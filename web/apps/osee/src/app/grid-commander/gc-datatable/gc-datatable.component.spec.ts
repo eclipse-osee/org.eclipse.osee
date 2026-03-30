@@ -68,25 +68,23 @@ describe('GcDatatableComponent', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('if isAllSelected === true, masterToggle will set the selection array to an empty array', (done: DoneFn) => {
+	it('if isAllSelected === true, masterToggle will set the selection array to an empty array', async () => {
 		component.rowsToBeSelectedVal.value.forEach((row) =>
 			component.selection.select(row)
 		);
 		component.masterToggle();
 		expect(component.selection.selected.length).toBe(0);
-		done();
 	});
 
-	it('if isAllSelected === false, masterToggle will push all values of _isSelected and their lengths will be equal', (done: DoneFn) => {
+	it('if isAllSelected === false, masterToggle will push all values of _isSelected and their lengths will be equal', async () => {
 		component.masterToggle();
 		expect(
 			component.selection.selected.length ===
 				component.rowsToBeSelectedVal.value.length
 		).toBe(true);
-		done();
 	});
 
-	it('isAllSelected to return false', (done: DoneFn) => {
+	it('isAllSelected to return false', async () => {
 		const testObj1 = {
 			name: 'testName',
 			description: 'testDescription',
@@ -97,22 +95,17 @@ describe('GcDatatableComponent', () => {
 		};
 
 		component.onElementToggled(testObj1);
-		expect(component.isAllSelected()).toBeInstanceOf(Boolean);
 		expect(component.isAllSelected()).toBe(false);
-		done();
 	});
 
-	it('isAllSelected to return true', (done: DoneFn) => {
+	it('isAllSelected to return true', async () => {
 		component.rowsToBeSelectedVal.value.forEach((row) =>
 			component.selection.select(row)
 		);
-
-		expect(component.isAllSelected()).toBeInstanceOf(Boolean);
 		expect(component.isAllSelected()).toBe(true);
-		done();
 	});
 
-	it('the argument passed to onElementToggle will be added to selection.selected array', (done: DoneFn) => {
+	it('the argument passed to onElementToggle will be added to selection.selected array', async () => {
 		const testObj = {
 			name: 'testName',
 			description: 'testDescription',
@@ -123,13 +116,11 @@ describe('GcDatatableComponent', () => {
 		};
 
 		component.onElementToggled(testObj);
-		expect(component.selection.selected).toBeInstanceOf(Array);
 		expect(component.selection.selected.length).toBe(1);
 		expect(component.selection.selected[0]).toEqual(testObj);
-		done();
 	});
 
-	it('hideRow when passed a rowObj should update hiddenRows array and return an array of the rowObjects that were passed as arguments', (done: DoneFn) => {
+	it('hideRow when passed a rowObj should update hiddenRows array and return an array of the rowObjects that were passed as arguments', async () => {
 		const testRowObj1 = {
 			name: 'test1Name',
 			description: 'test1Description',
@@ -153,11 +144,10 @@ describe('GcDatatableComponent', () => {
 		component.hiddenRows.subscribe((val) => {
 			expect(val).toBeInstanceOf(Array);
 			expect(val).toEqual([testRowObj1, testRowObj2]);
-			done();
 		});
 	});
 
-	it('hideSelectedRows will update hiddenRows to include all rows that are present in selection.selected array', (done: DoneFn) => {
+	it('hideSelectedRows will update hiddenRows to include all rows that are present in selection.selected array', async () => {
 		const testRowObj1 = {
 			name: 'test1Name',
 			description: 'test1Description',
@@ -183,11 +173,10 @@ describe('GcDatatableComponent', () => {
 		component.hiddenRows.subscribe((val) => {
 			expect(val).toBeInstanceOf(Array);
 			expect(val).toEqual([testRowObj1, testRowObj2]);
-			done();
 		});
 	});
 
-	it('showHiddenRows will clear the hiddenRows array', (done: DoneFn) => {
+	it('showHiddenRows will clear the hiddenRows array', async () => {
 		const testRowObj1 = {
 			name: 'test1Name',
 			description: 'test1Description',
@@ -212,7 +201,6 @@ describe('GcDatatableComponent', () => {
 		component.hiddenRows.subscribe((val) => {
 			expect(val).toBeInstanceOf(Array);
 			expect(val).toEqual([]);
-			done();
 		});
 	});
 });

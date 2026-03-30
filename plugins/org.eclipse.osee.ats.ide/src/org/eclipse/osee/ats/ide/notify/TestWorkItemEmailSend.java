@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -49,7 +49,7 @@ public class TestWorkItemEmailSend extends XNavigateItemAction {
    private Long workItemTestId;
 
    public TestWorkItemEmailSend() {
-      super(TITLE, FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
+      super(TITLE, CoreImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
       atsApi = AtsApiService.get();
    }
 

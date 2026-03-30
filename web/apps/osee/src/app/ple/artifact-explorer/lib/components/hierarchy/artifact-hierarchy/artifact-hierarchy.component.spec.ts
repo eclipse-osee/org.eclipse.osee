@@ -34,6 +34,7 @@ describe('ArtifactHierarchyComponent', () => {
 			providers: [provideHttpClientTesting(), provideHttpClient()],
 		});
 		fixture = TestBed.createComponent(ArtifactHierarchyComponent);
+		fixture.componentRef.setInput('artifactId', '1');
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

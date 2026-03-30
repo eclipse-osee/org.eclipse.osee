@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.mdeditor;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.edit.OmeEditTab;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -33,7 +33,7 @@ public class HorizontalAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.HORIZONTAL);
+      return ImageManager.getImageDescriptor(CoreImage.HORIZONTAL);
    }
 
    @Override

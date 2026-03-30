@@ -19,7 +19,6 @@ import { teamWorkflowDetails } from '@osee/shared/types/configuration-management
 	template: '<div>Dummy</div>',
 	standalone: true,
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class ActionDropdownStub {
 	teamWorkflow = input.required<teamWorkflowDetails>();
 	branch = input<branch>(branchSentinel);

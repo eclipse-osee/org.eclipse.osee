@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.api.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 
 /**
@@ -116,13 +115,8 @@ public class AtsImage extends OseeImage {
    public static AtsImage ZOOM_IN = new AtsImage("zoom_in.gif");
    public static AtsImage ZOOM_OUT = new AtsImage("zoom_out.gif");
 
-   private AtsImage(ArtifactImage artImage) {
-      super(artImage.getImageName());
-      values.add(this);
-   }
-
-   protected AtsImage(String fileName) {
-      super(fileName);
+   protected AtsImage(String filename) {
+      super(ENUM_ID, ENUM_ID + Long.valueOf(filename.hashCode()), filename);
       values.add(this);
    }
 

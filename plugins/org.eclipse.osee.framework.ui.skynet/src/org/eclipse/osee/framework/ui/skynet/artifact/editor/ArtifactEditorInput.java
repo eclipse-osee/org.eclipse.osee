@@ -16,10 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
@@ -59,11 +59,11 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
+      return ImageManager.getImageDescriptor(CoreImage.ARTIFACT_EDITOR);
    }
 
    public Image getImage() {
-      return ImageManager.getImage(FrameworkImage.ARTIFACT_EDITOR);
+      return ImageManager.getImage(CoreImage.ARTIFACT_EDITOR);
    }
 
    @Override

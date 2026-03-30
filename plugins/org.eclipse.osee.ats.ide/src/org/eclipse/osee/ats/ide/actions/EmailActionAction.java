@@ -19,9 +19,9 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.notify.WorkflowEmailWizard;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -58,7 +58,7 @@ public class EmailActionAction extends AbstractAtsAction {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.EMAIL);
+      return ImageManager.getImageDescriptor(CoreImage.EMAIL);
    }
 
    private void updateName() {

@@ -17,7 +17,7 @@ import {
 	input,
 	inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import {
 	MatTableDataSource,
@@ -37,7 +37,6 @@ import { TransferData } from '../../types/transfer-file/transferdata';
 @Component({
 	selector: 'osee-export-table',
 	imports: [
-		CommonModule,
 		MatFormFieldModule,
 		MatInputModule,
 		FormsModule,

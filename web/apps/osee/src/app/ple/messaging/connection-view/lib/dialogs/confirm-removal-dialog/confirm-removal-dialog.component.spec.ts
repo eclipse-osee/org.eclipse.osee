@@ -69,7 +69,7 @@ describe('ConfirmRemovalDialogComponent', () => {
 
 	it('should close without anything returning', async () => {
 		const buttons = await loader.getAllHarnesses(MatButtonHarness);
-		const spy = spyOn(component, 'onNoClick').and.callThrough();
+		const spy = vi.spyOn(component, 'onNoClick');
 		if ((await buttons[0].getText()) === 'Cancel') {
 			await buttons[0].click();
 			expect(spy).toHaveBeenCalled();

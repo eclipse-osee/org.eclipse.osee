@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -48,7 +47,6 @@ import { HttpLoadingService } from '@osee/shared/services/network';
 @Component({
 	selector: 'osee-workflow-attachments',
 	imports: [
-		CommonModule,
 		MatButton,
 		MatTooltip,
 		MatTableModule,

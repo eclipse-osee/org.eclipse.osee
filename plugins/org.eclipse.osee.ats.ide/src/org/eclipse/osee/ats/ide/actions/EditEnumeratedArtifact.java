@@ -21,6 +21,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 
@@ -41,7 +41,7 @@ public class EditEnumeratedArtifact extends XNavigateItemAction {
    private static final String TITLE = "Edit Enumerated Artifact";
 
    public EditEnumeratedArtifact() {
-      super(TITLE, FrameworkImage.GEAR, XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
+      super(TITLE, CoreImage.GEAR, XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
    }
 
    @Override

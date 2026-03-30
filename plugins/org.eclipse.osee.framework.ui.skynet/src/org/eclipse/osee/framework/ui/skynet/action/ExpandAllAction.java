@@ -18,9 +18,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -51,7 +51,7 @@ public class ExpandAllAction extends Action {
 
    public ExpandAllAction(IExpandAllHandler iRefreshActionHandler) {
       this.iExpandAllHandler = iRefreshActionHandler;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EXPAND_ALL));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.EXPAND_ALL));
       setToolTipText("Expand All");
       this.selectedOnly = false;
       setText("Expand All");

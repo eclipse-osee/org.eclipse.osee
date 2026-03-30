@@ -28,6 +28,7 @@ import {
 	MatHeaderCellDef,
 	MatHeaderRow,
 	MatHeaderRowDef,
+	MatNoDataRow,
 	MatRow,
 	MatRowDef,
 	MatTable,
@@ -62,6 +63,7 @@ import { trainingCourseRecordHeaderDetails } from './training-course-table-heade
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
+		MatNoDataRow,
 	],
 })
 export class TrainingCourseTableComponent {

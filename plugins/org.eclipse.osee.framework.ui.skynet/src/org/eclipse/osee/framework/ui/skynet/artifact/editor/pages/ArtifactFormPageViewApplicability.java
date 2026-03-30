@@ -16,11 +16,11 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -108,7 +108,7 @@ public class ArtifactFormPageViewApplicability {
 
    private Image getLockImage() {
       if (LOCK_IMAGE == null) {
-         LOCK_IMAGE = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);
+         LOCK_IMAGE = ImageManager.getImage(CoreImage.LOCK_OVERLAY);
       }
       return LOCK_IMAGE;
    }

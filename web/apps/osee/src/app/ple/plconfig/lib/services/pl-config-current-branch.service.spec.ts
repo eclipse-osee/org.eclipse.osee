@@ -30,7 +30,7 @@ describe('PlConfigCurrentBranchService', () => {
 	let service: PlConfigCurrentBranchService;
 	let ui: PlConfigUIStateService;
 	let baseUi: UiService;
-	let branchServiceSpy: jasmine.SpyObj<PlConfigBranchService>;
+	let branchServiceSpy: Partial<PlConfigBranchService>;
 	let scheduler: TestScheduler;
 
 	beforeEach(
@@ -41,27 +41,67 @@ describe('PlConfigCurrentBranchService', () => {
 	);
 	beforeEach(() => {
 		TestBed.resetTestingModule();
-		branchServiceSpy = jasmine.createSpyObj('PlConfigBranchService', {
-			//functions required to test
-			getBranchApplicability: of(testBranchApplicability),
-			modifyConfiguration: of(MockXResultData),
-			addFeature: of(MockXResultData),
-			modifyFeature: of(MockXResultData),
-			deleteFeature: of(MockXResultData),
-			getApplicabilityToken: of(testApplicabilityTag),
-			getCfgGroupDetail: of<configGroup>({
-				id: '1',
-				name: 'Hello',
-				description: '',
-				configurations: [],
-			}),
-			editConfiguration: of(MockXResultData),
-			addConfiguration: of(MockXResultData),
-			deleteConfiguration: of(MockXResultData),
-			addConfigurationGroup: of(MockXResultData),
-			deleteConfigurationGroup: of(MockXResultData),
-			updateConfigurationGroup: of(MockXResultData),
-		});
+		branchServiceSpy = {
+			getBranchApplicability: vi
+				.fn()
+				.mockName('PlConfigBranchService.getBranchApplicability')
+				.mockReturnValue(of(testBranchApplicability)),
+			modifyConfiguration: vi
+				.fn()
+				.mockName('PlConfigBranchService.modifyConfiguration')
+				.mockReturnValue(of(MockXResultData)),
+			addFeature: vi
+				.fn()
+				.mockName('PlConfigBranchService.addFeature')
+				.mockReturnValue(of(MockXResultData)),
+			modifyFeature: vi
+				.fn()
+				.mockName('PlConfigBranchService.modifyFeature')
+				.mockReturnValue(of(MockXResultData)),
+			deleteFeature: vi
+				.fn()
+				.mockName('PlConfigBranchService.deleteFeature')
+				.mockReturnValue(of(MockXResultData)),
+			getApplicabilityToken: vi
+				.fn()
+				.mockName('PlConfigBranchService.getApplicabilityToken')
+				.mockReturnValue(of(testApplicabilityTag)),
+			getCfgGroupDetail: vi
+				.fn()
+				.mockName('PlConfigBranchService.getCfgGroupDetail')
+				.mockReturnValue(
+					of<configGroup>({
+						id: '1',
+						name: 'Hello',
+						description: '',
+						configurations: [],
+					})
+				),
+			editConfiguration: vi
+				.fn()
+				.mockName('PlConfigBranchService.editConfiguration')
+				.mockReturnValue(of(MockXResultData)),
+			addConfiguration: vi
+				.fn()
+				.mockName('PlConfigBranchService.addConfiguration')
+				.mockReturnValue(of(MockXResultData)),
+			deleteConfiguration: vi
+				.fn()
+				.mockName('PlConfigBranchService.deleteConfiguration')
+				.mockReturnValue(of(MockXResultData)),
+			addConfigurationGroup: vi
+				.fn()
+				.mockName('PlConfigBranchService.addConfigurationGroup')
+				.mockReturnValue(of(MockXResultData)),
+			deleteConfigurationGroup: vi
+				.fn()
+				.mockName('PlConfigBranchService.deleteConfigurationGroup')
+				.mockReturnValue(of(MockXResultData)),
+			updateConfigurationGroup: vi
+				.fn()
+				.mockName('PlConfigBranchService.updateConfigurationGroup')
+				.mockReturnValue(of(MockXResultData)),
+		};
 	});
 	describe('normal tests', () => {
 		beforeEach(() => {

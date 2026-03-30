@@ -1,3 +1,15 @@
+<!--
+* Copyright (c) 2024 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-flex tw-place-content-center">
 	<table
 		mat-table
@@ -61,18 +73,18 @@
 		<tr
 			mat-header-row
 			*matHeaderRowDef="displayedColumns"></tr>
-		<ng-container *ngIf="exportedData().length !== 0">
+		@if (exportedData().length !== 0) {
 			<tr
 				mat-row
 				*matRowDef="let row; columns: displayedColumns"></tr>
-		</ng-container>
+		}
 	</table>
 </div>
-<div
-	*ngIf="exportedData().length === 0"
-	class="tw-flex tw-place-content-center">
-	<p>
-		No data available for the table, please initialize a transfer and/or
-		generate a new export to utilize this page.
-	</p>
-</div>
+@if (exportedData().length === 0) {
+	<div class="tw-flex tw-place-content-center">
+		<p>
+			No data available for the table, please initialize a transfer and/or
+			generate a new export to utilize this page.
+		</p>
+	</div>
+}

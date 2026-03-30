@@ -10,20 +10,19 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if (settingsCapable | async; as capable) {
-	@if (capable === 'true') {
-		<button
-			mat-menu-item
-			(click)="openSettingsDialog()"
-			data-cy="mim-settings">
-			<mat-icon>settings</mat-icon><span>Settings</span>
-		</button>
-	}
-	@if (capable === 'false') {
-		<button
-			mat-menu-item
-			[disabled]="true">
-			No branch selected
-		</button>
-	}
+
+@if (settingsCapable()) {
+	<button
+		mat-menu-item
+		(click)="openSettingsDialog()"
+		data-cy="mim-settings">
+		<mat-icon>settings</mat-icon><span>Settings</span>
+	</button>
+}
+@if (!settingsCapable()) {
+	<button
+		mat-menu-item
+		[disabled]="true">
+		No branch selected
+	</button>
 }

@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -58,7 +59,6 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
@@ -158,7 +158,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       new Label(completeComp, SWT.NONE).setText("Resolve all conflicts and ");
       Button completeButton = new Button(completeComp, SWT.PUSH);
       completeButton.setText("Complete Commit");
-      completeButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH_COMMIT));
+      completeButton.setImage(ImageManager.getImage(CoreImage.BRANCH_COMMIT));
       completeButton.setToolTipText("Commit changes into destination branch");
       setId(COMPLETE_COMMIT_ACTION_ID);
       completeButton.addSelectionListener(new SelectionAdapter() {
@@ -635,7 +635,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       public ShowSourceBranchChangeReportAction() {
          super();
          //         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change_source.gif"));
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE_SOURCE));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.BRANCH_CHANGE_SOURCE));
          setToolTipText("Show Source Branch Change Report");
       }
 
@@ -666,7 +666,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
 
       public ShowDestinationBranchChangeReportAction() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE_DEST));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.BRANCH_CHANGE_DEST));
          setToolTipText("Show Destination Branch Change Report");
       }
 
@@ -701,7 +701,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    private final class ApplyPriorMergeResultsAction extends Action {
       public ApplyPriorMergeResultsAction() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.OUTGOING_MERGED));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.OUTGOING_MERGED));
          setToolTipText("Apply Merge Results From Prior Merge");
       }
 

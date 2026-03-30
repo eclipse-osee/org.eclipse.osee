@@ -239,22 +239,4 @@ describe('StructureTableComponent', () => {
 	//   component.rowChange({ id:"1"} as structure, false);
 	//   expect(component.expandedElement).toEqual([])
 	// });
-
-	/**
-	 * TBD need better mock :)
-	 */
-	// it('should open add element dialog', async () => {
-	//   let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of({id:'10',name:'New Structure',structure:{id:'10216532',name:'New Structure',elements:[],description:'',interfaceMaxSimultaneity:'',interfaceMinSimultaneity:'',interfaceTaskFileType:0,interfaceStructureCategory:'',numElements:'10',sizeInBytes:'10',bytesPerSecondMinimum:10,bytesPerSecondMaximum:10}}), close: null });
-	//   let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy)
-	//   const spy = spyOn(component, 'openAddElementDialog').and.callThrough();
-	//   component.rowChange({ id: "1", name: 'dummy element' } as structure, true);
-	//   const addmenu = await loader.getHarness(TwoLayerAddButtonHarness);
-	//   await addmenu.toggleOpen();
-	//   expect(await (await addmenu.getNestedButtons()).length).toEqual(1);
-	//   expect(addmenu.isOpen()).toBeTruthy();
-	//   //await addmenu.clickItem({ text: "Add element to dummy element description" });
-	//   //await addmenu.clickItem({ text: new RegExp("Add element") });
-	//   await addmenu.clickItem();
-	//   expect(spy).toHaveBeenCalled();
-	// })
 });

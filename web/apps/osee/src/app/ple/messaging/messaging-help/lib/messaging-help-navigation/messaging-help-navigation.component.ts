@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass, AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -26,6 +26,7 @@ import { HelpService } from '@osee/shared/services/help';
 import { navigationElement } from '@osee/shared/types';
 import { from, iif, of, reduce, switchMap, tap } from 'rxjs';
 import helpNavigationStructure from './messaging-help-navigation-structure';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-messaging-help-navigation',
@@ -47,19 +48,13 @@ export class MessagingHelpNavigationComponent {
 	private route = inject(ActivatedRoute);
 	private userService = inject(UserDataAccountService);
 	private helpService = inject(HelpService);
+	private url = toSignal(this.route.url, { initialValue: [] });
+	protected currentPath = computed(() => {
+		return this.url()
+			.map((u) => u.path)
+			.join('/');
+	});
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		this.route.url.subscribe((url) => {
-			if (url.length > 0) {
-				this.currentPath = url.map((u) => u.path).join('/');
-			}
-		});
-	}
-
-	currentPath = '';
 	staticNavElements = helpNavigationStructure;
 	loadedNavElements = this.helpService
 		.getHelpNavElements('MIM')
@@ -70,7 +65,7 @@ export class MessagingHelpNavigationComponent {
 		navElements.forEach((e) => {
 			if (
 				e.isDropdown &&
-				e.children.find((c) => c.routerLink === this.currentPath)
+				e.children.find((c) => c.routerLink === this.currentPath())
 			) {
 				e.isDropdownOpen = true;
 			}

@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
@@ -35,7 +36,7 @@ public class XButton extends XButtonCommon {
    protected Composite parent;
    protected Composite comp;
    private boolean labelAfter = true;
-   protected int numColumns = 1;
+   protected int numColumns = 2;
    private static Cursor cursorHand;
 
    public XButton(String displayLabel) {
@@ -144,9 +145,15 @@ public class XButton extends XButtonCommon {
 
    @Override
    public void dispose() {
-      labelWidget.dispose();
-      button.dispose();
-      comp.dispose();
+      if (Widgets.isAccessible(labelWidget)) {
+         labelWidget.dispose();
+      }
+      if (Widgets.isAccessible(button)) {
+         button.dispose();
+      }
+      if (Widgets.isAccessible(comp)) {
+         comp.dispose();
+      }
       if (parent != null && !parent.isDisposed()) {
          parent.layout();
       }

@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.search.filter;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -59,7 +59,7 @@ public class FilterModelLabelProvider implements ITableLabelProvider {
    public Image getColumnImage(Object element, int columnIndex) {
       switch (columnIndex) {
          case FilterTableViewer.DELETE_NUM:
-            return ImageManager.getImage(FrameworkImage.REMOVE);
+            return ImageManager.getImage(CoreImage.REMOVE);
       }
       return null;
    }

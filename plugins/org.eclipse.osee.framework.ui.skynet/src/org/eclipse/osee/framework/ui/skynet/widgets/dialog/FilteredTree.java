@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
@@ -42,7 +42,7 @@ public class FilteredTree extends org.eclipse.ui.dialogs.FilteredTree {
       ImageDescriptor descriptor =
          AbstractUIPlugin.imageDescriptorFromPlugin(PlatformUI.PLUGIN_ID, "$nl$/icons/full/etool16/clear_co.gif"); //$NON-NLS-1$
       if (descriptor == null) {
-         descriptor = ImageManager.getImageDescriptor(FrameworkImage.CLEAR_CO);
+         descriptor = ImageManager.getImageDescriptor(CoreImage.CLEAR_CO);
       }
       if (descriptor != null) {
          JFaceResources.getImageRegistry().put(CLEAR_ICON, descriptor);

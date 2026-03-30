@@ -23,8 +23,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
@@ -53,17 +53,17 @@ public class ReLaunchSelectedAction extends DebugCommandAction implements IViewA
 
    @Override
    public ImageDescriptor getDisabledImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.RELAUNCH);
+      return ImageManager.getImageDescriptor(CoreImage.RELAUNCH);
    }
 
    @Override
    public ImageDescriptor getHoverImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.RELAUNCH);
+      return ImageManager.getImageDescriptor(CoreImage.RELAUNCH);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.RELAUNCH);
+      return ImageManager.getImageDescriptor(CoreImage.RELAUNCH);
    }
 
    @Override

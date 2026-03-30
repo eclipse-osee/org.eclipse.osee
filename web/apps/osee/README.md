@@ -1,6 +1,6 @@
 # OSEE
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4. Currently we are running version 19.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4. Currently we are running version 21.
 
 ## Development server
 
@@ -20,11 +20,17 @@ Run `ng build -c production` and copy the produced contents into /plugins/org.ec
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). Tests should be run with the --browsers=ChromeHeadless flag due to some third party dependencies not playing nice in test.
+Run `ng test` to execute the unit tests via [Vitest](https://vitest.dev/).
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via Playwright.
+### Install Playwright
+
+`npx playwright install`
+
+### Run end-to-end tests
+
+Run `ng e2e` to execute the end-to-end tests via Playwright. You can also use `npx playwright test`.
 
 ## Further help
 
@@ -115,8 +121,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### Running unit tests
 
--   Run **Jasmine unit tests** from shell/prompt/bash in the {path_to_repo}\org.eclipse.osee directory:
-    -   `pnpm -r run test --browsers=ChromeHeadless`
+-   Run **unit tests** from shell/prompt/bash in the {path_to_repo}\org.eclipse.osee directory:
+    -   `pnpm -r run test`
 
 ## Visual Studio Code Extensions
 

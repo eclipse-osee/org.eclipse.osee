@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.world.search.pr;
 import static org.eclipse.nebula.widgets.xviewer.core.model.SortDataType.String;
 import static org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign.Left;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -58,18 +59,37 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
  */
 public class ProblemReportBuildMemoOps {
 
+   protected XViewerColumn PrId = new XViewerColumn("col.pr.id", "PR ID", 75, Left, true, String, false, "");
+   protected XViewerColumn PriorityCol =
+      new XViewerColumn("col.priority", "Priority", 40, Left, true, String, false, "");
+   protected XViewerColumn TitleCol = new XViewerColumn("col.title", "Title", 200, Left, true, String, false, "");
+   protected XViewerColumn DescCol =
+      new XViewerColumn("col.description", "Description", 200, Left, true, String, false, "");
+   protected XViewerColumn OperImpCol =
+      new XViewerColumn("col.oper.impact", "Operational Impact", 200, Left, true, String, false, "");
+   protected XViewerColumn WorkAroundCol =
+      new XViewerColumn("col.work.around", "Workaround", 200, Left, true, String, false, "");
+   protected XViewerColumn CreatedDateCol =
+      new XViewerColumn("col.create.date", "Origination Date", 75, Left, true, String, false, "");
+   protected XViewerColumn StateCol = new XViewerColumn("col.state", "State", 80, Left, true, String, false, "");
+   protected XViewerColumn LegacyIdCol =
+      new XViewerColumn("col.legacy.id", "Legacy ID", 75, Left, true, String, false, "");
+   protected XViewerColumn PcrIdCol =
+      new XViewerColumn("col.legacy.pcr.id", "PCR ID(s)", 75, Left, true, String, false, "");
+   protected XViewerColumn SubsysCol =
+      new XViewerColumn("col.subsystem", "Subsystem", 80, Left, true, String, false, "");
+   protected XViewerColumn CogPriCol =
+      new XViewerColumn("col.cog.priority", "COG Priority", 40, Left, true, String, false, "");
+
    public static final String NOTHING_LOADED = "Nothing Loaded; Enter Parameters and Search";
    protected final WorldEditor worldEditor;
    private final String title;
    protected WorldSearchItem worldSearchItem;
-   private AttributeTypeToken descriptionAttrType;
-   private AttributeTypeToken operationalImpactAttrType;
-   private AttributeTypeToken workaroundAttrType;
-   private AttributeTypeToken subsystemAttrType;
    private List<XViewerColumn> tableColumns;
    protected final AtsApiIde atsApi;
    protected final List<ProblemReportCollector> collections = new ArrayList<>();
    protected XResultData rd;
+   protected List<XViewerColumn> cols;
 
    public ProblemReportBuildMemoOps(WorldEditor worldEditor, String title) {
       this.worldEditor = worldEditor;
@@ -255,11 +275,6 @@ public class ProblemReportBuildMemoOps {
          (WorldEditorParameterSearchItemProvider) weimp.getIWorldEditorProvider();
       worldSearchItem = editorInp.getWorldSearchItem();
 
-      descriptionAttrType = getDescriptionAttrType(worldSearchItem);
-      operationalImpactAttrType = getOperationalImpactAttrType(worldSearchItem);
-      workaroundAttrType = getWorkaroundAttrType(worldSearchItem);
-      subsystemAttrType = getSubsystemAttrType(worldSearchItem);
-
       tableColumns = createTableColumns();
    }
 
@@ -302,68 +317,58 @@ public class ProblemReportBuildMemoOps {
       return new ResultsEditorTableTab(coll.getName(), tableColumns, artRows);
    }
 
-   private void addTableRow(AtsApi atsApi, List<IResultsXViewerRow> artRows, Artifact art, IAtsTeamWorkflow teamWf) {
-
-      artRows.add(new ResultsXViewerRow(new String[] { //
-
-         teamWf.getAtsId(),
-         teamWf.getCurrentStateName(),
-         teamWf.getLegacyId(),
-         Collections.toString(",", teamWf.getPcrIds()),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""),
-         teamWf.getName(),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, descriptionAttrType, ""),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, operationalImpactAttrType, ""),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, workaroundAttrType, ""),
-         DateUtil.getMMDDYY(teamWf.getCreatedDate()),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, subsystemAttrType, ""),
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.CogPriority, "")
-
-      }, art));
-   }
-
-   protected AttributeTypeToken getDescriptionAttrType(WorldSearchItem worldSearchItem) {
-      return CoreAttributeTypes.Description;
-   }
-
-   protected AttributeTypeToken getSubsystemAttrType(WorldSearchItem worldSearchItem) {
-      return CoreAttributeTypes.Subsystem;
-   }
-
-   protected AttributeTypeToken getWorkaroundAttrType(WorldSearchItem worldSearchItem) {
-      return AtsAttributeTypes.Workaround;
-   }
-
-   protected AttributeTypeToken getOperationalImpactAttrType(WorldSearchItem worldSearchItem) {
-      return AtsAttributeTypes.OperationalImpact;
-   }
-
    protected List<XViewerColumn> createTableColumns() {
-      List<XViewerColumn> cols = new ArrayList<>();
-
-      cols.add(new XViewerColumn("col.pr.id", "PR ID", 75, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.state", "State", 100, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.legacy.id", "Legacy ID", 75, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.legacy.pcr.id", "PCR ID(s)", 75, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.priority", "Priority", 40, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.title", "Title", 200, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.description", descriptionAttrType.getUnqualifiedName(), 200, Left, true, String,
-         false, ""));
-      cols.add(new XViewerColumn("col.oper.impact", operationalImpactAttrType.getUnqualifiedName(), 200, Left, true,
-         String, false, ""));
-      cols.add(new XViewerColumn("col.work.around", workaroundAttrType.getUnqualifiedName(), 200, Left, true, String,
-         false, ""));
-      cols.add(new XViewerColumn("col.create.date", "Origination Date", 75, Left, true, String, false, ""));
-      cols.add(
-         new XViewerColumn("col.subsystem", subsystemAttrType.getUnqualifiedName(), 40, Left, true, String, false, ""));
-      cols.add(new XViewerColumn("col.cog.priority", "COG Priority", 40, Left, true, String, false, ""));
+      cols = Arrays.asList(PrId, StateCol, LegacyIdCol, PcrIdCol, PriorityCol, TitleCol, DescCol, OperImpCol,
+         WorkAroundCol, CreatedDateCol, SubsysCol, CogPriCol);
       return cols;
+   }
+
+   private void addTableRow(AtsApi atsApi, List<IResultsXViewerRow> artRows, Artifact art, IAtsTeamWorkflow teamWf) {
+      ResultsXViewerRow row = new ResultsXViewerRow();
+      artRows.add(row);
+      for (XViewerColumn col : cols) {
+         row.addValue(getValue(atsApi, teamWf, col));
+      }
+   }
+
+   protected String getValue(AtsApi atsApi, IAtsTeamWorkflow teamWf, XViewerColumn col) {
+      if (col.equals(PrId)) {
+         return teamWf.getAtsId();
+      } else if (col.equals(PriorityCol)) {
+         return getAttrValue(AtsAttributeTypes.Priority, teamWf);
+      } else if (col.equals(TitleCol)) {
+         return teamWf.getName();
+      } else if (col.equals(DescCol)) {
+         return teamWf.getDescription();
+      } else if (col.equals(OperImpCol)) {
+         return atsApi.getAttributeResolver().getSoleAttributeValue(teamWf,
+            AtsAttributeTypes.OperationalImpactDescription, "");
+      } else if (col.equals(WorkAroundCol)) {
+         return getAttrValue(AtsAttributeTypes.Workaround, teamWf);
+      } else if (col.equals(CreatedDateCol)) {
+         return DateUtil.getMMDDYY(teamWf.getCreatedDate());
+      } else if (col.equals(StateCol)) {
+         return teamWf.getCurrentStateName();
+      } else if (col.equals(LegacyIdCol)) {
+         return teamWf.getLegacyId();
+      } else if (col.equals(PcrIdCol)) {
+         return Collections.toString(",", teamWf.getPcrIds());
+      } else if (col.equals(SubsysCol)) {
+         getAttrValue(CoreAttributeTypes.Subsystem, teamWf);
+      } else if (col.equals(CogPriCol)) {
+         return getAttrValue(AtsAttributeTypes.CogPriority, teamWf);
+      }
+      return null;
    }
 
    private IResultsEditorTab createDetailsHtmlTab() {
       String htmlReport = XResultDataUI.getReport(rd, title, Manipulations.HTML_MANIPULATIONS,
          Manipulations.CONVERT_NEWLINES, Manipulations.ERROR_WARNING_HEADER).getManipulatedHtml();
       return new ResultsEditorHtmlTab(title, "Details", htmlReport);
+   }
+
+   protected String getAttrValue(AttributeTypeToken attrType, IAtsTeamWorkflow teamWf) {
+      return atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamWf, attrType, "");
    }
 
 }

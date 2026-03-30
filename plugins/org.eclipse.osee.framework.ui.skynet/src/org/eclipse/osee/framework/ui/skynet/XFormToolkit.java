@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -84,7 +85,7 @@ public class XFormToolkit extends FormToolkit {
       }
       ImageHyperlink helpLink = new ImageHyperlink(parent, SWT.NULL);
       toolkit.adapt(helpLink, true, true);
-      helpLink.setImage(ImageManager.getImage(FrameworkImage.HELP));
+      helpLink.setImage(ImageManager.getImage(CoreImage.HELP));
       helpLink.setBackground(section.getTitleBarGradientBackground());
       helpLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override

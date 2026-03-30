@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.ui.skynet.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -36,7 +36,7 @@ public class RevealInExplorerAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY);
+      return ImageManager.getImageDescriptor(CoreImage.MAGNIFY);
    }
 
 }

@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -123,7 +123,7 @@ public class XAtsUserListDam extends XListViewer implements AttributeWidget {
       mComp.setBackgroundMode(SWT.INHERIT_FORCE);
 
       Button modifyList = new Button(mComp, SWT.PUSH);
-      modifyList.setImage(ImageManager.getImage(FrameworkImage.EDIT));
+      modifyList.setImage(ImageManager.getImage(CoreImage.EDIT));
       modifyList.setToolTipText("Select to modify");
       modifyList.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, false, false));
       modifyList.addSelectionListener(new SelectionAdapter() {
@@ -136,7 +136,7 @@ public class XAtsUserListDam extends XListViewer implements AttributeWidget {
       });
 
       Button emailSelected = new Button(mComp, SWT.PUSH);
-      emailSelected.setImage(ImageManager.getImage(FrameworkImage.EMAIL));
+      emailSelected.setImage(ImageManager.getImage(CoreImage.EMAIL));
       emailSelected.setToolTipText("Email");
       emailSelected.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, false, false));
       emailSelected.addSelectionListener(new SelectionAdapter() {
