@@ -264,7 +264,7 @@
 			    <mat-checkbox *ngFor="let col of filteredAttributeColumns()" [checked]="col.visible" (click)="$event.stopPropagation(); onAttributeColumnToggle(col)">
 			    	{{ col.label }}
 			    </mat-checkbox>
-			    <div *ngIf="attributeSearch().length > 0 && filteredAttributeColumns().length === 0" class="tw-text-xs tw-px-2 tw-py-2">
+			    <div *ngIf="attributeSearch().length > 0 && filteredAttributeColumns().length === 0" class="tw-text-xs tw-px-2 tw-py-2 tw-text-gray-500">
 			    	No results for "{{ attributeSearch() }}"
 			    </div>
 		    </div>
