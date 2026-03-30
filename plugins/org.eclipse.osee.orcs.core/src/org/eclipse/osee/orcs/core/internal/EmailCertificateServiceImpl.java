@@ -13,14 +13,27 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.EmailRecipientInfo;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.util.EmailCertificateValidator;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.internal.util.EmailCertificateLdapLookup;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.utility.EmailCertificateService;
-import org.eclipse.osee.orcs.utility.EmailCertificateValidator;
 
 public class EmailCertificateServiceImpl implements EmailCertificateService {
 
@@ -64,5 +77,146 @@ public class EmailCertificateServiceImpl implements EmailCertificateService {
          "Delete email public certificate associated with user.");
       tx.deleteSoleAttribute(user.getArtifactId(), CoreAttributeTypes.EmailPublicCertificate);
       tx.commit();
+   }
+
+   @Override
+   public List<EmailRecipientInfo> getPublicCertificatesByEmailAddresses(Collection<String> emailAddresses) {
+      return getPublicCertificatesByEmailAddresses(emailAddresses, "");
+   }
+
+   @Override
+   public List<EmailRecipientInfo> getPublicCertificatesByEmailAddresses(Collection<String> emailAddresses,
+      String emailCertificateLdapUrl) {
+      if (emailAddresses == null || emailAddresses.isEmpty()) {
+         return Collections.emptyList();
+      }
+
+      Map<String, EmailRecipientInfo> resultsByEmailLower = new LinkedHashMap<>();
+      for (String email : emailAddresses) {
+         if (Strings.isValid(email)) {
+            resultsByEmailLower.put(email.toLowerCase(), new EmailRecipientInfo(email, null));
+         }
+      }
+
+      if (resultsByEmailLower.isEmpty()) {
+         return Collections.emptyList();
+      }
+
+      QueryFactory queryFactory = orcsApi.getQueryFactory();
+
+      List<ArtifactReadable> emailUsers =
+         queryFactory.fromBranch(CoreBranches.COMMON).andTypeEquals(CoreArtifactTypes.User).and(
+            CoreAttributeTypes.Email, new ArrayList<>(resultsByEmailLower.keySet()),
+            QueryOption.EXACT_MATCH_OPTIONS).asArtifacts();
+
+      //@formatter:off
+      emailUsers.stream().forEach(
+         art -> {
+            String email = art.getSoleAttributeValue(CoreAttributeTypes.Email, "");
+            String certificate = art.getSoleAttributeValue(CoreAttributeTypes.EmailPublicCertificate, null);
+            if (Strings.isValid(email)) {
+               resultsByEmailLower.put(email.toLowerCase(), new EmailRecipientInfo(email, certificate));
+            }
+         });
+      //@formatter:on
+
+      List<String> ldapLookupEmails =
+         resultsByEmailLower.values().stream().filter(info -> !hasValidCertificate(info.getPublicCertificate())).map(
+            EmailRecipientInfo::getEmail).filter(Strings::isValid).collect(Collectors.toList());
+
+      if (Strings.isValid(emailCertificateLdapUrl) && !ldapLookupEmails.isEmpty()) {
+         Map<String, String> ldapCertificatesByEmail =
+            EmailCertificateLdapLookup.getNewestEmailEncryptionCerts(emailCertificateLdapUrl, ldapLookupEmails);
+
+         for (Map.Entry<String, String> entry : ldapCertificatesByEmail.entrySet()) {
+            String emailLower = entry.getKey().toLowerCase();
+            EmailRecipientInfo existing = resultsByEmailLower.get(emailLower);
+            if (existing != null && Strings.isValid(entry.getValue())) {
+               existing.setPublicCertificate(entry.getValue());
+            }
+         }
+
+         if (!ldapCertificatesByEmail.isEmpty()) {
+            writePublicCertificatesByEmailAddressesAsync(ldapCertificatesByEmail);
+         }
+      }
+
+      return new ArrayList<>(resultsByEmailLower.values());
+   }
+
+   @Override
+   public void writePublicCertificatesByEmailAddressesAsync(Map<String, String> certificatesByEmailAddress) {
+      if (certificatesByEmailAddress == null || certificatesByEmailAddress.isEmpty()) {
+         return;
+      }
+
+      Map<String, String> normalizedCertificatesByEmail = new LinkedHashMap<>();
+      for (Map.Entry<String, String> entry : certificatesByEmailAddress.entrySet()) {
+         if (Strings.isValid(entry.getKey()) && Strings.isValid(entry.getValue())) {
+            normalizedCertificatesByEmail.put(entry.getKey().toLowerCase(), entry.getValue());
+         }
+      }
+
+      if (normalizedCertificatesByEmail.isEmpty()) {
+         return;
+      }
+
+      Thread writerThread = new Thread(() -> writePublicCertificatesByEmailAddresses(normalizedCertificatesByEmail),
+         "EmailCertificateLdapWriteback");
+      writerThread.setDaemon(true);
+      writerThread.start();
+   }
+
+   private void writePublicCertificatesByEmailAddresses(Map<String, String> certificatesByEmailAddress) {
+      try {
+         QueryFactory queryFactory = orcsApi.getQueryFactory();
+
+         List<ArtifactReadable> emailUsers =
+            queryFactory.fromBranch(CoreBranches.COMMON).andTypeEquals(CoreArtifactTypes.User).and(
+               CoreAttributeTypes.Email, new ArrayList<>(certificatesByEmailAddress.keySet()),
+               QueryOption.EXACT_MATCH_OPTIONS).asArtifacts();
+
+         if (emailUsers.isEmpty()) {
+            return;
+         }
+
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
+            "Write back LDAP email public certificates.");
+
+         for (ArtifactReadable userArt : emailUsers) {
+            String email = userArt.getSoleAttributeValue(CoreAttributeTypes.Email, "");
+            String certificatePem = certificatesByEmailAddress.get(email.toLowerCase());
+
+            if (!Strings.isValid(certificatePem)) {
+               continue;
+            }
+
+            try {
+               X509Certificate cert = EmailCertificateValidator.parseAndCheckBasicValidity(certificatePem);
+               EmailCertificateValidator.checkSuitableForEmail(cert);
+               tx.setSoleAttributeFromString(userArt.getArtifactId(), CoreAttributeTypes.EmailPublicCertificate,
+                  certificatePem);
+            } catch (Exception ex) {
+               // Skip invalid certificates
+            }
+         }
+
+         tx.commit();
+      } catch (Exception ex) {
+         // do nothing
+      }
+   }
+
+   private boolean hasValidCertificate(String certificatePem) {
+      if (!Strings.isValid(certificatePem)) {
+         return false;
+      }
+      try {
+         X509Certificate cert = EmailCertificateValidator.parseAndCheckBasicValidity(certificatePem);
+         EmailCertificateValidator.checkSuitableForEmail(cert);
+         return true;
+      } catch (Exception ex) {
+         return false;
+      }
    }
 }

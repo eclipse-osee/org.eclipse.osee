@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
-import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.IOseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmailType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -186,7 +186,7 @@ public class SendNotificationEvents {
          }
 
          try {
-            OseeEmail oseeEmail = oseeEmailCreator.createOseeEmail();
+            IOseeEmail oseeEmail = oseeEmailCreator.createOseeEmail();
             oseeEmail.setFrom(useFromEmail);
             String subject = getNotificationEmailSubject(notificationEvents, emailType);
             oseeEmail.setSubject(subject);

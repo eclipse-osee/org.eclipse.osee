@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.IOseeEmail;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
@@ -150,7 +150,7 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
             @Override
             public void run() {
                try {
-                  OseeEmail msg = createOseeEmail();
+                  IOseeEmail msg = createOseeEmail();
                   msg.setFrom(fromUserEmail);
                   msg.setRecipients(toUserEmails.toArray(new String[toUserEmails.size()]));
                   msg.setSubject(subject);
@@ -167,7 +167,7 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
    }
 
    @Override
-   public abstract OseeEmail createOseeEmail();
+   public abstract IOseeEmail createOseeEmail();
 
    private String getFromUserEmail(AtsNotificationCollector notifications) {
       String email = atsApi.getConfigValue("NoReplyEmail");

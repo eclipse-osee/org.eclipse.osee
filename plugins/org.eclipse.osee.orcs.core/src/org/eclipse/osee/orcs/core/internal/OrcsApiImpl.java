@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
+import org.eclipse.osee.framework.core.util.IOseeEmailService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
@@ -66,6 +67,7 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl.Transact
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
+import org.eclipse.osee.orcs.core.internal.util.OseeEmailService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -109,6 +111,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    AccessControlServiceImpl accessControlService;
 
    ExternalArtifactManager proxyManager;
+   private IOseeEmailService emailService;
 
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService) {
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi) {
@@ -206,6 +209,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       userService = new UserServiceImpl(this);
 
       emailCertificateService = new EmailCertificateServiceImpl(this);
+      emailService = new OseeEmailService(this);
 
       accessControlService = new AccessControlServiceImpl(this);
       accessControlService.bindUserService(userService);
@@ -347,6 +351,11 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public WeakReference<ResourcesOperations> getResourcesOperations() {
       return this.resourcesOperations;
+   }
+
+   @Override
+   public IOseeEmailService getEmailService() {
+      return emailService;
    }
 
 }

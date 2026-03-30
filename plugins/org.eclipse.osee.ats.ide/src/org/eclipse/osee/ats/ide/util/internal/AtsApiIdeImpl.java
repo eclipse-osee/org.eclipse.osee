@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceIdeImpl;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.ide.ev.internal.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.ide.health.AtsHealthServiceImpl;
-import org.eclipse.osee.ats.ide.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.search.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
@@ -132,8 +131,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
       taskService = new AtsTaskService(this);
       taskService.setTaskProviders(taskProviders);
-
-      notificationService = new AtsNotificationServiceImpl(this);
 
       jiraService = new AtsJiraServiceImpl(this);
 

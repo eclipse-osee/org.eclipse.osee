@@ -117,4 +117,7 @@ Service-Component: OSGI-INF/*.xml
 Require-Bundle: javax.activation,
  jakarta.ws.rs-api,
  com.fasterxml.jackson.core.jackson-databind,
- org.eclipse.osgi
+ org.eclipse.osgi,
+ bcpkix,
+ bcprov,
+ bcmail

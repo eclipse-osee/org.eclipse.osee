@@ -15,20 +15,24 @@ package org.eclipse.osee.ats.rest.internal.notify;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.core.notify.AbstractAtsNotificationService;
-import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.IOseeEmail;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsNotificationServiceImpl extends AbstractAtsNotificationService {
 
-   public AtsNotificationServiceImpl(AtsApi atsApi) {
+   private final OrcsApi orcsApi;
+
+   public AtsNotificationServiceImpl(AtsApi atsApi, OrcsApi orcsApi) {
       super(atsApi);
+      this.orcsApi = orcsApi;
    }
 
    @Override
-   public OseeEmail createOseeEmail() {
-      return OseeEmailServer.create();
+   public IOseeEmail createOseeEmail() {
+      return orcsApi.getEmailService().create();
    }
 
 }
