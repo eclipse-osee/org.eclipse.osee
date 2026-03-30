@@ -26,6 +26,7 @@ import org.eclipse.osee.branch.gantt.Activator;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -77,7 +77,7 @@ public class BranchVisualizationView extends ViewPart {
    public void createPartControl(Composite parent) {
       this.parent = parent;
 
-      setTitleImage(ImageManager.getImage(FrameworkImage.BRANCH));
+      setTitleImage(ImageManager.getImage(CoreImage.BRANCH));
 
       bodyComposite = new Composite(parent, SWT.None);
       bodyComposite.setLayout(new GridLayout(1, false));
@@ -231,7 +231,7 @@ public class BranchVisualizationView extends ViewPart {
       };
       zoomInAction.setText("Zoom In");
       zoomInAction.setToolTipText("Zoom In");
-      zoomInAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ZOOM_IN));
+      zoomInAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ZOOM_IN));
 
       zoomOutAction = new Action() {
          @Override
@@ -241,7 +241,7 @@ public class BranchVisualizationView extends ViewPart {
       };
       zoomOutAction.setText("Zoom Out");
       zoomOutAction.setToolTipText("Zoom Out");
-      zoomOutAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ZOOM_OUT));
+      zoomOutAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ZOOM_OUT));
 
       refreshAction = new Action() {
          @Override
@@ -251,7 +251,7 @@ public class BranchVisualizationView extends ViewPart {
       };
       refreshAction.setText("Refresh");
       refreshAction.setToolTipText("Refresh");
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.REFRESH));
 
    }
 

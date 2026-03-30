@@ -26,8 +26,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
@@ -52,7 +52,7 @@ public abstract class AbstractAddRelationColumnAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.ADD_GREEN);
+      return ImageManager.getImageDescriptor(CoreImage.ADD_GREEN);
    }
 
    @Override

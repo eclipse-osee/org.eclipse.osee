@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -55,7 +56,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -714,7 +714,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WorkDefinition) {
             return ImageManager.getImage(AtsImage.WORKFLOW);
          } else if (element instanceof WidgetDefinition) {
-            return ImageManager.getImage(FrameworkImage.GEAR);
+            return ImageManager.getImage(CoreImage.GEAR);
          } else if (element instanceof CompositeLayoutItem || element instanceof WrappedLayout) {
             return ImageManager.getImage(AtsImage.COMPOSITE_STATE_ITEM);
          } else if (element instanceof String || element instanceof WidgetOption || element instanceof WrappedPercentWeight) {
@@ -722,21 +722,21 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedStates || element instanceof WrappedTransitions) {
             return ImageManager.getImage(AtsImage.TRANSITION);
          } else if (element instanceof WrappedRules || element instanceof RuleAndLocation) {
-            return ImageManager.getImage(FrameworkImage.RULE);
+            return ImageManager.getImage(CoreImage.RULE);
          } else if (element instanceof Artifact && ((Artifact) element).isOfType(CoreArtifactTypes.User)) {
-            return ImageManager.getImage(FrameworkImage.USER);
+            return ImageManager.getImage(CoreImage.USER);
          } else if (element instanceof WrappedPeerReviews || element instanceof IAtsPeerReviewDefinition) {
             return ImageManager.getImage(AtsImage.PEER_REVIEW);
          } else if (element instanceof WrappedDecisionReviews || element instanceof IAtsDecisionReviewDefinition) {
             return ImageManager.getImage(AtsImage.DECISION_REVIEW);
          } else if (element instanceof IAtsDecisionReviewOption) {
-            return ImageManager.getImage(FrameworkImage.QUESTION);
+            return ImageManager.getImage(CoreImage.QUESTION);
          } else if (element instanceof HeaderDefinition) {
             return ImageManager.getImage(AtsImage.WORKFLOW_DEFINITION);
          } else if (element instanceof WrappedChangeTypes) {
             return ImageManager.getImage(AtsImage.CHANGE_REQUEST);
          } else if (element instanceof WrappedPriorities) {
-            return ImageManager.getImage(FrameworkImage.PAGE);
+            return ImageManager.getImage(CoreImage.PAGE);
          } else if (element instanceof ChangeTypes) {
             return ImageManager.getImage(AtsImage.CHANGE_REQUEST);
          }

@@ -23,13 +23,8 @@ import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.OrcsQueryService;
 
 /**

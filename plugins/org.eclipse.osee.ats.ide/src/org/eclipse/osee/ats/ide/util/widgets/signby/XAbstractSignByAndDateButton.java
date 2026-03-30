@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -43,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeType2Widget;
@@ -76,7 +76,7 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
 
    public XAbstractSignByAndDateButton(AttributeTypeToken attrType1, AttributeTypeToken attrType2) {
       super((attrType1.isDate() ? attrType2.getUnqualifiedName() : attrType1.getUnqualifiedName()), "Sign or Clear",
-         ImageManager.getImage(FrameworkImage.RUN_EXC));
+         ImageManager.getImage(CoreImage.RUN_EXC));
       setAttributeType(attrType1);
       setAttributeType2(attrType2);
       this.dateAttrType = attrType1.isDate() ? attrType1 : attrType2;

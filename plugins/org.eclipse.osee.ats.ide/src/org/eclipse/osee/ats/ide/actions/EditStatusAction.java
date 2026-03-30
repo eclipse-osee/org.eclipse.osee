@@ -18,8 +18,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePromptChangeStatus;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -37,7 +37,7 @@ public class EditStatusAction extends AbstractAtsAction {
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       this.editor = editor;
       this.xViewer = xViewer;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.EDIT));
    }
 
    @Override

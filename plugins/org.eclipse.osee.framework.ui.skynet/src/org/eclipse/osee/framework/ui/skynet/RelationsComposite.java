@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -258,7 +259,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    private void createDeleteRelationMenuItem(final Menu parentMenu) {
       deleteRelationMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       deleteRelationMenuItem.setText("&Delete Relation");
-      deleteRelationMenuItem.setImage(ImageManager.getImage(FrameworkImage.DELETE));
+      deleteRelationMenuItem.setImage(ImageManager.getImage(CoreImage.DELETE));
       needSelectedArtifactListener.add(deleteRelationMenuItem);
       deleteRelationMenuItem.addSelectionListener(new SelectionAdapter() {
 
@@ -274,7 +275,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    private void createDeleteArtifactMenuItem(final Menu parentMenu) {
       deleteArtifactMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       deleteArtifactMenuItem.setText("&Delete Artifact");
-      deleteArtifactMenuItem.setImage(ImageManager.getImage(FrameworkImage.DELETE));
+      deleteArtifactMenuItem.setImage(ImageManager.getImage(CoreImage.DELETE));
       needSelectedArtifactListener.add(deleteArtifactMenuItem);
       deleteArtifactMenuItem.addSelectionListener(new SelectionAdapter() {
 
@@ -290,7 +291,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    private void createViewRelationTreeMenuItem(Menu menu) {
       viewRelationTreeItem = new MenuItem(menu, SWT.PUSH);
       viewRelationTreeItem.setText("&View Relation Table Report");
-      viewRelationTreeItem.setImage(ImageManager.getImage(FrameworkImage.REPORT));
+      viewRelationTreeItem.setImage(ImageManager.getImage(CoreImage.REPORT));
       viewRelationTreeItem.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -345,7 +346,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    private void createExpandAllMenuItem(Menu parentMenu) {
       MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
       menuItem.setText("Expand All\tCtrl+X");
-      menuItem.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
+      menuItem.setImage(ImageManager.getImage(CoreImage.EXPAND_ALL));
       menuItem.addSelectionListener(new ExpandListener());
    }
 

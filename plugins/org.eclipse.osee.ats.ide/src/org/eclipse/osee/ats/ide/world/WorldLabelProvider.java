@@ -28,11 +28,11 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workdef.StateColorToSwtColor;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -68,9 +68,9 @@ public class WorldLabelProvider extends XViewerLabelProvider {
                String isHold = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
                   AtsAttributeTypes.HoldReason, "");
                if (Strings.isValid(isBlocked)) {
-                  return ImageManager.getImage(FrameworkImage.X_RED);
+                  return ImageManager.getImage(CoreImage.X_RED);
                } else if (Strings.isValid(isHold)) {
-                  return ImageManager.getImage(FrameworkImage.HOLD);
+                  return ImageManager.getImage(CoreImage.HOLD);
                }
             }
          }

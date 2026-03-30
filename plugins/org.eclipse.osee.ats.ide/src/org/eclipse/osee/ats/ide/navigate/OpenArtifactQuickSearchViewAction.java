@@ -15,9 +15,9 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PartInitException;
@@ -30,7 +30,7 @@ public class OpenArtifactQuickSearchViewAction extends Action {
 
    public OpenArtifactQuickSearchViewAction() {
       super("Open Artifact Quick Search");
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ARTIFACT_SEARCH));
    }
 
    @Override

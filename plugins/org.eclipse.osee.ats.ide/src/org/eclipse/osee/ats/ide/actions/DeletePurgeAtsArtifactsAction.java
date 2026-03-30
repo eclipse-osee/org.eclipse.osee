@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -29,7 +29,7 @@ public class DeletePurgeAtsArtifactsAction extends AbstractAtsAction {
    private final boolean executeInCurrentThread;
 
    public DeletePurgeAtsArtifactsAction(ISelectedAtsArtifacts selectedAtsArtifacts, boolean executeInCurrentThread) {
-      super(MSG, ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR));
+      super(MSG, ImageManager.getImageDescriptor(CoreImage.ARTIFACT_EDITOR));
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setToolTipText(getText());
       this.executeInCurrentThread = executeInCurrentThread;

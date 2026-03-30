@@ -29,10 +29,10 @@ import org.eclipse.osee.ats.ide.search.AttributeTypeFilteredDialog;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorWidget;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -196,7 +196,7 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
             }
 
             Label deleteLabel = new Label(lComp, SWT.NONE);
-            deleteLabel.setImage(ImageManager.getImage(FrameworkImage.X_RED));
+            deleteLabel.setImage(ImageManager.getImage(CoreImage.X_RED));
             deleteLabel.setBackground(attrComp.getBackground());
             deleteLabel.addListener(SWT.MouseUp, new Listener() {
 

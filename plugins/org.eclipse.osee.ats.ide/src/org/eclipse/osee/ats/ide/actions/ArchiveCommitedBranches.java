@@ -20,10 +20,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -37,7 +37,7 @@ public class ArchiveCommitedBranches extends AbstractAtsAction {
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public ArchiveCommitedBranches(ISelectedAtsArtifacts selectedAtsArtifacts) {
-      super(MSG, ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE));
+      super(MSG, ImageManager.getImageDescriptor(CoreImage.ARCHIVE));
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setToolTipText(getText());
    }

@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -60,7 +61,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.CompareArtifactAction;
@@ -293,7 +293,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    private void createChangeReportMenuItem(Menu popupMenu) {
       final MenuItem changeReportMenuItem = new MenuItem(popupMenu, SWT.CASCADE);
       changeReportMenuItem.setText("&Change Report");
-      changeReportMenuItem.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
+      changeReportMenuItem.setImage(ImageManager.getImage(CoreImage.BRANCH_CHANGE));
       popupMenu.addMenuListener(new MenuAdapter() {
 
          @Override

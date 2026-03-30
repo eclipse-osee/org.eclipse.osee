@@ -50,6 +50,11 @@ public class XNavigateItemAction extends XNavigateItem {
       this(name, false, ImageManager.create(oseeImage), xNavItemCat);
    }
 
+   public XNavigateItemAction(String name, boolean promptFirst, OseeImage oseeImage, XNavItemCat... xNavItemCat) {
+      this(name, promptFirst, ImageManager.create(oseeImage), xNavItemCat);
+
+   }
+
    public XNavigateItemAction(String name, boolean promptFirst, KeyedImage oseeImage, XNavItemCat... xNavItemCat) {
       super(name, oseeImage, xNavItemCat);
       this.action = null;
@@ -58,6 +63,12 @@ public class XNavigateItemAction extends XNavigateItem {
 
    public XNavigateItemAction(Action action, KeyedImage oseeImage, XNavItemCat... xNavItemCat) {
       this(action, oseeImage, false, Collections.emptyList(), xNavItemCat);
+   }
+
+   public XNavigateItemAction(Action action, OseeImage oseeImage, Collection<IUserGroupArtifactToken> groups, XNavItemCat... xNavItemCat) {
+      super(action.getText(), oseeImage, xNavItemCat);
+      this.action = action;
+      this.groups = groups;
    }
 
    public XNavigateItemAction(Action action, KeyedImage oseeImage, Collection<IUserGroupArtifactToken> groups, XNavItemCat... xNavItemCat) {

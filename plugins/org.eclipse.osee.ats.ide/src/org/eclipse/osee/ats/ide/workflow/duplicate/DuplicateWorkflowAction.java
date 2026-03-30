@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -44,7 +44,7 @@ public class DuplicateWorkflowAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE);
+      return ImageManager.getImageDescriptor(CoreImage.DUPLICATE);
    }
 
 }

@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.actions;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -29,7 +29,7 @@ public class OpenVersionArtifactAction extends AbstractAtsAction {
    private final AbstractWorkflowArtifact sma;
 
    public OpenVersionArtifactAction(AbstractWorkflowArtifact sma) {
-      super(ACTION_TEXT, ImageManager.getImageDescriptor(FrameworkImage.VERSION));
+      super(ACTION_TEXT, ImageManager.getImageDescriptor(CoreImage.VERSION));
       setToolTipText(ACTION_TEXT);
       this.sma = sma;
    }

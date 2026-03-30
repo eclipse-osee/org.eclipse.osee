@@ -13,22 +13,8 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.BOT;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.MID_BOT;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.MID_TOP;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.OSEE_ADMIN;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.SUBCAT;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.TOP;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.DEFINE;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.EMAIL_NOTIFICATIONS;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.OTE;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.PLE;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.REPORTS;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.TOP_ADMIN;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.USER_MANAGEMENT;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.USER_MANAGEMENT_ADMIN;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.UTILITY;
-import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.UTILITY_EXAMPLES;
+import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.*;
+import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -99,6 +85,7 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -111,7 +98,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
 import org.eclipse.osee.framework.ui.skynet.action.GetNextArtifactId;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
@@ -238,18 +224,18 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       List<IUserGroupArtifactToken> adminOrUserMgmt =
          Arrays.asList(CoreUserGroups.UserMgmtAdmin, CoreUserGroups.OseeAdmin);
 
-      items.add(new XNavigateItemFolder(USER_MANAGEMENT.getName(), FrameworkImage.USER, adminOrUserMgmt, TOP));
-      items.add(new XNavigateItemFolder("Admin", FrameworkImage.USER, adminOrUserMgmt, USER_MANAGEMENT_ADMIN, SUBCAT));
+      items.add(new XNavigateItemFolder(USER_MANAGEMENT.getName(), CoreImage.USER, adminOrUserMgmt, TOP));
+      items.add(new XNavigateItemFolder("Admin", CoreImage.USER, adminOrUserMgmt, USER_MANAGEMENT_ADMIN, SUBCAT));
 
       items.add(new XNavigateItemAction(new OpenUsersInMassEditor("Open Active Users", Active.Active),
-         FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
       items.add(new XNavigateItemAction(new OpenUsersInMassEditor("Open All Users", Active.Both),
-         FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
 
       items.add(new XNavigateItemAction(new GetOseeUsersFromServer("Get Active Users", Active.Active),
-         FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
       items.add(new XNavigateItemAction(new GetOseeUsersFromServer("Get All Users", Active.Both),
-         FrameworkImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
 
       items.add(new CreateNewUsersByNameItem());
 
@@ -266,10 +252,10 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addDefineItems() {
       ElapsedTime time = new ElapsedTime("NVI - addDefineItems", debug);
       try {
-         items.add(new XNavigateItemFolder(DEFINE.getName(), FrameworkImage.LASER, TOP));
-         items.add(new XNavigateItemFolder("Health", FrameworkImage.HEALTH, XNavigateItem.DEFINE_HEALTH, SUBCAT));
+         items.add(new XNavigateItemFolder(DEFINE.getName(), CoreImage.LASER, TOP));
+         items.add(new XNavigateItemFolder("Health", CoreImage.HEALTH, XNavigateItem.DEFINE_HEALTH, SUBCAT));
          items.add(
-            new XNavigateItemFolder("Admin", FrameworkImage.LASER, XNavigateItem.DEFINE_ADMIN, OSEE_ADMIN, SUBCAT));
+            new XNavigateItemFolder("Admin", CoreImage.LASER, XNavigateItem.DEFINE_ADMIN, OSEE_ADMIN, SUBCAT));
          if (AtsApiService.get().getUserService().isAtsAdmin()) {
             items.add(new CreateEnumeratedArtifactAction());
             items.add(new EditEnumeratedArtifact());
@@ -284,7 +270,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addOteItems() {
       ElapsedTime time = new ElapsedTime("NVI - addOteItems", debug);
       try {
-         items.add(new XNavigateItemFolder(OTE.getName(), FrameworkImage.TEST_PROCEDURE, XNavItemCat.MID_BOT));
+         items.add(new XNavigateItemFolder(OTE.getName(), CoreImage.TEST_PROCEDURE, XNavItemCat.MID_BOT));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -305,12 +291,12 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addAtsItems() {
       ElapsedTime time = new ElapsedTime("NVI - addAtsItems", debug);
       items.add(new XNavigateItemFolder(ATS.getName(), AtsImage.ATS, TOP));
-      items.add(new XNavigateItemFolder("Utility", FrameworkImage.GEAR, ATS_UTIL, SUBCAT));
-      items.add(new XNavigateItemFolder("Import", FrameworkImage.IMPORT, ATS_IMPORT, SUBCAT));
+      items.add(new XNavigateItemFolder("Utility", CoreImage.GEAR, ATS_UTIL, SUBCAT));
+      items.add(new XNavigateItemFolder("Import", CoreImage.IMPORT, ATS_IMPORT, SUBCAT));
       items.add(new XNavigateItemFolder("Admin", PluginUiImage.ADMIN, ATS_ADMIN, SUBCAT, OSEE_ADMIN));
 
       items.add(new AtsConfigResultsEditorNavigateItem());
-      items.add(new XNavigateItemAction(new AtsExportAction(), FrameworkImage.EXPORT, ATS_UTIL));
+      items.add(new XNavigateItemAction(new AtsExportAction(), CoreImage.EXPORT, ATS_UTIL));
       // Admin
       items.add(new ClearAtsConfigCache());
       items.add(new ClearAtsConfigCacheAllServers());
@@ -331,7 +317,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addHealthItems() {
       ElapsedTime time = new ElapsedTime("NVI - addAtsItems", debug);
       try {
-         items.add(new XNavigateItemFolder("Health", FrameworkImage.HEALTH, ATS_HEALTH, SUBCAT));
+         items.add(new XNavigateItemFolder("Health", CoreImage.HEALTH, ATS_HEALTH, SUBCAT));
 
          items.add(new AtsHealthCheckNavigateItem());
       } catch (Exception ex) {
@@ -343,22 +329,22 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addUtilItems() {
       ElapsedTime time = new ElapsedTime("NVI - addUtilItems", debug);
       try {
-         items.add(new XNavigateItemFolder(UTILITY.getName(), FrameworkImage.GEAR, XNavItemCat.BOT));
+         items.add(new XNavigateItemFolder(UTILITY.getName(), CoreImage.GEAR, XNavItemCat.BOT));
 
          items.add(new GenerateIdsAndArtId());
          items.add(new ValidateOseeTypes());
          items.add(new CommaDelimitLines());
          items.add(new ToggleAccessControlDebug());
          items.add(new ToggleXViewerColumnLoadingDebug());
-         items.add(new XNavigateItemAction(new CompareTwoStringsAction(), FrameworkImage.EDIT, UTILITY));
+         items.add(new XNavigateItemAction(new CompareTwoStringsAction(), CoreImage.EDIT, UTILITY));
          items.add(
             new XNavigateItemAction(new org.eclipse.osee.framework.ui.skynet.action.CompareTwoArtifactIdListsAction(),
-               FrameworkImage.EDIT, UTILITY));
-         items.add(new XNavigateItemOperation(FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
+               CoreImage.EDIT, UTILITY));
+         items.add(new XNavigateItemOperation(CoreImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
             new MassEditDirtyArtifactOperation(), UTILITY));
          items.add(new XNavigateUrlItem("Disciplined Engineering and OSEE",
             "https://git.eclipse.org/c/gerrit/osee/org.eclipse.osee.git/plain/plugins/org.eclipse.osee.support.admin/presentations_publications/Disciplined_Engineering_with_OSEE.pptx",
-            true, FrameworkImage.PPTX, UTILITY));
+            true, CoreImage.PPTX, UTILITY));
          items.add(new ShowWorldColumnTokens());
          items.add(new ImportWorkflowApplicabilities());
 
@@ -385,7 +371,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          new SearchTeamWorkflowsByProgramSearchItem("Search Team Workflows by Program", null, false),
          ATS_ADVANCED_SEARCHES));
       // Search Items
-      items.add(new XNavigateItemOperation(FrameworkImage.BRANCH_CHANGE, "Open Change Report(s) by ID(s)",
+      items.add(new XNavigateItemOperation(CoreImage.BRANCH_CHANGE, "Open Change Report(s) by ID(s)",
          new MultipleIdSearchOperationFactory("Open Change Report(s) by ID(s)", AtsEditor.ChangeReport),
          ATS_ADVANCED_SEARCHES));
       items.add(new XNavigateItemOperation(AtsImage.OPEN_BY_ID, "Search by ID(s) - Open World Editor",
@@ -413,20 +399,20 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new XNavigateItemBlam(new ConvertWorkflowStatesBlam(), TOP_ADMIN));
          items.add(new DisplayCurrentOseeEventListeners());
          items.add(new XNavigateItemBlam(new CreateAtsBaselineBranchBlam(), TOP_ADMIN));
-         items.add(new XNavigateItemAction(new OpenChangeReportByTransactionIdAction(), FrameworkImage.BRANCH_CHANGE,
+         items.add(new XNavigateItemAction(new OpenChangeReportByTransactionIdAction(), CoreImage.BRANCH_CHANGE,
             TOP_ADMIN));
-         items.add(new XNavigateItemAction(new OpenArtifactEditorById(), FrameworkImage.ARTIFACT_EDITOR, TOP_ADMIN));
-         items.add(new XNavigateItemAction(new PurgeTransactionAction(), FrameworkImage.PURGE, TOP_ADMIN));
+         items.add(new XNavigateItemAction(new OpenArtifactEditorById(), CoreImage.ARTIFACT_EDITOR, TOP_ADMIN));
+         items.add(new XNavigateItemAction(new PurgeTransactionAction(), CoreImage.PURGE, TOP_ADMIN));
          items.add(new AtsRemoteEventTestItem());
          items.add(new OseeProductionTestsNavItem());
-         items.add(new XNavigateItemAction(new GetNextArtifactId(), FrameworkImage.ADD_GREEN, TOP_ADMIN));
+         items.add(new XNavigateItemAction(new GetNextArtifactId(), CoreImage.ADD_GREEN, TOP_ADMIN));
       }
       time.end();
    }
 
    private void addEmailItems() {
       ElapsedTime time = new ElapsedTime("NVI - email", debug);
-      items.add(new XNavigateItemFolder(EMAIL_NOTIFICATIONS.getName(), FrameworkImage.EMAIL, BOT));
+      items.add(new XNavigateItemFolder(EMAIL_NOTIFICATIONS.getName(), CoreImage.EMAIL, BOT));
 
       items.add(new TestOseeEmailSend());
       items.add(new TestWorkItemEmailSend());
@@ -436,12 +422,12 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new EmailUserGroups());
       items.add(new SubscribeByActionableItem());
       items.add(new SubscribeByTeamDefinition());
-      items.add(new XNavigateItemBlam(new EmailActionsBlam(), FrameworkImage.EMAIL, EMAIL_NOTIFICATIONS));
+      items.add(new XNavigateItemBlam(new EmailActionsBlam(), CoreImage.EMAIL, EMAIL_NOTIFICATIONS));
       time.end();
    }
 
    private void addTraceItems() {
-      items.add(new XNavigateItemFolder(XNavigateItem.TRACE.getName(), FrameworkImage.TRACE, MID_BOT));
+      items.add(new XNavigateItemFolder(XNavigateItem.TRACE.getName(), CoreImage.TRACE, MID_BOT));
    }
 
    private void addReportItems() {
@@ -463,7 +449,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addExampleItems() {
       ElapsedTime time = new ElapsedTime("NVI - example", debug);
 
-      items.add(new XNavigateItemFolder("Examples", FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES, SUBCAT));
+      items.add(new XNavigateItemFolder("Examples", CoreImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES, SUBCAT));
 
       items.add(new ResultsEditorExample());
       items.add(new CompareEditorExample());
@@ -477,7 +463,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new FilteredCheckboxTreeDialogExample());
       items.add(new FilteredCheckboxTreeArtifactDialogExample());
       items.add(new FilteredCheckboxTreeDialogSelectAllExample());
-      items.add(new XNavigateItemAction(new XWidgetsDialogExampleAction(), FrameworkImage.EXAMPLE, UTILITY_EXAMPLES));
+      items.add(new XNavigateItemAction(new XWidgetsDialogExampleAction(), CoreImage.EXAMPLE, UTILITY_EXAMPLES));
 
       time.end();
    }
@@ -511,7 +497,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new SearchNavigateItem(new NextVersionSearchItem(null, LoadView.WorldEditor), ATS_VERSIONS));
          items.add(new GenerateVersionReportItem());
          items.add(new GenerateFullVersionReportItem());
-         items.add(new MassEditTeamVersionItem("Team Versions", FrameworkImage.VERSION));
+         items.add(new MassEditTeamVersionItem("Team Versions", CoreImage.VERSION));
 
          if (AtsApiService.get().getUserService().isAtsAdmin()) {
             items.add(new CreateNewVersionItem(null));
@@ -582,16 +568,16 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
             }
          }
 
-         items.add(new XNavigateItemFolder(PLE.getName(), FrameworkImage.PLE, XNavItemCat.TOP, PLE));
+         items.add(new XNavigateItemFolder(PLE.getName(), CoreImage.PLE, XNavItemCat.TOP, PLE));
          items.add(new XNavigateUrlItem("Product Line (PL) Dashboard", applicationServer + "/osee/ple", true,
-            FrameworkImage.PLE, PLE));
+            CoreImage.PLE, PLE));
          items.add(new XNavigateUrlItem("Product Line Configuration (PLConfig)",
-            applicationServer + "/osee/ple/plconfig", true, FrameworkImage.PLE, PLE));
+            applicationServer + "/osee/ple/plconfig", true, CoreImage.PLE, PLE));
          items.add(new XNavigateUrlItem("Message Interface Modeling (MIM)", applicationServer + "/osee/ple/messaging",
-            true, FrameworkImage.PLE, PLE));
+            true, CoreImage.PLE, PLE));
          items.add(new XNavigateUrlItem("PLE - Getting Started",
             "https://git.eclipse.org/c/osee/org.eclipse.osee.git/plain/plugins/org.eclipse.osee.support.admin/presentations_publications/Disciplined_Engineering_with_OSEE.pptx?h=dev",
-            true, FrameworkImage.PPTX, PLE));
+            true, CoreImage.PPTX, PLE));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create PLE section");
       }

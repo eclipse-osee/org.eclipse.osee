@@ -20,11 +20,11 @@ import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -68,7 +68,7 @@ public class OpenChangeReportByIdAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE);
+      return ImageManager.getImageDescriptor(CoreImage.BRANCH_CHANGE);
    }
 
    public void setOverrideId(String overrideId) {

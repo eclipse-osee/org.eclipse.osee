@@ -26,10 +26,10 @@ import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -87,7 +87,7 @@ public class XTaskEstActionBar implements TaskEstNameProvider {
 
       ToolItem addCannedItem = new ToolItem(toolBar, SWT.PUSH);
       addCannedItem.setText("Create Checked Task(s)");
-      addCannedItem.setImage(ImageManager.getImage(FrameworkImage.GREEN_PLUS));
+      addCannedItem.setImage(ImageManager.getImage(CoreImage.GREEN_PLUS));
       addCannedItem.setToolTipText("Create Checked Estimating Task(s)");
       addCannedItem.addSelectionListener(new SelectionAdapter() {
          @Override
