@@ -19,8 +19,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.util.CoreImage;
-import org.eclipse.osee.framework.core.util.OseeEmail;
-import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -76,7 +74,7 @@ public class TestOseeEmailSend extends XNavigateItemAction {
       }
       rd.log("1. A basic \"Hello World\" emails should be sent from the server.\n\n");
 
-      rd.log("\n\n2. If Abridged Email attribute is set on your user artifact, another " //
+      rd.log("2. If Abridged Email attribute is set on your user artifact, another " //
          + "email should be sent from the server with only basic information " //
          + "about the change with Abridged in title and abridged message body, etc).\n\n");
 

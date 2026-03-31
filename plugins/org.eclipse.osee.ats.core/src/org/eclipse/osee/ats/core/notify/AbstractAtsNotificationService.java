@@ -27,16 +27,14 @@ import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.util.IOseeEmail;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractAtsNotificationService implements IAtsNotificationService, OseeEmailCreator {
+public abstract class AbstractAtsNotificationService implements IAtsNotificationService {
 
    private volatile boolean emailEnabled = true;
    protected AtsApi atsApi;
@@ -134,40 +132,12 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
    }
 
    @Override
-   public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body,
-      Collection<? extends AtsNotificationEvent> notificationEvents, XResultData rd) {
-      SendNotificationEvents job = new SendNotificationEvents(this, atsApi, fromUserEmail, testingUserEmail, subject,
-         body, notificationEvents, atsApi.getUserService(), rd);
-      job.run();
-   }
+   public abstract void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body,
+      Collection<? extends AtsNotificationEvent> notificationEvents, XResultData rd);
 
    @Override
-   public void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject,
-      String htmlBody) {
-      if (isNotificationsEnabled()) {
-         Thread thread = new Thread("ATS Emailer") {
-
-            @Override
-            public void run() {
-               try {
-                  IOseeEmail msg = createOseeEmail();
-                  msg.setFrom(fromUserEmail);
-                  msg.setRecipients(toUserEmails.toArray(new String[toUserEmails.size()]));
-                  msg.setSubject(subject);
-                  msg.setHTMLBody(htmlBody);
-                  msg.send();
-               } catch (Exception ex) {
-                  System.err.println(Lib.exceptionToString(ex));
-               }
-            }
-
-         };
-         thread.start();
-      }
-   }
-
-   @Override
-   public abstract IOseeEmail createOseeEmail();
+   public abstract void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject,
+      String htmlBody);
 
    private String getFromUserEmail(AtsNotificationCollector notifications) {
       String email = atsApi.getConfigValue("NoReplyEmail");

@@ -74,9 +74,9 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.orcs.utility,
  org.mozilla.javascript,
- org.osgi.framework;version="[1.10.0,2.0.0)",
+ org.osgi.framework,
  org.osgi.service.event,
- org.osgi.service.packageadmin;version="[1.2.0,2.0.0)"
+ org.osgi.service.packageadmin
 Export-Package: org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.ds,
  org.eclipse.osee.orcs.core.internal.applicability,
