@@ -147,6 +147,7 @@ type SavedSearch = {
 	attributeTypes?: NamedId[];
 	exactMatch?: boolean;
 	searchById?: boolean;
+	global?: boolean;
 };
 
 @Component({

@@ -19,6 +19,7 @@ type SavedSearchFilters = {
 	attributeTypes: NamedId[];
 	exactMatch: boolean;
 	searchById: boolean;
+	global?: boolean;
 };
 
 @Injectable({

@@ -204,6 +204,9 @@ public class SavedSearchEndpoint {
       if (savedSearch.getSearchById() == null) {
          savedSearch.setSearchById(Boolean.FALSE);
       }
+      if (savedSearch.getGlobal() == null) {
+         savedSearch.setGlobal(Boolean.FALSE);
+      }
    }
 
    private UserId getCurrentUserId() {
@@ -240,6 +243,7 @@ public class SavedSearchEndpoint {
       public final List<SavedSearch.SavedSearchSelection> attributeTypes;
       public final Boolean exactMatch;
       public final Boolean searchById;
+      public final Boolean global;
 
       private SavedSearchPayload(SavedSearch savedSearch) {
          this.title = savedSearch.getTitle();
@@ -249,6 +253,7 @@ public class SavedSearchEndpoint {
          this.attributeTypes = savedSearch.getAttributeTypes();
          this.exactMatch = savedSearch.getExactMatch();
          this.searchById = savedSearch.getSearchById();
+         this.global = savedSearch.getGlobal();
       }
    }
 }

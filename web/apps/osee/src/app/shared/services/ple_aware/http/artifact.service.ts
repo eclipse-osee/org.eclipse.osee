@@ -20,6 +20,7 @@ type SavedSearchFilters = {
 	attributeTypes: NamedId[];
 	exactMatch: boolean;
 	searchById: boolean;
+	global?: boolean;
 };
 
 @Injectable({
@@ -79,6 +80,7 @@ export class ArtifactService {
 			attributeTypes: searchCriteria.attributeTypes,
 			exactMatch: searchCriteria.exactMatch,
 			searchById: searchCriteria.searchById,
+			global: searchCriteria.global ?? false,
 		};
 		return this.http.post(apiURL + '/orcs/savedSearch', body);
 	}
