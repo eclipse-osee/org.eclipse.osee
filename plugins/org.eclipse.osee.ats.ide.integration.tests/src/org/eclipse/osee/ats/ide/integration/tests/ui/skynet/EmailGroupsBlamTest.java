@@ -100,7 +100,7 @@ public class EmailGroupsBlamTest {
       data.setBodyIsHtml(true);
       htmlOut = data.getHtmlResult(user.getName(), user.getId());
 
-      String firstPart = "<b>Hello World</b></br>Click <a href=\"";
+      String firstPart = "<b>Hello World</b><br/><br/><p>Click <a href=\"";
       checkHtmlData(htmlOut, firstPart);
 
       String urlPart = "/unsubscribe/ui/";
