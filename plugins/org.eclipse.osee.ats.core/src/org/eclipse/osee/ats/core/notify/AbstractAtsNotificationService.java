@@ -20,16 +20,10 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
-import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
-import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 
 /**
  * @author Donald G. Dunne
@@ -37,9 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 public abstract class AbstractAtsNotificationService implements IAtsNotificationService {
 
    private volatile boolean emailEnabled = true;
-   protected AtsApi atsApi;
-   WorkItemNotificationProcessor workItemNotificationProcessor;
-   boolean loggedNotificationDisabled = false;
+   protected final AtsApi atsApi;
 
    public AbstractAtsNotificationService(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -78,76 +70,6 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
       IAtsChangeSet changes = atsApi.createChangeSet("Set Journal Subscribers");
       changes.setAttributeValues(workItem, AtsAttributeTypes.JournalSubscriber, userIds);
       changes.executeIfNeeded();
-   }
-
-   @Override
-   public synchronized XResultData sendNotifications(final AtsNotificationCollector notifications, XResultData rd) {
-
-      if (isNotificationsEnabled()) {
-         workItemNotificationProcessor = new WorkItemNotificationProcessor(rd);
-
-         // convert all WorkItem notifications to AtsNotificationEvent
-         for (AtsWorkItemNotificationEvent workItemEvent : notifications.getWorkItemNotificationEvents()) {
-            workItemNotificationProcessor.run(notifications, workItemEvent);
-         }
-
-         Thread send = new Thread("Send Notifications") {
-
-            @Override
-            public void run() {
-               if (isNotificationsEnabled()) {
-                  if (!atsApi.getStoreService().isProductionDb()) {
-                     if (!loggedNotificationDisabled) {
-                        atsApi.getLogger().info("Osee Notification Disabled");
-                        loggedNotificationDisabled = true;
-                     }
-                  } else {
-                     if (notifications.isIncludeCancelHyperlink() && !atsApi.getWorkItemService().isCancelHyperlinkConfigured()) {
-                        throw new OseeArgumentException("Cancel Hyperlink URl not configured");
-                     }
-                     Thread thread = new Thread("ATS Notification Sender") {
-
-                        @Override
-                        public void run() {
-                           super.run();
-
-                           // change to email address for testing purposes; all emails will go there
-                           String testingUserEmail = "";
-                           String fromUserEmail = getFromUserEmail(notifications);
-
-                           sendNotifications(fromUserEmail, testingUserEmail, notifications.getSubject(),
-                              notifications.getBody(), notifications.getNotificationEvents(), new XResultData());
-                        }
-
-                     };
-                     thread.start();
-                  }
-               }
-            }
-
-         };
-         send.start();
-      }
-      return rd;
-   }
-
-   @Override
-   public abstract void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body,
-      Collection<? extends AtsNotificationEvent> notificationEvents, XResultData rd);
-
-   @Override
-   public abstract void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject,
-      String htmlBody);
-
-   private String getFromUserEmail(AtsNotificationCollector notifications) {
-      String email = atsApi.getConfigValue("NoReplyEmail");
-      for (AtsNotificationEvent event : notifications.getNotificationEvents()) {
-         if (EmailUtil.isEmailValid(event.getFromEmailAddress())) {
-            email = event.getFromEmailAddress();
-            break;
-         }
-      }
-      return email;
    }
 
 }
