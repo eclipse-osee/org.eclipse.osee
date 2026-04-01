@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.api.agile.IAgileProgramBacklogItem;
 import org.eclipse.osee.ats.api.agile.IAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileStory;
-import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.agile.JaxAgileProgram;
 import org.eclipse.osee.ats.api.agile.JaxAgileProgramBacklog;
@@ -194,12 +193,6 @@ public class Pdd93CreateDemoAgile extends AbstractPopulateDemoDatabase {
 
       atsApi.getAgileService().createAgileTeam(newTeam);
 
-      IAtsChangeSet changes = atsApi.createChangeSet("Config Agile Points Attr Type");
-      ArtifactToken sawAgileTeam = atsApi.getQueryService().getArtifact(DemoArtifactToken.CIS_Agile_Team);
-      changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
-         AtsAttributeTypes.Points.getName());
-      changes.execute();
-
       // Create Backlog
       JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
       backlog.setName(DemoArtifactToken.CIS_Backlog.getName());
@@ -226,14 +219,8 @@ public class Pdd93CreateDemoAgile extends AbstractPopulateDemoDatabase {
       newTeam.setProgramId(aProgram.getIdString());
       atsApi.getAgileService().createAgileTeam(newTeam);
 
-      IAtsChangeSet changes = atsApi.createChangeSet("Config Agile Team with points attr type");
-      ArtifactToken sawAgileTeam = atsApi.getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
-      changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
-         AtsAttributeTypes.Points.getName());
-      changes.execute();
-
       // Assign ATS Team to Agile Team
-      changes = atsApi.createChangeSet("Config Agile Team with points attr type");
+      IAtsChangeSet changes = atsApi.createChangeSet("Config Agile Team with points attr type");
       ArtifactToken agileTeam = atsApi.getQueryService().getArtifact(newTeam.getId());
       for (ArtifactToken tok : Arrays.asList(DemoArtifactToken.SAW_SW, DemoArtifactToken.SAW_HW,
          DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Test, DemoArtifactToken.SAW_SW_Design,
@@ -431,12 +418,11 @@ public class Pdd93CreateDemoAgile extends AbstractPopulateDemoDatabase {
          }
 
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.UnplannedWork, unPlanned);
+
          String points = data.getPoints();
-         if (Strings.isValid(points)) {
-            IAgileTeam team = atsApi.getAgileService().getAgileTeam(workItem);
-            AttributeTypeToken agileTeamPointsAttributeType =
-               atsApi.getAgileService().getAgileTeamPointsAttributeType(team);
-            changes.setSoleAttributeValue(workItem, agileTeamPointsAttributeType, unPlanned);
+         if (Strings.isNumeric(points)) {
+            AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(workItem);
+            changes.setSoleAttributeValue(workItem, pointsAttrType, points);
          }
       }
       changes.execute();

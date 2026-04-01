@@ -1139,8 +1139,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
       IAgileItem item = atsApi.getWorkItemService().getAgileItem(itemArt);
-      IAgileTeam team = atsApi.getAgileService().getAgileTeam(item);
-      AttributeTypeToken agileTeamPointsAttributeType = atsApi.getAgileService().getAgileTeamPointsAttributeType(team);
+      AttributeTypeToken agileTeamPointsAttributeType = atsApi.getAgileService().getPointsAttrType(item);
       IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
       changes.setSoleAttributeValue(item, agileTeamPointsAttributeType, points);
       changes.execute();

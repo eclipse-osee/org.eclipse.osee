@@ -88,8 +88,7 @@ public class OpenAgileTasksAction extends Action {
          IAtsWorkItem workItem = (IAtsWorkItem) artifact;
          card = card.replaceFirst("PUT_TITLE_HERE", workItem.getName());
 
-         card =
-            card.replaceFirst("PUT_POINTS_HERE", AtsApiService.get().getAgileService().getAgileTeamPointsStr(workItem));
+         card = card.replaceFirst("PUT_POINTS_HERE", AtsApiService.get().getAgileService().getPointsStr(workItem));
          card = card.replaceFirst("PUT_FEATURE_HERE",
             AtsApiService.get().getAgileService().getAgileFeatureGroupStr(workItem));
 

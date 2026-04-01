@@ -123,7 +123,7 @@ public class WorkflowMetrics {
          manDaysNeeded += WorkDaysNeededColumnUI.getWorldViewManDaysNeeded(team);
          cummulativeWorkflowPercentComplete +=
             AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(team);
-         String ptsStr = team.getSoleAttributeValue(AtsAttributeTypes.Points, null);
+         String ptsStr = team.getSoleAttributeValue(AtsAttributeTypes.PointsEnum, null);
          points += Strings.isNumeric(ptsStr) ? Integer.valueOf(ptsStr) : 0;
          pointsNumeric += team.getSoleAttributeValue(AtsAttributeTypes.PointsNumeric, 0.0);
       }
