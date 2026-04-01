@@ -65,8 +65,10 @@ import org.eclipse.osee.framework.core.data.UpdateFromParentData;
 import org.eclipse.osee.framework.core.data.ValidateCommitResult;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -820,7 +822,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response purgeBranch(BranchId branchId, boolean recurse) {
+   public Response purgeBranch(BranchId branchId, boolean recurse, boolean createRecovery) {
       orcsApi.userService().requireRole(CoreUserGroups.AccountAdmin);
       boolean modified = false;
 
@@ -833,12 +835,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       Branch branch = getBranchById(branchId);
       if (branch != null) {
-         orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
-            OseeDb.TX_DETAILS_TABLE.getSelectInsertString(" where branch_id = ?"), branchId);
+         if (createRecovery) {
+            orcsApi.getJdbcService().getClient().runQuery(
+               stmt -> insertTxStatements.add(stmt.getString("insertString")),
+               OseeDb.TX_DETAILS_TABLE.getSelectInsertString(" where branch_id = ?"), branchId);
 
-         orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
-            OseeDb.TXS_TABLE.getSelectInsertString(" where branch_id = ?"), branchId);
-
+            orcsApi.getJdbcService().getClient().runQuery(
+               stmt -> insertTxStatements.add(stmt.getString("insertString")),
+               OseeDb.TXS_TABLE.getSelectInsertString(" where branch_id = ?"), branchId);
+         }
          orcsApi.getJdbcService().getClient().runQuery(stmt -> impactedGammaIds.add(stmt.getLong("gamma_id")),
             SELECT_IMPACTED_GAMMAS_ON_BRANCH_AFTER_BASELINE_TX, branchId, branch.getBaselineTx(), branchId,
             branch.getBaselineTx());
@@ -848,8 +853,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
          modified = true;
       }
       if (modified) {
-         String recoveryFileNamePrefix =
-            orcsApi.getAdminOps().isDataStoreProduction() ? "delete_branch_" + branch.getIdString() + "_" : "";
+         String recoveryFileNamePrefix = Strings.EMPTY_STRING;
+         if (createRecovery) {
+            recoveryFileNamePrefix =
+               orcsApi.getAdminOps().isDataStoreProduction() ? "delete_branch_" + branch.getIdString() + "_" : "";
+         }
          //Purge unused gammas if job was successful
          //recovery files are created and stored inside PurgeUnusedBackingDataAndTransactions
          try {
@@ -871,9 +879,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response purgeDeletedBranches(int expireTimeInDays, int branchCount) {
       List<BranchId> branchesPurged = new ArrayList<>();
-      String DELETED_BRANCHES_OLDER_THAN = "select branch_id from " //
-         + "(select row_number() over (order by max_time) rn, branch_id from " //
-         + "  (select b.branch_name, tx.branch_id, max(tx.time) max_time from osee_branch b, osee_tx_details tx " + "   where branch_state = " + BranchState.DELETED.getIdIntValue() + " and b.branch_id = tx.branch_id and tx.time < %s and archived = 1 and " + "         branch_type = " + BranchType.WORKING.getIdIntValue() + "         and not exists (select null from osee_branch b2 where b2.parent_transaction_id in " + "  							(select transaction_id from osee_tx_details txd2 where txd2.branch_id = b.branch_id)) " + "   group by b.branch_name, tx.branch_id" + "  ) t1 " + ") t2 " + "where rn < " + branchCount;
+      String DELETED_BRANCHES_OLDER_THAN = "select branch_id from " + //
+         "(select row_number() over (order by max_time) rn, branch_id from " + //
+         "  (select b.branch_name, tx.branch_id, max(tx.time) max_time from osee_branch b, osee_tx_details tx " + //
+         "   where branch_state = " + BranchState.DELETED.getIdIntValue() + //
+         " and b.branch_id = tx.branch_id and tx.time < %s and archived = 1 and " + //
+         " branch_type = " + BranchType.WORKING.getIdIntValue() + //
+         " and not exists (select null from osee_branch b2 where b2.parent_transaction_id in " + //
+         " (select transaction_id from osee_tx_details txd2 where txd2.branch_id = b.branch_id)" + //
+         "  union select null from osee_branch b2 where b2.parent_branch_id = b.branch_id) " + //
+         "   group by b.branch_name, tx.branch_id" + "  ) t1 " + ") t2 " + "where rn < " + branchCount;
 
       Set<BranchId> setOfBranchIds = new HashSet<>();
       String query = String.format(DELETED_BRANCHES_OLDER_THAN,
@@ -881,7 +896,81 @@ public class BranchEndpointImpl implements BranchEndpoint {
       orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), query);
 
       for (BranchId branchId : setOfBranchIds.stream().collect(Collectors.toList())) {
-         try (Response purgeResponse = purgeBranch(branchId, false);) {
+         try (Response purgeResponse = purgeBranch(branchId, false, true);) {
+            if (!(purgeResponse.getStatusInfo().getStatusCode() == Status.OK.getStatusCode())) {
+               throw new OseeCoreException("Error purging deleted branch id: " + branchId);
+            } else {
+               branchesPurged.add(branchId);
+            }
+         }
+      }
+      return Response.status(Status.OK.getStatusCode(), "Purged: " + branchesPurged.toString()).build();
+   }
+
+   @Override
+   public Response purgeWorkingBranchesOfClosedPrograms(int branchCount, int archived) {
+      List<BranchId> branchesPurged = new ArrayList<>();
+      String query = "with closedTDRs as ( " + //
+         "select attrTDR.value art_id \n" + // team def ref art id
+         "from osee_txs txs, osee_artifact art, osee_txs attrTxs, osee_attribute attr, osee_txs tdrTxs, osee_attribute attrTDR  \n" + //
+         "where txs.branch_id = " + CoreBranches.COMMON.getIdString() + " and txs.tx_current = " + TxCurrent.CURRENT + " and txs.gamma_id = art.gamma_id and \n" + //
+         "art.art_type_id in ( 52374361342017540, 204509162766378, 69569007414349727, 204509162766340, 402565)  \n" + // program types
+         "and attrTxs.branch_id = " + CoreBranches.COMMON.getIdString() + " and attrTxs. tx_current = " + TxCurrent.CURRENT + " and attrTxs.gamma_id = attr.gamma_id and attr.art_id = art.art_id and attr.attr_type_id = 1152921504606847452  \n" + // ats closure state
+         "and attr.value = 'Closed' " + //
+         "and tdrTxs.branch_id = " + CoreBranches.COMMON.getIdString() + " and tdrTxs. tx_current = " + TxCurrent.CURRENT + " and tdrTxs.gamma_id = attrTDR. gamma_id and attrTDR.art_id = art. art_id and attrTDR.attr_type_id = 4730961339090285773),  \n" + // ats team def reference
+         "closedTeams as (select art.art_id  \n" + //
+         "from osee_txs txs, osee_artifact art, closedTDRs tdr  \n" + //
+         "where txs.branch_id = " + CoreBranches.COMMON.getIdString() + " and txs.gamma_id = art.gamma_id  \n" + //
+         "and art.art_id = " + orcsApi.getJdbcService().getClient().getDbType().getPostgresCastStart() + " tdr.art_id " + orcsApi.getJdbcService().getClient().getDbType().getPostgresCastBigIntEnd() + "),  \n" + //
+         "closed_parent_branches as (  \n" + //
+         "select distinct attr.value closed_branch_id \n" + //
+         "from osee_txs relTxs, osee_relation_link rel , osee_txs vTxs, osee_attribute attr, closedTeams ct \n" + //
+         "where relTxs.branch_id = " + CoreBranches.COMMON.getIdString() + " and relTxs.tx_current = " + TxCurrent.CURRENT + " and relTxs.gamma_id = rel.gamma_id and rel_link_type_id = 2305843009213694320 and a_art_id = ct.art_id \n" + // ats team to version
+         "and vTxs.branch_id = " + CoreBranches.COMMON.getIdString() + " and vTxs.tx_current = " + TxCurrent.CURRENT + " and vTxs.gamma_id = attr.gamma_id and attr.art_id = b_art_id and attr.attr_type_id = 1152932018686787753) \n" + // ats baseline branch id for version
+         "select branch_id from (select wb.branch_id, row_number() over (order by wb.branch_id) rn \n" + //working branches of closed bl branches
+         "from osee_branch wb, osee_branch b, closed_parent_branches cpb \n" + //
+         "where b.branch_id = " + orcsApi.getJdbcService().getClient().getDbType().getPostgresCastStart() + " cpb.closed_branch_id " + orcsApi.getJdbcService().getClient().getDbType().getPostgresCastBigIntEnd() + " and wb.parent_branch_id = b.branch_id and wb.archived = " + archived + " \n" + //
+         "and wb.branch_type = " + BranchType.WORKING.getIdString() + " and not exists \n" + //
+         "(select null from osee_branch b2 where b2.parent_transaction_id in (select transaction_id from osee_tx_details txd2 where txd2.branch_id = wb.branch_id) \n" + //
+         "union select null from osee_branch b2 where b2.parent_branch_id = wb.branch_id)) t2 \n" + //working branch isn't a parent
+         " where rn < " + branchCount;
+      Set<BranchId> setOfBranchIds = new HashSet<>();
+      orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), query);
+
+      for (BranchId branchId : setOfBranchIds.stream().collect(Collectors.toList())) {
+         try (Response purgeResponse = purgeBranch(branchId, false, true);) {
+            if (!(purgeResponse.getStatusInfo().getStatusCode() == Status.OK.getStatusCode())) {
+               throw new OseeCoreException("Error purging deleted branch id: " + branchId);
+            } else {
+               branchesPurged.add(branchId);
+            }
+         }
+      }
+      return Response.status(Status.OK.getStatusCode(), "Purged: " + branchesPurged.toString()).build();
+   }
+
+   @Override
+   public Response purgeStaleWorkingBranches(int expireTimeInDays, int branchCount, int archived) {
+      List<BranchId> branchesPurged = new ArrayList<>();
+
+      String query = "select branch_id from \n" + //
+         " ( \n" + //
+         "    select row_number() over (order by max_time) rn, branch_id \n" + //
+         "    from ( \n" + //
+         "        select b.branch_name, tx.branch_id, max(tx.time) max_time, b.branch_state \n" + //
+         "        from osee_branch b, osee_tx_details tx \n" + //
+         "        where branch_state in (2,3) and b.branch_id = tx.branch_id and tx.time < " + orcsApi.getJdbcService().getClient().getDbType().getSysDateMinusIntervalInDays(
+            expireTimeInDays) + " \n" + //
+         "              and archived = " + archived + " and branch_type = " + BranchType.WORKING.getIdString() + " and not exists  \n" + //
+         "             (select null from osee_branch b2 where b2.parent_transaction_id in (select transaction_id from osee_tx_details txd2 where txd2.branch_id = b.branch_id)) \n" + //
+         "        group by b.branch_name, tx.branch_id, b.branch_state) t1  \n" + //
+         " ) t2  \n" + //
+         "where rn < " + branchCount;
+
+      Set<BranchId> setOfBranchIds = new HashSet<>();
+      orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), query);
+      for (BranchId branchId : setOfBranchIds.stream().collect(Collectors.toList())) {
+         try (Response purgeResponse = purgeBranch(branchId, false, true);) {
             if (!(purgeResponse.getStatusInfo().getStatusCode() == Status.OK.getStatusCode())) {
                throw new OseeCoreException("Error purging deleted branch id: " + branchId);
             } else {
