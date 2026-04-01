@@ -132,7 +132,7 @@ public class WorkflowDataCreator {
             wfd.setLegacyPcrId(AttributePojo.valueOf(attr, workItemArtifactType));
          } else if (AtsAttributeTypes.PcrId.equals(type)) {
             wfd.addPcrId(AttributePojo.valueOf(attr, workItemArtifactType));
-         } else if (AtsAttributeTypes.Points.equals(type)) {
+         } else if (AtsAttributeTypes.PointsEnum.equals(type)) {
             wfd.setPoints(AttributePojo.valueOf(attr, workItemArtifactType));
          } else if (AtsAttributeTypes.TeamDefinitionReference.equals(type)) {
             Object v = attr.getValue();

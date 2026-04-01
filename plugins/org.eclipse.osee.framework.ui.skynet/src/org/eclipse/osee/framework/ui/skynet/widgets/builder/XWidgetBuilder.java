@@ -466,4 +466,9 @@ public class XWidgetBuilder {
       return branchBuilder;
    }
 
+   public XWidgetBuilder andAttrType(AttributeTypeToken attrType) {
+      widData.setAttributeType(attrType);
+      return this;
+   }
+
 }

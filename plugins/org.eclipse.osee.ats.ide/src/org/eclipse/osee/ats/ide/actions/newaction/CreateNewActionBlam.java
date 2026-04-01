@@ -270,6 +270,12 @@ public class CreateNewActionBlam extends AbstractBlam {
                   data.addTeamData(widget.getTeamId(), attrType, obj);
                }
             }
+         } else if (widget.getLabel().equals("Points")) {
+            XText points = (XText) widget;
+            String ptsStr = points.get();
+            if (Strings.isValid(ptsStr)) {
+               data.setPoints(ptsStr);
+            }
          } else if (widget.getLabel().equals("Originator")) {
             XOriginatorHyperlinkWidget orig = (XOriginatorHyperlinkWidget) widget;
             AtsUser originator = orig.getSelected();
