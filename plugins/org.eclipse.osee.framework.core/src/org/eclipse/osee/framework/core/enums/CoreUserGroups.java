@@ -33,5 +33,12 @@ public class CoreUserGroups {
    public static final IUserGroupArtifactToken OseeSupport           = UserGroupArtifactToken.valueOf(  10865894L, "Osee Support"            );
    public static final IUserGroupArtifactToken Publishing            = UserGroupArtifactToken.valueOf( 388635466L, "Publishing"              );
    public static final IUserGroupArtifactToken UserMgmtAdmin         = UserGroupArtifactToken.valueOf(  10867527L, "User Mgmt Admin "        );
+   public static final IUserGroupArtifactToken OseeCustomer          = UserGroupArtifactToken.valueOf(  1519352965L, "Osee Customer"        );
+   public static final IUserGroupArtifactToken MIMUser               = UserGroupArtifactToken.valueOf(  1519352966L, "MIM User"        );
+   public static final IUserGroupArtifactToken ZenithUser            = UserGroupArtifactToken.valueOf(  1519352967L, "Zenith User"        );
+   public static final IUserGroupArtifactToken PLEUser               = UserGroupArtifactToken.valueOf(  1519352968L, "PLE User"        );
+   public static final IUserGroupArtifactToken ArtifactExplorerUser  = UserGroupArtifactToken.valueOf(  1519352969L, "Artifact Explorer User"        );
+
+
    //@formatter:on
 }
