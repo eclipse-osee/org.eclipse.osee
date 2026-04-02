@@ -39,7 +39,6 @@ import {
 } from '@osee/messaging/shared/testing';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
-import { PlatformTypeQueryComponent } from '../../dialogs/platform-type-query/platform-type-query.component';
 import { ElementFormComponent } from './element-form.component';
 import { Component, signal, viewChild } from '@angular/core';
 import { ElementDialog } from '@osee/messaging/shared/types';
@@ -87,7 +86,6 @@ describe('ElementFormComponent', () => {
 					MatDialogModule,
 					MatProgressSpinnerModule,
 					MockApplicabilityDropdownComponent,
-					PlatformTypeQueryComponent,
 					MockMatOptionLoadingComponent,
 					MockNewTypeFormComponent,
 					MockPlatformTypeDropdownComponent,

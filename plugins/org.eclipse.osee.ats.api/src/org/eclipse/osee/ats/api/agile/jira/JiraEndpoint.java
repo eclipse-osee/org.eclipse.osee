@@ -87,17 +87,20 @@ public interface JiraEndpoint {
    @Path("issueLink")
    @Consumes(MediaType.APPLICATION_JSON)
    public String createJiraIssueLink(@Encoded String jsonPayload);
-
+   
    /**
-    * Takes an issue id and uses it to delete an issue in Jira.
-    *
-    * @author Jaden W. Puckett
-    * @param @Encoded String jsonPayload - Json query to create issue link in Jira. Format can be found at
-    * https://docs.atlassian.com/software/jira/docs/api/REST/8.9.1/
+    * Adds a comment to an issue in Jira.
+    */
+   @POST
+   @Path("issue/{issueId}/comment")
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String addJiraComment(@Encoded String jsonPayload, @PathParam("issueId") String issueId);
+   
+   /**
+    * Deletes a comment from an issue in Jira.
     */
    @DELETE
-   @Path("issue/{issueId}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   public String deleteJiraIssue(@PathParam("issueId") String issueId);
+   @Path("issue/{issueId}/comment/{commentId}")
+   public String deleteJiraComment(@PathParam("issueId") String issueId, @PathParam("commentId") String commentId);
 
 }

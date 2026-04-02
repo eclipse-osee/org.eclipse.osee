@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEventFilter;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -120,7 +120,7 @@ public class ArtEdAttrTab extends FormPage implements IRefreshActionHandler, IAr
          toolBar.build();
 
          scrolledForm.setText("Attributes");
-         scrolledForm.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EDITOR));
+         scrolledForm.setImage(ImageManager.getImage(CoreImage.ARTIFACT_EDITOR));
 
          mainComp.layout(true);
          managedForm.reflow(true);

@@ -13,7 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CurrentElementSearchService } from '../../services/current-element-search.service';
 import { MockElementTableSearchComponent } from '../../testing/element-table-search.component.mock';
@@ -24,24 +24,22 @@ import { ElementTableComponent } from './element-table.component';
 describe('ElementTableComponent', () => {
 	let component: ElementTableComponent;
 	let fixture: ComponentFixture<ElementTableComponent>;
-	let serviceSpy: jasmine.SpyObj<CurrentElementSearchService>;
+	let serviceSpy: Partial<CurrentElementSearchService>;
 
 	beforeEach(async () => {
-		serviceSpy = jasmine.createSpyObj(
-			'CurrentElementSearchService',
-			{},
-			{ elements: of(elementSearch3) }
-		);
+		serviceSpy = {
+			elements: of(elementSearch3),
+		};
 		await TestBed.configureTestingModule({
 			imports: [
 				MatTableModule,
 				MatMenuModule,
-				NoopAnimationsModule,
 				ElementTableComponent,
 				MockElementTableSearchComponent,
 			],
 			providers: [
 				{ provide: CurrentElementSearchService, useValue: serviceSpy },
+				provideNoopAnimations(),
 			],
 		}).compileComponents();
 	});

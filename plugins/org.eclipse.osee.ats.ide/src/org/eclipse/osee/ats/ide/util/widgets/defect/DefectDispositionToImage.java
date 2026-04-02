@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.util.widgets.defect;
 
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -25,11 +25,11 @@ import org.eclipse.swt.graphics.Image;
 public class DefectDispositionToImage {
    public static Image getImage(Disposition sev) {
       if (sev == Disposition.Accept) {
-         return ImageManager.getImage(FrameworkImage.ACCEPT);
+         return ImageManager.getImage(CoreImage.ACCEPT);
       } else if (sev == Disposition.Reject) {
-         return ImageManager.getImage(FrameworkImage.REJECT);
+         return ImageManager.getImage(CoreImage.REJECT);
       } else if (sev == Disposition.Duplicate) {
-         return ImageManager.getImage(FrameworkImage.DUPLICATE);
+         return ImageManager.getImage(CoreImage.DUPLICATE);
       } else if (sev == Disposition.None) {
          return ImageManager.getImage(AtsImage.CENTER);
       }

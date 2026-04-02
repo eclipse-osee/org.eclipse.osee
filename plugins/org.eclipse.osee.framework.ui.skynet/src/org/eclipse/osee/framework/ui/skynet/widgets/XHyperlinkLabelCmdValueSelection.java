@@ -139,6 +139,7 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
       refresh();
    }
 
+   @Override
    public void clear() {
       if (handleClear()) {
          refresh();
@@ -182,8 +183,10 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
    @Override
    public void adaptControls(FormToolkit toolkit) {
       super.adaptControls(toolkit);
-      toolkit.adapt(selectHyperLinkLabel, true, true);
-      if (supportClear) {
+      if (Widgets.isAccessible(selectHyperLinkLabel)) {
+         toolkit.adapt(selectHyperLinkLabel, true, true);
+      }
+      if (Widgets.isAccessible(clearHyperLinkLabel)) {
          toolkit.adapt(clearHyperLinkLabel, true, true);
       }
       if (Widgets.isAccessible(valueLabel)) {

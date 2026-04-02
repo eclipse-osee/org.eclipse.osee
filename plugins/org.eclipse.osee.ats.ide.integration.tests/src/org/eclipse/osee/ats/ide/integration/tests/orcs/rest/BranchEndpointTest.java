@@ -466,7 +466,7 @@ public class BranchEndpointTest {
          Response res1 = branchEndpoint.setBranchName(testBranch, "TestBranchNameChanged");
          res1.close();
 
-         Response res2 = branchEndpoint.purgeBranch(testBranch, false);
+         Response res2 = branchEndpoint.purgeBranch(testBranch, false, false);
          res2.close();
 
       } else {
@@ -488,7 +488,7 @@ public class BranchEndpointTest {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getBranchState().equals(BranchState.MODIFIED));
 
          // put db back to original state by purging the branch
-         Response res2 = branchEndpoint.purgeBranch(testBranch, false);
+         Response res2 = branchEndpoint.purgeBranch(testBranch, false, false);
          res2.close();
       } else {
          Assert.fail("Test Branch not created");
@@ -505,7 +505,7 @@ public class BranchEndpointTest {
          res1.close();
 
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getBranchType().equals(BranchType.BASELINE));
-         Response res2 = branchEndpoint.purgeBranch(testBranch, false);
+         Response res2 = branchEndpoint.purgeBranch(testBranch, false, false);
          res2.close();
       } else {
          Assert.fail("Test Branch not created");
@@ -526,7 +526,7 @@ public class BranchEndpointTest {
 
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getAssociatedArtifact().equals(testArtifact));
          // put db back to original state by purging the branch
-         Response res2 = branchEndpoint.purgeBranch(testBranch, false);
+         Response res2 = branchEndpoint.purgeBranch(testBranch, false, false);
          res2.close();
          testArtifact.delete();
       } else {
@@ -544,7 +544,7 @@ public class BranchEndpointTest {
          PermissionEnum result = branchEndpoint.getBranchPermission(testBranch);
          Assert.assertEquals(result, p);
       }
-      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      Response res = branchEndpoint.purgeBranch(testBranch, false, false);
       res.close();
 
    }
@@ -565,7 +565,7 @@ public class BranchEndpointTest {
       XResultData xResult = branchEndpoint.createBranchValidation(testDataInitialization(CoreBranches.SYSTEM_ROOT));
 
       Assert.assertFalse(xResult.isErrors());
-      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      Response res = branchEndpoint.purgeBranch(testBranch, false, false);
       res.close();
 
    }
@@ -670,13 +670,13 @@ public class BranchEndpointTest {
             branchEndpoint.getOtherBranchesWithModifiedArtifacts(testBranchIdTwo, ArtifactId.create(newArtifact));
          // since the only change to the artifact is on branchIdTwo (given) we don't expect to see it as an other modified branch
          Assert.assertTrue(branchesModded.isEmpty());
-         try (Response res = branchEndpoint.purgeBranch(setUpBranchId, false)) {
+         try (Response res = branchEndpoint.purgeBranch(setUpBranchId, false, false)) {
             //
          }
-         try (Response res = branchEndpoint.purgeBranch(testBranchIdOne, false)) {
+         try (Response res = branchEndpoint.purgeBranch(testBranchIdOne, false, false)) {
             //
          }
-         try (Response res = branchEndpoint.purgeBranch(testBranchIdTwo, false)) {
+         try (Response res = branchEndpoint.purgeBranch(testBranchIdTwo, false, false)) {
             //
          }
       }
@@ -716,7 +716,7 @@ public class BranchEndpointTest {
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
       UpdateBranchData branchData = branchEndpoint.updateBranchFromParent(testBranch);
       Assert.assertEquals("Branch is up to date", branchData.getResults().getResults().get(0));
-      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      Response res = branchEndpoint.purgeBranch(testBranch, false, false);
       res.close();
    }
 
@@ -760,11 +760,11 @@ public class BranchEndpointTest {
       ArtifactToken newArtifactOnNewBranch = workingBranchArtifactEndpoint.getArtifactTokenOrSentinel(newArtifact);
       Assert.assertEquals(newArtifact.getIdString(), newArtifactOnNewBranch.getIdString());
 
-      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      Response res = branchEndpoint.purgeBranch(testBranch, false, false);
       res.close();
-      res = branchEndpoint.purgeBranch(testBranch2, false);
+      res = branchEndpoint.purgeBranch(testBranch2, false, false);
       res.close();
-      res = branchEndpoint.purgeBranch(branchData.getNewBranchId(), false);
+      res = branchEndpoint.purgeBranch(branchData.getNewBranchId(), false, false);
       res.close();
    }
 
@@ -787,7 +787,7 @@ public class BranchEndpointTest {
       // Check that the branch is still up to date since there have been no changes to the parent branch
       Assert.assertEquals("Branch is up to date", branchData.getResults().getResults().get(0));
 
-      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      Response res = branchEndpoint.purgeBranch(testBranch, false, false);
       res.close();
    }
 
@@ -837,11 +837,11 @@ public class BranchEndpointTest {
       Assert.assertTrue(originalTestBranch.getName().startsWith("TestBranch - for update"));
       Assert.assertEquals(BranchState.REBASELINED, originalTestBranch.getBranchState());
 
-      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      Response res = branchEndpoint.purgeBranch(testBranch, false, false);
       res.close();
-      res = branchEndpoint.purgeBranch(testBranch2, false);
+      res = branchEndpoint.purgeBranch(testBranch2, false, false);
       res.close();
-      res = branchEndpoint.purgeBranch(branchData.getNewBranchId(), false);
+      res = branchEndpoint.purgeBranch(branchData.getNewBranchId(), false, false);
       res.close();
    }
 
@@ -933,13 +933,13 @@ public class BranchEndpointTest {
       Branch newBranch = branchEndpoint.getBranchById(branchData.getNewBranchId());
       Assert.assertEquals("332211", newBranch.getAssociatedArtifact().getIdString());
 
-      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      Response res = branchEndpoint.purgeBranch(testBranch, false, false);
       res.close();
-      res = branchEndpoint.purgeBranch(testBranch2, false);
+      res = branchEndpoint.purgeBranch(testBranch2, false, false);
       res.close();
-      res = branchEndpoint.purgeBranch(testBranch3, false);
+      res = branchEndpoint.purgeBranch(testBranch3, false, false);
       res.close();
-      res = branchEndpoint.purgeBranch(newBranchId, false);
+      res = branchEndpoint.purgeBranch(newBranchId, false, false);
       res.close();
    }
 

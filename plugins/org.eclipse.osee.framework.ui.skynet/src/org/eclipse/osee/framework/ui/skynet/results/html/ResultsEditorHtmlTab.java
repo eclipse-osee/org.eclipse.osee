@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.browser.BrowserPrintAction;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -113,7 +113,7 @@ public class ResultsEditorHtmlTab extends AbstractResultsEditorTab implements IR
       new ActionContributionItem(new BrowserPrintAction(this)).fill(toolBar, -1);
 
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.EMAIL));
+      item.setImage(ImageManager.getImage(CoreImage.EMAIL));
       item.setToolTipText("Email");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

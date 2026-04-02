@@ -23,6 +23,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadAssociatedArtifactOperationFromBranch;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -45,7 +45,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
       this.branchProvider = branchProvider;
       setId("open.associated.artifact");
       setToolTipText("Open Associated Artifact");
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.EDIT));
    }
 
    @Override
@@ -84,7 +84,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       if (!isEnabled) {
-         descriptor = ImageManager.getImageDescriptor(FrameworkImage.EDIT);
+         descriptor = ImageManager.getImageDescriptor(CoreImage.EDIT);
       }
       setImageDescriptor(descriptor);
       setEnabled(isEnabled);

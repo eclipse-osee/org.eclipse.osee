@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -142,11 +142,11 @@ public class XCheckBoxThreeState extends GenericXWidget implements LabelAfterWid
    }
 
    protected void handleSetCheckState() {
-      if (checkLabel.getImage().equals(ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_TRUE))) {
+      if (checkLabel.getImage().equals(ImageManager.getImage(CoreImage.CHECKBOX_CHECK_TRUE))) {
          checkState = CheckState.UnChecked;
-      } else if (checkLabel.getImage().equals(ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_FALSE))) {
+      } else if (checkLabel.getImage().equals(ImageManager.getImage(CoreImage.CHECKBOX_CHECK_FALSE))) {
          checkState = CheckState.UnSet;
-      } else if (checkLabel.getImage().equals(ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_UNSET))) {
+      } else if (checkLabel.getImage().equals(ImageManager.getImage(CoreImage.CHECKBOX_CHECK_UNSET))) {
          checkState = CheckState.Checked;
       }
    }
@@ -173,11 +173,11 @@ public class XCheckBoxThreeState extends GenericXWidget implements LabelAfterWid
 
    private Image getImage() {
       if (checkState == CheckState.Checked) {
-         return ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_TRUE);
+         return ImageManager.getImage(CoreImage.CHECKBOX_CHECK_TRUE);
       } else if (checkState == CheckState.UnChecked) {
-         return ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_FALSE);
+         return ImageManager.getImage(CoreImage.CHECKBOX_CHECK_FALSE);
       } else if (checkState == CheckState.UnSet) {
-         return ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_UNSET);
+         return ImageManager.getImage(CoreImage.CHECKBOX_CHECK_UNSET);
       }
       return null;
    }

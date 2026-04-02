@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -45,7 +45,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    private final IAtsTeamDefinition teamDef;
 
    public GenerateFullVersionReportItem() {
-      super("Generate Full Version Report", FrameworkImage.VERSION, AtsNavigateViewItems.ATS_VERSIONS);
+      super("Generate Full Version Report", CoreImage.VERSION, AtsNavigateViewItems.ATS_VERSIONS);
       this.teamDef = null;
    }
 

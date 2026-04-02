@@ -43,13 +43,13 @@ import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
 /**
  * Provides the ATS Navigator items for the sample XYZ company's teams
@@ -119,8 +119,8 @@ public class DemoNavigateViewItems implements XNavigateItemProvider {
          }
       }
 
-      items.add(new XNavigateItemFolder("JHU Admin", FrameworkImage.LASER, JHU_ADMIN, SUBCAT));
-      items.add(new XNavigateItemFolder("Health", FrameworkImage.HEALTH, JHU_HEALTH, SUBCAT));
+      items.add(new XNavigateItemFolder("JHU Admin", CoreImage.LASER, JHU_ADMIN, SUBCAT));
+      items.add(new XNavigateItemFolder("Health", CoreImage.HEALTH, JHU_HEALTH, SUBCAT));
 
       items.add(
          new XNavigateUrlItem("Open JHU Website - Externally", "http://www.jhu.edu/", true, JOHN_HOPKINS_UNIV_JHU));

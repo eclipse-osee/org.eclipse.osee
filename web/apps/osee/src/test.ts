@@ -10,25 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-// This file is required by karma.conf.js and loads recursively all the .spec and framework files
+// This file is the global test setup file.
 
 import 'zone.js/testing';
-import { getTestBed } from '@angular/core/testing';
-import {
-	BrowserDynamicTestingModule,
-	platformBrowserDynamicTesting,
-} from '@angular/platform-browser-dynamic/testing';
-
-// First, initialize the Angular testing environment.
-getTestBed().initTestEnvironment(
-	BrowserDynamicTestingModule,
-	platformBrowserDynamicTesting(),
-	{
-		teardown: { destroyAfterEach: true },
-	}
-);
-beforeEach(function () {
-	let window1 = spyOn(window, 'open').and.callFake((url, target, replace) => {
-		return null;
-	});
-});
+vi.mock('dagre', () => ({
+	layout: vi.fn(),
+}));
+vi.spyOn(window, 'open').mockReturnValue(null);

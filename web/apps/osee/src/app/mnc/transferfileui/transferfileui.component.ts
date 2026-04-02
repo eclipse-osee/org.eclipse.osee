@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -30,7 +29,6 @@ import { TransferData } from '../types/transfer-file/transferdata';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './transferfileui.component.html',
 	imports: [
-		CommonModule,
 		MatFormFieldModule,
 		MatInputModule,
 		FormsModule,

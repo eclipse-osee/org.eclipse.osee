@@ -23,13 +23,13 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.IArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
@@ -265,7 +265,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       if (element instanceof FakeArtifactParent) {
          toReturn = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
       } else if (element instanceof AttributeLineElement) {
-         toReturn = ImageManager.getImage(FrameworkImage.LINE_MATCH);
+         toReturn = ImageManager.getImage(CoreImage.LINE_MATCH);
       } else if (element instanceof Artifact) {
          Image artImage = ArtifactImageManager.getImage((Artifact) element);
          int matchCount = getMatchCount(element);

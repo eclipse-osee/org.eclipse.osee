@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.navigate.ConvertVersionToAgileSprint;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
 /**
  * @author Donald G. Dunne
@@ -58,15 +58,15 @@ public class AgileNavigateItemProvider implements XNavigateItemProvider {
             AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_TEAM), XNavItemCat.MID));
 
          items.add(new XNavigateItemFolder("Reports", AtsImage.REPORT, AGILE_REPORTS, SUBCAT));
-         items.add(new XNavigateItemFolder("Configuration", FrameworkImage.GEAR, AGILE_CONFIG, SUBCAT));
-         items.add(new XNavigateItemFolder("Conversions", FrameworkImage.VERSION, AGILE_CONVERSIONS, SUBCAT));
+         items.add(new XNavigateItemFolder("Configuration", CoreImage.GEAR, AGILE_CONFIG, SUBCAT));
+         items.add(new XNavigateItemFolder("Conversions", CoreImage.VERSION, AGILE_CONVERSIONS, SUBCAT));
 
          items.add(new OpenAgileBacklog());
          items.add(new OpenAgileSprint());
          items.add(new SortAgileBacklog());
 
          // Reports
-         items.add(new XNavigateItemAction(new SprintReportAction(null, true), FrameworkImage.REPORT, AGILE_REPORTS));
+         items.add(new XNavigateItemAction(new SprintReportAction(null, true), CoreImage.REPORT, AGILE_REPORTS));
          items.add(new OpenAgileSprintReports());
          items.add(new OpenAgileStoredSprintReports());
 

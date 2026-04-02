@@ -19,7 +19,9 @@ import { ScriptTeam, scriptTeamSentinel } from '../../../../types';
 describe('CreateTeamDialogComponent', () => {
 	let component: CreateTeamDialogComponent;
 	let fixture: ComponentFixture<CreateTeamDialogComponent>;
-	const dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+	const dialogRef = {
+		close: vi.fn().mockName('MatDialogRef.close'),
+	};
 	const dialogData: ScriptTeam = {
 		...scriptTeamSentinel,
 		name: {

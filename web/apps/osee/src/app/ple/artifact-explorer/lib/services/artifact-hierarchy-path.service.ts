@@ -10,19 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, inject } from '@angular/core';
-import {
-	BehaviorSubject,
-	combineLatest,
-	filter,
-	map,
-	repeat,
-	shareReplay,
-	switchMap,
-} from 'rxjs';
+import { Injectable, computed, inject, linkedSignal } from '@angular/core';
+import { combineLatest, filter, repeat, shareReplay, switchMap } from 'rxjs';
 import { UiService } from '@osee/shared/services';
 import { ArtifactExplorerHttpService } from './artifact-explorer-http.service';
 import { ArtifactHierarchyArtifactsExpandedService } from './artifact-hierarchy-artifacts-expanded.service';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
@@ -34,21 +27,48 @@ export class ArtifactHierarchyPathService {
 		ArtifactHierarchyArtifactsExpandedService
 	);
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
+	private _id = toSignal(this.uiService.id);
+	private _viewId = toSignal(this.uiService.viewId);
+	private _branchAndView = computed(() => {
+		const id = this._id();
+		const _view = this._viewId();
+		if (!id && !_view) {
+			return undefined;
+		}
+		if (!_view && id) {
+			return { branch: id };
+		}
+		if (!id && _view) {
+			return { view: _view };
+		}
+		return { branch: id, view: _view };
+	});
+	private _selectedArtifactId = linkedSignal<
+		| {
+				branch: string;
+				view?: undefined;
+		  }
+		| {
+				view: string;
+				branch?: undefined;
+		  }
+		| {
+				branch: string | undefined;
+				view: string | undefined;
+		  }
+		| undefined,
+		string
+	>({
+		source: this._branchAndView,
+		computation: (_branchAndView, previous) => {
+			if (previous === undefined) {
+				return '';
+			}
+			return '';
+		},
+	});
+	selectedArtifactId = toObservable(this._selectedArtifactId);
 
-	constructor() {
-		// Clearing the selectedArtifactId when the branch id / view id changes
-		combineLatest([this.uiService.id, this.uiService.viewId])
-			.pipe(
-				map(([_branchId, _viewId]) => {
-					this.selectedArtifactId.next('');
-				})
-			)
-			.subscribe();
-	}
-
-	selectedArtifactId = new BehaviorSubject<string>('');
 	branchId = this.uiService.id;
 	viewId = this.uiService.viewId;
 
@@ -79,6 +99,6 @@ export class ArtifactHierarchyPathService {
 
 	updatePaths(artifactId: string) {
 		this.artifactsExpandedService.clear();
-		this.selectedArtifactId.next(artifactId);
+		this._selectedArtifactId.set(artifactId);
 	}
 }

@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 
 /**
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 public class FilteredTreeDialogSingleExample extends XNavigateItemAction {
 
    public FilteredTreeDialogSingleExample() {
-      super("FilteredTreeDialogSingle Example", FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
+      super("FilteredTreeDialogSingle Example", CoreImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override

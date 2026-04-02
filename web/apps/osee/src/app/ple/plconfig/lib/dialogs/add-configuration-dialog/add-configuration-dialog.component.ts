@@ -30,9 +30,7 @@ import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { MatSelect } from '@angular/material/select';
 import { ViewSelectorComponent } from '@osee/shared/components';
 import { UiService } from '@osee/shared/services';
-import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { PLAddConfigData } from '../../types/pl-edit-config-data';
 
 @Component({
@@ -58,11 +56,9 @@ import { PLAddConfigData } from '../../types/pl-edit-config-data';
 	],
 })
 export class AddConfigurationDialogComponent {
-	private typeService = inject(PlConfigTypesService);
 	dialogRef =
 		inject<MatDialogRef<AddConfigurationDialogComponent>>(MatDialogRef);
 	data = inject<PLAddConfigData>(MAT_DIALOG_DATA);
-	private branchService = inject(PlConfigBranchService);
 	private currentBranchService = inject(PlConfigCurrentBranchService);
 	private uiService = inject(UiService);
 

@@ -60,7 +60,6 @@ export class BranchSelectorComponent {
 	private loadingService = inject(HttpLoadingService);
 
 	selectedBranchType = this.branchRouteState.type;
-	selectedBranchId = '';
 	options = this.branchListingService.branches;
 	loading = this.loadingService.isLoading;
 
@@ -106,13 +105,6 @@ export class BranchSelectorComponent {
 	@Input() errorMatcher: ErrorStateMatcher =
 		new ShowOnDirtyErrorStateMatcher();
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-	constructor() {
-		this.branchRouteState.id.subscribe((val) => {
-			this.selectedBranchId = val;
-		});
-	}
 	get filter() {
 		return this._typeAhead;
 	}

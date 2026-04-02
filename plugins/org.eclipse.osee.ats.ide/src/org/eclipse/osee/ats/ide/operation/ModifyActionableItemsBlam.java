@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -63,7 +64,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -216,7 +216,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
       Button executeButton = new Button(buttonComp, SWT.PUSH | SWT.LEFT);
       executeButton.setText(getRunText());
-      executeButton.setImage(ImageManager.getImage(FrameworkImage.RUN_EXC));
+      executeButton.setImage(ImageManager.getImage(CoreImage.RUN_EXC));
       executeButton.setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false));
       executeButton.addListener(SWT.MouseUp, new Listener() {
 
@@ -230,7 +230,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       if (displayDuplicateButton()) {
          Button advancedDuplicate = new Button(buttonComp, SWT.PUSH | SWT.RIGHT);
          advancedDuplicate.setText("Open Advanced Duplicate Workflow");
-         advancedDuplicate.setImage(ImageManager.getImage(FrameworkImage.DUPLICATE));
+         advancedDuplicate.setImage(ImageManager.getImage(CoreImage.DUPLICATE));
          advancedDuplicate.setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false));
          advancedDuplicate.addListener(SWT.MouseUp, new Listener() {
 

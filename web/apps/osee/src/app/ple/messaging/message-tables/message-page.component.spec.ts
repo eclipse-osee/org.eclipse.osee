@@ -19,6 +19,7 @@ import { CurrentMessagesService } from '@osee/messaging/shared/services';
 import { messagesMock } from '@osee/messaging/shared/testing';
 import { MessagePageComponent } from './message-page.component';
 import { MockMessageInterfaceComponent } from './lib/message-interface/message-interface.component.mock';
+import { signal } from '@angular/core';
 
 describe('MessageInterfaceComponent', () => {
 	let component: MessagePageComponent;
@@ -33,6 +34,7 @@ describe('MessageInterfaceComponent', () => {
 						provide: CurrentMessagesService,
 						useValue: {
 							filter: '',
+							messageFilter: signal(''),
 							string: '',
 							messages: of(messagesMock),
 							BranchId: new BehaviorSubject('10'),

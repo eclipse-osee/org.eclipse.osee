@@ -30,12 +30,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -76,7 +76,7 @@ public class PurgeAction extends Action {
 
    public static MenuItem createPurgeMenuItem(Menu parentMenu, TreeViewer treeViewer) {
       MenuItem purgeMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      purgeMenuItem.setImage(ImageManager.getImage(FrameworkImage.TRASH));
+      purgeMenuItem.setImage(ImageManager.getImage(CoreImage.TRASH));
       purgeMenuItem.setText("&Purge Artifact(s)");
       purgeMenuItem.addSelectionListener(new SelectionAdapter() {
          @Override

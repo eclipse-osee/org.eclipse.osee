@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -51,10 +51,10 @@ public class AbstractWfeSubWorkflow extends Composite {
    private final AttributeTypeToken attrType;
    private final int color;
    private Label iconLabel;
-   private final KeyedImage image;
+   private final OseeImage image;
 
    protected AbstractWfeSubWorkflow(Composite parent, int style, IAtsWorkItem workItem, WorkflowEditor editor, String positive, //
-      String negative, AttributeTypeToken attrType, int color, KeyedImage image, String tooltip) {
+      String negative, AttributeTypeToken attrType, int color, OseeImage image, String tooltip) {
       super(parent, style);
       this.workItem = workItem;
       this.image = image;

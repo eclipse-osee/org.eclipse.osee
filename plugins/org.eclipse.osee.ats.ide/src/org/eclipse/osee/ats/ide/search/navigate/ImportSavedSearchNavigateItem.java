@@ -21,11 +21,11 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
@@ -37,7 +37,7 @@ public class ImportSavedSearchNavigateItem extends XNavigateItem {
    AtsApi atsApi;
 
    public ImportSavedSearchNavigateItem() {
-      super("Import Saved Search", FrameworkImage.IMPORT, SavedActionSearchNavigateItem.SAVED_ACTION_SEARCHES);
+      super("Import Saved Search", CoreImage.IMPORT, SavedActionSearchNavigateItem.SAVED_ACTION_SEARCHES);
       atsApi = AtsApiService.get();
    }
 

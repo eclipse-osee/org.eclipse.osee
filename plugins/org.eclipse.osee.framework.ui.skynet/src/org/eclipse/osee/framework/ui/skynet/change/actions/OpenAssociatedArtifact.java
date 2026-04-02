@@ -24,10 +24,10 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadAssociatedArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -41,7 +41,7 @@ public class OpenAssociatedArtifact extends Action {
       this.changeData = changeData;
       setId("open.associated.artifact.change.report");
       setToolTipText("Open Associated Artifact");
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.EDIT));
    }
 
    @Override
@@ -73,7 +73,7 @@ public class OpenAssociatedArtifact extends Action {
          descriptor = ArtifactImageManager.getImageDescriptor(associatedArtifact);
          isEnabled = true;
       } else {
-         descriptor = ImageManager.getImageDescriptor(FrameworkImage.EDIT);
+         descriptor = ImageManager.getImageDescriptor(CoreImage.EDIT);
          isEnabled = false;
       }
       setImageDescriptor(descriptor);

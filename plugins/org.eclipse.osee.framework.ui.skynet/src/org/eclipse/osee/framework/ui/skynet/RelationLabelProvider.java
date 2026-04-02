@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,7 +38,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Ryan D. Brooks
  */
 public class RelationLabelProvider implements ITableLabelProvider, ILabelProvider {
-   private static final Image LOCK_IMAGE = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);
+   private static final Image LOCK_IMAGE = ImageManager.getImage(CoreImage.LOCK_OVERLAY);
 
    private Artifact artifact;
 
@@ -51,7 +52,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       if (element instanceof RelationTypeSide && columnIndex == 0) {
          toReturn = getImage((RelationTypeSide) element);
       } else if (element instanceof RelationTypeToken && columnIndex == 0) {
-         toReturn = ImageManager.getImage(FrameworkImage.RELATION);
+         toReturn = ImageManager.getImage(CoreImage.RELATION);
       } else if (element instanceof WrapperForRelationLink && columnIndex == 0) {
          WrapperForRelationLink relationLinkWrapper = (WrapperForRelationLink) element;
          try {
@@ -88,15 +89,15 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
 
          if (side == RelationSide.SIDE_A) {
             if (multiplicity.getSideALimit() == 1) {
-               return ImageManager.getImage(FrameworkImage.LEFT_ARROW_1);
+               return ImageManager.getImage(CoreImage.LEFT_ARROW_1);
             } else {
-               return ImageManager.getImage(FrameworkImage.LEFT_ARROW_N);
+               return ImageManager.getImage(CoreImage.LEFT_ARROW_N);
             }
          } else {
             if (multiplicity.getSideBLimit() == 1) {
-               return ImageManager.getImage(FrameworkImage.RIGHT_ARROW_1);
+               return ImageManager.getImage(CoreImage.RIGHT_ARROW_1);
             } else {
-               return ImageManager.getImage(FrameworkImage.RIGHT_ARROW_N);
+               return ImageManager.getImage(CoreImage.RIGHT_ARROW_N);
             }
          }
       } catch (OseeCoreException ex) {
