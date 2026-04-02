@@ -2164,6 +2164,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	clearSearchTitle(): void {
 		this.data.searchTitle = '';
 	}
+	
+	clearAttributeSearch(): void {
+		this.attributeSearch.set('');
+	}
 
 	toggleSavedSearchDateSortDirection(): void {
 		this.savedSearchDateSortAsc = !this.savedSearchDateSortAsc;
