@@ -13,17 +13,13 @@
 
 package org.eclipse.osee.ats.ide.notify;
 
-import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.notify.TestEmail;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.util.CoreImage;
-import org.eclipse.osee.framework.core.util.OseeEmail;
-import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -32,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
@@ -77,23 +72,10 @@ public class TestOseeEmailSend extends XNavigateItemAction {
          XResultDataUI.errorf(TITLE, "User email [%s] is invalid", user);
          return;
       }
-      rd.log("1. Two basic \"Hello World\" emails should be sent; one from client and another from server.\n\n");
+      rd.log("1. A basic \"Hello World\" emails should be sent from the server.\n\n");
 
-      // Test Email Client
-      String title = "Send Test Email - Client";
-      rd.log(title);
-      try {
-         OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(email), email, email, title,
-            AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html, Arrays.asList(email),
-            "Abridged - " + title, "This is the abridged message body");
-         emailMessage.send();
-         rd.log("Completed");
-      } catch (Exception ex) {
-         rd.error(Lib.exceptionToString(ex));
-      }
-
-      rd.log("\n\n2. If Abridged Email attribute is set on your user artifact, another two " //
-         + "emails should be sent from client and server with only basic information " //
+      rd.log("2. If Abridged Email attribute is set on your user artifact, another " //
+         + "email should be sent from the server with only basic information " //
          + "about the change with Abridged in title and abridged message body, etc).\n\n");
 
       // Test Email Server

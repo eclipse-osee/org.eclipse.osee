@@ -300,7 +300,11 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Dictionary)
       .any(GeneralStringData)
       .zeroOrOne(ProductLinePreferences)
-      .zeroOrOne(WebPreferences));
+      .zeroOrOne(WebPreferences)
+      .zeroOrOne(EmailEncryptionEnabled)
+      .zeroOrOne(EmailCertificateLdapUrl)
+      .zeroOrOne(EmailCertificateUploadOverrideLink)
+      .zeroOrOne(EmailCertificateInstructions));
 
    ArtifactTypeToken GroupArtifact = osee.add(osee.artifactType(6L, "Group Artifact", false, new MaterialIcon("group_work"), Artifact));
 

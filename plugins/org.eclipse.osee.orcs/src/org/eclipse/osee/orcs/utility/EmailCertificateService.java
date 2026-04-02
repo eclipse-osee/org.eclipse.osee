@@ -12,25 +12,44 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.utility;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.framework.core.data.EmailRecipientInfo;
+
 public interface EmailCertificateService {
 
+   String CERTIFICATE_MANAGEMENT_SUB_PATH = "/osee/certificate-management";
+
    /**
-    * Parse, validate and store the current user's email public certificate.
-    *
-    * @param certificatePem PEM-encoded X.509 certificate string
-    * @throws EmailCertificateValidationException if certificate is invalid or not suitable for email
+    * Validates and stores the current user's public email certificate in PEM format.
     */
    void setPublicCertificateForCurrentUser(String certificatePem);
 
    /**
-    * Retrieve the current user's email public certificate (PEM).
-    *
-    * @return PEM string, or null if none is stored
+    * Returns the current user's stored public email certificate in PEM format, or null if none exists.
     */
    String getPublicCertificateForCurrentUser();
 
    /**
-    * Delete the current user's email public certificate (if present).
+    * Deletes the current user's stored public email certificate.
     */
    void deletePublicCertificateForCurrentUser();
+
+   /**
+    * Returns recipient information for the supplied email addresses, including any stored public certificates.
+    */
+   List<EmailRecipientInfo> getPublicCertificatesByEmailAddresses(Collection<String> emailAddresses);
+
+   /**
+    * Returns recipient information for the supplied email addresses, including any stored public certificates. If an
+    * LDAP URL is provided, LDAP may be queried for recipients whose stored certificate is missing or invalid.
+    */
+   List<EmailRecipientInfo> getPublicCertificatesByEmailAddresses(Collection<String> emailAddresses,
+      String emailCertificateLdapUrl);
+
+   /**
+    * Asynchronously writes back public certificates for the supplied email addresses in a single transaction.
+    */
+   void writePublicCertificatesByEmailAddressesAsync(Map<String, String> certificatesByEmailAddress);
 }

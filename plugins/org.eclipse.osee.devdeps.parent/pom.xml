@@ -152,8 +152,8 @@
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>2.7.5</version>
 					<configuration>
-                                                <source>11</source>
-                                                <target>11</target>
+						<source>21</source>
+						<target>21</target>
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>

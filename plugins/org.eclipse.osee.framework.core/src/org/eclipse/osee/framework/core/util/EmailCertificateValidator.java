@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.orcs.utility;
+package org.eclipse.osee.framework.core.util;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;

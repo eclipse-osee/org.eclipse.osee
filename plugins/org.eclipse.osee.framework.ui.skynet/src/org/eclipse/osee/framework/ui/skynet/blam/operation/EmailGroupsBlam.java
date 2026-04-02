@@ -21,17 +21,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
-import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.util.SendEmailRequest;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
@@ -43,7 +45,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -66,6 +67,7 @@ public class EmailGroupsBlam extends AbstractBlam {
    private XText bodyTextBox;
    private XText subjectTextBox, abridgedSubjectTextBox, replyToAddressTextBox;
    private XCheckBox isBodyHtmlCheckbox;
+   private XCheckBox certifyNoSensitiveDataCheckbox;
    private ExecutorService emailTheadPool;
    private final Collection<Future<String>> futures = new ArrayList<>(300);
    private final XModifiedListener listener = new ModificationListerner();
@@ -101,6 +103,11 @@ public class EmailGroupsBlam extends AbstractBlam {
          AWorkbench.popup(result);
          return;
       }
+      if (certifyNoSensitiveDataCheckbox == null || !certifyNoSensitiveDataCheckbox.isChecked()) {
+         AWorkbench.popup(
+            "You must certify that email subject lines do not contain " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " before sending.");
+         return;
+      }
       /**
        * Reload group artifact to get updates to users that have un-subscribe since un-subscribe is done via the server
        * and changes tables directly, clients won't know. This can be removed when server uses artifact framework to
@@ -126,37 +133,49 @@ public class EmailGroupsBlam extends AbstractBlam {
       if (user.isOfType(CoreArtifactTypes.User)) {
          String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
          if (EmailUtil.isEmailValid(emailAddress)) {
-            final OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
-               data.getReplyToAddress(), data.getSubject(), data.getHtmlResult(user), BodyType.Html, null, null, null);
+            Collection<String> abridgedAddresses = Collections.emptyList();
+            String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
+
+            if (Strings.isValid(data.getSubjectAbridged()) && EmailUtil.isEmailValid(abridgedEmail)) {
+               abridgedAddresses = Arrays.asList(abridgedEmail);
+            }
+
+            SendEmailRequest request = new SendEmailRequest(Arrays.asList(emailAddress), data.getFromAddress(),
+               data.getReplyToAddress(), data.getSubject(), data.getHtmlResult(user.getName(), user.getId()),
+               BodyType.Html, abridgedAddresses, data.getSubjectAbridged(), "Abridged - See Primary Email for Details");
 
             String logDescription = String.format("%s - [%s]", user, emailAddress);
+            if (!abridgedAddresses.isEmpty()) {
+               logDescription = String.format("%s (Abridged -> %s)", logDescription, abridgedEmail);
+            }
             logf(logDescription);
 
-            futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, logDescription)));
+            futures.add(emailTheadPool.submit(new SendEmailRemoteCall(request, logDescription)));
          } else {
             logf("ERROR: The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
-         }
-
-         // Handle abridged if necessary; Only send it abridged subject (default empty) and abridged email
-         if (Strings.isValid(data.getSubjectAbridged())) {
-            String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
-            if (EmailUtil.isEmailValid(abridgedEmail)) {
-               final OseeEmail abridgedEmailMessage = OseeEmailIde.create(Arrays.asList(abridgedEmail),
-                  data.getFromAddress(), data.getReplyToAddress(), data.getSubjectAbridged(),
-                  "Abridged - See Primary Email for Details", BodyType.Html, null, null, null);
-
-               String logDescriptionAbridged = String.format("%s - [%s] (Abridged)", user, abridgedEmail);
-               logf(logDescriptionAbridged);
-
-               futures.add(emailTheadPool.submit(new SendEmailCall(abridgedEmailMessage, logDescriptionAbridged)));
-            }
          }
       }
    }
 
+   private final class SendEmailRemoteCall implements Callable<String> {
+      private final SendEmailRequest request;
+      private final String logDescription;
+
+      private SendEmailRemoteCall(SendEmailRequest request, String logDescription) {
+         this.request = request;
+         this.logDescription = logDescription;
+      }
+
+      @Override
+      public String call() throws Exception {
+         OseeApiService.serverEnpoints().getOrcsUserEndpoint().sendEmail(request);
+         return logDescription;
+      }
+   }
+
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreating(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("Groups")) {
          groupsList = (XArtifactList) xWidget;
@@ -185,6 +204,8 @@ public class EmailGroupsBlam extends AbstractBlam {
       } else if (xWidget.getLabel().equals("Reply-To Address")) {
          replyToAddressTextBox = (XText) xWidget;
          replyToAddressTextBox.set(OseeApiService.user().getEmail());
+      } else if (xWidget.getLabel().equals("I certify the subject lines do not contain restricted or sensitive data.")) {
+         certifyNoSensitiveDataCheckbox = (XCheckBox) xWidget;
       } else if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;
          button.setDisplayLabel(false);
@@ -192,8 +213,8 @@ public class EmailGroupsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;
@@ -222,7 +243,8 @@ public class EmailGroupsBlam extends AbstractBlam {
             AWorkbench.popup(result);
             return;
          }
-         String htmlResult = data.getHtmlResult(OseeApiService.userArt());
+         UserToken user = OseeApiService.user();
+         String htmlResult = data.getHtmlResult(user.getName(), user.getId());
          HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
             String.format("Subject: %s\n\nSending message to [%d] users from groups [%s]", data.getSubject(),
                data.getUserToGroupMap().keySet().size(),
@@ -237,14 +259,20 @@ public class EmailGroupsBlam extends AbstractBlam {
    @Override
    public List<XWidgetData> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
+            wb.andXCheckbox("I certify the subject lines do not contain restricted or sensitive data.").andDefault(
+         false).andHorizLabel().andLabelAfter().andRequired().endWidget();
       wb.andWidget("Groups", "XArtifactList").andMultiSelect().endWidget();
       wb.andWidget("Template", "XArtifactList").endWidget();
       wb.andXText("Reply-To Address").endWidget();
       wb.andXText("Subject").endWidget();
+      wb.andXLabel("      - WARNING: Email subject lines are NOT encrypted.").endWidget();
+      wb.andXLabel(
+         "      - Do NOT include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " in the subject line.").endWidget();
       wb.andXText("Abridged Subject").endWidget();
       // @formatter:off
       wb.andXLabel("      - If an Abridged Subject is included, emails will be sent to users with potential external email.").endWidget();
       wb.andXLabel("      - Abridged Subject MUST be sanitized for general consumption and should give useful information.").endWidget();
+      wb.andXLabel("      - Abridged Subject is also NOT encrypted and must not include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + ".").endWidget();
       wb.andXLabel("      - NOTE: Email Body will NOT be included in these emails, just the Abridged Subject.").endWidget();
       wb.andXLabel("      - If no entry is given, NO abridged emails will be sent to users with Abridged Email set.").endWidget();
       // @formatter:on

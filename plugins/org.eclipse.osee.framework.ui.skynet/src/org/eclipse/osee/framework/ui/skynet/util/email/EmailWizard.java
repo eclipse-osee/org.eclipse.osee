@@ -18,22 +18,25 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.mail.Message;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
+import org.eclipse.osee.framework.core.util.SendEmailRequest;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 
 /**
  * @author Donald G. Dunne
  */
 public class EmailWizard extends Wizard {
+   private static final String SUBJECT_WARNING =
+      "Email subject lines are NOT encrypted.\n\nDo NOT include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " in the Subject.\n\nDo you certify that the Subject does not contain restricted or sensitive data?";
+
    private EmailWizardPage wizardPage;
    private String htmlMessage = null;
    private String subject = null;
@@ -66,10 +69,16 @@ public class EmailWizard extends Wizard {
                "Current user [%s] has no email address configured.\n\nEmail can not be sent", OseeApiService.user()));
             return true;
          }
-         if (wizardPage.getToAddresses().length == 0) {
-            AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not be sent"));
+         if (wizardPage.getToAddresses().length == 0 && wizardPage.getCcAddresses().length == 0 && wizardPage.getBccAddresses().length == 0) {
+            AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not sent"));
             return true;
          }
+
+         boolean confirmed = MessageDialog.openConfirm(getShell(), "Confirm Subject Content", SUBJECT_WARNING);
+         if (!confirmed) {
+            return false;
+         }
+
          String useSubject = wizardPage.getSubject();
          /**
           * Do not handle abridged emails for EmailWizard. If desired to do this, the UI would need to be updated to
@@ -77,16 +86,23 @@ public class EmailWizard extends Wizard {
           */
          Collection<String> toAbridgedAddresses = Collections.emptyList();
          String abridgedSubject = "";
-         OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(wizardPage.getToAddresses()),
-            OseeApiService.user().getEmail(), OseeApiService.user().getEmail(), useSubject, "", BodyType.Html,
-            toAbridgedAddresses, abridgedSubject, OseeEmail.EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL);
-         emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
-         emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
+
          String finalHtml = getFinalHtml();
-         emailMessage.setHTMLBody(finalHtml);
-         // Remove hyperlinks cause they won't work in email.
-         emailMessage.addHTMLBody(htmlMessage);
-         emailMessage.send();
+
+         SendEmailRequest request = new SendEmailRequest();
+         request.setToAddresses(Arrays.asList(wizardPage.getToAddresses()));
+         request.setCcAddresses(Arrays.asList(wizardPage.getCcAddresses()));
+         request.setBccAddresses(Arrays.asList(wizardPage.getBccAddresses()));
+         request.setFromAddress(OseeApiService.user().getEmail());
+         request.setReplyToAddress(OseeApiService.user().getEmail());
+         request.setSubject(useSubject);
+         request.setBody(finalHtml);
+         request.setBodyType(BodyType.Html);
+         request.setEmailAddressesAbridged(toAbridgedAddresses);
+         request.setSubjectAbridged(abridgedSubject);
+         request.setBodyAbridged(OseeEmail.EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL);
+
+         OseeApiService.serverEnpoints().getOrcsUserEndpoint().sendEmail(request);
       } catch (Exception e) {
          MessageDialog.openInformation(null, "Message Could Not Be Sent",
             "Your Email Message could not be sent.\n\n" + e.getLocalizedMessage());
@@ -101,8 +117,9 @@ public class EmailWizard extends Wizard {
       StringBuilder sb = new StringBuilder();
       String otherText = wizardPage.getText();
       if (Strings.isValid(otherText)) {
-         sb.append("<p>" + AHTML.textToHtml(
-            wizardPage.getText()) + "</p><p>--------------------------------------------------------</p>");
+         sb.append("<p>");
+         sb.append(AHTML.textToHtml(wizardPage.getText()));
+         sb.append("</p><p>--------------------------------------------------------</p>");
       }
       sb.append(htmlMessage);
       String finalHtml = sb.toString();

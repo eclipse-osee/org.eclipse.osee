@@ -12,15 +12,21 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
+import java.util.Collection;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.core.data.EmailRecipientInfo;
 import org.eclipse.osee.framework.core.data.UserTokens;
+import org.eclipse.osee.framework.core.util.SendEmailRequest;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -54,4 +60,23 @@ public interface UserEndpoint {
    @DELETE
    @Path("public-certificate")
    void deletePublicCertificate();
+
+   /**
+    * Retrieve user artifacts for the given email addresses, including public certificate data.
+    */
+   @POST
+   @Path("public-certificate/by-email")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   List<EmailRecipientInfo> getPublicCertificatesByEmailAddresses(Collection<String> emailAddresses);
+
+   /**
+    * Sends an email through the server using the configured OseeEmail server implementation.
+    */
+   @Path("email")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData sendEmail(SendEmailRequest request);
+
 }

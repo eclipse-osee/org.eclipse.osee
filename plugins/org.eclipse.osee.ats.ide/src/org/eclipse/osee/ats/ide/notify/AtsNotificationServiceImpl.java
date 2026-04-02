@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.notify;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.core.notify.AbstractAtsNotificationService;
-import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 
 /**
  * @author Donald G. Dunne
@@ -34,8 +33,10 @@ public class AtsNotificationServiceImpl extends AbstractAtsNotificationService {
    }
 
    @Override
-   public OseeEmail createOseeEmail() {
-      return OseeEmailIde.create();
+   public void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject,
+      String htmlBody) {
+      throw new UnsupportedOperationException(
+         "IDE notification service does not create or send email directly. Use the server notification endpoint.");
    }
 
 }

@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchild;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,14 +20,13 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.util.OseeEmail;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
+import org.eclipse.osee.framework.core.util.SendEmailRequest;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
 
 /**
  * See AbstractXHyperlinkWfdSelectedChildDam<br/>
@@ -63,57 +61,37 @@ public abstract class AbstractXHyperlinkWfdSelectedUserGroupWithNotifyDam extend
                if (members == null || members.isEmpty()) {
                   return;
                }
-               ArrayList<String> toUserEmailList = new ArrayList<String>();
-               for (UserToken userTok : members) {
-                  if (userTok.isActive()) {
-                     String userEmail = userTok.getEmail();
-                     if (EmailUtil.isEmailValid(userEmail)) {
-                        toUserEmailList.add(userEmail);
-                     }
-                  }
-               }
 
-               if (toUserEmailList.isEmpty()) {
-                  return;
-               }
                Set<String> addresses = new HashSet<>();
+               Set<String> addressesAbridged = new HashSet<>();
+
                for (UserToken user : members) {
-                  if (EmailUtil.isEmailValid(user.getEmail())) {
+                  if (user.isActive() && EmailUtil.isEmailValid(user.getEmail())) {
                      addresses.add(user.getEmail());
                   }
-               }
-               Set<String> addressesAbridged = new HashSet<>();
-               for (UserToken userTok : members) {
-                  String abridgedEmail = OseeApiService.userSvc().getAbridgedEmail(userTok);
+
+                  String abridgedEmail = OseeApiService.userSvc().getAbridgedEmail(user);
                   if (EmailUtil.isEmailValid(abridgedEmail)) {
                      addressesAbridged.add(abridgedEmail);
                   }
                }
 
-               try {
-                  if (!addresses.isEmpty()) {
-                     OseeEmail mail = OseeEmailIde.create();
-                     mail.setSubject(getEmailSubject(selected));
-                     mail.setHTMLBody(getEmailBody(selected));
-                     mail.setFrom(getEmailFrom(selected));
-                     mail.addRecipients(Collections.toString(",", addresses));
-                     mail.send();
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               if (addresses.isEmpty() && addressesAbridged.isEmpty()) {
+                  return;
                }
-               try {
-                  if (!addressesAbridged.isEmpty()) {
-                     OseeEmail mail = OseeEmailIde.create();
-                     mail.setSubject(getEmailSubjectAbridged(selected));
-                     mail.setHTMLBody(getEmailBodyAbridged(selected));
-                     mail.setFrom(getEmailFrom(selected));
-                     mail.addRecipients(Collections.toString(",", addressesAbridged));
-                     mail.send();
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
+
+               SendEmailRequest request = new SendEmailRequest();
+               request.setToAddresses(addresses);
+               request.setFromAddress(getEmailFrom(selected));
+               request.setReplyToAddress(getEmailFrom(selected));
+               request.setSubject(getEmailSubject(selected));
+               request.setBody(getEmailBody(selected));
+               request.setBodyType(BodyType.Html);
+               request.setEmailAddressesAbridged(addressesAbridged);
+               request.setSubjectAbridged(getEmailSubjectAbridged(selected));
+               request.setBodyAbridged(getEmailBodyAbridged(selected));
+
+               OseeApiService.serverEnpoints().getOrcsUserEndpoint().sendEmail(request);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

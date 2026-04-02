@@ -17,6 +17,10 @@
             %license
       </license>
 
+      <includes
+            id="org.eclipse.osee.core.plugin.feature"
+            version="0.0.0"/>
+
       <plugin
             id="javax.transaction"
             download-size="0"
@@ -352,12 +356,13 @@
             download-size="0"
             install-size="0"
             version="0.0.0"
+            unpack="false"/>
 
       <plugin
             id="org.apache.ws.commons.util"
             download-size="0"
             install-size="0"
-            version="0.0.0"/>
+            version="0.0.0"
             unpack="false"/>
 
       <plugin
@@ -1148,18 +1153,19 @@
             version="0.0.0"
             unpack="false"/>
 
-            <plugin
+      <plugin
             id="org.apache.aries.blueprint.core"
             download-size="0"
             install-size="0"
             version="0.0.0"/>
-            <plugin
+
+      <plugin
             id="org.apache.aries.proxy.api"
             download-size="0"
             install-size="0"
             version="0.0.0"/>
 
-            <plugin
+      <plugin
             id="org.apache.aries.util"
             download-size="0"
             install-size="0"

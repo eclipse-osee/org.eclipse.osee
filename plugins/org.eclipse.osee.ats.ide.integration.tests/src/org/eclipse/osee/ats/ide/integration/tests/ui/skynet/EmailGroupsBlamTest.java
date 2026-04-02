@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
@@ -88,29 +89,29 @@ public class EmailGroupsBlamTest {
       result = data.isValid();
       Assert.assertTrue(result.isTrue());
 
-      Artifact user = OseeApiService.userArt();
+      UserToken user = OseeApiService.user();
 
       String expectedBody = "Hello World\nNow is the time";
-      String htmlOut = data.getHtmlResult(user);
-      checkHtmlData(user, htmlOut, expectedBody);
+      String htmlOut = data.getHtmlResult(user.getName(), user.getId());
+      checkHtmlData(htmlOut, expectedBody);
 
       expectedBody = "<b>Hello World</b>";
       data.setBody(expectedBody);
       data.setBodyIsHtml(true);
-      htmlOut = data.getHtmlResult(user);
+      htmlOut = data.getHtmlResult(user.getName(), user.getId());
 
-      String firstPart = "<b>Hello World</b></br>Click <a href=\"";
-      checkHtmlData(user, htmlOut, firstPart);
+      String firstPart = "<b>Hello World</b><br/><br/><p>Click <a href=\"";
+      checkHtmlData(htmlOut, firstPart);
 
       String urlPart = "/unsubscribe/ui/";
-      checkHtmlData(user, htmlOut, urlPart);
+      checkHtmlData(htmlOut, urlPart);
 
       String endPart =
          String.format("unsubscribe</a> to stop receiving all emails for the topic <b>\"%s\"</b>", newGroup.getName());
-      checkHtmlData(user, htmlOut, endPart);
+      checkHtmlData(htmlOut, endPart);
    }
 
-   private void checkHtmlData(Artifact user, String htmlBody, String innerData) {
+   private void checkHtmlData(String htmlBody, String innerData) {
       String message = String.format("HtmlBody - [%s] did not contain [%s]", htmlBody, innerData);
       boolean result = htmlBody.contains(innerData);
       Assert.assertTrue(message, result);

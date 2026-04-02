@@ -112,7 +112,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       taskService.setTaskProviders(taskProviders);
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
-      notificationService = new AtsNotificationServiceImpl(this);
+      notificationService = new AtsNotificationServiceImpl(this, orcsApi);
 
       jiraService = new AtsJiraServiceImpl(this);
 
