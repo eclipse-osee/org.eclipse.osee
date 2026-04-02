@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -101,14 +101,14 @@ public class AgileTeamPointsColumnUI extends XViewerAtsCoreCodeXColumn {
          AWorkbench.popup("Can not determine Agile Team for %s", firstWf.toStringWithId());
          return false;
       }
-      AttributeTypeId attributeType = AtsApiService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
+      AttributeTypeToken attributeType = AtsApiService.get().getAgileService().getPointsAttrType(firstWf);
       if (attributeType == null) {
-         AWorkbench.popup("Can not determine Agile Team points attribute type for team %s", agileTeam.toStringWithId());
+         AWorkbench.popup("Can not determine points attribute type for wf %s", firstWf.toStringWithId());
          return false;
       }
 
-      if (AtsAttributeTypes.Points.equals(attributeType)) {
-         if (PromptChangeUtil.promptChangeAttributeWI(workItems, AtsAttributeTypes.Points, true)) {
+      if (AtsAttributeTypes.PointsEnum.equals(attributeType)) {
+         if (PromptChangeUtil.promptChangeAttributeWI(workItems, AtsAttributeTypes.PointsEnum, true)) {
             modified = true;
          }
       } else if (AtsAttributeTypes.PointsNumeric.equals(attributeType)) {

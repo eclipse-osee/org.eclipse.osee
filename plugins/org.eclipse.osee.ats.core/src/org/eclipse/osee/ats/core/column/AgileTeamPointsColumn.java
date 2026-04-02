@@ -34,7 +34,7 @@ public class AgileTeamPointsColumn extends AtsCoreCodeColumn {
    public String getText(IAtsObject atsObject) throws Exception {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
-         result = atsApi.getAgileService().getAgileTeamPointsStr((IAtsWorkItem) atsObject);
+         result = atsApi.getAgileService().getPointsStr((IAtsWorkItem) atsObject);
       }
       return result;
    }

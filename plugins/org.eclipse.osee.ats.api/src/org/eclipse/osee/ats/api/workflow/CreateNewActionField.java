@@ -28,7 +28,7 @@ public class CreateNewActionField {
    public static final CreateNewActionField TargetedVersion =
       new CreateNewActionField("Targeted Version", WidgetType.SELECT, "XTargetedVersionHyperlinkWidget");
    public static final CreateNewActionField Points =
-      new CreateNewActionField("Points", WidgetType.SELECT, "XHyperLinkEnumAttr", AtsAttributeTypes.Points);
+      new CreateNewActionField("Points", WidgetType.SELECT, "XHyperLinkEnumAttr", AtsAttributeTypes.PointsEnum);
    public static final CreateNewActionField UnplannedWork =
       new CreateNewActionField("Unplanned Work", WidgetType.BOOLEAN, "XBoolean", AtsAttributeTypes.UnplannedWork);
    public static final CreateNewActionField WorkPackage =

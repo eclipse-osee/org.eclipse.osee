@@ -214,7 +214,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Numeric2)
       .zeroOrOne(PeerReviewId)
       .zeroOrOne(PercentComplete)
-      .zeroOrOne(Points, Points.P_1)
+      .zeroOrOne(PointsEnum)
       .zeroOrOne(PointsNumeric)
       .zeroOrOne(ReleaseDate)
       .zeroOrOne(Resolution)
@@ -260,7 +260,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(OriginatingPcrId)
       .any(PcrId)
       .zeroOrOne(PercentRework)
-      .zeroOrOne(PointsAttributeType)
       .zeroOrOne(Priority)
       .zeroOrOne(Problem)
       .zeroOrOne(ProductLineApprovedBy)
@@ -369,8 +368,7 @@ public interface AtsArtifactTypes {
 
    ArtifactTypeToken AgileTeam = ats.add(ats.artifactType(7553778770333667393L, "Agile Team", false, new MaterialIcon("groups"), AtsConfigArtifact)
       .zeroOrOne(Description)
-      .zeroOrOne(KanbanIgnoreStates)
-      .zeroOrOne(PointsAttributeType));
+      .zeroOrOne(KanbanIgnoreStates));
 
    ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, new MaterialIcon("loop"), Goal)
       .any(Holiday)

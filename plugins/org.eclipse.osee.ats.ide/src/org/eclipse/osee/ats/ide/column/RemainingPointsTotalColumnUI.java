@@ -34,7 +34,7 @@ public class RemainingPointsTotalColumnUI extends AbstractNumericTotalColumnUI {
    private RemainingPointsTotalColumnUI() {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + ".remainingPointsTotal", "Remaining Points - Total",
          "Points that remain to complete the changes based on percent complete from workflow rollup.", CALCULATION_STR,
-         AtsAttributeTypes.Points);
+         AtsAttributeTypes.PointsEnum);
    }
 
    /**

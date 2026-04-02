@@ -197,7 +197,6 @@ public class AgileEndpointTest {
       Assert.assertEquals("SAW Agile Team", data.getAgileTeamName());
       Assert.assertEquals("SAW Sprint 2", data.getSprintName());
       Assert.assertEquals(2, data.getHolidays().size());
-      Assert.assertEquals("ats.Points", data.getPointsAttrTypeName());
       Assert.assertEquals(Integer.valueOf(200), data.getPlannedPoints());
       Assert.assertEquals(Integer.valueOf(45), data.getUnPlannedPoints());
       Assert.assertTrue(data.getDates().size() >= 19);
