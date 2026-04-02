@@ -105,7 +105,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       }
       if (certifyNoSensitiveDataCheckbox == null || !certifyNoSensitiveDataCheckbox.isChecked()) {
          AWorkbench.popup(
-            "You must certify that email subject lines do not contain Critical Technical Information, Finance, US Export - EAR, LR, US Export - ITAR, LR, Highly Sensitive PII, Regulated PII, US National Security Information, CUI, CDI, or SUI before sending.");
+            "You must certify that email subject lines do not contain " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " before sending.");
          return;
       }
       /**
@@ -267,12 +267,12 @@ public class EmailGroupsBlam extends AbstractBlam {
       wb.andXText("Subject").endWidget();
       wb.andXLabel("      - WARNING: Email subject lines are NOT encrypted.").endWidget();
       wb.andXLabel(
-         "      - Do NOT include Critical Technical Information, Finance, US Export - EAR, LR, US Export - ITAR, LR, Highly Sensitive PII, Regulated PII, US National Security Information, CUI, CDI, or SUI in the subject line.").endWidget();
+         "      - Do NOT include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " in the subject line.").endWidget();
       wb.andXText("Abridged Subject").endWidget();
       // @formatter:off
       wb.andXLabel("      - If an Abridged Subject is included, emails will be sent to users with potential external email.").endWidget();
       wb.andXLabel("      - Abridged Subject MUST be sanitized for general consumption and should give useful information.").endWidget();
-      wb.andXLabel("      - Abridged Subject is also NOT encrypted and must not include Critical Technical Information, Finance, US Export - EAR, LR, US Export - ITAR, LR, Highly Sensitive PII, Regulated PII, US National Security Information, CUI, CDI, or SUI.").endWidget();
+      wb.andXLabel("      - Abridged Subject is also NOT encrypted and must not include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + ".").endWidget();
       wb.andXLabel("      - NOTE: Email Body will NOT be included in these emails, just the Abridged Subject.").endWidget();
       wb.andXLabel("      - If no entry is given, NO abridged emails will be sent to users with Abridged Email set.").endWidget();
       // @formatter:on

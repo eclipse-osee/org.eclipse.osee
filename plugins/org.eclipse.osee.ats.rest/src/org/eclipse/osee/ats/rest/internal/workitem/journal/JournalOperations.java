@@ -113,7 +113,7 @@ public class JournalOperations {
                String abridgedEmail = atsApi.getUserService().getAbridgedEmail(user.getArtifactToken(), atsApi);
                if (EmailUtil.isEmailValid(abridgedEmail)) {
                   atsApi.getNotificationService().sendNotifications(fromEmail, Collections.singleton(abridgedEmail),
-                     getAbrigedSubject(), getAbridgedBody());
+                     getAbridgedSubject(), getAbridgedBody());
                }
             }
          }
@@ -123,7 +123,7 @@ public class JournalOperations {
       return journalData;
    }
 
-   private String getAbrigedSubject() {
+   private String getAbridgedSubject() {
       return String.format("Journal for \"%s\"", workItem.getAtsId());
    }
 

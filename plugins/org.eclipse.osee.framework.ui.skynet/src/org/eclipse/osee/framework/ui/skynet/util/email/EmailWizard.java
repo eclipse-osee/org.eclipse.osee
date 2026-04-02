@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
+import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**
@@ -34,7 +35,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
  */
 public class EmailWizard extends Wizard {
    private static final String SUBJECT_WARNING =
-      "Email subject lines are NOT encrypted.\n\nDo NOT include Critical Technical Information, Finance, US Export - EAR, LR, US Export - ITAR, LR, Highly Sensitive PII, Regulated PII, US National Security Information, CUI, CDI, or SUI in the Subject.\n\nDo you certify that the Subject does not contain restricted or sensitive data?";
+      "Email subject lines are NOT encrypted.\n\nDo NOT include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " in the Subject.\n\nDo you certify that the Subject does not contain restricted or sensitive data?";
 
    private EmailWizardPage wizardPage;
    private String htmlMessage = null;
