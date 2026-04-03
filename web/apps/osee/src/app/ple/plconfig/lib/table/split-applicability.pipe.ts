@@ -22,6 +22,9 @@ export class SplitApplicabilityPipe implements PipeTransform {
 		if (value.includes('|') || value.includes('&')) {
 			return "Included"; // Return Included if a compound applicability
 		}
+		if (!value || value == '') {
+			return "Excluded";
+		}
 		const parts = value.split(/\s?=\s?/);
 		return parts.length > 1 ? parts[1] : value;
 	}

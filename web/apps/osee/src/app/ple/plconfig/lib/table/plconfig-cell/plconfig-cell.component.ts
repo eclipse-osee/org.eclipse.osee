@@ -109,10 +109,7 @@ export class PlconfigCellComponent {
 			return pipe.transform(x.name);
 		})
 	);
-	protected value = computed(() => {
-		const name = this.applicability().name;
-		return name && name.trim() !== '' ? name : 'Excluded';
-	});
+	protected value = computed(() => this.applicability().name);
 	protected multiValued = computed(() => {
 		if (this.feature().id === '-1') {
 			return false;
