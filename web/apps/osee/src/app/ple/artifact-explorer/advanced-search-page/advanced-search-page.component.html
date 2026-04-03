@@ -397,7 +397,7 @@
             type="button"
             class="primary-button tw-flex tw-items-center tw-gap-2"
             (click)="onMassEdit()"
-            [disabled]="searchResultsSig().length === 0 || !hasSelectedRows()">
+            [disabled]="searchResultsSig().length === 0 || !hasSingleSelectedArtifactType()">
             <mat-icon>edit</mat-icon>
             Mass Edit
             <span *ngIf="hasSelectedRows()">({{ selectedRowCount() }})</span>
