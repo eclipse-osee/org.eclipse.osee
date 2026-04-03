@@ -72,7 +72,7 @@ public class TestOseeEmailSend extends XNavigateItemAction {
          XResultDataUI.errorf(TITLE, "User email [%s] is invalid", user);
          return;
       }
-      rd.log("1. A basic \"Hello World\" emails should be sent from the server.\n\n");
+      rd.log("1. A basic \"Hello World\" email should be sent from the server.\n\n");
 
       rd.log("2. If Abridged Email attribute is set on your user artifact, another " //
          + "email should be sent from the server with only basic information " //
