@@ -383,23 +383,15 @@ type SavedSearch = {
 				background-color: rgba(59, 130, 246, 0.1) !important;
 			}
 		`,
-
 		`
-			:host-context(.dark) .mat-mdc-text-field-wrapper {
-				background-color: transparent !important;
-			}
-
-			:host-context(.dark) .mat-mdc-form-field-focus-overlay {
-				background-color: transparent !important;
-			}
-
-			:host-context(.dark) input.mat-mdc-input-element {
-				background-color: transparent !important;
-				color: white !important;
-			}
-
-			:host-context(.dark) .mdc-text-field--filled {
-				background-color: #1e293b !important;
+			input:-webkit-autofill,
+			input:-webkit-autofill:hover,
+			input:-webkit-autofill:focus,
+			input:-webkit-autofill:active {
+				-webkit-box-shadow: 0 0 0 1000px #46464e inset !important;
+				-webkit-text-fill-color: #f8fafc !important;
+				caret-color: #f8fafc;
+				transition: background-color 5000s ease-in-out 0s;
 			}
 		`,
 	],
