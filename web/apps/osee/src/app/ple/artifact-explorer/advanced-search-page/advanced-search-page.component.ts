@@ -827,6 +827,29 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 248 - Prevent mixed artifact type selection in Mass Edit
+	 *
+	 * Mass Edit is only allowed when all selected Search Results rows are the
+	 * same artifact type.
+	 */
+	hasSingleSelectedArtifactType(): boolean {
+		const selectedRows = this.getSelectedRows();
+
+		if (selectedRows.length === 0) {
+			return false;
+		}
+
+		const selectedTypes = new Set(
+			selectedRows
+				.map((row) => String(row.type || '').trim())
+				.filter(Boolean)
+		);
+
+		return selectedTypes.size === 1;
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 208 - Implement backend mass update endpoint integration
 	 * Mass Edit requires selected artifacts to be the same artifact type.
 	 */
