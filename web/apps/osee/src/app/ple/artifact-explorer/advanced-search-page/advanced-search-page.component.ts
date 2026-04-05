@@ -388,10 +388,22 @@ type SavedSearch = {
 			input:-webkit-autofill:hover,
 			input:-webkit-autofill:focus,
 			input:-webkit-autofill:active {
-				-webkit-box-shadow: 0 0 0 1000px #46464e inset !important;
-				-webkit-text-fill-color: #f8fafc !important;
-				caret-color: #f8fafc;
+				-webkit-box-shadow: 0 0 0 1000px #e2e2ea inset !important;
+				-webkit-text-fill-color: #000000 !important;
+				caret-color: #000000;
 				transition: background-color 5000s ease-in-out 0s;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				input:-webkit-autofill,
+				input:-webkit-autofill:hover,
+				input:-webkit-autofill:focus,
+				input:-webkit-autofill:active {
+					-webkit-box-shadow: 0 0 0 1000px #46464e inset !important;
+					-webkit-text-fill-color: #f8fafc !important;
+					caret-color: #f8fafc;
+					transition: background-color 5000s ease-in-out 0s;
+				}
 			}
 		`,
 	],
