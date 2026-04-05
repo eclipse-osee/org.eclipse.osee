@@ -260,11 +260,22 @@
 			    		</mat-select>
 			    	</mat-form-field>
 			    </div>
-			    <input matInput placeholder="Search attributes..." name="attributeSearch" [ngModel]="attributeSearch()" (ngModelChange)="attributeSearch.set($event)" (click)="$event.stopPropagation()" />
+			    <mat-form-field class="tw-w-full" (click)="$event.stopPropagation()">
+			    	<input matInput placeholder="Search attributes..." name="attributeSearch" [ngModel]="attributeSearch()" (ngModelChange)="attributeSearch.set($event)" (click)="$event.stopPropagation()" />
+	          			<button
+	            			*ngIf="attributeSearch()?.length"
+	            			matSuffix
+	            			mat-icon-button
+	            			aria-label="Clear attribute search"
+	            			type="button"
+	            			(click)="clearAttributeSearch()">
+	            			<mat-icon>close</mat-icon>
+	          			</button>
+          		</mat-form-field>
 			    <mat-checkbox *ngFor="let col of filteredAttributeColumns()" [checked]="col.visible" (click)="$event.stopPropagation(); onAttributeColumnToggle(col)">
 			    	{{ col.label }}
 			    </mat-checkbox>
-			    <div *ngIf="attributeSearch().length > 0 && filteredAttributeColumns().length === 0" class="tw-text-xs tw-px-2 tw-py-2">
+			    <div *ngIf="attributeSearch().length > 0 && filteredAttributeColumns().length === 0" class="tw-text-xs tw-px-2 tw-py-2 tw-text-gray-500">
 			    	No results for "{{ attributeSearch() }}"
 			    </div>
 		    </div>
