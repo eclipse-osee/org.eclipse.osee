@@ -10,10 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, WritableSignal, signal, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Injectable, inject, linkedSignal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
-import { map } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
@@ -21,22 +20,23 @@ import { map } from 'rxjs';
 export class ArtifactHierarchyArtifactsExpandedService {
 	private uiService = inject(UiService);
 
-	private artifactsExpandedStructArray: WritableSignal<
+	private _id = toSignal(this.uiService.id);
+
+	private artifactsExpandedStructArray = linkedSignal<
+		string | undefined,
 		artifactsExpandedStruct[]
-	> = signal([]);
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		// Clearing the artifactsExpandedStructArray when the branch id changes
-		this.uiService.id
-			.pipe(
-				map(() => this.clear()),
-				takeUntilDestroyed()
-			)
-			.subscribe();
-	}
+	>({
+		source: this._id,
+		computation: (updatedId, previous) => {
+			if (previous === undefined) {
+				return [];
+			}
+			if (updatedId === undefined) {
+				return previous.value;
+			}
+			return [];
+		},
+	});
 
 	setArtifactsExpandedStructArray(artifactArray: artifactsExpandedStruct[]) {
 		this.artifactsExpandedStructArray.set([...artifactArray]);

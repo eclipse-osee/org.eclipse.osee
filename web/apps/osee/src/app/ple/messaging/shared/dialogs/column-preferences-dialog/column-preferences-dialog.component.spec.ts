@@ -136,10 +136,10 @@ describe('ColumnPreferencesDialogComponent', () => {
 				MatButtonHarness.with({ text: 'Reset to Defaults' })
 			)
 		).click();
-		expect(component.data.allowedHeaders1).toEqual(
+		expect(component.result().allowedHeaders1).toEqual(
 			defaultEditStructureProfile
 		);
-		expect(component.data.allowedHeaders2).toEqual(
+		expect(component.result().allowedHeaders2).toEqual(
 			defaultEditElementProfile
 		);
 	});
@@ -151,10 +151,10 @@ describe('ColumnPreferencesDialogComponent', () => {
 				MatButtonHarness.with({ text: 'Reset to Defaults' })
 			)
 		).click();
-		expect(component.data.allowedHeaders1).toEqual(
+		expect(component.result().allowedHeaders1).toEqual(
 			defaultViewStructureProfile
 		);
-		expect(component.data.allowedHeaders2).toEqual(
+		expect(component.result().allowedHeaders2).toEqual(
 			defaultViewElementProfile
 		);
 	});

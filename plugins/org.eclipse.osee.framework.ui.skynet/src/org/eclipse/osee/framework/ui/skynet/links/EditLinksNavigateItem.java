@@ -37,6 +37,7 @@ import org.eclipse.osee.account.rest.model.Link;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.program.Program;
 
@@ -61,7 +61,7 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
    private boolean addedListener = false;
 
    public EditLinksNavigateItem(boolean global) {
-      super("Edit " + (global ? "Global" : "Personal") + " Links", FrameworkImage.EDIT, AddNewLinkNavigateItem.LINKS);
+      super("Edit " + (global ? "Global" : "Personal") + " Links", CoreImage.EDIT, AddNewLinkNavigateItem.LINKS);
       this.global = global;
    }
 

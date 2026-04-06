@@ -136,7 +136,7 @@ public class SprintUtil {
       item.setAtsId(workItem.getAtsId());
       item.setState(aItem.getCurrentStateName());
       item.setChangeType(atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.ChangeType, ""));
-      item.setAgilePoints(atsApi.getAgileService().getAgileTeamPointsStr(workItem));
+      item.setAgilePoints(atsApi.getAgileService().getPointsStr(workItem));
       IAtsVersion ver = atsApi.getVersionService().getTargetedVersion(workItem);
       item.setVersion(ver == null ? "" : ver.getName());
       Boolean unplanned =

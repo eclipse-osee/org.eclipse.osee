@@ -105,9 +105,9 @@ public class EmailGroupsData {
       return Result.TrueResult;
    }
 
-   public String getHtmlResult(Artifact user) {
+   public String getHtmlResult(String userName, Long userId) {
       StringBuilder html = new StringBuilder();
-      String customizedBody = getCustomizedBody(body, user);
+      String customizedBody = getCustomizedBody(body, userName);
 
       if (bodyIsHtml) {
          html.append(customizedBody);
@@ -123,7 +123,12 @@ public class EmailGroupsData {
       }
 
       AccountClient client = ServiceUtil.getAccountClient();
-      ResultSet<UnsubscribeInfo> results = client.getUnsubscribeUris(user.getId(), groupsAllowed);
+      ResultSet<UnsubscribeInfo> results = client.getUnsubscribeUris(userId, groupsAllowed);
+
+      if (!results.isEmpty()) {
+         html.append("<br/><br/>");
+      }
+
       for (UnsubscribeInfo entry : results) {
          String subscriptionName = entry.getName();
          URI unsubscribeUri = entry.getUnsubscribeUri();
@@ -133,16 +138,17 @@ public class EmailGroupsData {
    }
 
    private void writeUnsubscribeSection(StringBuilder html, String subscriptionName, String unsubscribeUri) {
-      html.append("</br>Click <a href=\"");
+      html.append("<p>");
+      html.append("Click <a href=\"");
       html.append(unsubscribeUri);
       html.append("\">unsubscribe</a> to stop receiving all emails for the topic <b>\"");
       html.append(subscriptionName);
       html.append("\"</b>");
+      html.append("</p>");
    }
 
-   private String getCustomizedBody(String bodyTemplate, Artifact user) {
-      String fullName = user.getName();
-      String firstName = fullName.replaceAll("[^,]+, ([^ ]+).*", "$1");
+   private String getCustomizedBody(String bodyTemplate, String userName) {
+      String firstName = userName.replaceAll("[^,]+, ([^ ]+).*", "$1");
       return bodyTemplate.replace("<firstName/>", firstName);
    }
 

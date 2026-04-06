@@ -16,9 +16,9 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.core.data.OseeClient;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
@@ -32,7 +32,7 @@ public final class ArtifactValidityReportAction extends Action {
    public ArtifactValidityReportAction(Artifact artifact) {
       super();
       this.artifact = artifact;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.CHECKBOX_CHECK_TRUE));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.CHECKBOX_CHECK_TRUE));
       setText("Artifact &Validity Report");
       setToolTipText("Run validity checks on this artifact in the database.");
    }

@@ -48,7 +48,6 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -263,18 +262,6 @@ public class ImportActionsOperation {
                rd.errorf("Invalid sprint name [%s] for team [%s]\n", aData.agileSprintName, aData.agileTeamName);
             }
          }
-
-         if (Strings.isValid(aData.agilePoints)) {
-            IAgileTeam aTeam = getAgileTeamByName(aData.agileTeamName);
-            if (aTeam == null) {
-               rd.errorf("Invalid team name [%s] for points [%s]\n", aData.agileTeamName, aData.agilePoints);
-            } else {
-               AttributeTypeId pointsAttrType = atsApi.getAgileService().getAgileTeamPointsAttributeType(aTeam);
-               if (pointsAttrType == null) {
-                  rd.errorf("Points not configured for team [%s]\n", aData.agileTeamName);
-               }
-            }
-         }
       }
    }
 
@@ -479,15 +466,7 @@ public class ImportActionsOperation {
 
       // If Agile points, add points to workflow
       if (Strings.isValid(aData.agilePoints)) {
-         IAgileTeam aTeam = getAgileTeamByName(aData.agileTeamName);
-         AttributeTypeToken attrType = atsApi.getAgileService().getAgileTeamPointsAttributeType(aTeam);
-         if (attrType.getId().equals(AtsAttributeTypes.Points.getId())) {
-            data.andAttr(attrType, aData.agilePoints);
-         } else if (attrType.getId().equals(AtsAttributeTypes.PointsNumeric.getId())) {
-            data.andAttr(attrType, aData.agilePoints);
-         } else {
-            throw new OseeArgumentException("Un-configured pointes types for team %s", aData);
-         }
+         data.setPoints(aData.agilePoints);
       }
    }
 

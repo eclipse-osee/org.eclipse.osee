@@ -16,10 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -33,7 +33,7 @@ public class OpenChangeReportByTransactionIdAction extends Action {
       super(NAME, IAction.AS_PUSH_BUTTON);
       setId("open.by.transaction.id");
       setToolTipText(NAME);
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.OPEN));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.OPEN));
    }
 
    @Override

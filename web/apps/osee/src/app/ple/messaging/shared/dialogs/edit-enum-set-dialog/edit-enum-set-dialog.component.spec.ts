@@ -163,7 +163,11 @@ describe('EditEnumSetDialogComponent', () => {
 	});
 
 	it('should close the dialog', async () => {
-		const dialogRefClosure = spyOn(component.dialogRef, 'close').and.stub();
+		const dialogRefClosure = vi
+			.spyOn(component.dialogRef, 'close')
+			.mockImplementation(() => {
+				return;
+			});
 		const button = await loader.getHarness(
 			MatButtonHarness.with({ text: 'Cancel' })
 		);

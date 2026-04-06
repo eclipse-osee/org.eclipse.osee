@@ -13,10 +13,13 @@
 package org.eclipse.osee.orcs.rest.internal.user;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.mail.Message;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.EmailRecipientInfo;
 import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.UserTokens;
@@ -24,6 +27,10 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.util.IOseeEmail;
+import org.eclipse.osee.framework.core.util.SendEmailRequest;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.UserEndpoint;
 import org.eclipse.osee.orcs.utility.EmailCertificateService;
@@ -81,4 +88,32 @@ public class UserEndpointImpl implements UserEndpoint {
    public void deletePublicCertificate() {
       emailCertificateService.deletePublicCertificateForCurrentUser();
    }
+
+   @Override
+   public List<EmailRecipientInfo> getPublicCertificatesByEmailAddresses(Collection<String> emailAddresses) {
+      return emailCertificateService.getPublicCertificatesByEmailAddresses(emailAddresses);
+   }
+
+   @Override
+   public XResultData sendEmail(SendEmailRequest request) {
+      XResultData rd = new XResultData();
+      try {
+         IOseeEmail emailMessage = orcsApi.getEmailService().create(request.getToAddresses(), request.getFromAddress(),
+            request.getReplyToAddress(), request.getSubject(), request.getBody(), request.getBodyType(),
+            request.getEmailAddressesAbridged(), request.getSubjectAbridged(), request.getBodyAbridged());
+
+         if (request.getCcAddresses() != null && !request.getCcAddresses().isEmpty()) {
+            emailMessage.setRecipients(Message.RecipientType.CC, request.getCcAddresses().toArray(new String[0]));
+         }
+         if (request.getBccAddresses() != null && !request.getBccAddresses().isEmpty()) {
+            emailMessage.setRecipients(Message.RecipientType.BCC, request.getBccAddresses().toArray(new String[0]));
+         }
+
+         emailMessage.send(rd);
+      } catch (Exception ex) {
+         rd.error(Lib.exceptionToString(ex));
+      }
+      return rd;
+   }
+
 }

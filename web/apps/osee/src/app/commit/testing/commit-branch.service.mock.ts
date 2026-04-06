@@ -11,10 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommitBranchService } from '@osee/commit/services';
-import { of } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { mergeDataMock } from './commit-branch.mock';
 import { testCommitResponse } from '@osee/shared/testing';
 
+const mergeData = new BehaviorSubject(true);
 export const commitBranchServiceMock: Partial<CommitBranchService> = {
 	getMergeData(branchId: string) {
 		return of(mergeDataMock);
@@ -31,5 +32,8 @@ export const commitBranchServiceMock: Partial<CommitBranchService> = {
 	},
 	commitBranch(branchId, parentBranchId) {
 		return of(testCommitResponse);
+	},
+	get updatedMergeData() {
+		return mergeData as Subject<unknown>;
 	},
 };

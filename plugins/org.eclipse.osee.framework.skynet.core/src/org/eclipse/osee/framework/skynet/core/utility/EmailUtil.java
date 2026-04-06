@@ -30,6 +30,9 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class EmailUtil {
 
+   public static final String SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS =
+      "Critical Technical Information, Finance, US Export - EAR, LR, US Export - ITAR, LR, Highly Sensitive PII, Regulated PII, US National Security Information, CUI, CDI, or SUI";
+
    private static Pattern addressPattern = Pattern.compile(".+?@.+?\\.[a-z]+");
 
    public static boolean isEmailValid(String email) {

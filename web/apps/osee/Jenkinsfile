@@ -72,7 +72,7 @@ spec:
     stage('Run tests') {
       steps {
         container('node') {
-          sh 'corepack pnpm -r run test --browsers=ChromeHeadlessNoSandbox --watch=false'
+          sh 'corepack pnpm -r run test --watch=false'
         }
       }
     }

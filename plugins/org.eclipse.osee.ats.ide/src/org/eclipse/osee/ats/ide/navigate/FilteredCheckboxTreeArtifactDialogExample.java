@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTreeChildrenContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeA
 public class FilteredCheckboxTreeArtifactDialogExample extends XNavigateItemAction {
 
    public FilteredCheckboxTreeArtifactDialogExample() {
-      super("FilteredCheckboxTreeArtifactDialog Example", FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
+      super("FilteredCheckboxTreeArtifactDialog Example", CoreImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override

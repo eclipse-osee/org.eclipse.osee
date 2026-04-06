@@ -17,11 +17,11 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Font;
@@ -165,9 +165,9 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
             } else if (dCol.equals(MergeXViewerFactory.Change_Item)) {
                return ArtifactImageManager.getConflictImage(conflict);
             } else if (dCol.equals(MergeXViewerFactory.Source)) {
-               return ImageManager.getImage(FrameworkImage.MERGE_SOURCE);
+               return ImageManager.getImage(CoreImage.MERGE_SOURCE);
             } else if (dCol.equals(MergeXViewerFactory.Destination)) {
-               return ImageManager.getImage(FrameworkImage.MERGE_DEST);
+               return ImageManager.getImage(CoreImage.MERGE_DEST);
             } else if (dCol.equals(MergeXViewerFactory.Merged)) {
                return getMergeImage(conflict);
             } else if (dCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
@@ -176,25 +176,25 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
                   return null;
                }
                if (status.isEdited()) {
-                  return ImageManager.getImage(FrameworkImage.MERGE_EDITED);
+                  return ImageManager.getImage(CoreImage.MERGE_EDITED);
                }
                if (status.isResolved() || status.isCommitted()) {
-                  return ImageManager.getImage(FrameworkImage.MERGE_MARKED);
+                  return ImageManager.getImage(CoreImage.MERGE_MARKED);
                }
                if (status.isOutOfDate()) {
-                  return ImageManager.getImage(FrameworkImage.MERGE_OUT_OF_DATE);
+                  return ImageManager.getImage(CoreImage.MERGE_OUT_OF_DATE);
                }
                if (status.isOutOfDateCommitted()) {
-                  return ImageManager.getImage(FrameworkImage.MERGE_OUT_OF_DATE_COMMITTED);
+                  return ImageManager.getImage(CoreImage.MERGE_OUT_OF_DATE_COMMITTED);
                }
                if (status.isPreviousMergeSuccessfullyApplied()) {
-                  return ImageManager.getImage(FrameworkImage.MERGE_SUCCESS);
+                  return ImageManager.getImage(CoreImage.MERGE_SUCCESS);
                }
                if (status.isPreviousMergeAppliedWithCaution()) {
-                  return ImageManager.getImage(FrameworkImage.MERGE_CAUTION);
+                  return ImageManager.getImage(CoreImage.MERGE_CAUTION);
                }
                if (status.isInformational()) {
-                  return ImageManager.getImage(FrameworkImage.MERGE_INFO);
+                  return ImageManager.getImage(CoreImage.MERGE_INFO);
                }
             }
          } catch (Exception ex) {
@@ -210,18 +210,18 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
          return null;
       }
       if (conflict.sourceEqualsDestination() && conflict.mergeEqualsSource()) {
-         return ImageManager.getImage(FrameworkImage.MERGE_NO_CONFLICT);
+         return ImageManager.getImage(CoreImage.MERGE_NO_CONFLICT);
       }
       if (status.isUntouched()) {
-         return ImageManager.getImage(FrameworkImage.MERGE_START);
+         return ImageManager.getImage(CoreImage.MERGE_START);
       }
       if (conflict.mergeEqualsDestination()) {
-         return ImageManager.getImage(FrameworkImage.MERGE_DEST);
+         return ImageManager.getImage(CoreImage.MERGE_DEST);
       }
       if (conflict.mergeEqualsSource()) {
-         return ImageManager.getImage(FrameworkImage.MERGE_SOURCE);
+         return ImageManager.getImage(CoreImage.MERGE_SOURCE);
       } else {
-         return ImageManager.getImage(FrameworkImage.MERGE_MERGED);
+         return ImageManager.getImage(CoreImage.MERGE_MERGED);
       }
    }
 

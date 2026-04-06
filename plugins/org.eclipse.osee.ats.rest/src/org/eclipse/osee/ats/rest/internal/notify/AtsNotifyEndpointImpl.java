@@ -18,20 +18,23 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.notify.TestEmail;
-import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.IOseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
    private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
 
-   public AtsNotifyEndpointImpl(AtsApi atsApi) {
+   public AtsNotifyEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -47,8 +50,8 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
       XResultData rd = new XResultData();
       rd.log("Send Test Email - Server");
       try {
-         OseeEmail emailMessage = OseeEmailServer.create(Arrays.asList(testEmail.getEmail()), testEmail.getEmail(),
-            testEmail.getEmail(), testEmail.getSubject(),
+         IOseeEmail emailMessage = orcsApi.getEmailService().create(Arrays.asList(testEmail.getEmail()),
+            testEmail.getEmail(), testEmail.getEmail(), testEmail.getSubject(),
             AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html,
             Arrays.asList(testEmail.getEmail()), "Abridged - " + testEmail.getSubject(), "This is the abridged body");
          emailMessage.send(rd);
@@ -57,4 +60,5 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
       }
       return rd;
    }
+
 }

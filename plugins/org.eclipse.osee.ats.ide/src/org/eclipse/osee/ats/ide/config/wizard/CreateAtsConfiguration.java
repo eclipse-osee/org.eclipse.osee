@@ -18,15 +18,15 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class CreateAtsConfiguration extends XNavigateItem {
 
    public CreateAtsConfiguration() {
-      super("Create ATS Configuration", FrameworkImage.GEAR, AtsNavigateViewItems.ATS_ADMIN);
+      super("Create ATS Configuration", CoreImage.GEAR, AtsNavigateViewItems.ATS_ADMIN);
    }
 
    @Override

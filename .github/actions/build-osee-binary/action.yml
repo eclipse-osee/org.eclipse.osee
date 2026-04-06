@@ -1,45 +1,45 @@
 name: Build OSEE Binary
-description: 'This action builds the osee binary the using supplied configuration inputs.'
+description: "This action builds the osee binary the using supplied configuration inputs."
 inputs:
   ANGULAR_BUILD_TYPE:
-    description: 'The type of angular build to run.'
+    description: "The type of angular build to run."
     required: false
-    default: 'forced_sso_java_release'
+    default: "forced_sso_java_release"
   BUILD_ALIAS:
-    description: 'The build alias applied to OSEE build.'
+    description: "The build alias applied to OSEE build."
     required: false
-    default: '-TEMP'
+    default: "-TEMP"
   OSEE_VERSION:
-    description: 'The version applied to the OSEE build.'
+    description: "The version applied to the OSEE build."
     required: false
-    default: 'no_update'
+    default: "no_update"
   SKIP_ANGULAR_BUILD:
-    description: 'Whether or not to skip the OSEE Angular build.'
+    description: "Whether or not to skip the OSEE Angular build."
     required: false
-    default: 'false'
+    default: "false"
   SKIP_ANGULAR_TESTS:
-    description: 'Whether or not to skip the OSEE Angular tests.'
+    description: "Whether or not to skip the OSEE Angular tests."
     required: false
-    default: 'false'
+    default: "false"
   RUN_ANGULAR_STATIC_ANALYSIS:
-    description: 'Whether or not to run the OSEE Angular static analysis like linting and formatting.'
+    description: "Whether or not to run the OSEE Angular static analysis like linting and formatting."
     required: false
-    default: 'false'
+    default: "false"
   SKIP_JAVA_BUILD:
-    description: 'Whether or not to skip the OSEE Java build.'
+    description: "Whether or not to skip the OSEE Java build."
     required: false
-    default: 'false'
+    default: "false"
   SKIP_JAVA_TESTS:
-    description: 'Whether or not to skip the OSEE Java tests.'
+    description: "Whether or not to skip the OSEE Java tests."
     required: false
-    default: 'false'
+    default: "false"
   SKIP_PRODUCT_BUILD:
-    description: 'Whether or not to skip the OSEE product build.'
+    description: "Whether or not to skip the OSEE product build."
     required: false
-    default: 'false'
+    default: "false"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Set Environment Variables
       shell: bash
@@ -176,7 +176,7 @@ runs:
       shell: bash
       run: |
         : Osee Web Testing
-        pnpm -r run test --browsers=ChromeHeadlessNoSandbox --watch=false
+        pnpm -r run test --watch=false
 
     - name: Set Angular Build Information
       if: inputs.SKIP_ANGULAR_BUILD == 'false'

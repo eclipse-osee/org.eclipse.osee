@@ -294,4 +294,4 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.osgi.service.component.annotations,
  org.osgi.service.event,
  org.osgi.service.prefs
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21

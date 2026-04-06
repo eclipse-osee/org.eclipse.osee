@@ -48,7 +48,7 @@ describe('LayoutNotifierService', () => {
 			}))
 	);
 	beforeEach(() => {
-		spyOnProperty(window, 'innerWidth').and.returnValue(1921);
+		vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(1921);
 	});
 	it('should be created', () => {
 		expect(service).toBeTruthy();

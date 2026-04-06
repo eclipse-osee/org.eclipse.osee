@@ -23,10 +23,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.action.ArtTypeWalkerLayoutAction;
@@ -167,7 +167,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
       };
       openTypeAction.setText("Select Artifact Type");
       openTypeAction.setToolTipText("Select Artifact Type");
-      openTypeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.LASER));
+      openTypeAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.LASER));
       tbm.add(openTypeAction);
 
       /**
@@ -183,7 +183,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
          }
       };
       singleLevelAction.setText("Show One Level");
-      singleLevelAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.LINK));
+      singleLevelAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.LINK));
       tbm.add(singleLevelAction);
 
       tbm.add(new ArtTypeWalkerLayoutAction(this));
@@ -196,7 +196,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
       };
       refreshAction.setText("Reset");
       refreshAction.setToolTipText("Reset");
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.UNDO));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.UNDO));
       tbm.add(refreshAction);
    }
 

@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs;
 import java.lang.ref.WeakReference;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApi;
+import org.eclipse.osee.framework.core.util.IOseeEmailService;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -72,5 +73,7 @@ public interface OrcsApi extends OseeApi {
     */
 
    WeakReference<ResourcesOperations> getResourcesOperations();
+
+   IOseeEmailService getEmailService();
 
 }

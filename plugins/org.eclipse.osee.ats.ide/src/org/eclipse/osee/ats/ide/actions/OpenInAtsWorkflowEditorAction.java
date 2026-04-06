@@ -16,8 +16,8 @@ package org.eclipse.osee.ats.ide.actions;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -46,7 +46,7 @@ public class OpenInAtsWorkflowEditorAction extends AbstractAtsAction {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.WORKFLOW);
+      return ImageManager.getImageDescriptor(CoreImage.WORKFLOW);
    }
 
 }

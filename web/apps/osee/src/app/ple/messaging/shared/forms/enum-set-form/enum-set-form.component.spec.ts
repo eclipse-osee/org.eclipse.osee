@@ -38,7 +38,7 @@ import { EnumSetFormComponent } from './enum-set-form.component';
 	imports: [FormsModule, EnumSetFormComponent],
 	template: `<form #testForm="ngForm">
 		<osee-enum-set-form
-			[bitSize]="32"
+			bitSize="32"
 			[(enumSet)]="enumSet"></osee-enum-set-form>
 	</form>`,
 })
@@ -47,7 +47,8 @@ class ParentDriverComponent implements AfterViewInit {
 		const _val = 0; //do nothing
 	}
 	enumSet = signal(enumerationSetMock[0]);
-	@ViewChild(EnumSetFormComponent) enumsetForm!: EnumSetFormComponent;
+	@ViewChild(EnumSetFormComponent)
+	enumsetForm!: EnumSetFormComponent;
 }
 
 describe('EnumSetFormComponent', () => {

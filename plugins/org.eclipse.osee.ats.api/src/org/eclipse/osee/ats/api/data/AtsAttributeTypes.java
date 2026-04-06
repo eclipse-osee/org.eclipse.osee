@@ -14,13 +14,7 @@
 package org.eclipse.osee.ats.api.data;
 
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.Config;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.Edit;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.Read;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.SignByDate;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.SignByUser;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.UserArtId;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.UserUserId;
+import static org.eclipse.osee.ats.api.config.AtsDisplayHint.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.framework.core.data.AttributeTypeToken.TEXT_CALENDAR;
 import static org.eclipse.osee.framework.core.data.DisplayHint.MultiLine;
@@ -31,7 +25,6 @@ import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeTyp
 import org.eclipse.osee.ats.api.data.enums.token.BitStateEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.CancelledReasonEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ClosureStateAttributeType;
-import org.eclipse.osee.ats.api.data.enums.token.PointAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewBlocksAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewFormalTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.RiskAnalysisAttributeType;
@@ -188,8 +181,7 @@ public interface AtsAttributeTypes {
    AttributeTypeInteger PercentComplete = ats.createInteger(1152921504606847183L, "ats.Percent Complete", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger PercentRework = ats.createInteger(1152921504606847189L, "ats.Percent Rework", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger PlannedPoints = ats.createInteger(232851836925913430L, "ats.Planned Points", TEXT_PLAIN, "", Edit);
-   PointAttributeType Points = ats.createEnum(new PointAttributeType(), Edit);
-   AttributeTypeString PointsAttributeType = ats.createString(1152921573057888257L, "ats.Points Attribute Type", TEXT_PLAIN, "Used to store the agile points type name (ats.Points or ats.Points Numeric).", Edit);
+   AttributeTypeString PointsEnum = ats.createString(1152921504606847178L, "ats.Points", TEXT_PLAIN, "",Edit);
    AttributeTypeDouble PointsNumeric = ats.createDouble(1728793301637070003L, "ats.Points Numeric", TEXT_PLAIN, "Abstract value that describes risk, complexity, and size of Actions as float.", DisplayHint.SingleLine, Edit);
    AttributeTypeString Priority = ats.createString(1152921504606847179L, "ats.Priority", TEXT_PLAIN, "", Edit);
    AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", TEXT_PLAIN, "Problem found during analysis.", MultiLine, Edit);

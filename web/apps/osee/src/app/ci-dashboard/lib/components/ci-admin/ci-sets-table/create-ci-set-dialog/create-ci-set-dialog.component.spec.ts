@@ -19,7 +19,9 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 describe('CreateCiSetDialogComponent', () => {
 	let component: CreateCiSetDialogComponent;
 	let fixture: ComponentFixture<CreateCiSetDialogComponent>;
-	const dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+	const dialogRef = {
+		close: vi.fn().mockName('MatDialogRef.close'),
+	};
 	const dialogData: CISet = {
 		...CISetSentinel,
 		name: {

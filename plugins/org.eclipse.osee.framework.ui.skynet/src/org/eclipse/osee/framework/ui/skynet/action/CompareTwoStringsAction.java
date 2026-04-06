@@ -15,9 +15,9 @@ package org.eclipse.osee.framework.ui.skynet.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -61,7 +61,7 @@ public class CompareTwoStringsAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.EDIT);
+      return ImageManager.getImageDescriptor(CoreImage.EDIT);
    }
 
 }

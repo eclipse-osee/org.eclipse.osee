@@ -15,10 +15,10 @@ package org.eclipse.osee.framework.ui.skynet.mdeditor;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.Adaptable;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IEditorInput;
@@ -42,7 +42,7 @@ public class OseeMarkdownEditorInput implements IEditorInput, Adaptable {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.OSEE_MARKDOWN_EDIT);
+      return ImageManager.getImageDescriptor(CoreImage.OSEE_MARKDOWN_EDIT);
    }
 
    @Override

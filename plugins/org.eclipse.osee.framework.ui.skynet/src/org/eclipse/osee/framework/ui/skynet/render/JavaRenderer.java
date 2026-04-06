@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FindInWorkspaceOperation;
 import org.eclipse.osee.framework.ui.skynet.FindInWorkspaceOperation.FindInWorkspaceCollector;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
@@ -265,6 +265,6 @@ public class JavaRenderer extends FileSystemRenderer {
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
       commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, JavaRenderer.RENDERER_NAME,
-         FrameworkImage.JAVA_COMPILATION_UNIT));
+         CoreImage.JAVA_COMPILATION_UNIT));
    }
 }

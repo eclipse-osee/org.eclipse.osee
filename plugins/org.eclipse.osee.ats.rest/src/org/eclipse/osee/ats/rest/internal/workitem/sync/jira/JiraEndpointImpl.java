@@ -56,12 +56,6 @@ public class JiraEndpointImpl implements JiraEndpoint {
    }
 
    @Override
-   public String deleteJiraIssue(String issueId) {
-      String urlExtension = JIRA_ISSUE + "/" + issueId;
-      return sendJiraRequest("", urlExtension, "DELETE");
-   }
-
-   @Override
    public String createJiraIssue(String jsonPayload) {
       return sendJiraRequest(jsonPayload, JIRA_ISSUE, "POST");
    }
@@ -82,6 +76,18 @@ public class JiraEndpointImpl implements JiraEndpoint {
    public String createJiraIssueLink(String jsonPayload) {
       String urlExtension = JIRA_ISSUE_LINK;
       return sendJiraRequest(jsonPayload, urlExtension, "POST");
+   }
+   
+   @Override
+   public String addJiraComment(String jsonPayload, String issueId) {
+      String urlExtension = JIRA_ISSUE + "/" + issueId + "/comment";
+      return sendJiraRequest(jsonPayload, urlExtension, "POST");
+   }
+   
+   @Override
+   public String deleteJiraComment(String issueId, String commentId) {
+      String urlExtension = JIRA_ISSUE + "/" + issueId + "/comment/" + commentId;
+      return sendJiraRequest("", urlExtension, "DELETE");
    }
 
    private String sendJiraRequest(String jsonPayload, String urlExtension, String requestMethod) {

@@ -20,6 +20,7 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { CurrentTransactionService } from '@osee/transactions/services';
 import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
 import { PersistedStringAttributeInputComponent } from './persisted-string-attribute-input.component';
+import { attribute } from '@osee/attributes/types';
 
 describe('PersistedStringAttributeInputComponent', () => {
 	let component: ParentDriverComponent;
@@ -38,7 +39,7 @@ describe('PersistedStringAttributeInputComponent', () => {
 	class ParentDriverComponent {
 		artifactId = signal(`1` as const);
 		artifactApplicability = signal(applicabilitySentinel);
-		value = signal({
+		value = signal<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>({
 			id: '-1',
 			typeId: ATTRIBUTETYPEIDENUM.NAME,
 			gammaId: '-1',

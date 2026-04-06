@@ -411,7 +411,6 @@ public final class FrameworkXWidgetProvider {
                xWidget = combo;
                List<String> values = getWidgetOptions(widData);
                if (!values.isEmpty()) {
-                  xWidget = new XComboDam(widgetLabel);
                   combo.setDataStrings(values);
                   if (options.contains(XOption.NO_DEFAULT_VALUE)) {
                      combo.setDefaultSelectionAllowed(false);

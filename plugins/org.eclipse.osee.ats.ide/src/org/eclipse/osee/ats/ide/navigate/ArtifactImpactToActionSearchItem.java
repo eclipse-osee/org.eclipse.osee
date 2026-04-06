@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialogWithBranchSelect;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
@@ -56,7 +56,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
    private final static String TITLE = "Search Artifact Impact to Action";
 
    public ArtifactImpactToActionSearchItem() {
-      super(TITLE, FrameworkImage.FLASHLIGHT, AtsNavigateViewItems.ATS_ADVANCED_SEARCHES);
+      super(TITLE, CoreImage.FLASHLIGHT, AtsNavigateViewItems.ATS_ADVANCED_SEARCHES);
    }
 
    @Override

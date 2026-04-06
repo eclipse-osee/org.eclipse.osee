@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2026 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,17 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.orcs.utility;
-
-public class EmailCertificateValidationException extends RuntimeException {
-
-   private static final long serialVersionUID = 1L;
-
-   public EmailCertificateValidationException(String message) {
-      super(message);
-   }
-
-   public EmailCertificateValidationException(String message, Throwable cause) {
-      super(message, cause);
-   }
-}
+import { Component } from '@angular/core';
+import { OverflowMenuComponent } from './overflow-menu.component';
+@Component({
+	selector: 'osee-overflow-menu',
+	template: '<p>Dummy</p>',
+	standalone: true,
+})
+export class MockOverflowMenuComponent
+	implements Partial<OverflowMenuComponent> {}

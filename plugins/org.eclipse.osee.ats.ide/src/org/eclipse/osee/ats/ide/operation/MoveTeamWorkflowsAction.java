@@ -16,9 +16,9 @@ package org.eclipse.osee.ats.ide.operation;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -43,7 +43,7 @@ public class MoveTeamWorkflowsAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.ARROW_LEFT_YELLOW);
+      return ImageManager.getImageDescriptor(CoreImage.ARROW_LEFT_YELLOW);
    }
 
 }

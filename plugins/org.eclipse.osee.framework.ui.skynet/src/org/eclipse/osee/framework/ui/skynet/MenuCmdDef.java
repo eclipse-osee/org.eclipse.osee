@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -66,6 +67,16 @@ public class MenuCmdDef {
    }
 
    public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, KeyedImage imageEnum, String optionKey, String optionValue) {
+      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, ImageManager.getImageDescriptor(imageEnum),
+         optionKey, optionValue, (Map<String, String>) null);
+   }
+
+   public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, OseeImage imageEnum) {
+      this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, ImageManager.getImageDescriptor(imageEnum),
+         (String) null, (String) null, (Map<String, String>) null);
+   }
+
+   public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, OseeImage imageEnum, String optionKey, String optionValue) {
       this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, ImageManager.getImageDescriptor(imageEnum),
          optionKey, optionValue, (Map<String, String>) null);
    }

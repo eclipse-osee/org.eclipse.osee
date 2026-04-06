@@ -818,32 +818,8 @@ public class CreateActionOperation {
    private void setPoints() {
       if (Strings.isValid(data.getPoints())) {
          for (IAtsTeamWorkflow teamWf : teamWfs) {
-            IAgileTeam agileTeam = null;
-            if (Strings.isNumeric(data.getAgileTeam())) {
-               agileTeam = atsApi.getQueryService().getConfigItem(ArtifactId.valueOf(data.getAgileTeam()));
-            }
-            if (agileTeam == null) {
-               IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
-               agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
-            }
-            if (agileTeam == null) {
-               rd.warning("Agile Team not found, could not set points.");
-            } else {
-               String pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
-                  AtsAttributeTypes.PointsAttributeType, null);
-               if (Strings.isInValid(pointsAttrType)) {
-                  pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf.getTeamDefinition(),
-                     AtsAttributeTypes.PointsAttributeType, null);
-               }
-               if (!Strings.isValid(pointsAttrType)) {
-                  throw new OseeArgumentException(
-                     "Points Attribute Type must be specified on either Agile Team or Team Defintion to set Points",
-                     agileTeam.toStringWithId());
-               }
-               AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(pointsAttrType);
-
-               changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
-            }
+            AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(teamWf);
+            changes.setSoleAttributeValue(teamWf, pointsAttrType, data.getPoints());
          }
       }
    }

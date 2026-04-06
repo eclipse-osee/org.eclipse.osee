@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -24,7 +23,7 @@ import { MatButton } from '@angular/material/button';
 @Component({
 	selector: 'osee-drag-and-drop-upload',
 	standalone: true,
-	imports: [CommonModule, MatButton],
+	imports: [MatButton],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './drag-and-drop-upload.component.html',
 })

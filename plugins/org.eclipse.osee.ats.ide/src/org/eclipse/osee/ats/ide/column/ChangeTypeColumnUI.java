@@ -35,12 +35,12 @@ import org.eclipse.osee.ats.ide.util.xviewer.column.AtsColumnUtilIde;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.chgtype.ChangeTypeDialog;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -177,13 +177,13 @@ public class ChangeTypeColumnUI extends XViewerAtsCoreCodeXColumn {
 
    public static Image getImage(ChangeTypes type) {
       if (type == ChangeTypes.Problem || type == ChangeTypes.Fix) {
-         return ImageManager.getImage(FrameworkImage.PROBLEM);
+         return ImageManager.getImage(CoreImage.PROBLEM);
       } else if (type == ChangeTypes.Improvement || type == ChangeTypes.InitialDev) {
-         return ImageManager.getImage(FrameworkImage.GREEN_PLUS);
+         return ImageManager.getImage(CoreImage.GREEN_PLUS);
       } else if (type == ChangeTypes.Support) {
-         return ImageManager.getImage(FrameworkImage.SUPPORT);
+         return ImageManager.getImage(CoreImage.SUPPORT);
       } else if (type == ChangeTypes.Refinement) {
-         return ImageManager.getImage(FrameworkImage.REFINEMENT);
+         return ImageManager.getImage(CoreImage.REFINEMENT);
       }
       return null;
    }

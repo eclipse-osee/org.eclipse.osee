@@ -29,12 +29,12 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.BranchEntryEntryDialog;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
@@ -53,7 +53,7 @@ public class ImportWorkflowApplicabilities extends XNavigateItemAction {
    private Map<String, ApplicabilityToken> applicNameToTok;
 
    public ImportWorkflowApplicabilities() {
-      super("Import Workflow Applicabilities from Branch", FrameworkImage.IMPORT, AtsNavigateViewItems.ATS_IMPORT);
+      super("Import Workflow Applicabilities from Branch", CoreImage.IMPORT, AtsNavigateViewItems.ATS_IMPORT);
    }
 
    @Override

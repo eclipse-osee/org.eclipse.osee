@@ -13,10 +13,10 @@
 package org.eclipse.osee.framework.core.util;
 
 import java.io.File;
-import javax.activation.DataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 public interface IOseeEmail {
@@ -85,7 +85,7 @@ public interface IOseeEmail {
     *
     * @return A String representation of the current Body Type
     */
-   String getBodyType();
+   BodyType getBodyType();
 
    /**
     * Sets the text in the body of the message.
@@ -123,15 +123,12 @@ public interface IOseeEmail {
 
    XResultData sendLocalThread();
 
-   /**
-    * Adds an attachment to an email
-    */
-   void addAttachment(DataSource source, String attachmentName) throws MessagingException;
-
    void addAttachment(File file) throws MessagingException;
 
    void addAttachment(String contents, String attachmentName) throws MessagingException;
 
-   IOseeEmail create();
+   void send(XResultData rd);
+
+   void setSubject(String subject);
 
 }

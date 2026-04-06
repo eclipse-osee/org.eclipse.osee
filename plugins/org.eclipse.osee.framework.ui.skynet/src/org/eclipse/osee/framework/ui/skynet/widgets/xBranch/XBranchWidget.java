@@ -30,11 +30,11 @@ import org.eclipse.osee.framework.core.data.BranchQueryData;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.BranchTransactionUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -215,7 +215,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       new ToolItem(toolBar, SWT.SEPARATOR);
 
       baselineButton = new ToolItem(toolBar, SWT.CHECK);
-      baselineButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH_BASELINE));
+      baselineButton.setImage(ImageManager.getImage(CoreImage.BRANCH_BASELINE));
       baselineButton.setToolTipText("Show Baseline Branches");
       baselineButton.setSelection(true);
       branchData.getBranchTypes().add(BranchType.BASELINE);
@@ -235,7 +235,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       });
 
       workingButton = new ToolItem(toolBar, SWT.CHECK);
-      workingButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH_WORKING));
+      workingButton.setImage(ImageManager.getImage(CoreImage.BRANCH_WORKING));
       workingButton.setToolTipText("Show Working Branches");
       workingButton.setSelection(true);
       branchData.getBranchTypes().add(BranchType.WORKING);
@@ -256,7 +256,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
 
       if (ServiceUtil.accessControlService().isOseeAdmin()) {
          allButton = new ToolItem(toolBar, SWT.CHECK);
-         allButton.setImage(ImageManager.getImage(FrameworkImage.ADD_GREEN));
+         allButton.setImage(ImageManager.getImage(CoreImage.ADD_GREEN));
          allButton.setToolTipText("Show All Branches (Admin)");
          allButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -272,7 +272,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       flatLayout = new ToolItem(toolBar, SWT.CHECK);
       treeLayout = new ToolItem(toolBar, SWT.CHECK);
 
-      flatLayout.setImage(ImageManager.getImage(FrameworkImage.FLAT_LAYOUT));
+      flatLayout.setImage(ImageManager.getImage(CoreImage.FLAT_LAYOUT));
       flatLayout.setSelection(true);
       flatLayout.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -287,7 +287,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
          }
       });
 
-      treeLayout.setImage(ImageManager.getImage(FrameworkImage.TREE_LAYOUT));
+      treeLayout.setImage(ImageManager.getImage(CoreImage.TREE_LAYOUT));
       treeLayout.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {

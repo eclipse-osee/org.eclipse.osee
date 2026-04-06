@@ -26,12 +26,12 @@ import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectSeverityToImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -56,7 +56,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
          } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
             return ImageManager.getImage(AtsImage.ROLE);
          } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
-            return ImageManager.getImage(FrameworkImage.CLOCK);
+            return ImageManager.getImage(CoreImage.CLOCK);
          } else if (dCol.equals(UserRoleXViewerFactory.Completed_Col)) {
             return ImageManager.getImage(
                role.isCompleted() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);

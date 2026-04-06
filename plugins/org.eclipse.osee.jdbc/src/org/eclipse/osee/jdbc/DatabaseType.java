@@ -100,6 +100,22 @@ public class DatabaseType extends BaseId {
       }
    }
 
+   public String getSysDate() {
+      if (matches(postgresql)) {
+         return "date_trunc('day',CURRENT_TIMESTAMP)";
+      } else {
+         return "TRUNC(SYSDATE)";
+      }
+   }
+
+   public String getSysDateMinusIntervalInDays(int interval) {
+      if (matches(postgresql)) {
+         return "date_trunc('day',CURRENT_TIMESTAMP) - INTERVAL '" + interval + " days'";
+      } else {
+         return "TRUNC(SYSDATE) - " + interval;
+      }
+   }
+
    public String getStringConversion() {
       if (matches(postgresql)) {
          return "::varchar(255)";
@@ -342,13 +358,14 @@ public class DatabaseType extends BaseId {
    public String jsonObjectContains(String value, String tableColumn, String jsonColumn) {
       String result = "";
       if (matches(postgresql)) {
-         result = " exists (select 1 from jsonb_array_elements("+tableColumn+") t1 where t1->>'value'::text like ?)";
+         result =
+            " exists (select 1 from jsonb_array_elements(" + tableColumn + ") t1 where t1->>'value'::text like ?)";
       } else {
-         result = "DBMS_LOB.INSTR( "+tableColumn+", ? ) > 0"; 
+         result = "DBMS_LOB.INSTR( " + tableColumn + ", ? ) > 0";
       }
       return result;
    }
-   
+
    public String getJsonObjectContainsParameter(String value) {
       if (matches(postgresql)) {
          return "%" + value + "%";
@@ -356,6 +373,7 @@ public class DatabaseType extends BaseId {
          return value;
       }
    }
+
    public String cast(String value, String type) {
       String result = "";
       if (matches(postgresql) || matches(oracle)) {

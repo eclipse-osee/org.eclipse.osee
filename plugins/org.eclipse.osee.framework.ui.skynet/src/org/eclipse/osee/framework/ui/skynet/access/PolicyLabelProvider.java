@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.access.AccessControlData;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -69,7 +69,7 @@ public class PolicyLabelProvider extends XViewerLabelProvider {
    public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws Exception {
       String colId = col.getId();
       if (colId.equals(PolicyTableColumns.delete.toString())) {
-         return ImageManager.getImage(FrameworkImage.REMOVE);
+         return ImageManager.getImage(CoreImage.REMOVE);
       } else {
          return null;
       }

@@ -668,6 +668,12 @@
 /instance/org.eclipse.jdt.ui/editor_folding_default_fold_imports=true
 /instance/org.eclipse.jdt.ui/editor_folding_enabled=true
 /instance/org.eclipse.jdt.ui/editor_new_folding_enabled=false
+/instance/org.eclipse.pde.ds.annotations/dsVersion=V1_4
+/instance/org.eclipse.pde.ds.annotations/enabled=true
+/instance/org.eclipse.pde.ds.annotations/generateBundleActivationPolicyLazy=true
+/instance/org.eclipse.pde.ds.annotations/path=OSGI-INF
+/instance/org.eclipse.pde.ds.annotations/validationErrorLevel=error
+/instance/org.eclipse.pde.ds.annotations/validationErrorLevel.missingImplicitUnbindMethod=ignore
 @com.genuitec.pulse.client.delivery.package.runtime=6.2.1.v202503200710
 @com.google.eclipse.mechanic=0.9.0.v202503200710
 @net.sourceforge.vrapper.eclipse=0.74.0

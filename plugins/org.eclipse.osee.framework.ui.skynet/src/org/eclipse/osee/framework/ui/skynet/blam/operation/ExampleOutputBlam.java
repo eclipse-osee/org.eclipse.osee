@@ -17,9 +17,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -63,12 +63,12 @@ public class ExampleOutputBlam extends AbstractBlam {
 
    @Override
    public Image getImage() {
-      return ImageManager.getImage(FrameworkImage.EXAMPLE);
+      return ImageManager.getImage(CoreImage.EXAMPLE);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.EXAMPLE);
+      return ImageManager.getImageDescriptor(CoreImage.EXAMPLE);
    }
 
 }

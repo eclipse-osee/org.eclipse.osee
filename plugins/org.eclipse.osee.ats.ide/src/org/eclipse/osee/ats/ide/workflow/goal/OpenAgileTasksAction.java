@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -52,7 +52,7 @@ public class OpenAgileTasksAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.PRINT);
+      return ImageManager.getImageDescriptor(CoreImage.PRINT);
    }
 
    @Override
@@ -88,8 +88,7 @@ public class OpenAgileTasksAction extends Action {
          IAtsWorkItem workItem = (IAtsWorkItem) artifact;
          card = card.replaceFirst("PUT_TITLE_HERE", workItem.getName());
 
-         card =
-            card.replaceFirst("PUT_POINTS_HERE", AtsApiService.get().getAgileService().getAgileTeamPointsStr(workItem));
+         card = card.replaceFirst("PUT_POINTS_HERE", AtsApiService.get().getAgileService().getPointsStr(workItem));
          card = card.replaceFirst("PUT_FEATURE_HERE",
             AtsApiService.get().getAgileService().getAgileFeatureGroupStr(workItem));
 

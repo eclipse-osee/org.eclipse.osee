@@ -20,6 +20,7 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { attribute } from '@osee/attributes/types';
 
 describe('PersistedUnitDropdownComponent', () => {
 	let component: ParentDriverComponent;
@@ -38,7 +39,12 @@ describe('PersistedUnitDropdownComponent', () => {
 	class ParentDriverComponent {
 		artifactId = signal(`1` as const);
 		artifactApplicability = signal(applicabilitySentinel);
-		value = signal({
+		value = signal<
+			attribute<
+				string,
+				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS
+			>
+		>({
 			id: '-1',
 			typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS,
 			gammaId: '-1',

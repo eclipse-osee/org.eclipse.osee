@@ -16,8 +16,8 @@ package org.eclipse.osee.ats.ide.util.Import;
 import java.io.File;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.util.Import.action.ImportActionsViaSpreadsheetBlam;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.OseeInf;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -43,12 +43,12 @@ public class ImportAgileActionsViaSpreadsheetBlam extends ImportActionsViaSpread
 
    @Override
    public Image getImage() {
-      return ImageManager.getImage(FrameworkImage.IMPORT);
+      return ImageManager.getImage(CoreImage.IMPORT);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.IMPORT);
+      return ImageManager.getImageDescriptor(CoreImage.IMPORT);
    }
 
 }

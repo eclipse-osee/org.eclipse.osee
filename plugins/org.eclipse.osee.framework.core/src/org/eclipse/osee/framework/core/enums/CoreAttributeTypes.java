@@ -87,6 +87,10 @@ public interface CoreAttributeTypes {
    // @formatter:off
 
    AttributeTypeString AbridgedEmail = osee.createString(1867950456941316571L, "Abridged Email", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString EmailCertificateInstructions = osee.createString(9211057726662841963L, "Email Certificate Instructions", MediaType.TEXT_PLAIN, "Supplementary organization specific instructions for email certificates. Sent to users when a valid certificate is not available.", DisplayHint.MultiLine);
+   AttributeTypeString EmailCertificateUploadOverrideLink = osee.createString(3104381527452070592L, "Email Certificate Upload Override Link", MediaType.TEXT_PLAIN, "Email certificate upload link to override the default dynamic link.");
+   AttributeTypeString EmailCertificateLdapUrl = osee.createString(5692888595530430477L, "Email Certificate LDAP URL", MediaType.TEXT_PLAIN, "Email Certificate LDAP URL from which to retrieve public certificates.");
+   AttributeTypeBoolean EmailEncryptionEnabled = osee.createBoolean(8872490503810848554L, "Email Encryption Enabled", MediaType.TEXT_PLAIN, "Whether or not to use and require the encrypted email flow.");
    AttributeTypeString AccessContextId = osee.createString(1152921504606847102L, "Access Context Id", MediaType.TEXT_PLAIN, "", DisplayHint.SingleLine);
    AttributeTypeString Acronym = osee.createString(4723834159825897915L, "Acronym", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean Active = osee.createBoolean(1152921504606847065L, "Active", MediaType.TEXT_PLAIN, "");

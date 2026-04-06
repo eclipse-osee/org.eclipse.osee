@@ -39,12 +39,12 @@ jobs:
       - name: Web Setup
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
         uses: ./.github/actions/web-setup
-      
+
       - name: Angular Lint
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
         working-directory: ./
         run: pnpm -r run lint
-  
+
   formatting:
     needs: check-changes
     runs-on: ubuntu-latest
@@ -55,12 +55,12 @@ jobs:
       - name: Web Setup
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
         uses: ./.github/actions/web-setup
-      
+
       - name: Angular Formatting
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
         working-directory: ./
         run: pnpm -r run prettier:check
-  
+
   unit_tests:
     needs: check-changes
     runs-on: ubuntu-latest
@@ -71,8 +71,8 @@ jobs:
       - name: Web Setup
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
         uses: ./.github/actions/web-setup
-      
+
       - name: Angular Unit Tests
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
         working-directory: ./
-        run: pnpm -r run test --browsers=ChromeHeadlessNoSandbox --watch=false
+        run: pnpm -r run test --watch=false

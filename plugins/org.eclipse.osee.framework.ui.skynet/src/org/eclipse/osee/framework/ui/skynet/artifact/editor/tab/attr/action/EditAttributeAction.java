@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrXViewer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -42,7 +42,7 @@ public class EditAttributeAction extends Action {
    public EditAttributeAction(ArtEdAttrXViewer attrXViewer) {
       super("Edit Attribute Value");
       this.attrXViewer = attrXViewer;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.EDIT));
       setToolTipText("Edit Attribute Value");
    }
 
