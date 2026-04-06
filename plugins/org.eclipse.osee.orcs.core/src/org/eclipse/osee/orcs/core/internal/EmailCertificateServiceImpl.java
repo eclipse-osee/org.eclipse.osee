@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.EmailRecipientInfo;
@@ -38,6 +40,11 @@ import org.eclipse.osee.orcs.utility.EmailCertificateService;
 public class EmailCertificateServiceImpl implements EmailCertificateService {
 
    private final OrcsApi orcsApi;
+   private final ExecutorService ldapWritebackExecutor = Executors.newSingleThreadExecutor(runnable -> {
+      Thread thread = new Thread(runnable, "EmailCertificateLdapWriteback");
+      thread.setDaemon(true);
+      return thread;
+   });
 
    public EmailCertificateServiceImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -161,10 +168,7 @@ public class EmailCertificateServiceImpl implements EmailCertificateService {
          return;
       }
 
-      Thread writerThread = new Thread(() -> writePublicCertificatesByEmailAddresses(normalizedCertificatesByEmail),
-         "EmailCertificateLdapWriteback");
-      writerThread.setDaemon(true);
-      writerThread.start();
+      ldapWritebackExecutor.submit(() -> writePublicCertificatesByEmailAddresses(normalizedCertificatesByEmail));
    }
 
    private void writePublicCertificatesByEmailAddresses(Map<String, String> certificatesByEmailAddress) {
@@ -194,6 +198,9 @@ public class EmailCertificateServiceImpl implements EmailCertificateService {
             try {
                X509Certificate cert = EmailCertificateValidator.parseAndCheckBasicValidity(certificatePem);
                EmailCertificateValidator.checkSuitableForEmail(cert);
+
+               // Delete is done to lessen the likelihood of duplicate attributes being added in high latency scenarios.
+               tx.deleteAttributes(userArt.getArtifactId(), CoreAttributeTypes.EmailPublicCertificate);
                tx.setSoleAttributeFromString(userArt.getArtifactId(), CoreAttributeTypes.EmailPublicCertificate,
                   certificatePem);
             } catch (Exception ex) {
