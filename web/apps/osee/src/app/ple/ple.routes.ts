@@ -59,6 +59,10 @@ const routes: Routes = [
 		path: 'change-report',
 		loadChildren: () => import('./change-report/change-report.routes'),
 	},
+	{
+		path: 'publishing',
+		loadChildren: () => import('./book-explorer/book-explorer.routes'),
+	},
 ];
 
 export default routes;
