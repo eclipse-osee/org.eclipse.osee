@@ -48,7 +48,7 @@
     * Task 115 - Stylized the Save Search button to match current app button style
     * Task 119 - Move the Save Search button to the right hand side of the Search Title input
     -->
-    <div class="tw-flex tw-items-center tw-justify-between tw-mb-4 tw-gap-3 tw-min-w-0">
+    <div class="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-mb-4 tw-gap-3 tw-min-w-0">
     <button mat-flat-button class="primary-button tw-flex-none" type="button" (click)="onNewSearch()">
      New Search
      </button>
@@ -76,6 +76,13 @@
           </button>
         </div>
       </mat-form-field>
+
+      <mat-checkbox
+        [(ngModel)]="saveAsGlobal"
+        name="saveAsGlobal"
+        class="primary-checkbox tw-flex-none">
+        <mat-label>Global Search</mat-label>
+      </mat-checkbox>
 
       <button
         mat-flat-button

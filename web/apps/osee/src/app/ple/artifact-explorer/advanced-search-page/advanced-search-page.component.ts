@@ -757,6 +757,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 	saveErrorMessage = '';
 	// Author: Sofiia Holovko (sholovko) Task 243 - Show success notification after a search is saved
    saveSuccessMessage = '';
+	// Task 261 - UI-only checkbox state for a future global-save option
+	saveAsGlobal = false;
 	// Author: Sofiia Holovko (sholovko) Task 197
 	editingSearchId: number | null = null;
 	editingSearchTitle = '';
@@ -2205,6 +2207,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.data = { ...defaultAdvancedSearchCriteria };
 		this.searchValue = '';
 		this.data.searchTitle = '';
+		this.saveAsGlobal = false;
 		this.selectedArtifactType.set(null);
 
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
