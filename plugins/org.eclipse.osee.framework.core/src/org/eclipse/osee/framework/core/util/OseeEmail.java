@@ -115,7 +115,6 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
    // Support for non-classified "abridged" emails.  Should be generic information only
    private String bodyAbridged = EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL;
    private Collection<String> emailAddressesAbridged;
-   private String subjectAbridged;
 
    public OseeEmail() {
       super(getSession());
@@ -130,18 +129,16 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
     * @param fromAddress - the sender of the message
     * @param replyToAddress - a valid address of who the message should reply to
     * @param subject - the subject of the message
-    * @param emailAddressesAbridged addresses to send abridged email with just abridgedSubject and no body
-    * @param subjectAbridged sanitized subject only showing generic data and ids (eg: Ats Id) and generic action
+    * @param emailAddressesAbridged addresses to send abridged email with same subject and no body
     * @param bodyAbridged generic email body with no classified or proprietary data
     * @param textBody - the plain text of the body
     */
    public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, //
-      BodyType bodyType, Collection<String> emailAddressesAbridged, String subjectAbridged, String bodyAbridged) {
+      BodyType bodyType, Collection<String> emailAddressesAbridged, String bodyAbridged) {
       this();
       this.fromAddress = fromAddress;
       this.replyToAddress = replyToAddress;
       this.emailAddressesAbridged = emailAddressesAbridged != null ? emailAddressesAbridged : Collections.emptyList();
-      this.subjectAbridged = subjectAbridged;
       this.bodyAbridged = bodyAbridged;
       try {
          setRecipients(toAddresses.toArray(new String[toAddresses.size()]));
@@ -162,10 +159,10 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
       }
    }
 
-   public OseeEmail(String fromEmail, String toAddress, String subject, String body, BodyType bodyType, String emailAddressAbridged, String subjectAbridged, String bodyAbridged) {
+   public OseeEmail(String fromEmail, String toAddress, String subject, String body, BodyType bodyType, String emailAddressAbridged, String bodyAbridged) {
       this(Arrays.asList(toAddress), fromEmail, fromEmail, subject, body, bodyType,
          Strings.isValid(emailAddressAbridged) ? Collections.singleton(emailAddressAbridged) : Collections.emptyList(),
-         subjectAbridged, bodyAbridged);
+         bodyAbridged);
    }
 
    /**
@@ -719,7 +716,7 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
    protected abstract OseeEmail createAbridgedEmail(OseeEmail email);
 
    public boolean hasAbridged() {
-      return Strings.isValid(subjectAbridged) && emailAddressesAbridged != null && !emailAddressesAbridged.isEmpty();
+      return emailAddressesAbridged != null && !emailAddressesAbridged.isEmpty();
    }
 
    abstract public void setClassLoader();
@@ -775,10 +772,6 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
 
    public Collection<String> getEmailAddressesAbridged() {
       return emailAddressesAbridged;
-   }
-
-   public String getSubjectAbridged() {
-      return subjectAbridged;
    }
 
    public String getBodyAbridged() {

@@ -836,7 +836,7 @@ public class AtsHealthCheckOperation {
          fromReplyEmail = emails.iterator().next();
       }
       IOseeEmail emailMessage = orcsApi.getEmailService().create(emails, fromReplyEmail, fromReplyEmail,
-         dbName + " - ATS Health Check", html, BodyType.Html, java.util.Collections.emptySet(), "N/A", "");
+         dbName + " - ATS Health Check", html, BodyType.Html, java.util.Collections.emptySet(), "");
       emailMessage.send();
    }
 

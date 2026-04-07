@@ -53,12 +53,11 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
          IOseeEmail emailMessage = orcsApi.getEmailService().create(Arrays.asList(testEmail.getEmail()),
             testEmail.getEmail(), testEmail.getEmail(), testEmail.getSubject(),
             AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html,
-            Arrays.asList(testEmail.getEmail()), "Abridged - " + testEmail.getSubject(), "This is the abridged body");
+            Arrays.asList(testEmail.getEmail()), "This is the abridged body");
          emailMessage.send(rd);
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));
       }
       return rd;
    }
-
 }

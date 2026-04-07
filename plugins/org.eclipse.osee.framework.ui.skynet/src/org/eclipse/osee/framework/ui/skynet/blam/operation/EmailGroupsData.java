@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.net.URI;
@@ -33,7 +32,6 @@ public class EmailGroupsData {
 
    private String replyToAddress, fromAddress;
    private String subject;
-   private String subjectAbridged;
    private String body;
    private String bodyAbridged = OseeEmail.EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL;
    private boolean bodyIsHtml;
@@ -168,14 +166,6 @@ public class EmailGroupsData {
       this.fromAddress = fromAddress;
    }
 
-   public String getSubjectAbridged() {
-      return subjectAbridged;
-   }
-
-   public void setSubjectAbridged(String abridgedSubject) {
-      this.subjectAbridged = abridgedSubject;
-   }
-
    public String getBodyAbridged() {
       return bodyAbridged;
    }
@@ -183,5 +173,4 @@ public class EmailGroupsData {
    public void setBodyAbridged(String bodyAbridged) {
       this.bodyAbridged = bodyAbridged;
    }
-
 }

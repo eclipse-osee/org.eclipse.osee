@@ -88,7 +88,6 @@ public abstract class AbstractXHyperlinkWfdSelectedUserGroupWithNotifyDam extend
                request.setBody(getEmailBody(selected));
                request.setBodyType(BodyType.Html);
                request.setEmailAddressesAbridged(addressesAbridged);
-               request.setSubjectAbridged(getEmailSubjectAbridged(selected));
                request.setBodyAbridged(getEmailBodyAbridged(selected));
 
                OseeApiService.serverEnpoints().getOrcsUserEndpoint().sendEmail(request);
@@ -110,7 +109,5 @@ public abstract class AbstractXHyperlinkWfdSelectedUserGroupWithNotifyDam extend
    protected abstract String getEmailBodyAbridged(ArtifactToken selected);
 
    protected abstract String getEmailSubject(ArtifactToken selected);
-
-   protected abstract String getEmailSubjectAbridged(ArtifactToken selected);
 
 }

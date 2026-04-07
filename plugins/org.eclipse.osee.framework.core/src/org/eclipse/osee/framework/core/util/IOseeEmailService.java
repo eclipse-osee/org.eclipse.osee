@@ -22,11 +22,10 @@ import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 public interface IOseeEmailService {
 
    IOseeEmail create(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject,
-      String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String subjectAbridged,
-      String bodyAbridged);
+      String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String bodyAbridged);
 
    IOseeEmail create(String fromEmail, String toAddress, String subject, String body, BodyType bodyType,
-      String emailAddressAbridged, String subjectAbridged, String bodyAbridged);
+      String emailAddressAbridged, String bodyAbridged);
 
    IOseeEmail create();
 
