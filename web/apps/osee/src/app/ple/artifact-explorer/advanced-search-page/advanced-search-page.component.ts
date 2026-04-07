@@ -873,6 +873,29 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 265 - Show message when mixed artifact types are selected for Mass Edit
+	 *
+	 * Returns true only when the current selection contains more than one
+	 * artifact type, so the page can show an inline warning message.
+	 */
+	hasMixedSelectedArtifactTypes(): boolean {
+		const selectedRows = this.getSelectedRows();
+
+		if (selectedRows.length < 2) {
+			return false;
+		}
+
+		const selectedTypes = new Set(
+			selectedRows
+				.map((row) => String(row.type || '').trim())
+				.filter(Boolean)
+		);
+
+		return selectedTypes.size > 1;
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 208 - Implement backend mass update endpoint integration
 	 * Mass Edit requires selected artifacts to be the same artifact type.
 	 */
