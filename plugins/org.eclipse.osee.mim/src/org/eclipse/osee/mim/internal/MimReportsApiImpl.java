@@ -225,8 +225,8 @@ public class MimReportsApiImpl implements MimReportsApi {
             CoreArtifactTypes.InterfaceConnection.getId(), branch, TxCurrent.CURRENT.getIdIntValue(), branch,
             TxCurrent.CURRENT.getIdIntValue(), CoreAttributeTypes.Name.getId(),
             CoreArtifactTypes.InterfaceConnection.getId(), branch, TxCurrent.CURRENT.getIdIntValue(), branch,
-            TxCurrent.CURRENT.getIdIntValue(), CoreAttributeTypes.Name.getId(), branchArt.getParentBranch(),
-            TxCurrent.CURRENT, CoreAttributeTypes.Name.getId());
+            TxCurrent.CURRENT.getIdIntValue(), CoreAttributeTypes.Name.getId(), branch, TxCurrent.CURRENT,
+            CoreAttributeTypes.Name.getId());
       }
       return conns;
 
