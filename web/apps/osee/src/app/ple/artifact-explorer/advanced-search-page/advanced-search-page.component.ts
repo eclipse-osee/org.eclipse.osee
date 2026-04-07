@@ -383,6 +383,29 @@ type SavedSearch = {
 				background-color: rgba(59, 130, 246, 0.1) !important;
 			}
 		`,
+		`
+			input:-webkit-autofill,
+			input:-webkit-autofill:hover,
+			input:-webkit-autofill:focus,
+			input:-webkit-autofill:active {
+				-webkit-box-shadow: 0 0 0 1000px #e2e2ea inset !important;
+				-webkit-text-fill-color: #000000 !important;
+				caret-color: #000000;
+				transition: background-color 5000s ease-in-out 0s;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				input:-webkit-autofill,
+				input:-webkit-autofill:hover,
+				input:-webkit-autofill:focus,
+				input:-webkit-autofill:active {
+					-webkit-box-shadow: 0 0 0 1000px #46464e inset !important;
+					-webkit-text-fill-color: #f8fafc !important;
+					caret-color: #f8fafc;
+					transition: background-color 5000s ease-in-out 0s;
+				}
+			}
+		`,
 	],
 })
 export class AdvancedSearchPageComponent implements OnInit {
@@ -755,7 +778,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 	saveInProgress = false;
 	saveErrorMessage = '';
 	// Author: Sofiia Holovko (sholovko) Task 243 - Show success notification after a search is saved
-   saveSuccessMessage = '';
+	saveSuccessMessage = '';
 	// Author: Sofiia Holovko (sholovko) Task 197
 	editingSearchId: number | null = null;
 	editingSearchTitle = '';
@@ -854,7 +877,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Mass Edit requires selected artifacts to be the same artifact type.
 	 */
 	private getSelectedRows(): SearchResultRow[] {
-		return this.searchResultsSig().filter((row) => this.selectedRowIds.has(row.id));
+		return this.searchResultsSig().filter((row) =>
+			this.selectedRowIds.has(row.id)
+		);
 	}
 
 	/**
@@ -872,7 +897,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 			return obj['id'].trim();
 		}
 
-		if (typeof obj['attributeTypeId'] === 'string' && obj['attributeTypeId'].trim()) {
+		if (
+			typeof obj['attributeTypeId'] === 'string' &&
+			obj['attributeTypeId'].trim()
+		) {
 			return obj['attributeTypeId'].trim();
 		}
 
@@ -956,7 +984,9 @@ export class AdvancedSearchPageComponent implements OnInit {
 			console.warn(
 				'Mass Edit could not resolve the selected artifact type id.'
 			);
-			alert('Mass Edit could not determine the artifact type for the selected rows.');
+			alert(
+				'Mass Edit could not determine the artifact type for the selected rows.'
+			);
 			return;
 		}
 
@@ -965,23 +995,29 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.pipe(take(1))
 			.subscribe({
 				next: (validAttributes) => {
-					const dialogRef = this.dialog.open(MassEditDialogComponent, {
-						width: '720px',
-						maxWidth: '95vw',
-						data: {
-							selectedIds,
-							attributeTypes: (validAttributes ?? [])
-								.map((attr) => ({
-									id: this.extractValidAttributeId(attr),
-									name: this.extractValidAttributeName(attr),
-								}))
-								.filter((attr) => attr.id !== ''),
-						},
-						disableClose: true,
-					});
+					const dialogRef = this.dialog.open(
+						MassEditDialogComponent,
+						{
+							width: '720px',
+							maxWidth: '95vw',
+							data: {
+								selectedIds,
+								attributeTypes: (validAttributes ?? [])
+									.map((attr) => ({
+										id: this.extractValidAttributeId(attr),
+										name: this.extractValidAttributeName(
+											attr
+										),
+									}))
+									.filter((attr) => attr.id !== ''),
+							},
+							disableClose: true,
+						}
+					);
 
-					dialogRef.afterClosed().subscribe(
-						(result?: MassEditDialogResult) => {
+					dialogRef
+						.afterClosed()
+						.subscribe((result?: MassEditDialogResult) => {
 							if (!result || result.action === 'cancel') {
 								return;
 							}
@@ -1039,8 +1075,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 									);
 								},
 							});
-						}
-					);
+						});
 				},
 				error: (err: unknown) => {
 					const message =
@@ -1063,7 +1098,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.resetRowSelection();
 		this.onSearch();
 	}
-    /**
+	/**
 	 * Author: Sofiia Holovko (sholovko)
 	 * Task 236 - Open Saved Searches dialog
 	 */
@@ -1075,11 +1110,14 @@ export class AdvancedSearchPageComponent implements OnInit {
 			autoFocus: false,
 		});
 
-		dialogRef.afterClosed().pipe(take(1)).subscribe((result?: SavedSearchesDialogResult) => {
-			if (result?.action === 'load') {
-				this.applySavedSearch(result.savedSearch, true);
-			}
-		});
+		dialogRef
+			.afterClosed()
+			.pipe(take(1))
+			.subscribe((result?: SavedSearchesDialogResult) => {
+				if (result?.action === 'load') {
+					this.applySavedSearch(result.savedSearch, true);
+				}
+			});
 	}
 	/**
 	 * Author: Kris Graham (kgraha16)
@@ -1184,8 +1222,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 	 * Task 178 - Restore preserved Advanced Search state on page load
 	 */
 	ngOnInit(): void {
-    this.restoreAdvancedSearchState();
-}
+		this.restoreAdvancedSearchState();
+	}
 
 	/**
 	 * Author: Daria Berezianska (dvydybor)
@@ -1636,12 +1674,12 @@ export class AdvancedSearchPageComponent implements OnInit {
 				return cols.sort((a, b) => a.label.localeCompare(b.label));
 		}
 	});
-	
+
 	filteredAttributeColumns = computed<ColumnConfig[]>(() => {
-		const search = this.attributeSearch().toLowerCase().trim()
-		
-		return this.sortedAttributeColumns().filter(col =>
-			!search || col.label.toLowerCase().startsWith(search)
+		const search = this.attributeSearch().toLowerCase().trim();
+
+		return this.sortedAttributeColumns().filter(
+			(col) => !search || col.label.toLowerCase().startsWith(search)
 		);
 	});
 
@@ -1755,15 +1793,17 @@ export class AdvancedSearchPageComponent implements OnInit {
 			.pipe(take(1))
 			.subscribe({
 				next: () => {
-        this.saveInProgress = false;
-        // Author: Sofiia Holovko (sholovko) Task 243 - Set success message and auto-clear after 3 seconds
-        this.saveSuccessMessage = 'Search saved successfully.';
-        setTimeout(() => { this.saveSuccessMessage = ''; }, 3000);
-         },
+					this.saveInProgress = false;
+					// Author: Sofiia Holovko (sholovko) Task 243 - Set success message and auto-clear after 3 seconds
+					this.saveSuccessMessage = 'Search saved successfully.';
+					setTimeout(() => {
+						this.saveSuccessMessage = '';
+					}, 3000);
+				},
 				error: (err: unknown) => {
 					this.saveInProgress = false;
 					// Author: Sofiia Holovko (sholovko) Task 243 - Clear success message on error
-                this.saveSuccessMessage = '';
+					this.saveSuccessMessage = '';
 					this.saveErrorMessage =
 						err instanceof Error ? err.message : String(err);
 					console.error('Save search failed:', this.saveErrorMessage);
@@ -2032,11 +2072,11 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.selectSearchResultsByArtifactType(normalized);
 	}
 
-  clearResultsFilters(): void {
-    this.selectedArtifactType.set(null);
-    this.resultsIdFilter.set('');
-    this.resultsIdExactMatch.set(false);
-  }
+	clearResultsFilters(): void {
+		this.selectedArtifactType.set(null);
+		this.resultsIdFilter.set('');
+		this.resultsIdExactMatch.set(false);
+	}
 
 	onSearch(): void {
 		const filter = (this.searchValue || '').trim();
@@ -2057,7 +2097,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		// Task 143 - clear results before running a new search
 		this.searchResults = [];
 		this.searchResultsSig.set([]);
-    this.selectedArtifactType.set(null);
+		this.selectedArtifactType.set(null);
 		this.resultsIdFilter.set('');
 		this.resultsIdExactMatch.set(false);
 
@@ -2290,6 +2330,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 	clearSearchTitle(): void {
 		this.data.searchTitle = '';
 	}
+	
+	clearAttributeSearch(): void {
+		this.attributeSearch.set('');
+	}
 
 	toggleSavedSearchDateSortDirection(): void {
 		this.savedSearchDateSortAsc = !this.savedSearchDateSortAsc;
@@ -2353,7 +2397,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		 */
 		this.clearAdvancedSearchState();
 		this.resultsIdFilter.set('');
-    this.resultsIdExactMatch.set(false);
+		this.resultsIdExactMatch.set(false);
 	}
 
 	/**

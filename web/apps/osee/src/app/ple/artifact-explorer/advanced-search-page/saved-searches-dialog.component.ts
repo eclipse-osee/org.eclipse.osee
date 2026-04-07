@@ -126,7 +126,6 @@ export type SavedSearchesDialogResult =
 					Showing {{ filteredSearches().length }} of {{ sortedSearches().length }} saved searches
 				</div>
 			</div>
-		<div class="tw-px-6 tw-py-4 tw-overflow-auto" style="min-width: 1080px; max-height: 60vh;">
 
 			<!-- Loading state -->
 			<div *ngIf="loading()" class="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-slate-500 tw-py-4">
@@ -373,6 +372,16 @@ export type SavedSearchesDialogResult =
 			<div *ngIf="deleteErrorMessage()" class="tw-text-red-600 tw-text-sm tw-mt-2">
 				{{ deleteErrorMessage() }}
 			</div>
+			<!--
+			 * Author: Sofiia Holovko (sholovko)
+			 * Task 254 - Show success notification after deleting a saved search
+			 -->
+			<div
+				*ngIf="deleteSuccessMessage()"
+				class="tw-text-green-600 tw-text-sm tw-mt-2 tw-flex tw-items-center tw-gap-1">
+				<mat-icon class="tw-text-base tw-text-green-600">check_circle</mat-icon>
+				{{ deleteSuccessMessage() }}
+			</div>
 		</div>
 
 		<!-- Dialog footer -->
@@ -496,6 +505,11 @@ export class SavedSearchesDialogComponent implements OnInit {
 	readonly deletingId = signal<number | null>(null);
 	readonly deleteInProgress = signal(false);
 	readonly deleteErrorMessage = signal('');
+		/**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 254 - Show success notification after deleting a saved search
+	 */
+	readonly deleteSuccessMessage = signal('');
 
 	// ── lifecycle ──────────────────────────────────────────────────────────
 	ngOnInit(): void {
@@ -675,6 +689,8 @@ export class SavedSearchesDialogComponent implements OnInit {
 				next: () => {
 					this.deleteInProgress.set(false);
 					this.deletingId.set(null);
+					this.deleteSuccessMessage.set('Search deleted successfully.');
+					setTimeout(() => this.deleteSuccessMessage.set(''), 3000);
 					this.loadSavedSearches();
 				},
 				error: (err: unknown) => {
