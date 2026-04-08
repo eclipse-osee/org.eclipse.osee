@@ -202,7 +202,7 @@ public class TestWorkItemEmailSend extends XNavigateItemAction {
       notifications.addNotificationEvent(notify);
       notify.setSubjectType("Generic Notification");
       notify.setSubjectDescription("This is normal description.");
-      notify.setSubjectDescriptionAbridged("This is abridged description.");
+      notify.setSanitizedSubjectDescription("This is abridged description.");
       notify.setId("TW2000");
       notify.setUrl("http://www.google.com");
       notify.setFromEmailAddress(AtsCoreUsers.SYSTEM_USER.getEmail());

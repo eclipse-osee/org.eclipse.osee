@@ -128,10 +128,11 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
     * @param toAddresses - a list of valid addresses to send the message TO
     * @param fromAddress - the sender of the message
     * @param replyToAddress - a valid address of who the message should reply to
-    * @param subject - the subject of the message
-    * @param emailAddressesAbridged addresses to send abridged email with same subject and no body
-    * @param bodyAbridged generic email body with no classified or proprietary data
-    * @param textBody - the plain text of the body
+    * @param subject - sanitized subject line; must not contain user-input titles or sensitive data. Abridged email
+    * subject is auto-derived as "[Abridged] " + subject.
+    * @param emailAddressesAbridged addresses to send abridged email with same subject prefix and abridged body
+    * @param bodyAbridged generic email body with no sensitive data
+    * @param body - the body of the message
     */
    public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, //
       BodyType bodyType, Collection<String> emailAddressesAbridged, String bodyAbridged) {

@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -57,6 +58,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class EmailActionsBlam extends AbstractBlam {
    public final static String ATS_WORKFLOWS = "ATS Workflows (drop here)";
    boolean includeCancelHyperlink;
+   private XCheckBox certifyNoSensitiveDataCheckbox;
 
    @Override
    public String getName() {
@@ -97,6 +99,11 @@ public class EmailActionsBlam extends AbstractBlam {
       Result result = data.isValid();
       if (result.isFalse()) {
          AWorkbench.popup(result);
+         return;
+      }
+      if (certifyNoSensitiveDataCheckbox == null || !certifyNoSensitiveDataCheckbox.isChecked()) {
+         AWorkbench.popup(
+            "You must certify that email subject lines do not contain " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " before sending.");
          return;
       }
       sendEmailNotifications(data);
@@ -218,6 +225,8 @@ public class EmailActionsBlam extends AbstractBlam {
       if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;
          button.setDisplayLabel(false);
+      } else if (xWidget.getLabel().equals("I certify the subject lines do not contain restricted or sensitive data.")) {
+         certifyNoSensitiveDataCheckbox = (XCheckBox) xWidget;
       }
    }
 
@@ -225,8 +234,11 @@ public class EmailActionsBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       // @formatter:off
       return "<xWidgets>" +
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"I certify the subject lines do not contain restricted or sensitive data.\" defaultValue=\"false\" horizontalLabel=\"true\" labelAfter=\"true\" required=\"true\" />" +
             "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + ATS_WORKFLOWS + "\" />" +
             "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
+            "<XWidget xwidgetType=\"XLabel\" displayName=\"      - WARNING: Email subject lines are NOT encrypted.\" />" +
+            "<XWidget xwidgetType=\"XLabel\" displayName=\"      - Do NOT include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " in the subject line.\" />" +
             "<XWidget xwidgetType=\"XCombo("+EmailRecipient.Assignees.toString()+","+EmailRecipient.Originator.toString()+")\" defaultValue=\""+EmailRecipient.Assignees.toString()+"\" displayName=\"Recipient\" />" +
             "<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
             "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Cancel Hyperlink\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +

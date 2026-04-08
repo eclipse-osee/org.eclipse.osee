@@ -113,7 +113,7 @@ public class JournalOperations {
                String abridgedEmail = atsApi.getUserService().getAbridgedEmail(user.getArtifactToken(), atsApi);
                if (EmailUtil.isEmailValid(abridgedEmail)) {
                   atsApi.getNotificationService().sendNotifications(fromEmail, Collections.singleton(abridgedEmail),
-                     getAbridgedSubject(), getAbridgedBody());
+                     "[Abridged] " + getSubject(), getAbridgedBody());
                }
             }
          }
@@ -121,10 +121,6 @@ public class JournalOperations {
          journalData.getResults().errorf("Exception sending Journal notification %s", Lib.exceptionToString(ex));
       }
       return journalData;
-   }
-
-   private String getAbridgedSubject() {
-      return String.format("Journal for \"%s\"", workItem.getAtsId());
    }
 
    private String getAbridgedBody() {
@@ -160,7 +156,7 @@ public class JournalOperations {
    }
 
    private String getSubject() {
-      return String.format("OSEE ATS Journal for \"%s\"", workItem.toStringWithAtsId());
+      return String.format("OSEE ATS Journal for %s", workItem.getAtsId());
    }
 
 }

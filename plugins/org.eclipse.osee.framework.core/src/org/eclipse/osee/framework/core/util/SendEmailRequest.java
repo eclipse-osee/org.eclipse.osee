@@ -33,6 +33,11 @@ public class SendEmailRequest {
       // for JSON serialization
    }
 
+   /**
+    * @param subject sanitized subject line; must not contain user-input titles or sensitive data
+    * @param emailAddressesAbridged addresses to send abridged email with same subject and abridged body
+    * @param bodyAbridged generic email body with no sensitive data
+    */
    public SendEmailRequest(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject,
       String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String bodyAbridged) {
       this.toAddresses = toAddresses != null ? toAddresses : Collections.emptyList();
