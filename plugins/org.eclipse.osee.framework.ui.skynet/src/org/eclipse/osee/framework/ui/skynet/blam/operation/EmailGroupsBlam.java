@@ -65,7 +65,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class EmailGroupsBlam extends AbstractBlam {
    private XArtifactList templateList, groupsList;
    private XText bodyTextBox;
-   private XText subjectTextBox, abridgedSubjectTextBox, replyToAddressTextBox;
+   private XText subjectTextBox, replyToAddressTextBox;
    private XCheckBox isBodyHtmlCheckbox;
    private XCheckBox certifyNoSensitiveDataCheckbox;
    private ExecutorService emailTheadPool;
@@ -83,7 +83,6 @@ public class EmailGroupsBlam extends AbstractBlam {
          @Override
          public void run() {
             data.setSubject(subjectTextBox.get());
-            data.setSubjectAbridged(abridgedSubjectTextBox.get());
             data.setReplyToAddress(replyToAddressTextBox.get());
             data.setFromAddress(OseeApiService.user().getEmail());
             data.setBody(bodyTextBox.get());
@@ -136,13 +135,13 @@ public class EmailGroupsBlam extends AbstractBlam {
             Collection<String> abridgedAddresses = Collections.emptyList();
             String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
 
-            if (Strings.isValid(data.getSubjectAbridged()) && EmailUtil.isEmailValid(abridgedEmail)) {
+            if (EmailUtil.isEmailValid(abridgedEmail)) {
                abridgedAddresses = Arrays.asList(abridgedEmail);
             }
 
             SendEmailRequest request = new SendEmailRequest(Arrays.asList(emailAddress), data.getFromAddress(),
                data.getReplyToAddress(), data.getSubject(), data.getHtmlResult(user.getName(), user.getId()),
-               BodyType.Html, abridgedAddresses, data.getSubjectAbridged(), "Abridged - See Primary Email for Details");
+               BodyType.Html, abridgedAddresses, "Abridged - See Primary Email for Details");
 
             String logDescription = String.format("%s - [%s]", user, emailAddress);
             if (!abridgedAddresses.isEmpty()) {
@@ -199,8 +198,6 @@ public class EmailGroupsBlam extends AbstractBlam {
          isBodyHtmlCheckbox = (XCheckBox) xWidget;
       } else if (xWidget.getLabel().equals("Subject")) {
          subjectTextBox = (XText) xWidget;
-      } else if (xWidget.getLabel().equals("Abridged Subject")) {
-         abridgedSubjectTextBox = (XText) xWidget;
       } else if (xWidget.getLabel().equals("Reply-To Address")) {
          replyToAddressTextBox = (XText) xWidget;
          replyToAddressTextBox.set(OseeApiService.user().getEmail());
@@ -259,7 +256,7 @@ public class EmailGroupsBlam extends AbstractBlam {
    @Override
    public List<XWidgetData> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
-            wb.andXCheckbox("I certify the subject lines do not contain restricted or sensitive data.").andDefault(
+      wb.andXCheckbox("I certify the subject lines do not contain restricted or sensitive data.").andDefault(
          false).andHorizLabel().andLabelAfter().andRequired().endWidget();
       wb.andWidget("Groups", "XArtifactList").andMultiSelect().endWidget();
       wb.andWidget("Template", "XArtifactList").endWidget();
@@ -268,14 +265,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       wb.andXLabel("      - WARNING: Email subject lines are NOT encrypted.").endWidget();
       wb.andXLabel(
          "      - Do NOT include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " in the subject line.").endWidget();
-      wb.andXText("Abridged Subject").endWidget();
-      // @formatter:off
-      wb.andXLabel("      - If an Abridged Subject is included, emails will be sent to users with potential external email.").endWidget();
-      wb.andXLabel("      - Abridged Subject MUST be sanitized for general consumption and should give useful information.").endWidget();
-      wb.andXLabel("      - Abridged Subject is also NOT encrypted and must not include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + ".").endWidget();
-      wb.andXLabel("      - NOTE: Email Body will NOT be included in these emails, just the Abridged Subject.").endWidget();
-      wb.andXLabel("      - If no entry is given, NO abridged emails will be sent to users with Abridged Email set.").endWidget();
-      // @formatter:on
+      wb.andXLabel("      - If emails are sent to abridged recipients, they will use this same sanitized subject line.").endWidget();
       wb.andXCheckbox("Body is HTML").andDefault(true).andHorizLabel().andLabelAfter().endWidget();
       wb.andXText("Body").andFillVertically().endWidget();
       wb.andXButtonPush("Preview Message").endWidget();

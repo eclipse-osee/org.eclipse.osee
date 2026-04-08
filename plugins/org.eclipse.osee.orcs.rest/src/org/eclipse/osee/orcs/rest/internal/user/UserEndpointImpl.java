@@ -100,7 +100,7 @@ public class UserEndpointImpl implements UserEndpoint {
       try {
          IOseeEmail emailMessage = orcsApi.getEmailService().create(request.getToAddresses(), request.getFromAddress(),
             request.getReplyToAddress(), request.getSubject(), request.getBody(), request.getBodyType(),
-            request.getEmailAddressesAbridged(), request.getSubjectAbridged(), request.getBodyAbridged());
+            request.getEmailAddressesAbridged(), request.getBodyAbridged());
 
          if (request.getCcAddresses() != null && !request.getCcAddresses().isEmpty()) {
             emailMessage.setRecipients(Message.RecipientType.CC, request.getCcAddresses().toArray(new String[0]));
@@ -115,5 +115,4 @@ public class UserEndpointImpl implements UserEndpoint {
       }
       return rd;
    }
-
 }

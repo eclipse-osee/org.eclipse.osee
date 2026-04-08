@@ -122,7 +122,7 @@ public class SendNotificationEvents {
       for (AtsNotificationEvent notificationEvent : notificationEvents) {
          String description = notificationEvent.getSubjectDescription();
          if (emailType.isAbridged()) {
-            description = notificationEvent.getSubjectDescriptionAbridged();
+            description = notificationEvent.getSanitizedSubjectDescription();
          }
          if (anyCancelable) {
             sb.append(AHTML.addRowMultiColumnTable(new String[] {
@@ -209,19 +209,20 @@ public class SendNotificationEvents {
       if (!Strings.isValid(result)) {
          if (notificationEvents.size() == 1) {
             AtsNotificationEvent event = notificationEvents.iterator().next();
-            String subject = event.getSubjectType();
-            String description = event.getSubjectDescription();
-            if (emailType.isAbridged()) {
-               subject += " (abridged)";
-               description = event.getSubjectDescriptionAbridged();
+            // Always use the abridged (sanitized) description in the subject line since subjects are not encrypted;
+            // never fall back to getSubjectDescription() as it may contain unsanitized user input
+            String description = event.getSanitizedSubjectDescription();
+            if (Strings.isValid(description)) {
+               result = Strings.truncate("OSEE Notification" + " - " + event.getSubjectType() + " - " + description, 128);
+            } else {
+               result = Strings.truncate("OSEE Notification" + " - " + event.getSubjectType(), 128);
             }
-            result = Strings.truncate("OSEE Notification" + " - " + subject + " - " + description, 128);
          } else {
             result = "OSEE Notification";
          }
       }
-      if (Strings.isValid(result) && emailType.isAbridged()) {
-         result += " (abridged)";
+      if (emailType.isAbridged()) {
+         result = "[Abridged] " + result;
       }
       return result;
    }

@@ -27,7 +27,7 @@ public class AtsNotificationEvent {
    private String fromEmailAddress;
    private String subjectType;
    private String subjectDescription;
-   private String subjectDescriptionAbridged;
+   private String sanitizedSubjectDescription;
    private String url;
    private String cancelUrl;
 
@@ -54,16 +54,19 @@ public class AtsNotificationEvent {
       this.subjectDescription = subjectDescription;
    }
 
-   public String getSubjectDescriptionAbridged() {
-      return subjectDescriptionAbridged;
+   /**
+    * @return sanitized subject description safe for use in unencrypted email subject lines (no user-input titles)
+    */
+   public String getSanitizedSubjectDescription() {
+      return sanitizedSubjectDescription;
    }
 
    /**
-    * @param subjectDescriptionAbridged Must be generic subject desc with no detailed information. eg: "for Change
-    * Request" vs workflow title
+    * @param sanitizedSubjectDescription Must be generic subject desc with no detailed/sensitive information. eg: "for
+    * Change Request" or ATS ID only — never workflow titles or other user input
     */
-   public void setSubjectDescriptionAbridged(String subjectDescriptionAbridged) {
-      this.subjectDescriptionAbridged = subjectDescriptionAbridged;
+   public void setSanitizedSubjectDescription(String sanitizedSubjectDescription) {
+      this.sanitizedSubjectDescription = sanitizedSubjectDescription;
    }
 
    public String getUrl() {

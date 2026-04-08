@@ -45,7 +45,9 @@ public class OseeEmailService implements IOseeEmailService {
       private final String organizationSpecificCertificateInstructions;
       private final String emailCertificateLdapUrl;
 
-      private EmailPreferences(String defaultMailServer, boolean encryptionEnabled, String certificateUploadOverrideLink, String organizationSpecificCertificateInstructions, String emailCertificateLdapUrl) {
+      private EmailPreferences(String defaultMailServer, boolean encryptionEnabled,
+         String certificateUploadOverrideLink, String organizationSpecificCertificateInstructions,
+         String emailCertificateLdapUrl) {
          this.defaultMailServer = defaultMailServer;
          this.encryptionEnabled = encryptionEnabled;
          this.certificateUploadOverrideLink = certificateUploadOverrideLink;
@@ -89,21 +91,21 @@ public class OseeEmailService implements IOseeEmailService {
 
    @Override
    public IOseeEmail create(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject,
-      String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String subjectAbridged,
-      String bodyAbridged) {
+      String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String bodyAbridged) {
       EmailPreferences preferences = loadPreferences();
-      OseeEmailServer email = new OseeEmailServer(toAddresses, fromAddress, replyToAddress, subject, body, bodyType,
-         emailAddressesAbridged, subjectAbridged, bodyAbridged);
+      OseeEmailServer email =
+         new OseeEmailServer(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, emailAddressesAbridged,
+            bodyAbridged);
       applyPreferences(email, preferences);
       return email;
    }
 
    @Override
    public IOseeEmail create(String fromEmail, String toAddress, String subject, String body, BodyType bodyType,
-      String emailAddressAbridged, String subjectAbridged, String bodyAbridged) {
+      String emailAddressAbridged, String bodyAbridged) {
       EmailPreferences preferences = loadPreferences();
-      OseeEmailServer email = new OseeEmailServer(fromEmail, toAddress, subject, body, bodyType, emailAddressAbridged,
-         subjectAbridged, bodyAbridged);
+      OseeEmailServer email =
+         new OseeEmailServer(fromEmail, toAddress, subject, body, bodyType, emailAddressAbridged, bodyAbridged);
       applyPreferences(email, preferences);
       return email;
    }

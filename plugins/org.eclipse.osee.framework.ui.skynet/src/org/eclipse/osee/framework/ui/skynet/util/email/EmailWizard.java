@@ -70,7 +70,7 @@ public class EmailWizard extends Wizard {
             return true;
          }
          if (wizardPage.getToAddresses().length == 0 && wizardPage.getCcAddresses().length == 0 && wizardPage.getBccAddresses().length == 0) {
-            AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not sent"));
+            AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail can not be sent"));
             return true;
          }
 
@@ -85,7 +85,6 @@ public class EmailWizard extends Wizard {
           * allow/enforce a sanitized abridged subject.
           */
          Collection<String> toAbridgedAddresses = Collections.emptyList();
-         String abridgedSubject = "";
 
          String finalHtml = getFinalHtml();
 
@@ -99,7 +98,6 @@ public class EmailWizard extends Wizard {
          request.setBody(finalHtml);
          request.setBodyType(BodyType.Html);
          request.setEmailAddressesAbridged(toAbridgedAddresses);
-         request.setSubjectAbridged(abridgedSubject);
          request.setBodyAbridged(OseeEmail.EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL);
 
          OseeApiService.serverEnpoints().getOrcsUserEndpoint().sendEmail(request);

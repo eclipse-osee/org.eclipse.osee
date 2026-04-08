@@ -27,22 +27,27 @@ public class SendEmailRequest {
    private String body;
    private BodyType bodyType;
    private Collection<String> emailAddressesAbridged = Collections.emptyList();
-   private String subjectAbridged;
    private String bodyAbridged;
 
    public SendEmailRequest() {
       // for JSON serialization
    }
 
-   public SendEmailRequest(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String subjectAbridged, String bodyAbridged) {
+   /**
+    * @param subject sanitized subject line; must not contain user-input titles or sensitive data
+    * @param emailAddressesAbridged addresses to send abridged email with same subject and abridged body
+    * @param bodyAbridged generic email body with no sensitive data
+    */
+   public SendEmailRequest(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject,
+      String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String bodyAbridged) {
       this.toAddresses = toAddresses != null ? toAddresses : Collections.emptyList();
       this.fromAddress = fromAddress;
       this.replyToAddress = replyToAddress;
       this.subject = subject;
       this.body = body;
       this.bodyType = bodyType;
-      this.emailAddressesAbridged = emailAddressesAbridged != null ? emailAddressesAbridged : Collections.emptyList();
-      this.subjectAbridged = subjectAbridged;
+      this.emailAddressesAbridged =
+         emailAddressesAbridged != null ? emailAddressesAbridged : Collections.emptyList();
       this.bodyAbridged = bodyAbridged;
    }
 
@@ -115,15 +120,8 @@ public class SendEmailRequest {
    }
 
    public void setEmailAddressesAbridged(Collection<String> emailAddressesAbridged) {
-      this.emailAddressesAbridged = emailAddressesAbridged != null ? emailAddressesAbridged : Collections.emptyList();
-   }
-
-   public String getSubjectAbridged() {
-      return subjectAbridged;
-   }
-
-   public void setSubjectAbridged(String subjectAbridged) {
-      this.subjectAbridged = subjectAbridged;
+      this.emailAddressesAbridged =
+         emailAddressesAbridged != null ? emailAddressesAbridged : Collections.emptyList();
    }
 
    public String getBodyAbridged() {

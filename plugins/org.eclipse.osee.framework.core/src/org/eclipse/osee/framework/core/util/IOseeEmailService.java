@@ -21,12 +21,23 @@ import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
  */
 public interface IOseeEmailService {
 
+   /**
+    * @param subject sanitized subject line; must not contain user-input titles or sensitive data. Abridged email subject
+    * is auto-derived as "[Abridged] " + subject.
+    * @param emailAddressesAbridged addresses to send abridged email with abridged body
+    * @param bodyAbridged generic email body with no sensitive data
+    */
    IOseeEmail create(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject,
-      String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String subjectAbridged,
-      String bodyAbridged);
+      String body, BodyType bodyType, Collection<String> emailAddressesAbridged, String bodyAbridged);
 
+   /**
+    * @param subject sanitized subject line; must not contain user-input titles or sensitive data. Abridged email subject
+    * is auto-derived as "[Abridged] " + subject.
+    * @param emailAddressAbridged address to send abridged email with abridged body
+    * @param bodyAbridged generic email body with no sensitive data
+    */
    IOseeEmail create(String fromEmail, String toAddress, String subject, String body, BodyType bodyType,
-      String emailAddressAbridged, String subjectAbridged, String bodyAbridged);
+      String emailAddressAbridged, String bodyAbridged);
 
    IOseeEmail create();
 
