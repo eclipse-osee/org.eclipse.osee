@@ -70,7 +70,7 @@ public class EmailWizard extends Wizard {
             return true;
          }
          if (wizardPage.getToAddresses().length == 0 && wizardPage.getCcAddresses().length == 0 && wizardPage.getBccAddresses().length == 0) {
-            AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not be sent"));
+            AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail can not be sent"));
             return true;
          }
 
