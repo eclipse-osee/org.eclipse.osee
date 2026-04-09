@@ -298,6 +298,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(DefaultMailServer)
       .zeroOrOne(Dictionary)
       .any(GeneralStringData)
+      .any(SavedSearch)
       .zeroOrOne(ProductLinePreferences)
       .zeroOrOne(WebPreferences));
 

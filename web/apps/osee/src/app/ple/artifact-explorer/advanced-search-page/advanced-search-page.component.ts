@@ -110,6 +110,7 @@ type SavedSearch = {
 	attributeTypes?: NamedId[];
 	exactMatch?: boolean;
 	searchById?: boolean;
+	global?: boolean;
 };
 
 @Component({
@@ -742,6 +743,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 	saveErrorMessage = '';
 	// Author: Sofiia Holovko (sholovko) Task 243 - Show success notification after a search is saved
 	saveSuccessMessage = '';
+	// Task 261 - UI-only checkbox state for a future global-save option
+	saveAsGlobal = false;
 	// Author: Sofiia Holovko (sholovko) Task 197
 	editingSearchId: number | null = null;
 	editingSearchTitle = '';
@@ -1273,6 +1276,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 			exactMatch: !!savedSearch.exactMatch,
 			searchById: !!savedSearch.searchById,
 		};
+		this.saveAsGlobal = !!savedSearch.global;
 		this.searchValue = savedSearch.query ?? '';
 		this.artTypesFilter.set('');
 		this.attrTypesFilter.set('');
@@ -1775,6 +1779,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 				attributeTypes: this.data.attributeTypes,
 				exactMatch: this.data.exactMatch,
 				searchById: this.data.searchById,
+				global: this.saveAsGlobal,
 			})
 			.pipe(take(1))
 			.subscribe({
@@ -2360,6 +2365,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 		this.data = { ...defaultAdvancedSearchCriteria };
 		this.searchValue = '';
 		this.data.searchTitle = '';
+		this.saveAsGlobal = false;
 		this.selectedArtifactType.set(null);
 
 		//Author: Sofiia Holovko (sholovko) Task 145 - Clear search results on new search
