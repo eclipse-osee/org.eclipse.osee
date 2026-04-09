@@ -13,74 +13,37 @@
  * Author: Eihab Khudhair (ekhudhai)
  * Task 162 - Moved Advanced Search Form implementations into Advanced Search Page
  **********************************************************************/
-//import { Component, computed, signal, inject, effect } from '@angular/core'; // Author: Kris Graham (kgraha16) Task 138 - Added effect import to handle attribute column change
 import { Component, computed, signal, inject, effect, ViewChild, OnInit } from '@angular/core'; // Author: Eihab Khudhair (ekhudhai) Task 178 - Preserve search state after navigating
 import { toSignal } from '@angular/core/rxjs-interop'; // Author: Eihab Khudhair (ekhudhai) Task 178 - Required for artifactTypes/attributeTypes signals
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
-import {
-	MatAutocomplete,
-	MatAutocompleteSelectedEvent,
-	MatAutocompleteTrigger,
-} from '@angular/material/autocomplete';
-//import { MatMenuModule } from '@angular/material/menu'; // Author: Kris Graham (kgraha16) Task 122 - Added MatMenu to stylize Column button.
+import { MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger, } from '@angular/material/autocomplete';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Author: Eihab Khudhair (ekhudhai) Task 207 - Open Mass Edit dialog
-import { MatButtonModule } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
+import { MatButtonModule, MatIconButton } from '@angular/material/button'; // Author: Kris Graham (kgraha16) Task 112 - Added MatButton to stylize New Search.
 import { MatDividerModule } from '@angular/material/divider'; // Author: Kris Graham (kgraha16) Task 131 - Added MatDivider to divide Columns menu.
 import { MatSelectModule } from '@angular/material/select'; // Author: Kris Graham (kgraha16) Task 153 - Added MatSelect to display sorting options.
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatCheckboxChange } from '@angular/material/checkbox'; // Author: Kris Graham (kgraha16) Task 139 - Added MatCheckboxChange to capture checkbox toggle event.
+import { MatCheckboxModule, MatCheckboxChange } from '@angular/material/checkbox'; // Author: Kris Graham (kgraha16) Task 139 - Added MatCheckboxChange to capture checkbox toggle event.
 import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { MatIconButton } from '@angular/material/button';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { BehaviorSubject, switchMap, combineLatest, forkJoin, of } from 'rxjs'; // Author: Eihab Khudhair (ekhudhai) Task 182 - Resolve branchType for navigation
 import { Router } from '@angular/router'; //Author: Eihab Khudhair (ekhudhai) Task 175 - Implement artifact navigation logic (Router navigation to Artifact Explorer)
 import { BranchPickerComponent } from '@osee/shared/components';
 import { apiURL } from '@osee/environments';
-/**
- * Task 162 - Updated relative import paths because logic moved from lib/components into the page folder
- * (previously ../../../../../..., now ../lib/...)
- */
-import {
-	AdvancedSearchCriteria,
-	defaultAdvancedSearchCriteria,
-} from '../lib/types/artifact-search';
+import { AdvancedSearchCriteria, defaultAdvancedSearchCriteria, } from '../lib/types/artifact-search'; // Task 162 - Updated relative import paths because logic moved from lib/components into the page folder (previously ../../../../../..., now ../lib/...)
 import { MassEditDialogComponent, MassEditDialogResult } from './mass-edit-dialog.component'; // Author: Eihab Khudhair (ekhudhai) Task 207
-import {
-    SavedSearchesDialogComponent,
-	SavedSearchesDialogResult,
-} from './saved-searches-dialog.component';
-
-
-/**
- * Author: Eihab Khudhair (ekhudhai)
- * Task 143 - Populate dynamic results table with query search results
- */
-
-import { catchError, map, take } from 'rxjs/operators';
-import { UiService } from '@osee/shared/services';
-
-/**
- * Task 162 - Updated relative import path to match page location
- */
-import { ArtifactExplorerHttpService } from '../lib/services/artifact-explorer-http.service';
-
-/**
- * Author: Eihab Khudhair (ekhudhai)
- * Task 143 - Use existing typed models instead of any
- */
-import {
-	artifactTokenWithIcon,
-	artifactWithRelations,
-} from '@osee/artifact-with-relations/types';
+import { SavedSearchesDialogComponent, SavedSearchesDialogResult, } from './saved-searches-dialog.component';
+import { catchError, map, take } from 'rxjs/operators'; // Author: Eihab Khudhair (ekhudhai) Task 143 - Populate dynamic results table with query search results
+import { UiService } from '@osee/shared/services'; // Author: Eihab Khudhair (ekhudhai) Task 143 - Populate dynamic results table with query search results
+import { ArtifactExplorerHttpService } from '../lib/services/artifact-explorer-http.service'; // Task 162 - Updated relative import path to match page location
+import { artifactTokenWithIcon, artifactWithRelations, } from '@osee/artifact-with-relations/types'; // Author: Eihab Khudhair (ekhudhai) Task 143 - Use existing typed models instead of any
 
 /**
  * Author: Eihab Khudhair (ekhudhai)
