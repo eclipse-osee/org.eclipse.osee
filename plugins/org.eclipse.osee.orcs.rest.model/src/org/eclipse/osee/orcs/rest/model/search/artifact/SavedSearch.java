@@ -23,13 +23,15 @@ public class SavedSearch {
    private List<SavedSearchSelection> attributeTypes;
    private Boolean exactMatch;
    private Boolean searchById;
+   private Boolean global;
 
    @JsonCreator
    public SavedSearch(@JsonProperty("title") String title, @JsonProperty("query") String query,
       @JsonProperty("timestamp") Long timestamp,
       @JsonProperty("artifactTypes") List<SavedSearchSelection> artifactTypes,
       @JsonProperty("attributeTypes") List<SavedSearchSelection> attributeTypes,
-      @JsonProperty("exactMatch") Boolean exactMatch, @JsonProperty("searchById") Boolean searchById) {
+      @JsonProperty("exactMatch") Boolean exactMatch, @JsonProperty("searchById") Boolean searchById,
+      @JsonProperty("global") Boolean global) {
       this.title = title;
       this.query = query;
       this.timestamp = timestamp;
@@ -37,6 +39,7 @@ public class SavedSearch {
       this.attributeTypes = attributeTypes != null ? attributeTypes : new ArrayList<>();
       this.exactMatch = exactMatch != null ? exactMatch : Boolean.FALSE;
       this.searchById = searchById != null ? searchById : Boolean.FALSE;
+      this.global = global != null ? global : Boolean.FALSE;
    }
 
    // getters and setters
@@ -102,6 +105,14 @@ public class SavedSearch {
 
    public void setSearchById(Boolean searchById) {
       this.searchById = searchById != null ? searchById : Boolean.FALSE;
+   }
+
+   public Boolean getGlobal() {
+      return global;
+   }
+
+   public void setGlobal(Boolean global) {
+      this.global = global != null ? global : Boolean.FALSE;
    }
 
    @JsonIgnoreProperties(ignoreUnknown = true)

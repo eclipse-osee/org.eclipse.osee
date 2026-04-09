@@ -23,10 +23,12 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -48,7 +50,7 @@ public class SavedSearchEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public Response createSavedSearch(SavedSearch savedSearch) {
       validateSavedSearch(savedSearch);
-      UserId currentUser = getCurrentUserId();
+      ArtifactId targetArtifact = getSavedSearchContainer(savedSearch.getGlobal());
 
       savedSearch.setId(null);
       String payload = toPayload(savedSearch);
@@ -56,7 +58,7 @@ public class SavedSearchEndpoint {
       try {
          TransactionBuilder tx =
             orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Create Saved Search");
-         AttributeId attributeId = tx.createAttribute(currentUser, CoreAttributeTypes.SavedSearch, payload);
+         AttributeId attributeId = tx.createAttribute(targetArtifact, CoreAttributeTypes.SavedSearch, payload);
          tx.commit();
          savedSearch.setId(attributeId.getId());
          return Response.ok(savedSearch).build();
@@ -68,24 +70,35 @@ public class SavedSearchEndpoint {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Response getSavedSearches() {
-      UserId currentUser = getCurrentUserId();
-
       try {
-         ArtifactReadable userArtifact =
-            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(currentUser).asArtifactOrSentinel();
-
-         List<SavedSearch> savedSearches = new ArrayList<>();
-         if (userArtifact.isInvalid()) {
-            return Response.ok(savedSearches).build();
-         }
-
-         for (IAttribute<String> attribute : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
-            savedSearches.add(fromPayload(attribute.getValue(), attribute.getId()));
-         }
-         savedSearches.sort(Comparator.comparing(SavedSearch::getId, Comparator.nullsLast(Long::compareTo)).reversed());
+         List<SavedSearch> savedSearches = new ArrayList<>(getPrivateSavedSearchesInternal());
+         savedSearches.addAll(getGlobalSavedSearchesInternal());
+         sortSavedSearches(savedSearches);
          return Response.ok(savedSearches).build();
       } catch (Exception ex) {
          throw new WebApplicationException("Error getting SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @GET
+   @Path("/private")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getPrivateSavedSearches() {
+      try {
+         return Response.ok(getPrivateSavedSearchesInternal()).build();
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error getting private SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @GET
+   @Path("/global")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getGlobalSavedSearches() {
+      try {
+         return Response.ok(getGlobalSavedSearchesInternal()).build();
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error getting global SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
       }
    }
 
@@ -96,33 +109,13 @@ public class SavedSearchEndpoint {
          throw new WebApplicationException("id is required", Status.BAD_REQUEST);
       }
 
-      UserId currentUser = getCurrentUserId();
-
       try {
-         ArtifactReadable userArtifact =
-            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(currentUser).asArtifactOrSentinel();
-
-         if (userArtifact.isInvalid()) {
-            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
-         }
-
-         IAttribute<String> toDelete = null;
-         for (IAttribute<String> attr : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
-            if (attr.getId() != null && attr.getId().equals(id)) {
-               toDelete = attr;
-               break;
-            }
-         }
-
-         if (toDelete == null) {
-            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
-         }
+         SavedSearchLocation location = findSavedSearchLocation(id);
 
          TransactionBuilder tx =
             orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Delete Saved Search");
 
-         // Remove the attribute from the user's artifact
-         tx.deleteByAttributeId(currentUser, AttributeId.valueOf(id));
+         tx.deleteByAttributeId(location.getContainer(), AttributeId.valueOf(id));
          tx.commit();
 
          return Response.noContent().build();
@@ -143,35 +136,24 @@ public class SavedSearchEndpoint {
       }
 
       validateSavedSearch(savedSearch);
-      UserId currentUser = getCurrentUserId();
 
       try {
-         ArtifactReadable userArtifact =
-            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(currentUser).asArtifactOrSentinel();
-
-         if (userArtifact.isInvalid()) {
-            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
-         }
-
-         IAttribute<String> existing = null;
-         for (IAttribute<String> attr : userArtifact.getAttributeList(CoreAttributeTypes.SavedSearch)) {
-            if (attr.getId() != null && attr.getId().equals(id)) {
-               existing = attr;
-               break;
-            }
-         }
-
-         if (existing == null) {
-            throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
-         }
-
+         SavedSearchLocation existingLocation = findSavedSearchLocation(id);
+         ArtifactId targetContainer = getSavedSearchContainer(savedSearch.getGlobal());
          String payload = toPayload(savedSearch);
          TransactionBuilder tx =
             orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Update Saved Search");
-         tx.setAttributeById(currentUser, AttributeId.valueOf(id), payload);
-         tx.commit();
 
-         savedSearch.setId(id);
+         if (existingLocation.getContainer().equals(targetContainer)) {
+            tx.setAttributeById(targetContainer, AttributeId.valueOf(id), payload);
+            tx.commit();
+            savedSearch.setId(id);
+         } else {
+            tx.deleteByAttributeId(existingLocation.getContainer(), AttributeId.valueOf(id));
+            AttributeId newAttributeId = tx.createAttribute(targetContainer, CoreAttributeTypes.SavedSearch, payload);
+            tx.commit();
+            savedSearch.setId(newAttributeId.getId());
+         }
          return Response.ok(savedSearch).build();
       } catch (WebApplicationException wae) {
          throw wae;
@@ -204,6 +186,9 @@ public class SavedSearchEndpoint {
       if (savedSearch.getSearchById() == null) {
          savedSearch.setSearchById(Boolean.FALSE);
       }
+      if (savedSearch.getGlobal() == null) {
+         savedSearch.setGlobal(Boolean.FALSE);
+      }
    }
 
    private UserId getCurrentUserId() {
@@ -212,6 +197,83 @@ public class SavedSearchEndpoint {
          throw new WebApplicationException("No authenticated user found", Status.UNAUTHORIZED);
       }
       return currentUser;
+   }
+
+   private ArtifactId getSavedSearchContainer(Boolean global) {
+      if (Boolean.TRUE.equals(global)) {
+         return CoreArtifactTokens.GlobalPreferences;
+      }
+      return getCurrentUserId();
+   }
+
+   private List<SavedSearch> getPrivateSavedSearchesInternal() {
+      List<SavedSearch> savedSearches = getSavedSearchesFromContainer(getCurrentUserId(), false);
+      sortSavedSearches(savedSearches);
+      return savedSearches;
+   }
+
+   private List<SavedSearch> getGlobalSavedSearchesInternal() {
+      List<SavedSearch> savedSearches =
+         getSavedSearchesFromContainer(CoreArtifactTokens.GlobalPreferences, true);
+      sortSavedSearches(savedSearches);
+      return savedSearches;
+   }
+
+   private void sortSavedSearches(List<SavedSearch> savedSearches) {
+      savedSearches.sort(Comparator.comparing(SavedSearch::getId, Comparator.nullsLast(Long::compareTo)).reversed());
+   }
+
+   private List<SavedSearch> getSavedSearchesFromContainer(ArtifactId artifactId, boolean isGlobalContainer) {
+      ArtifactReadable container =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(artifactId).asArtifactOrSentinel();
+
+      List<SavedSearch> savedSearches = new ArrayList<>();
+      if (container.isInvalid()) {
+         return savedSearches;
+      }
+
+      for (IAttribute<String> attribute : container.getAttributeList(CoreAttributeTypes.SavedSearch)) {
+         SavedSearch savedSearch = fromPayload(attribute.getValue(), attribute.getId());
+         if (isGlobalContainer) {
+            savedSearch.setGlobal(Boolean.TRUE);
+         }
+         savedSearches.add(savedSearch);
+      }
+      return savedSearches;
+   }
+
+   private SavedSearchLocation findSavedSearchLocation(Long id) {
+      if (id == null || id <= 0) {
+         throw new WebApplicationException("id is required", Status.BAD_REQUEST);
+      }
+
+      SavedSearchLocation personalLocation = findSavedSearchLocation(getCurrentUserId(), id, false);
+      if (personalLocation != null) {
+         return personalLocation;
+      }
+
+      SavedSearchLocation globalLocation = findSavedSearchLocation(CoreArtifactTokens.GlobalPreferences, id, true);
+      if (globalLocation != null) {
+         return globalLocation;
+      }
+
+      throw new WebApplicationException("SavedSearch not found", Status.NOT_FOUND);
+   }
+
+   private SavedSearchLocation findSavedSearchLocation(ArtifactId containerId, Long attributeId, boolean global) {
+      ArtifactReadable container =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(containerId).asArtifactOrSentinel();
+
+      if (container.isInvalid()) {
+         return null;
+      }
+
+      for (IAttribute<String> attr : container.getAttributeList(CoreAttributeTypes.SavedSearch)) {
+         if (attr.getId() != null && attr.getId().equals(attributeId)) {
+            return new SavedSearchLocation(containerId, global);
+         }
+      }
+      return null;
    }
 
    private String toPayload(SavedSearch savedSearch) {
@@ -240,6 +302,7 @@ public class SavedSearchEndpoint {
       public final List<SavedSearch.SavedSearchSelection> attributeTypes;
       public final Boolean exactMatch;
       public final Boolean searchById;
+      public final Boolean global;
 
       private SavedSearchPayload(SavedSearch savedSearch) {
          this.title = savedSearch.getTitle();
@@ -249,6 +312,25 @@ public class SavedSearchEndpoint {
          this.attributeTypes = savedSearch.getAttributeTypes();
          this.exactMatch = savedSearch.getExactMatch();
          this.searchById = savedSearch.getSearchById();
+         this.global = savedSearch.getGlobal();
+      }
+   }
+
+   private static class SavedSearchLocation {
+      private final ArtifactId container;
+      private final boolean global;
+
+      private SavedSearchLocation(ArtifactId container, boolean global) {
+         this.container = container;
+         this.global = global;
+      }
+
+      public ArtifactId getContainer() {
+         return container;
+      }
+
+      public boolean isGlobal() {
+         return global;
       }
    }
 }

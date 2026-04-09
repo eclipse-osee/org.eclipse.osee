@@ -19,6 +19,7 @@ type SavedSearchFilters = {
 	attributeTypes: NamedId[];
 	exactMatch: boolean;
 	searchById: boolean;
+	global?: boolean;
 };
 
 @Injectable({
@@ -60,5 +61,13 @@ export class ArtifactUiService {
 		searchCriteria: SavedSearchFilters
 	) {
 		return this.artifactService.saveSearch(title, query, searchCriteria);
+	}
+
+	getPrivateSavedSearches() {
+		return this.artifactService.getPrivateSavedSearches();
+	}
+
+	getGlobalSavedSearches() {
+		return this.artifactService.getGlobalSavedSearches();
 	}
 }
