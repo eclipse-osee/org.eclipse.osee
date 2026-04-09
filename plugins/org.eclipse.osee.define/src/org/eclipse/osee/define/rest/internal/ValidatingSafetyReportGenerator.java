@@ -42,8 +42,7 @@ public class ValidatingSafetyReportGenerator {
    private ValidatingSafetyInformationAccumulator accumulator;
    private QueryFactory queryFactory;
    private ComponentUtil componentUtil;
-   private final TraceMatch match = new TraceMatch("\\^SRS\\s*([^;]+);?", "\\[?(\\{[^\\}]+\\})(.*)");
-   private final TraceAccumulator traces = new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", match);
+   private TraceAccumulator traces = SafetyReportConstants.newTraceAccumulator();
    private final ActivityLog activityLog;
    private String[] prevValues;
    private final PartitionLevels partitionLevels = new PartitionLevels();
@@ -119,6 +118,20 @@ public class ValidatingSafetyReportGenerator {
       writer.endWorkbook();
    }
 
+   public void runOperation(OrcsApi providedOrcs, BranchId branchId, ArtifactId view,
+      TraceAccumulator preloadedTraces, Writer providedWriter) throws IOException {
+      ISheetWriter writer = new ExcelXmlWriter(providedWriter);
+
+      init(providedOrcs, branchId, writer, view);
+
+      this.traces = preloadedTraces;
+      ArtifactReadable functionsFolder =
+         queryFactory.fromBranch(branchId).andTypeEquals(CoreArtifactTypes.Folder).andNameEquals(
+            "System Functions").getResults().getExactlyOne();
+      processSystemFunctions(functionsFolder, writer);
+
+      writer.endWorkbook();
+   }
    private void processSystemFunctions(ArtifactReadable functionsFolder, ISheetWriter writer) throws IOException {
       writer.startSheet("report", columnHeadings.length);
       writer.writeRow((Object[]) columnHeadings);
