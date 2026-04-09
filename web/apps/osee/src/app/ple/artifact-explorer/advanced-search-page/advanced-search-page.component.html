@@ -426,6 +426,13 @@
         </div>
       </div>
 
+      <div
+        *ngIf="hasMixedSelectedArtifactTypes()"
+        class="tw-mb-2 tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-amber-600 dark:tw-text-amber-400">
+        <mat-icon class="tw-text-base">info</mat-icon>
+        <span>To use Mass Edit, please select artifacts of the same type.</span>
+      </div>
+
       <mat-menu #filterMenu="matMenu">
         <div class="tw-px-3 tw-py-2 tw-flex tw-flex-col tw-gap-2">
     <span class="tw-text-xs tw-font-semibold tw-text-gray-500">
@@ -495,7 +502,6 @@
 
       <mat-menu #selectMenu="matMenu">
         <button mat-menu-item (click)="selectSearchResultsByArtifactType(null)">
-          <mat-icon>select_all</mat-icon>
           <span>All</span>
         </button>
 
@@ -503,18 +509,7 @@
           mat-menu-item
           *ngFor="let t of availableArtifactTypes()"
           (click)="selectSearchResultsByArtifactType(t)">
-          <mat-icon>category</mat-icon>
           <span>{{ t }}</span>
-        </button>
-
-        <mat-divider></mat-divider>
-
-        <button
-          mat-menu-item
-          (click)="deselectAllSearchResults()"
-          [disabled]="!hasSelectedRows()">
-          <mat-icon>remove_done</mat-icon>
-          <span>Deselect All</span>
         </button>
       </mat-menu>
 
