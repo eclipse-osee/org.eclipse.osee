@@ -71,13 +71,34 @@ public class SavedSearchEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public Response getSavedSearches() {
       try {
-         List<SavedSearch> savedSearches = new ArrayList<>();
-         savedSearches.addAll(getSavedSearchesFromContainer(getCurrentUserId(), false));
-         savedSearches.addAll(getSavedSearchesFromContainer(CoreArtifactTokens.GlobalPreferences, true));
-         savedSearches.sort(Comparator.comparing(SavedSearch::getId, Comparator.nullsLast(Long::compareTo)).reversed());
+         List<SavedSearch> savedSearches = new ArrayList<>(getPrivateSavedSearchesInternal());
+         savedSearches.addAll(getGlobalSavedSearchesInternal());
+         sortSavedSearches(savedSearches);
          return Response.ok(savedSearches).build();
       } catch (Exception ex) {
          throw new WebApplicationException("Error getting SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @GET
+   @Path("/private")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getPrivateSavedSearches() {
+      try {
+         return Response.ok(getPrivateSavedSearchesInternal()).build();
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error getting private SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @GET
+   @Path("/global")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getGlobalSavedSearches() {
+      try {
+         return Response.ok(getGlobalSavedSearchesInternal()).build();
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error getting global SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
       }
    }
 
@@ -183,6 +204,23 @@ public class SavedSearchEndpoint {
          return CoreArtifactTokens.GlobalPreferences;
       }
       return getCurrentUserId();
+   }
+
+   private List<SavedSearch> getPrivateSavedSearchesInternal() {
+      List<SavedSearch> savedSearches = getSavedSearchesFromContainer(getCurrentUserId(), false);
+      sortSavedSearches(savedSearches);
+      return savedSearches;
+   }
+
+   private List<SavedSearch> getGlobalSavedSearchesInternal() {
+      List<SavedSearch> savedSearches =
+         getSavedSearchesFromContainer(CoreArtifactTokens.GlobalPreferences, true);
+      sortSavedSearches(savedSearches);
+      return savedSearches;
+   }
+
+   private void sortSavedSearches(List<SavedSearch> savedSearches) {
+      savedSearches.sort(Comparator.comparing(SavedSearch::getId, Comparator.nullsLast(Long::compareTo)).reversed());
    }
 
    private List<SavedSearch> getSavedSearchesFromContainer(ArtifactId artifactId, boolean isGlobalContainer) {

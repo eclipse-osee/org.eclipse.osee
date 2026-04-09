@@ -62,4 +62,12 @@ export class ArtifactUiService {
 	) {
 		return this.artifactService.saveSearch(title, query, searchCriteria);
 	}
+
+	getPrivateSavedSearches() {
+		return this.artifactService.getPrivateSavedSearches();
+	}
+
+	getGlobalSavedSearches() {
+		return this.artifactService.getGlobalSavedSearches();
+	}
 }
