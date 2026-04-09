@@ -121,6 +121,15 @@ export type SavedSearchesDialogResult =
 						</button>
 					</div>
 				</mat-form-field>
+				<!--
+				 * Author: Sofiia Holovko (sholovko)
+				 * Task 237 - Show result count when filter is active
+				 -->
+				<div
+					*ngIf="filterQuery().length"
+					class="tw-text-xs tw-text-slate-500 dark:tw-text-slate-400 tw-mt-1">
+					Showing {{ filteredSearchCount() }} of {{ totalSearchCount() }} saved searches
+				</div>
 			</div>
 		<div style="min-width: 1080px;">
 
@@ -519,6 +528,16 @@ export type SavedSearchesDialogResult =
 			<div *ngIf="deleteErrorMessage()" class="tw-text-red-600 tw-text-sm tw-mt-2">
 				{{ deleteErrorMessage() }}
 			</div>
+			<!--
+			 * Author: Sofiia Holovko (sholovko)
+			 * Task 254 - Show success notification after deleting a saved search
+			 -->
+			<div
+				*ngIf="deleteSuccessMessage()"
+				class="tw-text-green-600 tw-text-sm tw-mt-2 tw-flex tw-items-center tw-gap-1">
+				<mat-icon class="tw-text-base tw-text-green-600">check_circle</mat-icon>
+				{{ deleteSuccessMessage() }}
+			</div>
 		</div>
 
 		<!-- Dialog footer -->
@@ -573,7 +592,7 @@ export class SavedSearchesDialogComponent implements OnInit {
 
 	/**
 	 * Author: Sofiia Holovko (sholovko)
-	 * Task 236 - Sorted searches derived from raw list and sort direction
+	 * Task 238 - Sorted searches derived from raw list, active sort column and direction
 	 */
 	private sortSearches(searches: SavedSearch[]): SavedSearch[] {
 		const dir = this.dateAsc() ? 1 : -1;
@@ -645,6 +664,10 @@ export class SavedSearchesDialogComponent implements OnInit {
 		target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 	}
 
+	toggleDateSort(): void {
+		this.dateAsc.update((v) => !v);
+	}
+
 	// ── edit state ─────────────────────────────────────────────────────────
 	readonly editingId = signal<number | null>(null);
 	editTitle = '';
@@ -659,6 +682,11 @@ export class SavedSearchesDialogComponent implements OnInit {
 	readonly deletingId = signal<number | null>(null);
 	readonly deleteInProgress = signal(false);
 	readonly deleteErrorMessage = signal('');
+		/**
+	 * Author: Sofiia Holovko (sholovko)
+	 * Task 254 - Show success notification after deleting a saved search
+	 */
+	readonly deleteSuccessMessage = signal('');
 
 	// ── lifecycle ──────────────────────────────────────────────────────────
 	ngOnInit(): void {
@@ -696,10 +724,7 @@ export class SavedSearchesDialogComponent implements OnInit {
 			});
 	}
 
-	// ── sort ───────────────────────────────────────────────────────────────
-	toggleDateSort(): void {
-		this.dateAsc.update((v) => !v);
-	}
+	
 
 	// ── timestamp formatting ───────────────────────────────────────────────
 	formatTimestamp(timestamp?: number): string {
@@ -849,6 +874,8 @@ export class SavedSearchesDialogComponent implements OnInit {
 				next: () => {
 					this.deleteInProgress.set(false);
 					this.deletingId.set(null);
+					this.deleteSuccessMessage.set('Search deleted successfully.');
+					setTimeout(() => this.deleteSuccessMessage.set(''), 3000);
 					this.loadSavedSearches();
 				},
 				error: (err: unknown) => {
