@@ -20,6 +20,19 @@ type SavedSearchFilters = {
 	attributeTypes: NamedId[];
 	exactMatch: boolean;
 	searchById: boolean;
+	global?: boolean;
+};
+
+type SavedSearch = {
+	id?: number;
+	title: string;
+	query: string;
+	timestamp?: number;
+	artifactTypes?: NamedId[];
+	attributeTypes?: NamedId[];
+	exactMatch?: boolean;
+	searchById?: boolean;
+	global?: boolean;
 };
 
 @Injectable({
@@ -79,7 +92,16 @@ export class ArtifactService {
 			attributeTypes: searchCriteria.attributeTypes,
 			exactMatch: searchCriteria.exactMatch,
 			searchById: searchCriteria.searchById,
+			global: searchCriteria.global ?? false,
 		};
 		return this.http.post(apiURL + '/orcs/savedSearch', body);
+	}
+
+	public getPrivateSavedSearches() {
+		return this.http.get<SavedSearch[]>(apiURL + '/orcs/savedSearch/private');
+	}
+
+	public getGlobalSavedSearches() {
+		return this.http.get<SavedSearch[]>(apiURL + '/orcs/savedSearch/global');
 	}
 }

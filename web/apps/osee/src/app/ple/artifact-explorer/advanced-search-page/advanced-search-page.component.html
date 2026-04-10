@@ -48,8 +48,8 @@
     * Task 115 - Stylized the Save Search button to match current app button style
     * Task 119 - Move the Save Search button to the right hand side of the Search Title input
     -->
-    <div class="tw-flex tw-items-center tw-justify-between tw-mb-4 tw-gap-3 tw-min-w-0">
-    <button mat-flat-button class="primary-button tw-flex-none tw-order-last" type="button" (click)="onNewSearch()">
+    <div class="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-mb-4 tw-gap-3 tw-min-w-0">
+    <button mat-flat-button class="primary-button tw-flex-none" type="button" (click)="onNewSearch()">
      New Search
      </button>
       <mat-form-field class="tw-flex-1 tw-min-w-0" subscriptSizing="dynamic">
@@ -76,6 +76,13 @@
           </button>
         </div>
       </mat-form-field>
+
+      <mat-checkbox
+        [(ngModel)]="saveAsGlobal"
+        name="saveAsGlobal"
+        class="primary-checkbox tw-flex-none">
+        <mat-label>Global Search</mat-label>
+      </mat-checkbox>
 
       <button
         mat-flat-button
@@ -283,7 +290,7 @@
     </div>
 
     <section class="tw-mt-1 tw-w-full">
-      <form class="tw-w-full">
+      <div class="tw-w-full">
         <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-3 tw-w-full">
           <mat-form-field class="tw-w-full">
             <mat-label>Artifact Types</mat-label>
@@ -368,7 +375,7 @@
             <mat-label>Search by ID</mat-label>
           </mat-checkbox>
         </div>
-      </form>
+      </div>
     </section>
 
     <!--
@@ -408,7 +415,7 @@
             type="button"
             class="primary-button tw-flex tw-items-center tw-gap-2"
             (click)="onMassEdit()"
-            [disabled]="searchResultsSig().length === 0 || !hasSelectedRows()">
+            [disabled]="searchResultsSig().length === 0 || !hasSingleSelectedArtifactType()">
             <mat-icon>edit</mat-icon>
             Mass Edit
             <span *ngIf="hasSelectedRows()">({{ selectedRowCount() }})</span>
@@ -424,6 +431,13 @@
             Export
           </button>
         </div>
+      </div>
+
+      <div
+        *ngIf="hasMixedSelectedArtifactTypes()"
+        class="tw-mb-2 tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-amber-600 dark:tw-text-amber-400">
+        <mat-icon class="tw-text-base">info</mat-icon>
+        <span>To use Mass Edit, please select artifacts of the same type.</span>
       </div>
 
       <mat-menu #filterMenu="matMenu">
@@ -493,6 +507,19 @@
         </div>
       </mat-menu>
 
+      <mat-menu #selectMenu="matMenu">
+        <button mat-menu-item (click)="selectSearchResultsByArtifactType(null)">
+          <span>All</span>
+        </button>
+
+        <button
+          mat-menu-item
+          *ngFor="let t of availableArtifactTypes()"
+          (click)="selectSearchResultsByArtifactType(t)">
+          <span>{{ t }}</span>
+        </button>
+      </mat-menu>
+
       <table
         class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
         <thead class="tw-bg-gray-100 dark:tw-bg-slate-800">
@@ -514,16 +541,39 @@
             [cdkDragPreviewContainer]="'parent'"
             [class.column-header-draggable]="isColumnDraggable(col)"
             class="column-header-cell tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800 tw-text-slate-900 dark:tw-text-white tw-select-none">
-            <ng-container *ngIf="isColumnDraggable(col); else lockedHeaderCell">
-              <div
-                cdkDragHandle
-                class="column-drag-handle">
-                <mat-icon class="column-drag-icon">drag_indicator</mat-icon>
-                <span>{{ col.label }}</span>
+
+            <ng-container *ngIf="col.key === 'select'; else standardHeaderCell">
+              <div class="tw-flex tw-items-center tw-gap-1">
+                <mat-checkbox
+                  [checked]="areAllVisibleSearchResultsSelected()"
+                  (change)="toggleSelectAllVisibleSearchResults()"
+                  (click)="$event.stopPropagation()"
+                  aria-label="Toggle select all search results">
+                </mat-checkbox>
+
+                <button
+                  type="button"
+                  class="tw-flex tw-items-center tw-justify-center tw-bg-transparent tw-border-0 tw-p-0 tw-m-0 tw-cursor-pointer tw-text-slate-900 dark:tw-text-white"
+                  [matMenuTriggerFor]="selectMenu"
+                  (click)="$event.stopPropagation()"
+                  aria-label="Open search results selection menu">
+                  <mat-icon class="tw-text-base">arrow_drop_down</mat-icon>
+                </button>
               </div>
             </ng-container>
-            <ng-template #lockedHeaderCell>
-              <span class="column-locked-label">{{ col.label }}</span>
+
+            <ng-template #standardHeaderCell>
+              <ng-container *ngIf="isColumnDraggable(col); else lockedHeaderCell">
+                <div
+                  cdkDragHandle
+                  class="column-drag-handle">
+                  <mat-icon class="column-drag-icon">drag_indicator</mat-icon>
+                  <span>{{ col.label }}</span>
+                </div>
+              </ng-container>
+              <ng-template #lockedHeaderCell>
+                <span class="column-locked-label">{{ col.label }}</span>
+              </ng-template>
             </ng-template>
 
             <ng-template cdkDragPreview>
