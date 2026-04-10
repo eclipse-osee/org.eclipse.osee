@@ -2325,4 +2325,8 @@ export class AdvancedSearchPageComponent implements OnInit {
 		a.click();
 		URL.revokeObjectURL(url);
 	}
+	
+	private getErrorMessage(err: unknown): string {
+		return err instanceof Error ? err.message : String(err);
+	}
 }
