@@ -816,6 +816,52 @@ export class AdvancedSearchPageComponent implements OnInit {
 
 	/**
 	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 248 - Prevent mixed artifact type selection in Mass Edit
+	 *
+	 * Mass Edit is only allowed when all selected Search Results rows are the
+	 * same artifact type.
+	 */
+	hasSingleSelectedArtifactType(): boolean {
+		const selectedRows = this.getSelectedRows();
+
+		if (selectedRows.length === 0) {
+			return false;
+		}
+
+		const selectedTypes = new Set(
+			selectedRows
+				.map((row) => String(row.type || '').trim())
+				.filter(Boolean)
+		);
+
+		return selectedTypes.size === 1;
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 265 - Show message when mixed artifact types are selected for Mass Edit
+	 *
+	 * Returns true only when the current selection contains more than one
+	 * artifact type, so the page can show an inline warning message.
+	 */
+	hasMixedSelectedArtifactTypes(): boolean {
+		const selectedRows = this.getSelectedRows();
+
+		if (selectedRows.length < 2) {
+			return false;
+		}
+
+		const selectedTypes = new Set(
+			selectedRows
+				.map((row) => String(row.type || '').trim())
+				.filter(Boolean)
+		);
+
+		return selectedTypes.size > 1;
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
 	 * Task 208 - Implement backend mass update endpoint integration
 	 * Mass Edit requires selected artifacts to be the same artifact type.
 	 */
@@ -1912,6 +1958,109 @@ export class AdvancedSearchPageComponent implements OnInit {
 			return;
 		}
 		this.selectedArtifactType.set(String(value));
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 247 - Select all currently visible Search Results rows
+	 *
+	 * Uses the current Search Results filters, so this respects the selected
+	 * artifact type and any other active result filters.
+	 */
+	private selectAllVisibleSearchResults(): void {
+		this.resetRowSelection();
+
+		for (const row of this.filteredSearchResults()) {
+			if (row?.id) {
+				this.selectedRowIds.add(row.id);
+			}
+		}
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 247 - Select all Search Results rows for the chosen artifact type
+	 *
+	 * Setting the artifact type also updates the visible Search Results table
+	 * so only that artifact type is shown before selection is applied.
+	 */
+	selectSearchResultsByArtifactType(type: string | null): void {
+		this.selectedArtifactType.set(type && type.trim() ? type.trim() : null);
+		this.selectAllVisibleSearchResults();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 247 - Deselect all currently selected Search Results rows
+	 */
+	deselectAllSearchResults(): void {
+		this.resetRowSelection();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 247 - Toggle select all / deselect all for visible Search Results
+	 *
+	 * If any visible rows are not selected, select all visible rows.
+	 * If all visible rows are already selected, clear the current selection.
+	 */
+	toggleSelectAllVisibleSearchResults(): void {
+		const visibleRows = this.filteredSearchResults();
+		const hasVisibleRows = visibleRows.length > 0;
+
+		if (!hasVisibleRows) {
+			return;
+		}
+
+		const allVisibleSelected = visibleRows.every((row) =>
+			this.selectedRowIds.has(row.id)
+		);
+
+		if (allVisibleSelected) {
+			this.deselectAllSearchResults();
+			return;
+		}
+
+		this.selectAllVisibleSearchResults();
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 247 - Check whether all visible Search Results rows are selected
+	 */
+	areAllVisibleSearchResultsSelected(): boolean {
+		const visibleRows = this.filteredSearchResults();
+
+		if (visibleRows.length === 0) {
+			return false;
+		}
+
+		return visibleRows.every((row) => this.selectedRowIds.has(row.id));
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 247 - Handle Search Results header selection dropdown
+	 *
+	 * "all" selects all currently visible rows.
+	 * "none" clears all selected rows.
+	 * Any other value is treated as an artifact type filter and selects only
+	 * the visible rows for that artifact type.
+	 */
+	onSearchResultsHeaderSelectChange(value: string): void {
+		const normalized = String(value ?? '').trim();
+
+		if (normalized === 'none') {
+			this.deselectAllSearchResults();
+			return;
+		}
+
+		if (normalized === 'all') {
+			this.selectSearchResultsByArtifactType(null);
+			return;
+		}
+
+		this.selectSearchResultsByArtifactType(normalized);
 	}
 
 	clearResultsFilters(): void {
