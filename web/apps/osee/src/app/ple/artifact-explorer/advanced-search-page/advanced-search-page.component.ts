@@ -584,8 +584,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 				);
 			},
 			error: (err: unknown) => {
-				const message =
-					err instanceof Error ? err.message : String(err);
+				const message = this.getErrorMessage(err);
 				console.error(
 					'Failed to resolve branch/view/type for navigation:',
 					message
@@ -990,10 +989,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 												this.refreshSearchResultsAfterMassEdit();
 											},
 											error: (err: unknown) => {
-												const message =
-													err instanceof Error
-														? err.message
-														: String(err);
+												const message = this.getErrorMessage(err);
 												console.error(
 													'Mass Edit failed:',
 													err
@@ -1005,10 +1001,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 										});
 								},
 								error: (err: unknown) => {
-									const message =
-										err instanceof Error
-											? err.message
-											: String(err);
+									const message = this.getErrorMessage(err);
 									console.error(
 										'Failed to resolve branch for Mass Edit:',
 										message
@@ -1018,8 +1011,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 						});
 				},
 				error: (err: unknown) => {
-					const message =
-						err instanceof Error ? err.message : String(err);
+					const message = this.getErrorMessage(err);
 					console.error(
 						'Failed to load valid attributes for Mass Edit:',
 						message
@@ -2086,8 +2078,7 @@ export class AdvancedSearchPageComponent implements OnInit {
 					this.searchValidationMessage.set('Search complete');
 				},
 				error: (err: unknown) => {
-					const message =
-						err instanceof Error ? err.message : String(err);
+					const message = this.getErrorMessage(err);
 					console.error('Advanced search failed:', message);
 					this.searchResults = [];
 					this.searchResultsSig.set([]);
