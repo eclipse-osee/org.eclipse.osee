@@ -1336,8 +1336,10 @@ export class AdvancedSearchPageComponent implements OnInit {
 			if (parsed.data) this.data = parsed.data;
 			if (typeof parsed.searchValue === 'string')
 				this.searchValue = parsed.searchValue;
-			if (Array.isArray(parsed.searchResults))
+			if (Array.isArray(parsed.searchResults)) {
 				this.searchResults = parsed.searchResults;
+				this.searchResultsSig.set(parsed.searchResults);
+			}
 			if (typeof parsed.hasSearched === 'boolean')
 				this.hasSearched = parsed.hasSearched;
 
