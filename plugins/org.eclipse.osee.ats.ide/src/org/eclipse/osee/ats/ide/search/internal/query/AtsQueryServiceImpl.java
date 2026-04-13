@@ -390,4 +390,14 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       return (ArtifactReadable) getArtifact(artId);
    }
 
+   @Override
+   public ArtifactReadable getArtifactNewFollowAll(ArtifactId art) {
+      throw new UnsupportedOperationException("Not supported on client");
+   }
+
+   @Override
+   public ArtifactReadable getArtifactNewFollowAll(Long id) {
+      throw new UnsupportedOperationException("Not supported on client");
+   }
+
 }

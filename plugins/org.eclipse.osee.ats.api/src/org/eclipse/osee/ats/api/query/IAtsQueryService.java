@@ -228,4 +228,8 @@ public interface IAtsQueryService {
 
    ArtifactReadable getArtifactNew(ArtifactId artId);
 
+   ArtifactReadable getArtifactNewFollowAll(ArtifactId art);
+
+   ArtifactReadable getArtifactNewFollowAll(Long id);
+
 }
