@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.operation;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -89,6 +90,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class DetailedTestStatusBlam extends AbstractBlam {
    private static final Pattern taskNamePattern = Pattern.compile("(?:\"([^\"]+)\")? for \"([^\"]+)\"");
+   public static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
    private final Matcher taskNameMatcher = taskNamePattern.matcher("");
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
@@ -335,7 +337,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
          if (testRunArtifact != null) {
             ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
             try {
-               runDate = DetailedTestStatusOld.getDateFormatter().format(runOperator.getEndDate());
+               runDate = DATE_FORMATTER.format(runOperator.getEndDate());
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -459,8 +461,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
                ArtifactTestRunOperator runOperator = new ArtifactTestRunOperator(testRunArtifact);
 
                try {
-                  statusLine[Index.RUN_DATE.ordinal()] =
-                     DetailedTestStatusOld.getDateFormatter().format(runOperator.getEndDate());
+                  statusLine[Index.RUN_DATE.ordinal()] = DATE_FORMATTER.format(runOperator.getEndDate());
                } catch (Exception ex) {
                   log(ex);
                }
@@ -602,8 +603,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       String widgetLabel = xWidget.getLabel();
 
       if (widgetLabel.equals("Versions")) {
@@ -614,8 +615,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       String widgetName = xWidget.getLabel();
       if (widgetName.equals("Program")) {
          XAtsProgramComboWidget programWidget = (XAtsProgramComboWidget) xWidget;

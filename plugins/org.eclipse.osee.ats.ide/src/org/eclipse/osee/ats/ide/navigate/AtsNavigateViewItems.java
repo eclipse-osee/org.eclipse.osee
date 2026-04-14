@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ParallelConfigurationView;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.ide.config.wizard.CreateAtsConfiguration;
-import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.health.AtsHealthCheckNavigateItem;
 import org.eclipse.osee.ats.ide.health.OseeProductionTestsNavItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -254,8 +253,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       try {
          items.add(new XNavigateItemFolder(DEFINE.getName(), CoreImage.LASER, TOP));
          items.add(new XNavigateItemFolder("Health", CoreImage.HEALTH, XNavigateItem.DEFINE_HEALTH, SUBCAT));
-         items.add(
-            new XNavigateItemFolder("Admin", CoreImage.LASER, XNavigateItem.DEFINE_ADMIN, OSEE_ADMIN, SUBCAT));
+         items.add(new XNavigateItemFolder("Admin", CoreImage.LASER, XNavigateItem.DEFINE_ADMIN, OSEE_ADMIN, SUBCAT));
          if (AtsApiService.get().getUserService().isAtsAdmin()) {
             items.add(new CreateEnumeratedArtifactAction());
             items.add(new EditEnumeratedArtifact());
@@ -296,7 +294,6 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new XNavigateItemFolder("Admin", PluginUiImage.ADMIN, ATS_ADMIN, SUBCAT, OSEE_ADMIN));
 
       items.add(new AtsConfigResultsEditorNavigateItem());
-      items.add(new XNavigateItemAction(new AtsExportAction(), CoreImage.EXPORT, ATS_UTIL));
       // Admin
       items.add(new ClearAtsConfigCache());
       items.add(new ClearAtsConfigCacheAllServers());
@@ -399,8 +396,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new XNavigateItemBlam(new ConvertWorkflowStatesBlam(), TOP_ADMIN));
          items.add(new DisplayCurrentOseeEventListeners());
          items.add(new XNavigateItemBlam(new CreateAtsBaselineBranchBlam(), TOP_ADMIN));
-         items.add(new XNavigateItemAction(new OpenChangeReportByTransactionIdAction(), CoreImage.BRANCH_CHANGE,
-            TOP_ADMIN));
+         items.add(
+            new XNavigateItemAction(new OpenChangeReportByTransactionIdAction(), CoreImage.BRANCH_CHANGE, TOP_ADMIN));
          items.add(new XNavigateItemAction(new OpenArtifactEditorById(), CoreImage.ARTIFACT_EDITOR, TOP_ADMIN));
          items.add(new XNavigateItemAction(new PurgeTransactionAction(), CoreImage.PURGE, TOP_ADMIN));
          items.add(new AtsRemoteEventTestItem());
