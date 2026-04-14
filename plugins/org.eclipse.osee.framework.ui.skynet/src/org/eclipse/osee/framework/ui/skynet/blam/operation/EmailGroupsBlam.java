@@ -20,13 +20,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.account.rest.client.AccountClient;
+import org.eclipse.osee.account.rest.client.AccountClient.UnsubscribeInfo;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -35,6 +39,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.SendEmailRequest;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,6 +50,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -113,6 +119,7 @@ public class EmailGroupsBlam extends AbstractBlam {
        * un-subscribe users and send appropriate events.
        */
       ArtifactQuery.reloadArtifacts(data.getGroups());
+      data.clearUserToGroupMapCache();
       sendEmailViaThreadPool(data);
    }
 
@@ -121,14 +128,46 @@ public class EmailGroupsBlam extends AbstractBlam {
       futures.clear();
 
       TreeSet<Artifact> users = new TreeSet<>(data.getUserToGroupMap().keySet());
+
+      // Batch-fetch unsubscribe URIs for all users in parallel before building emails
+      Map<Long, List<UnsubscribeInfo>> userUnsubscribeMap = prefetchUnsubscribeUris(users, data);
+
       for (Artifact user : users) {
-         sendEmailTo(data, user);
+         sendEmailTo(data, user, userUnsubscribeMap.getOrDefault(user.getId(), Collections.emptyList()));
       }
       emailTheadPool.shutdown();
       emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
    }
 
-   private void sendEmailTo(EmailGroupsData data, final Artifact user) {
+   private Map<Long, List<UnsubscribeInfo>> prefetchUnsubscribeUris(Collection<Artifact> users,
+      EmailGroupsData data) throws Exception {
+      Map<Long, List<UnsubscribeInfo>> result = new ConcurrentHashMap<>();
+      AccountClient client = ServiceUtil.getAccountClient();
+      Collection<String> groupNames = new ArrayList<>();
+      for (Artifact group : data.getGroups()) {
+         groupNames.add(group.getName());
+      }
+
+      ExecutorService fetchPool = Executors.newFixedThreadPool(30);
+      List<Future<?>> fetchFutures = new ArrayList<>();
+      for (Artifact user : users) {
+         fetchFutures.add(fetchPool.submit(() -> {
+            try {
+               ResultSet<UnsubscribeInfo> infos = client.getUnsubscribeUris(user.getId(), groupNames);
+               if (!infos.isEmpty()) {
+                  result.put(user.getId(), infos.getList());
+               }
+            } catch (Exception ex) {
+               logf("Error fetching unsubscribe URIs for user %s: %s", user.getName(), ex.getMessage());
+            }
+         }));
+      }
+      fetchPool.shutdown();
+      fetchPool.awaitTermination(30, TimeUnit.MINUTES);
+      return result;
+   }
+
+   private void sendEmailTo(EmailGroupsData data, final Artifact user, List<UnsubscribeInfo> unsubscribeInfos) {
       if (user.isOfType(CoreArtifactTypes.User)) {
          String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
          if (EmailUtil.isEmailValid(emailAddress)) {
@@ -140,8 +179,9 @@ public class EmailGroupsBlam extends AbstractBlam {
             }
 
             SendEmailRequest request = new SendEmailRequest(Arrays.asList(emailAddress), data.getFromAddress(),
-               data.getReplyToAddress(), data.getSubject(), data.getHtmlResult(user.getName(), user.getId()),
-               BodyType.Html, abridgedAddresses, "Abridged - See Primary Email for Details");
+               data.getReplyToAddress(), data.getSubject(),
+               data.getHtmlResult(user.getName(), unsubscribeInfos), BodyType.Html, abridgedAddresses,
+               "This is an abridged email. See your primary email account for additional details.");
 
             String logDescription = String.format("%s - [%s]", user, emailAddress);
             if (!abridgedAddresses.isEmpty()) {
@@ -235,16 +275,21 @@ public class EmailGroupsBlam extends AbstractBlam {
    private void handlePreviewMessage() {
       try {
          EmailGroupsData data = getEmailGroupsData();
-         Result result = data.isValid();
-         if (result.isFalse()) {
-            AWorkbench.popup(result);
+         // Light validation only — skip getUserToGroupMap() which loads all users
+         if (!Strings.isValid(data.getSubject()) || !Strings.isValid(data.getBody()) || data.getGroups().isEmpty()) {
+            AWorkbench.popup("Must enter subject, body, and select at least one group");
             return;
          }
          UserToken user = OseeApiService.user();
-         String htmlResult = data.getHtmlResult(user.getName(), user.getId());
+         AccountClient client = ServiceUtil.getAccountClient();
+         Collection<String> groupNames = new ArrayList<>();
+         for (Artifact group : data.getGroups()) {
+            groupNames.add(group.getName());
+         }
+         ResultSet<UnsubscribeInfo> infos = client.getUnsubscribeUris(user.getId(), groupNames);
+         String htmlResult = data.getHtmlResult(user.getName(), infos.getList());
          HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
-            String.format("Subject: %s\n\nSending message to [%d] users from groups [%s]", data.getSubject(),
-               data.getUserToGroupMap().keySet().size(),
+            String.format("Subject: %s\n\nPreview for current user from groups [%s]", data.getSubject(),
                org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", data.getGroups())),
             htmlResult);
          dialog.open();
