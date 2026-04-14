@@ -13,12 +13,14 @@ import java.util.Comparator;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -69,36 +71,83 @@ public class SavedSearchEndpoint {
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getSavedSearches() {
+   public Response getSavedSearches(@QueryParam("pageNum") @DefaultValue("0") Long pageNum,
+      @QueryParam("count") @DefaultValue("0") Long pageSize) {
       try {
          List<SavedSearch> savedSearches = new ArrayList<>(getPrivateSavedSearchesInternal());
          savedSearches.addAll(getGlobalSavedSearchesInternal());
          sortSavedSearches(savedSearches);
-         return Response.ok(savedSearches).build();
+         return Response.ok(applyPagination(savedSearches, pageNum, pageSize)).build();
+      } catch (WebApplicationException wae) {
+         throw wae;
       } catch (Exception ex) {
          throw new WebApplicationException("Error getting SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
       }
    }
 
    @GET
+   @Path("/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getSavedSearchesCount() {
+      try {
+         List<SavedSearch> savedSearches = new ArrayList<>(getPrivateSavedSearchesInternal());
+         savedSearches.addAll(getGlobalSavedSearchesInternal());
+         sortSavedSearches(savedSearches);
+         return Response.ok(savedSearches.size()).build();
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error getting SavedSearches count", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @GET
    @Path("/private")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getPrivateSavedSearches() {
+   public Response getPrivateSavedSearches(@QueryParam("pageNum") @DefaultValue("0") Long pageNum,
+      @QueryParam("count") @DefaultValue("0") Long pageSize) {
       try {
-         return Response.ok(getPrivateSavedSearchesInternal()).build();
+         return Response.ok(applyPagination(getPrivateSavedSearchesInternal(), pageNum, pageSize)).build();
+      } catch (WebApplicationException wae) {
+         throw wae;
       } catch (Exception ex) {
          throw new WebApplicationException("Error getting private SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
       }
    }
 
    @GET
+   @Path("/private/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getPrivateSavedSearchesCount() {
+      try {
+         return Response.ok(getPrivateSavedSearchesInternal().size()).build();
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error getting private SavedSearches count", ex,
+            Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @GET
    @Path("/global")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getGlobalSavedSearches() {
+   public Response getGlobalSavedSearches(@QueryParam("pageNum") @DefaultValue("0") Long pageNum,
+      @QueryParam("count") @DefaultValue("0") Long pageSize) {
       try {
-         return Response.ok(getGlobalSavedSearchesInternal()).build();
+         return Response.ok(applyPagination(getGlobalSavedSearchesInternal(), pageNum, pageSize)).build();
+      } catch (WebApplicationException wae) {
+         throw wae;
       } catch (Exception ex) {
          throw new WebApplicationException("Error getting global SavedSearches", ex, Status.INTERNAL_SERVER_ERROR);
+      }
+   }
+
+   @GET
+   @Path("/global/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getGlobalSavedSearchesCount() {
+      try {
+         return Response.ok(getGlobalSavedSearchesInternal().size()).build();
+      } catch (Exception ex) {
+         throw new WebApplicationException("Error getting global SavedSearches count", ex,
+            Status.INTERNAL_SERVER_ERROR);
       }
    }
 
@@ -213,14 +262,33 @@ public class SavedSearchEndpoint {
    }
 
    private List<SavedSearch> getGlobalSavedSearchesInternal() {
-      List<SavedSearch> savedSearches =
-         getSavedSearchesFromContainer(CoreArtifactTokens.GlobalPreferences, true);
+      List<SavedSearch> savedSearches = getSavedSearchesFromContainer(CoreArtifactTokens.GlobalPreferences, true);
       sortSavedSearches(savedSearches);
       return savedSearches;
    }
 
    private void sortSavedSearches(List<SavedSearch> savedSearches) {
       savedSearches.sort(Comparator.comparing(SavedSearch::getId, Comparator.nullsLast(Long::compareTo)).reversed());
+   }
+
+   private List<SavedSearch> applyPagination(List<SavedSearch> savedSearches, Long pageNum, Long pageSize) {
+      long safePageNum = pageNum == null ? 0L : pageNum;
+      long safePageSize = pageSize == null ? 0L : pageSize;
+
+      if (safePageNum == 0L && safePageSize == 0L) {
+         return savedSearches;
+      }
+      if (safePageNum <= 0L || safePageSize <= 0L) {
+         throw new WebApplicationException("pageNum and count must both be greater than 0", Status.BAD_REQUEST);
+      }
+
+      int fromIndex = Math.toIntExact((safePageNum - 1L) * safePageSize);
+      if (fromIndex >= savedSearches.size()) {
+         return new ArrayList<>();
+      }
+
+      int toIndex = Math.min(savedSearches.size(), Math.toIntExact(fromIndex + safePageSize));
+      return new ArrayList<>(savedSearches.subList(fromIndex, toIndex));
    }
 
    private List<SavedSearch> getSavedSearchesFromContainer(ArtifactId artifactId, boolean isGlobalContainer) {
