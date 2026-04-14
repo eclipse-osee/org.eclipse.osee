@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
+import org.eclipse.osee.ats.api.report.BuildMemoRequest;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -46,6 +47,11 @@ public class AtsReportEndpointImpl implements AtsReportEndpointApi {
    public XResultData getRestCoverageReport() {
       AtsRestCoverageReport rpt = new AtsRestCoverageReport(atsApi);
       return rpt.run();
+   }
+
+   @Override
+   public String getBuildMemo(BuildMemoRequest request) {
+      return new BuildMemoOperation(atsApi).generateBuildMemo(request);
    }
 
 }
