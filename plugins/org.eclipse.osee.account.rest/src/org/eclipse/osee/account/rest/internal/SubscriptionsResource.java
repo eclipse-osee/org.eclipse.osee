@@ -59,7 +59,7 @@ public class SubscriptionsResource {
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public SubscriptionData[] getBulkSubscriptions(List<Long> accountIds) {
+   public List<SubscriptionData> getBulkSubscriptions(List<Long> accountIds) {
       Collection<ArtifactId> artIds = new ArrayList<>(accountIds.size());
       for (Long id : accountIds) {
          artIds.add(ArtifactId.valueOf(id));
@@ -72,7 +72,7 @@ public class SubscriptionsResource {
             result.add(AccountDataUtil.asAccountSubscriptionData(sub));
          }
       }
-      return result.toArray(new SubscriptionData[0]);
+      return result;
    }
 
    @Path("/for-account/{account-id}")

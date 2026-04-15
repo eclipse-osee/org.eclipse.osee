@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -117,10 +118,10 @@ public class SubscriptionsResourceTest {
       subscriptionsByAccount.put(ACCOUNT_ID, ResultSets.singleton(subscription));
       when(manager.getSubscriptionsByAccountIds(anyCollection())).thenReturn(subscriptionsByAccount);
 
-      SubscriptionData[] actual = resource.getBulkSubscriptions(Arrays.asList(ACCOUNT_ID.getId()));
+      List<SubscriptionData> actual = resource.getBulkSubscriptions(Arrays.asList(ACCOUNT_ID.getId()));
 
-      assertEquals(1, actual.length);
-      checkSubscription(actual[0], GROUP_UUID, GROUP_NAME, ACCOUNT_NAME, ACCOUNT_ID.getId(), SUBSCRIPTION_IS_ACTIVE);
+      assertEquals(1, actual.size());
+      checkSubscription(actual.get(0), GROUP_UUID, GROUP_NAME, ACCOUNT_NAME, ACCOUNT_ID.getId(), SUBSCRIPTION_IS_ACTIVE);
       verify(manager).getSubscriptionsByAccountIds(anyCollection());
    }
 
@@ -128,9 +129,9 @@ public class SubscriptionsResourceTest {
    public void testGetBulkSubscriptionsEmpty() {
       when(manager.getSubscriptionsByAccountIds(anyCollection())).thenReturn(new HashMap<>());
 
-      SubscriptionData[] actual = resource.getBulkSubscriptions(Arrays.asList(ACCOUNT_ID.getId()));
+      List<SubscriptionData> actual = resource.getBulkSubscriptions(Arrays.asList(ACCOUNT_ID.getId()));
 
-      assertEquals(0, actual.length);
+      assertEquals(0, actual.size());
       verify(manager).getSubscriptionsByAccountIds(anyCollection());
    }
 

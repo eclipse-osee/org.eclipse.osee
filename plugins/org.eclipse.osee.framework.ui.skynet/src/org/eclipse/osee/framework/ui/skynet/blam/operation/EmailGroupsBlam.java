@@ -128,7 +128,7 @@ public class EmailGroupsBlam extends AbstractBlam {
 
       TreeSet<Artifact> users = new TreeSet<>(data.getUserToGroupMap().keySet());
 
-      // Batch-fetch unsubscribe URIs for all users in parallel before building emails
+      // Batch-fetch unsubscribe URIs for all users before building emails
       Map<Long, List<UnsubscribeInfo>> userUnsubscribeMap = prefetchUnsubscribeUris(users, data);
 
       for (Artifact user : users) {
