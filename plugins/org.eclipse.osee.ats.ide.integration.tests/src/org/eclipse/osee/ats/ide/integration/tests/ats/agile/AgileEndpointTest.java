@@ -146,13 +146,21 @@ public class AgileEndpointTest {
       try (Response response2 = agile.createFeatureGroup(teamId, group)) {
          Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
       }
-      // Test Get
+
+      // Test Get by Team
       List<JaxAgileFeatureGroup> groups = agile.getFeatureGroups(teamId);
       Assert.assertEquals(1, groups.size());
       JaxAgileFeatureGroup newGroup = groups.iterator().next();
       Assert.assertEquals("Communications", newGroup.getName());
       Assert.assertEquals(teamId, newGroup.getTeamId());
       Assert.assertEquals(id.longValue(), newGroup.getId().longValue());
+
+      // Test Get by id
+      JaxAgileFeatureGroup singleGroup = agile.getFeatureGroup(newGroup.getId());
+      Assert.assertNotNull(singleGroup);
+      Assert.assertEquals("Communications", singleGroup.getName());
+      Assert.assertEquals(teamId, singleGroup.getTeamId());
+      Assert.assertEquals(id.longValue(), singleGroup.getId().longValue());
 
       // Test Delete
       try (Response response3 = agile.deleteFeatureGroup(teamId, newGroup.getId())) {
