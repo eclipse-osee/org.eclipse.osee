@@ -1601,4 +1601,10 @@
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor">
       </editor>
    </extension>
+     <extension
+           point="org.eclipse.osee.framework.skynet.core.ArtifactAnnotationProvider">
+        <ArtifactAnnotationProvider
+              classname="org.eclipse.osee.framework.ui.skynet.artifact.annotation.NoOpAnnotationProvider">
+        </ArtifactAnnotationProvider>
+     </extension>
 </plugin>

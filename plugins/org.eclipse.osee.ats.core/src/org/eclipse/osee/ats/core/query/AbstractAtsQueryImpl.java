@@ -128,7 +128,37 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       if (allArtTypes.contains(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          teamWfs = getTeamWorkflowsNew(allArtTypes, allResults, allArtTypes);
       }
-      return teamWfs;
+
+      /**
+       * These need to be upgraded to use asArtifacts or rolled into the search criteria above
+       */
+
+      /**
+       * If team workflow's searched by Team Definition, Actionable Item or Version were searched, then the child tasks
+       * and reviews are what to use to search against
+       */
+      if (!teamWorkflowArtTypes.isEmpty() && teamsTypeDefOrAisOrVersionSearched) {
+         getTasksAndReviewsFromResultingTeamWfs(teamWfs, allResults, allArtTypes, false);
+      }
+
+      /**
+       * Else, perform task and review searches as normal
+       */
+      else {
+         getTasksFromSearchCriteria(allResults, allArtTypes, false);
+         getReviewsFromSearchCriteria(allResults, allArtTypes, false);
+      }
+
+      /**
+       * Search Goals, Sprints and Backlogs as normal
+       */
+      getGoalsFromSearchCriteria(allResults, allArtTypes, false);
+      getSprintsFromSearchCriteria(allResults, allArtTypes, false);
+
+      for (IAtsQueryFilter filter : queryFilters) {
+         allResults = filter.applyFilter(allResults);
+      }
+      return allResults;
    }
 
    @Override

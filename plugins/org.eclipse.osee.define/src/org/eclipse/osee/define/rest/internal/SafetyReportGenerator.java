@@ -40,8 +40,7 @@ public class SafetyReportGenerator {
    private SafetyInformationAccumulator accumulator;
    private QueryFactory queryFactory;
    private ComponentUtil componentUtil;
-   private final TraceMatch match = new TraceMatch("\\^SRS\\s*([^;]+);?", "\\[?(\\{[^\\}]+\\})(.*)");
-   private final TraceAccumulator traces = new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", match);
+   private TraceAccumulator traces = SafetyReportConstants.newTraceAccumulator();
    private final ActivityLog activityLog;
 
    public static int SYSTEM_REQUIREMENT_INDEX = 4;
@@ -98,6 +97,21 @@ public class SafetyReportGenerator {
          File root = new File(codeRoot);
          traces.extractTraces(root);
       }
+      ArtifactReadable functionsFolder =
+         queryFactory.fromBranch(branchId).andTypeEquals(CoreArtifactTypes.Folder).andNameEquals(
+            "System Functions").getResults().getExactlyOne();
+      processSystemFunctions(functionsFolder, writer);
+
+      writer.endWorkbook();
+   }
+
+   public void runOperation(OrcsApi providedOrcs, BranchId branchId, TraceAccumulator preloadedTraces,
+      Writer providedWriter) throws IOException {
+      ISheetWriter writer = new ExcelXmlWriter(providedWriter);
+
+      init(providedOrcs, branchId, writer);
+
+      this.traces = preloadedTraces;
       ArtifactReadable functionsFolder =
          queryFactory.fromBranch(branchId).andTypeEquals(CoreArtifactTypes.Folder).andNameEquals(
             "System Functions").getResults().getExactlyOne();
