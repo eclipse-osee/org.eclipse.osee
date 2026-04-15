@@ -140,7 +140,7 @@ public class EmailGroupsBlam extends AbstractBlam {
    }
 
    private Map<Long, List<UnsubscribeInfo>> prefetchUnsubscribeUris(Collection<Artifact> users,
-      EmailGroupsData data) throws Exception {
+      EmailGroupsData data) {
       Map<Long, List<UnsubscribeInfo>> result = new ConcurrentHashMap<>();
       AccountClient client = ServiceUtil.getAccountClient();
       Collection<String> groupNames = new ArrayList<>();
@@ -148,22 +148,27 @@ public class EmailGroupsBlam extends AbstractBlam {
          groupNames.add(group.getName());
       }
 
-      ExecutorService fetchPool = Executors.newFixedThreadPool(30);
-      List<Future<?>> fetchFutures = new ArrayList<>();
-      for (Artifact user : users) {
-         fetchFutures.add(fetchPool.submit(() -> {
-            try {
-               ResultSet<UnsubscribeInfo> infos = client.getUnsubscribeUris(user.getId(), groupNames);
-               if (!infos.isEmpty()) {
-                  result.put(user.getId(), infos.getList());
+      try (ExecutorService fetchPool = Executors.newFixedThreadPool(30)) {
+         for (Artifact user : users) {
+            fetchPool.submit(() -> {
+               try {
+                  ResultSet<UnsubscribeInfo> infos = client.getUnsubscribeUris(user.getId(), groupNames);
+                  if (!infos.isEmpty()) {
+                     result.put(user.getId(), infos.getList());
+                  }
+               } catch (Exception ex) {
+                  logf("Error fetching unsubscribe URIs for user %s: %s", user.getName(), ex.getMessage());
                }
-            } catch (Exception ex) {
-               logf("Error fetching unsubscribe URIs for user %s: %s", user.getName(), ex.getMessage());
-            }
-         }));
+            });
+         }
+         fetchPool.shutdown();
+         if (!fetchPool.awaitTermination(10, TimeUnit.MINUTES)) {
+            logf("Timed out waiting for unsubscribe URI fetch; some emails may not have unsubscribe links.");
+         }
+      } catch (InterruptedException ex) {
+         Thread.currentThread().interrupt();
+         logf("Interrupted while fetching unsubscribe URIs: %s", ex.getMessage());
       }
-      fetchPool.shutdown();
-      fetchPool.awaitTermination(30, TimeUnit.MINUTES);
       return result;
    }
 
