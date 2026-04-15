@@ -59,7 +59,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
    public static final String EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL =
-      "<email body redacted for abridged email; see primary email account>";
+      "This is an abridged email. See your primary email account for additional details.";
    public static final String DEFAULT_MAIL_SERVER_NOT_CONFIGURED = "Default Mail Server is not configured";
    protected static final String emailType = "mail.smtp.host";
    protected static final String HTMLHead = "<html><body>\n";

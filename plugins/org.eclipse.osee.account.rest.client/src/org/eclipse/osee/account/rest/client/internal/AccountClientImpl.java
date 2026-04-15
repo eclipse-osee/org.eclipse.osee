@@ -23,6 +23,7 @@ import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_S
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.client.Entity;
@@ -187,6 +188,24 @@ public class AccountClientImpl implements AccountClient {
          toReturn = ResultSets.newResultSet(infos);
       }
       return ResultSets.newResultSet(toReturn);
+   }
+
+   @Override
+   public Map<Long, List<UnsubscribeInfo>> getBulkUnsubscribeUris(Collection<Long> accountIds,
+      Collection<String> groupNames) {
+      WebTarget target = jaxRsApi.newTarget("subscriptions", "for-accounts");
+      SubscriptionData[] subscriptions =
+         target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(accountIds), SubscriptionData[].class);
+
+      Map<Long, List<UnsubscribeInfo>> result = new HashMap<>();
+      UriBuilder builder = UriBuilder.fromUri(baseUri).path("unsubscribe").path("ui").path("{subscription-uuid}");
+      for (SubscriptionData subscription : subscriptions) {
+         if (subscription.isActive() && groupNames.contains(subscription.getName())) {
+            result.computeIfAbsent(subscription.getAccountId(), k -> new ArrayList<>()).add(
+               newUnsubscribeInfo(subscription.getName(), builder.build(subscription.getGuid())));
+         }
+      }
+      return result;
    }
 
    private UnsubscribeInfo newUnsubscribeInfo(final String subscriptionName, final URI unsubscribeUri) {
