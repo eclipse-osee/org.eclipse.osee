@@ -14,9 +14,13 @@
 package org.eclipse.osee.account.rest.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.account.admin.Account;
@@ -79,6 +83,7 @@ public class SubscriptionsResourceTest {
       when(subscription.getGroupId()).thenReturn(GROUP_ID);
       when(subscription.getGuid()).thenReturn(GROUP_UUID);
       when(subscription.getName()).thenReturn(GROUP_NAME);
+      when(subscription.getAccountId()).thenReturn(ACCOUNT_ID);
       when(subscription.getAccountName()).thenReturn(ACCOUNT_NAME);
       when(subscription.isActive()).thenReturn(SUBSCRIPTION_IS_ACTIVE);
 
@@ -104,6 +109,29 @@ public class SubscriptionsResourceTest {
       SubscriptionData data = actual[0];
       checkSubscription(data, GROUP_UUID, GROUP_NAME, ACCOUNT_NAME, SUBSCRIPTION_IS_ACTIVE);
       verify(manager).getSubscriptionsByAccountId(ACCOUNT_ID);
+   }
+
+   @Test
+   public void testGetBulkSubscriptions() {
+      Map<ArtifactId, ResultSet<Subscription>> subscriptionsByAccount = new HashMap<>();
+      subscriptionsByAccount.put(ACCOUNT_ID, ResultSets.singleton(subscription));
+      when(manager.getSubscriptionsByAccountIds(anyCollection())).thenReturn(subscriptionsByAccount);
+
+      SubscriptionData[] actual = resource.getBulkSubscriptions(Arrays.asList(ACCOUNT_ID.getId()));
+
+      assertEquals(1, actual.length);
+      checkSubscription(actual[0], GROUP_UUID, GROUP_NAME, ACCOUNT_NAME, ACCOUNT_ID.getId(), SUBSCRIPTION_IS_ACTIVE);
+      verify(manager).getSubscriptionsByAccountIds(anyCollection());
+   }
+
+   @Test
+   public void testGetBulkSubscriptionsEmpty() {
+      when(manager.getSubscriptionsByAccountIds(anyCollection())).thenReturn(new HashMap<>());
+
+      SubscriptionData[] actual = resource.getBulkSubscriptions(Arrays.asList(ACCOUNT_ID.getId()));
+
+      assertEquals(0, actual.length);
+      verify(manager).getSubscriptionsByAccountIds(anyCollection());
    }
 
    @Test
@@ -224,6 +252,12 @@ public class SubscriptionsResourceTest {
       assertEquals(name, actual.getName());
       assertEquals(accountName, actual.getAccountName());
       assertEquals(active, actual.isActive());
+   }
+
+   private static void checkSubscription(SubscriptionData actual, String guid, String name, String accountName,
+      Long accountId, boolean active) {
+      checkSubscription(actual, guid, name, accountName, active);
+      assertEquals(accountId, actual.getAccountId());
    }
 
    private static void checkSubscriptionGroup(SubscriptionGroupData actual, String guid, String name,

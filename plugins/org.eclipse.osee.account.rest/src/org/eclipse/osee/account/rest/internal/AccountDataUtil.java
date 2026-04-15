@@ -96,6 +96,7 @@ public final class AccountDataUtil {
       data.setName(subscription.getName());
       data.setActive(subscription.isActive());
       data.setAccountName(subscription.getAccountName());
+      data.setAccountId(subscription.getAccountId().getId());
       return data;
    }
 

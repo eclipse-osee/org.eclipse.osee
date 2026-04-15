@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -141,35 +140,16 @@ public class EmailGroupsBlam extends AbstractBlam {
 
    private Map<Long, List<UnsubscribeInfo>> prefetchUnsubscribeUris(Collection<Artifact> users,
       EmailGroupsData data) {
-      Map<Long, List<UnsubscribeInfo>> result = new ConcurrentHashMap<>();
       AccountClient client = ServiceUtil.getAccountClient();
       Collection<String> groupNames = new ArrayList<>();
       for (Artifact group : data.getGroups()) {
          groupNames.add(group.getName());
       }
-
-      try (ExecutorService fetchPool = Executors.newFixedThreadPool(30)) {
-         for (Artifact user : users) {
-            fetchPool.submit(() -> {
-               try {
-                  ResultSet<UnsubscribeInfo> infos = client.getUnsubscribeUris(user.getId(), groupNames);
-                  if (!infos.isEmpty()) {
-                     result.put(user.getId(), infos.getList());
-                  }
-               } catch (Exception ex) {
-                  logf("Error fetching unsubscribe URIs for user %s: %s", user.getName(), ex.getMessage());
-               }
-            });
-         }
-         fetchPool.shutdown();
-         if (!fetchPool.awaitTermination(10, TimeUnit.MINUTES)) {
-            logf("Timed out waiting for unsubscribe URI fetch; some emails may not have unsubscribe links.");
-         }
-      } catch (InterruptedException ex) {
-         Thread.currentThread().interrupt();
-         logf("Interrupted while fetching unsubscribe URIs: %s", ex.getMessage());
+      Collection<Long> accountIds = new ArrayList<>(users.size());
+      for (Artifact user : users) {
+         accountIds.add(user.getId());
       }
-      return result;
+      return client.getBulkUnsubscribeUris(accountIds, groupNames);
    }
 
    private void sendEmailTo(EmailGroupsData data, final Artifact user, List<UnsubscribeInfo> unsubscribeInfos) {

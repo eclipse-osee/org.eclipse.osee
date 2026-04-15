@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.account.admin.ds;
 
+import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
@@ -26,6 +28,8 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 public interface SubscriptionStorage {
 
    ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId);
+
+   Map<ArtifactId, ResultSet<Subscription>> getSubscriptionsByAccountIds(Collection<ArtifactId> accountIds);
 
    SubscriptionGroup getSubscriptionGroupById(SubscriptionGroupId subscriptionId);
 
