@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.client.AccountClient.UnsubscribeInfo;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -258,29 +259,32 @@ public class EmailGroupsBlam extends AbstractBlam {
    }
 
    private void handlePreviewMessage() {
-      try {
-         EmailGroupsData data = getEmailGroupsData();
-         // Light validation only — skip getUserToGroupMap() which loads all users
-         if (!Strings.isValid(data.getSubject()) || !Strings.isValid(data.getBody()) || data.getGroups().isEmpty()) {
-            AWorkbench.popup("Must enter subject, body, and select at least one group");
-            return;
-         }
-         UserToken user = OseeApiService.user();
-         AccountClient client = ServiceUtil.getAccountClient();
-         Collection<String> groupNames = new ArrayList<>();
-         for (Artifact group : data.getGroups()) {
-            groupNames.add(group.getName());
-         }
-         ResultSet<UnsubscribeInfo> infos = client.getUnsubscribeUris(user.getId(), groupNames);
-         String htmlResult = data.getHtmlResult(user.getName(), infos.getList());
-         HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
-            String.format("Subject: %s\n\nPreview for current user from groups [%s]", data.getSubject(),
-               org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", data.getGroups())),
-            htmlResult);
-         dialog.open();
-      } catch (OseeCoreException ex) {
-         log(ex);
+      EmailGroupsData data = getEmailGroupsData();
+      if (!Strings.isValid(data.getSubject()) || !Strings.isValid(data.getBody()) || data.getGroups().isEmpty()) {
+         AWorkbench.popup("Must enter subject, body, and select at least one group");
+         return;
       }
+      Job.create("Email Groups - Loading Preview", monitor -> {
+         try {
+            UserToken user = OseeApiService.user();
+            AccountClient client = ServiceUtil.getAccountClient();
+            Collection<String> groupNames = new ArrayList<>();
+            for (Artifact group : data.getGroups()) {
+               groupNames.add(group.getName());
+            }
+            ResultSet<UnsubscribeInfo> infos = client.getUnsubscribeUris(user.getId(), groupNames);
+            String htmlResult = data.getHtmlResult(user.getName(), infos.getList());
+            Displays.ensureInDisplayThread(() -> {
+               HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
+                  String.format("Subject: %s\n\nPreview for current user from groups [%s]", data.getSubject(),
+                     org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", data.getGroups())),
+                  htmlResult);
+               dialog.open();
+            });
+         } catch (OseeCoreException ex) {
+            log(ex);
+         }
+      }).schedule();
    }
 
    @Override

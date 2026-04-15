@@ -45,7 +45,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
 
    @Override
    public ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId) {
-      ArtifactReadable account = newQuery().andTypeEquals(CoreArtifactTypes.User).andId(accountId).getArtifact();
+      ArtifactReadable account = newQuery().andTypeEquals(CoreArtifactTypes.User).andId(accountId).follow(CoreRelationTypes.Users_Artifact).asArtifact();
 
       List<Subscription> subscriptions = new ArrayList<>();
       for (ArtifactReadable group : account.getRelated(CoreRelationTypes.Users_Artifact)) {
