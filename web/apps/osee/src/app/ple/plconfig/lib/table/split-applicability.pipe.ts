@@ -20,10 +20,10 @@ export class SplitApplicabilityPipe implements PipeTransform {
 	//eslint-disable-next-line @typescript-eslint/no-unused-vars
 	transform(value: string): string {
 		if (!value) {
-			return "Excluded";
+			return 'Excluded';
 		}
 		if (value.includes('|') || value.includes('&')) {
-			return "Included"; // Return Included if a compound applicability
+			return 'Included'; // Return Included if a compound applicability
 		}
 		const parts = value.split(/\s?=\s?/);
 		return parts.length > 1 ? parts[1] : value;
