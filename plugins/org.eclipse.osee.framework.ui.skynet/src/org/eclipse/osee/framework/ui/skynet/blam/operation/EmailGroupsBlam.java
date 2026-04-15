@@ -139,8 +139,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
    }
 
-   private Map<Long, List<UnsubscribeInfo>> prefetchUnsubscribeUris(Collection<Artifact> users,
-      EmailGroupsData data) {
+   private Map<Long, List<UnsubscribeInfo>> prefetchUnsubscribeUris(Collection<Artifact> users, EmailGroupsData data) {
       AccountClient client = ServiceUtil.getAccountClient();
       Collection<String> groupNames = new ArrayList<>();
       for (Artifact group : data.getGroups()) {
@@ -165,8 +164,8 @@ public class EmailGroupsBlam extends AbstractBlam {
             }
 
             SendEmailRequest request = new SendEmailRequest(Arrays.asList(emailAddress), data.getFromAddress(),
-               data.getReplyToAddress(), data.getSubject(),
-               data.getHtmlResult(user.getName(), unsubscribeInfos), BodyType.Html, abridgedAddresses,
+               data.getReplyToAddress(), data.getSubject(), data.getHtmlResult(user.getName(), unsubscribeInfos),
+               BodyType.Html, abridgedAddresses,
                "This is an abridged email. See your primary email account for additional details.");
 
             String logDescription = String.format("%s - [%s]", user, emailAddress);
@@ -227,7 +226,8 @@ public class EmailGroupsBlam extends AbstractBlam {
       } else if (xWidget.getLabel().equals("Reply-To Address")) {
          replyToAddressTextBox = (XText) xWidget;
          replyToAddressTextBox.set(OseeApiService.user().getEmail());
-      } else if (xWidget.getLabel().equals("I certify the subject lines do not contain restricted or sensitive data.")) {
+      } else if (xWidget.getLabel().equals(
+         "I certify the subject lines do not contain restricted or sensitive data.")) {
          certifyNoSensitiveDataCheckbox = (XCheckBox) xWidget;
       } else if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;
@@ -260,7 +260,7 @@ public class EmailGroupsBlam extends AbstractBlam {
 
    private void handlePreviewMessage() {
       EmailGroupsData data = getEmailGroupsData();
-      if (!Strings.isValid(data.getSubject()) || !Strings.isValid(data.getBody()) || data.getGroups().isEmpty()) {
+      if (Strings.isInvalid(data.getSubject()) || Strings.isInvalid(data.getBody()) || data.getGroups().isEmpty()) {
          AWorkbench.popup("Must enter subject, body, and select at least one group");
          return;
       }
@@ -275,10 +275,11 @@ public class EmailGroupsBlam extends AbstractBlam {
             ResultSet<UnsubscribeInfo> infos = client.getUnsubscribeUris(user.getId(), groupNames);
             String htmlResult = data.getHtmlResult(user.getName(), infos.getList());
             Displays.ensureInDisplayThread(() -> {
-               HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
-                  String.format("Subject: %s\n\nPreview for current user from groups [%s]", data.getSubject(),
-                     org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", data.getGroups())),
-                  htmlResult);
+               HtmlDialog dialog =
+                  new HtmlDialog("Email Groups - Preview",
+                     String.format("Subject: %s\n\nPreview for current user from groups [%s]", data.getSubject(),
+                        org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", data.getGroups())),
+                     htmlResult);
                dialog.open();
             });
          } catch (OseeCoreException ex) {
@@ -299,7 +300,8 @@ public class EmailGroupsBlam extends AbstractBlam {
       wb.andXLabel("      - WARNING: Email subject lines are NOT encrypted.").endWidget();
       wb.andXLabel(
          "      - Do NOT include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " in the subject line.").endWidget();
-      wb.andXLabel("      - If emails are sent to abridged recipients, they will use this same sanitized subject line.").endWidget();
+      wb.andXLabel(
+         "      - If emails are sent to abridged recipients, they will use this same sanitized subject line.").endWidget();
       wb.andXCheckbox("Body is HTML").andDefault(true).andHorizLabel().andLabelAfter().endWidget();
       wb.andXText("Body").andFillVertically().endWidget();
       wb.andXButtonPush("Preview Message").endWidget();
