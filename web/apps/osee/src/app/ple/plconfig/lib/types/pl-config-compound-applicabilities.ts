@@ -20,6 +20,7 @@ export const compApplicRelationshipStructure: compoundApplicabilityRelationship[
 			name: 'OR',
 			symbol: '|',
 		},
+		{ name: 'AND', symbol: '&' },
 	];
 export type compoundApplicability = {
 	name: string;
