@@ -34,6 +34,7 @@ public final class SafetyStreamingOutput implements StreamingOutput {
    private final ActivityLog activityLog;
    private final ArtifactId view;
    private final boolean validate;
+   private final TraceAccumulator preloadedTraces;
 
    public SafetyStreamingOutput(ActivityLog activityLog, OrcsApi orcsApi, BranchId branchId, ArtifactId view, String codeRoot, String isOn) {
       this.activityLog = activityLog;
@@ -42,18 +43,39 @@ public final class SafetyStreamingOutput implements StreamingOutput {
       this.view = view;
       this.codeRoot = codeRoot;
       this.validate = isOn != null && isOn.equals("on") ? true : false;
+      this.preloadedTraces = null;
+   }
+
+   public SafetyStreamingOutput(ActivityLog activityLog, OrcsApi orcsApi, BranchId branchId, ArtifactId view, TraceAccumulator preloadedTraces, String isOn) {
+      this.activityLog = activityLog;
+      this.orcsApi = orcsApi;
+      this.branchId = branchId;
+      this.view = view;
+      this.codeRoot = null;
+      this.validate = isOn != null && isOn.equals("on") ? true : false;
+      this.preloadedTraces = preloadedTraces;
    }
 
    @Override
    public void write(OutputStream output) {
       try {
          Writer writer = new OutputStreamWriter(output);
-         if (validate) {
-            ValidatingSafetyReportGenerator teamSafetyReport = new ValidatingSafetyReportGenerator(activityLog);
-            teamSafetyReport.runOperation(orcsApi, branchId, view, codeRoot, writer);
+         if (preloadedTraces != null) {
+            if (validate) {
+               ValidatingSafetyReportGenerator teamSafetyReport = new ValidatingSafetyReportGenerator(activityLog);
+               teamSafetyReport.runOperation(orcsApi, branchId, view, preloadedTraces, writer);
+            } else {
+               SafetyReportGenerator safetyReport = new SafetyReportGenerator(activityLog);
+               safetyReport.runOperation(orcsApi, branchId, preloadedTraces, writer);
+            }
          } else {
-            SafetyReportGenerator safetyReport = new SafetyReportGenerator(activityLog);
-            safetyReport.runOperation(orcsApi, branchId, codeRoot, writer);
+            if (validate) {
+               ValidatingSafetyReportGenerator teamSafetyReport = new ValidatingSafetyReportGenerator(activityLog);
+               teamSafetyReport.runOperation(orcsApi, branchId, view, codeRoot, writer);
+            } else {
+               SafetyReportGenerator safetyReport = new SafetyReportGenerator(activityLog);
+               safetyReport.runOperation(orcsApi, branchId, codeRoot, writer);
+            }
          }
       } catch (Exception ex) {
          throw new WebApplicationException(ex);
