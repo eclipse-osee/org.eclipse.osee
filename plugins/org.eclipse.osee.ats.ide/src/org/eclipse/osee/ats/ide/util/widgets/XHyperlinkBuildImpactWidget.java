@@ -74,15 +74,11 @@ public class XHyperlinkBuildImpactWidget extends XHyperlinkLabelValueSelection {
          new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
       dialog.setInput(verNames);
 
-      boolean changed = false;
       if (dialog.open() == Window.OK) {
          selected = dialog.getSelectedFirst();
          return true;
       }
-      if (changed) {
-         refresh();
-      }
-      return changed;
+      return false;
    }
 
    public IAtsTeamDefinition getTeamDef() {

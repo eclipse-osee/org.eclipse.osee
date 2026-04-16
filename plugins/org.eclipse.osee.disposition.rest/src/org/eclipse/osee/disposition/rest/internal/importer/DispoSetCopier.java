@@ -171,7 +171,7 @@ public class DispoSetCopier {
             //else if the source is Test_Script or Exception_Handling
 
             if (DispoUtil.isAnnotationValueBlank(
-               destAnnotation) && (!sourceLastManualResolutionType.isEmpty() && !sourceLastManualResolutionType.isBlank() && sourceLastManualResolutionType != null)) {
+               destAnnotation) && (!sourceLastManualResolutionType.isEmpty() && !sourceLastManualResolutionType.isBlank())) {
                //If dest is empty and there is a 'Last Manual Resolution' in source, copy it over as the resolution
                newDestAnnot = new DispoAnnotationData(destAnnotation, sourceLastManualResolutionType,
                   sourceLastManualResolution, sourceResolutionType, sourceResolution, sourceLastManualResolutionType,
