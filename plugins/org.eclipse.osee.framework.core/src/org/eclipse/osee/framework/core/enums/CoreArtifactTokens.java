@@ -35,6 +35,7 @@ public final class CoreArtifactTokens {
    public static final ArtifactToken GlobalPreferences                           = ArtifactToken.valueOf(18026, CoreArtifactTypes.GlobalPreferences.getName(), COMMON, CoreArtifactTypes.GlobalPreferences);
    public static final ArtifactToken UniversalGroupRoot                          = ArtifactToken.valueOf(60807, "Root Artifact", UniversalGroup);
    public static final ArtifactToken XViewerCustomization                        = ArtifactToken.valueOf(78293, XViewerGlobalCustomization.getName(), COMMON, XViewerGlobalCustomization);
+   public static final ArtifactToken PublishingWebUISchema                       = ArtifactToken.valueOf(10716029, "PublishingJson", CoreArtifactTypes.OseeApp);
 
    // folders
    public static final ArtifactToken OseeConfiguration                           = ArtifactToken.valueOf(10525153, "OSEE Configuration", COMMON, Folder);
