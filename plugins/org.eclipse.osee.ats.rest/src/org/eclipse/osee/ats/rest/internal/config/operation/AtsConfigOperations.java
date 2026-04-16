@@ -82,7 +82,7 @@ public class AtsConfigOperations {
 
    public AtsConfigurations getAtsConfigurationsFromDb() {
 
-      boolean debugOn = false; // Set to true to enable debugging; false for commit/production
+      final boolean debugOn = false; // Set to true to enable debugging; false for commit/production
 
       // load ats branch configurations
       AtsConfigurations configs = new AtsConfigurations();
