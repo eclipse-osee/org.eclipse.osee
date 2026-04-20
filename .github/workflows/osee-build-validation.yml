@@ -247,6 +247,70 @@ jobs:
           overwrite: true
           path: ${{ env.ARTIFACT_PATH }}
 
+      - name: Archive Compiled Classes For SpotBugs
+        if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: osee-compiled-classes${{steps.artifact_ref.outputs.artifact_current_ref}}
+          overwrite: true
+          retention-days: 1
+          path: plugins/**/target/classes/**/*.class
+
+  spotbugs_analysis:
+    runs-on: ubuntu-latest
+    needs: [validate_osee_build_linux, check_changes]
+    if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
+    container:
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/alpine-spotbugs:latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: create artifact ref
+        id: artifact_ref
+        uses: ./.github/actions/artifact-current-ref
+
+      - name: Download Compiled Classes
+        uses: actions/download-artifact@v4
+        with:
+          name: osee-compiled-classes${{steps.artifact_ref.outputs.artifact_current_ref}}
+          path: compiled-classes
+
+      - name: Run SpotBugs Analysis
+        run: |
+          /root/spotbugs/spotbugs-4.9.1/bin/spotbugs \
+            -textui \
+            -html:fancy-hist.xsl \
+            -output spotbugs-report.html \
+            -auxclasspathFromInput \
+            -onlyAnalyze "org.eclipse.osee.-" \
+            -nested:false \
+            compiled-classes/
+
+      - name: Upload SpotBugs Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotbugs-report
+          path: spotbugs-report.html
+
+      - name: Post SpotBugs Summary To PR
+        if: always()
+        run: |
+          echo "## SpotBugs Analysis Results" >> $GITHUB_STEP_SUMMARY
+          if [ -f spotbugs-report.html ]; then
+            BUG_COUNT=$(grep -c '<tr class="tableRow' spotbugs-report.html 2>/dev/null || echo "0")
+            echo "**Bugs Found:** ${BUG_COUNT}" >> $GITHUB_STEP_SUMMARY
+            if [ "$BUG_COUNT" -gt 0 ]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo ":warning: SpotBugs found potential issues. Download the full HTML report from the build artifacts for details." >> $GITHUB_STEP_SUMMARY
+            else
+              echo ":white_check_mark: No bugs found by SpotBugs." >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo ":x: SpotBugs report was not generated." >> $GITHUB_STEP_SUMMARY
+          fi
+
   osee_server_container_build:
     runs-on: ubuntu-latest
     needs: [validate_osee_build_linux, check_changes]
