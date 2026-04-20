@@ -40,6 +40,10 @@ import { apiURL } from '@osee/environments';
 import { AdvancedSearchCriteria, defaultAdvancedSearchCriteria, } from '../lib/types/artifact-search'; // Task 162 - Updated relative import paths because logic moved from lib/components into the page folder (previously ../../../../../..., now ../lib/...)
 import { MassEditDialogComponent, MassEditDialogResult } from './mass-edit-dialog.component'; // Author: Eihab Khudhair (ekhudhai) Task 207
 import { SavedSearchesDialogComponent, SavedSearchesDialogResult, } from './saved-searches-dialog.component';
+import {
+	SaveSearchScopeDialogComponent,
+	SaveSearchScopeDialogResult,
+} from './save-search-scope-dialog.component';
 import { catchError, map, take } from 'rxjs/operators'; // Author: Eihab Khudhair (ekhudhai) Task 143 - Populate dynamic results table with query search results
 import { UiService } from '@osee/shared/services'; // Author: Eihab Khudhair (ekhudhai) Task 143 - Populate dynamic results table with query search results
 import { ArtifactExplorerHttpService } from '../lib/services/artifact-explorer-http.service'; // Task 162 - Updated relative import path to match page location
@@ -1765,34 +1769,57 @@ export class AdvancedSearchPageComponent implements OnInit {
 		}
 
 		this.saveErrorMessage = '';
-		this.saveInProgress = true;
-		const query = (this.searchValue || '').trim();
-		this.artifactService
-			.saveSearch(title, query, {
-				artifactTypes: this.data.artifactTypes,
-				attributeTypes: this.data.attributeTypes,
-				exactMatch: this.data.exactMatch,
-				searchById: this.data.searchById,
-				global: this.saveAsGlobal,
-			})
+		this.saveSuccessMessage = '';
+
+		const dialogRef = this.dialog.open(SaveSearchScopeDialogComponent, {
+			width: '460px',
+			maxWidth: '95vw',
+			autoFocus: false,
+			disableClose: true,
+			data: {
+				searchTitle: title,
+			},
+		});
+
+		dialogRef
+			.afterClosed()
 			.pipe(take(1))
-			.subscribe({
-				next: () => {
-					this.saveInProgress = false;
-					// Author: Sofiia Holovko (sholovko) Task 243 - Set success message and auto-clear after 3 seconds
-					this.saveSuccessMessage = 'Search saved successfully.';
-					setTimeout(() => {
-						this.saveSuccessMessage = '';
-					}, 3000);
-				},
-				error: (err: unknown) => {
-					this.saveInProgress = false;
-					// Author: Sofiia Holovko (sholovko) Task 243 - Clear success message on error
-					this.saveSuccessMessage = '';
-					this.saveErrorMessage =
-						err instanceof Error ? err.message : String(err);
-					console.error('Save search failed:', this.saveErrorMessage);
-				},
+			.subscribe((result?: SaveSearchScopeDialogResult) => {
+				if (!result || result.action === 'cancel') {
+					return;
+				}
+
+				const isGlobal = result.action === 'global';
+				this.saveAsGlobal = isGlobal;
+
+				this.saveInProgress = true;
+				const query = (this.searchValue || '').trim();
+
+				this.artifactService
+					.saveSearch(title, query, {
+						artifactTypes: this.data.artifactTypes,
+						attributeTypes: this.data.attributeTypes,
+						exactMatch: this.data.exactMatch,
+						searchById: this.data.searchById,
+						global: isGlobal,
+					})
+					.pipe(take(1))
+					.subscribe({
+						next: () => {
+							this.saveInProgress = false;
+							this.saveSuccessMessage = 'Search saved successfully.';
+							setTimeout(() => {
+								this.saveSuccessMessage = '';
+							}, 3000);
+						},
+						error: (err: unknown) => {
+							this.saveInProgress = false;
+							this.saveSuccessMessage = '';
+							this.saveErrorMessage =
+								err instanceof Error ? err.message : String(err);
+							console.error('Save search failed:', this.saveErrorMessage);
+						},
+					});
 			});
 	}
 
