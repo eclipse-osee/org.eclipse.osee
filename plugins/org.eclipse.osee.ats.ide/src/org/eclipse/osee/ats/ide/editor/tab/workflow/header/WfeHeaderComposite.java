@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -384,9 +385,15 @@ public class WfeHeaderComposite extends Composite {
    };
 
    public Collection<XWidget> getXWidgets(ArrayList<XWidget> widgets) {
-      titleHeader.getXWidgets(widgets);
-      relatedComposite.getXWidgets(widgets);
-      customHeader.getXWidgets(widgets);
+      if (Widgets.isAccessible(titleHeader)) {
+         titleHeader.getXWidgets(widgets);
+      }
+      if (Widgets.isAccessible(relatedComposite)) {
+         relatedComposite.getXWidgets(widgets);
+      }
+      if (Widgets.isAccessible(customHeader)) {
+         customHeader.getXWidgets(widgets);
+      }
       return widgets;
    }
 

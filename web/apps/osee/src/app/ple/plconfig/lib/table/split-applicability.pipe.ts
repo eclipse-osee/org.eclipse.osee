@@ -18,7 +18,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class SplitApplicabilityPipe implements PipeTransform {
 	//eslint-disable-next-line @typescript-eslint/no-unused-vars
-	transform(value: string, ...args: unknown[]): string {
-		return value.split(new RegExp('s?=s?'))[1];
+	transform(value: string): string {
+		if (!value) {
+			return 'Excluded';
+		}
+		if (value.includes('|') || value.includes('&')) {
+			return 'Included'; // Return Included if a compound applicability
+		}
+		const parts = value.split(/\s?=\s?/);
+		return parts.length > 1 ? parts[1] : value;
 	}
 }

@@ -64,10 +64,8 @@ public class OseeEmailServer extends OseeEmail {
       OseeEmailServer abridgedEmail =
          new OseeEmailServer(email.getEmailAddressesAbridged(), email.getFromAddress(), email.getReplyToAddress(),
             abridgedSubject, email.getBodyAbridged(), email.getBodyType(), Collections.emptyList(), "");
-      abridgedEmail.setEncryptionEnabled(isEncryptionEnabled());
-      abridgedEmail.setCertificateUploadOverrideLink(getCertificateUploadOverrideLink());
-      abridgedEmail.setOrganizationSpecificCertificateInstructions(getOrganizationSpecificCertificateInstructions());
-      abridgedEmail.setEmailCertificateLdapUrl(getEmailCertificateLdapUrl());
+      // Abridged emails are sent unencrypted; content must already be sanitized (no sensitive data)
+      abridgedEmail.setEncryptionEnabled(false);
       return abridgedEmail;
    }
 

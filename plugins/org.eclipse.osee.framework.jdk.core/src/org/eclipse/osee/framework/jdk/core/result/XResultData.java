@@ -521,6 +521,12 @@ public class XResultData {
       return errorStrings;
    }
 
+   public void assertEquals(String testName, String expected, String actual) {
+      if (!expected.equals(actual)) {
+         errorf("Test: %s Expected: %s Actual: %s\n", testName, expected, actual);
+      }
+   }
+
    public void assertEquals(String testName, int expected, int actual) {
       if (expected != actual) {
          errorf("Test: %s Expected: %s Actual: %s\n", testName, expected, actual);
@@ -530,6 +536,24 @@ public class XResultData {
    public void assertEquals(int expected, int actual) {
       if (expected != actual) {
          errorf("Expected: %s Actual: %s\n", expected, actual);
+      }
+   }
+
+   public void assertNotNull(Object obj) {
+      if (obj == null) {
+         error("object can not be null");
+      }
+   }
+
+   public void assertFalse(boolean bool) {
+      if (bool) {
+         error("expected false, but was true");
+      }
+   }
+
+   public void assertTrue(boolean bool) {
+      if (!bool) {
+         error("expected true, but was false");
       }
    }
 

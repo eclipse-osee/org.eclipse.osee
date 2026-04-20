@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.account.admin;
 
+import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -25,6 +27,8 @@ public interface SubscriptionAdmin {
    Subscription getSubscriptionsByEncodedId(String encodedId);
 
    ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId);
+
+   Map<ArtifactId, ResultSet<Subscription>> getSubscriptionsByAccountIds(Collection<ArtifactId> accountIds);
 
    SubscriptionGroup getSubscriptionGroupById(SubscriptionGroupId subscriptionId);
 

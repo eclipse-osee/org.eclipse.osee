@@ -188,33 +188,34 @@ public class WmzConverter {
       Process proc = pb.start();
 
       ExecutorService ex = Executors.newSingleThreadExecutor();
-      Future<?> reader = drainStreamAsync(proc.getInputStream(), ex);
-      if (reader == null) {
-         /*
-          * The reader is intentionally null - uncomment the code in drainStreamAsync to use this conversion. The code
-          * is commented out since the converter is only intended for developer use.
-          */
-         proc.destroyForcibly();
-         return 1000;
-      }
+      try (InputStream is = proc.getInputStream()) {
+         Future<?> reader = drainStreamAsync(is, ex);
+         if (reader == null) {
+            /*
+             * The reader is intentionally null - uncomment the code in drainStreamAsync to use this conversion. The
+             * code is commented out since the converter is only intended for developer use.
+             */
+            proc.destroyForcibly();
+            return 1000;
+         }
 
-      boolean finished = proc.waitFor(timeout.toMillis(), TimeUnit.MILLISECONDS);
-      if (!finished) {
-         proc.destroyForcibly();
-         reader.cancel(true);
-         ex.shutdownNow();
-         throw new RuntimeException("Conversion script timed out");
-      }
+         boolean finished = proc.waitFor(timeout.toMillis(), TimeUnit.MILLISECONDS);
+         if (!finished) {
+            proc.destroyForcibly();
+            reader.cancel(true);
+            ex.shutdownNow();
+            throw new RuntimeException("Conversion script timed out");
+         }
 
-      try {
-         reader.get(OUTPUT_READER_WAIT.toMillis(), TimeUnit.MILLISECONDS);
-      } catch (Exception e) {
-         // best-effort: ignore or log
-         result.log("Output reader finished with error/timeout: " + e.getMessage());
-      } finally {
-         ex.shutdownNow();
+         try {
+            reader.get(OUTPUT_READER_WAIT.toMillis(), TimeUnit.MILLISECONDS);
+         } catch (Exception e) {
+            // best-effort: ignore or log
+            result.log("Output reader finished with error/timeout: " + e.getMessage());
+         } finally {
+            ex.shutdownNow();
+         }
       }
-
       return proc.exitValue();
    }
 

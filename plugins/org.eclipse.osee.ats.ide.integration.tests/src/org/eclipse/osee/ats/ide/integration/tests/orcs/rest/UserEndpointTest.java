@@ -78,41 +78,39 @@ public class UserEndpointTest {
 
    @Test
    public void uploadGetDeletePublicCertificate_happyPath() throws Exception {
-      Response initial = userEndpoint.getPublicCertificate();
-      assertNotNull(initial);
-      assertEquals(Response.Status.NO_CONTENT.getStatusCode(), initial.getStatus());
-
+      try (Response initial = userEndpoint.getPublicCertificate()) {
+         assertNotNull(initial);
+         assertEquals(Response.Status.NO_CONTENT.getStatusCode(), initial.getStatus());
+      }
       String pem = generateEmailCertificatePem(validityFromNowMinutes(-1), validityFromNowDays(365));
 
       userEndpoint.uploadPublicCertificate(pem);
 
-      Response get = userEndpoint.getPublicCertificate();
-      assertNotNull(get);
-      assertEquals(Response.Status.OK.getStatusCode(), get.getStatus());
-      assertEquals(MediaType.TEXT_PLAIN, get.getMediaType().toString());
+      try (Response get = userEndpoint.getPublicCertificate()) {
+         assertNotNull(get);
+         assertEquals(Response.Status.OK.getStatusCode(), get.getStatus());
+         assertEquals(MediaType.TEXT_PLAIN, get.getMediaType().toString());
 
-      String returnedPem;
-      String contentDisposition;
-      try {
+         String returnedPem;
+         String contentDisposition;
+
          returnedPem = get.readEntity(String.class);
          contentDisposition = get.getHeaderString(HttpHeaders.CONTENT_DISPOSITION);
-      } finally {
-         get.close();
+
+         assertNotNull(returnedPem);
+         assertTrue(returnedPem.contains("-----BEGIN CERTIFICATE-----"));
+         assertTrue(returnedPem.contains("-----END CERTIFICATE-----"));
+
+         assertNotNull(contentDisposition);
+         assertTrue(contentDisposition.contains("attachment"));
+         assertTrue(contentDisposition.contains("public-cert.pem"));
+
+         userEndpoint.deletePublicCertificate();
       }
-
-      assertNotNull(returnedPem);
-      assertTrue(returnedPem.contains("-----BEGIN CERTIFICATE-----"));
-      assertTrue(returnedPem.contains("-----END CERTIFICATE-----"));
-
-      assertNotNull(contentDisposition);
-      assertTrue(contentDisposition.contains("attachment"));
-      assertTrue(contentDisposition.contains("public-cert.pem"));
-
-      userEndpoint.deletePublicCertificate();
-
-      Response afterDelete = userEndpoint.getPublicCertificate();
-      assertNotNull(afterDelete);
-      assertEquals(Response.Status.NO_CONTENT.getStatusCode(), afterDelete.getStatus());
+      try (Response afterDelete = userEndpoint.getPublicCertificate()) {
+         assertNotNull(afterDelete);
+         assertEquals(Response.Status.NO_CONTENT.getStatusCode(), afterDelete.getStatus());
+      }
    }
 
    @Test

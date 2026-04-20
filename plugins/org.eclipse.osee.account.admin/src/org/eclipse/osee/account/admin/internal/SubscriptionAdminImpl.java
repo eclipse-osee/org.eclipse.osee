@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.account.admin.internal;
 
+import java.util.Collection;
 import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountField;
@@ -76,6 +77,11 @@ public class SubscriptionAdminImpl implements SubscriptionAdmin {
    @Override
    public ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId) {
       return getStorage().getSubscriptionsByAccountId(accountId);
+   }
+
+   @Override
+   public Map<ArtifactId, ResultSet<Subscription>> getSubscriptionsByAccountIds(Collection<ArtifactId> accountIds) {
+      return getStorage().getSubscriptionsByAccountIds(accountIds);
    }
 
    @Override

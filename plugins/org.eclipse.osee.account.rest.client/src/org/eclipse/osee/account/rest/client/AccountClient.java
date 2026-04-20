@@ -15,6 +15,7 @@ package org.eclipse.osee.account.rest.client;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
@@ -69,6 +70,8 @@ public interface AccountClient {
    boolean setAccountPreferences(Long accountId, Map<String, String> preferences);
 
    ResultSet<UnsubscribeInfo> getUnsubscribeUris(Long accountId, Collection<String> groupNames);
+
+   Map<Long, List<UnsubscribeInfo>> getBulkUnsubscribeUris(Collection<Long> accountIds, Collection<String> groupNames);
 
    AccountWebPreferences getAccountWebPreferencesByUniqueField(ArtifactId accountId);
 }

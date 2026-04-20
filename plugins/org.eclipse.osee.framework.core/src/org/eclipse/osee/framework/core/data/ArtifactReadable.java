@@ -261,12 +261,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType);
 
-   default boolean isAttrsLoaded() {
-      return true;
-   }
-
    default boolean isLoaded() {
-      return isAttrsLoaded();
+      return true;
    }
 
    default boolean isNotLoaded() {

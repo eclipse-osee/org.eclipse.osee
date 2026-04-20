@@ -15,16 +15,23 @@ package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubscriptionGroup;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.account.rest.client.AccountClient;
+import org.eclipse.osee.account.rest.client.AccountClient.UnsubscribeInfo;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsData;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -91,14 +98,22 @@ public class EmailGroupsBlamTest {
 
       UserToken user = OseeApiService.user();
 
+      AccountClient client = ServiceUtil.getAccountClient();
+      Collection<String> groupNames = new ArrayList<>();
+      for (Artifact group : data.getGroups()) {
+         groupNames.add(group.getName());
+      }
+      ResultSet<UnsubscribeInfo> infos = client.getUnsubscribeUris(user.getId(), groupNames);
+      List<UnsubscribeInfo> unsubscribeInfos = infos.getList();
+
       String expectedBody = "Hello World\nNow is the time";
-      String htmlOut = data.getHtmlResult(user.getName(), user.getId());
+      String htmlOut = data.getHtmlResult(user.getName(), unsubscribeInfos);
       checkHtmlData(htmlOut, expectedBody);
 
       expectedBody = "<b>Hello World</b>";
       data.setBody(expectedBody);
       data.setBodyIsHtml(true);
-      htmlOut = data.getHtmlResult(user.getName(), user.getId());
+      htmlOut = data.getHtmlResult(user.getName(), unsubscribeInfos);
 
       String firstPart = "<b>Hello World</b><br/><br/><p>Click <a href=\"";
       checkHtmlData(htmlOut, firstPart);
