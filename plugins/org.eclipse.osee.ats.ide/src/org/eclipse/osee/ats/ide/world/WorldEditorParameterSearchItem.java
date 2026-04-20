@@ -467,7 +467,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       rd.logf("Title: [%s]\n", getTitleWidget().getWidget().get());
       rd.logf("Team(s): [%s]\n", teamDefWidget.getWidget().getSelectedTeamDefintions());
       Object ver = versionWidget.getWidget().getSelected();
-      rd.logf("Version: [%s]\n", ver == null || "".equals("") ? "" : versionWidget.getWidget().getSelected());
+      rd.logf("Version: [%s]\n", ver == null ? "" : versionWidget.getWidget().getSelected());
       if (getStateTypeWidget() != null && !getStateTypeWidget().get().isEmpty()) {
          rd.logf("State Type: %s\n", getStateTypeWidget().get());
       }

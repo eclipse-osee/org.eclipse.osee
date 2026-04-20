@@ -66,15 +66,11 @@ public class XHyperlinkBuildImpactStateWidget extends XHyperlinkLabelValueSelect
          new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
       dialog.setInput(BuildImpactState.getStateNames());
 
-      boolean changed = false;
       if (dialog.open() == Window.OK) {
          selected = dialog.getSelectedFirst();
          return true;
       }
-      if (changed) {
-         refresh();
-      }
-      return changed;
+      return false;
    }
 
    public IAtsTeamDefinition getTeamDef() {

@@ -234,9 +234,9 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          /**
           * less than 2 elements
           */
-         for (InterfaceStructureElementToken element : elements) {
-            element = this.defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL,
-               element.getPlatformType().isValid() ? element.getPlatformType() : defaultPlatformType);
+         if (elements.size() > 0) {
+            elements.set(0, this.defaultSetUpElement(branch, elements.get(0), InterfaceStructureElementToken.SENTINEL,
+               elements.get(0).getPlatformType().isValid() ? elements.get(0).getPlatformType() : defaultPlatformType));
          }
       }
       return elements;
