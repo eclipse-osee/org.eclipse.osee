@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, signal, inject, WritableSignal } from '@angular/core';
+import {
+	Injectable,
+	signal,
+	inject,
+	WritableSignal,
+	computed,
+} from '@angular/core';
 import {
 	combineLatest,
 	distinctUntilChanged,
@@ -19,12 +25,14 @@ import {
 	shareReplay,
 	switchMap,
 	take,
+	tap,
 } from 'rxjs';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { TmoHttpService } from './tmo-http.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
+import { writableSlice } from '@osee/shared/utils';
 
 @Injectable({
 	providedIn: 'root',
@@ -39,23 +47,83 @@ export abstract class CiDetailsService {
 	protected _currentPage = signal(0);
 	protected _currentPageSize = signal(25);
 
+	protected _filters = signal<{
+		name: string | undefined;
+		team: string | undefined;
+		subsystem: string | undefined;
+		safety: string | undefined;
+		statusBy: string | undefined;
+		machineName: string | undefined;
+		fullScriptName: string | undefined;
+		notes: string | undefined;
+	}>({
+		name: undefined,
+		team: undefined,
+		subsystem: undefined,
+		safety: undefined,
+		statusBy: undefined,
+		machineName: undefined,
+		fullScriptName: undefined,
+		notes: undefined,
+	});
+
+	nameFilter = writableSlice(this._filters, 'name');
+	teamFilter = writableSlice(this._filters, 'team');
+	subsystemFilter = writableSlice(this._filters, 'subsystem');
+	safetyFilter = writableSlice(this._filters, 'safety');
+	statusByFilter = writableSlice(this._filters, 'statusBy');
+	machineNameFilter = writableSlice(this._filters, 'machineName');
+	fullScriptNameFilter = writableSlice(this._filters, 'fullScriptName');
+	notesFilter = writableSlice(this._filters, 'notes');
+	private _emptyFilter = signal<string | undefined>(undefined);
+
+	private _queries = computed(() => {
+		const filters = this._filters();
+		return Object.entries(filters)
+			.filter(([_, value]) => value !== undefined && value.trim() !== '')
+			.map(([column, value]) => ({ column, value: value! }));
+	});
+
+	filterSignals: Record<string, WritableSignal<string | undefined>> = {
+		name: this.nameFilter,
+		team: this.teamFilter,
+		subsystem: this.subsystemFilter,
+		safety: this.safetyFilter,
+		statusBy: this.statusByFilter,
+		machineName: this.machineNameFilter,
+		fullScriptName: this.fullScriptNameFilter,
+		notes: this.notesFilter,
+	};
+
+	query = computed(() => ({ filters: this._queries() }));
+
 	scriptDefs = combineLatest([
 		this.branchId,
 		this.ciDashboardUiService.ciSetId,
-		toObservable(this._currentDefFilter),
+		toObservable(this.query).pipe(
+			tap((q) =>
+				console.log('query observable emitted:', JSON.stringify(q))
+			)
+		),
 		toObservable(this._currentPage),
 		toObservable(this._currentPageSize),
 	]).pipe(
 		filter(([branch, setId]) => branch !== '' && setId !== '-1'),
-		switchMap(([branch, setId, filter, currentPage, currentPageSize]) =>
-			this.tmoHttpService.getScriptDefListPagination(
+		switchMap(([branch, setId, query, currentPage, currentPageSize]) => {
+			console.log(
+				'switchMap triggered:',
 				branch,
 				setId,
-				filter,
+				JSON.stringify(query)
+			);
+			return this.tmoHttpService.getScriptDefListArtifactMultiFilter(
+				branch,
+				setId,
+				query,
 				currentPage + 1,
 				currentPageSize
-			)
-		),
+			);
+		}),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
@@ -149,6 +217,22 @@ export abstract class CiDetailsService {
 		);
 	}
 
+	private _artifactScriptDefCount = combineLatest([
+		this.branchId,
+		this.ciDashboardUiService.ciSetId,
+		toObservable(this.query),
+	]).pipe(
+		filter(([branch, setId]) => branch !== '' && setId !== '-1'),
+		switchMap(([branch, setId, query]) =>
+			this.tmoHttpService.getScriptDefListArtifactMultiFilterCount(
+				branch,
+				setId,
+				query
+			)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
 	get scriptResults() {
 		return this._scriptResults;
 	}
@@ -189,8 +273,60 @@ export abstract class CiDetailsService {
 		this._currentDefFilter.set(value);
 	}
 
+	updateFilter(column: string, value: string) {
+		switch (column) {
+			case 'name':
+				this.nameFilter.set(value);
+				break;
+			case 'team':
+				this.teamFilter.set(value);
+				break;
+			case 'subsystem':
+				this.subsystemFilter.set(value);
+				break;
+			case 'safety':
+				this.safetyFilter.set(value);
+				break;
+			case 'statusBy':
+				this.statusByFilter.set(value);
+				break;
+			case 'machineName':
+				this.machineNameFilter.set(value);
+				break;
+			case 'fullScriptName':
+				this.fullScriptNameFilter.set(value);
+				break;
+			case 'notes':
+				this.notesFilter.set(value);
+				break;
+		}
+	}
+
+	getFilterValue(column: string): WritableSignal<string | undefined> {
+		switch (column) {
+			case 'name':
+				return this.nameFilter;
+			case 'team':
+				return this.teamFilter;
+			case 'subsystem':
+				return this.subsystemFilter;
+			case 'safety':
+				return this.safetyFilter;
+			case 'statusBy':
+				return this.statusByFilter;
+			case 'machineName':
+				return this.machineNameFilter;
+			case 'fullScriptName':
+				return this.fullScriptNameFilter;
+			case 'notes':
+				return this.notesFilter;
+			default:
+				return this._emptyFilter;
+		}
+	}
+
 	get scriptDefCount() {
-		return this._scriptDefCount;
+		return this._artifactScriptDefCount;
 	}
 
 	get currentPage(): WritableSignal<number> {

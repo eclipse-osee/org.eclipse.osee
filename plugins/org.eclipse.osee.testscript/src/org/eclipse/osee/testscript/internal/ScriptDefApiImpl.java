@@ -14,11 +14,15 @@
 package org.eclipse.osee.testscript.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.accessor.ArtifactAccessor;
+import org.eclipse.osee.accessor.types.ArtifactQueryElement;
+import org.eclipse.osee.accessor.types.ArtifactQueryRequest;
+import org.eclipse.osee.accessor.types.AttributeQueryElement;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -29,6 +33,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
+import org.eclipse.osee.testscript.ColumnFilter;
+import org.eclipse.osee.testscript.ColumnFilterRequest;
 import org.eclipse.osee.testscript.ScriptDefApi;
 import org.eclipse.osee.testscript.ScriptDefToken;
 
@@ -237,20 +243,6 @@ public class ScriptDefApiImpl implements ScriptDefApi {
    }
 
    @Override
-   public Collection<ScriptDefToken> getAllByRelationThroughPartialFilter(BranchId branch,
-      LinkedList<RelationTypeSide> relations, ArtifactId relatedId, String filter,
-      Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount, long pageSize,
-      AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
-      try {
-         return this.accessor.getAllByRelationThroughPartialFilter(branch, relations, relatedId, filter, attributes,
-            followRelations, pageCount, pageSize, orderByAttribute, followAttributes, viewId);
-      } catch (Exception ex) {
-         OseeLog.log(OseeData.class, Level.WARNING, ex);
-      }
-      return new LinkedList<>();
-   }
-
-   @Override
    public int getAllByRelationThroughAndCount(BranchId branch, LinkedList<RelationTypeSide> relations,
       ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId) {
       try {
@@ -259,6 +251,126 @@ public class ScriptDefApiImpl implements ScriptDefApi {
          OseeLog.log(OseeData.class, Level.WARNING, ex);
       }
       return 0;
+   }
+
+   @Override
+   public Collection<ScriptDefToken> getAllByRelationThroughArtifactQuery(BranchId branch,
+      LinkedList<RelationTypeSide> relations, ArtifactId relatedId, ArtifactQueryRequest query,
+      Collection<FollowRelation> followRelations, long pageNum, long pageSize, AttributeTypeId orderByAttribute,
+      ArtifactId viewId) {
+      try {
+         return this.accessor.getAllByRelationThroughArtifactQuery(branch, relations, relatedId, query, followRelations,
+            pageNum, pageSize, orderByAttribute, viewId);
+      } catch (Exception ex) {
+         return new LinkedList<>();
+      }
+   }
+
+   @Override
+   public int getAllByRelationThroughArtifactQueryAndCount(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, ArtifactQueryRequest query, Collection<FollowRelation> followRelations, ArtifactId viewId) {
+      try {
+         return this.accessor.getAllByRelationThroughArtifactQueryAndCount(branch, relations, relatedId, query,
+            followRelations, viewId);
+      } catch (Exception ex) {
+         return 0;
+      }
+   }
+
+   @Override
+   public Collection<ScriptDefToken> getScriptDefsByMultiFilter(BranchId branch, ArtifactId scriptSetId,
+      ColumnFilterRequest filterRequest, long pageNum, long pageSize, ArtifactId viewId) {
+      try {
+         LinkedList<RelationTypeSide> rels = new LinkedList<>();
+         rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
+         rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
+
+         ArtifactQueryRequest query = toArtifactQueryRequest(filterRequest);
+
+         return this.accessor.getAllByRelationThroughArtifactQuery(branch, rels, scriptSetId, query,
+            Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
+            pageNum, pageSize, CoreAttributeTypes.Name, viewId);
+      } catch (Exception ex) {
+         return new LinkedList<>();
+      }
+   }
+
+   @Override
+   public int getScriptDefsByMultiFilterCount(BranchId branch, ArtifactId scriptSetId,
+      ColumnFilterRequest filterRequest, ArtifactId viewId) {
+      try {
+         LinkedList<RelationTypeSide> rels = new LinkedList<>();
+         rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
+         rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
+
+         ArtifactQueryRequest query = toArtifactQueryRequest(filterRequest);
+
+         return this.accessor.getAllByRelationThroughArtifactQueryAndCount(branch, rels, scriptSetId, query,
+            Arrays.asList(FollowRelation.follow(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults)),
+            viewId);
+      } catch (Exception ex) {
+         return 0;
+      }
+   }
+
+   private ArtifactQueryRequest toArtifactQueryRequest(ColumnFilterRequest filterRequest) {
+      ArtifactQueryRequest request = new ArtifactQueryRequest();
+      if (filterRequest == null || filterRequest.getFilters() == null) {
+         return request;
+      }
+
+      Collection<ArtifactQueryElement> queries = new LinkedList<>();
+      for (ColumnFilter filter : filterRequest.getFilters()) {
+         if (filter.getColumn() == null || filter.getValue() == null || filter.getValue().isBlank()) {
+            continue;
+         }
+
+         AttributeTypeId attributeId;
+         LinkedList<RelationTypeSide> relationPath = new LinkedList<>();
+
+         switch (filter.getColumn()) {
+            case "name":
+               attributeId = CoreAttributeTypes.Name;
+               break;
+            case "team":
+               attributeId = CoreAttributeTypes.Name;
+               relationPath.add(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam);
+               break;
+            case "subsystem":
+               attributeId = CoreAttributeTypes.ScriptSubsystem;
+               break;
+            case "safety":
+               attributeId = CoreAttributeTypes.Safety;
+               break;
+            case "statusBy":
+               attributeId = CoreAttributeTypes.StatusBy;
+               break;
+            case "machineName":
+               attributeId = CoreAttributeTypes.MachineName;
+               break;
+            case "fullScriptName":
+               attributeId = CoreAttributeTypes.ScriptName;
+               break;
+            case "notes":
+               attributeId = CoreAttributeTypes.Notes;
+               break;
+            default:
+               continue;
+         }
+
+         AttributeQueryElement attributeQuery = new AttributeQueryElement();
+         attributeQuery.setAttributeId(attributeId);
+         attributeQuery.setValue(filter.getValue());
+
+         ArtifactQueryElement element = new ArtifactQueryElement();
+         element.setAttributeQuery(attributeQuery);
+         element.setRelationPath(relationPath);
+
+         queries.add(element);
+      }
+
+      request.setQueries(queries);
+      return request;
    }
 
 }
