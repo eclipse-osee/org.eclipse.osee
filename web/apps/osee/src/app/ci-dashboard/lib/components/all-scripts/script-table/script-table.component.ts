@@ -15,12 +15,12 @@ import {
 	Component,
 	effect,
 	inject,
+	signal,
 	viewChild,
 } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { scriptDefHeaderDetails } from '../../../table-headers/script-headers';
 import { FormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import {
 	MatCell,
 	MatCellDef,
@@ -37,19 +37,15 @@ import {
 import { MatTooltip } from '@angular/material/tooltip';
 import { HeaderService } from '@osee/shared/services';
 import { CiDetailsTableService } from '../../../services/ci-details-table.service';
-import type { DefReference } from '../../../types/tmo';
+import type { DefReference, ScriptDefColumnFilters } from '../../../types/tmo';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { SubsystemSelectorComponent } from '../../subsystem-selector/subsystem-selector.component';
 import { TeamSelectorComponent } from '../../team-selector/team-selector.component';
-import {
-	MatFormField,
-	MatLabel,
-	MatPrefix,
-} from '@angular/material/form-field';
+import { TeamSelectorFilterComponent } from '../../team-selector/team-selector-filter.component';
+import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatIcon } from '@angular/material/icon';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { UserDataAccountService } from '../../../../../auth/user-data-account.service';
@@ -67,6 +63,7 @@ const editRoles = new Set<string>([
 		AsyncPipe,
 		SubsystemSelectorComponent,
 		TeamSelectorComponent,
+		TeamSelectorFilterComponent,
 		FormsModule,
 		MatTable,
 		MatColumnDef,
@@ -80,10 +77,7 @@ const editRoles = new Set<string>([
 		MatRow,
 		MatRowDef,
 		MatFormField,
-		MatLabel,
 		MatInput,
-		MatIcon,
-		MatPrefix,
 		MatPaginator,
 		MatSort,
 		MatSortHeader,
@@ -91,15 +85,6 @@ const editRoles = new Set<string>([
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `<div class="tw-flex tw-h-full tw-w-screen tw-flex-col">
 		@if (scriptDefs()) {
-			<mat-form-field
-				class="tw-w-full"
-				subscriptSizing="dynamic">
-				<mat-label>Filter Scripts</mat-label>
-				<input
-					matInput
-					[(ngModel)]="ciDetailsService.currentDefFilter" />
-				<mat-icon matPrefix>filter_list</mat-icon>
-			</mat-form-field>
 			<mat-table
 				[dataSource]="datasource"
 				class="tw-overflow-auto"
@@ -115,10 +100,33 @@ const editRoles = new Set<string>([
 								(getTableHeaderByName(header) | async)
 									?.description || ''
 							">
-							{{
-								(getTableHeaderByName(header) | async)
-									?.humanReadable || ''
-							}}
+							<div class="tw-flex tw-flex-col tw-items-center">
+								<div>
+									{{
+										(getTableHeaderByName(header) | async)
+											?.humanReadable || ''
+									}}
+								</div>
+								@if (
+									header === 'team' &&
+									isFilterableColumn(header)
+								) {
+									<osee-team-selector-filter />
+								} @else if (isFilterableColumn(header)) {
+									<mat-form-field
+										class="tw-w-full"
+										subscriptSizing="dynamic"
+										(click)="$event.stopPropagation()">
+										<input
+											matInput
+											[(ngModel)]="
+												ciDetailsService.filterSignals[
+													header
+												]
+											" />
+									</mat-form-field>
+								}
+							</div>
 						</th>
 						<td
 							mat-cell
@@ -158,6 +166,7 @@ const editRoles = new Set<string>([
 					class="odd:tw-bg-selected-button even:tw-bg-background-background hover:tw-bg-background-app-bar"
 					[attr.data-cy]="'script-def-table-row-' + row.name"></tr>
 			</mat-table>
+
 			<mat-paginator
 				[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"
 				[pageSize]="this.ciDetailsService.currentPageSize()"
@@ -173,8 +182,24 @@ export class ScriptTableComponent {
 	ciDashboardService = inject(CiDashboardUiService);
 	headerService = inject(HeaderService);
 	userData = inject(UserDataAccountService);
-	dialog = inject(MatDialog);
 	router = inject(Router);
+
+	headerFilters = signal<(keyof ScriptDefColumnFilters)[]>([
+		'name',
+		'team',
+		'subsystem',
+		'safety',
+		'statusBy',
+		'machineName',
+		'fullScriptName',
+		'notes',
+	]);
+
+	isFilterableColumn(header: string): header is keyof ScriptDefColumnFilters {
+		return this.headerFilters().includes(
+			header as keyof ScriptDefColumnFilters
+		);
+	}
 
 	private matSort = viewChild(MatSort);
 
@@ -201,17 +226,10 @@ export class ScriptTableComponent {
 		url = url.replace('allScripts', 'results');
 		const tree = this.router.parseUrl(url);
 		tree.queryParams['script'] = defId;
-		tree.queryParams['filter'] = this.ciDetailsService.currentDefFilter();
 		this.router.navigateByUrl(tree);
 	}
 
-	private _filterEffect = effect(() => {
-		this.datasource.filter = this.ciDetailsService.currentDefFilter();
-		const filterValue = this.ciDetailsService.currentDefFilter();
-		const tree = this.router.parseUrl(this.router.url);
-		tree.queryParams['filter'] = filterValue;
-		this.router.navigateByUrl(tree);
-	});
+
 
 	private _sortEffect = effect(() => {
 		const sort = this.matSort();
@@ -228,11 +246,6 @@ export class ScriptTableComponent {
 			this.datasource.data = [];
 		}
 	});
-
-	menuPosition = {
-		x: '0',
-		y: '0',
-	};
 
 	getTableHeaderByName(header: keyof DefReference) {
 		return this.headerService.getHeaderByName(

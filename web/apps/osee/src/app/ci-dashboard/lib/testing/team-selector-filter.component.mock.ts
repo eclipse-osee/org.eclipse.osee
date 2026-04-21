@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2026 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,9 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './ci-details.service.mock';
-export * from './ci-dashboard-controls.component.mock';
-export * from './subsystem-selector.component.mock';
-export * from './team-selector.component.mock';
-export * from './team-selector-filter.component.mock';
-export * from './ci-set.service.mock';
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'osee-team-selector-filter',
+	template: '<p>Dummy</p>',
+	standalone: true,
+})
+export class TeamSelectorFilterMockComponent {}

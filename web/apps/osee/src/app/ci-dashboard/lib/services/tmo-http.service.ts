@@ -12,7 +12,12 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { DefReference, ScriptBatch, SetDiff } from '../types/tmo';
+import {
+	ColumnFilterRequest,
+	DefReference,
+	ScriptBatch,
+	SetDiff,
+} from '../types/tmo';
 import { ResultReference } from '../types/tmo';
 import { apiURL } from '@osee/environments';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
@@ -71,6 +76,40 @@ export class TmoHttpService {
 	getScriptDef(branchId: string | number, defId: string | number) {
 		return this.http.get<DefReference>(
 			`${apiURL}/script/tmo/${branchId}/def/${defId}`
+		);
+	}
+
+	getScriptDefListArtifactMultiFilter(
+		branchId: string | number,
+		setId: string | number,
+		query: ColumnFilterRequest,
+		pageNum?: number,
+		pageSize?: number
+	): Observable<DefReference[]> {
+		let params: HttpParamsType = {};
+		if (pageNum) {
+			params = { ...params, pageNum: pageNum };
+		}
+		if (pageSize) {
+			params = { ...params, count: pageSize };
+		}
+		return this.http.post<DefReference[]>(
+			`${apiURL}/script/tmo/${branchId}/def/set/${setId}/artifact-multifilter`,
+			query,
+			{
+				params,
+			}
+		);
+	}
+
+	getScriptDefListArtifactMultiFilterCount(
+		branchId: string | number,
+		setId: string | number,
+		query: ColumnFilterRequest
+	): Observable<number> {
+		return this.http.post<number>(
+			`${apiURL}/script/tmo/${branchId}/def/set/${setId}/artifact-multifilter/count`,
+			query
 		);
 	}
 
