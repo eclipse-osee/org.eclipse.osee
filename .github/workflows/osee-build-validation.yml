@@ -337,6 +337,10 @@ jobs:
         if: always()
         shell: bash
         run: |
+          # Ensure python3 is available (baked into the image after Dockerfile update,
+          # but installed here as a fallback for older image versions)
+          command -v python3 >/dev/null 2>&1 || apk add --no-cache python3
+
           ARGS="spotbugs-report.xml"
           if [ -f changed-files.txt ]; then
             ARGS="$ARGS changed-files.txt"
