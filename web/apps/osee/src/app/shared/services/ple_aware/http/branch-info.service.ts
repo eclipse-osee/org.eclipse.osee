@@ -52,7 +52,9 @@ export class BranchInfoService {
 		pageNum?: string | number
 	) {
 		let params: HttpParamsType = {};
-		params = { ...params, workType: workType };
+		if (type === '0') {
+			params = { ...params, workType: workType };
+		}
 		params = { ...params, type: type };
 		if (category !== '-1') {
 			params = { ...params, category };
