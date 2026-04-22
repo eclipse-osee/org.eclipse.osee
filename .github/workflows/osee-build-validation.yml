@@ -276,43 +276,27 @@ jobs:
           name: osee-compiled-classes${{steps.artifact_ref.outputs.artifact_current_ref}}
           path: compiled-classes
 
-      - name: Run SpotBugs Analysis (HTML)
+      - name: Run SpotBugs Analysis (Full)
         run: |
           /root/spotbugs/spotbugs-4.9.1/bin/spotbugs \
             -textui \
             -html:fancy-hist.xsl \
-            -output spotbugs-report.html \
+            -output spotbugs-report-full.html \
             -auxclasspathFromInput \
             -onlyAnalyze "org.eclipse.osee.-" \
             -nested:false \
             compiled-classes/
 
-      - name: Run SpotBugs Analysis (XML)
-        run: |
-          /root/spotbugs/spotbugs-4.9.1/bin/spotbugs \
-            -textui \
-            -xml:withMessages \
-            -output spotbugs-report.xml \
-            -auxclasspathFromInput \
-            -onlyAnalyze "org.eclipse.osee.-" \
-            -nested:false \
-            compiled-classes/
-
-      - name: Upload SpotBugs Reports
+      - name: Get Changed Files and Run Scoped SpotBugs
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: spotbugs-report
-          path: |
-            spotbugs-report.html
-            spotbugs-report.xml
-
-      - name: Get Changed Files in PR
-        if: always()
-        id: changed_files
+        id: changed_analysis
         uses: actions/github-script@v7
         with:
           script: |
+            const fs = require('fs');
+            const { execSync } = require('child_process');
+
+            // Fetch changed files from the PR
             const files = [];
             let page = 1;
             while (true) {
@@ -324,40 +308,56 @@ jobs:
                 page: page,
               });
               if (data.length === 0) break;
-              for (const f of data) {
-                files.push(f.filename);
-              }
+              for (const f of data) files.push(f.filename);
               page++;
             }
-            const fs = require('fs');
-            fs.writeFileSync('changed-files.txt', files.join('\n') + '\n');
-            core.info(`Found ${files.length} changed files in PR`);
 
-      - name: Generate Markdown from SpotBugs XML
+            // Extract fully-qualified class names from changed .java files
+            const classes = new Set();
+            for (const f of files) {
+              if (!f.endsWith('.java')) continue;
+              for (const marker of ['/src/', '/src-gen/']) {
+                const idx = f.indexOf(marker);
+                if (idx !== -1) {
+                  const rel = f.substring(idx + marker.length);
+                  const dotted = rel.replace(/\//g, '.').replace(/\.java$/, '');
+                  classes.add(dotted);
+                  break;
+                }
+              }
+            }
+
+            if (classes.size === 0) {
+              core.info('No changed Java classes found, skipping scoped analysis.');
+              core.setOutput('has_changed_classes', 'false');
+              return;
+            }
+
+            const analyzeList = [...classes].join(',');
+            core.info(`Running SpotBugs on ${classes.size} changed class(es)`);
+
+            try {
+              execSync(
+                `/root/spotbugs/spotbugs-4.9.1/bin/spotbugs ` +
+                `-textui -html:fancy-hist.xsl -output spotbugs-report-changed.html ` +
+                `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
+                `-nested:false compiled-classes/`,
+                { stdio: 'inherit' }
+              );
+            } catch (e) {
+              core.warning(`Scoped SpotBugs analysis exited with code ${e.status}`);
+            }
+
+            core.setOutput('has_changed_classes', 'true');
+
+      - name: Upload SpotBugs Reports
         if: always()
-        shell: bash
-        run: |
-          # Ensure python3 is available (baked into the image after Dockerfile update,
-          # but installed here as a fallback for older image versions)
-          command -v python3 >/dev/null 2>&1 || apk add --no-cache python3
-
-          ARGS="spotbugs-report.xml"
-          if [ -f changed-files.txt ]; then
-            ARGS="$ARGS changed-files.txt"
-          fi
-          python3 .github/scripts/spotbugs-to-markdown.py $ARGS > spotbugs-comment.md
-
-          # Append artifact link (needs workflow context not available in the script)
-          echo ">" >> spotbugs-comment.md
-          echo "> The full HTML report is available in the [build artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})." >> spotbugs-comment.md
-
-      - name: Post SpotBugs Summary To PR
-        if: always()
-        shell: bash
-        run: |
-          if [ -f spotbugs-comment.md ]; then
-            cat spotbugs-comment.md >> $GITHUB_STEP_SUMMARY
-          fi
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotbugs-report
+          path: |
+            spotbugs-report-full.html
+            spotbugs-report-changed.html
 
       - name: Post SpotBugs Comment To PR
         if: always() && github.event_name == 'pull_request'
@@ -365,11 +365,48 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const body = fs.readFileSync('spotbugs-comment.md', 'utf8');
             const marker = '<!-- spotbugs-analysis-comment -->';
-            const fullBody = marker + '\n' + body;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
 
-            // Find and update existing comment, or create a new one
+            function countBugs(file) {
+              if (!fs.existsSync(file)) return -1;
+              const html = fs.readFileSync(file, 'utf8');
+              const matches = html.match(/<tr class="tableRow/g);
+              return matches ? matches.length : 0;
+            }
+
+            const fullCount = countBugs('spotbugs-report-full.html');
+            const changedCount = countBugs('spotbugs-report-changed.html');
+
+            const lines = [marker, `## :mag: SpotBugs Analysis`, ``];
+
+            // Changed files section
+            if (changedCount > 0) {
+              lines.push(`### :pushpin: Changed Files`);
+              lines.push(`> :warning: **${changedCount}** issue(s) in files changed by this PR.`);
+            } else if (changedCount === 0) {
+              lines.push(`### :pushpin: Changed Files`);
+              lines.push(`> :white_check_mark: No issues in files changed by this PR.`);
+            }
+
+            lines.push(``);
+
+            // Full report section
+            if (fullCount > 0) {
+              lines.push(`### :file_folder: Full Analysis`);
+              lines.push(`> :warning: **${fullCount}** total issue(s) across all \`org.eclipse.osee\` packages.`);
+            } else if (fullCount === 0) {
+              lines.push(`### :file_folder: Full Analysis`);
+              lines.push(`> :white_check_mark: No issues found.`);
+            } else {
+              lines.push(`> :x: SpotBugs report was not generated.`);
+            }
+
+            lines.push(``);
+            lines.push(`[:arrow_down: Download the HTML reports](${runUrl}#artifacts)`);
+
+            const body = lines.join('\n');
+
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -383,14 +420,14 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: existing.id,
-                body: fullBody,
+                body,
               });
             } else {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: fullBody,
+                body,
               });
             }
 
