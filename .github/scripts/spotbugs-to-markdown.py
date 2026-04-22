@@ -21,9 +21,8 @@ If changed-files.txt is provided, the output splits bugs into two sections:
   2. All other bugs (collapsed)
 """
 
+import re
 import sys
-import xml.etree.ElementTree as ET
-from pathlib import PurePosixPath
 
 PRIORITY_LABELS = {
     "1": ":red_circle: High",
@@ -69,28 +68,42 @@ def parse_changed_files(path):
     return source_paths, class_names
 
 
+def _attr(text, name):
+    """Extract an XML attribute value by name from a text block."""
+    m = re.search(rf'{name}="([^"]*)"', text)
+    return m.group(1) if m else ""
+
+
+def _tag_text(text, tag):
+    """Extract the text content of the first occurrence of <tag>...</tag>."""
+    m = re.search(rf"<{tag}>([^<]*)</{tag}>", text)
+    return m.group(1) if m else ""
+
+
 def parse_bugs(xml_path):
     """Parse SpotBugs XML and return a list of bug dicts."""
-    tree = ET.parse(xml_path)
-    root = tree.getroot()
+    with open(xml_path) as f:
+        content = f.read()
+
     bugs = []
+    for m in re.finditer(r"<BugInstance\b.*?</BugInstance>", content, re.DOTALL):
+        block = m.group(0)
 
-    for bug_instance in root.iter("BugInstance"):
-        category = bug_instance.get("category", "")
-        priority = bug_instance.get("priority", "")
-        bug_type = bug_instance.get("type", "")
+        # Attributes on the opening <BugInstance ...> tag
+        opening = block[: block.index(">") + 1]
+        category = _attr(opening, "category")
+        priority = _attr(opening, "priority")
+        bug_type = _attr(opening, "type")
 
-        # Get class name from the first Class element
-        class_el = bug_instance.find("Class")
-        classname = class_el.get("classname", "") if class_el is not None else ""
+        # classname from the first element that has one (Class or SourceLine)
+        classname = _attr(block, "classname")
 
-        # Get source path from the first SourceLine element
-        source_line = bug_instance.find(".//SourceLine")
-        sourcepath = source_line.get("sourcepath", "") if source_line is not None else ""
+        # sourcepath from the first SourceLine element
+        sl_match = re.search(r"<SourceLine\b[^>]*>", block)
+        sourcepath = _attr(sl_match.group(0), "sourcepath") if sl_match else ""
 
-        # Get short message
-        short_msg_el = bug_instance.find("ShortMessage")
-        message = short_msg_el.text if short_msg_el is not None and short_msg_el.text else ""
+        # ShortMessage text
+        message = _tag_text(block, "ShortMessage")
 
         bugs.append(
             {
@@ -142,7 +155,7 @@ def main():
 
     try:
         bugs = parse_bugs(xml_path)
-    except (ET.ParseError, FileNotFoundError) as e:
+    except FileNotFoundError as e:
         print("## :x: SpotBugs Analysis")
         print(f"Failed to parse SpotBugs report: {e}")
         sys.exit(0)
