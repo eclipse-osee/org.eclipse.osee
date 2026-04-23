@@ -276,211 +276,136 @@ jobs:
           name: osee-compiled-classes${{steps.artifact_ref.outputs.artifact_current_ref}}
           path: compiled-classes
 
-      - name: Run SpotBugs Analysis (Full)
+      - name: Run SpotBugs Full Analysis
         run: |
-          /root/spotbugs/spotbugs-4.9.1/bin/spotbugs \
-            -textui \
-            -html:fancy-hist.xsl \
-            -output spotbugs-report-full.html \
-            -auxclasspathFromInput \
-            -onlyAnalyze "org.eclipse.osee.-" \
-            -nested:false \
-            compiled-classes/
+          /root/spotbugs/spotbugs-4.9.1/bin/spotbugs -textui \
+            -xml:withMessages -output spotbugs-report-full.xml \
+            -html:fancy-hist.xsl -output spotbugs-report-full.html \
+            -auxclasspathFromInput -onlyAnalyze "org.eclipse.osee.-" \
+            -nested:false compiled-classes/
 
-          /root/spotbugs/spotbugs-4.9.1/bin/spotbugs \
-            -textui \
-            -xml:withMessages \
-            -output spotbugs-report-full.xml \
-            -auxclasspathFromInput \
-            -onlyAnalyze "org.eclipse.osee.-" \
-            -nested:false \
-            compiled-classes/
-
-      - name: Get Changed Files and Run Scoped SpotBugs
-        if: always()
-        id: changed_analysis
+      - name: Run Scoped Analysis and Post Results
+        if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             const { execSync } = require('child_process');
 
-            const files = [];
-            let page = 1;
-            while (true) {
-              const { data } = await github.rest.pulls.listFiles({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.issue.number,
-                per_page: 100,
-                page: page,
-              });
-              if (data.length === 0) break;
-              for (const f of data) files.push(f.filename);
-              page++;
+            // --- Helpers ---
+            function countBugs(file) {
+              if (!fs.existsSync(file)) return -1;
+              const m = fs.readFileSync(file, 'utf8').match(/total_bugs="(\d+)"/);
+              return m ? parseInt(m[1], 10) : 0;
             }
 
+            function parseBugs(file) {
+              if (!fs.existsSync(file)) return [];
+              const xml = fs.readFileSync(file, 'utf8');
+              const bugs = [];
+              const re = /<BugInstance[\s\S]*?<\/BugInstance>/g;
+              let m;
+              while ((m = re.exec(xml)) !== null) {
+                const b = m[0];
+                const tag = (t) => { const x = b.match(new RegExp(`<${t}>([^<]*)</${t}>`)); return x ? x[1] : ''; };
+                const opening = b.substring(0, b.indexOf('>') + 1);
+                const sl = b.match(/<SourceLine[^>]*>/)?.[0] || '';
+                bugs.push({
+                  type:       opening.match(/type="([^"]*)"/)?.[1] || '',
+                  priority:   opening.match(/priority="([^"]*)"/)?.[1] || '',
+                  category:   opening.match(/category="([^"]*)"/)?.[1] || '',
+                  sourcepath: sl.match(/sourcepath="([^"]*)"/)?.[1] || '',
+                  methodName: (b.match(/<Method[^>]*name="([^"]*)"/) || [])[1] || '',
+                  message:    tag('ShortMessage'),
+                  longMsg:    tag('LongMessage'),
+                });
+              }
+              return bugs;
+            }
+
+            const P = { '1': ':red_circle: High', '2': ':orange_circle: Medium', '3': ':yellow_circle: Low' };
+
+            // --- Get changed files and build class list ---
+            const changedFiles = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner, repo: context.repo.repo,
+              pull_number: context.issue.number, per_page: 100,
+            });
+
             const classes = new Set();
-            const classToRepo = new Map();
-            for (const f of files) {
-              if (!f.endsWith('.java')) continue;
+            const srcToRepo = {};
+            for (const f of changedFiles) {
+              if (!f.filename.endsWith('.java')) continue;
               for (const marker of ['/src/', '/src-gen/']) {
-                const idx = f.indexOf(marker);
+                const idx = f.filename.indexOf(marker);
                 if (idx !== -1) {
-                  const rel = f.substring(idx + marker.length);
-                  const dotted = rel.replace(/\//g, '.').replace(/\.java$/, '');
-                  classes.add(dotted);
-                  classToRepo.set(f, rel);
+                  const rel = f.filename.substring(idx + marker.length);
+                  classes.add(rel.replace(/\//g, '.').replace(/\.java$/, ''));
+                  srcToRepo[rel] = f.filename;
                   break;
                 }
               }
             }
 
-            if (classes.size === 0) {
-              core.info('No changed Java classes found, skipping scoped analysis.');
-              core.setOutput('has_changed_classes', 'false');
-              return;
-            }
-
-            const analyzeList = [...classes].join(',');
-            core.info(`Running SpotBugs on ${classes.size} changed class(es): ${analyzeList}`);
-
-            // Save the sourcepath-to-repo-path mapping for inline review comments
-            const mapping = {};
-            for (const [repoPath, srcRel] of classToRepo.entries()) {
-              mapping[srcRel] = repoPath;
-            }
-            fs.writeFileSync('sourcepath-mapping.json', JSON.stringify(mapping));
-
-            try {
-              execSync(
-                `/root/spotbugs/spotbugs-4.9.1/bin/spotbugs ` +
-                `-textui -html:fancy-hist.xsl -output spotbugs-report-changed.html ` +
-                `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
-                `-nested:false compiled-classes/`,
-                { stdio: 'inherit' }
-              );
-              execSync(
-                `/root/spotbugs/spotbugs-4.9.1/bin/spotbugs ` +
-                `-textui -xml:withMessages -output spotbugs-report-changed.xml ` +
-                `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
-                `-nested:false compiled-classes/`,
-                { stdio: 'inherit' }
-              );
-            } catch (e) {
-              core.warning(`Scoped SpotBugs analysis exited with code ${e.status}`);
-            }
-
-            core.setOutput('has_changed_classes', 'true');
-
-      - name: Upload SpotBugs Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: spotbugs-report
-          path: |
-            spotbugs-report-full.html
-            spotbugs-report-changed.html
-
-      - name: Post SpotBugs Comment To PR
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const marker = '<!-- spotbugs-analysis-comment -->';
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-
-            function countBugsFromXml(file) {
-              if (!fs.existsSync(file)) return -1;
-              const xml = fs.readFileSync(file, 'utf8');
-              const m = xml.match(/total_bugs="(\d+)"/);
-              return m ? parseInt(m[1], 10) : 0;
-            }
-
-            function parseBugsFromXml(file) {
-              if (!fs.existsSync(file)) return [];
-              const xml = fs.readFileSync(file, 'utf8');
-              const bugs = [];
-              const bugRe = /<BugInstance[\s\S]*?<\/BugInstance>/g;
-              let match;
-              while ((match = bugRe.exec(xml)) !== null) {
-                const block = match[0];
-
-                const attr = (name) => {
-                  const m = block.match(new RegExp(`${name}="([^"]*)"`));
-                  return m ? m[1] : '';
-                };
-
-                const tagText = (tag) => {
-                  const m = block.match(new RegExp(`<${tag}>([^<]*)</${tag}>`));
-                  return m ? m[1] : '';
-                };
-
-                // Get category and priority from the BugInstance opening tag
-                const opening = block.substring(0, block.indexOf('>') + 1);
-                const category = opening.match(/category="([^"]*)"/)?.[1] || '';
-                const priority = opening.match(/priority="([^"]*)"/)?.[1] || '';
-                const type = opening.match(/type="([^"]*)"/)?.[1] || '';
-
-                // Get source info from the first SourceLine element
-                const slMatch = block.match(/<SourceLine[^>]*>/);
-                const sl = slMatch ? slMatch[0] : '';
-                const sourcepath = sl.match(/sourcepath="([^"]*)"/)?.[1] || '';
-                const startLine = sl.match(/start="([^"]*)"/)?.[1] || '';
-
-                const message = tagText('ShortMessage');
-                const longMessage = tagText('LongMessage');
-
-                const priorityLabel = { '1': 'High', '2': 'Medium', '3': 'Low' }[priority] || priority;
-
-                bugs.push({ category, priority: priorityLabel, type, sourcepath, startLine, message, longMessage });
+            // --- Run scoped SpotBugs on changed classes ---
+            let changedBugs = [];
+            if (classes.size > 0) {
+              const analyzeList = [...classes].join(',');
+              core.info(`Running SpotBugs on ${classes.size} changed class(es)`);
+              try {
+                execSync(
+                  `/root/spotbugs/spotbugs-4.9.1/bin/spotbugs -textui ` +
+                  `-xml:withMessages -output spotbugs-report-changed.xml ` +
+                  `-html:fancy-hist.xsl -output spotbugs-report-changed.html ` +
+                  `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
+                  `-nested:false compiled-classes/`,
+                  { stdio: 'inherit' }
+                );
+              } catch (e) {
+                core.warning(`Scoped SpotBugs exited with code ${e.status}`);
               }
-              return bugs;
+              changedBugs = parseBugs('spotbugs-report-changed.xml');
             }
 
-            const fullCount = countBugsFromXml('spotbugs-report-full.xml');
-            const changedCount = countBugsFromXml('spotbugs-report-changed.xml');
-            const changedBugs = parseBugsFromXml('spotbugs-report-changed.xml');
+            const fullCount = countBugs('spotbugs-report-full.xml');
 
-            // Get the direct artifact download URL
+            // --- Upload artifacts ---
+            // (handled by the next step)
+
+            // --- Artifact download URL ---
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             let artifactUrl = `${runUrl}#artifacts`;
             try {
               const { data: { artifacts } } = await github.rest.actions.listWorkflowRunArtifacts({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                run_id: context.runId,
+                owner: context.repo.owner, repo: context.repo.repo, run_id: context.runId,
               });
-              const report = artifacts.find(a => a.name === 'spotbugs-report');
-              if (report) {
-                artifactUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}/artifacts/${report.id}`;
-              }
-            } catch (e) {
-              core.warning(`Could not fetch artifact URL: ${e.message}`);
-            }
+              const rpt = artifacts.find(a => a.name === 'spotbugs-report');
+              if (rpt) artifactUrl = `${runUrl}/artifacts/${rpt.id}`;
+            } catch (e) { core.warning(`Could not fetch artifact URL: ${e.message}`); }
 
-            const lines = [marker, `## :mag: SpotBugs Analysis`, ``];
+            // =============================================
+            // 1. PR COMMENT (in the conversation thread)
+            // =============================================
+            const marker = '<!-- spotbugs-analysis-comment -->';
+            const lines = [marker, `## :beetle: SpotBugs Analysis`, ``];
 
-            // Changed files section with inline details
             if (changedBugs.length > 0) {
               lines.push(`### :pushpin: Issues in Changed Files — ${changedBugs.length} issue(s)`);
               lines.push(``);
-              lines.push(`| File | Line | Priority | Category | Bug Type | Message |`);
-              lines.push(`|------|------|----------|----------|----------|---------|`);
+              lines.push(`| File | Method | Priority | Message |`);
+              lines.push(`|------|--------|----------|---------|`);
               for (const bug of changedBugs) {
-                const file = bug.sourcepath ? `\`${bug.sourcepath}\`` : '';
-                const line = bug.startLine || '';
+                const file = bug.sourcepath ? `\`${bug.sourcepath.split('/').pop()}\`` : '';
+                const method = bug.methodName ? `\`${bug.methodName}()\`` : '';
                 const msg = bug.message.replace(/\|/g, '\\|');
-                lines.push(`| ${file} | ${line} | ${bug.priority} | ${bug.category} | ${bug.type} | ${msg} |`);
+                lines.push(`| ${file} | ${method} | ${P[bug.priority] || bug.priority} | ${msg} |`);
               }
               lines.push(``);
-            } else if (changedCount === 0) {
+            } else {
               lines.push(`### :pushpin: Changed Files`);
               lines.push(`> :white_check_mark: No issues in files changed by this PR.`);
               lines.push(``);
             }
 
-            // Full report section
             if (fullCount > 0) {
               lines.push(`### :file_folder: Full Analysis`);
               lines.push(`> :warning: **${fullCount}** total issue(s) across all \`org.eclipse.osee\` packages.`);
@@ -494,179 +419,89 @@ jobs:
             lines.push(``);
             lines.push(`[:arrow_down: Download the SpotBugs HTML reports](${artifactUrl})`);
 
-            const body = lines.join('\n');
-
+            const prBody = lines.join('\n');
             const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number,
             });
-
             const existing = comments.find(c => c.body.includes(marker));
-
             if (existing) {
               await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
+                owner: context.repo.owner, repo: context.repo.repo, comment_id: existing.id, body: prBody,
               });
             } else {
               await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body,
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body: prBody,
               });
             }
 
-      - name: Post SpotBugs Inline Review Comments
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
+            // =============================================
+            // 2. FILE-LEVEL REVIEW COMMENTS (on each file)
+            // =============================================
+            if (changedBugs.length === 0) return;
 
-            if (!fs.existsSync('spotbugs-report-changed.xml') || !fs.existsSync('sourcepath-mapping.json')) {
-              core.info('No changed-files SpotBugs report or mapping found, skipping inline comments.');
-              return;
+            const bugsByFile = {};
+            for (const bug of changedBugs) {
+              const repo = srcToRepo[bug.sourcepath];
+              if (!repo) continue;
+              if (!bugsByFile[repo]) bugsByFile[repo] = [];
+              bugsByFile[repo].push(bug);
             }
 
-            const xml = fs.readFileSync('spotbugs-report-changed.xml', 'utf8');
-            const sourceToRepo = JSON.parse(fs.readFileSync('sourcepath-mapping.json', 'utf8'));
+            const reviewComments = [];
+            for (const [filePath, bugs] of Object.entries(bugsByFile)) {
+              const fileName = filePath.split('/').pop();
+              const body = [];
+              body.push(`## :beetle: SpotBugs — ${bugs.length} issue${bugs.length !== 1 ? 's' : ''} in \`${fileName}\``);
+              body.push(``);
 
-            // Build sorted arrays of diff lines for each changed file
-            const diffLineArrays = {};
-            const prFiles = await github.paginate(github.rest.pulls.listFiles, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-              per_page: 100,
-            });
+              for (const bug of bugs) {
+                const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
+                const method = bug.methodName ? `\`${bug.methodName}()\`` : '_unknown_';
+                const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
 
-            for (const file of prFiles) {
-              if (!file.patch) continue;
-              const lines = new Set();
-              const hunkRe = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/gm;
-              let hunk;
-              while ((hunk = hunkRe.exec(file.patch)) !== null) {
-                const start = parseInt(hunk[1], 10);
-                const count = hunk[2] !== undefined ? parseInt(hunk[2], 10) : 1;
-                for (let i = start; i < start + count; i++) {
-                  lines.add(i);
-                }
+                body.push(`**${desc || bug.type}**`);
+                body.push(``);
+                body.push(`${P[bug.priority] || bug.priority} &nbsp;&nbsp; **Method:** ${method} &nbsp;&nbsp; **Type:** [\`${bug.type}\`](${docsUrl})`);
+                body.push(``);
               }
-              diffLineArrays[file.filename] = [...lines].sort((a, b) => a - b);
+
+              reviewComments.push({ path: filePath, body: body.join('\n'), subject_type: 'file' });
             }
 
-            // Find the nearest diff line to a target line
-            function nearestDiffLine(sortedLines, target) {
-              if (!sortedLines || sortedLines.length === 0) return null;
-              let closest = sortedLines[0];
-              let minDist = Math.abs(target - closest);
-              for (const l of sortedLines) {
-                const dist = Math.abs(target - l);
-                if (dist < minDist) {
-                  minDist = dist;
-                  closest = l;
-                }
-                if (l > target) break;
-              }
-              return closest;
-            }
-
-            // Parse bugs
-            const bugRe = /<BugInstance[\s\S]*?<\/BugInstance>/g;
-            const comments = [];
-            let match;
-
-            while ((match = bugRe.exec(xml)) !== null) {
-              const block = match[0];
-
-              const opening = block.substring(0, block.indexOf('>') + 1);
-              const type = opening.match(/type="([^"]*)"/)?.[1] || '';
-              const priority = opening.match(/priority="([^"]*)"/)?.[1] || '';
-              const category = opening.match(/category="([^"]*)"/)?.[1] || '';
-
-              const slMatch = block.match(/<SourceLine[^>]*>/);
-              const sl = slMatch ? slMatch[0] : '';
-              const sourcepath = sl.match(/sourcepath="([^"]*)"/)?.[1] || '';
-              const startLine = parseInt(sl.match(/start="([^"]*)"/)?.[1] || '0', 10);
-
-              const shortMsg = block.match(/<ShortMessage>([^<]*)<\/ShortMessage>/)?.[1] || '';
-              const longMsg = block.match(/<LongMessage>([^<]*)<\/LongMessage>/)?.[1] || '';
-
-              if (!sourcepath) continue;
-
-              const repoPath = sourceToRepo[sourcepath];
-              if (!repoPath) continue;
-
-              const priorityLabel = { '1': 'High', '2': 'Medium', '3': 'Low' }[priority] || priority;
-              const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${type.toLowerCase()}`;
-
-              const fileDiffLines = diffLineArrays[repoPath];
-              const isExactLine = startLine > 0 && fileDiffLines && fileDiffLines.includes(startLine);
-              const commentLine = isExactLine
-                ? startLine
-                : (startLine > 0 ? nearestDiffLine(fileDiffLines, startLine) : (fileDiffLines ? fileDiffLines[0] : null));
-
-              if (!commentLine) continue;
-
-              const locationNote = !isExactLine && startLine > 0
-                ? `\n> :round_pushpin: _Actual location: **line ${startLine}** (nearest diff line shown here)_\n`
-                : '';
-
-              const body = [
-                `**:warning: SpotBugs: ${shortMsg}**`,
-                ``,
-                longMsg && longMsg !== shortMsg ? `> ${longMsg}` : null,
-                longMsg && longMsg !== shortMsg ? `` : null,
-                locationNote || null,
-                `| | |`,
-                `|---|---|`,
-                `| **Priority** | ${priorityLabel} |`,
-                `| **Category** | ${category} |`,
-                `| **Bug Type** | [\`${type}\`](${docsUrl}) |`,
-              ].filter(l => l !== null).join('\n');
-
-              comments.push({ path: repoPath, line: commentLine, body });
-            }
-
-            if (comments.length === 0) {
-              core.info('No inline comments to post.');
-              return;
-            }
-
-            core.info(`Posting ${comments.length} inline review comment(s)`);
+            if (reviewComments.length === 0) return;
+            core.info(`Posting file-level comments on ${reviewComments.length} file(s)`);
 
             try {
               await github.rest.pulls.createReview({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
+                owner: context.repo.owner, repo: context.repo.repo,
                 pull_number: context.issue.number,
                 commit_id: context.payload.pull_request.head.sha,
                 event: 'COMMENT',
-                body: ':mag: **SpotBugs** found issues in the changed files. See inline comments below.',
-                comments: comments.map(c => ({ path: c.path, line: c.line, body: c.body })),
+                body: ':beetle: **SpotBugs** found issues in changed files.',
+                comments: reviewComments,
               });
             } catch (e) {
-              core.warning(`Failed to create batch review: ${e.message}`);
-              for (const c of comments) {
+              core.warning(`Batch review failed: ${e.message}`);
+              for (const c of reviewComments) {
                 try {
                   await github.rest.pulls.createReviewComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
+                    owner: context.repo.owner, repo: context.repo.repo,
                     pull_number: context.issue.number,
                     commit_id: context.payload.pull_request.head.sha,
-                    path: c.path,
-                    line: c.line,
-                    body: c.body,
+                    path: c.path, body: c.body, subject_type: 'file',
                   });
-                } catch (innerErr) {
-                  core.warning(`Could not comment on ${c.path}:${c.line}: ${innerErr.message}`);
-                }
+                } catch (err) { core.warning(`Could not comment on ${c.path}: ${err.message}`); }
               }
             }
+
+      - name: Upload SpotBugs Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotbugs-report
+          path: |
+            spotbugs-report-full.html
+            spotbugs-report-changed.html
 
   osee_server_container_build:
     runs-on: ubuntu-latest
