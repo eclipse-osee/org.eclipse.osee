@@ -289,7 +289,7 @@ jobs:
 
           /root/spotbugs/spotbugs-4.9.1/bin/spotbugs \
             -textui \
-            -xml \
+            -xml:withMessages \
             -output spotbugs-report-full.xml \
             -auxclasspathFromInput \
             -onlyAnalyze "org.eclipse.osee.-" \
@@ -362,7 +362,7 @@ jobs:
               );
               execSync(
                 `/root/spotbugs/spotbugs-4.9.1/bin/spotbugs ` +
-                `-textui -xml -output spotbugs-report-changed.xml ` +
+                `-textui -xml:withMessages -output spotbugs-report-changed.xml ` +
                 `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
                 `-nested:false compiled-classes/`,
                 { stdio: 'inherit' }
@@ -533,12 +533,37 @@ jobs:
             }
 
             const xml = fs.readFileSync('spotbugs-report-changed.xml', 'utf8');
-            // sourcepath (e.g. org/eclipse/osee/foo/Bar.java) -> repo path (e.g. plugins/.../src/org/eclipse/osee/foo/Bar.java)
             const sourceToRepo = JSON.parse(fs.readFileSync('sourcepath-mapping.json', 'utf8'));
+
+            // Build a set of lines that are in the diff for each changed file
+            const diffLines = {};
+            const prFiles = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+
+            for (const file of prFiles) {
+              if (!file.patch) continue;
+              const lines = new Set();
+              // Parse unified diff hunks: @@ -a,b +c,d @@
+              const hunkRe = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/gm;
+              let hunk;
+              while ((hunk = hunkRe.exec(file.patch)) !== null) {
+                const start = parseInt(hunk[1], 10);
+                const count = hunk[2] !== undefined ? parseInt(hunk[2], 10) : 1;
+                for (let i = start; i < start + count; i++) {
+                  lines.add(i);
+                }
+              }
+              diffLines[file.filename] = lines;
+            }
 
             // Parse bugs
             const bugRe = /<BugInstance[\s\S]*?<\/BugInstance>/g;
-            const comments = [];
+            const inlineComments = [];
+            const fileComments = [];
             let match;
 
             while ((match = bugRe.exec(xml)) !== null) {
@@ -557,9 +582,8 @@ jobs:
               const shortMsg = block.match(/<ShortMessage>([^<]*)<\/ShortMessage>/)?.[1] || '';
               const longMsg = block.match(/<LongMessage>([^<]*)<\/LongMessage>/)?.[1] || '';
 
-              if (!sourcepath || startLine <= 0) continue;
+              if (!sourcepath) continue;
 
-              // Map sourcepath back to the repo file path
               const repoPath = sourceToRepo[sourcepath];
               if (!repoPath) continue;
 
@@ -569,48 +593,42 @@ jobs:
               const body = [
                 `**:warning: SpotBugs: ${shortMsg}**`,
                 ``,
-                longMsg !== shortMsg && longMsg ? `> ${longMsg}` : null,
-                ``,
+                longMsg && longMsg !== shortMsg ? `> ${longMsg}` : null,
+                longMsg && longMsg !== shortMsg ? `` : null,
                 `| | |`,
                 `|---|---|`,
                 `| **Priority** | ${priorityLabel} |`,
                 `| **Category** | ${category} |`,
                 `| **Bug Type** | [\`${type}\`](${docsUrl}) |`,
+                startLine > 0 ? `| **Line** | ${startLine} |` : null,
               ].filter(l => l !== null).join('\n');
 
-              comments.push({ path: repoPath, line: startLine, body });
+              // Check if the bug line is within the diff
+              const fileDiff = diffLines[repoPath];
+              if (startLine > 0 && fileDiff && fileDiff.has(startLine)) {
+                inlineComments.push({ path: repoPath, line: startLine, body });
+              } else {
+                // Post as a file-level comment (no line, just the file)
+                fileComments.push({ path: repoPath, body });
+              }
             }
 
-            if (comments.length === 0) {
+            if (inlineComments.length === 0 && fileComments.length === 0) {
               core.info('No inline comments to post.');
               return;
             }
 
-            core.info(`Posting ${comments.length} inline review comment(s)`);
+            core.info(`Posting ${inlineComments.length} inline + ${fileComments.length} file-level review comment(s)`);
 
-            // Dismiss any previous SpotBugs review to avoid stale comments
-            const { data: reviews } = await github.rest.pulls.listReviews({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-            });
+            // Build all review comments
+            const allComments = [];
 
-            const botReview = reviews.find(r =>
-              r.user.type === 'Bot' && r.body && r.body.includes('SpotBugs')
-            );
+            for (const c of inlineComments) {
+              allComments.push({ path: c.path, line: c.line, body: c.body });
+            }
 
-            if (botReview) {
-              try {
-                await github.rest.pulls.dismissReview({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: context.issue.number,
-                  review_id: botReview.id,
-                  message: 'Superseded by new SpotBugs analysis.',
-                });
-              } catch (e) {
-                core.warning(`Could not dismiss previous review: ${e.message}`);
-              }
+            for (const c of fileComments) {
+              allComments.push({ path: c.path, body: c.body, subject_type: 'file' });
             }
 
             try {
@@ -621,28 +639,29 @@ jobs:
                 commit_id: context.payload.pull_request.head.sha,
                 event: 'COMMENT',
                 body: ':mag: **SpotBugs** found issues in the changed files. See inline comments below.',
-                comments: comments.map(c => ({
-                  path: c.path,
-                  line: c.line,
-                  body: c.body,
-                })),
+                comments: allComments,
               });
             } catch (e) {
-              core.warning(`Failed to create review: ${e.message}`);
-              // If the review fails (e.g. line not in diff), fall back to individual comments
-              for (const c of comments) {
+              core.warning(`Failed to create batch review: ${e.message}`);
+              // Fall back to posting comments one at a time
+              for (const c of allComments) {
                 try {
-                  await github.rest.pulls.createReviewComment({
+                  const params = {
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     pull_number: context.issue.number,
                     commit_id: context.payload.pull_request.head.sha,
                     path: c.path,
-                    line: c.line,
                     body: c.body,
-                  });
+                  };
+                  if (c.subject_type === 'file') {
+                    params.subject_type = 'file';
+                  } else {
+                    params.line = c.line;
+                  }
+                  await github.rest.pulls.createReviewComment(params);
                 } catch (innerErr) {
-                  core.warning(`Could not comment on ${c.path}:${c.line}: ${innerErr.message}`);
+                  core.warning(`Could not comment on ${c.path}${c.line ? ':' + c.line : ''}: ${innerErr.message}`);
                 }
               }
             }
