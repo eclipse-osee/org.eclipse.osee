@@ -432,9 +432,13 @@ jobs:
                 const message = tagText('ShortMessage');
                 const longMessage = tagText('LongMessage');
 
+                // Get method name
+                const methodMatch = block.match(/<Method[^>]*name="([^"]*)"/);
+                const methodName = methodMatch ? methodMatch[1] : '';
+
                 const priorityLabel = { '1': 'High', '2': 'Medium', '3': 'Low' }[priority] || priority;
 
-                bugs.push({ category, priority: priorityLabel, type, sourcepath, startLine, message, longMessage });
+                bugs.push({ category, priority: priorityLabel, type, sourcepath, startLine, message, longMessage, methodName });
               }
               return bugs;
             }
@@ -465,13 +469,14 @@ jobs:
             if (changedBugs.length > 0) {
               lines.push(`### :pushpin: Issues in Changed Files — ${changedBugs.length} issue(s)`);
               lines.push(``);
-              lines.push(`| File | Line | Priority | Category | Bug Type | Message |`);
-              lines.push(`|------|------|----------|----------|----------|---------|`);
+              lines.push(`| File | Method | Priority | Message |`);
+              lines.push(`|------|--------|----------|---------|`);
               for (const bug of changedBugs) {
-                const file = bug.sourcepath ? `\`${bug.sourcepath}\`` : '';
-                const line = bug.startLine || '';
+                const file = bug.sourcepath ? `\`${bug.sourcepath.split('/').pop()}\`` : '';
+                const method = bug.methodName ? `\`${bug.methodName}()\`` : '';
+                const pLabel = { 'High': ':red_circle: High', 'Medium': ':orange_circle: Medium', 'Low': ':yellow_circle: Low' }[bug.priority] || bug.priority;
                 const msg = bug.message.replace(/\|/g, '\\|');
-                lines.push(`| ${file} | ${line} | ${bug.priority} | ${bug.category} | ${bug.type} | ${msg} |`);
+                lines.push(`| ${file} | ${method} | ${pLabel} | ${msg} |`);
               }
               lines.push(``);
             } else if (changedCount === 0) {
@@ -535,49 +540,9 @@ jobs:
             const xml = fs.readFileSync('spotbugs-report-changed.xml', 'utf8');
             const sourceToRepo = JSON.parse(fs.readFileSync('sourcepath-mapping.json', 'utf8'));
 
-            // Build sorted arrays of diff lines for each changed file
-            const diffLineArrays = {};
-            const prFiles = await github.paginate(github.rest.pulls.listFiles, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-              per_page: 100,
-            });
-
-            for (const file of prFiles) {
-              if (!file.patch) continue;
-              const lines = new Set();
-              const hunkRe = /^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@/gm;
-              let hunk;
-              while ((hunk = hunkRe.exec(file.patch)) !== null) {
-                const start = parseInt(hunk[1], 10);
-                const count = hunk[2] !== undefined ? parseInt(hunk[2], 10) : 1;
-                for (let i = start; i < start + count; i++) {
-                  lines.add(i);
-                }
-              }
-              diffLineArrays[file.filename] = [...lines].sort((a, b) => a - b);
-            }
-
-            // Find the nearest diff line to a target line
-            function nearestDiffLine(sortedLines, target) {
-              if (!sortedLines || sortedLines.length === 0) return null;
-              let closest = sortedLines[0];
-              let minDist = Math.abs(target - closest);
-              for (const l of sortedLines) {
-                const dist = Math.abs(target - l);
-                if (dist < minDist) {
-                  minDist = dist;
-                  closest = l;
-                }
-                if (l > target) break;
-              }
-              return closest;
-            }
-
-            // Parse bugs
+            // Parse bugs and group by file
             const bugRe = /<BugInstance[\s\S]*?<\/BugInstance>/g;
-            const comments = [];
+            const bugsByFile = {};
             let match;
 
             while ((match = bugRe.exec(xml)) !== null) {
@@ -591,53 +556,68 @@ jobs:
               const slMatch = block.match(/<SourceLine[^>]*>/);
               const sl = slMatch ? slMatch[0] : '';
               const sourcepath = sl.match(/sourcepath="([^"]*)"/)?.[1] || '';
-              const startLine = parseInt(sl.match(/start="([^"]*)"/)?.[1] || '0', 10);
+
+              const methodMatch = block.match(/<Method[^>]*name="([^"]*)"/);
+              const methodName = methodMatch ? methodMatch[1] : '';
 
               const shortMsg = block.match(/<ShortMessage>([^<]*)<\/ShortMessage>/)?.[1] || '';
               const longMsg = block.match(/<LongMessage>([^<]*)<\/LongMessage>/)?.[1] || '';
 
               if (!sourcepath) continue;
-
               const repoPath = sourceToRepo[sourcepath];
               if (!repoPath) continue;
 
-              const priorityLabel = { '1': 'High', '2': 'Medium', '3': 'Low' }[priority] || priority;
-              const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${type.toLowerCase()}`;
-
-              const fileDiffLines = diffLineArrays[repoPath];
-              const isExactLine = startLine > 0 && fileDiffLines && fileDiffLines.includes(startLine);
-              const commentLine = isExactLine
-                ? startLine
-                : (startLine > 0 ? nearestDiffLine(fileDiffLines, startLine) : (fileDiffLines ? fileDiffLines[0] : null));
-
-              if (!commentLine) continue;
-
-              const locationNote = !isExactLine && startLine > 0
-                ? `\n> :round_pushpin: _Actual location: **line ${startLine}** (nearest diff line shown here)_\n`
-                : '';
-
-              const body = [
-                `**:warning: SpotBugs: ${shortMsg}**`,
-                ``,
-                longMsg && longMsg !== shortMsg ? `> ${longMsg}` : null,
-                longMsg && longMsg !== shortMsg ? `` : null,
-                locationNote || null,
-                `| | |`,
-                `|---|---|`,
-                `| **Priority** | ${priorityLabel} |`,
-                `| **Category** | ${category} |`,
-                `| **Bug Type** | [\`${type}\`](${docsUrl}) |`,
-              ].filter(l => l !== null).join('\n');
-
-              comments.push({ path: repoPath, line: commentLine, body });
+              if (!bugsByFile[repoPath]) bugsByFile[repoPath] = [];
+              bugsByFile[repoPath].push({ type, priority, category, methodName, shortMsg, longMsg });
             }
 
-            if (comments.length === 0) {
+            const filePaths = Object.keys(bugsByFile);
+            if (filePaths.length === 0) {
               core.info('No inline comments to post.');
               return;
             }
 
-            core.info(`Posting ${comments.length} inline review comment(s)`);
+            // Build one file-level comment per file with all bugs listed
+            const reviewComments = [];
+            for (const filePath of filePaths) {
+              const bugs = bugsByFile[filePath];
+              const fileName = filePath.split('/').pop();
+
+              const lines = [];
+              lines.push(`## :beetle: SpotBugs — ${bugs.length} issue${bugs.length > 1 ? 's' : ''} in \`${fileName}\``);
+              lines.push(``);
+
+              for (let i = 0; i < bugs.length; i++) {
+                const bug = bugs[i];
+                const priorityLabel = { '1': ':red_circle: High', '2': ':orange_circle: Medium', '3': ':yellow_circle: Low' }[bug.priority] || bug.priority;
+                const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
+                const method = bug.methodName ? `\`${bug.methodName}()\`` : '_unknown_';
+
+                if (bugs.length > 1) {
+                  lines.push(`### ${i + 1}. ${bug.shortMsg || bug.type}`);
+                } else {
+                  lines.push(`### ${bug.shortMsg || bug.type}`);
+                }
+                lines.push(``);
+                lines.push(`${priorityLabel} &nbsp; **Method:** ${method} &nbsp; **Type:** [\`${bug.type}\`](${docsUrl})`);
+                lines.push(``);
+
+                const desc = bug.longMsg && bug.longMsg !== bug.shortMsg ? bug.longMsg : bug.shortMsg;
+                if (desc) {
+                  lines.push(`**What SpotBugs found:**`);
+                  lines.push(`> ${desc}`);
+                  lines.push(``);
+                }
+              }
+
+              reviewComments.push({
+                path: filePath,
+                body: lines.join('\n'),
+                subject_type: 'file',
+              });
+            }
+
+            core.info(`Posting file-level review comments on ${reviewComments.length} file(s)`);
 
             try {
               await github.rest.pulls.createReview({
@@ -646,12 +626,12 @@ jobs:
                 pull_number: context.issue.number,
                 commit_id: context.payload.pull_request.head.sha,
                 event: 'COMMENT',
-                body: ':mag: **SpotBugs** found issues in the changed files. See inline comments below.',
-                comments: comments.map(c => ({ path: c.path, line: c.line, body: c.body })),
+                body: ':mag: **SpotBugs** found issues in the changed files. See file comments below.',
+                comments: reviewComments,
               });
             } catch (e) {
               core.warning(`Failed to create batch review: ${e.message}`);
-              for (const c of comments) {
+              for (const c of reviewComments) {
                 try {
                   await github.rest.pulls.createReviewComment({
                     owner: context.repo.owner,
@@ -659,11 +639,11 @@ jobs:
                     pull_number: context.issue.number,
                     commit_id: context.payload.pull_request.head.sha,
                     path: c.path,
-                    line: c.line,
                     body: c.body,
+                    subject_type: 'file',
                   });
                 } catch (innerErr) {
-                  core.warning(`Could not comment on ${c.path}:${c.line}: ${innerErr.message}`);
+                  core.warning(`Could not comment on ${c.path}: ${innerErr.message}`);
                 }
               }
             }
