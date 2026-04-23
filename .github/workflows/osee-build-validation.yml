@@ -321,6 +321,7 @@ jobs:
             }
 
             const classes = new Set();
+            const classToRepo = new Map();
             for (const f of files) {
               if (!f.endsWith('.java')) continue;
               for (const marker of ['/src/', '/src-gen/']) {
@@ -329,6 +330,7 @@ jobs:
                   const rel = f.substring(idx + marker.length);
                   const dotted = rel.replace(/\//g, '.').replace(/\.java$/, '');
                   classes.add(dotted);
+                  classToRepo.set(f, rel);
                   break;
                 }
               }
@@ -342,6 +344,13 @@ jobs:
 
             const analyzeList = [...classes].join(',');
             core.info(`Running SpotBugs on ${classes.size} changed class(es): ${analyzeList}`);
+
+            // Save the sourcepath-to-repo-path mapping for inline review comments
+            const mapping = {};
+            for (const [repoPath, srcRel] of classToRepo.entries()) {
+              mapping[srcRel] = repoPath;
+            }
+            fs.writeFileSync('sourcepath-mapping.json', JSON.stringify(mapping));
 
             try {
               execSync(
@@ -389,8 +398,50 @@ jobs:
               return m ? parseInt(m[1], 10) : 0;
             }
 
+            function parseBugsFromXml(file) {
+              if (!fs.existsSync(file)) return [];
+              const xml = fs.readFileSync(file, 'utf8');
+              const bugs = [];
+              const bugRe = /<BugInstance[\s\S]*?<\/BugInstance>/g;
+              let match;
+              while ((match = bugRe.exec(xml)) !== null) {
+                const block = match[0];
+
+                const attr = (name) => {
+                  const m = block.match(new RegExp(`${name}="([^"]*)"`));
+                  return m ? m[1] : '';
+                };
+
+                const tagText = (tag) => {
+                  const m = block.match(new RegExp(`<${tag}>([^<]*)</${tag}>`));
+                  return m ? m[1] : '';
+                };
+
+                // Get category and priority from the BugInstance opening tag
+                const opening = block.substring(0, block.indexOf('>') + 1);
+                const category = opening.match(/category="([^"]*)"/)?.[1] || '';
+                const priority = opening.match(/priority="([^"]*)"/)?.[1] || '';
+                const type = opening.match(/type="([^"]*)"/)?.[1] || '';
+
+                // Get source info from the first SourceLine element
+                const slMatch = block.match(/<SourceLine[^>]*>/);
+                const sl = slMatch ? slMatch[0] : '';
+                const sourcepath = sl.match(/sourcepath="([^"]*)"/)?.[1] || '';
+                const startLine = sl.match(/start="([^"]*)"/)?.[1] || '';
+
+                const message = tagText('ShortMessage');
+                const longMessage = tagText('LongMessage');
+
+                const priorityLabel = { '1': 'High', '2': 'Medium', '3': 'Low' }[priority] || priority;
+
+                bugs.push({ category, priority: priorityLabel, type, sourcepath, startLine, message, longMessage });
+              }
+              return bugs;
+            }
+
             const fullCount = countBugsFromXml('spotbugs-report-full.xml');
             const changedCount = countBugsFromXml('spotbugs-report-changed.xml');
+            const changedBugs = parseBugsFromXml('spotbugs-report-changed.xml');
 
             // Get the direct artifact download URL
             let artifactUrl = `${runUrl}#artifacts`;
@@ -410,16 +461,26 @@ jobs:
 
             const lines = [marker, `## :mag: SpotBugs Analysis`, ``];
 
-            if (changedCount > 0) {
-              lines.push(`### :pushpin: Changed Files`);
-              lines.push(`> :warning: **${changedCount}** issue(s) in files changed by this PR.`);
+            // Changed files section with inline details
+            if (changedBugs.length > 0) {
+              lines.push(`### :pushpin: Issues in Changed Files — ${changedBugs.length} issue(s)`);
+              lines.push(``);
+              lines.push(`| File | Line | Priority | Category | Bug Type | Message |`);
+              lines.push(`|------|------|----------|----------|----------|---------|`);
+              for (const bug of changedBugs) {
+                const file = bug.sourcepath ? `\`${bug.sourcepath}\`` : '';
+                const line = bug.startLine || '';
+                const msg = bug.message.replace(/\|/g, '\\|');
+                lines.push(`| ${file} | ${line} | ${bug.priority} | ${bug.category} | ${bug.type} | ${msg} |`);
+              }
+              lines.push(``);
             } else if (changedCount === 0) {
               lines.push(`### :pushpin: Changed Files`);
               lines.push(`> :white_check_mark: No issues in files changed by this PR.`);
+              lines.push(``);
             }
 
-            lines.push(``);
-
+            // Full report section
             if (fullCount > 0) {
               lines.push(`### :file_folder: Full Analysis`);
               lines.push(`> :warning: **${fullCount}** total issue(s) across all \`org.eclipse.osee\` packages.`);
@@ -457,6 +518,133 @@ jobs:
                 issue_number: context.issue.number,
                 body,
               });
+            }
+
+      - name: Post SpotBugs Inline Review Comments
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            if (!fs.existsSync('spotbugs-report-changed.xml') || !fs.existsSync('sourcepath-mapping.json')) {
+              core.info('No changed-files SpotBugs report or mapping found, skipping inline comments.');
+              return;
+            }
+
+            const xml = fs.readFileSync('spotbugs-report-changed.xml', 'utf8');
+            // sourcepath (e.g. org/eclipse/osee/foo/Bar.java) -> repo path (e.g. plugins/.../src/org/eclipse/osee/foo/Bar.java)
+            const sourceToRepo = JSON.parse(fs.readFileSync('sourcepath-mapping.json', 'utf8'));
+
+            // Parse bugs
+            const bugRe = /<BugInstance[\s\S]*?<\/BugInstance>/g;
+            const comments = [];
+            let match;
+
+            while ((match = bugRe.exec(xml)) !== null) {
+              const block = match[0];
+
+              const opening = block.substring(0, block.indexOf('>') + 1);
+              const type = opening.match(/type="([^"]*)"/)?.[1] || '';
+              const priority = opening.match(/priority="([^"]*)"/)?.[1] || '';
+              const category = opening.match(/category="([^"]*)"/)?.[1] || '';
+
+              const slMatch = block.match(/<SourceLine[^>]*>/);
+              const sl = slMatch ? slMatch[0] : '';
+              const sourcepath = sl.match(/sourcepath="([^"]*)"/)?.[1] || '';
+              const startLine = parseInt(sl.match(/start="([^"]*)"/)?.[1] || '0', 10);
+
+              const shortMsg = block.match(/<ShortMessage>([^<]*)<\/ShortMessage>/)?.[1] || '';
+              const longMsg = block.match(/<LongMessage>([^<]*)<\/LongMessage>/)?.[1] || '';
+
+              if (!sourcepath || startLine <= 0) continue;
+
+              // Map sourcepath back to the repo file path
+              const repoPath = sourceToRepo[sourcepath];
+              if (!repoPath) continue;
+
+              const priorityLabel = { '1': 'High', '2': 'Medium', '3': 'Low' }[priority] || priority;
+              const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${type.toLowerCase()}`;
+
+              const body = [
+                `**:warning: SpotBugs: ${shortMsg}**`,
+                ``,
+                longMsg !== shortMsg && longMsg ? `> ${longMsg}` : null,
+                ``,
+                `| | |`,
+                `|---|---|`,
+                `| **Priority** | ${priorityLabel} |`,
+                `| **Category** | ${category} |`,
+                `| **Bug Type** | [\`${type}\`](${docsUrl}) |`,
+              ].filter(l => l !== null).join('\n');
+
+              comments.push({ path: repoPath, line: startLine, body });
+            }
+
+            if (comments.length === 0) {
+              core.info('No inline comments to post.');
+              return;
+            }
+
+            core.info(`Posting ${comments.length} inline review comment(s)`);
+
+            // Dismiss any previous SpotBugs review to avoid stale comments
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const botReview = reviews.find(r =>
+              r.user.type === 'Bot' && r.body && r.body.includes('SpotBugs')
+            );
+
+            if (botReview) {
+              try {
+                await github.rest.pulls.dismissReview({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: context.issue.number,
+                  review_id: botReview.id,
+                  message: 'Superseded by new SpotBugs analysis.',
+                });
+              } catch (e) {
+                core.warning(`Could not dismiss previous review: ${e.message}`);
+              }
+            }
+
+            try {
+              await github.rest.pulls.createReview({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                commit_id: context.payload.pull_request.head.sha,
+                event: 'COMMENT',
+                body: ':mag: **SpotBugs** found issues in the changed files. See inline comments below.',
+                comments: comments.map(c => ({
+                  path: c.path,
+                  line: c.line,
+                  body: c.body,
+                })),
+              });
+            } catch (e) {
+              core.warning(`Failed to create review: ${e.message}`);
+              // If the review fails (e.g. line not in diff), fall back to individual comments
+              for (const c of comments) {
+                try {
+                  await github.rest.pulls.createReviewComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: context.issue.number,
+                    commit_id: context.payload.pull_request.head.sha,
+                    path: c.path,
+                    line: c.line,
+                    body: c.body,
+                  });
+                } catch (innerErr) {
+                  core.warning(`Could not comment on ${c.path}:${c.line}: ${innerErr.message}`);
+                }
+              }
             }
 
   osee_server_container_build:
