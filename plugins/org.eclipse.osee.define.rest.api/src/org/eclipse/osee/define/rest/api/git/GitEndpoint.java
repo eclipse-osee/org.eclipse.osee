@@ -63,4 +63,18 @@ public interface GitEndpoint {
    List<String> getRemoteBranches(@PathParam("branch") BranchId branch,
       @PathParam("repositoryName") String repositoryName);
 
+   @POST
+   @Path("{branch}/repo/{repositoryName}/bundle")
+   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+   @Produces(MediaType.APPLICATION_JSON)
+   ArtifactId importBundleFile(@PathParam("branch") BranchId branch,
+      @PathParam("repositoryName") String repositoryName, @QueryParam("refSpec") String refSpec,
+      @QueryParam("gitBranchName") String gitBranchName, byte[] bundleData);
+
+   @GET
+   @Path("{branch}/repo/{repositoryName}/latestSha")
+   @Produces(MediaType.TEXT_PLAIN)
+   String getLatestCommitSha(@PathParam("branch") BranchId branch,
+      @PathParam("repositoryName") String repositoryName);
+
 }

@@ -26,6 +26,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Repositor
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.GitRepositoryCommit_GitCommit;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +41,8 @@ import java.util.regex.Pattern;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.MergeCommand;
+import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.api.TransportConfigCallback;
@@ -50,6 +53,7 @@ import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
 import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
@@ -61,6 +65,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.NetRCCredentialsProvider;
+import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.SshSessionFactory;
 import org.eclipse.jgit.transport.SshTransport;
 import org.eclipse.jgit.transport.TagOpt;
@@ -220,6 +225,49 @@ public final class GitOperationsImpl implements GitOperations {
             sshTransport.setSshSessionFactory(sshSessionFactory);
          }
       });
+   }
+
+   @Override
+   public ArtifactId importBundleFile(BranchId branch, ArtifactReadable repoArtifact, byte[] bundleData,
+      String refSpec, String gitBranchName) {
+      String repoPath = repoArtifact.getSoleAttributeValue(FileSystemPath);
+      File bundleFile = new File(repoPath, "server_bundle.bundle");
+      try {
+         Files.write(bundleFile.toPath(), bundleData);
+         try (Repository jgitRepo = getLocalRepoReference(repoPath)) {
+            try (Git git = new Git(jgitRepo)) {
+               String effectiveRefSpec = (refSpec == null || refSpec.isEmpty())
+                  ? "refs/heads/main:refs/remotes/origin/main" : refSpec;
+               FetchCommand fetchCmd = git.fetch().setRemote(
+                  bundleFile.toURI().toString()).setRefSpecs(new RefSpec(effectiveRefSpec));
+               fetchCmd.call();
+
+               ObjectId fetchHead = jgitRepo.resolve(Constants.FETCH_HEAD);
+               MergeResult mergeResult = git.merge().include(fetchHead).call();
+               if (mergeResult.getMergeStatus() == MergeResult.MergeStatus.CONFLICTING) {
+                  throw new OseeCoreException("Merge conflict during bundle import for repo [%s]",
+                     repoArtifact.getName());
+               }
+            }
+         }
+         return updateGitTrackingBranch(branch, repoArtifact, gitBranchName, false, null, false, false);
+      } catch (IOException | GitAPIException ex) {
+         throw OseeCoreException.wrap(ex);
+      } finally {
+         if (bundleFile.exists() && !bundleFile.delete()) {
+            logger.warn("Failed to delete bundle file: %s", bundleFile.getAbsolutePath());
+         }
+      }
+   }
+
+   @Override
+   public String getLatestCommitSha(BranchId branch, ArtifactReadable repoArtifact) {
+      ArtifactReadable latestCommit =
+         repoArtifact.getRelated(GitRepositoryCommit_GitCommit).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      if (latestCommit.isValid()) {
+         return latestCommit.getSoleAttributeValue(CoreAttributeTypes.GitCommitSha);
+      }
+      return "";
    }
 
    @Override
