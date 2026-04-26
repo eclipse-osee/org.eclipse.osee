@@ -1,0 +1,800 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *
+ * Author: Eihab Khudhair (ekhudhai)
+ * Task 162 - Moved Advanced Search Form implementations into Advanced Search Page
+ -->
+<form class="tw-w-full tw-flex tw-gap-6">
+
+
+  <!--
+   * Author: Kris Graham (kgraha16)
+   * Task 108 - Created right hand div for Search/Dynamic Table functionality
+   -->
+  <div class="tw-flex-1">
+     <!--
+     * Author: Sofiia Holovko (sholovko)
+     * Task 170 - Add Branch Selection drop down to Advanced Search Page
+     -->
+    <div class="tw-mb-4">
+      <osee-branch-picker></osee-branch-picker>
+       <!--
+         * Author: Sofiia Holovko (sholovko)
+         * Task 183 - Show warning when no branch is selected
+        -->
+   <div *ngIf="!branchSelected()" class="tw-text-amber-500 tw-text-xs tw-mt-1">
+    Please select a branch to search.
+  </div>
+    </div>
+    <!--
+    * Author: Mariia Gordieieva (mgordiei)
+    * Task 106 - Editable search title header for Advanced Search Options
+    -->
+    <!--
+    * Author: Daria Berezianska (dvydybor)
+    * Task 118 - Stylize the Search Title input to be above left aligned with the Search input and remove the Advanced Search title next to it
+    -->
+    <!--
+    * Author: Eihab Khudhair (ekhudhai)
+    * Task 115 - Stylized the Save Search button to match current app button style
+    * Task 119 - Move the Save Search button to the right hand side of the Search Title input
+    -->
+    <div class="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-mb-4 tw-gap-3 tw-min-w-0">
+      <mat-form-field class="tw-flex-1 tw-min-w-0" subscriptSizing="dynamic">
+        <mat-label>Search Title</mat-label>
+        <input
+          matInput
+          placeholder="Search Title"
+          [(ngModel)]="data.searchTitle"
+          name="searchTitle"
+          (keydown.enter)="onSearchEnter($event)" />
+
+        <!--
+        * Author: Eihab Khudhair (ekhudhai)
+        * Task 129 - Add clear (X) action to Search Title input
+        -->
+        <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+          <button
+            *ngIf="data.searchTitle?.length"
+            mat-icon-button
+            aria-label="Clear search title"
+            type="button"
+            (click)="clearSearchTitle()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        class="primary-button tw-flex-none tw-inline-flex tw-items-center tw-gap-2 tw-whitespace-nowrap"
+        type="button"
+        (click)="onSaveSearch()"
+        [disabled]="saveInProgress || !(data.searchTitle || '').trim()">
+        <mat-icon class="tw-shrink-0" *ngIf="!saveInProgress">save</mat-icon>
+        <mat-icon class="tw-shrink-0" *ngIf="saveInProgress">hourglass_top</mat-icon>
+        <span>Save Search</span>
+      </button>
+      <button
+        mat-flat-button
+        class="primary-button tw-flex-none tw-inline-flex tw-items-center tw-gap-2 tw-whitespace-nowrap"
+        type="button"
+        (click)="onOpenSavedSearchesDialog()">
+        <mat-icon class="tw-shrink-0">bookmark</mat-icon>
+        <span>Saved Searches</span>
+      </button>
+      <div *ngIf="saveErrorMessage" class="tw-text-red-600 tw-text-sm tw-mt-1">{{ saveErrorMessage }}</div>
+      <!--
+       * Author: Sofiia Holovko (sholovko)
+       * Task 243 - Show success notification after a search is saved
+       -->
+      <div *ngIf="saveSuccessMessage" class="tw-text-green-600 tw-text-sm tw-mt-1 tw-flex tw-items-center tw-gap-1">
+        <mat-icon class="tw-shrink-0">check_circle</mat-icon>
+        {{ saveSuccessMessage }}
+      </div>
+    </div>
+
+    <!--
+     * Author: Kris Graham (kgraha16)
+     * Task 102 - Insert search text bar
+     -->
+     <!--
+     * Author: Daria Berezianska (dvydybor)
+     * Task 125 - Change the input alarm from being a popup to being a red written text under the search input bar
+     -->
+
+<div class="tw-flex tw-items-center tw-gap-2 tw-w-full">
+    <div class="tw-flex-1">
+      <mat-form-field class="tw-w-full">
+	      <mat-label>Search</mat-label>
+	      <input
+        matInput
+        placeholder="Search"
+        [(ngModel)]="searchValue"
+        name="advancedSearch"
+        #searchInput="ngModel"
+        (ngModelChange)="onSearchValueChange()"
+        (keydown.enter)="onSearchEnter($event)"
+      />
+<!--
+          * Author: Eihab Khudhair (ekhudhai)
+          * Task 128 - Add clear (X) action to Advanced Search input
+          -->
+           <!--
+          * Author: Sofiia Holovko (sholovko)
+          * Task 140 - Enhanced search input state handling with visual feedback icons
+          -->
+          <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+            <!-- Green checkmark when valid -->
+            <mat-icon
+              *ngIf="searchInputState() === 'valid'"
+              class="tw-text-green-500"
+              aria-label="Valid search input">
+              check_circle
+            </mat-icon>
+
+            <button
+              *ngIf="searchValue?.length"
+              mat-icon-button
+              aria-label="Clear search"
+              type="button"
+              (click)="clearSearch()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        <!-- Task 141 Mariia Gordieieva (mgordiei) - Show inline error when user attempts to search with empty input -->
+        <div
+          *ngIf="showSearchError"
+          class="tw-text-red-500 tw-text-xs tw-mt-1"
+        >
+          Please enter a search query.
+        </div>
+          <!--
+        * Author: Sofiia Holovko (sholovko)
+        * Task 140 - Display validation hint message with conditional styling
+        -->
+        <mat-hint
+          *ngIf="searchValidationMessage() && !showSearchError"
+          [class.tw-text-green-600]="searchInputState() === 'valid'"
+          [class.tw-text-red-500]="searchInputState() === 'invalid'"
+          [class.tw-text-gray-500]="searchInputState() === 'idle'">
+          {{ searchValidationMessage() }}
+        </mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!--
+      * Author: Sofiia Holovko (sholovko)
+      * Task 117 - Stylize the Search button to be outside of the Search Input
+      -->
+      <!--
+        * Author: Sofiia Holovko (sholovko)
+        * Task 132 - Update the search button component to visually align with the application's overall style
+       -->
+        <!--
+         * Author: Sofiia Holovko (sholovko)
+         * Task 133 - Disable Search button when search value is empty
+       -->
+        <button
+         mat-flat-button
+         class="primary-button tw-min-w-0 tw-px-3 tw-flex tw-items-center tw-justify-center"
+         aria-label="search"
+         type="button"
+         (click)="onSearch()"
+         [disabled]="!(searchValue || '').trim()|| !branchSelected()">
+         <mat-icon class="tw-m-0 tw-leading-none">search</mat-icon>
+       </button>
+
+      <button
+        mat-flat-button
+        class="primary-button tw-flex tw-items-center tw-gap-2 tw-whitespace-nowrap"
+        type="button"
+        (click)="onNewSearch()"
+        aria-label="New Search">
+        New Search
+      </button>
+      
+    	<!--
+	     * Author: Kris Graham (kgraha16)
+	     * Task 122/126 - Create column customization with drop down menu of checkbox options
+	     * Task 137 - Ensured ID checkbox is marked and disabled
+	     * Task 139 - Added checkbox change attribute to capture toggle mutability
+	     * Task 153 - Added Sort By drop down with sorting options and changed Attribute Columns to be the sorted selections
+	     -->
+	    <button mat-flat-button type="button" class="primary-button" [matMenuTriggerFor]="columnMenu" #columnMenuTrigger="matMenuTrigger" aria-label="Customize Columns">
+	    	<mat-icon>view_column</mat-icon>
+	    	Columns
+	    </button>
+	    <mat-menu #columnMenu="matMenu">
+			<div class="tw-px-3 tw-py-2 tw-flex tw-flex-col tw-gap-1">
+
+        <!-- Clear selections button -->
+        <div class="tw-flex tw-justify-center tw-mb-1">
+        <button
+            mat-stroked-button
+            type="button"
+            class="tw-text-xs"
+            (click)="$event.stopPropagation(); clearAllColumnSelections()">
+            Clear Selections
+          </button>
+        </div>
+        <div class="tw-flex tw-justify-center tw-mb-1">
+          <button
+            mat-stroked-button
+            type="button"
+            class="tw-text-xs"
+            [disabled]="!canOpenColumnOrderDialog()"
+            (click)="$event.stopPropagation(); columnMenuTrigger.closeMenu(); openColumnOrderDialog()">
+            Manage Order
+          </button>
+        </div>
+
+				<span class="tw-text-xs tw-font-semibold tw-text-gray-500">
+			    	Core Columns
+			    </span>
+			    <mat-checkbox *ngFor="let col of baseColumns()" [checked]="col.visible" [disabled]="col.locked" (click)="$event.stopPropagation(); onCoreColumnToggle(col)">
+			    	{{ col.label }}
+			    </mat-checkbox>
+		    	<mat-divider></mat-divider>
+		    	<div class="tw-flex tw-items-center tw-justify-between tw-mb-1">
+			    	<span class="tw-text-xs tw-font-semibold tw-text-gray-500">
+			    		Attribute Columns
+			    	</span>
+			    	<mat-form-field appearance="fill" class="tw-w-28 tw-text-xs tw-p-0" subscriptSizing="dynamic" (click)="$event.stopPropagation()">
+			    		<mat-label class="tw-text-[10px]">
+				    		Sort By
+				    	</mat-label>
+			    		<mat-select class="tw-h-7 tw-text-xs" panelClass="tw-text-xs" [value]="attributeSortSelect()" (selectionChange)="attributeSortSelect.set($event.value)">
+			    			<mat-option value="selectedFirst">
+			    				Selected First
+			    			</mat-option>
+			    			<mat-option value="az">
+			    				A-Z
+			    			</mat-option>
+			    			<mat-option value="za">
+			    				Z-A
+			    			</mat-option>
+			    		</mat-select>
+			    	</mat-form-field>
+			    </div>
+			    <mat-form-field class="tw-w-full" (click)="$event.stopPropagation()">
+			    	<input matInput placeholder="Search attributes..." name="attributeSearch" [ngModel]="attributeSearch()" (ngModelChange)="attributeSearch.set($event)" (click)="$event.stopPropagation()" />
+	          			<button
+	            			*ngIf="attributeSearch()?.length"
+	            			matSuffix
+	            			mat-icon-button
+	            			aria-label="Clear attribute search"
+	            			type="button"
+	            			(click)="clearAttributeSearch()">
+	            			<mat-icon>close</mat-icon>
+	          			</button>
+          		</mat-form-field>
+			    <mat-checkbox *ngFor="let col of filteredAttributeColumns()" [checked]="col.visible" (click)="$event.stopPropagation(); onAttributeColumnToggle(col)">
+			    	{{ col.label }}
+			    </mat-checkbox>
+			    <div *ngIf="attributeSearch().length > 0 && filteredAttributeColumns().length === 0" class="tw-text-xs tw-px-2 tw-py-2 tw-text-gray-500">
+			    	No results for "{{ attributeSearch() }}"
+			    </div>
+		    </div>
+	    </mat-menu>
+    </div>
+
+    <section class="tw-mt-1 tw-w-full">
+      <div class="tw-w-full">
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-3 tw-w-full">
+          <mat-form-field class="tw-w-full">
+            <mat-label>Artifact Types</mat-label>
+            <mat-chip-set class="tw-pt-4">
+              @for (item of data.artifactTypes; track $index) {
+                <mat-chip>
+                  {{ item.name }}
+                  <button
+                    type="button"
+                    matChipRemove
+                    [attr.aria-label]="'remove ' + item.name"
+                    (click)="removeArtType(item)">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip>
+              }
+            </mat-chip-set>
+            <input
+              matInput
+              aria-label="Artifact Types"
+              placeholder="Select artifact types"
+              [ngModel]="artTypesFilter()"
+              (ngModelChange)="updateArtTypesFilter($event)"
+              name="advancedPageArtTypeInput"
+              [matAutocomplete]="advancedPageArtAuto" />
+            <mat-autocomplete
+              #advancedPageArtAuto="matAutocomplete"
+              [displayWith]="displayWith"
+              (optionSelected)="selectArtType($event)">
+              @for (artType of filteredArtTypes() || []; track artType.id) {
+                <mat-option [value]="artType">{{ artType.name }}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field class="tw-w-full">
+            <mat-label>Attribute Types</mat-label>
+            <mat-chip-set class="tw-pt-4">
+              @for (item of data.attributeTypes; track $index) {
+                <mat-chip>
+                  {{ item.name }}
+                  <button
+                    type="button"
+                    matChipRemove
+                    [attr.aria-label]="'remove ' + item.name"
+                    (click)="removeAttrType(item)">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip>
+              }
+            </mat-chip-set>
+            <input
+              matInput
+              aria-label="Attribute Types"
+              placeholder="Select attribute types"
+              [ngModel]="attrTypesFilter()"
+              (ngModelChange)="updateAttrTypesFilter($event)"
+              name="advancedPageAttrTypeInput"
+              [matAutocomplete]="advancedPageAttrAuto" />
+            <mat-autocomplete
+              #advancedPageAttrAuto="matAutocomplete"
+              [displayWith]="displayWith"
+              (optionSelected)="selectAttrType($event)">
+              @for (attrType of filteredAttrTypes() || []; track attrType.id) {
+                <mat-option [value]="attrType">{{ attrType.name }}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+
+        <div class="tw-flex tw-flex-wrap tw-items-center tw-gap-x-6 tw-gap-y-1">
+          <mat-checkbox
+            [(ngModel)]="data.exactMatch"
+            name="advancedPageExactMatch"
+            class="primary-checkbox">
+            <mat-label>Exact Match</mat-label>
+          </mat-checkbox>
+          <mat-checkbox
+            [(ngModel)]="data.searchById"
+            name="advancedPageSearchById"
+            class="primary-checkbox">
+            <mat-label>Search by ID</mat-label>
+          </mat-checkbox>
+        </div>
+      </div>
+    </section>
+
+    <!--
+     * Author: Sofiia Holovko (sholovko)
+     * Task 103 - Search Results table for Advanced Search Options
+     -->
+     <!--
+     * Author: Sofiia Holovko (sholovko)
+     * Task 145 - Handle "no results found" state by displaying a message in the results table
+     -->
+    <div class="tw-mt-6">
+      <div class="tw-flex tw-justify-between tw-items-center tw-mb-2">
+        <h3 class="tw-text-lg tw-font-medium">
+          Search Results
+        </h3>
+
+        <div class="tw-flex tw-items-center tw-gap-2">
+          <button
+            mat-flat-button
+            type="button"
+            class="primary-button tw-flex tw-items-center tw-gap-2"
+            [matMenuTriggerFor]="filterMenu"
+            [disabled]="searchResultsSig().length === 0">
+            <mat-icon>filter_list</mat-icon>
+            Filter
+            <span *ngIf="selectedArtifactType()">
+        ({{ selectedArtifactType() }})
+      </span>
+          </button>
+
+          <!--
+          * Author: Eihab Khudhair (ekhudhai)
+          * Task 206 - Add Mass Edit button (separate from column customization)
+          -->
+          <button
+            mat-flat-button
+            type="button"
+            class="primary-button tw-flex tw-items-center tw-gap-2"
+            (click)="onMassEdit()"
+            [disabled]="searchResultsSig().length === 0 || !hasSingleSelectedArtifactType()">
+            <mat-icon>edit</mat-icon>
+            Mass Edit
+            <span *ngIf="hasSelectedRows()">({{ selectedRowCount() }})</span>
+          </button>
+
+          <button
+            mat-flat-button
+            class="primary-button tw-flex tw-items-center tw-gap-2"
+            type="button"
+            (click)="onExport()"
+            [disabled]="searchResultsSig().length === 0">
+            <mat-icon>download</mat-icon>
+            Export
+          </button>
+        </div>
+      </div>
+
+      <div
+        *ngIf="hasMixedSelectedArtifactTypes()"
+        class="tw-mb-2 tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-amber-600 dark:tw-text-amber-400">
+        <mat-icon class="tw-text-base">info</mat-icon>
+        <span>To use Mass Edit, please select artifacts of the same type.</span>
+      </div>
+
+      <mat-menu #filterMenu="matMenu">
+        <div class="tw-px-3 tw-py-2 tw-flex tw-flex-col tw-gap-2">
+    <span class="tw-text-xs tw-font-semibold tw-text-gray-500">
+      Filter by Artifact Type
+    </span>
+
+          <mat-form-field appearance="fill" class="tw-w-64" subscriptSizing="dynamic" (click)="$event.stopPropagation()">
+            <mat-label>Artifact Type</mat-label>
+            <mat-select
+              [value]="selectedArtifactType()"
+              (selectionChange)="onArtifactTypeFilterChange($event.value)">
+              <mat-option [value]="null">None (show all)</mat-option>
+              <mat-option *ngFor="let t of availableArtifactTypes()" [value]="t">
+                {{ t }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill"
+                          class="tw-w-64"
+                          subscriptSizing="dynamic"
+                          (click)="$event.stopPropagation()">
+
+            <mat-label>ID contains</mat-label>
+
+            <input
+              matInput
+              inputmode="numeric"
+              placeholder="e.g. 20049"
+              [ngModel]="resultsIdFilter()"
+              (ngModelChange)="setResultsIdFilter($event)"
+              [ngModelOptions]="{ standalone: true }"
+              (keydown)="$event.stopPropagation()" />
+
+            <div matSuffix class="tw-flex tw-items-center tw-gap-1">
+              <button
+                *ngIf="(resultsIdFilter() || '').length"
+                mat-icon-button
+                type="button"
+                aria-label="Clear ID filter"
+                (click)="clearResultsIdFilter(); $event.stopPropagation()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </mat-form-field>
+
+          <mat-checkbox
+            class="tw-text-sm"
+            [checked]="resultsIdExactMatch()"
+            (change)="resultsIdExactMatch.set($event.checked)"
+            (click)="$event.stopPropagation()">
+            Exact match
+          </mat-checkbox>
+
+          <div class="tw-flex tw-justify-end">
+            <button
+              mat-stroked-button
+              type="button"
+              class="tw-text-xs"
+              (click)="clearResultsFilters(); $event.stopPropagation()"
+              [disabled]="!selectedArtifactType() && !(resultsIdFilter() || '').length && !resultsIdExactMatch()">
+              Clear
+            </button>
+          </div>
+        </div>
+      </mat-menu>
+
+      <mat-menu #selectMenu="matMenu">
+        <button mat-menu-item (click)="selectSearchResultsByArtifactType(null)">
+          <span>All</span>
+        </button>
+
+        <button
+          mat-menu-item
+          *ngFor="let t of availableArtifactTypes()"
+          (click)="selectSearchResultsByArtifactType(t)">
+          <span>{{ t }}</span>
+        </button>
+      </mat-menu>
+
+      <table
+        class="tw-w-full tw-text-sm tw-text-left tw-border tw-border-slate-700 tw-rounded-lg tw-overflow-hidden">
+        <thead class="tw-bg-gray-100 dark:tw-bg-slate-800">
+        <!--
+         * Author: Daria Berezianska(dvydybor)
+         * Task 198 - Implement drag-and-drop for table headers (column reordering)
+         -->
+        <tr
+          class="column-drop-row"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          [cdkDropListData]="visibleColumns()"
+          [cdkDropListSortPredicate]="columnSortPredicate"
+          (cdkDropListDropped)="onColumnHeaderDrop($event)">
+          <th
+            *ngFor="let col of visibleColumns()"
+            cdkDrag
+            [cdkDragDisabled]="!isColumnDraggable(col)"
+            [cdkDragPreviewContainer]="'parent'"
+            [class.column-header-draggable]="isColumnDraggable(col)"
+            class="column-header-cell tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800 tw-text-slate-900 dark:tw-text-white tw-select-none">
+
+            <ng-container *ngIf="col.key === 'select'; else standardHeaderCell">
+              <div class="tw-flex tw-items-center tw-gap-1">
+                <mat-checkbox
+                  [checked]="areAllVisibleSearchResultsSelected()"
+                  (change)="toggleSelectAllVisibleSearchResults()"
+                  (click)="$event.stopPropagation()"
+                  aria-label="Toggle select all search results">
+                </mat-checkbox>
+
+                <button
+                  type="button"
+                  class="tw-flex tw-items-center tw-justify-center tw-bg-transparent tw-border-0 tw-p-0 tw-m-0 tw-cursor-pointer tw-text-slate-900 dark:tw-text-white"
+                  [matMenuTriggerFor]="selectMenu"
+                  (click)="$event.stopPropagation()"
+                  aria-label="Open search results selection menu">
+                  <mat-icon class="tw-text-base">arrow_drop_down</mat-icon>
+                </button>
+              </div>
+            </ng-container>
+
+            <ng-template #standardHeaderCell>
+              <ng-container *ngIf="isColumnDraggable(col); else lockedHeaderCell">
+                <div
+                  cdkDragHandle
+                  class="column-drag-handle">
+                  <mat-icon class="column-drag-icon">drag_indicator</mat-icon>
+                  <span>{{ col.label }}</span>
+                </div>
+              </ng-container>
+              <ng-template #lockedHeaderCell>
+                <span class="column-locked-label">{{ col.label }}</span>
+              </ng-template>
+            </ng-template>
+
+            <ng-template cdkDragPreview>
+              <div class="column-drag-preview tw-border tw-border-slate-300 dark:tw-border-slate-700 tw-bg-white dark:tw-bg-black tw-text-slate-900 dark:tw-text-white">
+                <mat-icon class="column-drag-preview-icon tw-text-blue-700 dark:tw-text-white">drag_indicator</mat-icon>
+                <span>{{ col.label }}</span>
+              </div>
+            </ng-template>
+
+            <ng-template cdkDragPlaceholder>
+              <div class="column-drag-placeholder tw-border-sky-300 tw-bg-sky-50 dark:tw-border-slate-700 dark:tw-bg-black"></div>
+            </ng-template>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+          <!--
+         * Author: Sofiia Holovko (sholovko)
+         * Task 144 - Show loading state during search
+         -->
+          <!-- Show loading spinner during search -->
+          <tr *ngIf="isLoading">
+            <td
+              class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-text-center"
+              [attr.colspan]="visibleColumns().length">
+              <mat-icon class="tw-animate-spin">refresh</mat-icon>
+              <span class="tw-ml-2">Searching...</span>
+            </td>
+          </tr>
+        <!--
+        * Author: Eihab Khudhair (ekhudhai)
+        * Task 143 - Populate the Dynamic Search Results Table with the query search results (HTML display logic fix)
+        -->
+
+       <!-- Show when search has been performed but returned no results -->
+        <tr *ngIf="!isLoading && hasSearched && searchResults.length === 0">
+          <td
+            class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700"
+            [attr.colspan]="visibleColumns().length">
+            No results found for your search query.
+          </td>
+        </tr>
+
+        <!-- Show actual search results -->
+
+        <ng-container *ngIf="!isLoading">
+          <!--
+          * Author: Eihab Khudhair (ekhudhai)
+          * Task 174 - Make Search Result rows clickable (right-click dropdown trigger)
+          -->
+          <ng-container *ngFor="let result of filteredSearchResults()">
+            <tr
+              class="tw-cursor-context-menu hover:tw-bg-slate-800/40 tw-transition-colors"
+              (contextmenu)="onRowRightClick($event, result)">
+              <td
+                *ngFor="let col of visibleColumns()"
+                class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700"
+                [class.tw-w-12]="col.key === 'relations'">
+
+                <!--
+                * Author: Kris Graham (kgraha16)
+                * Task 179 - Create Relations column with drop down button.
+                -->
+                <!-- Task 204 - Selection checkbox column -->
+                <ng-container *ngIf="col.key === 'select'; else notSelect">
+                  <mat-checkbox
+                    [checked]="isRowSelected(result)"
+                    (change)="onRowSelectionToggle(result, $event)"
+                    (click)="$event.stopPropagation()">
+                  </mat-checkbox>
+                </ng-container>
+
+                <ng-template #notSelect>
+                  <!-- Task 179 - Relations column -->
+                  <ng-container *ngIf="col.key === 'relations'; else normalCell">
+                    <button mat-icon-button type="button" class="tw-h-6 tw-w-6" (click)="expandToggle(result)">
+                      <mat-icon class="tw-text-base">
+                        {{ isExpanded(result) ? 'expand_more' : 'chevron_right' }}
+                      </mat-icon>
+                    </button>
+                  </ng-container>
+
+                  <ng-template #normalCell>
+                    {{ getCellValue(result, col) }}
+                  </ng-template>
+                </ng-template>
+              </td>
+            </tr>
+
+            <!--
+            * Author: Kris Graham (kgraha16)
+            * Task 179 - Create Relations column drop down row.
+            -->
+            <tr *ngIf="isExpanded(result)">
+              <td
+                class="tw-px-3 tw-py-2 tw-border-t tw-border-slate-700 tw-bg-gray-100 dark:tw-bg-slate-800"
+                [attr.colspan]="visibleColumns().length">
+              	<ng-container *ngIf="relatedNames.get(result.id) as names">
+                	<div *ngIf="names.length > 0; else noRelations">
+                		<div *ngFor="let name of names">
+                			{{ name }}
+                		</div>
+                	</div>
+                	<ng-template #noRelations>
+                		<div class="tw-text-slate-400">
+                			No related artifacts
+                		</div>
+                	</ng-template>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+     </tbody>
+    </table>
+      <!--
+      * Author: Eihab Khudhair (ekhudhai)
+      * Task 174 - Right-click dropdown menu trigger for Search Result rows
+      *
+      -->
+      <div
+        class="tw-fixed tw-invisible"
+        [style.left.px]="contextMenuPosition.x"
+        [style.top.px]="contextMenuPosition.y"
+        [matMenuTriggerFor]="rowContextMenu"
+        #rowContextMenuTrigger="matMenuTrigger">
+      </div>
+
+      <mat-menu #rowContextMenu="matMenu">
+        <!--
+        * Author: Eihab Khudhair (ekhudhai)
+        * Task 174 - Menu item placeholder (navigation logic implemented in Task 175)
+        -->
+        <button mat-menu-item type="button" (click)="onOpenArtifactFromContextMenu()">
+          <mat-icon>open_in_new</mat-icon>
+          Open in Artifact Explorer
+        </button>
+      </mat-menu>
+
+      <div *ngIf="columnOrderDialogOpen()" class="column-order-dialog-backdrop">
+        <div
+          class="column-order-dialog-backdrop-surface tw-bg-slate-900/40 dark:tw-bg-slate-950/75"
+          tabindex="0"
+          role="button"
+          aria-label="Close column order dialog"
+          (click)="closeColumnOrderDialog()"
+          (keydown.enter)="closeColumnOrderDialog()"
+          (keydown.space)="closeColumnOrderDialog(); $event.preventDefault()">
+        </div>
+
+        <div
+          class="column-order-dialog tw-bg-white tw-text-slate-900 tw-border tw-border-slate-300 dark:tw-bg-slate-900 dark:tw-text-slate-100 dark:tw-border-slate-700"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Manage Column Order">
+          <div class="tw-flex tw-items-center tw-justify-between tw-px-4 tw-py-3 tw-border-b tw-border-slate-200 dark:tw-border-slate-700">
+            <h4 class="tw-text-base tw-font-semibold">Manage Column Order</h4>
+            <button
+              mat-icon-button
+              type="button"
+              aria-label="Close column order dialog"
+              (click)="closeColumnOrderDialog()">
+              <mat-icon class="tw-text-slate-600 dark:tw-text-slate-200">close</mat-icon>
+            </button>
+          </div>
+          <div class="tw-p-4 tw-text-xs tw-text-slate-500 dark:tw-text-slate-300">
+            Reorder visible columns using drag-and-drop or arrow buttons.
+          </div>
+          <div
+            cdkDropList
+            [cdkDropListData]="columnOrderDraft()"
+            class="column-order-list tw-px-4 tw-pb-4"
+            (cdkDropListDropped)="onColumnOrderDialogDrop($event)">
+            <div
+              *ngFor="let key of columnOrderDraft(); let i = index"
+              cdkDrag
+              [cdkDragPreviewContainer]="'parent'"
+              class="column-order-item tw-bg-slate-50 tw-text-slate-900 tw-border tw-border-slate-300 hover:tw-bg-slate-100 dark:tw-bg-slate-800 dark:tw-text-slate-100 dark:tw-border-slate-700 dark:hover:tw-bg-slate-700">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <mat-icon cdkDragHandle class="tw-cursor-grab">drag_indicator</mat-icon>
+                <span>{{ getColumnLabelByKey(key) }}</span>
+              </div>
+              <div class="tw-flex tw-items-center tw-gap-1">
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="tw-h-7 tw-w-7 tw-leading-none"
+                  [disabled]="i === 0"
+                  aria-label="Move column up"
+                  (click)="moveColumnInDialog(i, -1)">
+                  <mat-icon class="tw-text-[18px]">keyboard_arrow_up</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="tw-h-7 tw-w-7 tw-leading-none"
+                  [disabled]="i === columnOrderDraft().length - 1"
+                  aria-label="Move column down"
+                  (click)="moveColumnInDialog(i, 1)">
+                  <mat-icon class="tw-text-[18px]">keyboard_arrow_down</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="tw-flex tw-justify-end tw-gap-2 tw-px-4 tw-py-3 tw-border-t tw-border-slate-200 dark:tw-border-slate-700">
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="closeColumnOrderDialog()">
+              Cancel
+            </button>
+            <button
+              mat-flat-button
+              type="button"
+              class="primary-button"
+              (click)="saveColumnOrderDialog()">
+              Apply
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</form>

@@ -18,6 +18,7 @@
 				<mat-chip
 					>{{ item.name
 					}}<button
+						type="button"
 						matChipRemove
 						[attr.aria-label]="'remove ' + item.name"
 						(click)="removeArtType(item)">
@@ -27,11 +28,13 @@
 			}
 		</mat-chip-set>
 		<input
-			matInput
-			[ngModel]="artTypesFilter()"
-			(ngModelChange)="updateArtTypesFilter($event)"
-			name="artTypeInput"
-			[matAutocomplete]="artAuto" />
+		matInput
+		aria-label="Artifact Types"
+		placeholder="Select artifact types"
+		[ngModel]="artTypesFilter()"
+		(ngModelChange)="updateArtTypesFilter($event)"
+		name="artTypeInput"
+		[matAutocomplete]="artAuto" />
 		<mat-autocomplete
 			#artAuto="matAutocomplete"
 			[displayWith]="displayWith"
@@ -45,23 +48,26 @@
 		<mat-label>Attribute Types</mat-label>
 		<mat-chip-set class="tw-pt-4">
 			@for (item of data.attributeTypes; track $index) {
-				<mat-chip
-					>{{ item.name
-					}}<button
-						matChipRemove
-						[attr.aria-label]="'remove ' + item.name"
-						(click)="removeAttrType(item)">
-						<mat-icon>cancel</mat-icon>
-					</button></mat-chip
-				>
+			<mat-chip>
+				{{ item.name }}
+				<button
+				type="button"
+				matChipRemove
+				[attr.aria-label]="'remove ' + item.name"
+				(click)="removeAttrType(item)">
+				<mat-icon>cancel</mat-icon>
+				</button>
+			</mat-chip>
 			}
 		</mat-chip-set>
 		<input
-			matInput
-			[ngModel]="attrTypesFilter()"
-			(ngModelChange)="updateAttrTypesFilter($event)"
-			name="attrTypeInput"
-			[matAutocomplete]="attrAuto" />
+		matInput
+		aria-label="Attribute Types"
+		placeholder="Select attribute types"
+		[ngModel]="attrTypesFilter()"
+		(ngModelChange)="updateAttrTypesFilter($event)"
+		name="attrTypeInput"
+		[matAutocomplete]="attrAuto" />
 		<mat-autocomplete
 			#attrAuto="matAutocomplete"
 			[displayWith]="displayWith"
