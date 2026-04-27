@@ -280,6 +280,10 @@ jobs:
         run: |
           /root/spotbugs/spotbugs-4.9.1/bin/spotbugs -textui \
             -xml:withMessages -output spotbugs-report-full.xml \
+            -auxclasspathFromInput -onlyAnalyze "org.eclipse.osee.-" \
+            -nested:false compiled-classes/
+
+          /root/spotbugs/spotbugs-4.9.1/bin/spotbugs -textui \
             -html:fancy-hist.xsl -output spotbugs-report-full.html \
             -auxclasspathFromInput -onlyAnalyze "org.eclipse.osee.-" \
             -nested:false compiled-classes/
@@ -355,6 +359,12 @@ jobs:
                 execSync(
                   `/root/spotbugs/spotbugs-4.9.1/bin/spotbugs -textui ` +
                   `-xml:withMessages -output spotbugs-report-changed.xml ` +
+                  `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
+                  `-nested:false compiled-classes/`,
+                  { stdio: 'inherit' }
+                );
+                execSync(
+                  `/root/spotbugs/spotbugs-4.9.1/bin/spotbugs -textui ` +
                   `-html:fancy-hist.xsl -output spotbugs-report-changed.html ` +
                   `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
                   `-nested:false compiled-classes/`,
