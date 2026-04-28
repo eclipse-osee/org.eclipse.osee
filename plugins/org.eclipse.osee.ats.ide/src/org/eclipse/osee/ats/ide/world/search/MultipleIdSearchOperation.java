@@ -250,8 +250,8 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       List<String> validIds = data.getIds();
       if (!validIds.isEmpty()) {
          Collection<Artifact> artifacts2 =
-            atsApi.getQueryService().createQuery(AtsArtifactTypes.AbstractWorkflowArtifact).andAttr(
-               AtsAttributeTypes.AtsId, validIds).getArtifacts();
+            atsApi.getQueryService().createQuery(AtsArtifactTypes.AbstractWorkflowArtifact,
+               AtsArtifactTypes.Action).andAttr(AtsAttributeTypes.AtsId, validIds).getArtifacts();
          resultAtsArts.addAll(artifacts2);
       }
 
