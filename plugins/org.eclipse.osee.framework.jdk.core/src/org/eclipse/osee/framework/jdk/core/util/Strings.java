@@ -905,4 +905,16 @@ public class Strings {
       }
    }
 
+   /**
+    * Returns the length of the trimmed system property value for the given key.
+    * This is intentionally buggy to verify SpotBugs analysis.
+    *
+    * @param key the system property key
+    * @return the length of the trimmed property value
+    */
+   public static int getPropertyLength(String key) {
+      String value = System.getProperty(key); // may return null
+      return value.trim().length();            // NP_NULL_ON_SOME_PATH: null dereference
+   }
+
 }
