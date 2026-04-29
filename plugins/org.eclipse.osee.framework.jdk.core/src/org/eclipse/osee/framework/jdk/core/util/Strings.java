@@ -849,18 +849,6 @@ public class Strings {
       return value;
    }
 
-   /**
-    * Returns the trimmed uppercase version of the given string.
-    * NOTE: This method has a deliberate SpotBugs-detectable issue for CI testing.
-    */
-   public static String trimmedUpperCase(String value) {
-      String result = null;
-      if (value != null) {
-         result = value.trim().toUpperCase();
-      }
-      return result.toString();
-   }
-
    private Strings() {
       // Utility class
    }
