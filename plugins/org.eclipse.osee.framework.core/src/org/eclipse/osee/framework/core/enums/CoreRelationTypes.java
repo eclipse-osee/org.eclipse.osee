@@ -236,6 +236,10 @@ public interface CoreRelationTypes {
    RelationTypeToken RequirementTrace = osee.add(2305843009213694303L, "Requirement Trace", MANY_TO_MANY, UNORDERED, Requirement, "higher-level requirement", Requirement, "lower-level requirement");
    RelationTypeSide RequirementTrace_HigherLevelRequirement = RelationTypeSide.create(RequirementTrace, SIDE_A);
    RelationTypeSide RequirementTrace_LowerLevelRequirement = RelationTypeSide.create(RequirementTrace, SIDE_B);
+   
+   RelationTypeToken RequirementsTraceAircraftToSim = osee.addNewRelationType(1478243999526997180L, "Requirement Trace - Aircraft to Simulation", MANY_TO_MANY, RelationSorter.USER_DEFINED, Requirement, "Aircraft Requirement", Requirement, "Simulation Requirement");
+   RelationTypeSide RequirementTrace_AircraftRequirement = RelationTypeSide.create(RequirementsTraceAircraftToSim, SIDE_A);
+   RelationTypeSide RequirementTrace_SimRequirement = RelationTypeSide.create(RequirementsTraceAircraftToSim, SIDE_B);
 
    RelationTypeToken ResultsData = osee.add(2305843009213694312L, "Results Data", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, TestUnit, "test unit", AbstractTestResult, "test result");
    RelationTypeSide ResultsData_TestUnit = RelationTypeSide.create(ResultsData, SIDE_A);
