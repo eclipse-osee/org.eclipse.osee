@@ -6,7 +6,7 @@
 # via the GitEndpoint REST API. Verifies the local and server SHAs match
 # before creating the bundle.
 #
-# Usage: ./git-bundle-update.sh [--dry-run]
+# Usage: ./git-bundle-update.sh --auth <authorization-string> [--dry-run]
 #
 
 set -euo pipefail
@@ -14,8 +14,8 @@ set -euo pipefail
 # ============================================================================
 # Configuration — adjust these to match your environment
 # ============================================================================
-OSEE_SERVER="http://localhost:8089"
-OSEE_BRANCH_ID="570"                          # OSEE branch ID
+OSEE_SERVER="http://localhost:8111"
+OSEE_BRANCH_ID="88"                          # OSEE branch ID
 REPO_NAME="your-repo-name"                    # Repository name as registered in OSEE
 GIT_BRANCH="dev"                              # Git branch to sync
 REF_SPEC="refs/remotes/origin/${GIT_BRANCH}:refs/remotes/origin/${GIT_BRANCH}"
@@ -25,10 +25,38 @@ BUNDLE_DIR="."                                # Where to write the temporary bun
 # Parse arguments
 # ============================================================================
 DRY_RUN=false
-if [[ "${1:-}" == "--dry-run" ]]; then
-    DRY_RUN=true
-    echo "[DRY RUN] Will show what would happen without making changes."
+AUTH_STRING=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --auth)
+            AUTH_STRING="${2:-}"
+            if [[ -z "${AUTH_STRING}" ]]; then
+                echo "ERROR: --auth requires a value (e.g. --auth dXNlcjpwYXNz)"
+                exit 1
+            fi
+            shift 2
+            ;;
+        --dry-run)
+            DRY_RUN=true
+            echo "[DRY RUN] Will show what would happen without making changes."
+            shift
+            ;;
+        *)
+            echo "Unknown argument: $1"
+            echo "Usage: $0 --auth <authorization-string> [--dry-run]"
+            exit 1
+            ;;
+    esac
+done
+
+if [[ -z "${AUTH_STRING}" ]]; then
+    echo "ERROR: --auth is required."
+    echo "Usage: $0 --auth <authorization-string> [--dry-run]"
+    exit 1
 fi
+
+AUTH_HEADER="Authorization: Basic ${AUTH_STRING}"
 
 # ============================================================================
 # Step 1: Get the local repo's latest SHA on origin/<branch>
@@ -44,6 +72,7 @@ echo "    Local  origin/${GIT_BRANCH} SHA: ${LOCAL_SHA}"
 # ============================================================================
 echo "==> Querying server for latest imported SHA..."
 SERVER_SHA=$(curl -sf \
+    -H "${AUTH_HEADER}" \
     "${OSEE_SERVER}/define/git/${OSEE_BRANCH_ID}/repo/${REPO_NAME}/latestSha" \
     2>/dev/null || echo "")
 
@@ -103,6 +132,7 @@ else
     HTTP_RESPONSE=$(curl -s -w "\n%{http_code}" \
         -X POST \
         -H "Content-Type: application/octet-stream" \
+        -H "${AUTH_HEADER}" \
         --data-binary "@${BUNDLE_FILE}" \
         "${UPLOAD_URL}")
 
