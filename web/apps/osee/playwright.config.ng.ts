@@ -80,6 +80,11 @@ const config: PlaywrightTestConfig = {
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/asu/tests',
 			dependencies: ['Setup'],
+		{
+			name: 'PLConfig Tests',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/plconfig/tests',
+			dependencies: ['Setup'],
 		},
 	],
 };

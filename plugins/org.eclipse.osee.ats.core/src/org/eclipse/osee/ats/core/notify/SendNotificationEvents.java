@@ -169,8 +169,11 @@ public class SendNotificationEvents {
          return;
       }
       String html = "";
-      if (Strings.isValid(body)) {
+      // Do not include body in abridged emails since they will be sent unencrypted
+      if (Strings.isValid(body) && emailType.isDefault()) {
          html += "<pre>" + body + "</pre>";
+      } else if (emailType.isAbridged()) {
+         html += "<p>This is an abridged email. See your primary email account for additional details.</p>";
       }
       html += notificationEventsToHtml(notificationEvents, emailType);
       if (!Strings.isValid(email)) {
@@ -187,6 +190,10 @@ public class SendNotificationEvents {
 
          try {
             IOseeEmail oseeEmail = oseeEmailCreator.createOseeEmail();
+            // Abridged emails are sent unencrypted; content is already sanitized (no sensitive data)
+            if (emailType.isAbridged()) {
+               oseeEmail.setEncryptionEnabled(false);
+            }
             oseeEmail.setFrom(useFromEmail);
             String subject = getNotificationEmailSubject(notificationEvents, emailType);
             oseeEmail.setSubject(subject);

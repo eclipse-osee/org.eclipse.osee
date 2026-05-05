@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.util.AbstractAtsTest;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchOperation;
@@ -43,6 +47,19 @@ public class MultipleIdSearchOperationTest extends AbstractAtsTest {
       op.doSubWork(op, null, 0);
       Set<Artifact> resultAtsArts = op.getResultAtsArts();
       org.junit.Assert.assertEquals(3, resultAtsArts.size());
+
+      IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeamWf(resultAtsArts.iterator().next());
+      IAtsAction action = teamWf.getParentAction();
+
+      data = new MultipleIdSearchData(getClass().getSimpleName(), null);
+      data.setEnteredIds(action.getAtsId());
+      data.setBranch(atsApi.getAtsBranch());
+      op = new MultipleIdSearchOperation(data);
+      op.setPerformUi(false);
+      op.doSubWork(op, null, 0);
+      resultAtsArts = op.getResultAtsArts();
+      org.junit.Assert.assertEquals(1, resultAtsArts.size());
+      org.junit.Assert.assertEquals(AtsArtifactTypes.Action, resultAtsArts.iterator().next().getArtifactType());
 
       // By artifact id
       List<Long> ids =

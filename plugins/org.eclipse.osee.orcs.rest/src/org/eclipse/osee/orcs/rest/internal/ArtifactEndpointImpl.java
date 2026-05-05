@@ -101,6 +101,7 @@ import org.eclipse.osee.orcs.search.ArtifactTableOptions;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.FollowAllCriteria;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -538,7 +539,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andId(artifact);
       if (includeRelations) {
-         query = query.followAll(true);
+         query = query.followAll(FollowAllCriteria.OneLevel);
       }
       ArtifactReadable art = query.asArtifactOrSentinel();
       return new ArtifactWithRelations(art, this.tokenService, includeRelations);
@@ -803,33 +804,34 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       }
 
       // 1) Export the artifact records as ZIP
-      Response exportResponse = exportArtifactRecordsAsZip(branchId, artifact);
+      try (Response exportResponse = exportArtifactRecordsAsZip(branchId, artifact);) {
 
-      // If export failed, propagate the error
-      if (exportResponse.getStatus() != Status.OK.getStatusCode()) {
-         // Pass through the original status and entity (if any)
+         // If export failed, propagate the error
+         if (exportResponse.getStatus() != Status.OK.getStatusCode()) {
+            // Pass through the original status and entity (if any)
+            Object entity = exportResponse.getEntity();
+            return Response.status(exportResponse.getStatus()).entity(
+               entity != null ? entity : "Export failed with status: " + exportResponse.getStatus()).build();
+         }
+
+         // 2) Extract the ZIP bytes from the export response
          Object entity = exportResponse.getEntity();
-         return Response.status(exportResponse.getStatus()).entity(
-            entity != null ? entity : "Export failed with status: " + exportResponse.getStatus()).build();
-      }
+         if (!(entity instanceof byte[])) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
+               "Unexpected export entity type; expected byte[] ZIP.").build();
+         }
 
-      // 2) Extract the ZIP bytes from the export response
-      Object entity = exportResponse.getEntity();
-      if (!(entity instanceof byte[])) {
-         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
-            "Unexpected export entity type; expected byte[] ZIP.").build();
-      }
+         byte[] zipBytes = (byte[]) entity;
 
-      byte[] zipBytes = (byte[]) entity;
-
-      // 3) Pipe the ZIP into the import method
-      try (InputStream zipInputStream = new ByteArrayInputStream(zipBytes)) {
-         return importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(zipInputStream,
-            deleteWordTemplateContent, deleteConversionMarkdownContentAndImages);
-      } catch (IOException e) {
-         e.printStackTrace();
-         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
-            "Failed to prepare ZIP for import: " + e.getMessage()).build();
+         // 3) Pipe the ZIP into the import method
+         try (InputStream zipInputStream = new ByteArrayInputStream(zipBytes)) {
+            return importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(zipInputStream,
+               deleteWordTemplateContent, deleteConversionMarkdownContentAndImages);
+         } catch (IOException e) {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
+               "Failed to prepare ZIP for import: " + e.getMessage()).build();
+         }
       }
    }
 

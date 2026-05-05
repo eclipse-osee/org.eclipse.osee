@@ -26,21 +26,21 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: create artifact ref
               id: artifact_ref
               uses: ./.github/actions/artifact-current-ref
 
-            - uses: geekyeggo/delete-artifact@v5
+            - uses: geekyeggo/delete-artifact@v6
               continue-on-error: true
               with:
                   name: bat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-            - uses: geekyeggo/delete-artifact@v5
+            - uses: geekyeggo/delete-artifact@v6
               continue-on-error: true
               with:
                   name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-            - uses: geekyeggo/delete-artifact@v5
+            - uses: geekyeggo/delete-artifact@v6
               continue-on-error: true
               with:
                   name: java-rust-ffi-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
@@ -48,7 +48,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: create docker ref
               id: docker_ref
@@ -86,12 +86,12 @@ jobs:
               id: artifact_ref
               uses: ./.github/actions/artifact-current-ref
 
-            - uses: geekyeggo/delete-artifact@v5
+            - uses: geekyeggo/delete-artifact@v6
               continue-on-error: true
               with:
                   name: osee-server${{steps.artifact_ref.outputs.artifact_current_ref}}-binaries
 
-            - uses: geekyeggo/delete-artifact@v5
+            - uses: geekyeggo/delete-artifact@v6
               continue-on-error: true
               with:
                   name: compose-file${{steps.artifact_ref.outputs.artifact_current_ref}}

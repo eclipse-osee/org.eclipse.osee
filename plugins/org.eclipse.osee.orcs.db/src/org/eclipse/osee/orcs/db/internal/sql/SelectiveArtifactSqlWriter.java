@@ -97,7 +97,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    private int runSqlorFetch(Consumer<JdbcStatement> consumer, SqlHandlerFactory handlerFactory, int numArtifacts) {
-      boolean debugSql = false;
+      final boolean debugSql = false;
       try {
          build(handlerFactory);
          for (AbstractJoinQuery join : joinTables) {

@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
+import org.eclipse.osee.orcs.search.ds.FollowAllCriteria;
 
 /**
  * @author Ryan D. Brooks
@@ -370,7 +371,7 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder followAll();
 
-   QueryBuilder followAll(Boolean singleLevel);
+   QueryBuilder followAll(FollowAllCriteria criteria);
 
    /**
     * @param relationTypeSide side of of the relation following to (not starting from)

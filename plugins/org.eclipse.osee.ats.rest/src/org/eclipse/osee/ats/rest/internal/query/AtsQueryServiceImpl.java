@@ -412,8 +412,18 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
+   public ArtifactReadable getArtifactNewFollowAll(ArtifactId art) {
+      return atsApi.getQueryService().fromAtsBranch().andId(art).followAll().asArtifactOrSentinel();
+   }
+
+   @Override
    public ArtifactReadable getArtifactNew(Long id) {
       return getArtifactNew(ArtifactId.valueOf(id));
+   }
+
+   @Override
+   public ArtifactReadable getArtifactNewFollowAll(Long id) {
+      return getArtifactNewFollowAll(ArtifactId.valueOf(id));
    }
 
 }
