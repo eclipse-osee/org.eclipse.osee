@@ -238,18 +238,9 @@ function main() {
 
   const fullCount = countBugs('spotbugs-report-full.xml');
 
-  // --- Artifact download URL ---
+  // --- Artifact download URL (uses nightly.link for direct download without auth) ---
   const runUrl = `${serverUrl}/${owner}/${repo}/actions/runs/${runId}`;
-  let artifactUrl = `${runUrl}#artifacts`;
-  try {
-    const data = ghGet(
-      `https://api.github.com/repos/${owner}/${repo}/actions/runs/${runId}/artifacts`
-    );
-    const rpt = data.artifacts.find((a) => a.name === 'spotbugs-report');
-    if (rpt) artifactUrl = `${runUrl}/artifacts/${rpt.id}`;
-  } catch (e) {
-    console.warn(`Could not fetch artifact URL: ${e.message}`);
-  }
+  const artifactUrl = `https://nightly.link/${owner}/${repo}/actions/runs/${runId}/spotbugs-report.zip`;
 
   // =============================================
   // 1. PR COMMENT (in the conversation thread)
