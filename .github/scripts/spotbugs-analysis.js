@@ -140,6 +140,31 @@ function getChangedFiles() {
 // ---------------------------------------------------------------------------
 
 function main() {
+  // --- Run full SpotBugs analysis ---
+  console.log('Running SpotBugs full analysis on org.eclipse.osee.-');
+  try {
+    execSync(
+      `${spotbugsBin} -textui -low -effort:max ` +
+        `-xml:withMessages -output spotbugs-report-full.xml ` +
+        `-auxclasspathFromInput -onlyAnalyze "org.eclipse.osee.-" ` +
+        `-nested:false compiled-classes/`,
+      { stdio: 'inherit' }
+    );
+  } catch (e) {
+    console.warn(`Full SpotBugs (xml) exited with code ${e.status}`);
+  }
+  try {
+    execSync(
+      `${spotbugsBin} -textui -low -effort:max ` +
+        `-html:fancy-hist.xsl -output spotbugs-report-full.html ` +
+        `-auxclasspathFromInput -onlyAnalyze "org.eclipse.osee.-" ` +
+        `-nested:false compiled-classes/`,
+      { stdio: 'inherit' }
+    );
+  } catch (e) {
+    console.warn(`Full SpotBugs (html) exited with code ${e.status}`);
+  }
+
   // --- Get changed files and build class list ---
   const changedFiles = getChangedFiles();
 
@@ -174,7 +199,7 @@ function main() {
       console.log(`  ${rel} → ${repo}`);
     }
     const cmd =
-      `${spotbugsBin} -textui ` +
+      `${spotbugsBin} -textui -low -effort:max ` +
       `-xml:withMessages -output spotbugs-report-changed.xml ` +
       `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
       `-nested:false compiled-classes/`;
@@ -186,7 +211,7 @@ function main() {
     }
     try {
       execSync(
-        `${spotbugsBin} -textui ` +
+        `${spotbugsBin} -textui -low -effort:max ` +
           `-html:fancy-hist.xsl -output spotbugs-report-changed.html ` +
           `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
           `-nested:false compiled-classes/`,
