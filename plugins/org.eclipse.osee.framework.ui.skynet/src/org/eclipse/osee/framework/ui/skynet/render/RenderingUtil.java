@@ -138,12 +138,15 @@ public final class RenderingUtil {
     * the document.</dd>
     * </dl>
     *
+    * @param artifact
+    * @param extension
     * @param presentationType the {@link PresentationType} determines the type of file monitor.
     * @param program the {@link Program} to open the <code>contentFile</code> with.
     * @param contentFile the rendered file to be displayed.
     */
 
-   public static void displayDocument(PresentationType presentationType, Program program, IFile contentFile) {
+   public static void displayDocument(Artifact artifact, String extension, PresentationType presentationType,
+      Program program, IFile contentFile) {
 
       var contentFilePath = contentFile.getLocation().toFile().getAbsolutePath();
 
@@ -152,8 +155,13 @@ public final class RenderingUtil {
          if (RenderingUtil.arePopupsAllowed()) {
 
             RenderingUtil.ensureFilenameLimit(contentFile);
-
-            program.execute(contentFile.getLocation().toFile().getAbsolutePath());
+            if (extension.equals("xml")) {
+               // Explicitly tell OS what to open with
+               program.execute(contentFile.getLocation().toFile().getAbsolutePath());
+            } else {
+               // Let OS open with configured application for that extension
+               Program.launch(contentFile.getLocation().toFile().getAbsolutePath());
+            }
 
          } else {
 
