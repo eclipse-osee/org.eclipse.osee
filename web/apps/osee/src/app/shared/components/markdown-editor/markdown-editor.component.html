@@ -50,10 +50,45 @@
 				</button>
 			}
 		</mat-menu>
+		<!-- Upload Image Button -->
+		<span [matTooltip]="uploadImageTooltip()">
+			<button
+				mat-icon-button
+				[disabled]="!canUploadImage() || isUploading()"
+				(click)="openUploadImageDialog()">
+				<div>
+					@if (isUploading()) {
+						<mat-icon> hourglass_empty </mat-icon>
+					} @else {
+						<mat-icon> image </mat-icon>
+					}
+				</div>
+			</button>
+		</span>
 	</div>
 </div>
 <!-- Editor -->
-<div class="tw-flex tw-size-full tw-border tw-border-solid">
+<div
+	class="tw-relative tw-flex tw-size-full tw-border tw-border-solid"
+	[class.tw-border-2]="dragActive()"
+	[class.tw-border-dashed]="dragActive()"
+	[class.tw-border-osee-blue-6]="dragActive()"
+	(dragover)="onEditorDragOver($event)"
+	(dragenter)="onEditorDragEnter($event)"
+	(dragleave)="onEditorDragLeave($event)"
+	(drop)="onEditorDrop($event)">
+	@if (dragActive()) {
+		<div
+			class="tw-pointer-events-none tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-bg-blue-50/90 dark:tw-bg-osee-neutral-6/90">
+			<mat-icon
+				class="tw-h-12 tw-w-12 tw-text-5xl tw-leading-[48px] tw-text-osee-blue-6"
+				>cloud_upload</mat-icon
+			>
+			<span class="tw-text-lg tw-font-medium tw-text-osee-blue-6">
+				Drop Image Here
+			</span>
+		</div>
+	}
 	<!-- Markdown Editor -->
 	<mat-form-field
 		ngPreserveWhitespaces
