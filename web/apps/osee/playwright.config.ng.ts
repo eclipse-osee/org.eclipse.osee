@@ -76,6 +76,10 @@ const config: PlaywrightTestConfig = {
 			testDir: 'playwright/specs/sca/tests',
 			dependencies: ['SCA Demo Init'],
 		},
+		{	name: 'ASU Group28 Tests',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/asu/tests',
+			dependencies: ['Setup'],
 		{
 			name: 'PLConfig Tests',
 			use: { ...devices['Desktop Chrome'] },
