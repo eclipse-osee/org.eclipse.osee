@@ -20,7 +20,7 @@ runs:
         - uses: ./.github/actions/web-setup
           name: Setup web dependencies
 
-        - uses: actions/cache@v4
+        - uses: actions/cache@v5
           name: Setup angular cache
           if: inputs.angular_cache == 'true'
           with:
@@ -56,7 +56,7 @@ runs:
         
         - name: Upload angular build
           if: ${{ inputs.archive == 'true' }}
-          uses: actions/upload-artifact@v4
+          uses: actions/upload-artifact@v7
           with:
             name: angular-${{inputs.angular_environment}}
             path: |

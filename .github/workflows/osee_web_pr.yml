@@ -9,11 +9,11 @@ jobs:
       angular_changed: ${{steps.angular_changes.outputs.any_modified}}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check For Angular Changes
         id: angular_changes
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v47
         with:
           files: |
             web/**/*
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Angular Build
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Web Setup
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Web Setup
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Web Setup
         if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'

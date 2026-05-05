@@ -4,7 +4,7 @@ description: Installs pnpm dependencies necessary to build osee web
 runs:
   using: composite
   steps:
-    - uses: pnpm/action-setup@v4
+    - uses: pnpm/action-setup@v6
       name: Install pnpm
       with:
         version: 10.11
@@ -12,7 +12,7 @@ runs:
         run_install: false
 
     - name: Install Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: 22.12
         cache: "pnpm"
@@ -27,7 +27,7 @@ runs:
       run: |
         echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE" >> $GITHUB_ENV
 
-    - uses: actions/cache@v4
+    - uses: actions/cache@v5
       name: Setup pnpm cache
       with:
         path: ${{ env.STORE_PATH }}
