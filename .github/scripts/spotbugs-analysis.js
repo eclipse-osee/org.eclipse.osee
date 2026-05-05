@@ -158,14 +158,23 @@ function main() {
   if (classes.size > 0) {
     const analyzeList = [...classes].join(',');
     console.log(`Running SpotBugs on ${classes.size} changed class(es)`);
+    console.log(`Classes: ${analyzeList}`);
+    console.log(`srcToRepo mappings:`);
+    for (const [rel, repo] of Object.entries(srcToRepo)) {
+      console.log(`  ${rel} → ${repo}`);
+    }
+    const cmd =
+      `${spotbugsBin} -textui ` +
+      `-xml:withMessages -output spotbugs-report-changed.xml ` +
+      `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
+      `-nested:false compiled-classes/`;
+    console.log(`SpotBugs command: ${cmd}`);
     try {
-      execSync(
-        `${spotbugsBin} -textui ` +
-          `-xml:withMessages -output spotbugs-report-changed.xml ` +
-          `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
-          `-nested:false compiled-classes/`,
-        { stdio: 'inherit' }
-      );
+      execSync(cmd, { stdio: 'inherit' });
+    } catch (e) {
+      console.warn(`Scoped SpotBugs (xml) exited with code ${e.status}`);
+    }
+    try {
       execSync(
         `${spotbugsBin} -textui ` +
           `-html:fancy-hist.xsl -output spotbugs-report-changed.html ` +
@@ -174,9 +183,22 @@ function main() {
         { stdio: 'inherit' }
       );
     } catch (e) {
-      console.warn(`Scoped SpotBugs exited with code ${e.status}`);
+      console.warn(`Scoped SpotBugs (html) exited with code ${e.status}`);
+    }
+    if (fs.existsSync('spotbugs-report-changed.xml')) {
+      const raw = fs.readFileSync('spotbugs-report-changed.xml', 'utf8');
+      console.log(`Changed report size: ${raw.length} bytes`);
+      console.log(`First 500 chars: ${raw.substring(0, 500)}`);
+    } else {
+      console.warn('spotbugs-report-changed.xml was NOT created');
     }
     changedBugs = parseBugs('spotbugs-report-changed.xml');
+    console.log(`Parsed ${changedBugs.length} bug(s) from changed report`);
+  } else {
+    console.log('No changed Java classes found — skipping scoped analysis');
+    console.log(`Total changed files from API: ${changedFiles.length}`);
+    const javaFiles = changedFiles.filter((f) => f.filename.endsWith('.java'));
+    console.log(`Java files in PR: ${javaFiles.map((f) => f.filename).join(', ')}`);
   }
 
   const fullCount = countBugs('spotbugs-report-full.xml');
