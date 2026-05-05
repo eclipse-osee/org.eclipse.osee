@@ -91,7 +91,8 @@ public class WfeInput extends ArtifactEditorInput {
     */
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof WfeInput) {
+      // Check if exact class and not subclass
+      if (obj != null && obj.getClass() == WfeInput.class) {
          WfeInput other = (WfeInput) obj;
          if (getArtId().notEqual(other.getArtId())) {
             return false;
