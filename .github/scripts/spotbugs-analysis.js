@@ -854,6 +854,42 @@ function main() {
   // =============================================
   // 2. FILE-LEVEL REVIEW COMMENTS (on each file)
   // =============================================
+
+  // Always clean up old SpotBugs review comments first, even if there are
+  // no new bugs to report. This prevents stale comments from accumulating.
+  const SPOTBUGS_MARKER = ':beetle: SpotBugs';
+  console.log('Cleaning up old SpotBugs review comments...');
+  try {
+    let commentPage = 1;
+    while (true) {
+      const existingComments = ghGet(
+        `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/comments?per_page=100&page=${commentPage}`
+      );
+      if (existingComments.length === 0) break;
+      for (const c of existingComments) {
+        if (c.body && c.body.includes(SPOTBUGS_MARKER)) {
+          try {
+            execSync(
+              `curl -fsSL -X DELETE ` +
+                `-H "Authorization: token ${token}" ` +
+                `-H "Accept: application/vnd.github+json" ` +
+                `-H "X-GitHub-Api-Version: 2022-11-28" ` +
+                `"https://api.github.com/repos/${owner}/${repo}/pulls/comments/${c.id}"`,
+              { encoding: 'utf8' }
+            );
+            console.log(`  Deleted old comment ${c.id}`);
+          } catch (err) {
+            console.warn(`  Could not delete old comment ${c.id}: ${err.message}`);
+          }
+        }
+      }
+      if (existingComments.length < 100) break;
+      commentPage++;
+    }
+  } catch (e) {
+    console.warn(`Could not fetch existing review comments: ${e.message}`);
+  }
+
   if (filteredBugs.length === 0) return;
 
   const bugsByFile = {};
@@ -924,32 +960,6 @@ function main() {
     console.warn(`Could not fetch current PR head SHA, using event payload: ${e.message}`);
   }
   console.log(`Using commit_id: ${commitId}`);
-
-  // Delete previous SpotBugs review comments to avoid duplicates on re-runs.
-  const SPOTBUGS_MARKER = ':beetle: SpotBugs';
-  try {
-    const existingComments = ghGet(
-      `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/comments?per_page=100`
-    );
-    for (const c of existingComments) {
-      if (c.body && c.body.includes(SPOTBUGS_MARKER)) {
-        try {
-          execSync(
-            `curl -fsSL -X DELETE ` +
-              `-H "Authorization: token ${token}" ` +
-              `-H "Accept: application/vnd.github+json" ` +
-              `-H "X-GitHub-Api-Version: 2022-11-28" ` +
-              `"https://api.github.com/repos/${owner}/${repo}/pulls/comments/${c.id}"`,
-            { encoding: 'utf8' }
-          );
-        } catch (err) {
-          console.warn(`Could not delete old comment ${c.id}: ${err.message}`);
-        }
-      }
-    }
-  } catch (e) {
-    console.warn(`Could not fetch existing review comments: ${e.message}`);
-  }
 
   try {
     ghPost(
