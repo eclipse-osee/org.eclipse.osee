@@ -238,6 +238,14 @@ function main() {
 
   const fullCount = countBugs('spotbugs-report-full.xml');
 
+  // --- Filter changedBugs to only include bugs in files actually changed by the PR ---
+  const changedPaths = new Set(changedFiles.map((f) => f.filename));
+  const filteredBugs = changedBugs.filter((bug) => {
+    const repoPath = srcToRepo[bug.sourcepath];
+    return repoPath && changedPaths.has(repoPath);
+  });
+  console.log(`Filtered bugs: ${filteredBugs.length} of ${changedBugs.length} are in changed files`);
+
   // --- Artifact download URL (uses nightly.link for direct download without auth) ---
   const runUrl = `${serverUrl}/${owner}/${repo}/actions/runs/${runId}`;
   const artifactUrl = `https://nightly.link/${owner}/${repo}/actions/runs/${runId}/spotbugs-report.zip`;
@@ -248,14 +256,14 @@ function main() {
   const marker = '<!-- spotbugs-analysis-comment -->';
   const lines = [marker, `## :beetle: SpotBugs Analysis`, ``];
 
-  if (changedBugs.length > 0) {
+  if (filteredBugs.length > 0) {
     lines.push(
-      `### :pushpin: Issues in Changed Files — ${changedBugs.length} issue(s)`
+      `### :pushpin: Issues in Changed Files — ${filteredBugs.length} issue(s)`
     );
     lines.push(``);
     lines.push(`| File | Method | Priority | Message |`);
     lines.push(`|------|--------|----------|---------|`);
-    for (const bug of changedBugs) {
+    for (const bug of filteredBugs) {
       const file = bug.sourcepath
         ? `\`${bug.sourcepath.split('/').pop()}\``
         : '';
@@ -313,18 +321,12 @@ function main() {
   // =============================================
   // 2. FILE-LEVEL REVIEW COMMENTS (on each file)
   // =============================================
-  if (changedBugs.length === 0) return;
-
-  // Only post review comments on files that are actually in the PR diff.
-  // SpotBugs analyzes entire packages, so it may report bugs in files not
-  // changed by this PR — GitHub rejects review comments on those (422).
-  const changedPaths = new Set(changedFiles.map((f) => f.filename));
+  if (filteredBugs.length === 0) return;
 
   const bugsByFile = {};
-  for (const bug of changedBugs) {
+  for (const bug of filteredBugs) {
     const repoPath = srcToRepo[bug.sourcepath];
     if (!repoPath) continue;
-    if (!changedPaths.has(repoPath)) continue;
     if (!bugsByFile[repoPath]) bugsByFile[repoPath] = [];
     bugsByFile[repoPath].push(bug);
   }
@@ -338,7 +340,8 @@ function main() {
     );
     body.push(``);
 
-    for (const bug of bugs) {
+    for (let i = 0; i < bugs.length; i++) {
+      const bug = bugs[i];
       const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
       const method = bug.methodName
         ? `\`${bug.methodName}()\``
@@ -354,6 +357,11 @@ function main() {
         `${PRIORITY_LABELS[bug.priority] || bug.priority} &nbsp;&nbsp; **Method:** ${method} &nbsp;&nbsp; **Type:** [\`${bug.type}\`](${docsUrl})`
       );
       body.push(``);
+      // Add a separator between bugs, but not after the last one
+      if (i < bugs.length - 1) {
+        body.push(`---`);
+        body.push(``);
+      }
     }
 
     reviewComments.push({
@@ -378,6 +386,32 @@ function main() {
     commitId = prData.head.sha;
   } catch (e) {
     console.warn(`Could not fetch current PR head SHA, using event payload: ${e.message}`);
+  }
+
+  // Delete previous SpotBugs review comments to avoid duplicates on re-runs.
+  const SPOTBUGS_MARKER = ':beetle: SpotBugs';
+  try {
+    const existingComments = ghGet(
+      `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/comments?per_page=100`
+    );
+    for (const c of existingComments) {
+      if (c.body && c.body.includes(SPOTBUGS_MARKER)) {
+        try {
+          execSync(
+            `curl -fsSL -X DELETE ` +
+              `-H "Authorization: token ${token}" ` +
+              `-H "Accept: application/vnd.github+json" ` +
+              `-H "X-GitHub-Api-Version: 2022-11-28" ` +
+              `"https://api.github.com/repos/${owner}/${repo}/pulls/comments/${c.id}"`,
+            { encoding: 'utf8' }
+          );
+        } catch (err) {
+          console.warn(`Could not delete old comment ${c.id}: ${err.message}`);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn(`Could not fetch existing review comments: ${e.message}`);
   }
 
   try {
