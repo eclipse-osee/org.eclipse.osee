@@ -18,14 +18,11 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHi
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitRepository;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DefaultTrackingBranch;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.FileSystemPath;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RepositoryUrl;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.GitRepositoryCommit_GitCommit;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,12 +32,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
+import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -50,6 +49,7 @@ import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
 import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
@@ -61,6 +61,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.NetRCCredentialsProvider;
+import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.SshSessionFactory;
 import org.eclipse.jgit.transport.SshTransport;
 import org.eclipse.jgit.transport.TagOpt;
@@ -86,6 +87,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -220,6 +222,81 @@ public final class GitOperationsImpl implements GitOperations {
             sshTransport.setSshSessionFactory(sshSessionFactory);
          }
       });
+   }
+
+   /**
+    * Merges a rooted path (e.g. //server-name/data-dir) with a repo path (e.g. /data-dir/git/repo)
+    * by finding the overlapping segment and producing the fully qualified path.
+    */
+   private String resolveFullPath(String rootPath, String repoPath) {
+      if (rootPath == null || rootPath.isEmpty()) {
+         return repoPath;
+      }
+      String normalizedRoot = rootPath.replace('\\', '/');
+      String normalizedRepo = repoPath.replace('\\', '/');
+
+      // Find the longest suffix of rootPath that matches a prefix of repoPath
+      for (int i = 1; i <= normalizedRoot.length(); i++) {
+         String rootSuffix = normalizedRoot.substring(normalizedRoot.length() - i);
+         if (normalizedRepo.startsWith(rootSuffix)) {
+            return normalizedRoot + normalizedRepo.substring(rootSuffix.length());
+         }
+      }
+      // No overlap found — just concatenate
+      return normalizedRoot + (normalizedRepo.startsWith("/") ? "" : "/") + normalizedRepo;
+   }
+
+   @Override
+   public ArtifactId importBundleFile(BranchId branch, ArtifactReadable repoArtifact, byte[] bundleData, String refSpec,
+      String gitBranchName) {
+      String root = OseeServerProperties.getOseeApplicationServerData().orElse("");
+      String repoPath = resolveFullPath(root, repoArtifact.getSoleAttributeValue(FileSystemPath));
+      File repoDir = new File(repoPath);
+      File bundleFile = new File(repoDir, "server_bundle.bundle");
+      try {
+         Files.write(bundleFile.toPath(), bundleData);
+
+         String effectiveRefSpec =
+            (refSpec == null || refSpec.isEmpty()) ? "refs/heads/main:refs/remotes/origin/main" : refSpec;
+
+         // Use git CLI instead of JGit — JGit's ObjectDirectoryPackParser tries to create
+         // temp files in .git/objects/pack which fails on network shares
+         runGitCommand(repoDir, "git", "fetch", bundleFile.getAbsolutePath(), effectiveRefSpec);
+         runGitCommand(repoDir, "git", "merge", "FETCH_HEAD");
+
+         return updateGitTrackingBranch(branch, repoArtifact, gitBranchName, false, null, false, false);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      } finally {
+         if (bundleFile.exists() && !bundleFile.delete()) {
+            logger.warn("Failed to delete bundle file: %s", bundleFile.getAbsolutePath());
+         }
+      }
+   }
+
+   private void runGitCommand(File workingDir, String... command) {
+      try {
+         ProcessBuilder pb = new ProcessBuilder(command).directory(workingDir).redirectErrorStream(true);
+         Process process = pb.start();
+         String output = new String(process.getInputStream().readAllBytes());
+         int exitCode = process.waitFor();
+         if (exitCode != 0) {
+            throw new OseeCoreException("git command failed (exit %d): %s\nOutput: %s", exitCode,
+               String.join(" ", command), output);
+         }
+      } catch (IOException | InterruptedException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   @Override
+   public String getLatestCommitSha(BranchId branch, ArtifactReadable repoArtifact) {
+      ArtifactReadable latestCommit =
+         repoArtifact.getRelated(GitRepositoryCommit_GitCommit).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+      if (latestCommit.isValid()) {
+         return latestCommit.getSoleAttributeValue(CoreAttributeTypes.GitCommitSha);
+      }
+      return "";
    }
 
    @Override

@@ -44,4 +44,9 @@ public interface GitOperations {
    List<String> getChangeIdBetweenTags(BranchId branch, ArtifactReadable repoArtifact, String startTag, String endTag);
 
    List<String> getRemoteBranches(BranchId branch, ArtifactReadable repoArtifact);
+
+   ArtifactId importBundleFile(BranchId branch, ArtifactReadable repoArtifact, byte[] bundleData, String refSpec,
+      String gitBranchName);
+
+   String getLatestCommitSha(BranchId branch, ArtifactReadable repoArtifact);
 }
