@@ -37,17 +37,12 @@ import {
 	UploadImageDialogComponent,
 	UploadImageDialogData,
 	UploadImageDialogResult,
-} from '../upload-image-dialog/upload-image-dialog.component';
-import { MarkdownImageService } from '../../services/ple_aware/http/markdown-image.service';
-
-const SUPPORTED_IMAGE_MIME_TYPES = [
-	'image/png',
-	'image/jpeg',
-	'image/gif',
-	'image/bmp',
-	'image/webp',
-	'image/svg+xml',
-];
+} from '@osee/shared/components';
+import {
+	SUPPORTED_IMAGE_FORMATS_LABEL,
+} from '@osee/shared/types/constants';
+import { isSupportedImageFile } from '@osee/shared/utils';
+import { MarkdownImageService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-markdown-editor',
@@ -221,12 +216,11 @@ export class MarkdownEditorComponent {
 		}
 
 		const imageFile = Array.from(files).find((f) =>
-			SUPPORTED_IMAGE_MIME_TYPES.includes(f.type)
+			isSupportedImageFile(f)
 		);
 
 		if (!imageFile) {
-			this.uiService.ErrorText =
-				'Unsupported file type. Supported image formats: PNG, JPG, JPEG, GIF, BMP, WEBP, SVG';
+			this.uiService.ErrorText = `Unsupported file type. Supported formats: ${SUPPORTED_IMAGE_FORMATS_LABEL}`;
 			return;
 		}
 

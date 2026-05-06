@@ -31,7 +31,7 @@
 			[multiple]="false"
 			(filesSelected)="onFilesSelected($event)"></osee-drag-and-drop-upload>
 		<div class="tw-mt-2 tw-text-center tw-text-xs tw-text-osee-neutral-60">
-			Supported formats: PNG, JPG, JPEG, GIF, BMP, WEBP, SVG
+			Supported formats: {{ supportedFormatsLabel }}
 		</div>
 	} @else {
 		<div

@@ -27,6 +27,12 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DragAndDropUploadComponent } from '@osee/shared/components';
+import { UiService } from '@osee/shared/services';
+import {
+	ACCEPTED_IMAGE_INPUT_TYPES,
+	SUPPORTED_IMAGE_FORMATS_LABEL,
+} from '@osee/shared/types/constants';
+import { isSupportedImageFile } from '@osee/shared/utils';
 
 export type UploadImageDialogData = {
 	readonly branchId: string;
@@ -36,18 +42,6 @@ export type UploadImageDialogData = {
 export type UploadImageDialogResult = {
 	readonly file: File;
 };
-
-const SUPPORTED_IMAGE_EXTENSIONS = [
-	'.png',
-	'.jpg',
-	'.jpeg',
-	'.gif',
-	'.bmp',
-	'.webp',
-	'.svg',
-];
-
-const ACCEPTED_IMAGE_TYPES = SUPPORTED_IMAGE_EXTENSIONS.join(',');
 
 @Component({
 	selector: 'osee-upload-image-dialog',
@@ -73,14 +67,20 @@ export class UploadImageDialogComponent {
 			>
 		>(MatDialogRef);
 	protected readonly data = inject<UploadImageDialogData>(MAT_DIALOG_DATA);
+	private readonly uiService = inject(UiService);
 
 	protected readonly selectedFile = signal<File | null>(null);
 	protected readonly previewUrl = signal<string | null>(null);
-	protected readonly acceptedTypes = ACCEPTED_IMAGE_TYPES;
+	protected readonly acceptedTypes = ACCEPTED_IMAGE_INPUT_TYPES;
+	protected readonly supportedFormatsLabel = SUPPORTED_IMAGE_FORMATS_LABEL;
 
 	protected onFilesSelected(files: File[]): void {
 		const file = files[0];
 		if (!file) {
+			return;
+		}
+		if (!isSupportedImageFile(file)) {
+			this.uiService.ErrorText = `Unsupported file type. Supported formats: ${SUPPORTED_IMAGE_FORMATS_LABEL}`;
 			return;
 		}
 		this.selectedFile.set(file);
