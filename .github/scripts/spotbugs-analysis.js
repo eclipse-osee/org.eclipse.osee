@@ -136,22 +136,57 @@ function getChangedFiles() {
 }
 
 // ---------------------------------------------------------------------------
+// Shared HTML styles
+// ---------------------------------------------------------------------------
+
+const HTML_STYLES = `
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 2rem; background: #fafbfc; color: #24292f; }
+  h1 { color: #1a1a1a; margin-bottom: 0.25rem; }
+  h2 { color: #333; margin-top: 2rem; border-bottom: 1px solid #e1e4e8; padding-bottom: 0.4rem; }
+  .version { color: #666; font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .summary-cards { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+  .card { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; min-width: 140px; }
+  .card .number { font-size: 2rem; font-weight: 700; }
+  .card .label { color: #666; font-size: 0.85rem; margin-top: 0.25rem; }
+  .card.high .number { color: #d32f2f; }
+  .card.medium .number { color: #f57c00; }
+  .card.low .number { color: #fbc02d; }
+  .card.total .number { color: #1976d2; }
+  table { border-collapse: collapse; width: 100%; margin-top: 1rem; background: #fff; border: 1px solid #e1e4e8; border-radius: 6px; overflow: hidden; }
+  th, td { border-bottom: 1px solid #eee; padding: 10px 14px; text-align: left; font-size: 0.9rem; }
+  th { background: #f6f8fa; font-weight: 600; color: #444; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9f9f9; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 0.85em; }
+  a { color: #1976d2; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .priority-high { color: #d32f2f; font-weight: 600; }
+  .priority-medium { color: #f57c00; font-weight: 600; }
+  .priority-low { color: #fbc02d; font-weight: 600; }
+  .section-nav { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; margin: 1.5rem 0; }
+  .section-nav a { margin-right: 1.5rem; font-weight: 500; }
+  .category-group, .package-group { margin-top: 1rem; }
+  .category-group h3, .package-group h3 { color: #555; font-size: 1rem; margin-bottom: 0.5rem; }
+`;
+
+// ---------------------------------------------------------------------------
 // HTML report generator for changed-file bugs
 // ---------------------------------------------------------------------------
 
-function generateChangedHtml(bugs, srcToRepo) {
+function generateChangedHtml(bugs, srcToRepo, version) {
   const priorityText = { '1': 'High', '2': 'Medium', '3': 'Low' };
-  const priorityColor = { '1': '#d32f2f', '2': '#f57c00', '3': '#fbc02d' };
+  const priorityClass = { '1': 'priority-high', '2': 'priority-medium', '3': 'priority-low' };
 
   const rows = bugs
     .map((bug) => {
       const file = srcToRepo[bug.sourcepath] || bug.sourcepath || '';
-      const color = priorityColor[bug.priority] || '#999';
+      const pClass = priorityClass[bug.priority] || '';
       const pLabel = priorityText[bug.priority] || bug.priority;
       const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
       const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
       return `<tr>
-        <td style="color:${color};font-weight:bold">${pLabel}</td>
+        <td class="${pClass}">${pLabel}</td>
         <td><code>${escapeHtml(file)}</code></td>
         <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
         <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
@@ -165,22 +200,12 @@ function generateChangedHtml(bugs, srcToRepo) {
 <head>
 <meta charset="utf-8">
 <title>SpotBugs — Changed Files Report</title>
-<style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 2rem; }
-  h1 { color: #333; }
-  table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-  th { background: #f5f5f5; }
-  tr:nth-child(even) { background: #fafafa; }
-  code { background: #f0f0f0; padding: 2px 4px; border-radius: 3px; font-size: 0.9em; }
-  a { color: #1976d2; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .summary { color: #555; margin-top: 0.5rem; }
-</style>
+<style>${HTML_STYLES}</style>
 </head>
 <body>
 <h1>&#x1f41e; SpotBugs — Changed Files Report</h1>
-<p class="summary">${bugs.length} issue${bugs.length !== 1 ? 's' : ''} found in files changed by this PR.</p>
+<p class="version">SpotBugs ${escapeHtml(version)}</p>
+<p>${bugs.length} issue${bugs.length !== 1 ? 's' : ''} found in files changed by this PR.</p>
 ${
   bugs.length > 0
     ? `<table>
@@ -191,6 +216,186 @@ ${rows}
 </table>`
     : `<p><strong>&#x2705; No issues found in changed files.</strong></p>`
 }
+</body>
+</html>`;
+}
+
+// ---------------------------------------------------------------------------
+// HTML report generator for full analysis
+// ---------------------------------------------------------------------------
+
+function generateFullHtml(bugs, version) {
+  const priorityText = { '1': 'High', '2': 'Medium', '3': 'Low' };
+  const priorityClass = { '1': 'priority-high', '2': 'priority-medium', '3': 'priority-low' };
+
+  // Summary counts
+  const highCount = bugs.filter((b) => b.priority === '1').length;
+  const medCount = bugs.filter((b) => b.priority === '2').length;
+  const lowCount = bugs.filter((b) => b.priority === '3').length;
+
+  // Group by category
+  const byCategory = {};
+  for (const bug of bugs) {
+    const cat = bug.category || 'UNKNOWN';
+    if (!byCategory[cat]) byCategory[cat] = [];
+    byCategory[cat].push(bug);
+  }
+
+  // Group by package
+  const byPackage = {};
+  for (const bug of bugs) {
+    const sp = bug.sourcepath || '';
+    const pkg = sp.includes('/') ? sp.substring(0, sp.lastIndexOf('/')).replace(/\//g, '.') : '(default)';
+    if (!byPackage[pkg]) byPackage[pkg] = [];
+    byPackage[pkg].push(bug);
+  }
+
+  // Build category sections
+  const categorySections = Object.keys(byCategory)
+    .sort()
+    .map((cat) => {
+      const catBugs = byCategory[cat];
+      const catRows = catBugs
+        .map((bug) => {
+          const pClass = priorityClass[bug.priority] || '';
+          const pLabel = priorityText[bug.priority] || bug.priority;
+          const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
+          const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
+          const file = bug.sourcepath ? bug.sourcepath.split('/').pop() : '';
+          return `<tr>
+            <td class="${pClass}">${pLabel}</td>
+            <td><code>${escapeHtml(file)}</code></td>
+            <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
+            <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
+            <td>${escapeHtml(desc || bug.type)}</td>
+          </tr>`;
+        })
+        .join('\n');
+      return `<div class="category-group">
+<h3 id="cat-${escapeHtml(cat)}">${escapeHtml(cat)} (${catBugs.length})</h3>
+<table>
+<thead><tr><th>Priority</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>${catRows}</tbody>
+</table>
+</div>`;
+    })
+    .join('\n');
+
+  // Build package sections
+  const packageSections = Object.keys(byPackage)
+    .sort()
+    .map((pkg) => {
+      const pkgBugs = byPackage[pkg];
+      const pkgRows = pkgBugs
+        .map((bug) => {
+          const pClass = priorityClass[bug.priority] || '';
+          const pLabel = priorityText[bug.priority] || bug.priority;
+          const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
+          const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
+          const file = bug.sourcepath ? bug.sourcepath.split('/').pop() : '';
+          return `<tr>
+            <td class="${pClass}">${pLabel}</td>
+            <td><code>${escapeHtml(file)}</code></td>
+            <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
+            <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
+            <td>${escapeHtml(desc || bug.type)}</td>
+          </tr>`;
+        })
+        .join('\n');
+      return `<div class="package-group">
+<h3 id="pkg-${escapeHtml(pkg)}">${escapeHtml(pkg)} (${pkgBugs.length})</h3>
+<table>
+<thead><tr><th>Priority</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>${pkgRows}</tbody>
+</table>
+</div>`;
+    })
+    .join('\n');
+
+  // Category nav links
+  const categoryNav = Object.keys(byCategory)
+    .sort()
+    .map((cat) => `<a href="#cat-${escapeHtml(cat)}">${escapeHtml(cat)} (${byCategory[cat].length})</a>`)
+    .join(' ');
+
+  // Package nav links
+  const packageNav = Object.keys(byPackage)
+    .sort()
+    .map((pkg) => `<a href="#pkg-${escapeHtml(pkg)}">${escapeHtml(pkg)} (${byPackage[pkg].length})</a>`)
+    .join(' ');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SpotBugs — Full Analysis Report</title>
+<style>${HTML_STYLES}</style>
+</head>
+<body>
+<h1>&#x1f41e; SpotBugs — Full Analysis Report</h1>
+<p class="version">SpotBugs ${escapeHtml(version)}</p>
+
+<div class="section-nav">
+  <a href="#summary">Summary</a>
+  <a href="#by-category">Browse by Category</a>
+  <a href="#by-package">Browse by Package</a>
+  <a href="#all-bugs">All Issues</a>
+  <a href="#info">Info</a>
+</div>
+
+<h2 id="summary">Summary</h2>
+<div class="summary-cards">
+  <div class="card total"><div class="number">${bugs.length}</div><div class="label">Total Issues</div></div>
+  <div class="card high"><div class="number">${highCount}</div><div class="label">High Priority</div></div>
+  <div class="card medium"><div class="number">${medCount}</div><div class="label">Medium Priority</div></div>
+  <div class="card low"><div class="number">${lowCount}</div><div class="label">Low Priority</div></div>
+  <div class="card"><div class="number">${Object.keys(byCategory).length}</div><div class="label">Categories</div></div>
+  <div class="card"><div class="number">${Object.keys(byPackage).length}</div><div class="label">Packages</div></div>
+</div>
+
+<h2 id="by-category">Browse by Category</h2>
+<div class="section-nav">${categoryNav}</div>
+${categorySections}
+
+<h2 id="by-package">Browse by Package</h2>
+<div class="section-nav">${packageNav}</div>
+${packageSections}
+
+<h2 id="all-bugs">All Issues (${bugs.length})</h2>
+<table>
+<thead><tr><th>Priority</th><th>Category</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+${bugs
+  .map((bug) => {
+    const pClass = priorityClass[bug.priority] || '';
+    const pLabel = priorityText[bug.priority] || bug.priority;
+    const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
+    const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
+    const file = bug.sourcepath ? bug.sourcepath.split('/').pop() : '';
+    return `<tr>
+      <td class="${pClass}">${pLabel}</td>
+      <td>${escapeHtml(bug.category)}</td>
+      <td><code>${escapeHtml(file)}</code></td>
+      <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
+      <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
+      <td>${escapeHtml(desc || bug.type)}</td>
+    </tr>`;
+  })
+  .join('\n')}
+</tbody>
+</table>
+
+<h2 id="info">Info</h2>
+<table>
+<tbody>
+  <tr><td><strong>SpotBugs Version</strong></td><td>${escapeHtml(version)}</td></tr>
+  <tr><td><strong>Analysis Scope</strong></td><td><code>org.eclipse.osee.-</code></td></tr>
+  <tr><td><strong>Effort</strong></td><td>Max</td></tr>
+  <tr><td><strong>Threshold</strong></td><td>Low (all priorities reported)</td></tr>
+  <tr><td><strong>Total Issues</strong></td><td>${bugs.length}</td></tr>
+</tbody>
+</table>
+
 </body>
 </html>`;
 }
@@ -208,7 +413,17 @@ function escapeHtml(str) {
 // ---------------------------------------------------------------------------
 
 function main() {
-  // --- Run SpotBugs analysis (single run, full codebase) ---
+  // --- Get SpotBugs version ---
+  let spotbugsVersion = 'unknown';
+  try {
+    const vOut = execSync(`${spotbugsBin} -version`, { encoding: 'utf8' }).trim();
+    spotbugsVersion = vOut.split('\n')[0];
+  } catch (e) {
+    console.warn(`Could not determine SpotBugs version: ${e.message}`);
+  }
+  console.log(`SpotBugs version: ${spotbugsVersion}`);
+
+  // --- Run SpotBugs analysis (single run, XML only) ---
   console.log('Running SpotBugs full analysis on org.eclipse.osee.-');
   try {
     execSync(
@@ -221,21 +436,15 @@ function main() {
   } catch (e) {
     console.warn(`SpotBugs (xml) exited with code ${e.status}`);
   }
-  try {
-    execSync(
-      `${spotbugsBin} -textui -low -effort:max ` +
-        `-html:fancy-hist.xsl -output spotbugs-report-full.html ` +
-        `-auxclasspathFromInput -onlyAnalyze "org.eclipse.osee.-" ` +
-        `-nested:false compiled-classes/`,
-      { stdio: 'inherit' }
-    );
-  } catch (e) {
-    console.warn(`SpotBugs (html) exited with code ${e.status}`);
-  }
 
   const fullCount = countBugs('spotbugs-report-full.xml');
   const allBugs = parseBugs('spotbugs-report-full.xml');
   console.log(`Full analysis: ${fullCount} total bug(s)`);
+
+  // --- Generate full HTML report ---
+  const fullHtml = generateFullHtml(allBugs, spotbugsVersion);
+  fs.writeFileSync('spotbugs-report-full.html', fullHtml);
+  console.log(`Generated spotbugs-report-full.html with ${allBugs.length} issue(s)`);
 
   // --- Get changed files and build source path mapping ---
   const changedFiles = getChangedFiles();
@@ -261,7 +470,7 @@ function main() {
   console.log(`Filtered bugs: ${filteredBugs.length} of ${allBugs.length} are in changed files`);
 
   // --- Generate HTML report for changed files (no extra SpotBugs run) ---
-  const changedHtml = generateChangedHtml(filteredBugs, srcToRepo);
+  const changedHtml = generateChangedHtml(filteredBugs, srcToRepo, spotbugsVersion);
   fs.writeFileSync('spotbugs-report-changed.html', changedHtml);
   console.log(`Generated spotbugs-report-changed.html with ${filteredBugs.length} issue(s)`);
 
