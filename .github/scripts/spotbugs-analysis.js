@@ -183,6 +183,8 @@ const HTML_STYLES = `
   .priority-low { color: #fbc02d; font-weight: 600; }
   .section-nav { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; margin: 1.5rem 0; }
   .section-nav a { margin-right: 1.5rem; font-weight: 500; }
+  .browse-nav { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; margin: 1.5rem 0; column-count: 3; column-gap: 2rem; }
+  .browse-nav a { display: block; padding: 3px 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .category-group, .package-group { margin-top: 1rem; }
   .category-group h3, .package-group h3 { color: #555; font-size: 1rem; margin-bottom: 0.5rem; }
 `;
@@ -333,13 +335,13 @@ function generateFullHtml(bugs, version) {
   const categoryNav = Object.keys(byCategory)
     .sort()
     .map((cat) => `<a href="#cat-${escapeHtml(cat)}">${escapeHtml(cat)} (${byCategory[cat].length})</a>`)
-    .join(' ');
+    .join('\n');
 
   // Package nav links
   const packageNav = Object.keys(byPackage)
     .sort()
     .map((pkg) => `<a href="#pkg-${escapeHtml(pkg)}">${escapeHtml(pkg)} (${byPackage[pkg].length})</a>`)
-    .join(' ');
+    .join('\n');
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -371,11 +373,11 @@ function generateFullHtml(bugs, version) {
 </div>
 
 <h2 id="by-category">Browse by Category</h2>
-<div class="section-nav">${categoryNav}</div>
+<div class="browse-nav">${categoryNav}</div>
 ${categorySections}
 
 <h2 id="by-package">Browse by Package</h2>
-<div class="section-nav">${packageNav}</div>
+<div class="browse-nav">${packageNav}</div>
 ${packageSections}
 
 <h2 id="all-bugs">All Issues (${bugs.length})</h2>
