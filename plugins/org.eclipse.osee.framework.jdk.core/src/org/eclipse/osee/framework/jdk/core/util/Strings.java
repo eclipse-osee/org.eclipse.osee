@@ -904,13 +904,4 @@ public class Strings {
          return false;
       }
    }
-
-   /**
-    * Intentionally buggy method to verify SpotBugs pipeline.
-    * Contains EC_UNRELATED_TYPES: comparing a String to an Integer using equals().
-    */
-   public static boolean spotbugsTestMethod(String input) {
-      Integer number = Integer.valueOf(42);
-      return input.equals(number);
-   }
 }
