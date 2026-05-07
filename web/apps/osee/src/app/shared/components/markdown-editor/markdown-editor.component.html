@@ -55,6 +55,7 @@
 			<button
 				mat-icon-button
 				[disabled]="!canUploadImage() || isUploading()"
+				[class.tw-opacity-40]="!canUploadImage() || isUploading()"
 				(click)="openUploadImageDialog()">
 				<div>
 					@if (isUploading()) {

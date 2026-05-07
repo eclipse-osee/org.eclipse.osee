@@ -109,7 +109,10 @@ export class MarkdownEditorComponent {
 	);
 
 	protected readonly canUploadImage = computed(
-		() => !this.disabled() && this.artifactId() !== ''
+		() =>
+			!this.disabled() &&
+			this.artifactId() !== '' &&
+			!this.showImages()
 	);
 
 	protected readonly uploadImageTooltip = computed(() => {
@@ -118,6 +121,9 @@ export class MarkdownEditorComponent {
 		}
 		if (this.artifactId() === '') {
 			return 'Save the artifact first to enable image uploads.';
+		}
+		if (this.showImages()) {
+			return 'Exit image preview to upload images.';
 		}
 		if (this.isUploading()) {
 			return 'Image upload in progress.';
