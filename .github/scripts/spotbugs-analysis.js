@@ -858,8 +858,6 @@ function main() {
   // Always clean up old SpotBugs reviews and review comments first, even if
   // there are no new bugs to report. This prevents stale comments from accumulating.
   const SPOTBUGS_MARKER = '<!-- spotbugs-auto-review -->';
-  const isSpotbugsComment = (body) =>
-    body && (body.includes(SPOTBUGS_MARKER) || body.includes(':beetle: **SpotBugs**') || body.includes(':beetle: SpotBugs'));
   console.log('Cleaning up old SpotBugs reviews and comments...');
 
   // Delete old SpotBugs reviews (the top-level "SpotBugs found issues" entries)
@@ -868,7 +866,7 @@ function main() {
       `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews?per_page=100`
     );
     for (const r of reviews) {
-      if (isSpotbugsComment(r.body)) {
+      if (r.body && r.body.includes(SPOTBUGS_MARKER)) {
         try {
           // Dismiss the review first if it's not already dismissed, then delete
           execSync(
@@ -898,7 +896,7 @@ function main() {
       );
       if (existingComments.length === 0) break;
       for (const c of existingComments) {
-        if (isSpotbugsComment(c.body)) {
+        if (c.body && c.body.includes(SPOTBUGS_MARKER)) {
           try {
             execSync(
               `curl -fsSL -X DELETE ` +
