@@ -144,7 +144,6 @@ function main() {
   const changedFiles = getChangedFiles();
 
   const classes = new Set();
-  const packages = new Set();
   const srcToRepo = {};
   for (const f of changedFiles) {
     if (!f.filename.endsWith('.java')) continue;
@@ -152,11 +151,7 @@ function main() {
       const idx = f.filename.indexOf(marker);
       if (idx !== -1) {
         const rel = f.filename.substring(idx + marker.length);
-        const fqcn = rel.replace(/\//g, '.').replace(/\.java$/, '');
-        classes.add(fqcn);
-        // Use package-level pattern (with trailing .-) for -onlyAnalyze
-        const pkg = fqcn.substring(0, fqcn.lastIndexOf('.'));
-        if (pkg) packages.add(pkg + '.-');
+        classes.add(rel.replace(/\//g, '.').replace(/\.java$/, ''));
         srcToRepo[rel] = f.filename;
         break;
       }
@@ -166,9 +161,9 @@ function main() {
   // --- Run scoped SpotBugs on changed classes ---
   let changedBugs = [];
   if (classes.size > 0) {
-    const analyzeList = [...packages].join(',');
-    console.log(`Running SpotBugs on ${classes.size} changed class(es) in ${packages.size} package(s)`);
-    console.log(`Packages: ${analyzeList}`);
+    const analyzeList = [...classes].join(',');
+    console.log(`Running SpotBugs on ${classes.size} changed class(es)`);
+    console.log(`Classes: ${analyzeList}`);
     console.log(`srcToRepo mappings:`);
     for (const [rel, repo] of Object.entries(srcToRepo)) {
       console.log(`  ${rel} → ${repo}`);
