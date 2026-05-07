@@ -613,7 +613,7 @@ function main() {
     reviewComments.push({
       path: filePath,
       body: body.join('\n'),
-      position: 1,
+      subject_type: 'file',
     });
   }
 
@@ -665,34 +665,56 @@ function main() {
   }
 
   try {
+    const reviewPayload = {
+      event: 'COMMENT',
+      body: ':beetle: **SpotBugs** found issues in changed files.',
+      comments: reviewComments,
+    };
+    // Only include commit_id if we have a fresh one from the API.
+    // Omitting it lets GitHub default to the PR's current head.
+    if (commitId) {
+      reviewPayload.commit_id = commitId;
+    }
+    console.log(`Review payload: ${reviewComments.length} comment(s), commit_id=${commitId || '(omitted)'}`);
     ghPost(
       `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`,
-      {
-        commit_id: commitId,
-        event: 'COMMENT',
-        body: ':beetle: **SpotBugs** found issues in changed files.',
-        comments: reviewComments,
-      }
+      reviewPayload
     );
     console.log('Batch review posted successfully');
   } catch (e) {
     console.warn(`Batch review failed: ${e.message}`);
-    // Fallback: post each comment individually
-    console.log('Falling back to individual comments...');
-    for (const c of reviewComments) {
-      try {
-        ghPost(
-          `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/comments`,
-          {
-            commit_id: commitId,
-            path: c.path,
-            body: c.body,
-            position: 1,
-          }
-        );
-        console.log(`  Posted comment on ${c.path}`);
-      } catch (err) {
-        console.warn(`  Could not comment on ${c.path}: ${err.message}`);
+    // Retry without commit_id in case it was the problem
+    console.log('Retrying batch review without commit_id...');
+    try {
+      ghPost(
+        `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`,
+        {
+          event: 'COMMENT',
+          body: ':beetle: **SpotBugs** found issues in changed files.',
+          comments: reviewComments,
+        }
+      );
+      console.log('Batch review posted successfully (without commit_id)');
+    } catch (e2) {
+      console.warn(`Batch review without commit_id also failed: ${e2.message}`);
+      // Final fallback: post each comment individually as line comments
+      console.log('Falling back to individual line comments...');
+      for (const c of reviewComments) {
+        try {
+          ghPost(
+            `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/comments`,
+            {
+              commit_id: commitId,
+              path: c.path,
+              body: c.body,
+              line: 1,
+              side: 'RIGHT',
+            }
+          );
+          console.log(`  Posted comment on ${c.path}`);
+        } catch (err) {
+          console.warn(`  Could not comment on ${c.path}: ${err.message}`);
+        }
       }
     }
   }
