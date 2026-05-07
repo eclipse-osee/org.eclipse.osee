@@ -5,7 +5,6 @@
 //   GITHUB_SERVER_URL, GITHUB_EVENT_PATH (all provided by GitHub Actions)
 
 const fs = require('fs');
-const https = require('https');
 const { execSync } = require('child_process');
 
 // ---------------------------------------------------------------------------
@@ -52,7 +51,7 @@ const PRIORITY_LABELS = {
 };
 
 // ---------------------------------------------------------------------------
-// GitHub API helpers (using built-in https module)
+// GitHub API helpers (using the REST API directly via fetch)
 // ---------------------------------------------------------------------------
 
 const token = process.env.GITHUB_TOKEN;
@@ -60,8 +59,7 @@ const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
 const runId = process.env.GITHUB_RUN_ID;
 const serverUrl = process.env.GITHUB_SERVER_URL || 'https://github.com';
 const eventPath = process.env.GITHUB_EVENT_PATH;
-const spotbugsBin =
-  process.env.SPOTBUGS_BIN || '/root/spotbugs/current/bin/spotbugs';
+const spotbugsBin = process.env.SPOTBUGS_BIN || '/root/spotbugs/current/bin/spotbugs';
 
 const event = JSON.parse(fs.readFileSync(eventPath, 'utf8'));
 const pullNumber = event.pull_request?.number;
@@ -72,53 +70,44 @@ if (!pullNumber) {
   process.exit(0);
 }
 
-/** Low-level HTTPS request using Node built-in module. */
-function request(method, url, body) {
-  return new Promise((resolve, reject) => {
-    const parsed = new URL(url);
-    const opts = {
-      hostname: parsed.hostname,
-      path: parsed.pathname + parsed.search,
-      method,
-      headers: {
-        Authorization: `token ${token}`,
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'User-Agent': 'spotbugs-analysis-script',
-      },
-    };
-    if (body) {
-      opts.headers['Content-Type'] = 'application/json';
-    }
-    const req = https.request(opts, (res) => {
-      const chunks = [];
-      res.on('data', (chunk) => chunks.push(chunk));
-      res.on('end', () => {
-        const text = Buffer.concat(chunks).toString();
-        if (res.statusCode >= 400) {
-          reject(
-            new Error(`${method} ${url} → ${res.statusCode}: ${text}`)
-          );
-        } else {
-          resolve(JSON.parse(text));
-        }
-      });
-    });
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
+const headers = {
+  Authorization: `token ${token}`,
+  Accept: 'application/vnd.github+json',
+  'X-GitHub-Api-Version': '2022-11-28',
+};
+
+async function ghGet(url) {
+  const res = await fetch(url, { headers });
+  if (!res.ok) throw new Error(`GET ${url} → ${res.status} ${res.statusText}`);
+  return res.json();
 }
 
-function ghGet(url) {
-  return request('GET', url);
+async function ghPost(url, body) {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`POST ${url} → ${res.status}: ${text}`);
+  }
+  return res.json();
 }
-function ghPost(url, body) {
-  return request('POST', url, body);
+
+async function ghPatch(url, body) {
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`PATCH ${url} → ${res.status}: ${text}`);
+  }
+  return res.json();
 }
-function ghPatch(url, body) {
-  return request('PATCH', url, body);
-}
+
 
 /** Paginate through all changed files in the PR. */
 async function getChangedFiles() {
