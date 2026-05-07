@@ -21,15 +21,10 @@ function parseBugs(file) {
   if (!fs.existsSync(file)) return [];
   const xml = fs.readFileSync(file, 'utf8');
   const bugs = [];
-
-  // Use split-based parsing instead of a single regex over the entire file.
-  // The [\s\S]*? regex fails on multi-MB XML due to backtracking limits.
-  const chunks = xml.split('<BugInstance ');
-  for (let i = 1; i < chunks.length; i++) {
-    const endIdx = chunks[i].indexOf('</BugInstance>');
-    if (endIdx === -1) continue;
-    const b = '<BugInstance ' + chunks[i].substring(0, endIdx + '</BugInstance>'.length);
-
+  const re = /<BugInstance[\s\S]*?<\/BugInstance>/g;
+  let m;
+  while ((m = re.exec(xml)) !== null) {
+    const b = m[0];
     const tag = (t) => {
       const x = b.match(new RegExp(`<${t}>([^<]*)</${t}>`));
       return x ? x[1] : '';
