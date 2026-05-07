@@ -5,6 +5,7 @@
 //   GITHUB_SERVER_URL, GITHUB_EVENT_PATH (all provided by GitHub Actions)
 
 const fs = require('fs');
+const https = require('https');
 const { execSync } = require('child_process');
 
 // ---------------------------------------------------------------------------
@@ -51,7 +52,7 @@ const PRIORITY_LABELS = {
 };
 
 // ---------------------------------------------------------------------------
-// GitHub API helpers (using curl for reliable networking in Alpine containers)
+// GitHub API helpers (using built-in https module)
 // ---------------------------------------------------------------------------
 
 const token = process.env.GITHUB_TOKEN;
@@ -71,56 +72,60 @@ if (!pullNumber) {
   process.exit(0);
 }
 
+/** Low-level HTTPS request using Node built-in module. */
+function request(method, url, body) {
+  return new Promise((resolve, reject) => {
+    const parsed = new URL(url);
+    const opts = {
+      hostname: parsed.hostname,
+      path: parsed.pathname + parsed.search,
+      method,
+      headers: {
+        Authorization: `token ${token}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'User-Agent': 'spotbugs-analysis-script',
+      },
+    };
+    if (body) {
+      opts.headers['Content-Type'] = 'application/json';
+    }
+    const req = https.request(opts, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => {
+        const text = Buffer.concat(chunks).toString();
+        if (res.statusCode >= 400) {
+          reject(
+            new Error(`${method} ${url} → ${res.statusCode}: ${text}`)
+          );
+        } else {
+          resolve(JSON.parse(text));
+        }
+      });
+    });
+    req.on('error', reject);
+    if (body) req.write(JSON.stringify(body));
+    req.end();
+  });
+}
+
 function ghGet(url) {
-  const out = execSync(
-    `curl -fsSL ` +
-      `-H "Authorization: token ${token}" ` +
-      `-H "Accept: application/vnd.github+json" ` +
-      `-H "X-GitHub-Api-Version: 2022-11-28" ` +
-      `"${url}"`,
-    { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }
-  );
-  return JSON.parse(out);
+  return request('GET', url);
 }
-
 function ghPost(url, body) {
-  const tmp = '/tmp/_gh_post_body.json';
-  fs.writeFileSync(tmp, JSON.stringify(body));
-  const out = execSync(
-    `curl -fsSL -X POST ` +
-      `-H "Authorization: token ${token}" ` +
-      `-H "Accept: application/vnd.github+json" ` +
-      `-H "X-GitHub-Api-Version: 2022-11-28" ` +
-      `-H "Content-Type: application/json" ` +
-      `-d @${tmp} ` +
-      `"${url}"`,
-    { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }
-  );
-  return JSON.parse(out);
+  return request('POST', url, body);
 }
-
 function ghPatch(url, body) {
-  const tmp = '/tmp/_gh_patch_body.json';
-  fs.writeFileSync(tmp, JSON.stringify(body));
-  const out = execSync(
-    `curl -fsSL -X PATCH ` +
-      `-H "Authorization: token ${token}" ` +
-      `-H "Accept: application/vnd.github+json" ` +
-      `-H "X-GitHub-Api-Version: 2022-11-28" ` +
-      `-H "Content-Type: application/json" ` +
-      `-d @${tmp} ` +
-      `"${url}"`,
-    { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }
-  );
-  return JSON.parse(out);
+  return request('PATCH', url, body);
 }
 
 /** Paginate through all changed files in the PR. */
-function getChangedFiles() {
+async function getChangedFiles() {
   const files = [];
   let page = 1;
   while (true) {
-    const batch = ghGet(
+    const batch = await ghGet(
       `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/files?per_page=100&page=${page}`
     );
     files.push(...batch);
@@ -134,9 +139,9 @@ function getChangedFiles() {
 // Main
 // ---------------------------------------------------------------------------
 
-function main() {
+async function main() {
   // --- Get changed files and build class list ---
-  const changedFiles = getChangedFiles();
+  const changedFiles = await getChangedFiles();
 
   const classes = new Set();
   const srcToRepo = {};
@@ -185,7 +190,7 @@ function main() {
   const runUrl = `${serverUrl}/${owner}/${repo}/actions/runs/${runId}`;
   let artifactUrl = `${runUrl}#artifacts`;
   try {
-    const data = ghGet(
+    const data = await ghGet(
       `https://api.github.com/repos/${owner}/${repo}/actions/runs/${runId}/artifacts`
     );
     const rpt = data.artifacts.find((a) => a.name === 'spotbugs-report');
@@ -246,17 +251,17 @@ function main() {
   const prBody = lines.join('\n');
 
   // Upsert the PR comment
-  const commentsData = ghGet(
+  const commentsData = await ghGet(
     `https://api.github.com/repos/${owner}/${repo}/issues/${pullNumber}/comments`
   );
   const existing = commentsData.find((c) => c.body.includes(marker));
   if (existing) {
-    ghPatch(
+    await ghPatch(
       `https://api.github.com/repos/${owner}/${repo}/issues/comments/${existing.id}`,
       { body: prBody }
     );
   } else {
-    ghPost(
+    await ghPost(
       `https://api.github.com/repos/${owner}/${repo}/issues/${pullNumber}/comments`,
       { body: prBody }
     );
@@ -315,7 +320,7 @@ function main() {
   );
 
   try {
-    ghPost(
+    await ghPost(
       `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`,
       {
         commit_id: headSha,
@@ -328,7 +333,7 @@ function main() {
     console.warn(`Batch review failed: ${e.message}`);
     for (const c of reviewComments) {
       try {
-        ghPost(
+        await ghPost(
           `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/comments`,
           {
             commit_id: headSha,
@@ -344,4 +349,7 @@ function main() {
   }
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
