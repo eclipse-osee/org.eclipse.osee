@@ -36,20 +36,12 @@ function parseBugs(file) {
       return x ? x[1] : '';
     };
     const opening = b.substring(0, b.indexOf('>') + 1);
-    // Find the best SourceLine with a sourcepath attribute.
-    // BugInstance XML contains multiple SourceLine elements (on Class, Method, etc.)
-    // We want one with sourcepath defined — prefer the last one (most specific).
-    let sourcepath = '';
-    const slMatches = b.matchAll(/<SourceLine[^>]*>/g);
-    for (const slMatch of slMatches) {
-      const sp = slMatch[0].match(/sourcepath="([^"]*)"/);
-      if (sp) sourcepath = sp[1];
-    }
+    const sl = b.match(/<SourceLine[^>]*>/)?.[0] || '';
     bugs.push({
       type: opening.match(/type="([^"]*)"/)?.[1] || '',
       priority: opening.match(/priority="([^"]*)"/)?.[1] || '',
       category: opening.match(/category="([^"]*)"/)?.[1] || '',
-      sourcepath,
+      sourcepath: sl.match(/sourcepath="([^"]*)"/)?.[1] || '',
       methodName: (b.match(/<Method[^>]*name="([^"]*)"/) || [])[1] || '',
       message: tag('ShortMessage'),
       longMsg: tag('LongMessage'),
@@ -100,7 +92,7 @@ function ghPost(url, body) {
   const tmp = '/tmp/_gh_post_body.json';
   fs.writeFileSync(tmp, JSON.stringify(body));
   const out = execSync(
-    `curl -sS -X POST -w "\\n%{http_code}" ` +
+    `curl -fsSL -X POST ` +
       `-H "Authorization: token ${token}" ` +
       `-H "Accept: application/vnd.github+json" ` +
       `-H "X-GitHub-Api-Version: 2022-11-28" ` +
@@ -109,16 +101,7 @@ function ghPost(url, body) {
       `"${url}"`,
     { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }
   );
-  const lines = out.trim().split('\n');
-  const httpCode = lines.pop();
-  const responseBody = lines.join('\n');
-  if (parseInt(httpCode, 10) >= 400) {
-    const err = new Error(`HTTP ${httpCode}: ${url}`);
-    err.responseBody = responseBody;
-    console.warn(`GitHub API error (${httpCode}): ${responseBody.substring(0, 500)}`);
-    throw err;
-  }
-  return JSON.parse(responseBody);
+  return JSON.parse(out);
 }
 
 function ghPatch(url, body) {
@@ -619,9 +602,6 @@ function main() {
   console.log(
     `Posting file-level comments on ${reviewComments.length} file(s)`
   );
-  for (const c of reviewComments) {
-    console.log(`  Review comment for: ${c.path}`);
-  }
 
   // Fetch the current PR head SHA to avoid 422 if the PR was updated after
   // the workflow was triggered (stale event payload).
@@ -634,7 +614,6 @@ function main() {
   } catch (e) {
     console.warn(`Could not fetch current PR head SHA, using event payload: ${e.message}`);
   }
-  console.log(`Using commit_id: ${commitId}`);
 
   // Delete previous SpotBugs review comments to avoid duplicates on re-runs.
   const SPOTBUGS_MARKER = ':beetle: SpotBugs';
@@ -663,56 +642,30 @@ function main() {
   }
 
   try {
-    const reviewPayload = {
-      event: 'COMMENT',
-      body: ':beetle: **SpotBugs** found issues in changed files.',
-      comments: reviewComments,
-    };
-    // Only include commit_id if we have a fresh one from the API.
-    // Omitting it lets GitHub default to the PR's current head.
-    if (commitId) {
-      reviewPayload.commit_id = commitId;
-    }
-    console.log(`Review payload: ${reviewComments.length} comment(s), commit_id=${commitId || '(omitted)'}`);
     ghPost(
       `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`,
-      reviewPayload
+      {
+        commit_id: commitId,
+        event: 'COMMENT',
+        body: ':beetle: **SpotBugs** found issues in changed files.',
+        comments: reviewComments,
+      }
     );
-    console.log('Batch review posted successfully');
   } catch (e) {
     console.warn(`Batch review failed: ${e.message}`);
-    // Retry without commit_id in case it was the problem
-    console.log('Retrying batch review without commit_id...');
-    try {
-      ghPost(
-        `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`,
-        {
-          event: 'COMMENT',
-          body: ':beetle: **SpotBugs** found issues in changed files.',
-          comments: reviewComments,
-        }
-      );
-      console.log('Batch review posted successfully (without commit_id)');
-    } catch (e2) {
-      console.warn(`Batch review without commit_id also failed: ${e2.message}`);
-      // Final fallback: post each comment individually as line comments
-      console.log('Falling back to individual line comments...');
-      for (const c of reviewComments) {
-        try {
-          ghPost(
-            `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/comments`,
-            {
-              commit_id: commitId,
-              path: c.path,
-              body: c.body,
-              line: 1,
-              side: 'RIGHT',
-            }
-          );
-          console.log(`  Posted comment on ${c.path}`);
-        } catch (err) {
-          console.warn(`  Could not comment on ${c.path}: ${err.message}`);
-        }
+    for (const c of reviewComments) {
+      try {
+        ghPost(
+          `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/comments`,
+          {
+            commit_id: commitId,
+            path: c.path,
+            body: c.body,
+            subject_type: 'file',
+          }
+        );
+      } catch (err) {
+        console.warn(`Could not comment on ${c.path}: ${err.message}`);
       }
     }
   }
