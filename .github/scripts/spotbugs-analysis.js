@@ -1,48 +1,9 @@
-// =============================================================================
 // SpotBugs PR Analysis Script
-// =============================================================================
-//
+// Runs SpotBugs on all org.eclipse.osee packages, then filters results to
+// only report issues in files changed by the PR.
 // Usage: node .github/scripts/spotbugs-analysis.js
-//
-// Required environment variables (provided by GitHub Actions):
-//   GITHUB_TOKEN, GITHUB_REPOSITORY, GITHUB_RUN_ID, GITHUB_EVENT_PATH
-//   SPOTBUGS_BIN (optional, defaults to /root/spotbugs/current/bin/spotbugs)
-//
-// What this script does:
-//
-// 1. RUNS SPOTBUGS (single pass)
-//    - Executes SpotBugs once against all compiled classes in org.eclipse.osee
-//    - Produces an XML report (spotbugs-report-full.xml)
-//
-// 2. GENERATES HTML REPORTS
-//    - Full report (spotbugs-report-full.html): tabbed layout with Summary,
-//      Browse by Category, Browse by Package, paginated All Issues with search,
-//      and Info sections
-//    - Changed files report (spotbugs-report-changed.html): same tabbed format
-//      but filtered to only bugs in files changed by the PR
-//    - Both reports show the SpotBugs version at the top
-//
-// 3. POSTS/UPDATES A PR CONVERSATION COMMENT
-//    - Upserts a single comment (identified by hidden HTML marker) with:
-//      - A table of issues found in changed files
-//      - Total issue count across all packages
-//      - Download link for the HTML reports artifact
-//
-// 4. CLEANS UP OLD SPOTBUGS REVIEW COMMENTS
-//    - Deletes any previous SpotBugs reviews (top-level review entries)
-//    - Deletes any previous SpotBugs file-level review comments
-//    - Identifies SpotBugs content via hidden <!-- spotbugs-auto-review -->
-//      marker, plus legacy patterns for backwards compatibility
-//    - Never touches user-written comments
-//
-// 5. POSTS FILE-LEVEL REVIEW COMMENTS
-//    - Creates a batch review with one comment per affected file
-//    - Each comment lists all bugs in that file with descriptions, priority,
-//      method, and links to SpotBugs documentation
-//    - Comments are anchored to position 1 (first line of the diff)
-//    - Falls back to individual comments if the batch review fails
-//
-// =============================================================================
+// Requires environment: GITHUB_TOKEN, GITHUB_REPOSITORY, GITHUB_RUN_ID,
+//   GITHUB_SERVER_URL, GITHUB_EVENT_PATH (all provided by GitHub Actions)
 
 const fs = require('fs');
 const { execSync } = require('child_process');
