@@ -855,39 +855,10 @@ function main() {
   // 2. FILE-LEVEL REVIEW COMMENTS (on each file)
   // =============================================
 
-  // Always clean up old SpotBugs reviews and review comments first, even if
-  // there are no new bugs to report. This prevents stale comments from accumulating.
-  const SPOTBUGS_MARKER = '<!-- spotbugs-auto-review -->';
-  console.log('Cleaning up old SpotBugs reviews and comments...');
-
-  // Delete old SpotBugs reviews (the top-level "SpotBugs found issues" entries)
-  try {
-    const reviews = ghGet(
-      `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews?per_page=100`
-    );
-    for (const r of reviews) {
-      if (r.body && r.body.includes(SPOTBUGS_MARKER)) {
-        try {
-          // Dismiss the review first if it's not already dismissed, then delete
-          execSync(
-            `curl -fsSL -X DELETE ` +
-              `-H "Authorization: token ${token}" ` +
-              `-H "Accept: application/vnd.github+json" ` +
-              `-H "X-GitHub-Api-Version: 2022-11-28" ` +
-              `"https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews/${r.id}"`,
-            { encoding: 'utf8' }
-          );
-          console.log(`  Deleted old review ${r.id}`);
-        } catch (err) {
-          console.warn(`  Could not delete old review ${r.id}: ${err.message}`);
-        }
-      }
-    }
-  } catch (e) {
-    console.warn(`Could not fetch existing reviews: ${e.message}`);
-  }
-
-  // Delete old SpotBugs review comments (file-level comments)
+  // Always clean up old SpotBugs review comments first, even if there are
+  // no new bugs to report. This prevents stale comments from accumulating.
+  const SPOTBUGS_MARKER = ':beetle: SpotBugs';
+  console.log('Cleaning up old SpotBugs review comments...');
   try {
     let commentPage = 1;
     while (true) {
@@ -933,7 +904,6 @@ function main() {
   for (const [filePath, bugs] of Object.entries(bugsByFile)) {
     const fileName = filePath.split('/').pop();
     const body = [];
-    body.push(`<!-- spotbugs-auto-review -->`);
     body.push(
       `## :beetle: SpotBugs — ${bugs.length} issue${bugs.length !== 1 ? 's' : ''} in \`${fileName}\``
     );
@@ -997,7 +967,7 @@ function main() {
       {
         commit_id: commitId,
         event: 'COMMENT',
-        body: '<!-- spotbugs-auto-review -->\n:beetle: **SpotBugs** found issues in changed files.',
+        body: ':beetle: **SpotBugs** found issues in changed files.',
         comments: reviewComments,
       }
     );
