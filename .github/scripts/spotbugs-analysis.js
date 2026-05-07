@@ -490,7 +490,7 @@ function generateFullHtml(bugs, version) {
     .map((cat) => {
       const catBugs = byCategory[cat];
       return `<div class="category-group">
-<h3 id="cat-${escapeHtml(cat)}">${escapeHtml(cat)} (${catBugs.length})</h3>
+<h3>${escapeHtml(cat)} (${catBugs.length})</h3>
 ${bugTable(catBugs, false)}
 </div>`;
     })
@@ -502,7 +502,7 @@ ${bugTable(catBugs, false)}
     .map((pkg) => {
       const pkgBugs = byPackage[pkg];
       return `<div class="package-group">
-<h3 id="pkg-${escapeHtml(pkg)}">${escapeHtml(pkg)} (${pkgBugs.length})</h3>
+<h3>${escapeHtml(pkg)} (${pkgBugs.length})</h3>
 ${bugTable(pkgBugs, false)}
 </div>`;
     })
@@ -511,13 +511,13 @@ ${bugTable(pkgBugs, false)}
   // Category nav links
   const categoryNav = Object.keys(byCategory)
     .sort()
-    .map((cat) => `<a class="nav-item" href="#cat-${escapeHtml(cat)}">${escapeHtml(cat)} (${byCategory[cat].length})</a>`)
+    .map((cat) => `<span class="nav-item">${escapeHtml(cat)} (${byCategory[cat].length})</span>`)
     .join('\n');
 
   // Package nav links
   const packageNav = Object.keys(byPackage)
     .sort()
-    .map((pkg) => `<a class="nav-item" href="#pkg-${escapeHtml(pkg)}">${escapeHtml(pkg)} (${byPackage[pkg].length})</a>`)
+    .map((pkg) => `<span class="nav-item">${escapeHtml(pkg)} (${byPackage[pkg].length})</span>`)
     .join('\n');
 
   return `<!DOCTYPE html>
