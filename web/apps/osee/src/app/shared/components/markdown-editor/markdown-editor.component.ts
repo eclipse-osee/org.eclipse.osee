@@ -65,7 +65,7 @@ export class MarkdownEditorComponent {
 	artifactId = input<string>('');
 	mdContent = model.required<string>();
 
-	_history = toObservable(this.mdContent).pipe(
+	private readonly _history = toObservable(this.mdContent).pipe(
 		scan((acc, curr) => {
 			if (acc.length === this.maxHistory()) {
 				acc = acc.splice(1);
@@ -73,20 +73,34 @@ export class MarkdownEditorComponent {
 			return [...acc, curr];
 		}, [] as string[])
 	);
-	history = toSignal(this._history);
-	redoHistory = signal([] as string[]);
-	maxHistory = signal(100);
-	mdExamples = mdExamples;
+	private readonly history = toSignal(this._history);
+	protected readonly redoHistory = signal([] as string[]);
+	private readonly maxHistory = signal(100);
+	protected readonly mdExamples = mdExamples;
 
 	private readonly dialog = inject(MatDialog);
 	private readonly uiService = inject(UiService);
 	private readonly imageService = inject(MarkdownImageService);
-	artExpHttpService = inject(ArtifactExplorerHttpService);
-	domSanitizer = inject(DomSanitizer);
+	private readonly artExpHttpService = inject(ArtifactExplorerHttpService);
+	private readonly domSanitizer = inject(DomSanitizer);
+
+	private readonly branchId = toSignal(this.uiService.id, {
+		initialValue: '',
+	});
 
 	protected readonly isUploading = signal(false);
 	protected readonly dragActive = signal(false);
+	protected readonly showImages = signal(false);
+	protected readonly isLoadingImages = signal(false);
+	protected readonly imagePreviewHtml = signal<SafeHtml>(
+		this.domSanitizer.bypassSecurityTrustHtml('')
+	);
 	private dragCounter = 0;
+	private imageObjectUrls: string[] = [];
+
+	protected readonly isEditorDisabled = computed(
+		() => this.disabled() || this.showImages()
+	);
 
 	protected readonly canUploadImage = computed(
 		() => !this.disabled() && this.artifactId() !== ''
@@ -94,15 +108,15 @@ export class MarkdownEditorComponent {
 
 	protected readonly uploadImageTooltip = computed(() => {
 		if (this.disabled()) {
-			return 'Editing is disabled';
+			return 'Editing is disabled.';
 		}
 		if (this.artifactId() === '') {
-			return 'Save the artifact first to enable image uploads';
+			return 'Save the artifact first to enable image uploads.';
 		}
 		if (this.isUploading()) {
-			return 'Image upload in progress';
+			return 'Image upload in progress.';
 		}
-		return 'Upload image';
+		return 'Upload Image';
 	});
 
 	// Markdown Preview
@@ -128,6 +142,61 @@ export class MarkdownEditorComponent {
 		}
 	);
 
+	toggleShowImages(): void {
+		if (this.showImages()) {
+			this.revokeImageObjectUrls();
+			this.showImages.set(false);
+			return;
+		}
+
+		const content = this.mdContent();
+		const imageLinkRegex = /<image-link>(\d+)<\/image-link>/g;
+		const matches = [...content.matchAll(imageLinkRegex)];
+		const artifactIds = [...new Set(matches.map((m) => m[1]))];
+
+		if (artifactIds.length === 0) {
+			this.showImages.set(true);
+			this.imagePreviewHtml.set(this.mdPreview()!);
+			return;
+		}
+
+		this.isLoadingImages.set(true);
+
+		this.imageService
+			.fetchImagesAsObjectUrls(this.branchId(), artifactIds)
+			.pipe(
+				take(1),
+				switchMap((imageUrls) => {
+					this.imageObjectUrls = imageUrls.map(
+						(img) => img.objectUrl
+					);
+					let contentWithImages = content;
+					for (const img of imageUrls) {
+						contentWithImages = contentWithImages.replaceAll(
+							`<image-link>${img.artifactId}</image-link>`,
+							`![Image ${img.artifactId}](${img.objectUrl})`
+						);
+					}
+					return this.artExpHttpService
+						.convertMarkdownToHtmlPreview(contentWithImages)
+						.pipe(take(1));
+				})
+			)
+			.subscribe({
+				next: (html) => {
+					this.imagePreviewHtml.set(
+						this.domSanitizer.bypassSecurityTrustHtml(html)
+					);
+					this.isLoadingImages.set(false);
+					this.showImages.set(true);
+				},
+				error: (err) => {
+					this.uiService.ErrorText = `Failed to load image preview: ${err?.message ?? 'Unknown error'}`;
+					this.isLoadingImages.set(false);
+				},
+			});
+	}
+
 	addExampleToMdContent(markdownExample: string) {
 		this.mdContent.set(this.mdContent() + '\n\n' + markdownExample);
 	}
@@ -140,7 +209,6 @@ export class MarkdownEditorComponent {
 		}
 
 		const dialogData: UploadImageDialogData = {
-			branchId: '',
 			artifactId: this.artifactId(),
 		};
 
@@ -247,6 +315,13 @@ export class MarkdownEditorComponent {
 		this.mdContent.set(currentContent + separator + imageTag);
 	}
 
+	private revokeImageObjectUrls(): void {
+		for (const url of this.imageObjectUrls) {
+			URL.revokeObjectURL(url);
+		}
+		this.imageObjectUrls = [];
+	}
+
 	// Undo/Redo
 
 	undo() {
@@ -267,7 +342,7 @@ export class MarkdownEditorComponent {
 		}
 	}
 
-	updateRedoHistory(latestHistoryValue: string) {
+	private updateRedoHistory(latestHistoryValue: string) {
 		if (
 			this.redoHistory()[this.redoHistory().length - 1] !==
 			latestHistoryValue

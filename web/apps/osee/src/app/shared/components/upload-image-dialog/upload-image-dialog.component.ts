@@ -35,7 +35,6 @@ import {
 import { isSupportedImageFile } from '@osee/shared/utils';
 
 export type UploadImageDialogData = {
-	readonly branchId: string;
 	readonly artifactId: string;
 };
 

@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
-import { Observable, defer, map } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, defer, forkJoin, map } from 'rxjs';
 import {
 	ATTRIBUTETYPEID,
 	ATTRIBUTETYPEIDENUM,
@@ -31,14 +32,21 @@ import {
 	getFileExtension,
 	getFileNameWithoutExtension,
 } from '@osee/shared/utils';
+import { apiURL } from '@osee/environments';
 
 export type ImageUploadResult = {
 	readonly artifactId: string;
 	readonly imageName: string;
 };
 
+export type ImageObjectUrl = {
+	readonly artifactId: string;
+	readonly objectUrl: string;
+};
+
 @Injectable({ providedIn: 'root' })
 export class MarkdownImageService {
+	private readonly http = inject(HttpClient);
 	private readonly currentTx = inject(CurrentTransactionService);
 
 	uploadImageArtifact(
@@ -114,5 +122,31 @@ export class MarkdownImageService {
 				})
 			);
 		});
+	}
+
+	getImageUrl(branchId: string, artifactId: string): string {
+		return `${apiURL}/orcs/branch/${branchId}/artifact/${artifactId}/attribute/type/${ATTRIBUTETYPEIDENUM.NATIVE_CONTENT}`;
+	}
+
+	fetchImageAsObjectUrl(
+		branchId: string,
+		artifactId: string
+	): Observable<ImageObjectUrl> {
+		const url = this.getImageUrl(branchId, artifactId);
+		return this.http.get(url, { responseType: 'blob' }).pipe(
+			map((blob) => ({
+				artifactId,
+				objectUrl: URL.createObjectURL(blob),
+			}))
+		);
+	}
+
+	fetchImagesAsObjectUrls(
+		branchId: string,
+		artifactIds: string[]
+	): Observable<ImageObjectUrl[]> {
+		return forkJoin(
+			artifactIds.map((id) => this.fetchImageAsObjectUrl(branchId, id))
+		);
 	}
 }

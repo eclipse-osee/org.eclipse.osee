@@ -65,6 +65,26 @@
 				</div>
 			</button>
 		</span>
+		<!-- Toggle Image Preview -->
+		<button
+			mat-icon-button
+			[matTooltip]="
+				showImages()
+					? 'Return to editing.'
+					: 'Preview With Images'
+			"
+			[disabled]="isLoadingImages()"
+			(click)="toggleShowImages()">
+			<div>
+				@if (isLoadingImages()) {
+					<mat-icon> hourglass_empty </mat-icon>
+				} @else if (showImages()) {
+					<mat-icon> edit </mat-icon>
+				} @else {
+					<mat-icon> visibility </mat-icon>
+				}
+			</div>
+		</button>
 	</div>
 </div>
 <!-- Editor -->
@@ -93,13 +113,19 @@
 	<mat-form-field
 		ngPreserveWhitespaces
 		class="tw-flex-1 [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
-		subscriptSizing="dynamic">
+		subscriptSizing="dynamic"
+		[matTooltip]="
+			showImages()
+				? 'Click the edit icon to return to editing.'
+				: ''
+		"
+		matTooltipShowDelay="300">
 		<textarea
 			type="text"
 			matInput
 			cdkTextareaAutosize
 			[(ngModel)]="mdContent"
-			[disabled]="disabled()"
+			[disabled]="isEditorDisabled()"
 			placeholder="Start typing Markdown text..."
 			class="placeholder:tw-font-mat-bold placeholder:tw-opacity-50"
 			ngPreserveWhitespaces></textarea>
@@ -108,7 +134,13 @@
 	<!-- Divider -->
 	<mat-divider vertical></mat-divider>
 	<!-- HTML (Markdown Preview) -->
-	<div
-		class="tw-flex-1 tw-p-4"
-		[innerHtml]="mdPreview()"></div>
+	@if (showImages()) {
+		<div
+			class="tw-flex-1 tw-overflow-auto tw-p-4"
+			[innerHtml]="imagePreviewHtml()"></div>
+	} @else {
+		<div
+			class="tw-flex-1 tw-overflow-auto tw-p-4"
+			[innerHtml]="mdPreview()"></div>
+	}
 </div>
