@@ -45,7 +45,7 @@ import {
 	UploadImageDialogComponent,
 	UploadImageDialogData,
 	UploadImageDialogResult,
-} from '@osee/shared/components';
+} from '@osee/shared/dialogs';
 import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
 import { MarkdownImageService } from '@osee/shared/services';

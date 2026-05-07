@@ -80,7 +80,7 @@ protected readonly loadingGlobal = toSignal(this.$loadingGlobal, { initialValue:
 
 ## Required header (top of every file)
 
-Include the Boeing EPL header comment block at the top of every file. The content should be exactly the same, but the comment syntax can be different based on the file type:
+Include the Boeing EPL header comment block at the top of every **new** file. The content should be exactly the same, but the comment syntax can be different based on the file type. **Do not modify or update headers on existing files** — leave them as-is (they may have older copyright years or different contributor lists).
 
 ```text
 /*********************************************************************
