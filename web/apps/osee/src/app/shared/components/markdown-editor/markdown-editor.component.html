@@ -69,9 +69,7 @@
 		<button
 			mat-icon-button
 			[matTooltip]="
-				showImages()
-					? 'Return to editing.'
-					: 'Preview With Images'
+				showImages() ? 'Return to editing.' : 'Preview With Images'
 			"
 			[disabled]="isLoadingImages()"
 			(click)="toggleShowImages()">
@@ -115,9 +113,7 @@
 		class="tw-flex-1 [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
 		subscriptSizing="dynamic"
 		[matTooltip]="
-			showImages()
-				? 'Click the edit icon to return to editing.'
-				: ''
+			showImages() ? 'Click the edit icon to return to editing.' : ''
 		"
 		matTooltipShowDelay="300">
 		<textarea

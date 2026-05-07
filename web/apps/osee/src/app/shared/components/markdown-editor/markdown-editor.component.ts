@@ -29,7 +29,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { UiService } from '@osee/shared/services';
-import { debounceTime, filter, map, scan, startWith, switchMap, take } from 'rxjs';
+import {
+	debounceTime,
+	filter,
+	map,
+	scan,
+	startWith,
+	switchMap,
+	take,
+} from 'rxjs';
 import { mdExamples } from './markdown-editor-examples';
 import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -38,9 +46,7 @@ import {
 	UploadImageDialogData,
 	UploadImageDialogResult,
 } from '@osee/shared/components';
-import {
-	SUPPORTED_IMAGE_FORMATS_LABEL,
-} from '@osee/shared/types/constants';
+import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
 import { MarkdownImageService } from '@osee/shared/services';
 

@@ -70,15 +70,13 @@ export class MarkdownImageService {
 						gammaId: '-1',
 					};
 
-					const extensionAttr: newAttribute<
-						string,
-						ATTRIBUTETYPEID
-					> = {
-						id: '-1',
-						value: getFileExtension(file.name),
-						typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
-						gammaId: '-1',
-					};
+					const extensionAttr: newAttribute<string, ATTRIBUTETYPEID> =
+						{
+							id: '-1',
+							value: getFileExtension(file.name),
+							typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
+							gammaId: '-1',
+						};
 
 					const nativeContentAttr: newAttribute<
 						string,

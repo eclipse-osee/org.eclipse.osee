@@ -41,5 +41,6 @@ export const ACCEPTED_IMAGE_INPUT_TYPES = SUPPORTED_IMAGE_EXTENSIONS.map(
 ).join(',');
 
 /** Human-readable label for display in UI messages. */
-export const SUPPORTED_IMAGE_FORMATS_LABEL =
-	SUPPORTED_IMAGE_EXTENSIONS.map((ext) => ext.toUpperCase()).join(', ');
+export const SUPPORTED_IMAGE_FORMATS_LABEL = SUPPORTED_IMAGE_EXTENSIONS.map(
+	(ext) => ext.toUpperCase()
+).join(', ');
