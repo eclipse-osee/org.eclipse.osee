@@ -276,7 +276,19 @@ jobs:
           name: osee-compiled-classes${{steps.artifact_ref.outputs.artifact_current_ref}}
           path: compiled-classes
 
-      - name: Run SpotBugs Analysis and Post Results
+      - name: Run SpotBugs Full Analysis
+        run: |
+          /root/spotbugs/current/bin/spotbugs -textui \
+            -xml:withMessages -output spotbugs-report-full.xml \
+            -auxclasspathFromInput -onlyAnalyze "org.eclipse.osee.-" \
+            -nested:false compiled-classes/
+
+          /root/spotbugs/current/bin/spotbugs -textui \
+            -html:fancy-hist.xsl -output spotbugs-report-full.html \
+            -auxclasspathFromInput -onlyAnalyze "org.eclipse.osee.-" \
+            -nested:false compiled-classes/
+
+      - name: Run Scoped Analysis and Post Results
         if: always() && github.event_name == 'pull_request'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
