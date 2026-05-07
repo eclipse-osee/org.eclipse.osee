@@ -1,6 +1,5 @@
 // SpotBugs PR Analysis Script
-// Runs SpotBugs on all org.eclipse.osee packages, then filters results to
-// only report issues in files changed by the PR.
+// Runs scoped SpotBugs analysis on changed files and posts results to the PR.
 // Usage: node .github/scripts/spotbugs-analysis.js
 // Requires environment: GITHUB_TOKEN, GITHUB_REPOSITORY, GITHUB_RUN_ID,
 //   GITHUB_SERVER_URL, GITHUB_EVENT_PATH (all provided by GitHub Actions)
@@ -63,6 +62,7 @@ const PRIORITY_LABELS = {
 const token = process.env.GITHUB_TOKEN;
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
 const runId = process.env.GITHUB_RUN_ID;
+const serverUrl = process.env.GITHUB_SERVER_URL || 'https://github.com';
 const eventPath = process.env.GITHUB_EVENT_PATH;
 const spotbugsBin =
   process.env.SPOTBUGS_BIN || '/root/spotbugs/current/bin/spotbugs';
@@ -136,79 +136,11 @@ function getChangedFiles() {
 }
 
 // ---------------------------------------------------------------------------
-// HTML report generator for changed-file bugs
-// ---------------------------------------------------------------------------
-
-function generateChangedHtml(bugs, srcToRepo) {
-  const priorityText = { '1': 'High', '2': 'Medium', '3': 'Low' };
-  const priorityColor = { '1': '#d32f2f', '2': '#f57c00', '3': '#fbc02d' };
-
-  const rows = bugs
-    .map((bug) => {
-      const file = srcToRepo[bug.sourcepath] || bug.sourcepath || '';
-      const color = priorityColor[bug.priority] || '#999';
-      const pLabel = priorityText[bug.priority] || bug.priority;
-      const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
-      const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
-      return `<tr>
-        <td style="color:${color};font-weight:bold">${pLabel}</td>
-        <td><code>${escapeHtml(file)}</code></td>
-        <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
-        <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
-        <td>${escapeHtml(desc || bug.type)}</td>
-      </tr>`;
-    })
-    .join('\n');
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>SpotBugs — Changed Files Report</title>
-<style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 2rem; }
-  h1 { color: #333; }
-  table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-  th { background: #f5f5f5; }
-  tr:nth-child(even) { background: #fafafa; }
-  code { background: #f0f0f0; padding: 2px 4px; border-radius: 3px; font-size: 0.9em; }
-  a { color: #1976d2; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .summary { color: #555; margin-top: 0.5rem; }
-</style>
-</head>
-<body>
-<h1>&#x1f41e; SpotBugs — Changed Files Report</h1>
-<p class="summary">${bugs.length} issue${bugs.length !== 1 ? 's' : ''} found in files changed by this PR.</p>
-${
-  bugs.length > 0
-    ? `<table>
-<thead><tr><th>Priority</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
-<tbody>
-${rows}
-</tbody>
-</table>`
-    : `<p><strong>&#x2705; No issues found in changed files.</strong></p>`
-}
-</body>
-</html>`;
-}
-
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
 function main() {
-  // --- Run SpotBugs analysis (single run, full codebase) ---
+  // --- Run full SpotBugs analysis ---
   console.log('Running SpotBugs full analysis on org.eclipse.osee.-');
   try {
     execSync(
@@ -219,7 +151,7 @@ function main() {
       { stdio: 'inherit' }
     );
   } catch (e) {
-    console.warn(`SpotBugs (xml) exited with code ${e.status}`);
+    console.warn(`Full SpotBugs (xml) exited with code ${e.status}`);
   }
   try {
     execSync(
@@ -230,15 +162,14 @@ function main() {
       { stdio: 'inherit' }
     );
   } catch (e) {
-    console.warn(`SpotBugs (html) exited with code ${e.status}`);
+    console.warn(`Full SpotBugs (html) exited with code ${e.status}`);
   }
 
-  const fullCount = countBugs('spotbugs-report-full.xml');
-  const allBugs = parseBugs('spotbugs-report-full.xml');
-  console.log(`Full analysis: ${fullCount} total bug(s)`);
-
-  // --- Get changed files and build source path mapping ---
+  // --- Get changed files and build class list ---
   const changedFiles = getChangedFiles();
+
+  const classes = new Set();
+  const packages = new Set();
   const srcToRepo = {};
   for (const f of changedFiles) {
     if (!f.filename.endsWith('.java')) continue;
@@ -246,26 +177,77 @@ function main() {
       const idx = f.filename.indexOf(marker);
       if (idx !== -1) {
         const rel = f.filename.substring(idx + marker.length);
+        const fqcn = rel.replace(/\//g, '.').replace(/\.java$/, '');
+        classes.add(fqcn);
+        // Use package-level pattern (with trailing .-) for -onlyAnalyze
+        const pkg = fqcn.substring(0, fqcn.lastIndexOf('.'));
+        if (pkg) packages.add(pkg + '.-');
         srcToRepo[rel] = f.filename;
         break;
       }
     }
   }
 
-  // --- Filter bugs to only those in files changed by the PR ---
+  // --- Run scoped SpotBugs on changed classes ---
+  let changedBugs = [];
+  if (classes.size > 0) {
+    const analyzeList = [...packages].join(',');
+    console.log(`Running SpotBugs on ${classes.size} changed class(es) in ${packages.size} package(s)`);
+    console.log(`Packages: ${analyzeList}`);
+    console.log(`srcToRepo mappings:`);
+    for (const [rel, repo] of Object.entries(srcToRepo)) {
+      console.log(`  ${rel} → ${repo}`);
+    }
+    const cmd =
+      `${spotbugsBin} -textui -low -effort:max ` +
+      `-xml:withMessages -output spotbugs-report-changed.xml ` +
+      `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
+      `-nested:false compiled-classes/`;
+    console.log(`SpotBugs command: ${cmd}`);
+    try {
+      execSync(cmd, { stdio: 'inherit' });
+    } catch (e) {
+      console.warn(`Scoped SpotBugs (xml) exited with code ${e.status}`);
+    }
+    try {
+      execSync(
+        `${spotbugsBin} -textui -low -effort:max ` +
+          `-html:fancy-hist.xsl -output spotbugs-report-changed.html ` +
+          `-auxclasspathFromInput -onlyAnalyze "${analyzeList}" ` +
+          `-nested:false compiled-classes/`,
+        { stdio: 'inherit' }
+      );
+    } catch (e) {
+      console.warn(`Scoped SpotBugs (html) exited with code ${e.status}`);
+    }
+    if (fs.existsSync('spotbugs-report-changed.xml')) {
+      const raw = fs.readFileSync('spotbugs-report-changed.xml', 'utf8');
+      console.log(`Changed report size: ${raw.length} bytes`);
+      console.log(`First 500 chars: ${raw.substring(0, 500)}`);
+    } else {
+      console.warn('spotbugs-report-changed.xml was NOT created');
+    }
+    changedBugs = parseBugs('spotbugs-report-changed.xml');
+    console.log(`Parsed ${changedBugs.length} bug(s) from changed report`);
+  } else {
+    console.log('No changed Java classes found — skipping scoped analysis');
+    console.log(`Total changed files from API: ${changedFiles.length}`);
+    const javaFiles = changedFiles.filter((f) => f.filename.endsWith('.java'));
+    console.log(`Java files in PR: ${javaFiles.map((f) => f.filename).join(', ')}`);
+  }
+
+  const fullCount = countBugs('spotbugs-report-full.xml');
+
+  // --- Filter changedBugs to only include bugs in files actually changed by the PR ---
   const changedPaths = new Set(changedFiles.map((f) => f.filename));
-  const filteredBugs = allBugs.filter((bug) => {
+  const filteredBugs = changedBugs.filter((bug) => {
     const repoPath = srcToRepo[bug.sourcepath];
     return repoPath && changedPaths.has(repoPath);
   });
-  console.log(`Filtered bugs: ${filteredBugs.length} of ${allBugs.length} are in changed files`);
-
-  // --- Generate HTML report for changed files (no extra SpotBugs run) ---
-  const changedHtml = generateChangedHtml(filteredBugs, srcToRepo);
-  fs.writeFileSync('spotbugs-report-changed.html', changedHtml);
-  console.log(`Generated spotbugs-report-changed.html with ${filteredBugs.length} issue(s)`);
+  console.log(`Filtered bugs: ${filteredBugs.length} of ${changedBugs.length} are in changed files`);
 
   // --- Artifact download URL (uses nightly.link for direct download without auth) ---
+  const runUrl = `${serverUrl}/${owner}/${repo}/actions/runs/${runId}`;
   const artifactUrl = `https://nightly.link/${owner}/${repo}/actions/runs/${runId}/spotbugs-report.zip`;
 
   // =============================================
