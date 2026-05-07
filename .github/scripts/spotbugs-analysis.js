@@ -156,91 +156,12 @@ function getChangedFiles() {
 // Shared HTML styles
 // ---------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
-// HTML report generator for changed-file bugs
-// ---------------------------------------------------------------------------
-
-function generateChangedHtml(bugs, srcToRepo, version) {
-  const priorityText = { '1': 'High', '2': 'Medium', '3': 'Low' };
-  const priorityClass = { '1': 'priority-high', '2': 'priority-medium', '3': 'priority-low' };
-
-  // Summary counts
-  const highCount = bugs.filter((b) => b.priority === '1').length;
-  const medCount = bugs.filter((b) => b.priority === '2').length;
-  const lowCount = bugs.filter((b) => b.priority === '3').length;
-
-  // Group by file
-  const byFile = {};
-  for (const bug of bugs) {
-    const file = srcToRepo[bug.sourcepath] || bug.sourcepath || '(unknown)';
-    if (!byFile[file]) byFile[file] = [];
-    byFile[file].push(bug);
-  }
-
-  // Helper to build a bug table
-  const bugTable = (bugList) => {
-    const rows = bugList
-      .map((bug) => {
-        const pClass = priorityClass[bug.priority] || '';
-        const pLabel = priorityText[bug.priority] || bug.priority;
-        const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
-        const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
-        const file = bug.sourcepath ? bug.sourcepath.split('/').pop() : '';
-        return `<tr>
-          <td class="${pClass}">${pLabel}</td>
-          <td><code>${escapeHtml(file)}</code></td>
-          <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
-          <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
-          <td>${escapeHtml(desc || bug.type)}</td>
-        </tr>`;
-      })
-      .join('\n');
-    return `<table>
-<thead><tr><th>Priority</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
-<tbody>${rows}</tbody>
-</table>`;
-  };
-
-  // Build file sections
-  const fileSections = Object.keys(byFile)
-    .sort()
-    .map((file) => {
-      const fileBugs = byFile[file];
-      const fileName = file.split('/').pop();
-      return `<div class="file-group">
-<h3>${escapeHtml(fileName)} (${fileBugs.length})</h3>
-${bugTable(fileBugs)}
-</div>`;
-    })
-    .join('\n');
-
-  // File nav links
-  const fileNav = Object.keys(byFile)
-    .sort()
-    .map((file) => `<span class="nav-item">${escapeHtml(file.split('/').pop())} (${byFile[file].length})</span>`)
-    .join('\n');
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>SpotBugs — Changed Files Report</title>
-<style>
+const HTML_STYLES = `
   * { box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 2rem; background: #fafbfc; color: #24292f; }
   h1 { color: #1a1a1a; margin-bottom: 0.25rem; }
-  h3 { color: #555; font-size: 1rem; margin: 1.5rem 0 0.5rem; }
+  h2 { color: #333; margin-top: 2rem; border-bottom: 1px solid #e1e4e8; padding-bottom: 0.4rem; }
   .version { color: #666; font-size: 0.85rem; margin-bottom: 1.5rem; }
-
-  /* Tabs */
-  .tabs { display: flex; gap: 0; border-bottom: 2px solid #e1e4e8; margin-bottom: 1.5rem; }
-  .tab { padding: 0.75rem 1.5rem; cursor: pointer; font-weight: 500; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; user-select: none; }
-  .tab:hover { color: #1976d2; }
-  .tab.active { color: #1976d2; border-bottom-color: #1976d2; }
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* Summary cards */
   .summary-cards { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
   .card { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; min-width: 140px; }
   .card .number { font-size: 2rem; font-weight: 700; }
@@ -249,9 +170,7 @@ ${bugTable(fileBugs)}
   .card.medium .number { color: #f57c00; }
   .card.low .number { color: #fbc02d; }
   .card.total .number { color: #1976d2; }
-
-  /* Tables */
-  table { border-collapse: collapse; width: 100%; margin-top: 0.5rem; background: #fff; border: 1px solid #e1e4e8; border-radius: 6px; overflow: hidden; }
+  table { border-collapse: collapse; width: 100%; margin-top: 1rem; background: #fff; border: 1px solid #e1e4e8; border-radius: 6px; overflow: hidden; }
   th, td { border-bottom: 1px solid #eee; padding: 10px 14px; text-align: left; font-size: 0.9rem; }
   th { background: #f6f8fa; font-weight: 600; color: #444; }
   tr:last-child td { border-bottom: none; }
@@ -262,128 +181,60 @@ ${bugTable(fileBugs)}
   .priority-high { color: #d32f2f; font-weight: 600; }
   .priority-medium { color: #f57c00; font-weight: 600; }
   .priority-low { color: #fbc02d; font-weight: 600; }
+  .section-nav { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; margin: 1.5rem 0; }
+  .section-nav a { margin-right: 1.5rem; font-weight: 500; }
+  .browse-nav { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; margin: 1.5rem 0; column-count: 3; column-gap: 2rem; }
+  .browse-nav a { display: block; padding: 3px 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .category-group, .package-group { margin-top: 1rem; }
+  .category-group h3, .package-group h3 { color: #555; font-size: 1rem; margin-bottom: 0.5rem; }
+`;
 
-  /* Browse nav */
-  .browse-nav { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; margin: 1rem 0; column-count: 3; column-gap: 2rem; }
-  .browse-nav .nav-item { display: block; padding: 3px 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9rem; }
+// ---------------------------------------------------------------------------
+// HTML report generator for changed-file bugs
+// ---------------------------------------------------------------------------
 
-  /* Search */
-  #bug-search { width: 100%; padding: 0.6rem 1rem; border: 1px solid #e1e4e8; border-radius: 6px; font-size: 0.9rem; margin-bottom: 1rem; outline: none; }
-  #bug-search:focus { border-color: #1976d2; box-shadow: 0 0 0 2px rgba(25,118,210,0.15); }
-</style>
+function generateChangedHtml(bugs, srcToRepo, version) {
+  const priorityText = { '1': 'High', '2': 'Medium', '3': 'Low' };
+  const priorityClass = { '1': 'priority-high', '2': 'priority-medium', '3': 'priority-low' };
+
+  const rows = bugs
+    .map((bug) => {
+      const file = srcToRepo[bug.sourcepath] || bug.sourcepath || '';
+      const pClass = priorityClass[bug.priority] || '';
+      const pLabel = priorityText[bug.priority] || bug.priority;
+      const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
+      const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
+      return `<tr>
+        <td class="${pClass}">${pLabel}</td>
+        <td><code>${escapeHtml(file)}</code></td>
+        <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
+        <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
+        <td>${escapeHtml(desc || bug.type)}</td>
+      </tr>`;
+    })
+    .join('\n');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SpotBugs — Changed Files Report</title>
+<style>${HTML_STYLES}</style>
 </head>
 <body>
 <h1>&#x1f41e; SpotBugs — Changed Files Report</h1>
 <p class="version">SpotBugs ${escapeHtml(version)}</p>
-
-${bugs.length > 0 ? `
-<div class="tabs">
-  <div class="tab active" data-page="summary">Summary</div>
-  <div class="tab" data-page="by-file">By File</div>
-  <div class="tab" data-page="all-issues">All Issues</div>
-</div>
-
-<div class="page active" id="summary">
-  <h2>Summary</h2>
-  <p>${bugs.length} issue${bugs.length !== 1 ? 's' : ''} found in files changed by this PR.</p>
-  <div class="summary-cards">
-    <div class="card total"><div class="number">${bugs.length}</div><div class="label">Total Issues</div></div>
-    <div class="card high"><div class="number">${highCount}</div><div class="label">High Priority</div></div>
-    <div class="card medium"><div class="number">${medCount}</div><div class="label">Medium Priority</div></div>
-    <div class="card low"><div class="number">${lowCount}</div><div class="label">Low Priority</div></div>
-    <div class="card"><div class="number">${Object.keys(byFile).length}</div><div class="label">Files</div></div>
-  </div>
-</div>
-
-<div class="page" id="by-file">
-  <h2>Browse by File</h2>
-  <div class="browse-nav">${fileNav}</div>
-  ${fileSections}
-</div>
-
-<div class="page" id="all-issues">
-  <h2>All Issues (${bugs.length})</h2>
-  <input type="text" id="bug-search" placeholder="Search by file, method, type, or description..." />
-  <div id="all-bugs-table"></div>
-</div>
-
-<script>
-// Tab switching
-document.querySelectorAll('.tab').forEach(function(tab) {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-    tab.classList.add('active');
-    document.getElementById(tab.dataset.page).classList.add('active');
-  });
-});
-
-// Searchable "All Issues" table
-var ALL_BUGS = ${JSON.stringify(bugs.map((bug) => ({
-    priority: bug.priority,
-    category: bug.category,
-    file: srcToRepo[bug.sourcepath] || bug.sourcepath || '',
-    method: bug.methodName || '',
-    type: bug.type,
-    desc: (bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message) || bug.type,
-  })))};
-
-var priorityLabels = { '1': 'High', '2': 'Medium', '3': 'Low' };
-var priorityClasses = { '1': 'priority-high', '2': 'priority-medium', '3': 'priority-low' };
-
-function esc(s) {
-  var d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
+<p>${bugs.length} issue${bugs.length !== 1 ? 's' : ''} found in files changed by this PR.</p>
+${
+  bugs.length > 0
+    ? `<table>
+<thead><tr><th>Priority</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+${rows}
+</tbody>
+</table>`
+    : `<p><strong>&#x2705; No issues found in changed files.</strong></p>`
 }
-
-function renderTable(bugsToRender) {
-  if (bugsToRender.length === 0) {
-    document.getElementById('all-bugs-table').innerHTML = '<p style="color:#666;margin-top:1rem;">No results match your search.</p>';
-    return;
-  }
-  var rows = '';
-  for (var i = 0; i < bugsToRender.length; i++) {
-    var b = bugsToRender[i];
-    var pClass = priorityClasses[b.priority] || '';
-    var pLabel = priorityLabels[b.priority] || b.priority;
-    var docsUrl = 'https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#' + b.type.toLowerCase();
-    rows += '<tr>'
-      + '<td class="' + pClass + '">' + pLabel + '</td>'
-      + '<td><code>' + esc(b.file.split('/').pop()) + '</code></td>'
-      + '<td><code>' + esc(b.method) + '()</code></td>'
-      + '<td><a href="' + docsUrl + '">' + esc(b.type) + '</a></td>'
-      + '<td>' + esc(b.desc) + '</td>'
-      + '</tr>';
-  }
-  document.getElementById('all-bugs-table').innerHTML =
-    '<table><thead><tr><th>Priority</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead><tbody>' + rows + '</tbody></table>';
-}
-
-function applySearch() {
-  var query = document.getElementById('bug-search').value.toLowerCase().trim();
-  if (!query) {
-    renderTable(ALL_BUGS);
-  } else {
-    var filtered = ALL_BUGS.filter(function(b) {
-      return b.file.toLowerCase().indexOf(query) !== -1
-        || b.method.toLowerCase().indexOf(query) !== -1
-        || b.type.toLowerCase().indexOf(query) !== -1
-        || b.desc.toLowerCase().indexOf(query) !== -1;
-    });
-    renderTable(filtered);
-  }
-}
-
-var searchTimeout;
-document.getElementById('bug-search').addEventListener('input', function() {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(applySearch, 200);
-});
-
-renderTable(ALL_BUGS);
-</script>
-` : `<p><strong>&#x2705; No issues found in changed files.</strong></p>`}
 </body>
 </html>`;
 }
@@ -418,41 +269,33 @@ function generateFullHtml(bugs, version) {
     byPackage[pkg].push(bug);
   }
 
-  // Helper to build a bug table
-  const bugTable = (bugList, includeCategory) => {
-    const catHeader = includeCategory ? '<th>Category</th>' : '';
-    const rows = bugList
-      .map((bug) => {
-        const pClass = priorityClass[bug.priority] || '';
-        const pLabel = priorityText[bug.priority] || bug.priority;
-        const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
-        const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
-        const file = bug.sourcepath ? bug.sourcepath.split('/').pop() : '';
-        const catCol = includeCategory ? `<td>${escapeHtml(bug.category)}</td>` : '';
-        return `<tr>
-          <td class="${pClass}">${pLabel}</td>
-          ${catCol}
-          <td><code>${escapeHtml(file)}</code></td>
-          <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
-          <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
-          <td>${escapeHtml(desc || bug.type)}</td>
-        </tr>`;
-      })
-      .join('\n');
-    return `<table>
-<thead><tr><th>Priority</th>${catHeader}<th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
-<tbody>${rows}</tbody>
-</table>`;
-  };
-
   // Build category sections
   const categorySections = Object.keys(byCategory)
     .sort()
     .map((cat) => {
       const catBugs = byCategory[cat];
+      const catRows = catBugs
+        .map((bug) => {
+          const pClass = priorityClass[bug.priority] || '';
+          const pLabel = priorityText[bug.priority] || bug.priority;
+          const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
+          const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
+          const file = bug.sourcepath ? bug.sourcepath.split('/').pop() : '';
+          return `<tr>
+            <td class="${pClass}">${pLabel}</td>
+            <td><code>${escapeHtml(file)}</code></td>
+            <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
+            <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
+            <td>${escapeHtml(desc || bug.type)}</td>
+          </tr>`;
+        })
+        .join('\n');
       return `<div class="category-group">
-<h3>${escapeHtml(cat)} (${catBugs.length})</h3>
-${bugTable(catBugs, false)}
+<h3 id="cat-${escapeHtml(cat)}">${escapeHtml(cat)} (${catBugs.length})</h3>
+<table>
+<thead><tr><th>Priority</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>${catRows}</tbody>
+</table>
 </div>`;
     })
     .join('\n');
@@ -462,9 +305,28 @@ ${bugTable(catBugs, false)}
     .sort()
     .map((pkg) => {
       const pkgBugs = byPackage[pkg];
+      const pkgRows = pkgBugs
+        .map((bug) => {
+          const pClass = priorityClass[bug.priority] || '';
+          const pLabel = priorityText[bug.priority] || bug.priority;
+          const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
+          const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
+          const file = bug.sourcepath ? bug.sourcepath.split('/').pop() : '';
+          return `<tr>
+            <td class="${pClass}">${pLabel}</td>
+            <td><code>${escapeHtml(file)}</code></td>
+            <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
+            <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
+            <td>${escapeHtml(desc || bug.type)}</td>
+          </tr>`;
+        })
+        .join('\n');
       return `<div class="package-group">
-<h3>${escapeHtml(pkg)} (${pkgBugs.length})</h3>
-${bugTable(pkgBugs, false)}
+<h3 id="pkg-${escapeHtml(pkg)}">${escapeHtml(pkg)} (${pkgBugs.length})</h3>
+<table>
+<thead><tr><th>Priority</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>${pkgRows}</tbody>
+</table>
 </div>`;
     })
     .join('\n');
@@ -472,13 +334,13 @@ ${bugTable(pkgBugs, false)}
   // Category nav links
   const categoryNav = Object.keys(byCategory)
     .sort()
-    .map((cat) => `<span class="nav-item">${escapeHtml(cat)} (${byCategory[cat].length})</span>`)
+    .map((cat) => `<a href="#cat-${escapeHtml(cat)}">${escapeHtml(cat)} (${byCategory[cat].length})</a>`)
     .join('\n');
 
   // Package nav links
   const packageNav = Object.keys(byPackage)
     .sort()
-    .map((pkg) => `<span class="nav-item">${escapeHtml(pkg)} (${byPackage[pkg].length})</span>`)
+    .map((pkg) => `<a href="#pkg-${escapeHtml(pkg)}">${escapeHtml(pkg)} (${byPackage[pkg].length})</a>`)
     .join('\n');
 
   return `<!DOCTYPE html>
@@ -486,222 +348,73 @@ ${bugTable(pkgBugs, false)}
 <head>
 <meta charset="utf-8">
 <title>SpotBugs — Full Analysis Report</title>
-<style>
-  * { box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 2rem; background: #fafbfc; color: #24292f; }
-  h1 { color: #1a1a1a; margin-bottom: 0.25rem; }
-  h3 { color: #555; font-size: 1rem; margin: 1.5rem 0 0.5rem; }
-  .version { color: #666; font-size: 0.85rem; margin-bottom: 1.5rem; }
-
-  /* Tabs */
-  .tabs { display: flex; gap: 0; border-bottom: 2px solid #e1e4e8; margin-bottom: 1.5rem; }
-  .tab { padding: 0.75rem 1.5rem; cursor: pointer; font-weight: 500; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; user-select: none; }
-  .tab:hover { color: #1976d2; }
-  .tab.active { color: #1976d2; border-bottom-color: #1976d2; }
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* Summary cards */
-  .summary-cards { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
-  .card { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; min-width: 140px; }
-  .card .number { font-size: 2rem; font-weight: 700; }
-  .card .label { color: #666; font-size: 0.85rem; margin-top: 0.25rem; }
-  .card.high .number { color: #d32f2f; }
-  .card.medium .number { color: #f57c00; }
-  .card.low .number { color: #fbc02d; }
-  .card.total .number { color: #1976d2; }
-
-  /* Tables */
-  table { border-collapse: collapse; width: 100%; margin-top: 0.5rem; background: #fff; border: 1px solid #e1e4e8; border-radius: 6px; overflow: hidden; }
-  th, td { border-bottom: 1px solid #eee; padding: 10px 14px; text-align: left; font-size: 0.9rem; }
-  th { background: #f6f8fa; font-weight: 600; color: #444; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #f9f9f9; }
-  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 0.85em; }
-  a { color: #1976d2; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .priority-high { color: #d32f2f; font-weight: 600; }
-  .priority-medium { color: #f57c00; font-weight: 600; }
-  .priority-low { color: #fbc02d; font-weight: 600; }
-
-  /* Browse nav */
-  .browse-nav { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; padding: 1rem 1.5rem; margin: 1rem 0; column-count: 3; column-gap: 2rem; }
-  .browse-nav .nav-item { display: block; padding: 3px 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9rem; }
-
-  /* All Issues pagination */
-  .page-controls { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; }
-  .page-controls button { padding: 0.4rem 1rem; border: 1px solid #e1e4e8; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.85rem; }
-  .page-controls button:hover { background: #f6f8fa; }
-  .page-controls button:disabled { opacity: 0.4; cursor: default; }
-  .page-controls span { font-size: 0.85rem; color: #666; }
-  #bug-search { width: 100%; padding: 0.6rem 1rem; border: 1px solid #e1e4e8; border-radius: 6px; font-size: 0.9rem; margin-bottom: 1rem; outline: none; }
-  #bug-search:focus { border-color: #1976d2; box-shadow: 0 0 0 2px rgba(25,118,210,0.15); }
-</style>
+<style>${HTML_STYLES}</style>
 </head>
 <body>
 <h1>&#x1f41e; SpotBugs — Full Analysis Report</h1>
 <p class="version">SpotBugs ${escapeHtml(version)}</p>
 
-<div class="tabs">
-  <div class="tab active" data-page="summary">Summary</div>
-  <div class="tab" data-page="by-category">By Category</div>
-  <div class="tab" data-page="by-package">By Package</div>
-  <div class="tab" data-page="all-bugs">All Issues</div>
-  <div class="tab" data-page="info">Info</div>
+<div class="section-nav">
+  <a href="#summary">Summary</a>
+  <a href="#by-category">Browse by Category</a>
+  <a href="#by-package">Browse by Package</a>
+  <a href="#all-bugs">All Issues</a>
+  <a href="#info">Info</a>
 </div>
 
-<div class="page active" id="summary">
-  <h2>Summary</h2>
-  <div class="summary-cards">
-    <div class="card total"><div class="number">${bugs.length}</div><div class="label">Total Issues</div></div>
-    <div class="card high"><div class="number">${highCount}</div><div class="label">High Priority</div></div>
-    <div class="card medium"><div class="number">${medCount}</div><div class="label">Medium Priority</div></div>
-    <div class="card low"><div class="number">${lowCount}</div><div class="label">Low Priority</div></div>
-    <div class="card"><div class="number">${Object.keys(byCategory).length}</div><div class="label">Categories</div></div>
-    <div class="card"><div class="number">${Object.keys(byPackage).length}</div><div class="label">Packages</div></div>
-  </div>
+<h2 id="summary">Summary</h2>
+<div class="summary-cards">
+  <div class="card total"><div class="number">${bugs.length}</div><div class="label">Total Issues</div></div>
+  <div class="card high"><div class="number">${highCount}</div><div class="label">High Priority</div></div>
+  <div class="card medium"><div class="number">${medCount}</div><div class="label">Medium Priority</div></div>
+  <div class="card low"><div class="number">${lowCount}</div><div class="label">Low Priority</div></div>
+  <div class="card"><div class="number">${Object.keys(byCategory).length}</div><div class="label">Categories</div></div>
+  <div class="card"><div class="number">${Object.keys(byPackage).length}</div><div class="label">Packages</div></div>
 </div>
 
-<div class="page" id="by-category">
-  <h2>Browse by Category</h2>
-  <div class="browse-nav">${categoryNav}</div>
-  ${categorySections}
-</div>
+<h2 id="by-category">Browse by Category</h2>
+<div class="browse-nav">${categoryNav}</div>
+${categorySections}
 
-<div class="page" id="by-package">
-  <h2>Browse by Package</h2>
-  <div class="browse-nav">${packageNav}</div>
-  ${packageSections}
-</div>
+<h2 id="by-package">Browse by Package</h2>
+<div class="browse-nav">${packageNav}</div>
+${packageSections}
 
-<div class="page" id="all-bugs">
-  <h2>All Issues (${bugs.length})</h2>
-  <input type="text" id="bug-search" placeholder="Search by file, method, type, or description..." />
-  <div class="page-controls">
-    <button id="prev-btn" disabled>&larr; Previous</button>
-    <span id="page-info"></span>
-    <button id="next-btn">Next &rarr;</button>
-  </div>
-  <div id="all-bugs-table"></div>
-  <div class="page-controls">
-    <button id="prev-btn2" disabled>&larr; Previous</button>
-    <span id="page-info2"></span>
-    <button id="next-btn2">Next &rarr;</button>
-  </div>
-</div>
+<h2 id="all-bugs">All Issues (${bugs.length})</h2>
+<table>
+<thead><tr><th>Priority</th><th>Category</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+${bugs
+  .map((bug) => {
+    const pClass = priorityClass[bug.priority] || '';
+    const pLabel = priorityText[bug.priority] || bug.priority;
+    const desc = bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message;
+    const docsUrl = `https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#${bug.type.toLowerCase()}`;
+    const file = bug.sourcepath ? bug.sourcepath.split('/').pop() : '';
+    return `<tr>
+      <td class="${pClass}">${pLabel}</td>
+      <td>${escapeHtml(bug.category)}</td>
+      <td><code>${escapeHtml(file)}</code></td>
+      <td><code>${escapeHtml(bug.methodName || '')}()</code></td>
+      <td><a href="${docsUrl}">${escapeHtml(bug.type)}</a></td>
+      <td>${escapeHtml(desc || bug.type)}</td>
+    </tr>`;
+  })
+  .join('\n')}
+</tbody>
+</table>
 
-<div class="page" id="info">
-  <h2>Info</h2>
-  <table>
-  <tbody>
-    <tr><td><strong>SpotBugs Version</strong></td><td>${escapeHtml(version)}</td></tr>
-    <tr><td><strong>Analysis Scope</strong></td><td><code>org.eclipse.osee.-</code></td></tr>
-    <tr><td><strong>Effort</strong></td><td>Max</td></tr>
-    <tr><td><strong>Threshold</strong></td><td>Low (all priorities reported)</td></tr>
-    <tr><td><strong>Total Issues</strong></td><td>${bugs.length}</td></tr>
-  </tbody>
-  </table>
-</div>
+<h2 id="info">Info</h2>
+<table>
+<tbody>
+  <tr><td><strong>SpotBugs Version</strong></td><td>${escapeHtml(version)}</td></tr>
+  <tr><td><strong>Analysis Scope</strong></td><td><code>org.eclipse.osee.-</code></td></tr>
+  <tr><td><strong>Effort</strong></td><td>Max</td></tr>
+  <tr><td><strong>Threshold</strong></td><td>Low (all priorities reported)</td></tr>
+  <tr><td><strong>Total Issues</strong></td><td>${bugs.length}</td></tr>
+</tbody>
+</table>
 
-<script>
-// Tab switching
-document.querySelectorAll('.tab').forEach(function(tab) {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-    tab.classList.add('active');
-    document.getElementById(tab.dataset.page).classList.add('active');
-  });
-});
-
-// Paginated "All Issues" table with search
-var ALL_BUGS = ${JSON.stringify(bugs.map((bug) => ({
-    priority: bug.priority,
-    category: bug.category,
-    file: bug.sourcepath ? bug.sourcepath.split('/').pop() : '',
-    method: bug.methodName || '',
-    type: bug.type,
-    desc: (bug.longMsg && bug.longMsg !== bug.message ? bug.longMsg : bug.message) || bug.type,
-  })))};
-
-var PAGE_SIZE = 100;
-var currentPage = 0;
-var filteredBugs = ALL_BUGS;
-
-var priorityLabels = { '1': 'High', '2': 'Medium', '3': 'Low' };
-var priorityClasses = { '1': 'priority-high', '2': 'priority-medium', '3': 'priority-low' };
-
-function esc(s) {
-  var d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
-
-function renderPage(page) {
-  var totalPages = Math.ceil(filteredBugs.length / PAGE_SIZE) || 1;
-  currentPage = Math.max(0, Math.min(page, totalPages - 1));
-  var start = currentPage * PAGE_SIZE;
-  var end = Math.min(start + PAGE_SIZE, filteredBugs.length);
-  var rows = '';
-  for (var i = start; i < end; i++) {
-    var b = filteredBugs[i];
-    var pClass = priorityClasses[b.priority] || '';
-    var pLabel = priorityLabels[b.priority] || b.priority;
-    var docsUrl = 'https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html#' + b.type.toLowerCase();
-    rows += '<tr>'
-      + '<td class="' + pClass + '">' + pLabel + '</td>'
-      + '<td>' + esc(b.category) + '</td>'
-      + '<td><code>' + esc(b.file) + '</code></td>'
-      + '<td><code>' + esc(b.method) + '()</code></td>'
-      + '<td><a href="' + docsUrl + '">' + esc(b.type) + '</a></td>'
-      + '<td>' + esc(b.desc) + '</td>'
-      + '</tr>';
-  }
-  var tableHtml = filteredBugs.length > 0
-    ? '<table><thead><tr><th>Priority</th><th>Category</th><th>File</th><th>Method</th><th>Type</th><th>Description</th></tr></thead><tbody>' + rows + '</tbody></table>'
-    : '<p style="color:#666;margin-top:1rem;">No results match your search.</p>';
-  document.getElementById('all-bugs-table').innerHTML = tableHtml;
-
-  var info = filteredBugs.length > 0
-    ? 'Showing ' + (start + 1) + '–' + end + ' of ' + filteredBugs.length
-    : '0 results';
-  document.getElementById('page-info').textContent = info;
-  document.getElementById('page-info2').textContent = info;
-  document.getElementById('prev-btn').disabled = currentPage === 0;
-  document.getElementById('prev-btn2').disabled = currentPage === 0;
-  document.getElementById('next-btn').disabled = currentPage >= totalPages - 1;
-  document.getElementById('next-btn2').disabled = currentPage >= totalPages - 1;
-}
-
-function applySearch() {
-  var query = document.getElementById('bug-search').value.toLowerCase().trim();
-  if (!query) {
-    filteredBugs = ALL_BUGS;
-  } else {
-    filteredBugs = ALL_BUGS.filter(function(b) {
-      return b.file.toLowerCase().indexOf(query) !== -1
-        || b.method.toLowerCase().indexOf(query) !== -1
-        || b.type.toLowerCase().indexOf(query) !== -1
-        || b.desc.toLowerCase().indexOf(query) !== -1
-        || b.category.toLowerCase().indexOf(query) !== -1;
-    });
-  }
-  renderPage(0);
-}
-
-var searchTimeout;
-document.getElementById('bug-search').addEventListener('input', function() {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(applySearch, 200);
-});
-
-document.getElementById('prev-btn').addEventListener('click', function() { renderPage(currentPage - 1); });
-document.getElementById('next-btn').addEventListener('click', function() { renderPage(currentPage + 1); });
-document.getElementById('prev-btn2').addEventListener('click', function() { renderPage(currentPage - 1); });
-document.getElementById('next-btn2').addEventListener('click', function() { renderPage(currentPage + 1); });
-
-renderPage(0);
-</script>
 </body>
 </html>`;
 }
