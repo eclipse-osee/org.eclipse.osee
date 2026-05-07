@@ -109,10 +109,7 @@ export class MarkdownEditorComponent {
 	);
 
 	protected readonly canUploadImage = computed(
-		() =>
-			!this.disabled() &&
-			this.artifactId() !== '' &&
-			!this.showImages()
+		() => !this.disabled() && this.artifactId() !== '' && !this.showImages()
 	);
 
 	protected readonly uploadImageTooltip = computed(() => {
