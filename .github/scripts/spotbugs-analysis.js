@@ -315,16 +315,10 @@ function main() {
   // =============================================
   if (changedBugs.length === 0) return;
 
-  // Only post review comments on files that are actually in the PR diff.
-  // SpotBugs analyzes entire packages, so it may report bugs in files not
-  // changed by this PR — GitHub rejects review comments on those (422).
-  const changedPaths = new Set(changedFiles.map((f) => f.filename));
-
   const bugsByFile = {};
   for (const bug of changedBugs) {
     const repoPath = srcToRepo[bug.sourcepath];
     if (!repoPath) continue;
-    if (!changedPaths.has(repoPath)) continue;
     if (!bugsByFile[repoPath]) bugsByFile[repoPath] = [];
     bugsByFile[repoPath].push(bug);
   }
@@ -368,23 +362,11 @@ function main() {
     `Posting file-level comments on ${reviewComments.length} file(s)`
   );
 
-  // Fetch the current PR head SHA to avoid 422 if the PR was updated after
-  // the workflow was triggered (stale event payload).
-  let commitId = headSha;
-  try {
-    const prData = ghGet(
-      `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}`
-    );
-    commitId = prData.head.sha;
-  } catch (e) {
-    console.warn(`Could not fetch current PR head SHA, using event payload: ${e.message}`);
-  }
-
   try {
     ghPost(
       `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`,
       {
-        commit_id: commitId,
+        commit_id: headSha,
         event: 'COMMENT',
         body: ':beetle: **SpotBugs** found issues in changed files.',
         comments: reviewComments,
@@ -397,7 +379,7 @@ function main() {
         ghPost(
           `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}/comments`,
           {
-            commit_id: commitId,
+            commit_id: headSha,
             path: c.path,
             body: c.body,
             subject_type: 'file',
