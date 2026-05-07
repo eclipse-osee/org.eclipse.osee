@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -74,7 +75,12 @@ public class EmailUserGroups extends XNavigateItemAction {
          if (dialog.open() == Window.OK) {
 
             Set<String> emails = new HashSet<>();
-            for (Artifact artifact : dialog.getChecked()) {
+            Collection<Artifact> checked = dialog.getChecked();
+            if (checked.isEmpty()) {
+               AWorkbench.popup("Must select one or more User Groups");
+               return;
+            }
+            for (Artifact artifact : checked) {
                if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Members)) {
                      addValidUser(emails, userArt);
@@ -107,7 +113,7 @@ public class EmailUserGroups extends XNavigateItemAction {
    private void addValidUser(Set<String> emails, Artifact userArt) {
       if (userArt.isOfType(CoreArtifactTypes.User)) {
          if (!EmailUtil.isEmailValid(OseeApiService.userSvc().getEmail(userArt))) {
-            OseeLog.logf(Activator.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
+            OseeLog.logf(Activator.class, Level.WARNING, "Invalid email [%s] for user [%s]; skipping",
                OseeApiService.userSvc().getEmail(userArt), userArt);
          } else if (OseeApiService.userSvc().isActive(userArt)) {
             emails.add(OseeApiService.userSvc().getEmail(userArt));
