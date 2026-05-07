@@ -340,6 +340,7 @@ jobs:
           # Ensure python3 is available (baked into the image after Dockerfile update,
           # but installed here as a fallback for older image versions)
           command -v python3 >/dev/null 2>&1 || apk add --no-cache python3
+          python3 -c "import xml.parsers.expat" 2>/dev/null || apk add --no-cache py3-expat
 
           ARGS="spotbugs-report.xml"
           if [ -f changed-files.txt ]; then
