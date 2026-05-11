@@ -86,11 +86,12 @@
 				<sysproperty key="osee.application.server.data" value="${osee.application.server.data}" />
 				<sysproperty key="osee.authentication.protocol" value="${xserver-authentication}" />
 				<sysproperty key="logback.configurationFile" value="${xserver-log-config}" />
+				<sysproperty key="java.util.logging.config.file" value="etc/logging.properties" />
 				<sysproperty key="osgi.configuration.area" value="${xserver-project}/configuration" />
 				<sysproperty key="cm.config.uri" value="${osee.app.server.config.file}" />
 
 				<jvmarg line="${additionalJvmArgs}" />
-				<arg line=" -console ${xserver-telnet-port} -consoleLog -configuration &quot;${xserver-home}/configuration&quot;" />
+				<arg line=" -console ${xserver-telnet-port} -consoleLog -configuration &quot;${xserver-home}/configuration&quot; -data workspace" />
 			</java>
 		</forget>
 

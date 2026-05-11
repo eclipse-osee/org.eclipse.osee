@@ -23,12 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.Attribute;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.ArtifactReferenceAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.BooleanAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.BranchReferenceAttribute;
@@ -41,6 +36,12 @@ import org.eclipse.osee.orcs.core.internal.attribute.primitives.JavaObjectAttrib
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.LongAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.MapEntryAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.StringAttribute;
+import org.eclipse.osee.orcs.data.AttributeContainer;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.Attribute;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
+import org.eclipse.osee.orcs.search.ds.ResourceNameResolver;
 
 /**
  * @author Roberto E. Escobar

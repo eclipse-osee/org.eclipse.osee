@@ -84,7 +84,7 @@ public class AtsWorldResultRowOperation {
          }
          String stateType = sb.toString().replaceFirst(",'$", "");
          String query = String.format(getQuery(), teamIds, stateType);
-         List<ArtifactId> artIds = atsApi.getQueryService().getArtifactIdsFromQuery(query);
+         List<ArtifactId> artIds = atsApi.getQueryServiceServer().getArtifactIdsFromQuery(query);
          return new AtsSearchDataResults(atsApi.getQueryService().getArtifacts(artIds, atsApi.getAtsBranch()),
             XResultData.OK_STATUS);
       } else {

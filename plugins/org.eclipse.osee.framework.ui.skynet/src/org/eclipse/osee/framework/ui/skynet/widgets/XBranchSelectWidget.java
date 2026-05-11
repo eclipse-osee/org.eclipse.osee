@@ -40,9 +40,8 @@ import org.eclipse.swt.widgets.Listener;
 public class XBranchSelectWidget extends GenericXWidget implements Listener {
    public static final String WIDGET_ID = XBranchSelectWidget.class.getSimpleName();
 
-   protected BranchSelectComposite selectComposite;
+   protected BranchSelectComposite branchSelComp;
    private Composite composite;
-   private BranchToken defaultBranch;
 
    private final List<Listener> listeners = new ArrayList<>();
 
@@ -76,34 +75,31 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
          labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
       }
-      selectComposite = BranchSelectComposite.createBranchSelectComposite(composite, SWT.NONE);
-      if (defaultBranch != null) {
-         selectComposite.setDefaultSelectedBranch(defaultBranch);
-      }
-      selectComposite.addListener(this);
+      branchSelComp = BranchSelectComposite.createBranchSelectComposite(composite, SWT.NONE);
+      branchSelComp.addListener(this);
    }
 
    @Override
    public void dispose() {
-      if (selectComposite != null) {
-         selectComposite.removeListener(this);
-         selectComposite.dispose();
+      if (branchSelComp != null) {
+         branchSelComp.removeListener(this);
+         branchSelComp.dispose();
       }
    }
 
    @Override
    public Control getControl() {
-      return selectComposite.getBranchSelectText();
+      return branchSelComp.getBranchSelectText();
    }
 
    public Control getButtonControl() {
-      return selectComposite.getBranchSelectButton();
+      return branchSelComp.getBranchSelectButton();
    }
 
    @Override
    public void setEditable(boolean editable) {
       super.setEditable(editable);
-      if (selectComposite != null) {
+      if (branchSelComp != null) {
          if (getControl() != null && !getControl().isDisposed()) {
             getControl().setEnabled(editable);
          }
@@ -119,12 +115,12 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
    }
 
    public BranchToken getSelection() {
-      return selectComposite.getSelectedBranch();
+      return branchSelComp.getSelectedBranch();
    }
 
    @Override
    public String getReportData() {
-      BranchId branch = selectComposite.getSelectedBranch();
+      BranchId branch = branchSelComp.getSelectedBranch();
       return branch == null ? "" : BranchManager.getBranchName(branch);
    }
 
@@ -138,12 +134,12 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
 
    @Override
    public boolean isEmpty() {
-      return selectComposite.getSelectedBranch() == null;
+      return branchSelComp.getSelectedBranch() == null;
    }
 
    @Override
    public void setFocus() {
-      selectComposite.setFocus();
+      branchSelComp.setFocus();
    }
 
    @Override
@@ -164,9 +160,9 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
          public void run() {
             if (Strings.isValid(toolTip)) {
                XBranchSelectWidget.super.setToolTip(toolTip);
-               if (selectComposite != null && selectComposite.isDisposed() != true) {
-                  selectComposite.setToolTipText(toolTip);
-                  for (Control control : selectComposite.getChildren()) {
+               if (branchSelComp != null && branchSelComp.isDisposed() != true) {
+                  branchSelComp.setToolTipText(toolTip);
+                  for (Control control : branchSelComp.getChildren()) {
                      control.setToolTipText(toolTip);
                   }
                }
@@ -197,13 +193,13 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
    }
 
    public void setSelection(BranchToken branch) {
-      defaultBranch = branch;
-      if (selectComposite != null) {
-         selectComposite.setSelected(branch);
+      if (branchSelComp != null) {
+         branchSelComp.setSelected(branch);
       }
    }
 
    public BranchSelectComposite getSelectComposite() {
-      return selectComposite;
+      return branchSelComp;
    }
+
 }

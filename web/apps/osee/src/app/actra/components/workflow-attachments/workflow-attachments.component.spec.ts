@@ -16,6 +16,8 @@ import { WorkflowAttachmentsComponent } from './workflow-attachments.component';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AttachmentService } from '../../services/attachment.service';
 import { AttachmentServiceMock } from '../../services/testing/attachments.service.mock';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('WorkflowAttachmentsComponent', () => {
 	let component: WorkflowAttachmentsComponent;
@@ -30,6 +32,8 @@ describe('WorkflowAttachmentsComponent', () => {
 					provide: AttachmentService,
 					useValue: AttachmentServiceMock,
 				},
+				provideHttpClient(),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 

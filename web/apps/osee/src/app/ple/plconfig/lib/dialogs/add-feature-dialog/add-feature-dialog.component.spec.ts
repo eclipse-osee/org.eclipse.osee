@@ -37,9 +37,11 @@ describe('AddFeatureDialogComponent', () => {
 	let fixture: ComponentFixture<AddFeatureDialogComponent>;
 
 	beforeEach(async () => {
-		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
-			'getBranchApplicability',
-		]);
+		const branchService = {
+			getBranchApplicability: vi
+				.fn()
+				.mockName('PlConfigBranchService.getBranchApplicability'),
+		};
 		await TestBed.configureTestingModule({
 			imports: [
 				MatFormFieldModule,

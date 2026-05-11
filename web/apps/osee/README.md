@@ -1,6 +1,6 @@
 # OSEE
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4. Currently we are running version 19.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4. Currently we are running version 21.
 
 ## Development server
 
@@ -20,11 +20,17 @@ Run `ng build -c production` and copy the produced contents into /plugins/org.ec
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). Tests should be run with the --browsers=ChromeHeadless flag due to some third party dependencies not playing nice in test.
+Run `ng test` to execute the unit tests via [Vitest](https://vitest.dev/).
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via Playwright.
+### Install Playwright
+
+`pnpm exec playwright install`
+
+### Run end-to-end tests
+
+Run `ng e2e` to execute the end-to-end tests via Playwright. You can also use `pnpm exec playwright test`.
 
 ## Further help
 
@@ -115,8 +121,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### Running unit tests
 
--   Run **Jasmine unit tests** from shell/prompt/bash in the {path_to_repo}\org.eclipse.osee directory:
-    -   `pnpm -r run test --browsers=ChromeHeadless`
+-   Run **unit tests** from shell/prompt/bash in the {path_to_repo}\org.eclipse.osee directory:
+    -   `pnpm -r run test`
 
 ## Visual Studio Code Extensions
 
@@ -133,3 +139,52 @@ Visual Studio Code extensions enhance the functionality of the editor by offerin
 
 -   Error Lens
 -   GitLens
+-   Playwright Test for VSCode
+
+## Writing Playwright Tests
+
+### 1. Create a New Test Project
+
+- Create a new folder under `specs` for your test project.
+
+### 2. Add Setup if Needed
+
+If your tests require data or state initialization before execution:
+
+- Create a `setup` folder inside your new project folder.
+- Add a file named `new-project-init.e2e-spec.ts` under the `setup` folder.
+- In this file, add a test that calls the appropriate server endpoint to initialize the data required for the page or tool being tested.
+
+### 3. Add Test Files
+
+- Create a `tests` folder inside your new project folder.
+- Add one or more test files named `new-project-test.e2e-spec.ts` as needed.
+- Add your new project to the `projects` array in `playwright.config.ng.ts`.
+- If your project has prerequisite tests, list them in the `dependencies` array.
+
+### 4. Follow the Test Procedure
+
+When writing tests:
+
+- Wait until the label for the loaded item appears on the page.
+- After confirming the item has loaded, perform the operation associated with that item.
+
+### 5. Test Writing Recommendations
+
+#### Code Generation Options
+
+- Use Playwright code generation:
+
+  `pnpm exec playwright codegen --browser=chromium`
+
+- Or use the VS Code extension:
+
+  `Playwright Test for VSCode`
+
+#### Imports
+
+- In test files, import from `@ngx-playwright`.
+
+#### Utilities
+
+- Place shared utility methods in a `utils` folder within your project.

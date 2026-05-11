@@ -11,7 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import {
+	Component,
+	computed,
+	effect,
+	inject,
+	linkedSignal,
+	signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -28,13 +35,12 @@ import { MatInput } from '@angular/material/input';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { Observable, of } from 'rxjs';
+import { combineLatest, Observable, of, switchMap } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 import { PLAddFeatureData, writeFeature } from '../../types/pl-config-features';
 import { UiService } from '@osee/shared/services';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-plconfig-add-feature-dialog',
@@ -61,52 +67,95 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class AddFeatureDialogComponent {
 	dialogRef = inject<MatDialogRef<AddFeatureDialogComponent>>(MatDialogRef);
-	data = inject<PLAddFeatureData>(MAT_DIALOG_DATA);
+	dialogData = signal(inject<PLAddFeatureData>(MAT_DIALOG_DATA));
+	private _dialogData$ = toObservable(this.dialogData);
 	private branchService = inject(PlConfigBranchService);
 	private currentBranchService = inject(PlConfigCurrentBranchService);
 	private uiService = inject(UiService);
+	private _viewId$ = this.uiService.viewId;
+	viewId = toSignal(this._viewId$);
 
-	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
-	productApplicabilities = this.currentBranchService.productTypes;
+	branchApplicability = combineLatest([
+		this._dialogData$,
+		this._viewId$,
+	]).pipe(
+		switchMap(([data, viewId]) =>
+			this.branchService.getBranchApplicability(
+				data.currentBranch,
+				viewId || ''
+			)
+		)
+	);
+	allProductApplicabilities = this.currentBranchService.productTypes;
 	private _valueTypes: string[] = ['String', 'Integer', 'Decimal', 'Boolean'];
 	valueTypes: Observable<string[]> = of(this._valueTypes);
-	viewId = toSignal(this.uiService.viewId);
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-	constructor() {
-		const data = this.data;
+	private feature = linkedSignal(() => this.dialogData().feature);
+	protected name = linkedSignal(() => this.feature().name);
+	protected description = linkedSignal(() => this.feature().description);
+	protected valueType = linkedSignal(() => this.feature().valueType);
+	protected multiValued = linkedSignal(() => this.feature().multiValued);
+	protected values = linkedSignal(() => this.feature().values);
+	protected valueStr = computed(() => this.values().toString());
+	protected defaultValue = linkedSignal(() => this.feature().defaultValue);
+	protected productApplicabilities = linkedSignal(
+		() => this.feature().productApplicabilities
+	);
+	protected results = computed<PLAddFeatureData>(() => {
+		return {
+			feature: {
+				name: this.name(),
+				description: this.description(),
+				valueType: this.valueType(),
+				valueStr: this.valueStr(),
+				defaultValue: this.defaultValue(),
+				productAppStr: this.feature().productAppStr,
+				values: this.values(),
+				productApplicabilities: this.productApplicabilities(),
+				multiValued: this.multiValued(),
+				setValueStr: this.feature().setValueStr,
+				setProductAppStr: this.feature().setProductAppStr,
+			},
+			currentBranch: this.dialogData().currentBranch,
+		};
+	});
 
-		this.branchApplicability = this.branchService.getBranchApplicability(
-			data.currentBranch,
-			this.viewId() || ''
-		);
-	}
+	private _autoSetValuesIfBoolean = effect(() => {
+		const oldData = this.results();
+		if (
+			this.valueType() === 'Boolean' &&
+			!this.multiValued() &&
+			this.values().length <= 2
+		) {
+			oldData.feature.values = ['Included', 'Excluded'];
+			this.dialogData.set(oldData);
+		}
+	});
+
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
-	selectMultiValued() {
-		this.autoSetValueIfBoolean();
-	}
-	autoSetValueIfBoolean() {
-		if (
-			this.data.feature.valueType === 'Boolean' &&
-			!this.data.feature.multiValued &&
-			this.data.feature.values.length <= 2
-		) {
-			this.data.feature.values = ['Included', 'Excluded'];
-		}
-	}
 	increaseValueArray() {
-		this.data.feature.values.length = this.data.feature.values.length + 1;
+		const oldValues = this.results().feature.values;
+		oldValues.length = oldValues.length + 1;
+		this.values.set(oldValues);
 	}
 	selectDefaultValue(event: MatSelectChange) {
-		this.data.feature.defaultValue = event.value;
+		let oldDefaultValue = this.results().feature.defaultValue;
+		oldDefaultValue = event.value;
+		this.defaultValue.set(oldDefaultValue);
 	}
 	valueTracker<T>(index: number, _item: T) {
 		return index;
 	}
 	clearFeatureData() {
-		this.data.feature = new writeFeature();
+		let oldFeature = this.results().feature;
+		oldFeature = new writeFeature();
+		this.feature.set(oldFeature);
+	}
+	updateValue(index: number, event: string) {
+		const oldValues = this.results().feature.values;
+		oldValues[index] = event;
+		this.values.set(oldValues);
 	}
 }

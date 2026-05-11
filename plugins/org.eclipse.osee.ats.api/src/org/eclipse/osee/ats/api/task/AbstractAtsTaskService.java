@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -63,7 +62,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    }
 
    @Override
-   public Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state) {
+   public Collection<IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state) {
       ArtifactId artifact = atsApi.getArtifactResolver().get(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
       if (workItem instanceof IAtsTeamWorkflow) {
@@ -111,8 +110,8 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
             // First, attempt to get from Working Branch if still exists
             if (atsApi.getBranchService().isWorkingBranchInWork(derivedTeamWf)) {
                BranchToken workingBranch = atsApi.getBranchService().getWorkingBranch(derivedTeamWf);
-               relatedArt = atsApi.getQueryService().getArtifact(relatedArt, BranchId.valueOf(workingBranch.getId()),
-                  DeletionFlag.INCLUDE_DELETED);
+               relatedArt =
+                  atsApi.getQueryService().getArtifact(relatedArt, workingBranch, DeletionFlag.INCLUDE_DELETED);
             } else {
                // Else get from first commit transaction
                // NOTE: Each workflow has it's own commit in parallel dev

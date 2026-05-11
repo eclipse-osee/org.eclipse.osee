@@ -16,10 +16,11 @@ package org.eclipse.osee.orcs.core.internal.proxy.impl;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.search.ds.Attribute;
 
 /**
  * @author Roberto E. Escobar
@@ -63,5 +64,10 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> impl
    @Override
    public String getDisplayableString() {
       return getProxiedObject().getDisplayableString();
+   }
+
+   @Override
+   public TransactionDetails getLatestTxDetails() {
+      return getProxiedObject().getLatestTxDetails();
    }
 }

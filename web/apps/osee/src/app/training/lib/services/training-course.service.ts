@@ -20,26 +20,6 @@ import { Injectable, inject } from '@angular/core';
 })
 export class TrainingCourseService {
 	private http = inject(HttpClient);
-
-	private trainingCourseRecords: Observable<TrainingCourseRecord[]>;
-	private trainingCourses: Observable<TrainingCourse[]>;
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		this.trainingCourseRecords = of(this.TEST_COURSE_RECORDS);
-		this.trainingCourses = of(this.TEST_COURSES_TO_ADD);
-	}
-
-	public getTrainingCourseRecords(): Observable<TrainingCourseRecord[]> {
-		return this.trainingCourseRecords;
-	}
-
-	public getTrainingCourses(): Observable<TrainingCourse[]> {
-		return this.trainingCourses;
-	}
-
 	private TEST_COURSES_TO_ADD: TrainingCourse[] = [
 		{
 			courseID: '12345',
@@ -90,4 +70,19 @@ export class TrainingCourseService {
 			endDate: '4/27/2023',
 		},
 	];
+
+	private trainingCourseRecords: Observable<TrainingCourseRecord[]> = of(
+		this.TEST_COURSE_RECORDS
+	);
+	private trainingCourses: Observable<TrainingCourse[]> = of(
+		this.TEST_COURSES_TO_ADD
+	);
+
+	public getTrainingCourseRecords(): Observable<TrainingCourseRecord[]> {
+		return this.trainingCourseRecords;
+	}
+
+	public getTrainingCourses(): Observable<TrainingCourse[]> {
+		return this.trainingCourses;
+	}
 }

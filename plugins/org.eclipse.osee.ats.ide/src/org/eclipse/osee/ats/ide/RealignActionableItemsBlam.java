@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.XActionableItemCombo;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -71,13 +71,13 @@ public class RealignActionableItemsBlam extends AbstractBlam {
    }
 
    @Override
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
       wb.andWidget(ACTIONABLE_ITEMS_FROM, "XListDropViewer").endWidget();
       wb.andWidget(ACTIONABLE_ITEM_TO, "XActionableItemCombo").endWidget();
       wb.andWidget(PERSIST, "XCheckBox").endWidget();
       wb.andWidget(DELETE, "XCheckBox").endWidget();
-      return wb.getItems();
+      return wb.getXWidgetDatas();
    }
 
    private IAtsActionableItem getSelectedActionableItemTo() {
@@ -195,9 +195,9 @@ public class RealignActionableItemsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(ACTIONABLE_ITEM_TO)) {
          xActionableItemCombo = (XActionableItemCombo) xWidget;
       } else if (xWidget.getLabel().equals(ACTIONABLE_ITEMS_FROM)) {

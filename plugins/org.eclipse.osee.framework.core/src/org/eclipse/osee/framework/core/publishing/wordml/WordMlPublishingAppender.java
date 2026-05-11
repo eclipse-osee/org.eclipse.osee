@@ -18,6 +18,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.PublishingAppenderBase;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
@@ -622,10 +623,10 @@ public class WordMlPublishingAppender extends PublishingAppenderBase {
       }
 
    }
-   
+
    @Override
    public void endOutlineSubSection() {
-	this.endSubSection();
+      this.endSubSection();
    }
 
    @Override
@@ -683,6 +684,11 @@ public class WordMlPublishingAppender extends PublishingAppenderBase {
    @Override
    public void startText() {
       this.append(WordCoreUtil.TEXT);
+   }
+
+   @Override
+   public void appendLinkAnchor(PublishingArtifact artifact) {
+      // This is not applicable to a word publish.
    }
 
    @Override

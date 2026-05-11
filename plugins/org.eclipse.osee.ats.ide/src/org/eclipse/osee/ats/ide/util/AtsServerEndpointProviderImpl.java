@@ -19,13 +19,14 @@ import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
-import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
+import org.eclipse.osee.ats.api.store.AtsRelationEndpointApi;
+import org.eclipse.osee.ats.api.store.AtsStoreEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.AtsTestEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
@@ -42,8 +43,10 @@ import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
+import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -56,7 +59,6 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsTeamWfEndpointApi teamWfEp;
    private AtsConfigEndpointApi configEp;
    private AgileEndpointApi agileEp;
-   private AtsWorkPackageEndpointApi workPackageEp;
    private AtsNotifyEndpointApi notifyEp;
    private AtsActionEndpointApi actionEp;
    private final AtsApi atsApi;
@@ -77,10 +79,22 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsPrEndpointApi prEp;
    private AtsReportEndpointApi reportEp;
    private AtsWorkTypeEndpoint workTypeEp;
+   private QueryEndpoint queryEp;
+   private AtsStoreEndpointApi storeEp;
+   private AtsRelationEndpointApi relEp;
+   private BranchEndpoint brchEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
       jaxRsApi = atsApi.jaxRsApi();
+   }
+
+   @Override
+   public BranchEndpoint getBrchEp() {
+      if (brchEp == null) {
+         brchEp = ServiceUtil.getOseeClient().getBranchEndpoint();
+      }
+      return brchEp;
    }
 
    @Override
@@ -89,6 +103,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          artEp = ServiceUtil.getOseeClient().getArtifactEndpoint(CoreBranches.COMMON);
       }
       return artEp;
+   }
+
+   @Override
+   public QueryEndpoint getQueryEp() {
+      if (queryEp == null) {
+         queryEp = ServiceUtil.getOseeClient().getQueryEndpoint();
+      }
+      return queryEp;
    }
 
    @Override
@@ -127,6 +149,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          worldEp = jaxRsApi.newProxy(getAtsTarget(), AtsWorldEndpointApi.class);
       }
       return worldEp;
+   }
+
+   @Override
+   public AtsStoreEndpointApi getStoreEp() {
+      if (storeEp == null) {
+         storeEp = jaxRsApi.newProxy(getAtsTarget(), AtsStoreEndpointApi.class);
+      }
+      return storeEp;
    }
 
    @Override
@@ -170,14 +200,6 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          agileEp = jaxRsApi.newProxy(getAtsTarget(), AgileEndpointApi.class);
       }
       return agileEp;
-   }
-
-   @Override
-   public AtsWorkPackageEndpointApi getWorkPackageEndpoint() {
-      if (workPackageEp == null) {
-         workPackageEp = jaxRsApi.newProxy(getAtsTarget(), AtsWorkPackageEndpointApi.class);
-      }
-      return workPackageEp;
    }
 
    @Override
@@ -300,4 +322,13 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
       }
       return workTypeEp;
    }
+
+   @Override
+   public AtsRelationEndpointApi getRelationEp() {
+      if (relEp == null) {
+         relEp = jaxRsApi.newProxy("ats", AtsRelationEndpointApi.class);
+      }
+      return relEp;
+   }
+
 }

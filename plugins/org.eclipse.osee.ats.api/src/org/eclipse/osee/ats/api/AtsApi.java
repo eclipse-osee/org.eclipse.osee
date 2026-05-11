@@ -28,8 +28,11 @@ import org.eclipse.osee.ats.api.event.IAtsEventService;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.query.IAtsQueryServiceServer;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.task.IAtsTaskProvider;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
@@ -44,6 +47,7 @@ import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.workdef.IAtsRelationService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -75,6 +79,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    BranchToken getAtsBranch();
 
    IRelationResolver getRelationResolver();
+
+   IAtsRelationService<?> relSvc();
 
    IAttributeResolver getAttributeResolver();
 
@@ -192,6 +198,10 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
     */
    void setUserConfigValue(String key, String value);
 
+   public void addTaskProvider(IAtsTaskProvider provider);
+
+   public void removeTaskProvider(IAtsTaskProvider provider);
+
    EventAdmin getEventAdmin();
 
    IAtsEventService getEventService();
@@ -274,5 +284,13 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    default AtsUser user() {
       return getUserService().getCurrentUser();
    }
+
+   default BranchToken branch() {
+      return getAtsBranch();
+   }
+
+   IAtsSearchDataService getAtsSearchDataService();
+
+   IAtsQueryServiceServer getQueryServiceServer();
 
 }

@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.api.agile.jira;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Encoded;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -86,5 +87,20 @@ public interface JiraEndpoint {
    @Path("issueLink")
    @Consumes(MediaType.APPLICATION_JSON)
    public String createJiraIssueLink(@Encoded String jsonPayload);
+   
+   /**
+    * Adds a comment to an issue in Jira.
+    */
+   @POST
+   @Path("issue/{issueId}/comment")
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String addJiraComment(@Encoded String jsonPayload, @PathParam("issueId") String issueId);
+   
+   /**
+    * Deletes a comment from an issue in Jira.
+    */
+   @DELETE
+   @Path("issue/{issueId}/comment/{commentId}")
+   public String deleteJiraComment(@PathParam("issueId") String issueId, @PathParam("commentId") String commentId);
 
 }

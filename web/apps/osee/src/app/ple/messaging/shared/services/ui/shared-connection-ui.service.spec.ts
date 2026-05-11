@@ -51,7 +51,7 @@ describe('SharedConnectionUIService', () => {
 		expect(service).toBeTruthy();
 	});
 	//TODO: this isn't behaving properly with signals...the actual code is working fine
-	xit('should get the connection', () => {
+	it.skip('should get the connection', () => {
 		scheduler.run(({ expectObservable }) => {
 			uiService.connectionId.set('30');
 			expectObservable(service.connection).toBe('a', {

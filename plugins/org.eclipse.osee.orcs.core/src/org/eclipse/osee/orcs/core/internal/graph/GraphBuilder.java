@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.orcs.core.internal.graph;
 
-import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.search.ds.LoadDataHandler;
 
 /**
  * @author Roberto E. Escobar

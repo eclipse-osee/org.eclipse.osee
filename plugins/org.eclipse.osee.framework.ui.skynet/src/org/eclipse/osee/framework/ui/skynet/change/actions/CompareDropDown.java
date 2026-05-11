@@ -17,7 +17,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -28,7 +28,7 @@ public class CompareDropDown extends Action {
    public CompareDropDown() {
       super("Compare Against...", IAction.AS_DROP_DOWN_MENU);
       setToolTipText("Select from the drop down to change the current change report settings.");
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.CHANGE_LOG));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.CHANGE_LOG));
       manager = new MenuManager();
       setMenuCreator(new CompareMenuCreator());
    }

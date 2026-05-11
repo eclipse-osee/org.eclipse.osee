@@ -29,13 +29,13 @@ import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.event.EventUtil;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -88,7 +88,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
             !ServiceUtil.getOseeClient().getAccessControlService().getAccessControlList(branch).isEmpty();
       }
       button.setImage(ImageManager.getImage(
-         noBranch || someAccessControlSet ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));
+         noBranch || someAccessControlSet ? CoreImage.LOCK_LOCKED : CoreImage.LOCK_UNLOCKED));
       button.redraw();
       button.getParent().redraw();
    }

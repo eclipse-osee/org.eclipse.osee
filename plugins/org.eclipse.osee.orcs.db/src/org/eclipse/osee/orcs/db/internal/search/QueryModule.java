@@ -23,7 +23,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
-import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
@@ -32,6 +31,7 @@ import org.eclipse.osee.orcs.db.internal.search.engines.QueryEngineImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.ds.QueryEngine;
 
 /**
  * @author Roberto E. Escobar

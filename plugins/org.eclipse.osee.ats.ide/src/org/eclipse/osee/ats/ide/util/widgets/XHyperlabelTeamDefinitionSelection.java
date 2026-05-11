@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +39,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
    TeamDefinitionTreeWithChildrenDialog dialog = null;
 
    public XHyperlabelTeamDefinitionSelection() {
-      this(TeamDefinitionSearchWidget.TEAM_DEFINITIONS);
+      this(TeamDefinitionSearchWidget.TeamDefintiionWidget.getName());
    }
 
    public XHyperlabelTeamDefinitionSelection(String label) {
@@ -68,7 +69,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
 
    @Override
    public boolean handleClear() {
-      selectedTeamDefs.clear();
+      selectedTeamDefs = new ArrayList<>();
       notifyXModifiedListeners();
       return true;
    }

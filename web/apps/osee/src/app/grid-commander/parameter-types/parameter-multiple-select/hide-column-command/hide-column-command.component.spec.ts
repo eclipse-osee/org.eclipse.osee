@@ -43,12 +43,11 @@ describe('HideColumnCommandComponent', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('unhideCol will remove element from the array when test array contains the parameter passed in', (done: DoneFn) => {
+	it('unhideCol will remove element from the array when test array contains the parameter passed in', async () => {
 		component.hideColumnsControl.next(['test1', 'test2', 'test3']);
 		const testEl = 'test2';
 
 		component.unhideCol(testEl);
 		expect(component.hideColumnsControl.value).toEqual(['test1', 'test3']);
-		done();
 	});
 });

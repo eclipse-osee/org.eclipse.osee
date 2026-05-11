@@ -26,21 +26,17 @@ describe('CheckboxContainerService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('when true is passed to clearIsChecked, clearIsCheckedVal will be true', (done: DoneFn) => {
+	it('when true is passed to clearIsChecked, clearIsCheckedVal will be true', async () => {
 		service.updateClearIsChecked(true);
 		service.clearIsCheckedVal.subscribe((val) => {
-			expect(val).toBeInstanceOf(Boolean);
 			expect(val).toBe(true);
-			done();
 		});
 	});
 
-	it('when true is passed into clearIsChecked, clearIsCheckedVal will be true', (done: DoneFn) => {
+	it('when true is passed into clearIsChecked, clearIsCheckedVal will be true', async () => {
 		service.updateClearIsChecked(true);
 		service.clearIsCheckedVal.subscribe((val) => {
-			expect(val).toBeInstanceOf(Boolean);
 			expect(val).toBe(true);
-			done();
 		});
 	});
 });

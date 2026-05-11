@@ -17,11 +17,11 @@ import java.util.Iterator;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.QueryData;
 
 /**
  * Used to write branch and transaction queries

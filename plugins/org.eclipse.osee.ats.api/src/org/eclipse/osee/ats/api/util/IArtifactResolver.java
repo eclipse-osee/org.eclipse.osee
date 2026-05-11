@@ -32,5 +32,4 @@ public interface IArtifactResolver {
    <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz);
 
    ArtifactTypeToken getArtifactType(IAtsWorkItem workItem);
-
 }

@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
@@ -240,7 +241,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
             selectedArtifacts.iterator().next().getBranch(), "Mass Editor - Delete Artifacts");
          for (Artifact art : selectedArtifacts) {
             art.deleteAndPersist(transaction);
-            art.persist(transaction);
+            transaction.addArtifact(art);
          }
          transaction.execute();
       }
@@ -258,18 +259,20 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          XResultDataDialog.open(rd, "Add Attributes Failed", "Access Denied for artifacts");
          return;
       }
-      // get attributes that can be deleted (from artifact and validity)
+      // get attributes that can be added (from artifact and validity)
       Set<AttributeTypeToken> attrTypesUsed = new HashSet<>();
       for (Artifact art : artifacts) {
          // include attribute types that are used even if invalid
-         attrTypesUsed.addAll(art.getAttributeTypesUsed());
+         attrTypesUsed.addAll(art.getArtifactType().getValidAttributeTypes());
       }
 
-      // popup dialog
+      // popup attr type dialog
       FilteredCheckboxAttributeTypeDialog dialog =
          new FilteredCheckboxAttributeTypeDialog("Add Attributes", "Select attribute type to add value.");
       dialog.setSelectable(attrTypesUsed);
       if (dialog.open() == Window.OK) {
+
+         // popup value dialog
          EntryDialog diag = new EntryDialog("Add Attribute Value",
             "Enter Attribute Value for " + dialog.getChecked().iterator().next());
          if (diag.open() == Window.OK) {
@@ -283,8 +286,10 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
                selectedArtifacts.iterator().next().getBranch(), "Mass Editor - Add Attributes");
             for (Artifact art : selectedArtifacts) {
                for (AttributeTypeToken attributeType : dialog.getChecked()) {
-                  art.addAttributeFromString(attributeType, diag.getEntry());
-                  art.persist(transaction);
+                  if (art.getArtifactType().isValidAttributeType(attributeType)) {
+                     art.addAttributeFromString(attributeType, diag.getEntry());
+                  }
+                  transaction.addArtifact(art);
                }
             }
             transaction.execute();
@@ -304,6 +309,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          XResultDataDialog.open(rd, "Delete Attributes Failed", "Access Denied for artifacts");
          return;
       }
+
       // get attributes that can be deleted (from artifact and validity)
       Set<AttributeTypeToken> attrTypesUsed = new HashSet<>();
       for (Artifact art : artifacts) {
@@ -311,18 +317,46 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          attrTypesUsed.addAll(art.getAttributeTypesUsed());
       }
 
-      // popup dialog
+      // popup attr type dialog
       FilteredCheckboxAttributeTypeDialog dialog =
          new FilteredCheckboxAttributeTypeDialog("Delete Attributes", "Select attribute type(s) to delete.");
       dialog.setSelectable(attrTypesUsed);
+
       if (dialog.open() == Window.OK) {
+
+         boolean deleteAll = true;
+         String valueMatch = null;
+
+         // popup match value / delete all dialog
+         Collection<AttributeTypeToken> attrTypesChecked = dialog.getChecked();
+         if (attrTypesChecked.size() == 1) {
+            EntryCheckDialog diag = new EntryCheckDialog("Delete Attribute(s)",
+               "Enter Value (exact match) to Delete OR...", "Check to Delete All");
+            if (diag.open() == Window.OK) {
+               valueMatch = diag.getEntry();
+               boolean deleteAllChecked = diag.isChecked();
+               if (Strings.isValid(valueMatch) && deleteAllChecked) {
+                  AWorkbench.popup("Must either enter Value or check \"Delete All\", not both");
+                  return;
+               } else if (Strings.isInValid(valueMatch) && !deleteAllChecked) {
+                  AWorkbench.popup("Must either enter Value or check \"Delete All\"");
+                  return;
+               }
+               deleteAll = deleteAllChecked;
+            }
+         }
+
          // perform deletion
          SkynetTransaction transaction = TransactionManager.createTransaction(
             selectedArtifacts.iterator().next().getBranch(), "Mass Editor - Delete Attributes");
          for (Artifact art : selectedArtifacts) {
             for (AttributeTypeToken attributeType : dialog.getChecked()) {
-               art.deleteAttributes(attributeType);
-               art.persist(transaction);
+               if (deleteAll) {
+                  art.deleteAttributes(attributeType);
+               } else {
+                  art.deleteAttribute(attributeType, valueMatch);
+               }
+               transaction.addArtifact(art);
             }
          }
          transaction.execute();

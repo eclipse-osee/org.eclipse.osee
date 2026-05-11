@@ -32,7 +32,7 @@ jobs:
     outputs:
       run_workflow: ${{ steps.check_conditions.outputs.run_workflow }}
     container:
-      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20250922213428
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20260210184531
     strategy:
       matrix:
         include:
@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check Conditions For Running Workflow
         id: check_conditions
@@ -78,14 +78,14 @@ jobs:
 
       - name: Archive Server Runtime Zip
         if: steps.check_conditions.outputs.run_workflow == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.IMAGE_NAME }}-binaries
           path: ${{ env.ARTIFACT_PATH }}
 
       - name: Archive Client Product Artifacts (osee-server only)
         if: steps.check_conditions.outputs.run_workflow == 'true' && matrix.UPLOAD_PRODUCTS == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: osee-client-products
           path: |
@@ -105,7 +105,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: create image
         uses: ./.github/actions/osee-server-container-build
@@ -122,10 +122,10 @@ jobs:
       contents: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download Product Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: osee-client-products
           path: products
@@ -253,7 +253,7 @@ jobs:
 
 
       - name: Create Pre-release and Upload Assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.nightly_tag.outputs.tag_name }}
           name: ${{ steps.nightly_tag.outputs.release_name }}

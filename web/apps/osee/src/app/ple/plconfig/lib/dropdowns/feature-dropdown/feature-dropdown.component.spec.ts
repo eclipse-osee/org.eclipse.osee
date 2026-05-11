@@ -45,18 +45,22 @@ describe('FeatureDropdownComponent', () => {
 			txId: '2',
 			warningCount: 0,
 		};
-		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
-			'deleteFeature',
-			'modifyFeature',
-			'addFeature',
-		]);
-		const _addFeatureSpy = branchService.addFeature.and.returnValue(
+		const branchService = {
+			deleteFeature: vi
+				.fn()
+				.mockName('PlConfigBranchService.deleteFeature'),
+			modifyFeature: vi
+				.fn()
+				.mockName('PlConfigBranchService.modifyFeature'),
+			addFeature: vi.fn().mockName('PlConfigBranchService.addFeature'),
+		};
+		const _addFeatureSpy = branchService.addFeature.mockReturnValue(
 			of(testResponse)
 		);
-		const _deleteFeatureSpy = branchService.deleteFeature.and.returnValue(
+		const _deleteFeatureSpy = branchService.deleteFeature.mockReturnValue(
 			of(testResponse)
 		);
-		const _modifyFeatureSpy = branchService.modifyFeature.and.returnValue(
+		const _modifyFeatureSpy = branchService.modifyFeature.mockReturnValue(
 			of(testResponse)
 		);
 		await TestBed.configureTestingModule({

@@ -17,17 +17,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.export.AtsExportAction.ExportOption;
 import org.eclipse.osee.ats.ide.export.AtsExportBlam;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,9 +50,8 @@ public class AtsExportBlamTest {
       AtsExportBlam blam = new AtsExportBlam(new ArrayList<AbstractWorkflowArtifact>());
       String xml = blam.getXWidgetsXml();
       Assert.assertNotNull(xml);
-      SwtXWidgetRenderer renderer = new SwtXWidgetRenderer();
-      List<XWidgetRendererItem> layoutDatas = XWidgetParser.extractWorkAttributes(renderer, xml);
-      Assert.assertEquals(8, layoutDatas.size());
+      List<XWidgetData> widDatas = XWidgetParser.extractWidgetDatas(xml);
+      Assert.assertEquals(8, widDatas.size());
    }
 
    @Test
@@ -74,7 +74,9 @@ public class AtsExportBlamTest {
       Assert.assertEquals(AtsExportBlam.NO_ARTIFACTS_SELECTED, result.getText());
 
       // test artifacts
-      variableMap.setValue(AtsExportBlam.ARTIFACTS, Arrays.asList(DemoUtil.getSawCodeCommittedWf()));
+      IAtsTeamWorkflow sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
+      Artifact codeArt = (Artifact) AtsApiService.get().getQueryService().getArtifact(sawCodeCommittedWf.getId());
+      variableMap.setValue(AtsExportBlam.ARTIFACTS, Arrays.asList(codeArt));
       result = blam.isEntryValid(variableMap);
       Assert.assertTrue(result.isFalse());
       Assert.assertEquals(AtsExportBlam.MUST_SELECT_AT_LEAST_ONE_EXPORT_AS_OPTION, result.getText());

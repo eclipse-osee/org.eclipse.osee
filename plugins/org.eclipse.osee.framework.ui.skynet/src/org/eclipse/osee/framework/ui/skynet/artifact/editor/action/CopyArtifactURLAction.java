@@ -19,12 +19,13 @@ import java.net.URL;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUrlClient;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
@@ -44,7 +45,7 @@ public final class CopyArtifactURLAction extends Action {
    public CopyArtifactURLAction(Artifact artifact) {
       super();
       this.artifact = artifact;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COPYTOCLIPBOARD));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.COPYTOCLIPBOARD));
       setToolTipText(
          "Copy Artifact URL link to clipboard. NOTE: This is a link pointing to the latest version of the artifact.");
    }
@@ -79,7 +80,8 @@ public final class CopyArtifactURLAction extends Action {
    }
 
    public String generateLink() {
-      String baseURL = System.getProperty("osee.web.url", new ArtifactUrlClient().getSelectedPermanentLinkUrl());
+      String baseURL = System.getProperty(OseeClient.getOseeWebApplicationServer(),
+         new ArtifactUrlClient().getSelectedPermanentLinkUrl());
       baseUri = null;
       try {
          baseUri = new URI(baseURL);

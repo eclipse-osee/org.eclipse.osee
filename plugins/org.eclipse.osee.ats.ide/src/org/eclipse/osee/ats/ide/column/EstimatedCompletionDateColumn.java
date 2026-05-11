@@ -29,12 +29,12 @@ import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttrTokenXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -74,7 +74,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttrTokenXColumn {
             return null;
          }
          if (isWorldViewEcdAlerting(element).isTrue()) {
-            return ImageManager.getImage(FrameworkImage.WARNING);
+            return ImageManager.getImage(CoreImage.WARNING);
          }
       } catch (Exception ex) {
          // do nothing

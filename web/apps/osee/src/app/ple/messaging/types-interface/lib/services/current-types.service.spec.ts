@@ -89,7 +89,7 @@ describe('CurrentTypesService', () => {
 	});
 
 	//borked by signal
-	xit('should fetch data from backend', () => {
+	it.skip('should fetch data from backend', () => {
 		scheduler.run(() => {
 			const expectedFilterValues = { a: platformTypes1 };
 			const expectedMarble = '500ms a';

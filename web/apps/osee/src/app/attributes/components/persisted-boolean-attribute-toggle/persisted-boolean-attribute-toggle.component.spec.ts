@@ -19,6 +19,7 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { CurrentTransactionService } from '@osee/transactions/services';
 import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
 import { PersistedBooleanAttributeToggleComponent } from './persisted-boolean-attribute-toggle.component';
+import { attribute } from '@osee/attributes/types';
 
 describe('PersistedBooleanAttributeToggleComponent', () => {
 	let component: ParentDriverComponent;
@@ -37,11 +38,16 @@ describe('PersistedBooleanAttributeToggleComponent', () => {
 	class ParentDriverComponent {
 		artifactId = signal(`1` as const);
 		artifactApplicability = signal(applicabilitySentinel);
-		value = signal({
+		value = signal<
+			attribute<
+				boolean,
+				typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE
+			>
+		>({
 			id: '-1',
 			typeId: ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE,
 			gammaId: '-1',
-			value: false,
+			value: false as const,
 		});
 	}
 

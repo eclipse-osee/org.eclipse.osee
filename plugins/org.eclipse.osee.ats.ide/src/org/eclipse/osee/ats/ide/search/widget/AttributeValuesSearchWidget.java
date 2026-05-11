@@ -16,24 +16,23 @@ package org.eclipse.osee.ats.ide.search.widget;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.util.AttributeValues;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
 public class AttributeValuesSearchWidget extends AbstractSearchWidget<XDynamicAttrValuesWidget, AttributeValues> {
 
-   public static final String ATTR_VALUE = "Attribute Values";
-   private XDynamicAttrValuesWidget attrWidget;
+   public static SearchWidget AttributeValuesSearchWidget =
+      new SearchWidget(3893898, "Attribute Values", "XDynamicAttrValuesWidget");
 
    public AttributeValuesSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(ATTR_VALUE, "XDynamicAttrValuesWidget", searchItem);
+      super(AttributeValuesSearchWidget, searchItem);
    }
 
+   @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
-         setup(getWidget());
-         attrWidget.setAttrValues(data.getAttrValues());
+         getWidget().setAttrValues(data.getAttrValues());
       }
    }
 
@@ -43,17 +42,6 @@ public class AttributeValuesSearchWidget extends AbstractSearchWidget<XDynamicAt
          return attrWidget.getAttrValues();
       }
       return new AttributeValues();
-   }
-
-   @Override
-   public XDynamicAttrValuesWidget getWidget() {
-      return attrWidget;
-   }
-
-   public void setup(XWidget widget) {
-      if (widget != null) {
-         attrWidget = (XDynamicAttrValuesWidget) widget;
-      }
    }
 
 }

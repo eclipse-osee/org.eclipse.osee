@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, linkedSignal, signal } from '@angular/core';
 import {
 	BranchCommitEventService,
 	CurrentBranchInfoService,
@@ -21,7 +21,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { tab } from '../types/artifact-explorer';
 import { ArtifactIconService } from './artifact-icon.service';
 import { artifactWithRelations } from '@osee/artifact-with-relations/types';
-import { teamWorkflowToken } from '@osee/shared/types/configuration-management';
 import { map } from 'rxjs';
 
 @Injectable({
@@ -32,7 +31,20 @@ export class ArtifactExplorerTabService {
 	private artifactIconService = inject(ArtifactIconService);
 	private currentBranchService = inject(CurrentBranchInfoService);
 
-	private tabs = signal<tab[]>([]);
+	private _events = toSignal(this.eventService.events);
+
+	private tabs = linkedSignal<string | undefined, tab[]>({
+		source: this._events,
+		computation: (event, previous) => {
+			if (previous === undefined) {
+				return [];
+			}
+			if (event === undefined) {
+				return previous.value;
+			}
+			return previous.value.filter((tab) => tab.branchId !== event);
+		},
+	});
 	private _selectedIndex = signal<number>(0);
 
 	private uiService = inject(UiService);
@@ -45,17 +57,6 @@ export class ArtifactExplorerTabService {
 	);
 	viewId = toSignal(this.uiService.viewId, { initialValue: '' });
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		this.eventService.events.subscribe((id) => {
-			this.tabs.update((current) =>
-				current.filter((tab) => tab.branchId !== id)
-			);
-		});
-	}
-
 	generateTabId() {
 		return (performance.now() * Math.random()).toString();
 	}
@@ -63,18 +64,6 @@ export class ArtifactExplorerTabService {
 	addTab(tab: tab) {
 		this.tabs.update((rows) => [...rows, tab]);
 		this.SelectedIndex = this.tabs().length - 1;
-	}
-
-	addChangeReportTab(tabTitle: string) {
-		const newTab: tab = {
-			tabId: this.generateTabId(),
-			tabType: 'ChangeReport',
-			tabTitle,
-			branchId: this.branchId(),
-			branchName: this.branchName(),
-			viewId: this.viewId(),
-		};
-		this.addTab(newTab);
 	}
 
 	addArtifactTab(artifact: artifactWithRelations) {
@@ -109,29 +98,6 @@ export class ArtifactExplorerTabService {
 		});
 	}
 
-	addTeamWorkflowTab(teamWorkflow: teamWorkflowToken) {
-		// don't open a tab for an action if it's already open
-		const currentIndex = this.tabs().findIndex(
-			(existingTab) =>
-				existingTab.tabType === 'TeamWorkflow' &&
-				existingTab.teamWorkflowId === teamWorkflow.id
-		);
-		if (currentIndex !== -1) {
-			this.SelectedIndex = currentIndex;
-			return;
-		}
-
-		this.addTab({
-			tabId: this.generateTabId(),
-			tabType: 'TeamWorkflow',
-			tabTitle: teamWorkflow.atsId + ' - ' + teamWorkflow.name,
-			teamWorkflowId: teamWorkflow.id,
-			branchId: '570',
-			branchName: 'Common',
-			viewId: '-1',
-		});
-	}
-
 	removeTab(index: number) {
 		this.tabs.update((rows) => rows.filter((_, i) => index !== i));
 	}
@@ -140,10 +106,6 @@ export class ArtifactExplorerTabService {
 		switch (tab.tabType) {
 			case 'Artifact':
 				return tab.artifact.icon.icon;
-			case 'ChangeReport':
-				return 'differences';
-			case 'TeamWorkflow':
-				return 'assignment';
 			default:
 				return '';
 		}
@@ -173,9 +135,6 @@ export class ArtifactExplorerTabService {
 			return this.artifactIconService.getIconVariantClass(
 				tab.artifact.icon
 			);
-		}
-		if (tab.tabType === 'TeamWorkflow') {
-			return 'material-icons-outlined';
 		}
 		return '';
 	}

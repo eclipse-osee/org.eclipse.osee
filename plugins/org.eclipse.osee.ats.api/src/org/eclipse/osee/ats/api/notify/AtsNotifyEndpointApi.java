@@ -18,7 +18,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -31,7 +30,8 @@ public interface AtsNotifyEndpointApi {
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response sendNotifications(AtsNotificationCollector notifications);
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData sendNotifications(AtsNotificationCollector notifications);
 
    @Path("test")
    @POST

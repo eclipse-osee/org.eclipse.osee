@@ -10,8 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { vi, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import {
 	elementSearch1,
 	elementSearch2,
@@ -27,34 +28,23 @@ describe('CurrentElementSearchService', () => {
 	let service: CurrentElementSearchService;
 	let searchService: SearchService;
 	let routerStateService: RouterStateService;
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	let searchServiceSpy: jasmine.SpyObj<SearchService>;
-	let platformTypeSpy: jasmine.SpyObj<PlatformTypesService>;
+	let platformTypeSpy: MockedObject<Partial<PlatformTypesService>>;
 	let scheduler: TestScheduler;
 
 	beforeEach(() => {
-		jasmine.setDefaultSpyStrategy((and) =>
-			and.returnValues([of('hello'), of('world')])
-		);
-		searchServiceSpy = jasmine.createSpyObj('SearchService', {}, [
-			'searchTerm',
-		]);
-		jasmine.setDefaultSpyStrategy((and) =>
-			and.returnValues(
-				of(elementSearch1),
-				of(elementSearch2),
-				of([]),
-				of([]),
-				of([]),
-				of([]),
-				of([]),
-				of([])
-			)
-		);
-		platformTypeSpy = jasmine.createSpyObj('PlatformTypesService', [
-			'getFilteredElements',
-		]);
-		jasmine.setDefaultSpyStrategy();
+		platformTypeSpy = {
+			getFilteredElements: vi
+				.fn()
+				.mockName('PlatformTypesService.getFilteredElements')
+				.mockReturnValueOnce(of(elementSearch1))
+				.mockReturnValueOnce(of(elementSearch2))
+				.mockReturnValueOnce(of([]))
+				.mockReturnValueOnce(of([]))
+				.mockReturnValueOnce(of([]))
+				.mockReturnValueOnce(of([]))
+				.mockReturnValueOnce(of([]))
+				.mockReturnValueOnce(of([])),
+		};
 		TestBed.configureTestingModule({
 			providers: [
 				{ provide: PlatformTypesService, useValue: platformTypeSpy },
@@ -62,6 +52,9 @@ describe('CurrentElementSearchService', () => {
 		});
 		service = TestBed.inject(CurrentElementSearchService);
 		searchService = TestBed.inject(SearchService);
+		vi.spyOn(searchService, 'searchTerm', 'get')
+			.mockReturnValueOnce(of('hello') as BehaviorSubject<string>)
+			.mockReturnValueOnce(of('world') as BehaviorSubject<string>);
 		routerStateService = TestBed.inject(RouterStateService);
 	});
 

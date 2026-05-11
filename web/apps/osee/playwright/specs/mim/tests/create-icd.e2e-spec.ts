@@ -235,9 +235,7 @@ test('create transport type', async ({ page }) => {
 		.getByRole('option', { name: 'Name' })
 		.locator('mat-pseudo-checkbox')
 		.click();
-	await page
-		.getByRole('combobox', { name: 'Select Available Message' })
-		.press('Escape');
+	await page.keyboard.press('Escape');
 	await page
 		.getByLabel('Select Available Submessage')
 		.locator('span')
@@ -246,27 +244,25 @@ test('create transport type', async ({ page }) => {
 		.getByRole('option', { name: 'SubMessage Name' })
 		.locator('mat-pseudo-checkbox')
 		.click();
-	await page.getByLabel('SubMessage Name').press('Escape');
+	await page.keyboard.press('Escape');
 
 	await page.getByLabel('Select Available Structure').locator('span').click();
 	await page
 		.getByRole('option', { name: 'Name', exact: true })
 		.locator('mat-pseudo-checkbox')
 		.click();
-	await page
-		.getByRole('combobox', { name: 'Select Available Structure' })
-		.press('Escape');
+	await page.getByRole('combobox', { name: 'Select Available Structure' });
+	await page.keyboard.press('Escape');
 
 	await page.getByLabel('Select Available Element').locator('span').click();
 	await page
 		.getByRole('option', { name: 'Start Index' })
 		.locator('mat-pseudo-checkbox')
 		.click();
-	await page
-		.getByRole('combobox', { name: 'Select Available Element' })
-		.press('Escape');
+	await page.getByRole('combobox', { name: 'Select Available Element' });
+	await page.keyboard.press('Escape');
 	await page.getByText('message, submessage,').click();
-	await page.getByLabel('message, submessage,').press('Escape');
+	await page.keyboard.press('Escape');
 	await page.getByRole('button', { name: 'Ok' }).click();
 
 	await expect(page.getByText('Ethernet')).toBeVisible();
@@ -471,7 +467,11 @@ test('create elements', async ({ page }) => {
 		.locator('osee-platform-type-dropdown')
 		.getByRole('button')
 		.click();
-	await page.getByLabel('', { exact: true }).locator('span').click();
+	await page
+		.locator('osee-logical-type-dropdown')
+		.getByTestId('logical-type-selector')
+		.locator('span')
+		.click();
 	await page.getByText('Enumeration').click();
 	await page
 		.getByLabel('1Select a logical type')
@@ -648,7 +648,11 @@ async function createElement(
 		.locator('osee-platform-type-dropdown')
 		.getByRole('button')
 		.click();
-	await page.getByLabel('', { exact: true }).locator('span').click();
+	await page
+		.locator('osee-logical-type-dropdown')
+		.getByTestId('logical-type-selector')
+		.locator('span')
+		.click();
 	await page.getByRole('option', { name: logicalType, exact: true }).click();
 	await page
 		.getByLabel('1Select a logical type')

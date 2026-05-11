@@ -17,16 +17,18 @@ package org.eclipse.osee.framework.core.enums;
  */
 public abstract class OseeImage extends OseeEnum {
 
-   private static final Long ENUM_ID = 3241857093L;
+   public static final boolean ensureUnique = false;
 
-   public OseeImage(String filename) {
-      super(ENUM_ID, ENUM_ID + Long.valueOf(filename.hashCode()), filename);
+   public OseeImage(Long typeId, Long ordinal, String filename) {
+      /**
+       * Want to be able to have images with same filename as image token improves readability, so don't validate
+       * uniqueness
+       */
+      super(typeId, ordinal, filename, ensureUnique);
    }
 
    @Override
-   public Long getTypeId() {
-      return ENUM_ID;
-   }
+   public abstract Long getTypeId();
 
    abstract public String getPluginId();
 

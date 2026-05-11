@@ -18,6 +18,7 @@ import com.google.common.collect.SetMultimap;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+import org.eclipse.osee.orcs.search.ds.Criteria;
 
 /**
  * @author Roberto E. Escobar

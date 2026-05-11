@@ -81,4 +81,9 @@ public interface ScriptResultApi {
       NoSuchMethodException, SecurityException;
 
    int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter);
+
+   int getCountWithPrefixFilter(BranchId branch, ArtifactId viewId, String filter)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
 }

@@ -13,8 +13,13 @@
 package org.eclipse.osee.orcs.rest.internal.user;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.mail.Message;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.EmailRecipientInfo;
 import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.UserTokens;
@@ -22,8 +27,13 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.util.IOseeEmail;
+import org.eclipse.osee.framework.core.util.SendEmailRequest;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.UserEndpoint;
+import org.eclipse.osee.orcs.utility.EmailCertificateService;
 
 /**
  * @author Donald G. Dunne
@@ -31,9 +41,11 @@ import org.eclipse.osee.orcs.rest.model.UserEndpoint;
 public class UserEndpointImpl implements UserEndpoint {
 
    private final OrcsApi orcsApi;
+   private final EmailCertificateService emailCertificateService;
 
    public UserEndpointImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+      this.emailCertificateService = orcsApi.getEmailCertificateService();
    }
 
    @Override
@@ -55,4 +67,52 @@ public class UserEndpointImpl implements UserEndpoint {
       return toks;
    }
 
+   @Override
+   public void uploadPublicCertificate(String certificatePem) {
+      emailCertificateService.setPublicCertificateForCurrentUser(certificatePem);
+   }
+
+   @Override
+   public Response getPublicCertificate() {
+      String pemString = emailCertificateService.getPublicCertificateForCurrentUser();
+
+      if (pemString == null || pemString.isBlank()) {
+         return Response.noContent().build();
+      }
+
+      return Response.ok(pemString, MediaType.TEXT_PLAIN).header("Content-Disposition",
+         "attachment; filename=\"public-cert.pem\"").build();
+   }
+
+   @Override
+   public void deletePublicCertificate() {
+      emailCertificateService.deletePublicCertificateForCurrentUser();
+   }
+
+   @Override
+   public List<EmailRecipientInfo> getPublicCertificatesByEmailAddresses(Collection<String> emailAddresses) {
+      return emailCertificateService.getPublicCertificatesByEmailAddresses(emailAddresses);
+   }
+
+   @Override
+   public XResultData sendEmail(SendEmailRequest request) {
+      XResultData rd = new XResultData();
+      try {
+         IOseeEmail emailMessage = orcsApi.getEmailService().create(request.getToAddresses(), request.getFromAddress(),
+            request.getReplyToAddress(), request.getSubject(), request.getBody(), request.getBodyType(),
+            request.getEmailAddressesAbridged(), request.getBodyAbridged());
+
+         if (request.getCcAddresses() != null && !request.getCcAddresses().isEmpty()) {
+            emailMessage.setRecipients(Message.RecipientType.CC, request.getCcAddresses().toArray(new String[0]));
+         }
+         if (request.getBccAddresses() != null && !request.getBccAddresses().isEmpty()) {
+            emailMessage.setRecipients(Message.RecipientType.BCC, request.getBccAddresses().toArray(new String[0]));
+         }
+
+         emailMessage.send(rd);
+      } catch (Exception ex) {
+         rd.error(Lib.exceptionToString(ex));
+      }
+      return rd;
+   }
 }

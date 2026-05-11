@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -122,7 +123,7 @@ public class OpenContributionItem extends ContributionItem {
    @Override
    public void fill(final ToolBar parent, int index) {
       final ToolItem toolItem = new ToolItem(parent, SWT.DROP_DOWN);
-      toolItem.setImage(ImageManager.getImage(FrameworkImage.OPEN));
+      toolItem.setImage(ImageManager.getImage(CoreImage.OPEN));
       toolItem.setToolTipText("Open the Artifact");
 
       final OpenWithToolItemListener listener = new OpenWithToolItemListener(parent);

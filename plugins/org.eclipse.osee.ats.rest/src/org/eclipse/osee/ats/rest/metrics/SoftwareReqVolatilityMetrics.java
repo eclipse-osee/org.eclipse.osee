@@ -297,8 +297,8 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          int numSecurity = 0;
 
          for (ChangeItem changeItem : attrChangeItems) {
-            BranchId workingBranch = atsApi.getBranchService().getBranch(reqWorkflow);
-            BranchId parentBranch = atsApi.getBranchService().getParentBranch(workingBranch);
+            BranchToken workingBranch = atsApi.getBranchService().getBranch(reqWorkflow);
+            BranchToken parentBranch = atsApi.getBranchService().getParentBranch(workingBranch);
             ArtifactToken artToken = orcsApi.getQueryFactory().fromBranch(parentBranch).includeDeletedAttributes(
                true).includeDeletedArtifacts(true).andId(changeItem.getArtId()).asArtifactTokenOrSentinel();
             ArtifactTypeToken artType = artToken.getArtifactType();

@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.util;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -88,8 +87,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) {
-      Set<BranchId> branches = new HashSet<>();
+   public Collection<BranchToken> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) {
+      Set<BranchToken> branches = new HashSet<>();
       for (CommitConfigItem obj : getConfigArtifactsConfiguredToCommitTo(teamWf)) {
          if (isBranchValid(obj)) {
             branches.add(getBranch(obj));
@@ -141,7 +140,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch) {
+   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchToken destinationBranch) {
       CommitStatus commitStatus = getCommitStatus(teamWf, destinationBranch, null);
       return commitStatus;
    }
@@ -194,9 +193,9 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchId branchToExclude) {
+   public boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchToken branchToExclude) {
       Collection<BranchToken> committedTo = getBranchesCommittedTo(teamWf);
-      for (BranchId destBranch : getBranchesToCommitTo(teamWf)) {
+      for (BranchToken destBranch : getBranchesToCommitTo(teamWf)) {
          if (destBranch.notEqual(branchToExclude) && !committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf,
             destBranch) && !isCommitOverridden(teamWf, destBranch)) {
             return false;
@@ -219,7 +218,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public Collection<BranchId> getBranchesLeftToCommit(IAtsTeamWorkflow teamWf) {
       Set<BranchId> branchesLeft = new HashSet<>();
       Collection<BranchToken> committedTo = getBranchesCommittedTo(teamWf);
-      for (BranchId branchToCommit : getBranchesToCommitTo(teamWf)) {
+      for (BranchToken branchToCommit : getBranchesToCommitTo(teamWf)) {
          if (!committedTo.contains(branchToCommit) && !isNoCommitNeeded(teamWf,
             branchToCommit) && !isCommitOverridden(teamWf, branchToCommit)) {
             branchesLeft.add(branchToCommit);
@@ -271,11 +270,11 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       return transactionIds;
    }
 
-   public boolean isNoCommitNeeded(IAtsTeamWorkflow teamWf, BranchId destinationBranch) {
+   public boolean isNoCommitNeeded(IAtsTeamWorkflow teamWf, BranchToken destinationBranch) {
       return getCommitStatus(teamWf, destinationBranch) == CommitStatus.No_Commit_Needed;
    }
 
-   public boolean isCommitOverridden(IAtsTeamWorkflow teamWf, BranchId destinationBranch) {
+   public boolean isCommitOverridden(IAtsTeamWorkflow teamWf, BranchToken destinationBranch) {
       return getCommitStatus(teamWf, destinationBranch) == CommitStatus.Commit_Overridden;
    }
 
@@ -285,7 +284,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public boolean isBranchesAllCommitted(IAtsTeamWorkflow teamWf) {
       Collection<BranchToken> committedTo = getBranchesCommittedTo(teamWf);
-      for (BranchId destBranch : getBranchesToCommitTo(teamWf)) {
+      for (BranchToken destBranch : getBranchesToCommitTo(teamWf)) {
          if (!committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf, destBranch) && !isCommitOverridden(teamWf,
             destBranch)) {
             return false;
@@ -374,7 +373,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public BranchId getBranch(CommitConfigItem configItem) {
+   public BranchToken getBranch(CommitConfigItem configItem) {
       return getBranch(configItem.getConfigObject());
    }
 
@@ -513,7 +512,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch,
+   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchToken destinationBranch,
       CommitConfigItem configItem) {
       BranchId workingBranch = getWorkingBranch(teamWf);
       if (workingBranch.isValid()) {
@@ -603,9 +602,9 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(
-      IAtsTeamWorkflow teamWf, BranchId destinationBranch,
+      IAtsTeamWorkflow teamWf, BranchToken destinationBranch,
       Collection<? extends TransactionToken> commitTransactionIds) {
-      BranchId destinationBranchParent = getParentBranch(destinationBranch);
+      BranchToken destinationBranchParent = getParentBranch(destinationBranch);
       if (getBranchType(destinationBranchParent) == BranchType.SYSTEM_ROOT) {
          return false;
       }

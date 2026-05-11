@@ -101,18 +101,22 @@ import { addRelation } from '@osee/transactions/operators';
 						[paginationSize]="pageSize"
 						paginationMode="AUTO"
 						[count]="teamsCount()!"
-						[noneOption]="filter() === '' ? noneOption : undefined">
+						[noneOption]="undefined">
 						<ng-template let-option>
-							<mat-option
-								[attr.data-cy]="'option-' + option.name.value"
-								[value]="option"
-								[id]="option.id">
-								@if (option.name === '') {
-									None
-								} @else {
-									{{ option.name.value }}
-								}
-							</mat-option>
+							@if (option.name !== '') {
+								<mat-option
+									[attr.data-cy]="
+										'option-' + option.name.value
+									"
+									[value]="option"
+									[id]="option.id">
+									@if (option.name === '') {
+										None
+									} @else {
+										{{ option.name.value }}
+									}
+								</mat-option>
+							}
 						</ng-template>
 					</osee-mat-option-loading>
 				}

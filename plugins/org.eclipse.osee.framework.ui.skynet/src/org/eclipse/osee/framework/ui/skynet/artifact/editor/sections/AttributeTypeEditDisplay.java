@@ -23,12 +23,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
@@ -45,7 +44,7 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
       MessageDialog.openInformation(AWorkbench.getActiveShell(), title, message);
    }
 
-   private CheckedTreeSelectionDialog createDialog(String title, String message, KeyedImage keyedImage) {
+   private CheckedTreeSelectionDialog createDialog(String title, String message, CoreImage keyedImage) {
       CheckedTreeSelectionDialog dialog = new CheckedTreeSelectionDialog(AWorkbench.getActiveShell(),
          new LabelProvider(), new ArrayTreeContentProvider());
       dialog.setTitle(title);
@@ -84,14 +83,14 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
       return toReturn;
    }
 
-   private KeyedImage getImage(OperationType operationType) {
-      KeyedImage toReturn = null;
+   private CoreImage getImage(OperationType operationType) {
+      CoreImage toReturn = null;
       switch (operationType) {
          case ADD_ITEM:
-            toReturn = FrameworkImage.ADD_GREEN;
+            toReturn = CoreImage.ADD_GREEN;
             break;
          case REMOVE_ITEM:
-            toReturn = FrameworkImage.DELETE;
+            toReturn = CoreImage.DELETE;
             break;
          default:
             break;

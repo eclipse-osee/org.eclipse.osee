@@ -11,13 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import {
-	Component,
-	Input,
-	OnChanges,
-	SimpleChanges,
-	inject,
-} from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import {
 	MatCell,
 	MatCellDef,
@@ -32,15 +26,10 @@ import {
 } from '@angular/material/table';
 import { HeaderService } from '@osee/shared/services';
 import { changeReportRow } from '@osee/shared/types/change-report';
-import {
-	BehaviorSubject,
-	combineLatest,
-	of,
-	shareReplay,
-	switchMap,
-} from 'rxjs';
+import { combineLatest, of, shareReplay, switchMap } from 'rxjs';
 import { changeReportHeaders } from './change-report-table-headers';
 import { ChangeReportService } from './services/change-report.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-change-report-table',
@@ -60,17 +49,11 @@ import { ChangeReportService } from './services/change-report.service';
 		MatRowDef,
 	],
 })
-export class ChangeReportTableComponent implements OnChanges {
+export class ChangeReportTableComponent {
 	private headerService = inject(HeaderService);
 	private crService = inject(ChangeReportService);
 
-	@Input() branchId = '';
-
-	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.branchId) {
-			this.branchId$.next(this.branchId);
-		}
-	}
+	branchId = input.required<string>();
 
 	headers: (keyof changeReportRow)[] = [
 		'ids',
@@ -86,10 +69,11 @@ export class ChangeReportTableComponent implements OnChanges {
 		return this.headerService.getHeaderByName(changeReportHeaders, value);
 	}
 
-	branchId$ = new BehaviorSubject<string>('');
+	private branchId$ = toObservable(this.branchId);
 
 	branch = this.branchId$.pipe(
-		switchMap((branchId) => this.crService.getBranchInfo(branchId))
+		switchMap((id) => this.crService.getBranchInfo(id)),
+		shareReplay(1)
 	);
 
 	parentBranch = this.branch.pipe(

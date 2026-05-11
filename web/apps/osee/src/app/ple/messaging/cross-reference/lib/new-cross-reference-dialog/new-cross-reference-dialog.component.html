@@ -18,7 +18,7 @@
 				<mat-label>Name</mat-label>
 				<input
 					matInput
-					[(ngModel)]="crossReference.name"
+					[(ngModel)]="crossRefName"
 					required
 					name="field-name"
 					data-cy="field-name"
@@ -28,7 +28,7 @@
 				<mat-label>Value</mat-label>
 				<input
 					matInput
-					[(ngModel)]="crossReference.crossReferenceValue"
+					[(ngModel)]="crossRefValue"
 					required
 					name="field-value"
 					data-cy="field-value"
@@ -38,21 +38,21 @@
 				<mat-label>Additional Content</mat-label>
 				<input
 					matInput
-					[(ngModel)]="crossReference.crossReferenceAdditionalContent"
+					[(ngModel)]="crossRefAdditionalContent"
 					name="field-additional"
 					data-cy="field-additional" />
 			</mat-form-field>
 		</div>
 		<div class="tw-grid tw-gap-2 tw-py-2">
 			<h4 class="tw-m-0">Array Values</h4>
-			@for (item of arrayValues; track item; let i = $index) {
+			@for (item of crossRefArray(); track item; let i = $index) {
 				<div class="tw-flex tw-gap-2">
 					<mat-form-field>
 						<mat-label>Key</mat-label>
 						<input
 							matInput
-							[(ngModel)]="item.key"
-							(ngModelChange)="updateArrayString()"
+							[ngModel]="item.key"
+							(ngModelChange)="updateKey($event, i)"
 							[name]="'field-item-key-' + i"
 							[attr.data-testid]="'field-item-key-' + i" />
 					</mat-form-field>
@@ -60,8 +60,8 @@
 						<mat-label>Value</mat-label>
 						<input
 							matInput
-							[(ngModel)]="item.value"
-							(ngModelChange)="updateArrayString()"
+							[ngModel]="item.value"
+							(ngModelChange)="updateValue($event, i)"
 							[name]="'field-item-value-' + i"
 							[attr.data-testid]="'field-item-value-' + i" />
 					</mat-form-field>
@@ -75,8 +75,7 @@
 			data-testid="add-array-value">
 			<mat-icon>add</mat-icon>
 		</button>
-		<osee-applicability-dropdown
-			[(applicability)]="crossReference.applicability">
+		<osee-applicability-dropdown [(applicability)]="crossRefApplicability">
 		</osee-applicability-dropdown>
 	</mat-dialog-content>
 </form>
@@ -88,7 +87,7 @@
 	</button>
 	<button
 		mat-flat-button
-		[mat-dialog-close]="crossReference"
+		[mat-dialog-close]="crossRefResults()"
 		class="primary-button"
 		data-cy="submit-btn"
 		[disabled]="!crossRefForm.valid">

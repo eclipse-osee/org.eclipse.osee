@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.db.internal.search;
 
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.QueryType;
-import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.search.QueryData;
 
 /**
  * @author Roberto E. Escobar

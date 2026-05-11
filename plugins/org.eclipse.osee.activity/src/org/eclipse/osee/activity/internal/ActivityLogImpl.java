@@ -459,14 +459,14 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       if (isEnabled()) {
          if (!newEntities.isEmpty()) {
             try {
-               storage.addEntries(new DrainingIterator<>(newEntities.values().iterator()));
+               storage.addEntries(new DrainingIterator<>(newEntities.values()));
             } catch (Throwable ex) {
                logger.error(ex, "Exception while storing updates to the activity log");
             }
          }
          if (!updatedEntities.isEmpty()) {
             try {
-               storage.updateEntries(new DrainingIterator<>(updatedEntities.values().iterator()));
+               storage.updateEntries(new DrainingIterator<>(updatedEntities.values()));
             } catch (Throwable ex) {
                logger.error(ex, "Exception while storing updates to the activity log");
             }
@@ -477,7 +477,10 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       }
    }
 
-   private void flush(boolean force) {
+   /**
+    * Must be synchronized to prevent multiple log calls simultaneously flushing before the lastFlushTime is set
+    */
+   private synchronized void flush(boolean force) {
       long currentTime = System.currentTimeMillis();
       if (force || currentTime - lastFlushTime > freshnessMillis) {
          try {

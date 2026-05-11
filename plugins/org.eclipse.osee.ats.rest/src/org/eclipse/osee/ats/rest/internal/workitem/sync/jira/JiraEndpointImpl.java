@@ -77,6 +77,18 @@ public class JiraEndpointImpl implements JiraEndpoint {
       String urlExtension = JIRA_ISSUE_LINK;
       return sendJiraRequest(jsonPayload, urlExtension, "POST");
    }
+   
+   @Override
+   public String addJiraComment(String jsonPayload, String issueId) {
+      String urlExtension = JIRA_ISSUE + "/" + issueId + "/comment";
+      return sendJiraRequest(jsonPayload, urlExtension, "POST");
+   }
+   
+   @Override
+   public String deleteJiraComment(String issueId, String commentId) {
+      String urlExtension = JIRA_ISSUE + "/" + issueId + "/comment/" + commentId;
+      return sendJiraRequest("", urlExtension, "DELETE");
+   }
 
    private String sendJiraRequest(String jsonPayload, String urlExtension, String requestMethod) {
 

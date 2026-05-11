@@ -24,7 +24,6 @@ import { PlConfigUIStateService } from './pl-config-uistate.service';
 import { PlConfigTypesService } from './pl-config-types.service';
 import { plConfigTypesServiceMock } from '../testing/pl-config-types.service.mock';
 import {
-	testBranchListing,
 	MockXResultData,
 	testBranchActions,
 	testWorkFlow,
@@ -36,8 +35,8 @@ describe('PlConfigCurrentBranchService diffs', () => {
 	let service: PlConfigCurrentBranchService;
 	let ui: PlConfigUIStateService;
 	let baseUi: UiService;
-	let branchServiceSpy: jasmine.SpyObj<PlConfigBranchService>;
-	let actionServiceSpy: jasmine.SpyObj<ActionService>;
+	let branchServiceSpy: Partial<PlConfigBranchService>;
+	let actionServiceSpy: Partial<ActionService>;
 	let scheduler: TestScheduler;
 
 	beforeEach(
@@ -48,22 +47,42 @@ describe('PlConfigCurrentBranchService diffs', () => {
 	);
 	beforeEach(() => {
 		TestBed.resetTestingModule();
-		branchServiceSpy = jasmine.createSpyObj('PlConfigBranchService', {
-			//functions required to test
-			getBranchApplicability: of(testBranchApplicability),
-			getBranchState: of(testBranchListing),
-			modifyConfiguration: of(MockXResultData),
-			addFeature: of(MockXResultData),
-			modifyFeature: of(MockXResultData),
-			deleteFeature: of(MockXResultData),
-			commitBranch: of(MockXResultData),
-			getApplicabilityToken: of(testApplicabilityTag),
-		});
-		actionServiceSpy = jasmine.createSpyObj('PlConfigActionService', {
-			//functions required to test
-			getAction: of(testBranchActions),
-			getWorkFlow: of(testWorkFlow),
-		});
+		branchServiceSpy = {
+			getBranchApplicability: vi
+				.fn()
+				.mockName('PlConfigBranchService.getBranchApplicability')
+				.mockReturnValue(of(testBranchApplicability)),
+			modifyConfiguration: vi
+				.fn()
+				.mockName('PlConfigBranchService.modifyConfiguration')
+				.mockReturnValue(of(MockXResultData)),
+			addFeature: vi
+				.fn()
+				.mockName('PlConfigBranchService.addFeature')
+				.mockReturnValue(of(MockXResultData)),
+			modifyFeature: vi
+				.fn()
+				.mockName('PlConfigBranchService.modifyFeature')
+				.mockReturnValue(of(MockXResultData)),
+			deleteFeature: vi
+				.fn()
+				.mockName('PlConfigBranchService.deleteFeature')
+				.mockReturnValue(of(MockXResultData)),
+			getApplicabilityToken: vi
+				.fn()
+				.mockName('PlConfigBranchService.getApplicabilityToken')
+				.mockReturnValue(of(testApplicabilityTag)),
+		};
+		actionServiceSpy = {
+			getAction: vi
+				.fn()
+				.mockName('PlConfigActionService.getAction')
+				.mockReturnValue(of(testBranchActions)),
+			getWorkFlow: vi
+				.fn()
+				.mockName('PlConfigActionService.getWorkFlow')
+				.mockReturnValue(of(testWorkFlow)),
+		};
 	});
 	describe('diff tests', () => {
 		beforeEach(() => {

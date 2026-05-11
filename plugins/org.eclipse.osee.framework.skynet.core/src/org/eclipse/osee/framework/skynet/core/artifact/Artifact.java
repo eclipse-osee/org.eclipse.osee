@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -1353,7 +1352,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       RelationManager.prepareRelationsForReload(this);
    }
 
-   public final TransactionId persist(String comment) {
+   public final TransactionToken persist(String comment) {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, comment);
       persist(transaction);
       return transaction.execute();

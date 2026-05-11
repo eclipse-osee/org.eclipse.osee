@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -31,7 +30,7 @@ public class DemoTeamWorkflows implements ITeamWorkflowProvider {
    @Override
    public boolean isResponsibleFor(IAtsWorkItem workItem) {
       try {
-         TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) workItem.getParentTeamWorkflow();
+         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
          if (teamWf != null) {
             return teamWf.isTypeEqual(AtsArtifactTypes.DemoCodeTeamWorkflow) || teamWf.isTypeEqual(
                AtsArtifactTypes.DemoReqTeamWorkflow) || teamWf.isTypeEqual(AtsArtifactTypes.DemoTestTeamWorkflow);

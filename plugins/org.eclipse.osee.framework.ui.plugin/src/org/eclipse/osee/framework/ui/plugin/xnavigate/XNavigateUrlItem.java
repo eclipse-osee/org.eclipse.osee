@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import java.net.URL;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -42,6 +43,12 @@ public class XNavigateUrlItem extends XNavigateItemAction {
     */
    public XNavigateUrlItem(String name, String url, boolean external, XNavItemCat xNavItemCat) {
       this(name, url, external, PluginUiImage.URL, xNavItemCat);
+   }
+
+   public XNavigateUrlItem(String name, String url, boolean external, OseeImage oseeImage, XNavItemCat xNavItemCat) {
+      super(name, oseeImage, xNavItemCat);
+      this.url = url;
+      this.external = external;
    }
 
    public XNavigateUrlItem(String name, String url, boolean external, KeyedImage oseeImage, XNavItemCat xNavItemCat) {

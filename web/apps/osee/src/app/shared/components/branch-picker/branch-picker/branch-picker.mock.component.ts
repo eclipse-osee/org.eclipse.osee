@@ -18,7 +18,6 @@ import { workType } from '@osee/shared/types/configuration-management';
 	template: '<div>Dummy</div>',
 	standalone: true,
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class BranchPickerStub {
 	category = input<`${number}`>('-1');
 	excludeCategory = input<`${number}`>('-1');

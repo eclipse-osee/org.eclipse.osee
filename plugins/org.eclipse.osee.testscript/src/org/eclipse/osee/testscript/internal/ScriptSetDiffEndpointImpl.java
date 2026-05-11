@@ -55,12 +55,21 @@ public class ScriptSetDiffEndpointImpl implements ScriptSetDiffEndpoint {
       }
       List<SetDiffToken> sortedDiffs = new LinkedList<>(diffs.values());
       Collections.sort(sortedDiffs, new Comparator<SetDiffToken>() {
-
          @Override
          public int compare(SetDiffToken o1, SetDiffToken o2) {
-            return o1.getName().compareTo(o2.getName());
+            String n1 = o1.getName();
+            String n2 = o2.getName();
+            if (n1 == null && n2 == null) {
+               return 0;
+            } else if (n1 == null) {
+               return 1;
+            } else if (n2 == null) {
+               return -1;
+            }
+            return n1.compareTo(n2);
          }
       });
+
       return sortedDiffs;
    }
 

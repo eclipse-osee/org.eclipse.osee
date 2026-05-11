@@ -43,10 +43,4 @@ public abstract class AbstractXHyperlinkWfdFunctAreaDam extends AbstractXHyperli
       return FunctionalAreaUtil.getEmailSubject(teamWf, selected);
    }
 
-   @Override
-   protected String getEmailSubjectAbridged(ArtifactToken selected) {
-      IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) artifact;
-      return FunctionalAreaUtil.getEmailSubjectAbridged(teamWf, selected);
-   }
-
 }

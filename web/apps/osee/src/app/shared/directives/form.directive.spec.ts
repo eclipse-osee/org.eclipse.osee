@@ -26,8 +26,8 @@ describe('FormDirective', () => {
 			},
 		} as unknown as NgForm;
 
-		spyOn(ngFormMock.form.statusChanges, 'pipe').and.callThrough();
-		spyOn(ngFormMock.form.valueChanges, 'pipe').and.callThrough();
+		vi.spyOn(ngFormMock.form.statusChanges, 'pipe');
+		vi.spyOn(ngFormMock.form.valueChanges, 'pipe');
 
 		TestBed.configureTestingModule({
 			providers: [{ provide: NgForm, useValue: ngFormMock }],

@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMapAssocArtToRelatedAttributes;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaMapAssocArtToRelatedAttributes;
 
 public class BranchMapAssocArtToRelatedAttributesSqlHandler extends SqlHandler<CriteriaMapAssocArtToRelatedAttributes> {
 

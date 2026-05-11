@@ -23,10 +23,10 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class PrioritySearchWidget extends AbstractXHyperlinkEntrySearchWidget {
 
-   public static final String PRIORITY = "Priority";
+   public static SearchWidget PriorityWidget = new SearchWidget(14321234, "Priority", "XHyperlinkLabelValueStringSel");
 
    public PrioritySearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(PRIORITY, searchItem);
+      super(PriorityWidget, searchItem);
    }
 
    @Override

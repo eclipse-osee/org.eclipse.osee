@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -51,10 +51,8 @@ import {
 	styles: [],
 })
 export class CurrentViewSelectorComponent {
-	constructor(
-		private applicService: ApplicabilityListUIService,
-		private viewsService: ViewsRoutedUiService
-	) {}
+	private applicService = inject(ApplicabilityListUIService);
+	private viewsService = inject(ViewsRoutedUiService);
 
 	filterText = new BehaviorSubject<string>('');
 

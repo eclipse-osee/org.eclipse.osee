@@ -19,19 +19,16 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -91,10 +88,6 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
          if (overrideFile.exists()) {
             Image overrideImage = ImageDescriptor.createFromURL(overrideFile.toURI().toURL()).createImage();
             overrideImage(overrideImage);
-         } else if (ClientSessionManager.isSessionValid() && ClientSessionManager.getSession().getClientVersion().equals(
-            "Development")) {
-            Image overideImage = ImageManager.getImage(FrameworkImage.OSEE_32_RUN);
-            overrideImage(overideImage);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error restoring .osee.data/workbenchOverride.gif image.", ex);

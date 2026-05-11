@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.testscript;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -46,7 +47,9 @@ public interface ScriptResultEndpoint {
    /**
     * @return all Script Result types matching criteria
     */
-   int getCount(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId);
+   int getCount(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
 
    @GET()
    @Path("def/{defId}")

@@ -15,11 +15,11 @@ package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactAnnotation;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -75,11 +75,11 @@ public class ArtifactAnnotationComposite extends Composite {
 
    public static Image getAnnotationImage(ArtifactAnnotation.AnnotationType annotationType) {
       if (annotationType == ArtifactAnnotation.AnnotationType.Error) {
-         return ImageManager.getImage(FrameworkImage.ERROR);
+         return ImageManager.getImage(CoreImage.ERROR);
       } else if (annotationType == ArtifactAnnotation.AnnotationType.Warning) {
-         return ImageManager.getImage(FrameworkImage.WARNING);
+         return ImageManager.getImage(CoreImage.WARNING);
       }
-      return ImageManager.getImage(FrameworkImage.INFO_LG);
+      return ImageManager.getImage(CoreImage.INFO_LG);
    }
 
 }

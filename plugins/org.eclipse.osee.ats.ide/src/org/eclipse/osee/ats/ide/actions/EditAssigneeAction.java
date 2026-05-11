@@ -18,8 +18,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -34,7 +34,7 @@ public class EditAssigneeAction extends AbstractAtsAction {
       super("Edit Assignee(s)", IAction.AS_PUSH_BUTTON);
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       this.xViewer = xViewer;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER_PURPLE));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.USER_PURPLE));
    }
 
    @Override

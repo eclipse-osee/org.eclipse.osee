@@ -17,13 +17,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.ScriptDefApi;
@@ -50,7 +53,7 @@ public class ScriptDefApiImpl implements ScriptDefApi {
       try {
          return this.accessor.get(branch, scriptDefTypeId);
       } catch (Exception ex) {
-         System.out.println(ex);
+         OseeLog.log(OseeData.class, Level.WARNING, ex);
          return new ScriptDefToken();
       }
    }
@@ -199,7 +202,7 @@ public class ScriptDefApiImpl implements ScriptDefApi {
             followAttributes, ArtifactId.SENTINEL);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
+         OseeLog.log(OseeData.class, Level.WARNING, ex);
       }
       return new LinkedList<>();
    }
@@ -208,6 +211,14 @@ public class ScriptDefApiImpl implements ScriptDefApi {
    public int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter,
       Collection<AttributeTypeId> attributes) {
       return this.accessor.getAllByFilterAndCount(branch, filter, attributes, viewId);
+   }
+
+   @Override
+   public int getCountWithPrefixFilter(BranchId branch, ArtifactId viewId, String filter,
+      Collection<AttributeTypeId> attributes) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+
+      return this.accessor.getAllByPrefixFilterAndCount(branch, filter, attributes, viewId);
    }
 
    @Override
@@ -220,7 +231,21 @@ public class ScriptDefApiImpl implements ScriptDefApi {
             pageCount, pageSize, orderByAttribute, followAttributes, viewId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
+         OseeLog.log(OseeData.class, Level.WARNING, ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
+   public Collection<ScriptDefToken> getAllByRelationThroughPartialFilter(BranchId branch,
+      LinkedList<RelationTypeSide> relations, ArtifactId relatedId, String filter,
+      Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount, long pageSize,
+      AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
+      try {
+         return this.accessor.getAllByRelationThroughPartialFilter(branch, relations, relatedId, filter, attributes,
+            followRelations, pageCount, pageSize, orderByAttribute, followAttributes, viewId);
+      } catch (Exception ex) {
+         OseeLog.log(OseeData.class, Level.WARNING, ex);
       }
       return new LinkedList<>();
    }
@@ -231,7 +256,7 @@ public class ScriptDefApiImpl implements ScriptDefApi {
       try {
          return this.accessor.getAllByRelationThroughAndCount(branch, relations, relatedId, filter, attributes, viewId);
       } catch (IllegalArgumentException | SecurityException ex) {
-         System.out.println(ex);
+         OseeLog.log(OseeData.class, Level.WARNING, ex);
       }
       return 0;
    }

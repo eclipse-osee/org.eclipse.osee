@@ -178,7 +178,7 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
    @Override
    public XResultData checkPlarbApproval(String id) {
       XResultData rd = new XResultData();
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(id);
       ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
       Attribute approval = ops.getActionAttributeValues(AtsAttributeTypes.ProductLineApprovedBy, workItem);
       if (approval.getValues().isEmpty()) {
@@ -190,7 +190,7 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
    @Override
    public XResultData setPlarbApproval(String id) {
       XResultData rd = new XResultData();
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(id);
       IAtsChangeSet changes = atsApi.createChangeSet("Set Plarb approval user");
       Date resultDate = new Date(System.currentTimeMillis());
 

@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -90,9 +90,9 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
          TaskEstDefinition ted = (TaskEstDefinition) element;
          if (xViewerColumn.getName().equals("Select")) {
             if (ted.isChecked()) {
-               return ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_TRUE);
+               return ImageManager.getImage(CoreImage.CHECKBOX_CHECK_TRUE);
             } else {
-               return ImageManager.getImage(FrameworkImage.CHECKBOX_CHECK_UNSET);
+               return ImageManager.getImage(CoreImage.CHECKBOX_CHECK_UNSET);
             }
          }
       } else if (element instanceof IAtsTask) {
@@ -111,7 +111,7 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
             if (teamWf != null) {
                return ImageManager.getImage(AtsImage.WORKFLOW);
             }
-            return ImageManager.getImage(FrameworkImage.ADD_GREEN);
+            return ImageManager.getImage(CoreImage.ADD_GREEN);
          }
       }
       return null;

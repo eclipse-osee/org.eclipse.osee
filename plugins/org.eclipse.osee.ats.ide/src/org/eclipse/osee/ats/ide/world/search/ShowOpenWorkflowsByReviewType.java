@@ -15,6 +15,9 @@ package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -59,7 +62,10 @@ public class ShowOpenWorkflowsByReviewType extends WorldUISearchItem {
          query.andStateType(StateType.Working);
       }
       if (showWorkflow) {
-         return Collections.castAll(query.createFilter().getTeamWorkflows());
+         return Collections.castAll(query.getItems().stream() //
+            .map(IAtsWorkItem::getParentTeamWorkflow) //
+            .filter(Objects::nonNull) //
+            .collect(Collectors.toSet()));
       } else {
          return Collections.castAll(query.getResultArtifacts().getList());
       }

@@ -25,6 +25,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.TransactionBuilderMessageReader;
 import org.eclipse.osee.orcs.rest.admin.LinkUpdateResource;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityUiEndpointImpl;
+import org.eclipse.osee.orcs.rest.internal.search.builder.QueryEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.types.TypesEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.user.UserEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.user.preferences.UserPreferencesEndpointImpl;
@@ -72,6 +73,7 @@ public class OrcsApplication extends Application {
 
    public void start() {
       // Add all root resource, provider and feature instances.
+      singletons.add(new QueryEndpointImpl(orcsApi));
       singletons.add(new BranchesResource(orcsApi, jdbcService));
       singletons.add(new BranchEndpointImpl(orcsApi, activityLog));
       singletons.add(new ApplicabilityUiEndpointImpl(orcsApi));

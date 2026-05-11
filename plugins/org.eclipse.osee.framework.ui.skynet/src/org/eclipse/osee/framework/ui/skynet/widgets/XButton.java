@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
@@ -64,13 +65,17 @@ public class XButton extends XButtonCommon {
 
       comp = new Composite(parent, SWT.NONE);
       comp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      if (isFillHorizontally()) {
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      } else {
+         comp.setLayoutData(new GridData());
+      }
       if (toolkit != null) {
          toolkit.adapt(comp);
       }
 
       // Create Text Widgets
-      if (!labelAfter) {
+      if (!labelAfter && isDisplayLabel()) {
          labelWidget = new Label(comp, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
       }
@@ -96,7 +101,7 @@ public class XButton extends XButtonCommon {
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
       gd.horizontalSpan = horizontalSpan - 1;
 
-      if (labelAfter) {
+      if (labelAfter && isDisplayLabel()) {
          labelWidget = new Label(comp, SWT.NONE);
          labelWidget.setText(getLabel());
       }
@@ -140,9 +145,15 @@ public class XButton extends XButtonCommon {
 
    @Override
    public void dispose() {
-      labelWidget.dispose();
-      button.dispose();
-      comp.dispose();
+      if (Widgets.isAccessible(labelWidget)) {
+         labelWidget.dispose();
+      }
+      if (Widgets.isAccessible(button)) {
+         button.dispose();
+      }
+      if (Widgets.isAccessible(comp)) {
+         comp.dispose();
+      }
       if (parent != null && !parent.isDisposed()) {
          parent.layout();
       }

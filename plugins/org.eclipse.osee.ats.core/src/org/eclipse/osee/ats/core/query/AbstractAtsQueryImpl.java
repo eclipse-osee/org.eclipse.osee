@@ -30,14 +30,15 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryFilter;
-import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -53,6 +54,8 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -76,10 +79,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Long programId;
    protected Long insertionId;
    protected Long insertionActivityId;
-   protected Long workPackageId;
+   protected String workPackage;
    protected List<ArtifactId> onlyIds = null;
-   private ReleasedOption releasedOption;
+   protected ReleasedOption releasedOption;
    protected final List<IAtsQueryFilter> queryFilters;
+   protected QueryBuilder query;
 
    public AbstractAtsQueryImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -124,7 +128,37 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       if (allArtTypes.contains(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          teamWfs = getTeamWorkflowsNew(allArtTypes, allResults, allArtTypes);
       }
-      return teamWfs;
+
+      /**
+       * These need to be upgraded to use asArtifacts or rolled into the search criteria above
+       */
+
+      /**
+       * If team workflow's searched by Team Definition, Actionable Item or Version were searched, then the child tasks
+       * and reviews are what to use to search against
+       */
+      if (!teamWorkflowArtTypes.isEmpty() && teamsTypeDefOrAisOrVersionSearched) {
+         getTasksAndReviewsFromResultingTeamWfs(teamWfs, allResults, allArtTypes, false);
+      }
+
+      /**
+       * Else, perform task and review searches as normal
+       */
+      else {
+         getTasksFromSearchCriteria(allResults, allArtTypes, false);
+         getReviewsFromSearchCriteria(allResults, allArtTypes, false);
+      }
+
+      /**
+       * Search Goals, Sprints and Backlogs as normal
+       */
+      getGoalsFromSearchCriteria(allResults, allArtTypes, false);
+      getSprintsFromSearchCriteria(allResults, allArtTypes, false);
+
+      for (IAtsQueryFilter filter : queryFilters) {
+         allResults = filter.applyFilter(allResults);
+      }
+      return allResults;
    }
 
    @Override
@@ -174,44 +208,25 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return allResults;
    }
 
-   public abstract Collection<? extends ArtifactToken> runQuery();
+   public abstract Collection<? extends ArtifactToken> runQueryLegacy();
 
-   public abstract Collection<? extends ArtifactToken> runQueryNew();
+   public abstract Collection<? extends ArtifactToken> runQueryAsArts();
 
-   @SuppressWarnings("unchecked")
-   private <T> Collection<T> collectResults(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes, boolean newSearch) {
-      Set<T> workItems = new HashSet<>();
-      if (isOnlyIds()) {
-         onlyIds.addAll(handleReleaseOption(queryGetIds()));
+   protected abstract <T> Collection<T> collectResults(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes,
+      boolean newSearch);
+
+   protected void validateReleasedOption() {
+      if (releasedOption != null && releasedOption != ReleasedOption.Both) {
+         throw new UnsupportedOperationException("This option not supported");
       }
-      // filter on original artifact types
-      else {
-         for (ArtifactToken artifact : newSearch ? runQueryNew() : runQuery()) {
-            if (isArtifactTypeMatch(artifact, allArtTypes)) {
-               IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(artifact);
-               if (workItem != null) {
-                  workItems.add((T) workItem);
-               }
-            }
-         }
-         addtoResultsWithNullCheck(allResults, handleReleasedOption(workItems));
-      }
-      return workItems;
    }
 
-   private <T> void addtoResultsWithNullCheck(Set<T> allResults, Collection<? extends T> workItems) {
+   protected <T> void addtoResultsWithNullCheck(Set<T> allResults, Collection<? extends T> workItems) {
       Conditions.assertFalse(workItems.contains(null), "Null found in results.");
       allResults.addAll(workItems);
    }
 
-   private Collection<ArtifactId> handleReleaseOption(List<ArtifactId> queryGetIds) {
-      if (releasedOption != null && releasedOption != ReleasedOption.Both) {
-         throw new UnsupportedOperationException("This option not supported");
-      }
-      return queryGetIds;
-   }
-
-   private <T> Collection<? extends T> handleReleasedOption(Set<T> workItems) {
+   protected <T> Collection<? extends T> handleReleasedOption(Set<T> workItems) {
       if (releasedOption == null) {
          return workItems;
       }
@@ -231,7 +246,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return results;
    }
 
-   private boolean isArtifactTypeMatch(ArtifactToken artifact, Collection<ArtifactTypeToken> artTypes) {
+   protected boolean isArtifactTypeMatch(ArtifactToken artifact, Collection<ArtifactTypeToken> artTypes) {
       if (artTypes.isEmpty()) {
          return true;
       }
@@ -262,7 +277,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
             queryAndRelatedTo(AtsRelationTypes.TeamWfToTask_TeamWorkflow, teamWfIds);
          }
 
-         addEvConfigCriteria();
+         addWorkPackageCriteria();
 
          collectResults(allResults, allArtTypes, newSearch);
       }
@@ -326,9 +341,13 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAndNotExists(RelationTypeSide relationTypeSide);
+   public void queryAndNotExists(RelationTypeSide relationTypeSide) {
+      query.andRelationNotExists(relationTypeSide);
+   }
 
-   public abstract void queryAndExists(RelationTypeSide relationTypeSide);
+   public void queryAndExists(RelationTypeSide relationTypeSide) {
+      query.andRelationExists(relationTypeSide);
+   }
 
    private boolean typeIsSpecified(ArtifactTypeToken parentArtType, Set<ArtifactTypeToken> allArtTypes) {
       for (ArtifactTypeToken artifactType : allArtTypes) {
@@ -386,7 +405,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          // team def, ai, version are all covered by team search
 
-         addEvConfigCriteria();
+         addWorkPackageCriteria();
 
          collectResults(allResults, allArtTypes, newSearch);
       }
@@ -415,19 +434,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
       addVersionCriteria();
 
-      addEvConfigCriteria();
-
-      return collectResults(allResults, allArtTypes, newSearch);
-   }
-
-   private void addEvConfigCriteria() {
       addWorkPackageCriteria();
 
-      addInsertionActivityCriteria();
-
-      addInsertionCriteria();
-
-      addProgramCriteria();
+      return collectResults(allResults, allArtTypes, newSearch);
    }
 
    protected boolean isProgramSpecified() {
@@ -447,24 +456,48 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    protected boolean isWorkPackageSpecified() {
-      return workPackageId != null && workPackageId > 0;
+      return Strings.isValid(workPackage);
    }
 
    public abstract void createQueryBuilder();
 
-   public abstract void queryAndIsOfType(ArtifactTypeToken artifactType);
+   public void queryAndIsOfType(ArtifactTypeToken artifactType) {
+      query.andIsOfType(artifactType);
+   }
 
    public boolean isOnlyIds() {
       return onlyIds != null;
    }
 
-   public abstract List<ArtifactId> queryGetIds();
+   public List<ArtifactId> queryGetIds() {
+      return query.asArtifactIds();
+   }
+
+   public abstract IAtsQuery getAtsQuery();
 
    /**
     * Return team workflow ids based on teamdef, ai and version criteria to use in relatedTo criteria.
     */
-   public abstract List<ArtifactId> getRelatedTeamWorkflowIdsBasedOnTeamDefsAisAndVersions(
-      List<AtsAttributeQuery> teamWorkflowAttr);
+   public List<ArtifactId> getRelatedTeamWorkflowIdsBasedOnTeamDefsAisAndVersions(
+      List<AtsAttributeQuery> teamWorkflowAttr) {
+      IAtsQuery search = getAtsQuery();
+      search.isOfType(AtsArtifactTypes.TeamWorkflow);
+      if (teamDefIds != null && !teamDefIds.isEmpty()) {
+         search.andTeam(new ArrayList<>(teamDefIds));
+      }
+      if (teamWorkflowAttr != null && !teamWorkflowAttr.isEmpty()) {
+         for (AtsAttributeQuery attrQuery : teamWorkflowAttr) {
+            search.andAttrQuery(attrQuery);
+         }
+      }
+      if (aiIds != null && !aiIds.isEmpty()) {
+         search.andActionableItem(new ArrayList<>(aiIds));
+      }
+      if (versionId != null && versionId > 0) {
+         search.andVersion(versionId);
+      }
+      return new ArrayList<>(search.getItemIds());
+   }
 
    private Set<ArtifactTypeToken> getAllArtTypes() {
       Set<ArtifactTypeToken> allArtTypes = new HashSet<>();
@@ -585,11 +618,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    @Override
    public IAtsQuery andLegacyIds(Collection<String> legacyIds) {
       return andAttr(AtsAttributeTypes.LegacyPcrId, legacyIds, QueryOption.EXACT_MATCH_OPTIONS);
-   }
-
-   @Override
-   public IAtsWorkItemFilter andFilter() {
-      return new AtsWorkItemFilter(getItems());
    }
 
    protected Set<ArtifactTypeToken> getArtifactTypesFromWorkItemTypes() {
@@ -769,8 +797,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andWorkPackage(Long workPackageId) {
-      this.workPackageId = workPackageId;
+   public IAtsQuery andWorkPackage(String workPackage) {
+      this.workPackage = workPackage;
       return this;
    }
 
@@ -797,16 +825,19 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       addPrioritiesCriteria();
    }
 
-   public abstract void queryAndIsOfType(Collection<ArtifactTypeToken> artTypes);
+   public void queryAndIsOfType(Collection<ArtifactTypeToken> artTypes) {
+      query.andIsOfType(artTypes);
+   }
 
    private void addWorkPackageCriteria() {
       if (isWorkPackageSpecified()) {
-         ArtifactId workPackArt = atsApi.getQueryService().getArtifact(workPackageId);
-         queryAnd(AtsAttributeTypes.WorkPackageReference, workPackArt.getIdString(), QueryOption.EXACT_MATCH_OPTIONS);
+         queryAnd(AtsAttributeTypes.WorkPackage, workPackage, QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 
-   public abstract void queryAnd(AttributeTypeToken attrType, String value);
+   public void queryAnd(AttributeTypeToken attrType, String value) {
+      query.and(attrType, value);
+   }
 
    private void addVersionCriteria() {
       if (versionId != null && versionId > 0) {
@@ -815,7 +846,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAndRelatedToLocalIds(RelationTypeSide relationTypeSide, ArtifactId artId);
+   public void queryAndRelatedToLocalIds(RelationTypeSide relationTypeSide, ArtifactId artId) {
+      query.andRelatedTo(relationTypeSide, artId);
+   }
 
    private void addAiCriteria() {
       if (isActionableItemSpecified()) {
@@ -847,7 +880,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAnd(AttributeTypeToken attrType, Collection<String> values, QueryOption[] queryOption);
+   public void queryAnd(AttributeTypeToken attrType, Collection<String> values, QueryOption[] queryOption) {
+      query.and(attrType, values, queryOption);
+   }
 
    private void addRelationCriteria() {
       if (!andRels.isEmpty()) {
@@ -861,7 +896,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAndRelatedTo(RelationTypeSide relationTypeSide, List<ArtifactId> artIds);
+   public void queryAndRelatedTo(RelationTypeSide relationTypeSide, List<ArtifactId> artIds) {
+      query.andRelatedTo(relationTypeSide, artIds);
+   }
 
    private void addStateNameCriteria() {
       if (stateNames != null && !stateNames.isEmpty()) {
@@ -881,7 +918,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAnd(AttributeTypeToken attrType, String value, QueryOption[] queryOption);
+   public void queryAnd(AttributeTypeToken attrType, String value, QueryOption[] queryOption) {
+      query.and(attrType, value, queryOption);
+   }
 
    private void addStateTypeCriteria() {
       if (!stateTypes.isEmpty()) {
@@ -893,72 +932,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAndIds(Collection<? extends ArtifactId> artIds);
-
-   public void addProgramCriteria() {
-      if (!isInsertionSpecified()) {
-         if (programId != null && programId > 0) {
-            ArtifactId programArt = atsApi.getQueryService().getArtifact(programId);
-            List<String> workPackageIds = new LinkedList<>();
-            for (ArtifactId insertionArt : atsApi.getRelationResolver().getRelated(programArt,
-               AtsRelationTypes.ProgramToInsertion_Insertion)) {
-               for (ArtifactId insertionActivityArt : atsApi.getRelationResolver().getRelated(insertionArt,
-                  AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
-                  for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
-                     AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-                     workPackageIds.add(workPackageArt.getIdString());
-                  }
-               }
-            }
-            if (!workPackageIds.isEmpty()) {
-               queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
-            }
-         }
-      }
+   public void queryAndIds(Collection<? extends ArtifactId> artIds) {
+      query.andIds(artIds);
    }
 
-   public void addInsertionCriteria() {
-      if (!isInsertionActivitySpecified()) {
-         if (insertionId != null && insertionId > 0) {
-            ArtifactId insertionArt = atsApi.getQueryService().getArtifact(insertionId);
-            List<String> workPackageIds = new LinkedList<>();
-            for (ArtifactId insertionActivityArt : atsApi.getRelationResolver().getRelated(insertionArt,
-               AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
-               for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
-                  AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-                  workPackageIds.add(workPackageArt.getIdString());
-               }
-            }
-            if (!workPackageIds.isEmpty()) {
-               queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
-            }
-         }
-      }
-   }
-
-   public abstract void queryAnd(AttributeTypeToken attrType, Collection<String> values);
-
-   public void addInsertionActivityCriteria() {
-      if (!isWorkPackageSpecified()) {
-         if (insertionActivityId != null && insertionActivityId > 0) {
-            List<String> workPackageIds = getWorkPackageIdsFromActivity();
-            if (!workPackageIds.isEmpty()) {
-               queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
-            }
-         }
-      }
-   }
-
-   private List<String> getWorkPackageIdsFromActivity() {
-      List<String> ids = new LinkedList<>();
-      if (insertionActivityId != null && insertionActivityId > 0) {
-         ArtifactId insertionActivityArt = atsApi.getQueryService().getArtifact(insertionActivityId);
-         for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
-            AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-            ids.add(workPackageArt.getIdString());
-         }
-      }
-      return ids;
+   public void queryAnd(AttributeTypeToken attrType, Collection<String> values) {
+      query.and(attrType, values);
    }
 
    private void addStateTypeNameAndAttributeCriteria() {
@@ -973,11 +952,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
       // relations
       addRelationCriteria();
-   }
-
-   @Override
-   public IAtsWorkItemFilter createFilter() {
-      return new AtsWorkItemFilter(getItems());
    }
 
    @Override
@@ -1056,7 +1030,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return this;
    }
 
-   protected abstract void queryAndNotExists(AttributeTypeToken attributeType);
+   protected void queryAndNotExists(AttributeTypeToken attributeType) {
+      query.andNotExists(attributeType);
+   }
 
    @Override
    public IAtsQuery andExists(AttributeTypeToken attributeType) {
@@ -1065,6 +1041,24 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return this;
    }
 
-   protected abstract void queryAndExists(AttributeTypeToken attributeType);
+   protected void queryAndExists(AttributeTypeToken attributeType) {
+      query.andExists(attributeType);
+   }
+
+   @Override
+   public IAtsQuery andHoldState(HoldState holdState) {
+      createQueryBuilder();
+      if (holdState.isOnHold()) {
+         query.andExists(AtsAttributeTypes.HoldReason);
+      } else if (holdState.isNotOnHold()) {
+         query.andNotExists(AtsAttributeTypes.HoldReason);
+      }
+      return this;
+   }
+
+   @Override
+   public void andAttrQuery(AtsAttributeQuery attrQuery) {
+      andAttr.add(attrQuery);
+   }
 
 }

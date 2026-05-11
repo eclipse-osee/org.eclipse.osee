@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -44,7 +43,6 @@ export type UpdateAttachmentDialogData = {
 @Component({
 	selector: 'osee-update-attachment-dialog',
 	imports: [
-		CommonModule,
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,

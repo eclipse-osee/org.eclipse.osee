@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.orcs.search.ds.OrcsData;
+import org.eclipse.osee.orcs.search.ds.VersionData;
 
 /**
  * @author Roberto E. Escobar

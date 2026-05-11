@@ -19,10 +19,10 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.OseeImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -36,7 +36,7 @@ public class XNavigateItemBlam extends XNavigateItem {
    private final IBlamProvider blamProvider;
 
    public XNavigateItemBlam(AbstractBlam blamOperation, XNavItemCat xNavItemCat) {
-      this(blamOperation, FrameworkImage.BLAM, xNavItemCat);
+      this(blamOperation, CoreImage.BLAM, xNavItemCat);
    }
 
    public XNavigateItemBlam(final AbstractBlam blamOperation, KeyedImage keyedImage, XNavItemCat... xNavItemCat) {
@@ -76,7 +76,7 @@ public class XNavigateItemBlam extends XNavigateItem {
    }
 
    public XNavigateItemBlam(AbstractBlam blamOperation) {
-      this(blamOperation, FrameworkImage.BLAM,
+      this(blamOperation, CoreImage.BLAM,
          blamOperation.getCategories().toArray(new XNavItemCat[blamOperation.getCategories().size()]));
    }
 

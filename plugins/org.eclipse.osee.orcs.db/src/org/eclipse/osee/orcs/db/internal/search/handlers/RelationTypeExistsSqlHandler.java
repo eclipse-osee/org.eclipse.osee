@@ -15,8 +15,8 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeExists;
 
 /**
  * @author Roberto E. Escobar
@@ -28,7 +28,7 @@ public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<Cri
       String relAlias = "eRel";
       String relType;
       String relTableName;
-      if (this.criteria.getType().isNewRelationTable()) {
+      if (this.criteria.getRelationType().isNewRelationTable()) {
          relType = "rel_type";
          relTableName = "osee_relation";
       } else {
@@ -40,7 +40,7 @@ public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<Cri
          relTableName);
       writer.addParameter(writer.getRootQueryData().getBranch());
       writer.write(" and eRel.%s = ? ", relType);
-      writer.addParameter(this.criteria.getType());
+      writer.addParameter(this.criteria.getRelationType());
 
       List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
@@ -67,5 +67,6 @@ public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<Cri
             }
          }
       }
+      writer.write(")");
    }
 }

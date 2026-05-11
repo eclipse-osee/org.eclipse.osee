@@ -17,14 +17,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.util.AttributeValues;
 import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -54,7 +57,7 @@ public class AtsSearchData {
    @JsonSerialize(using = ToStringSerializer.class)
    private Long insertionActivityId = 0L;
    @JsonSerialize(using = ToStringSerializer.class)
-   private Long workPackageId = 0L;
+   private final Long workPackageId = 0L;
    @JsonSerialize(using = ToStringSerializer.class)
    private Long applicId = 0L;
    private String colorTeam = "";
@@ -64,6 +67,13 @@ public class AtsSearchData {
    private HoldState holdState;
    private CustomizeData customizeData;
    private AttributeValues attrValues = new AttributeValues();
+   private BranchViewToken configuration = BranchViewToken.SENTINEL;
+   private String buildImpact = "";
+   private String buildImpactState = "";
+   private String buildImpact2 = "";
+   private String buildImpactState2 = "";
+   private String workPackage = "";
+   private Long previousPrListId = 0L;
 
    public AtsSearchData() {
       // for jackson deserialization
@@ -97,12 +107,18 @@ public class AtsSearchData {
       item.setProgramId(getProgramId());
       item.setInsertionId(getInsertionId());
       item.setInsertionActivityId(getInsertionActivityId());
-      item.setWorkPackageId(getWorkPackageId());
+      item.setWorkPackage(getWorkPackage());
       item.setColorTeam(getColorTeam());
       item.setReviewType(getReviewType());
       item.setAttrValues(getAttrValues());
       item.setApplicId(getApplicId());
       item.setHoldState(getHoldState());
+      item.setConfiguration(getConfiguration());
+      item.setBuildImpact(getBuildImpact());
+      item.setBuildImpactState(getBuildImpactState());
+      item.setBuildImpact2(getBuildImpact2());
+      item.setBuildImpactState2(getBuildImpactState2());
+      item.setPreviousPrListId(getPreviousPrListId());
       return item;
    }
 
@@ -217,12 +233,12 @@ public class AtsSearchData {
       this.insertionActivityId = insertionActivityId;
    }
 
-   public Long getWorkPackageId() {
-      return workPackageId;
+   public String getWorkPackage() {
+      return workPackage;
    }
 
-   public void setWorkPackageId(Long workPackageId) {
-      this.workPackageId = workPackageId;
+   public void setWorkPackage(String workPackage) {
+      this.workPackage = workPackage;
    }
 
    public String getColorTeam() {
@@ -315,6 +331,64 @@ public class AtsSearchData {
 
    public void setPriorities(List<String> priorities) {
       this.priorities = priorities;
+   }
+
+   public BranchViewToken getConfiguration() {
+      return configuration;
+   }
+
+   public void setConfiguration(BranchViewToken configuration) {
+      this.configuration = configuration;
+   }
+
+   public String getBuildImpact() {
+      return buildImpact;
+   }
+
+   public void setBuildImpact(String buildImpact) {
+      this.buildImpact = buildImpact;
+   }
+
+   public void setAtsIds(Collection<String> ids) {
+      AttributeValue attr = new AttributeValue(AtsAttributeTypes.AtsId, ids.toArray(new String[ids.size()]));
+      addAttrValue(attr);
+   }
+
+   public void setLegacyIds(List<String> ids) {
+      AttributeValue attr = new AttributeValue(AtsAttributeTypes.LegacyPcrId, ids.toArray(new String[ids.size()]));
+      addAttrValue(attr);
+   }
+
+   public String getBuildImpactState() {
+      return buildImpactState;
+   }
+
+   public void setBuildImpactState(String buildImpactState) {
+      this.buildImpactState = buildImpactState;
+   }
+
+   public String getBuildImpact2() {
+      return buildImpact2;
+   }
+
+   public void setBuildImpact2(String buildImpact2) {
+      this.buildImpact2 = buildImpact2;
+   }
+
+   public String getBuildImpactState2() {
+      return buildImpactState2;
+   }
+
+   public void setBuildImpactState2(String buildImpactState2) {
+      this.buildImpactState2 = buildImpactState2;
+   }
+
+   public Long getPreviousPrListId() {
+      return previousPrListId;
+   }
+
+   public void setPreviousPrListId(Long previousPrListId) {
+      this.previousPrListId = previousPrListId;
    }
 
 }

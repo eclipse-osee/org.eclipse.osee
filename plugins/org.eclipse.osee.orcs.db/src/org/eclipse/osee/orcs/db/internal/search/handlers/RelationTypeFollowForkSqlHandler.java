@@ -18,11 +18,11 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlAliasManager;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelationTypeFollow;
 
 /**
  * @author Audrey Denk
@@ -55,7 +55,7 @@ public class RelationTypeFollowForkSqlHandler extends SqlHandler<CriteriaRelatio
       } else {
          artAlias0 = artAliases.iterator().next();
       }
-      relAlias1 = writer.addTable(criteria.getType());
+      relAlias1 = writer.addTable(criteria.getRelationTypeSide());
       txsAlias1 = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
 
       String branchAlias = writer.getFirstAlias(OseeDb.BRANCH_TABLE);
@@ -74,7 +74,7 @@ public class RelationTypeFollowForkSqlHandler extends SqlHandler<CriteriaRelatio
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       boolean includeDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(writer.getOptions());
-      RelationTypeSide typeSide = criteria.getType();
+      RelationTypeSide typeSide = criteria.getRelationTypeSide();
 
       if (txsAlias0 != null && artAlias0 != null) {
 

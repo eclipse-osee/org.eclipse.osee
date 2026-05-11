@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.world;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +58,9 @@ import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.action.ViewTableReportAction;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -66,7 +69,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
@@ -76,11 +78,8 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -108,7 +107,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Donald G. Dunne
  */
 public class WorldXWidgetActionPage extends FormPage {
-   protected SwtXWidgetRenderer dynamicXWidgetLayout;
+   protected SwtXWidgetRenderer swtXWidgetRenderer;
    protected final XFormToolkit toolkit;
    private Composite parametersContainer;
    private Section parameterSection;
@@ -200,7 +199,7 @@ public class WorldXWidgetActionPage extends FormPage {
       }
 
       try {
-         worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.Search, false);
+         worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.Search, PendOp.NoPend);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -249,17 +248,17 @@ public class WorldXWidgetActionPage extends FormPage {
       rightParamComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       rightParamComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      List<XWidgetRendererItem> rItems = null;
-      dynamicXWidgetLayout = new SwtXWidgetRenderer(getDynamicWidgetLayoutListener(), getXWidgetOptionResolver());
+      List<XWidgetData> widDatas = null;
+      swtXWidgetRenderer = new SwtXWidgetRenderer(getDynamicWidgetLayoutListener());
       try {
-         rItems = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, xWidgetXml);
-         if (rItems != null && !rItems.isEmpty()) {
-            dynamicXWidgetLayout.addWorkLayoutDatas(rItems);
-            dynamicXWidgetLayout.createBody(managedForm, rightParamComp, null, null, true);
-            allXWidgets.addAll(dynamicXWidgetLayout.getXWidgets());
+         widDatas = XWidgetParser.extractWidgetDatas(xWidgetXml);
+         if (widDatas != null && !widDatas.isEmpty()) {
+            swtXWidgetRenderer.addXWidgetDatas(widDatas);
+            swtXWidgetRenderer.createBody(managedForm, rightParamComp, null, null, true);
+            allXWidgets.addAll(swtXWidgetRenderer.getXWidgets());
             parametersContainer.layout();
             parametersContainer.getParent().layout();
-            for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+            for (XWidget widget : swtXWidgetRenderer.getXWidgets()) {
                if (widget instanceof WorldEditorWidget) {
                   ((WorldEditorWidget) widget).setEditor(worldEditor);
                }
@@ -276,24 +275,27 @@ public class WorldXWidgetActionPage extends FormPage {
       buttonComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.BOTTOM, false, true));
 
-      Button searchButton = toolkit.createButton(buttonComp, "Search", SWT.PUSH);
-      GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
-      searchButton.setLayoutData(gridData);
-      searchButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleSearchButtonPressed();
-         }
-      });
+      List<SearchEngine> searchEngines = new ArrayList<>();
+      IWorldEditorProvider worldEditorProvider = worldEditor.getWorldEditorProvider();
+      if (worldEditorProvider instanceof WorldEditorProvider) {
+         searchEngines.addAll(((WorldEditorProvider) worldEditorProvider).getSearchEngines());
+      }
+      if (searchEngines.isEmpty()) {
+         searchEngines.addAll(
+            Arrays.asList(SearchEngine.AsArtifacts, SearchEngine.IdeClient, SearchEngine.ResultsEditor));
+      }
 
-      if (AtsApiService.get().getUserService().isAtsAdmin()) {
-         Button search2Button = toolkit.createButton(buttonComp, "Search-2 (Beta)", SWT.PUSH);
-         gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
-         search2Button.setLayoutData(gridData);
-         search2Button.addSelectionListener(new SelectionAdapter() {
+      for (SearchEngine eng : searchEngines) {
+         Button searchButton = toolkit.createButton(buttonComp, eng.getDisplayName(), SWT.PUSH);
+         if (Strings.isValid(eng.getToolTip())) {
+            searchButton.setToolTipText(eng.getToolTip());
+         }
+         GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
+         searchButton.setLayoutData(gridData);
+         searchButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-               handleSearch2ButtonPressed();
+               handleSearchButtonPressed(eng);
             }
          });
       }
@@ -308,39 +310,18 @@ public class WorldXWidgetActionPage extends FormPage {
       return null;
    }
 
-   public void reSearch() {
+   public void reSearch(SearchEngine srchEng) {
       Result result = isResearchSearchValid();
       if (result.isFalse()) {
          AWorkbench.popup(result);
          return;
       }
-      reSearch(false);
+      reSearch(srchEng, PendOp.NoPend);
    }
 
-   public void reSearch2() {
-      Result result = isResearchSearchValid();
-      if (result.isFalse()) {
-         AWorkbench.popup(result);
-         return;
-      }
-      reSearch2(false);
-   }
-
-   public IXWidgetOptionResolver getXWidgetOptionResolver() {
-      return new DefaultXWidgetOptionResolver();
-   }
-
-   public void handleSearchButtonPressed() {
+   public void handleSearchButtonPressed(SearchEngine srchEng) {
       try {
-         reSearch();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
-   public void handleSearch2ButtonPressed() {
-      try {
-         reSearch2();
+         reSearch(srchEng);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -349,12 +330,8 @@ public class WorldXWidgetActionPage extends FormPage {
    /*
     * Mainly for testing purposes
     */
-   public void reSearch(boolean forcePend) {
-      worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, forcePend);
-   }
-
-   public void reSearch2(boolean forcePend) {
-      worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, forcePend, true);
+   public void reSearch(SearchEngine srchEng, PendOp pendOp) {
+      worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, srchEng, pendOp);
    }
 
    public void setTableTitle(final String title, final boolean warning) {
@@ -420,7 +397,7 @@ public class WorldXWidgetActionPage extends FormPage {
       public DropDownAction() {
          setText("Other");
          setMenuCreator(this);
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GEAR));
          addKeyListener();
       }
 
@@ -629,7 +606,7 @@ public class WorldXWidgetActionPage extends FormPage {
             worldComposite.getXViewer().refresh();
          }
       };
-      filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS));
+      filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GREEN_PLUS));
 
       filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", IAction.AS_CHECK_BOX) {
 
@@ -644,7 +621,7 @@ public class WorldXWidgetActionPage extends FormPage {
             worldComposite.getXViewer().refresh();
          }
       };
-      filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
+      filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.USER));
 
       toAction = new Action(ACTIONS, IAction.AS_PUSH_BUTTON) {
 
@@ -671,7 +648,7 @@ public class WorldXWidgetActionPage extends FormPage {
             redisplayAsWorkFlow();
          }
       };
-      toWorkFlow.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.WORKFLOW));
+      toWorkFlow.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.WORKFLOW));
 
       toTask = new Action(TASKS, IAction.AS_PUSH_BUTTON) {
 

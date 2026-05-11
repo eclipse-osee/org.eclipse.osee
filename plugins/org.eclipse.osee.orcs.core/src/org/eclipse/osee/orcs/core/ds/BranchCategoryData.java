@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.orcs.search.ds.OrcsData;
 
 /**
  * @author Audrey Denk

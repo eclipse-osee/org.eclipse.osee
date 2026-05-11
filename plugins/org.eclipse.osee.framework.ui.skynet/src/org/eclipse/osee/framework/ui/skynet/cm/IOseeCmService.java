@@ -48,7 +48,7 @@ public interface IOseeCmService {
       return false;
    }
 
-   default boolean isBranchesAllCommittedExcept(Artifact art, BranchId branch) {
+   default boolean isBranchesAllCommittedExcept(Artifact art, BranchToken branch) {
       return true;
    }
 

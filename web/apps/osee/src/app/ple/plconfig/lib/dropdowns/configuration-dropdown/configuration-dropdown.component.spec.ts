@@ -51,17 +51,23 @@ describe('ConfigurationDropdownComponent', () => {
 			txId: '2',
 			warningCount: 0,
 		};
-		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
-			'deleteConfiguration',
-			'copyConfiguration',
-			'addConfiguration',
-		]);
+		const branchService = {
+			deleteConfiguration: vi
+				.fn()
+				.mockName('PlConfigBranchService.deleteConfiguration'),
+			copyConfiguration: vi
+				.fn()
+				.mockName('PlConfigBranchService.copyConfiguration'),
+			addConfiguration: vi
+				.fn()
+				.mockName('PlConfigBranchService.addConfiguration'),
+		};
 		const _addConfigurationSpy =
-			branchService.addConfiguration.and.returnValue(of(testResponse));
+			branchService.addConfiguration.mockReturnValue(of(testResponse));
 		const _copyConfigurationSpy =
-			branchService.copyConfiguration.and.returnValue(of(testResponse));
+			branchService.copyConfiguration.mockReturnValue(of(testResponse));
 		const _delteConfigurationSpy =
-			branchService.deleteConfiguration.and.returnValue(of(testResponse));
+			branchService.deleteConfiguration.mockReturnValue(of(testResponse));
 		await TestBed.configureTestingModule({
 			imports: [
 				MatMenuModule,

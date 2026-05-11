@@ -10,8 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, linkedSignal, signal } from '@angular/core';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogRef,
@@ -19,42 +18,31 @@ import {
 } from '@angular/material/dialog';
 import {
 	TransportType,
-	TransportTypeForm,
+	transportType,
 	transportTypeAttributes,
 } from '@osee/messaging/shared/types';
 import { TransportTypeFormComponent } from '@osee/messaging/transports/forms';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'osee-edit-transport-type-dialog',
-	imports: [MatDialogTitle, AsyncPipe, TransportTypeFormComponent],
-	template: `@if (transportType | async; as _t) {
-			<h1 mat-dialog-title>Editing Transport Type {{ _t.name }}</h1>
-			<osee-transport-type-form
-				[transportType]="_t"
-				(completion)="
-					receiveFormState($event)
-				"></osee-transport-type-form>
-		} @else {
-			<h1 mat-dialog-title>Editing Transport Type</h1>
-		} `,
+	imports: [MatDialogTitle, TransportTypeFormComponent],
+	template: `
+		<h1 mat-dialog-title>
+			Editing Transport Type {{ transportType().name }}
+		</h1>
+		<osee-transport-type-form
+			[transportType]="transportType()"
+			(completion)="receiveFormState($event)"></osee-transport-type-form>
+	`,
 })
 export class EditTransportTypeDialogComponent {
 	dialogRef =
 		inject<MatDialogRef<EditTransportTypeDialogComponent>>(MatDialogRef);
-	data = inject(MAT_DIALOG_DATA);
-
-	protected transportType = new BehaviorSubject<TransportTypeForm>(
-		new TransportType()
+	data = signal(inject<transportType>(MAT_DIALOG_DATA));
+	protected transportType = linkedSignal(
+		() => new TransportType(this.data())
 	);
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-	constructor() {
-		const data = this.data;
-
-		this.transportType.next(new TransportType(data));
-	}
 	onNoClick(): void {
 		this.dialogRef.close();
 	}

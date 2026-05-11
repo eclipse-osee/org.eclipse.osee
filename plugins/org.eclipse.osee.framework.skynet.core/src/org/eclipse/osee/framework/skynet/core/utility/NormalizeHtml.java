@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 import org.jsoup.Jsoup;
@@ -505,24 +506,28 @@ public final class NormalizeHtml {
 
    static String[] removeUnsupportedAttributes(Element e, boolean addBack) {
       String[] attributeValues = {null, null, null, null, null};
-      // remove "unsupported" attributes
       Attributes attr = e.attributes();
-      for (Attribute a : attr) {
+      Iterator<Attribute> iterator = attr.iterator();
+
+      while (iterator.hasNext()) {
+         Attribute a = iterator.next();
          if (allowedAttributes.contains(a.getKey())) {
             if (!(a.getKey().equals("border") && a.getValue().equals("0"))) {
                attributeValues[allowedAttributes.indexOf(a.getKey())] = a.getValue();
             }
          }
-         e.removeAttr(a.getKey());
+         iterator.remove();
       }
+
       if (addBack) {
-         // set specific order for attributes
+         // Set specific order for attributes
          for (int i = 0; i < attributeValues.length; i++) {
             if (attributeValues[i] != null) {
                e.attr(allowedAttributes.get(i), attributeValues[i]);
             }
          }
       }
+
       return attributeValues;
    }
 

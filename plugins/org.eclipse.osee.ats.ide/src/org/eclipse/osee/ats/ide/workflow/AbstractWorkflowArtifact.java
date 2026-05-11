@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
@@ -87,6 +88,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsTeamWorkflow getParentTeamWorkflow() {
       return parentTeamArt;
+   }
+
+   @Override
+   public void reload() {
+      ArtifactQuery.reloadArtifactFromId(getArtifactId(), AtsApiService.get().branch());
    }
 
    @Override

@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.api.country.JaxCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -163,17 +162,6 @@ public class AtsProgramService implements IAtsProgramService {
    public IAtsInsertionActivity getInsertionActivity(Long insertionActivityId) {
       return atsApi.getProgramService().getInsertionActivityById(
          atsApi.getQueryService().getArtifact(insertionActivityId));
-   }
-
-   @Override
-   public IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage) {
-      ArtifactId wpArt = atsApi.getQueryService().getArtifact(workPackage.getId());
-      Collection<ArtifactToken> related = atsApi.getRelationResolver().getRelated(wpArt,
-         AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity);
-      if (related.size() > 0) {
-         return atsApi.getProgramService().getInsertionActivityById(related.iterator().next());
-      }
-      return null;
    }
 
    @Override
@@ -618,5 +606,15 @@ public class AtsProgramService implements IAtsProgramService {
       jaxCountry.setActive(country.isActive());
       jaxCountry.setDescription(country.getDescription());
       return jaxCountry;
+   }
+
+   @Override
+   public IAtsCountry getCountry(IAtsWorkItem workItem) {
+      IAtsCountry country = null;
+      IAtsProgram program = getProgram(workItem);
+      if (program != null) {
+         country = getCountry(program);
+      }
+      return country;
    }
 }

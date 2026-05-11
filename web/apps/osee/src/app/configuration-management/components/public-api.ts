@@ -12,8 +12,8 @@
  **********************************************************************/
 export * from './action-drop-down/action-drop-down.component';
 export * from './create-action-button/create-action-button.component';
-export * from './create-action-working-branch-button/create-action-working-branch-button.component';
 export * from './current-action-drop-down/current-action-drop-down.component';
 export * from './create-action-button/create-action-dialog/create-action-dialog.component';
 export * from './manage-action-button/manage-action-button.component';
 export * from './commit-manager-button/commit-manager-button.component';
+export * from './create-action-button/create-action-form/create-action-form.component';

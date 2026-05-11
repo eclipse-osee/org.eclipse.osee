@@ -16,12 +16,12 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.HasTransaction;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
 import org.eclipse.osee.orcs.core.internal.graph.GraphNode;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderStore;
-import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
+import org.eclipse.osee.orcs.data.OrcsWriteable;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.HasOrcsData;
 
 /**
  * @author Megumi Telles

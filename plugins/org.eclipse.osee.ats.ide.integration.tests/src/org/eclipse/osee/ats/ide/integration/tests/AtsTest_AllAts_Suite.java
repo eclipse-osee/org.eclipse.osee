@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.actions.AtsTest_Action_Sui
 import org.eclipse.osee.ats.ide.integration.tests.ats.query.AtsTest_Query_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.rest.AtsRestCoverageTest;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.TransitionManagerTest;
+import org.eclipse.osee.ats.ide.integration.tests.util.TestFailureListener;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -49,6 +50,8 @@ import org.junit.runners.Suite;
 public class AtsTest_AllAts_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
+      TestFailureListener.setEnabled(false);
+
       System.out.println("Begin Integration Tests");
       DemoUtil.checkDbInitAndPopulateSuccess();
       AtsApiService.get().setIsInTest(true);

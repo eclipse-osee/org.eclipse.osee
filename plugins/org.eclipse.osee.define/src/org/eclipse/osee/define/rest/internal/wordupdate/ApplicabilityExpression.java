@@ -19,9 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -29,6 +26,8 @@ import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 
 /**
  * @author Morgan E. Cook
@@ -40,9 +39,6 @@ public class ApplicabilityExpression {
 
    private final String configuration;
    private final HashCollection<String, String> featureValuesAllowed;
-
-   private static ScriptEngineManager sem = new ScriptEngineManager();
-   private static ScriptEngine se = sem.getEngineByName("JavaScript");
 
    public ApplicabilityExpression(String configuration, HashCollection<String, String> featureValuesAllowed) {
       this.configuration = configuration;
@@ -72,9 +68,13 @@ public class ApplicabilityExpression {
       String expression = createFeatureExpression(featureIdValuesMap, featureOperators, featureDefArt);
 
       boolean result = false;
+      Context context = Context.enter();
       try {
-         result = (boolean) se.eval(expression);
-      } catch (ScriptException ex) {
+         context.setOptimizationLevel(-1);
+         Scriptable scope = context.initStandardObjects();
+         Object evalResult = context.evaluateString(scope, expression, "JavaScript", 1, null);
+         result = Context.toBoolean(evalResult);
+      } catch (Exception ex) {
          throw new OseeCoreException("Failed to parse expression: " + expression);
       }
 
@@ -127,10 +127,16 @@ public class ApplicabilityExpression {
 
          boolean result = false;
 
+         Context context = Context.enter();
          try {
-            result = (boolean) se.eval(valueExpression);
-         } catch (ScriptException ex) {
+            context.setOptimizationLevel(-1);
+            Scriptable scope = context.initStandardObjects();
+            Object evalResult = context.evaluateString(scope, valueExpression, "JavaScript", 1, null);
+            result = Context.toBoolean(evalResult);
+         } catch (Exception ex) {
             throw new OseeCoreException("Failed to parse expression: " + valueExpression);
+         } finally {
+            Context.exit();
          }
 
          myFeatureExpression += result + " ";

@@ -45,14 +45,6 @@ public interface AtsWorkDefEndpointApi {
    public WorkDefinition getWorkDefForTeam(@PathParam("id") String id);
 
    /**
-    * Convert missing work definitions to artifact referenced attriutes
-    */
-   @GET
-   @Path("convert/artrefattr")
-   @Produces(MediaType.APPLICATION_JSON)
-   public String convertToWorkDefRefs();
-
-   /**
     * Get all work definitions and ensure all attr types exist
     */
    @GET

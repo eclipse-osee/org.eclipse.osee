@@ -42,6 +42,7 @@ import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 import org.eclipse.osee.orcs.rest.model.UserEndpoint;
+import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -101,4 +102,6 @@ public interface IdeServerEndpoints {
    UserEndpoint getOrcsUserEndpoint();
 
    KeyValueEndpoint getKeyValueEp();
+
+   QueryEndpoint getQueryEndpoint();
 }

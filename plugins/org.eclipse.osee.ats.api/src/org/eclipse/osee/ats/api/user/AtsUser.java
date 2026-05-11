@@ -37,6 +37,9 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    private String abridgedEmail;
    private String phone;
    private List<String> loginIds = new ArrayList<>();
+   private String manager;
+   private String dept;
+   private String json;
 
    public AtsUser() {
       // for jax-rs instantiation
@@ -124,5 +127,29 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
 
    public boolean isUnAssigned() {
       return AtsCoreUsers.isUnAssignedUser(this);
+   }
+
+   public String getManager() {
+      return manager;
+   }
+
+   public void setManager(String manager) {
+      this.manager = manager;
+   }
+
+   public String getDept() {
+      return dept;
+   }
+
+   public void setDept(String dept) {
+      this.dept = dept;
+   }
+
+   public String getJson() {
+      return json;
+   }
+
+   public void setJson(String json) {
+      this.json = json;
    }
 }

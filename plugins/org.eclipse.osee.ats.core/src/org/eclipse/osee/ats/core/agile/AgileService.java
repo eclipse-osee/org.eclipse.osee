@@ -79,7 +79,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -107,49 +106,11 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public AttributeTypeToken getPointsAttrType(IAtsTeamDefinition teamDef) {
-      AttributeTypeToken pointsAttrType = AttributeTypeToken.SENTINEL;
-      IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
-      if (agileTeam != null) {
-         pointsAttrType = atsApi.getAgileService().getAgileTeamPointsAttributeType(agileTeam);
-      }
-      if (pointsAttrType.isInvalid()) {
-         pointsAttrType = AtsAttributeTypes.PointsNumeric;
-      }
-      return pointsAttrType;
-   }
-
-   @Override
    public AttributeTypeToken getPointsAttrType(IAtsWorkItem workItem) {
-      // This performs better; To set different attr type, WorkDef needs to overwrite default PointsNumeric
       if (workItem.getWorkDefinition().getPointsAttrType().isValid()) {
          return workItem.getWorkDefinition().getPointsAttrType();
       }
-      AttributeTypeToken pointsAttrType = AttributeTypeToken.SENTINEL;
-      Long aTeamId = atsApi.getConfigService().getConfigurations().getTeamDefToAgileTeam().get(
-         workItem.getParentTeamWorkflow().getTeamDefinition().getId());
-      if (aTeamId != null && aTeamId > 0) {
-         JaxAgileTeam aTeam = atsApi.getConfigService().getConfigurations().getIdToAgileTeam().get(aTeamId);
-         if (aTeam != null) {
-            AttributeTypeToken ptsAttrType = aTeam.getPointsAttrType();
-            if (ptsAttrType.isValid()) {
-               pointsAttrType = ptsAttrType;
-            }
-         }
-      }
-      if (pointsAttrType.isInvalid()) {
-         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-         if (teamWf != null) {
-            IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
-            if (agileTeam != null) {
-               pointsAttrType = atsApi.getAgileService().getAgileTeamPointsAttributeType(agileTeam);
-            }
-         }
-      }
-      if (pointsAttrType.isInvalid()) {
-         pointsAttrType = AtsAttributeTypes.PointsNumeric;
-      }
-      return pointsAttrType;
+      return AtsAttributeTypes.PointsNumeric;
    }
 
    @Override
@@ -319,31 +280,6 @@ public class AgileService implements IAgileService {
          teams.add(getAgileTeam(teamArt));
       }
       return teams;
-   }
-
-   @Override
-   public AttributeTypeToken getAgileTeamPointsAttributeType(IAgileTeam team) {
-      AttributeTypeToken type = AtsAttributeTypes.Points;
-      String attrTypeName =
-         atsApi.getAttributeResolver().getSoleAttributeValue(team, AtsAttributeTypes.PointsAttributeType, null);
-      if (Strings.isValid(attrTypeName)) {
-         type = getTypeFromName(attrTypeName);
-      }
-      return type;
-   }
-
-   private AttributeTypeToken getTypeFromName(String attrTypeName) {
-      AttributeTypeToken type = null;
-      for (AttributeTypeToken attrType : atsApi.getStoreService().getAttributeTypes()) {
-         if (attrType.getName().equals(attrTypeName)) {
-            type = attrType;
-            break;
-         }
-      }
-      if (type == null) {
-         throw new OseeCoreException("Invalid attribute type name provided: %s", attrTypeName);
-      }
-      return type;
    }
 
    @Override
@@ -700,22 +636,6 @@ public class AgileService implements IAgileService {
          sprints.add(sprintArt);
       }
       return sprints;
-   }
-
-   @Override
-   public String getAgileTeamPointsStr(IAtsWorkItem workItem) {
-      String result =
-         atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, AtsAttributeTypes.Points, "");
-      if (Strings.isInValid(result)) {
-         Double pts =
-            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PointsNumeric, 0.0);
-         if (pts == 0.0) {
-            result = "";
-         } else {
-            result = pts.toString();
-         }
-      }
-      return result;
    }
 
    @Override

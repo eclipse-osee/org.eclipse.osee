@@ -54,6 +54,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.ide.world.WorldEditor";
    protected WorldXWidgetActionPage worldXWidgetActionPage;
+   private SearchEngine lastSearchEngine;
    public static final int TITLE_MAX_LENGTH = 80;
 
    @Override
@@ -197,7 +198,10 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    @Override
    public void reSearch() {
-      worldXWidgetActionPage.reSearch();
+      if (lastSearchEngine == null) {
+         lastSearchEngine = SearchEngine.AsArtifacts;
+      }
+      worldXWidgetActionPage.reSearch(lastSearchEngine);
    }
 
    public boolean isReloadTabShown() {

@@ -43,25 +43,25 @@ public class Pdd21CreateUnCommittedActionTest extends AbstractPopulateDemoDataba
       Collection<IAtsTeamWorkflow> sawUnCommittedTeamWfs = DemoUtil.getSawUnCommittedTeamWfs();
       assertEquals(4, sawUnCommittedTeamWfs.size());
 
-      IAtsTeamWorkflow codeTeamArt = DemoUtil.getSawCodeUnCommittedWf();
-      assertNotNull(codeTeamArt);
-      IAtsTeamWorkflow testTeamArt = DemoUtil.getSawTestUnCommittedWf();
-      assertNotNull(testTeamArt);
-      IAtsTeamWorkflow reqTeamArt = DemoUtil.getSawReqUnCommittedWf();
-      assertNotNull(reqTeamArt);
-      IAtsTeamWorkflow designTeamArt = DemoUtil.getSawSWDesignUnCommittedWf();
-      assertNotNull(designTeamArt);
+      IAtsTeamWorkflow codeTeamWf = DemoUtil.getSawCodeUnCommittedWf();
+      assertNotNull(codeTeamWf);
+      IAtsTeamWorkflow testTeamWf = DemoUtil.getSawTestUnCommittedWf();
+      assertNotNull(testTeamWf);
+      IAtsTeamWorkflow reqTeamWf = DemoUtil.getSawReqUnCommittedWf();
+      assertNotNull(reqTeamWf);
+      IAtsTeamWorkflow designTeamWf = DemoUtil.getSawSWDesignUnCommittedWf();
+      assertNotNull(designTeamWf);
 
-      testTeamContents(codeTeamArt, DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
+      testTeamContents(codeTeamWf, DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code", DemoUsers.Joe_Smith.getName(),
          AtsArtifactTypes.DemoCodeTeamWorkflow, getTeamDef(DemoArtifactToken.SAW_Code));
-      testTeamContents(testTeamArt, DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
+      testTeamContents(testTeamWf, DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test", DemoUsers.Kay_Jones.getName(),
          AtsArtifactTypes.DemoTestTeamWorkflow, getTeamDef(DemoArtifactToken.SAW_Test));
-      testTeamContents(reqTeamArt, DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
+      testTeamContents(reqTeamWf, DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements", DemoUsers.Joe_Smith.getName(),
          AtsArtifactTypes.DemoReqTeamWorkflow, getTeamDef(DemoArtifactToken.SAW_Requirements));
-      testTeamContents(designTeamArt, DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
+      testTeamContents(designTeamWf, DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW SW Design", DemoUsers.Kay_Jones.getName(),
          AtsArtifactTypes.TeamWorkflow, getTeamDef(DemoArtifactToken.SAW_SW_Design));
 

@@ -45,7 +45,7 @@ public class SubscribedAction extends AbstractAtsAction {
    public void updateEnablement() {
       String title = "Subscribed";
       try {
-         setEnabled(getSelectedSubscribableArts().size() > 0);
+         setEnabled(!getSelectedSubscribableArts().isEmpty());
          if (getSelectedSubscribableArts().size() == 1) {
             title = AtsApiService.get().getWorkItemService().getSubscribeService().amISubscribed(
                getSelectedSubscribableArts().iterator().next()) ? "Remove Subscribed" : "Add as Subscribed";

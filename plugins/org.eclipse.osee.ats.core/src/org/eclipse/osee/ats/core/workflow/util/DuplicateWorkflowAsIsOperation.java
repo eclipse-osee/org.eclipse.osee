@@ -173,7 +173,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
 
       for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(fromWorkItem.getStoreObject())) {
          if (!getExcludeTypes().contains(attr.getAttributeType())) {
-            if (attr.getAttributeType().equals(AtsAttributeTypes.Points) || attr.getAttributeType().equals(
+            if (attr.getAttributeType().equals(AtsAttributeTypes.PointsEnum) || attr.getAttributeType().equals(
                AtsAttributeTypes.PointsNumeric)) {
                if (Strings.isValid(points)) {
                   changes.setSoleAttributeValue(newWorkItemArt, attr.getAttributeType(), points);

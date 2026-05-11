@@ -17,10 +17,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
@@ -105,5 +107,10 @@ public class FavoritesManager {
    @SuppressWarnings("unlikely-arg-type")
    public static boolean isFavorite(AbstractWorkflowArtifact workflow) {
       return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(OseeApiService.user());
+   }
+
+   public static Collection<Artifact> getFavorites(AtsUser user) {
+      return Collections.castAll(
+         AtsApiService.get().relSvc().getRelated(user.getArtifactId(), AtsRelationTypes.FavoriteUser_Artifact));
    }
 }

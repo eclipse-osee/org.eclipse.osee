@@ -60,7 +60,7 @@ public class MetricsReportOperations {
 
    public Response setBranchDiffData(String atsId) {
       try {
-         IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemByAtsId(atsId);
+         IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
          if (!(workItem instanceof IAtsTeamWorkflow)) {
             return Response.status(406, "Provided atsId is not a Team Workflow").build();
          }

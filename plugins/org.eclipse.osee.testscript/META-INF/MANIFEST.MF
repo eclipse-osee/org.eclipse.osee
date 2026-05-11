@@ -4,7 +4,7 @@ Bundle-Name: OSEE Server Disposition Test Script
 Bundle-SymbolicName: org.eclipse.osee.testscript;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.testscript
@@ -15,6 +15,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  com.google.common.collect,
  javax.ws.rs,
  javax.ws.rs.core,
+ javax.xml.ws,
  org.apache.cxf.jaxrs.ext.multipart,
  org.eclipse.osee.accessor,
  org.eclipse.osee.accessor.internal,
@@ -29,6 +30,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.xml,
+ org.eclipse.osee.framework.logging,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.core.ds,
@@ -37,5 +39,6 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.testscript.ats,
- org.eclipse.osee.testscript.ats.internal
+ org.eclipse.osee.testscript.ats.internal,
+ org.osgi.service.http
 

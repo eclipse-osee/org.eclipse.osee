@@ -20,7 +20,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsUsersUtilityTest.class, CoreAtsUsersTest.class})
+@Suite.SuiteClasses({
+   AtsUsersUtilityTest.class, //
+   CoreAtsUsersTest.class, //
+   UserActivityDataTest.class})
+
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  *

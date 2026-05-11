@@ -32,10 +32,10 @@ import org.eclipse.osee.ats.ide.editor.tab.bit.XBitViewer;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -49,7 +49,7 @@ public class RemoveBitWorkflowAction extends AbstractAtsAction {
    public RemoveBitWorkflowAction(ISelectedAtsArtifacts selectedAtsArtifacts, XBitViewer bitXViewer) {
       super("Remove BIT Workflow (admin)", IAction.AS_PUSH_BUTTON);
       this.bitXViewer = bitXViewer;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DELETE));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.DELETE));
    }
 
    @Override

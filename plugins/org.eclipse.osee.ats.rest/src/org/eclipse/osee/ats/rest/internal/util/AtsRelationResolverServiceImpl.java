@@ -128,13 +128,17 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
 
    @Override
    public boolean areRelated(IAtsObject atsObject1, RelationTypeSide relationType, IAtsObject atsObject2) {
-      boolean related = false;
-      ArtifactReadable useArt1 = getArtifact(atsObject1);
-      ArtifactReadable useArt2 = getArtifact(atsObject2);
-      if (useArt1 != null && useArt2 != null) {
-         related = useArt1.areRelated(relationType, useArt2);
+      ArtifactReadable artifact1 = getArtifact(atsObject1);
+      ArtifactReadable artifact2 = getArtifact(atsObject2);
+      boolean areRelated = false;
+      // Method areRelated uses both loaded relations Graphs for each artifact, so both have to be legacy
+      if (artifact1.isLegacyArtRead() && artifact2.isLegacyArtRead()) {
+         areRelated = artifact1.areRelated(relationType, artifact2);
+      } else {
+         // Can't use areRelated for ArtifactReadableImpl cause relations may not have been loaded for that type
+         areRelated = getRelated(atsObject1, relationType).contains(atsObject2.getStoreObject());
       }
-      return related;
+      return areRelated;
    }
 
    @SuppressWarnings("unchecked")
@@ -172,6 +176,9 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          }
       } else if (object instanceof ArtifactId) {
          useArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(((ArtifactId) object).getId());
+      }
+      if (useArt != null && !useArt.isLoaded()) {
+         useArt = atsApi.getQueryService().getArtifactNew(useArt.getId());
       }
       return useArt;
    }
@@ -216,7 +223,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       List<ArtifactToken> results = new LinkedList<>();
       ArtifactReadable art = getArtifact(artifact);
       for (ArtifactToken related : art.getRelated(relationType)) {
-         if (((ArtifactReadable) related).isOfType(artifactType)) {
+         if (related.isOfType(artifactType)) {
             results.add(related);
          }
       }

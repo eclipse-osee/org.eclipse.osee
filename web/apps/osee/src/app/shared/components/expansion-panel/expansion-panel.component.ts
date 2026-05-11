@@ -32,8 +32,8 @@ import { ExpandIconComponent } from '../expand-icon/expand-icon.component';
 		hideToggle>
 		<mat-expansion-panel-header
 			(click)="togglePanel()"
-			[class]="panelOpen() ? 'tw-bg-background-hover tw-shadow-md' : ''"
-			class="hover:tw-bg-osee-neutral-20">
+			[class]="panelOpen() ? 'tw-shadow-md' : ''"
+			class="dark:hover:tw-bg-osee-neutral-20">
 			<mat-panel-title class="tw-flex tw-gap-4">
 				<osee-expand-icon [open]="panelOpen()" />
 				<div class="tw-font-bold">{{ title() }}</div>

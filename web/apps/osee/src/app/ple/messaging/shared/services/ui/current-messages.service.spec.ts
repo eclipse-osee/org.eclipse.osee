@@ -102,7 +102,7 @@ describe('CurrentMessagesService', () => {
 		});
 
 		//TODO: test doesn't work with signals
-		xit('should fetch filtered messages', () => {
+		it.skip('should fetch filtered messages', () => {
 			scheduler.run(() => {
 				// service.filter = 'filter';
 				service.branch = '10';
@@ -116,7 +116,7 @@ describe('CurrentMessagesService', () => {
 		});
 
 		//TODO: doesn't work with signals
-		xit('should update the list of all messages twice', () => {
+		it.skip('should update the list of all messages twice', () => {
 			scheduler.run(({ cold }) => {
 				service.branch = '10';
 				service.connection = '10';
@@ -218,7 +218,7 @@ describe('CurrentMessagesService', () => {
 		});
 
 		//TODO: doesn't work with signals
-		xit('should remove a message', () => {
+		it.skip('should remove a message', () => {
 			scheduler.run(() => {
 				service.branch = '10';
 				service.connection = '10';
@@ -332,7 +332,7 @@ describe('CurrentMessagesService', () => {
 		});
 	});
 	//TODO: test doesn't work with signals currently
-	xdescribe('diffs', () => {
+	describe.skip('diffs', () => {
 		it('should get messages,submessages with differences', () => {
 			scheduler.run(({ expectObservable }) => {
 				service.difference = changeReportMock;

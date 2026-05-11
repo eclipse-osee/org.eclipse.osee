@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
@@ -75,6 +76,20 @@ public abstract class SkynetXViewerFactory extends XViewerFactory {
             xCol.setShow(show);
             xCol.setMultiColumnEditable(multiColumnEditable);
             registerColumns(xCol);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+   
+   public void registerRelatedColumnsBasedOnCustomizations() {
+      try {
+         for (CustomizeData cust : super.getXViewerCustomizations().getSavedCustDatas()) {
+            for (XViewerColumn col : cust.getColumnData().getColumns()) {
+               if (col.getName().indexOf("related") >= 0) {
+                  registerColumns(getDefaultXViewerColumn(col.getId()));
+               }
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

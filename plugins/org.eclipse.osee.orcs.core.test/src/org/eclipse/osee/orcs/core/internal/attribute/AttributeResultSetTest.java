@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
-import org.eclipse.osee.orcs.core.ds.Attribute;
+import org.eclipse.osee.orcs.search.ds.Attribute;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;

@@ -76,7 +76,7 @@ LOCK="$INSTALL_PATH/locks/osee_app_server_$SERVER_ID.lock"
 OSEE_APP_SERVER_EXTRA_VMARGS="-Djavax.net.ssl.trustStore=-Djavax.net.ssl.trustStore=$serv_path/etc/keystore/lba.jks -Djavax.net.ssl.trustStorePassword=secret -Dcm.config.uri=$OSEE_SERVER_CONFIG_URI -Djava.security.egd=file:///dev/urandom -Dosee.authentication.protocol=$OSEE_AUTHENTICATION_PROTOCOL -Dosee.application.server.data=$OSEE_APP_SERVER_DATA -Dosee.check.tag.queue.on.startup=false -Dosee.proxy.bypass.enabled=true"
 echo x $OSEE_APP_SERVER_EXTRA_VMARGS
 ######################################################################
-                                        
+
 RETVAL=0
 
 BOOTUP=color
@@ -149,7 +149,7 @@ test_app_server_alive() {
    fi
 }
 
-pid_of_osee_app_server() {  
+pid_of_osee_app_server() {
   pid=`jps -v | grep $OSEE_APP_SERVER_PORT | awk '{print $1}'`
 }
 
@@ -159,25 +159,25 @@ echo app args $OSEE_APP_ARGS
     [ -e "$LOG" ] && cnt=`wc -l "$LOG" | awk '{ print $3 }'` || cnt=1
 
     echo $"Starting OSEE App Server: "
-    
+
     mkdir -p "$INSTALL_PATH"/logs
     mkdir -p "$INSTALL_PATH"/locks
-    
+
     pid_of_osee_app_server
     if [ -n "$pid" ]; then
            echo Server already started with pid: $pid
            exit 0
     fi
   #  $JAVA_EXEC =  /c/'"Program Files"'/Java/jdk1.8.0_121/bin/java
-    EXECUTION_CMD="/c/'Program Files'/Java/jdk1.8.0_121/bin/java -jar $EQUINOX_LAUNCHER" 
-   
+    EXECUTION_CMD="/c/'Program Files'/Java/jdk1.8.0_121/bin/java -jar $EQUINOX_LAUNCHER"
+
     OSEE_APP_SERVER_EXTRA_VMARGS="-Djavax.net.ssl.trustStore=$serv_path/etc/keystore/lba.jks -Djavax.net.ssl.trustStorePassword=secret -Dcm.config.uri=$serv_path_c/etc/osee.hsql.json -Djava.security.egd=file:///dev/urandom -Dosee.authentication.protocol=trustAll -Dosee.application.server.data=$OSEE_APP_SERVER_DATA -Dosee.check.tag.queue.on.startup=false -Dosee.proxy.bypass.enabled=true"
-   
-   eval "java -Xms40m -Xmx3G -Dosgi.configuration.area=$CONFIGURATION_AREA -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT -Dlogback.configurationFile=$PWD/logback/logback-config.xml $OSEE_APP_SERVER_EXTRA_VMARGS -jar $PWD/plugins/org.eclipse.equinox.launcher_*.jar -console $OSGI_TELNET_PORT -consoleLog $OSEE_APP_ARGS -clean>> $LOG 2>&1 &" 
-   
-   
-    pid_of_osee_app_server 
-    echo pid: $pid 
+
+   eval "java -Xms40m -Xmx3G -Dosgi.configuration.area=$CONFIGURATION_AREA -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT -Dlogback.configurationFile=$PWD/logback/logback-config.xml $OSEE_APP_SERVER_EXTRA_VMARGS -Djava.util.logging.config.file=etc/logging.properties -jar $PWD/plugins/org.eclipse.equinox.launcher_*.jar -console $OSGI_TELNET_PORT -consoleLog $OSEE_APP_ARGS -clean  -data workspace>> $LOG 2>&1 &"
+
+
+    pid_of_osee_app_server
+    echo pid: $pid
     RETVAL=$?
     echo ret $RETVAL
      if [ -z "$pid" ]; then
@@ -186,9 +186,9 @@ echo app args $OSEE_APP_ARGS
        elif [ $RETVAL == 0 ]; then
           echo Server started with port $OSEE_APP_SERVER_PORT and pid $pid
           echo "[  OK  ]"
-       else 
+       else
           echo Server not started with port $OSEE_APP_SERVER_PORT
-          echo "[ FAILED ]"   
+          echo "[ FAILED ]"
     fi
 }
 
@@ -224,21 +224,21 @@ stop() {
 
 status() {
    pid_of_osee_app_server
-   
+
    if [ -n "$pid" ]; then
-       
+
           test_app_server_alive
 
          if [ "$isAlive" == "Alive" ]; then
               echo "OSEE App Server (pid $pid) is running..."
-         else 
+         else
               echo "OSGI without OSEE (pid $pid) is running..."
        fi
-             
+
    fi
-  
+
    if [ -z "$pid" ]; then
-                echo No pid found for port $OSEE_APP_SERVER_PORT                  
+                echo No pid found for port $OSEE_APP_SERVER_PORT
            else
              echo Server is running for port $OSEE_APP_SERVER_PORT
              return 0

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchQueryData;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ConflictData;
 import org.eclipse.osee.framework.core.data.ConflictUpdateData;
@@ -307,12 +308,24 @@ public interface BranchEndpoint {
    @DELETE
    @Path("{branch}")
    Response purgeBranch(@PathParam("branch") BranchId branch,
-      @DefaultValue("false") @QueryParam("recurse") boolean recurse);
+      @DefaultValue("false") @QueryParam("recurse") boolean recurse,
+      @QueryParam("createRecovery") boolean createRecovery);
 
    @DELETE
    @Path("purgeDeletedBranches")
    Response purgeDeletedBranches(@QueryParam("expireTimeInDays") @DefaultValue("90") int expireTimeInDays,
       @QueryParam("branchCount") @DefaultValue("25") int branchCount);
+
+   @DELETE
+   @Path("purgeWorkingBranchesOfClosedPrograms")
+   Response purgeWorkingBranchesOfClosedPrograms(@QueryParam("branchCount") @DefaultValue("25") int branchCount,
+      @QueryParam("archived") @DefaultValue("1") int archived);
+
+   @DELETE
+   @Path("purgeStaleWorkingBranches")
+   Response purgeStaleWorkingBranches(@QueryParam("expireTimeInDays") @DefaultValue("365") int expireTimeInDays,
+      @QueryParam("branchCount") @DefaultValue("25") int branchCount,
+      @QueryParam("archived") @DefaultValue("1") int archived);
 
    @DELETE
    @Path("{branch}/associated-artifact")

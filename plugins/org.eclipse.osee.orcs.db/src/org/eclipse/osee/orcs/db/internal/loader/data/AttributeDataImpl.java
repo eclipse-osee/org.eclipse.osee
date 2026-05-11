@@ -15,10 +15,10 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsVersionedObjectImpl;
-import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
+import org.eclipse.osee.orcs.search.ds.VersionData;
 
 /**
  * @author Roberto E. Escobar

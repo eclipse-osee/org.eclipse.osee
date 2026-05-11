@@ -28,7 +28,6 @@ import { NavContainerComponent } from './layout/lib/containers/nav-container.com
 		MatSidenavModule,
 		MatIconModule,
 		MatToolbarModule,
-		NavContainerComponent,
 	],
 })
 class MockOseeUserComponent {}

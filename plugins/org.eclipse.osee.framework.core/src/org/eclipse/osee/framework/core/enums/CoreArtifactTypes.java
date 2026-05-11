@@ -262,7 +262,8 @@ public interface CoreArtifactTypes {
                 .any( DataRightsRequiredIndicatorStatementEntry )
          );
 
-   ArtifactTypeToken EnumeratedArtifact = osee.add(osee.artifactType(4619295485563766003L, "Enumerated Artifact", false, Controlled));
+   ArtifactTypeToken EnumeratedArtifact = osee.add(osee.artifactType(4619295485563766003L, "Enumerated Artifact", false, Controlled)
+      .any(IdValue));
 
    ArtifactTypeToken Feature = osee.add(osee.artifactType(87L, "Feature", false, new MaterialIcon("stars", MaterialColors.BLUE, MaterialShades.S700), Artifact)
       .zeroOrOne(DefaultValue)
@@ -299,7 +300,11 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Dictionary)
       .any(GeneralStringData)
       .zeroOrOne(ProductLinePreferences)
-      .zeroOrOne(WebPreferences));
+      .zeroOrOne(WebPreferences)
+      .zeroOrOne(EmailEncryptionEnabled)
+      .zeroOrOne(EmailCertificateLdapUrl)
+      .zeroOrOne(EmailCertificateUploadOverrideLink)
+      .zeroOrOne(EmailCertificateInstructions));
 
    ArtifactTypeToken GroupArtifact = osee.add(osee.artifactType(6L, "Group Artifact", false, new MaterialIcon("group_work"), Artifact));
 
@@ -338,19 +343,9 @@ public interface CoreArtifactTypes {
       .exactlyOne(SeverityCategory, SeverityCategory.Unspecified)
       .zeroOrOne(SubjectMatterExpert));
 
-   ArtifactTypeToken DesignDescriptionMsWord = osee.add(osee.artifactType(810L, "Design Description - MS Word", false, MsWordTemplate)
-      .zeroOrOne(DoorsHierarchy)
-      .any(DoorsId)
-      .any(DoorsModId)
-      .zeroOrOne(MarkdownContent)
-      .zeroOrOne(Extension));
+   ArtifactTypeToken DesignDescriptionMsWord = osee.add(osee.artifactType(810L, "Design Description - MS Word", false, MsWordTemplate, AbstractHeading));
 
-   ArtifactTypeToken DocumentDescriptionMsWord = osee.add(osee.artifactType(806L, "Document Description - MS Word", false, MsWordTemplate)
-      .zeroOrOne(DoorsHierarchy)
-      .any(DoorsId)
-      .any(DoorsModId)
-      .zeroOrOne(MarkdownContent)
-      .zeroOrOne(Extension));
+   ArtifactTypeToken DocumentDescriptionMsWord = osee.add(osee.artifactType(806L, "Document Description - MS Word", false, MsWordTemplate, AbstractHeading));
 
    ArtifactTypeToken FunctionMsWord = osee.add(osee.artifactType(34L, "Function - MS Word", true, MsWordTemplate)
       .exactlyOne(FDAL, FDAL.Unspecified)
@@ -400,8 +395,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(Active, Boolean.TRUE)
       .any(UriGeneralStringData));
 
-   ArtifactTypeToken OseeTypeEnum = osee.add(osee.artifactType(5447805027409642344L, "Osee Type Enum", false, EnumeratedArtifact)
-      .any(IdValue));
+   ArtifactTypeToken OseeTypeEnum = osee.add(osee.artifactType(5447805027409642344L, "Osee Type Enum", false, EnumeratedArtifact));
 
    ArtifactTypeToken AcronymPlainText = osee.add(osee.artifactType(5034328852220100337L, "Acronym Plain Text", false, PlainText)
       .zeroOrOne(Acronym)
@@ -784,6 +778,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Country)
       .zeroOrOne(Dictionary)
       .zeroOrOne(Email)
+      .zeroOrOne(EmailPublicCertificate)
       .zeroOrOne(AbridgedEmail)
       .any(FavoriteBranch)
       .zeroOrOne(FaxPhone)

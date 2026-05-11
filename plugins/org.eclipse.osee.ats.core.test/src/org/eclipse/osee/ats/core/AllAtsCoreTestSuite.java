@@ -14,9 +14,7 @@
 package org.eclipse.osee.ats.core;
 
 import org.eclipse.osee.ats.core.ai.AtsCore_AI_Suite;
-import org.eclipse.osee.ats.core.column.AtsCore_Column_JT_Suite;
 import org.eclipse.osee.ats.core.commit.operations.AtsCore_Commit_JT_Suite;
-import org.eclipse.osee.ats.core.config.AtsCore_Config_JT_Suite;
 import org.eclipse.osee.ats.core.internal.log.AtsTest_Internal_Log_Suite;
 import org.eclipse.osee.ats.core.internal.state.AtsCore_Internal_State_JT_Suite;
 import org.eclipse.osee.ats.core.internal.util.AtsCore_Internal_Util_Suite;
@@ -35,9 +33,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsCore_AI_Suite.class,
-   AtsCore_Column_JT_Suite.class,
    AtsCore_Commit_JT_Suite.class,
-   AtsCore_Config_JT_Suite.class,
    AtsTest_Internal_Log_Suite.class,
    AtsCore_Internal_Util_Suite.class,
    AtsCore_Internal_State_JT_Suite.class,

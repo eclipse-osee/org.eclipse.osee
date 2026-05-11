@@ -22,7 +22,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsBranchServiceImplTest.class, //
-   DemoBranchRegressionTest.class})
+   DemoBranchRegressionTest.class, //
+   BranchQueryBuilderTest.class})
 
 public class AtsTest_Branch_Suite {
    // do nothing

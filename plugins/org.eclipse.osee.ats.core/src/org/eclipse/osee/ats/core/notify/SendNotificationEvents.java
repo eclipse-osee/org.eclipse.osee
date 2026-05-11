@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
-import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.IOseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmailType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -81,7 +81,7 @@ public class SendNotificationEvents {
             for (String email : uniqueEmailAddressesAbridged) {
                List<AtsNotificationEvent> notifyEvents = new ArrayList<>();
                for (AtsNotificationEvent notificationEvent : notificationEvents) {
-                  if (notificationEvent.getEmailAddresses().contains(email)) {
+                  if (notificationEvent.getEmailAddressesAbridged().contains(email)) {
                      notifyEvents.add(notificationEvent);
                   }
                }
@@ -122,7 +122,7 @@ public class SendNotificationEvents {
       for (AtsNotificationEvent notificationEvent : notificationEvents) {
          String description = notificationEvent.getSubjectDescription();
          if (emailType.isAbridged()) {
-            description = notificationEvent.getSubjectDescriptionAbridged();
+            description = notificationEvent.getSanitizedSubjectDescription();
          }
          if (anyCancelable) {
             sb.append(AHTML.addRowMultiColumnTable(new String[] {
@@ -169,8 +169,11 @@ public class SendNotificationEvents {
          return;
       }
       String html = "";
-      if (Strings.isValid(body)) {
+      // Do not include body in abridged emails since they will be sent unencrypted
+      if (Strings.isValid(body) && emailType.isDefault()) {
          html += "<pre>" + body + "</pre>";
+      } else if (emailType.isAbridged()) {
+         html += "<p>This is an abridged email. See your primary email account for additional details.</p>";
       }
       html += notificationEventsToHtml(notificationEvents, emailType);
       if (!Strings.isValid(email)) {
@@ -186,7 +189,11 @@ public class SendNotificationEvents {
          }
 
          try {
-            OseeEmail oseeEmail = oseeEmailCreator.createOseeEmail();
+            IOseeEmail oseeEmail = oseeEmailCreator.createOseeEmail();
+            // Abridged emails are sent unencrypted; content is already sanitized (no sensitive data)
+            if (emailType.isAbridged()) {
+               oseeEmail.setEncryptionEnabled(false);
+            }
             oseeEmail.setFrom(useFromEmail);
             String subject = getNotificationEmailSubject(notificationEvents, emailType);
             oseeEmail.setSubject(subject);
@@ -209,19 +216,20 @@ public class SendNotificationEvents {
       if (!Strings.isValid(result)) {
          if (notificationEvents.size() == 1) {
             AtsNotificationEvent event = notificationEvents.iterator().next();
-            String subject = event.getSubjectType();
-            String description = event.getSubjectDescription();
-            if (emailType.isAbridged()) {
-               subject += " (abridged)";
-               description = event.getSubjectDescriptionAbridged();
+            // Always use the abridged (sanitized) description in the subject line since subjects are not encrypted;
+            // never fall back to getSubjectDescription() as it may contain unsanitized user input
+            String description = event.getSanitizedSubjectDescription();
+            if (Strings.isValid(description)) {
+               result = Strings.truncate("OSEE Notification" + " - " + event.getSubjectType() + " - " + description, 128);
+            } else {
+               result = Strings.truncate("OSEE Notification" + " - " + event.getSubjectType(), 128);
             }
-            result = Strings.truncate("OSEE Notification" + " - " + subject + " - " + description, 128);
          } else {
             result = "OSEE Notification";
          }
       }
-      if (Strings.isValid(result) && emailType.isAbridged()) {
-         result += " (abridged)";
+      if (emailType.isAbridged()) {
+         result = "[Abridged] " + result;
       }
       return result;
    }

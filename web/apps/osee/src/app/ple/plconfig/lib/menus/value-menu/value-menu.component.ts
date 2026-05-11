@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuItem } from '@angular/material/menu';
 import { applic } from '@osee/applicability/types';
@@ -29,13 +29,9 @@ import {
 })
 export class ValueMenuComponent {
 	private currentBranchService = inject(PlConfigCurrentBranchService);
-
-	@Input() value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges = {
-		id: '',
-		name: '',
-		value: '',
-		values: [],
-	};
+	value = input.required<
+		ExtendedNameValuePair | ExtendedNameValuePairWithChanges
+	>();
 
 	hasChanges(
 		value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges

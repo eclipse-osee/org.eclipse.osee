@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.IXViewerLabelProvider;
@@ -105,7 +104,7 @@ public class CustomizeManager {
          if (resolvedCol == null) {
             resolvedCol = resolveComputedColumns(storedCol, resolvedCol);
          }
-
+         
          // Only handle columns that the factory supports and only resolve shown columns (rest will be loaded later)
          if (resolvedCol != null && resolvedCol.getWidth() > 0) {
             if (storedCol.getWidth() > 0) {

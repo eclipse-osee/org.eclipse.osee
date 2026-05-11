@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -55,7 +56,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class DemoTestUtil {
    public static Map<DemoWorkType, IAtsTeamWorkflow> unCommittedWorkflows;
    public static Map<DemoWorkType, IAtsTeamWorkflow> committedWorkflows;
-   public static TeamWorkFlowArtifact toolsTeamWorkflow;
+   public static IAtsTeamWorkflow toolsTeamWorkflow;
    private static IAtsTeamWorkflow buttonSTeamWf, buttonWTeamWf;
 
    /**
@@ -110,12 +111,12 @@ public class DemoTestUtil {
       return Collections.castAll(arts);
    }
 
-   public static TeamWorkFlowArtifact getToolsTeamWorkflow() {
+   public static IAtsTeamWorkflow getToolsTeamWorkflow() {
       if (toolsTeamWorkflow == null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromName(
             DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getName(), AtsApiService.get().getAtsBranch())) {
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               toolsTeamWorkflow = (TeamWorkFlowArtifact) art;
+               toolsTeamWorkflow = TeamWorkflow.valueOf(art);
             }
          }
       }

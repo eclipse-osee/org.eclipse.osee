@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.search.WorldSearchItem;
+import org.eclipse.osee.ats.ide.search.WorldSearchDataItem;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public class OpenWorkflowsByTeamDefSearchItem extends WorldSearchItem {
+public class OpenWorkflowsByTeamDefSearchItem extends WorldSearchDataItem {
 
    private final AtsUser assignee;
    private final boolean includeCompletedCancelled;
@@ -74,7 +74,7 @@ public class OpenWorkflowsByTeamDefSearchItem extends WorldSearchItem {
             data.setReleasedOption(releasedOption);
          }
       }
-      return new WorldSearchItem(data);
+      return new WorldSearchDataItem(data);
    }
 
    @Override

@@ -14,10 +14,12 @@
 package org.eclipse.osee.ats.ide.world;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
@@ -28,9 +30,9 @@ public interface IWorldEditorProvider {
    /**
     * Called to start the process of search and load.
     */
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend);
+   public void run(WorldEditor worldEditor, SearchType searchType, PendOp pendOp);
 
-   default public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend, boolean search2) {
+   default public void run(WorldEditor worldEditor, SearchType searchType, SearchEngine srchEng, PendOp pendOp) {
       // do nothing
    }
 
@@ -52,8 +54,21 @@ public interface IWorldEditorProvider {
     */
    Collection<? extends ArtifactId> performSearch(SearchType searchType);
 
+   default Collection<? extends ArtifactId> performSearchAsArtifacts(SearchType searchType) {
+      // do nothing
+      return Collections.emptyList();
+   }
+
    default public String getWorldEditorHtmlReport() {
       return "";
+   }
+
+   default public void reportAdditionalCriteria(XResultData rd) {
+      // for subclass
+   }
+
+   default public XResultData getWorldEditorHtmlReportRd() {
+      return new XResultData();
    }
 
 }

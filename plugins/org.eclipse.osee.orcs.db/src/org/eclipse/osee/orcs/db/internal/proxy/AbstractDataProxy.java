@@ -15,9 +15,9 @@ package org.eclipse.osee.orcs.db.internal.proxy;
 
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.Attribute;
-import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
+import org.eclipse.osee.orcs.search.ds.Attribute;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
+import org.eclipse.osee.orcs.search.ds.ResourceNameResolver;
 
 /**
  * @author Roberto E. Escobar

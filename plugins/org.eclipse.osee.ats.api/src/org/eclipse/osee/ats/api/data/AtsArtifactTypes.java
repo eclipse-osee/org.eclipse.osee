@@ -25,10 +25,12 @@ import static org.eclipse.osee.ats.api.util.AtsImage.GOAL;
 import static org.eclipse.osee.ats.api.util.AtsImage.INSERTION;
 import static org.eclipse.osee.ats.api.util.AtsImage.INSERTION_ACTIVITY;
 import static org.eclipse.osee.ats.api.util.AtsImage.PEER_REVIEW;
+import static org.eclipse.osee.ats.api.util.AtsImage.PROBLEM_REPORT;
 import static org.eclipse.osee.ats.api.util.AtsImage.PROGRAM;
 import static org.eclipse.osee.ats.api.util.AtsImage.TASK;
 import static org.eclipse.osee.ats.api.util.AtsImage.TEAM_DEFINITION;
 import static org.eclipse.osee.ats.api.util.AtsImage.VERSION;
+import static org.eclipse.osee.ats.api.util.AtsImage.WORKFLOW;
 import static org.eclipse.osee.ats.api.util.AtsImage.WORKFLOW_DEFINITION;
 import static org.eclipse.osee.ats.api.util.AtsImage.WORK_PACKAGE;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractAccessControlled;
@@ -39,7 +41,6 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChange
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitRepoName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
-import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.MaterialIcon;
 
@@ -140,6 +141,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(NextVersion)
       .zeroOrOne(ReleaseDate)
       .zeroOrOne(StartDate)
+      .zeroOrOne(TeamDefinitionReference)
       .zeroOrOne(Released)
       .zeroOrOne(TestRunToSourceLocator)
       .zeroOrOne(VersionLocked)
@@ -156,21 +158,13 @@ public interface AtsArtifactTypes {
     */
    ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, new MaterialIcon("cases"), Artifact)
       .exactlyOne(Active, Boolean.TRUE)
-      .zeroOrOne(ActivityId)
-      .zeroOrOne(ActivityName)
-      .zeroOrOne(CAM)
-      .zeroOrOne(CognosUniqueId)
-      .zeroOrOne(ControlAccount)
       .zeroOrOne(Description)
       .zeroOrOne(EndDate)
       .zeroOrOne(EstimatedHours)
       .any(Notes)
       .zeroOrOne(PercentComplete)
       .zeroOrOne(PointsNumeric)
-      .zeroOrOne(StartDate)
-      .zeroOrOne(WorkPackageId)
-      .zeroOrOne(WorkPackageProgram)
-      .zeroOrOne(WorkPackageType, WorkPackageType.Discrete));
+      .zeroOrOne(StartDate));
 
 
    // ATS Workflows
@@ -220,7 +214,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Numeric2)
       .zeroOrOne(PeerReviewId)
       .zeroOrOne(PercentComplete)
-      .zeroOrOne(Points, Points.P_1)
+      .zeroOrOne(PointsEnum)
       .zeroOrOne(PointsNumeric)
       .zeroOrOne(ReleaseDate)
       .zeroOrOne(Resolution)
@@ -231,12 +225,11 @@ public interface AtsArtifactTypes {
       .zeroOrOne(UnplannedWork)
       .any(WebExportReviewed)
       .zeroOrOne(AtsAttributeTypes.WorkPackage)
-      .zeroOrOne(WorkPackageReference)
       .zeroOrOne(WorkflowDefinitionReference)
       .zeroOrOne(WorkflowNoteColor)
       .zeroOrOne(WorkflowNotes));
 
-   ArtifactTypeToken TeamWorkflow = ats.add(ats.artifactType(73L, "Team Workflow", false, AbstractAccessControlled, AbstractWorkflowArtifact)
+   ArtifactTypeToken TeamWorkflow = ats.add(ats.artifactType(73L, "Team Workflow", false, WORKFLOW, AbstractAccessControlled, AbstractWorkflowArtifact)
       .any(ActionableItemReference)
       .zeroOrOne(ApplicabilityWorkflow)
       .zeroOrOne(ApplicableToProgram, ApplicableToProgram.No)
@@ -267,7 +260,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(OriginatingPcrId)
       .any(PcrId)
       .zeroOrOne(PercentRework)
-      .zeroOrOne(PointsAttributeType)
       .zeroOrOne(Priority)
       .zeroOrOne(Problem)
       .zeroOrOne(ProductLineApprovedBy)
@@ -295,10 +287,9 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ValidateChangesRanDate)
       .zeroOrOne(ManagerSignedOffByDate)
       .zeroOrOne(ManagerSignedOffBy)
-      .zeroOrOne(ActivityId)
    );
 
-   ArtifactTypeToken ProblemReportTeamWorkflow = ats.add(ats.artifactType(6410317324151198012L, "PR Team Workflow", false, TeamWorkflow)
+   ArtifactTypeToken ProblemReportTeamWorkflow = ats.add(ats.artifactType(6410317324151198012L, "PR Team Workflow", false, PROBLEM_REPORT, TeamWorkflow)
       .zeroOrOne(Analysis)
       .zeroOrOne(FlightNumber)
       .zeroOrOne(Ship)
@@ -348,7 +339,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(LocReviewed)
       .zeroOrOne(Location)
       .zeroOrOne(HoursSpentRoles)
-      .any(MeetingAttendeeUserId)
       .any(MeetingAttendeeId)
       .zeroOrOne(MeetingDate)
       .zeroOrOne(MeetingLength)
@@ -378,8 +368,7 @@ public interface AtsArtifactTypes {
 
    ArtifactTypeToken AgileTeam = ats.add(ats.artifactType(7553778770333667393L, "Agile Team", false, new MaterialIcon("groups"), AtsConfigArtifact)
       .zeroOrOne(Description)
-      .zeroOrOne(KanbanIgnoreStates)
-      .zeroOrOne(PointsAttributeType));
+      .zeroOrOne(KanbanIgnoreStates));
 
    ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, new MaterialIcon("loop"), Goal)
       .any(Holiday)
@@ -393,9 +382,9 @@ public interface AtsArtifactTypes {
 
    // Demo Db Only
    ArtifactTypeToken DemoChangeRequestTeamWorkflow = atsDemo.add(atsDemo.artifactType(3456L, "Demo Change Request", false,
-      CHANGE_REQUEST, AtsArtifactTypes.ChangeRequestTeamWorkflow));
+      CHANGE_REQUEST, ChangeRequestTeamWorkflow));
    ArtifactTypeToken DemoProblemReportTeamWorkflow = atsDemo.add(atsDemo.artifactType(234523458L, "Demo Problem Report", false,
-      AtsImage.PROBLEM_REPORT, AtsArtifactTypes.ProblemReportTeamWorkflow)
+      PROBLEM_REPORT, ProblemReportTeamWorkflow)
       .zeroOrOne(AtsAttributeTypes.CustomerDescriptionLock)
       .zeroOrOne(AtsAttributeTypes.CustomerDescription)
       );

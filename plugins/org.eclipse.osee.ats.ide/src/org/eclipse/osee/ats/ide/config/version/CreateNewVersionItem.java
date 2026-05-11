@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -33,6 +34,7 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -41,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -64,7 +65,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
 
    public CreateNewVersionItem(IAtsTeamDefinition teamDefHoldingVersions, XNavItemCat xNavItemCat) {
       super("Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version(s) (Admin)",
-         FrameworkImage.VERSION, xNavItemCat);
+         CoreImage.VERSION, xNavItemCat);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
@@ -135,6 +136,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
                changes.add(
                   new AtsRelationChange(teamDefHoldingVersions, AtsRelationTypes.TeamDefinitionToVersion_Version,
                      Collections.singleton(version), RelationOperation.Add));
+               changes.setSoleAttributeValue(version, AtsAttributeTypes.TeamDefinitionReference,
+                  teamDefHoldingVersions);
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -36,7 +37,9 @@ import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.task.IAtsTaskProvider;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
@@ -49,6 +52,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.workdef.IAtsRelationService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -70,6 +74,7 @@ import org.eclipse.osee.ats.core.internal.AtsWorkItemMetricsServiceImpl;
 import org.eclipse.osee.ats.core.internal.column.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
+import org.eclipse.osee.ats.core.query.AtsSearchDataServiceImpl;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.task.internal.AtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
@@ -119,6 +124,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsColumnService columnServices;
    protected IAtsActionableItemService actionableItemManager;
    protected IRelationResolver relationResolver;
+   protected IAtsRelationService<?> relationService;
    protected IAtsVersionService versionService;
    protected IAtsTaskService taskService;
    protected IAtsTeamDefinitionService teamDefinitionService;
@@ -135,6 +141,8 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAgileService agileService;
    protected AtsJiraService jiraService;
    protected IAtsGroupService groupService;
+   protected AtsSearchDataServiceImpl atsSearchDataService;
+   protected final List<IAtsTaskProvider> taskProviders = new CopyOnWriteArrayList<>();
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -178,6 +186,16 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    public void setTaskSetDefinitionProviderService(
       IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
       this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
+   }
+
+   @Override
+   public void addTaskProvider(IAtsTaskProvider provider) {
+      taskProviders.add(provider);
+   }
+
+   @Override
+   public void removeTaskProvider(IAtsTaskProvider provider) {
+      taskProviders.remove(provider);
    }
 
    public void start() {
@@ -246,14 +264,14 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    @Override
    public void setUserConfigValue(String key, String value) {
-      ArtifactId userArt = getUserService().getCurrentUser().getStoreObject();
+      AtsUser userArt = getUserService().getCurrentUser();
       IAtsChangeSet changes =
          storeService.createAtsChangeSet("Set User AtsConfig Value", getUserService().getCurrentUser());
       if (userArt != null) {
          String keyValue = String.format("%s=%s", key, value);
          boolean found = false;
          Collection<IAttribute<String>> attributes =
-            getAttributeResolver().getAttributes(userArt, CoreAttributeTypes.AtsUserConfig);
+            getAttributeResolver().getAttributes((IAtsObject) userArt, CoreAttributeTypes.AtsUserConfig);
          for (IAttribute<String> attr : attributes) {
             String str = attr.getValue();
             if (str.startsWith(key + "=")) {
@@ -263,7 +281,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
             }
          }
          if (!found) {
-            changes.addAttribute(userArt, CoreAttributeTypes.AtsUserConfig, keyValue);
+            changes.addAttribute((IAtsObject) userArt, CoreAttributeTypes.AtsUserConfig, keyValue);
          }
          changes.executeIfNeeded();
       }
@@ -481,6 +499,14 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public IAtsConfigurationsService getConfigService() {
       return configurationsService;
+   }
+
+   @Override
+   public IAtsSearchDataService getAtsSearchDataService() {
+      if (atsSearchDataService == null) {
+         atsSearchDataService = new AtsSearchDataServiceImpl(this);
+      }
+      return atsSearchDataService;
    }
 
    @Override

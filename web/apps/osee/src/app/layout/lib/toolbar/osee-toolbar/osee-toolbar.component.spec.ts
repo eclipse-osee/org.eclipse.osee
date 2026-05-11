@@ -22,7 +22,8 @@ import { OseeToolbarComponent } from './osee-toolbar.component';
 	standalone: true,
 })
 class MockOseeToolbarComponent {
-	@Input() oseeToolbar = true;
+	@Input()
+	oseeToolbar = true;
 }
 
 describe('ToolbarComponent', () => {

@@ -48,7 +48,9 @@ import { MatTooltip } from '@angular/material/tooltip';
 describe('AddMessageDialogComponent', () => {
 	let component: AddMessageDialogComponent;
 	let fixture: ComponentFixture<AddMessageDialogComponent>;
-	const dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+	const dialogRef = {
+		close: vi.fn().mockName('MatDialogRef.close'),
+	};
 	const dialogData: AddMessageDialog = {
 		id: '-1',
 		name: '',

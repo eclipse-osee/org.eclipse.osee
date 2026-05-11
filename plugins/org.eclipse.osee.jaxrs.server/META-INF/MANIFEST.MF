@@ -4,7 +4,7 @@ Bundle-Name: OSEE JAX-RS Server (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.jaxrs.server;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Osee-Template: OSEE-INF/templates/*.html
 Import-Package: com.fasterxml.jackson.core,
@@ -41,6 +41,7 @@ Import-Package: com.fasterxml.jackson.core,
  org.apache.cxf.jaxrs,
  org.apache.cxf.jaxrs.ext,
  org.apache.cxf.jaxrs.ext.multipart,
+ org.osgi.service.cm,
  org.apache.cxf.jaxrs.impl,
  org.apache.cxf.jaxrs.model,
  org.apache.cxf.jaxrs.model.wadl,
@@ -71,6 +72,7 @@ Import-Package: com.fasterxml.jackson.core,
  org.apache.cxf.transport.common.gzip,
  org.apache.cxf.transport.http,
  org.apache.cxf.transport.servlet,
+ javax.xml.ws,
  org.eclipse.osee.account.admin,
  org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,

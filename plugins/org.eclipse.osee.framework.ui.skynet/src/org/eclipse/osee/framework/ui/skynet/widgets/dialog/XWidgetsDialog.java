@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,11 +32,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -137,23 +136,23 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
 
    protected void createWidgets(Composite parent) {
       try {
-         List<XWidgetRendererItem> layoutDatas = getDynamicXWidgetLayouts();
-         XWidgetPage workPage = new XWidgetPage(layoutDatas, new DefaultXWidgetOptionResolver(), this);
+         List<XWidgetData> widDatas = getDynamicXWidgetLayouts();
+         XWidgetPage workPage = new XWidgetPage(widDatas, this);
          workPage.createBody(null, parent, null, null, true);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
-   public List<XWidgetRendererItem> getLayoutDatas() {
+   public List<XWidgetData> getLayoutDatas() {
       widgetRenderer = new SwtXWidgetRenderer();
-      return XWidgetParser.extractWorkAttributes(widgetRenderer, getXWidgetsXml());
+      return XWidgetParser.extractWidgetDatas(getXWidgetsXml());
    }
 
    public abstract String getXWidgetsXml();
 
-   private List<XWidgetRendererItem> getDynamicXWidgetLayouts() throws Exception {
-      List<XWidgetRendererItem> itemsToReturn = new ArrayList<>();
+   private List<XWidgetData> getDynamicXWidgetLayouts() throws Exception {
+      List<XWidgetData> itemsToReturn = new ArrayList<>();
       itemsToReturn.addAll(getLayoutDatas());
       return itemsToReturn;
    }
@@ -299,7 +298,7 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
 
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener xModListener, boolean isEditable) {
       xWidgets.add(xWidget);
    }
 

@@ -14,13 +14,7 @@
 package org.eclipse.osee.ats.api.data;
 
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.Config;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.Edit;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.Read;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.SignByDate;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.SignByUser;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.UserArtId;
-import static org.eclipse.osee.ats.api.config.AtsDisplayHint.UserUserId;
+import static org.eclipse.osee.ats.api.config.AtsDisplayHint.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.framework.core.data.AttributeTypeToken.TEXT_CALENDAR;
 import static org.eclipse.osee.framework.core.data.DisplayHint.MultiLine;
@@ -31,12 +25,10 @@ import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeTyp
 import org.eclipse.osee.ats.api.data.enums.token.BitStateEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.CancelledReasonEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ClosureStateAttributeType;
-import org.eclipse.osee.ats.api.data.enums.token.PointAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewBlocksAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewFormalTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.RiskAnalysisAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.RiskFactorAttributeType;
-import org.eclipse.osee.ats.api.data.enums.token.WorkPackageTypeAttributeType;
 import org.eclipse.osee.framework.core.data.AttributeTypeArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeDate;
@@ -81,8 +73,6 @@ public interface AtsAttributeTypes {
    AgilePiTrackingEnumAttributeType AgilePiTrackingEnum = ats.createEnum(new AgilePiTrackingEnumAttributeType(), Edit);
    AttributeTypeString ApprovedByAircrew = ats.createString(6479770428311494165L, "ats.Approved By Aircrew", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean Active = ats.createBoolean(1152921504606847153L, "ats.Active", TEXT_PLAIN, "Active ATS configuration object.", Config);
-   AttributeTypeString ActivityId = ats.createString(1152921504606847874L, "ats.Activity Id", TEXT_PLAIN, "", Edit);
-   AttributeTypeString ActivityName = ats.createString(1152921504606847875L, "ats.Activity Name", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean AllowCommitBranch = ats.createBoolean(1152921504606847162L, "ats.Allow Commit Branch", TEXT_PLAIN, "", Config);
    AttributeTypeBoolean AllowCreateBranch = ats.createBoolean(1152921504606847161L, "ats.Allow Create Branch", TEXT_PLAIN, "", Config);
    AttributeTypeBoolean AllowUserActionCreation = ats.createBoolean(1322118789779953012L, "ats.Allow User Action Creation", TEXT_PLAIN, "", Config);
@@ -99,7 +89,6 @@ public interface AtsAttributeTypes {
    BitStateEnumAttributeType BitState = ats.createEnum(new BitStateEnumAttributeType(), Edit);
    AttributeTypeString BlockedReason = ats.createString(7797797474874870503L, "ats.Blocked Reason", TEXT_PLAIN, "Reason for action being blocked", Edit);
    AttributeTypeString BranchMetrics = ats.createString(1152921504606847190L, "ats.Branch Metrics", TEXT_PLAIN, "", Read);
-   AttributeTypeString CAM = ats.createString(1152921596009727571L, "ats.CAM", TEXT_PLAIN, "", Read);
    AttributeTypeString CSCI = ats.createString(72063457007112443L, "ats.CSCI", TEXT_PLAIN, "CSCI this Team is reponsible for.", Edit);
    AttributeTypeString CancelledBy = ats.createString(1152921504606847170L, "ats.Cancelled By", TEXT_PLAIN, "UserId of the user who cancelled workflow.", Read, UserUserId);
    AttributeTypeDate CancelledDate = ats.createDate(1152921504606847169L, "ats.Cancelled Date", TEXT_CALENDAR, "Date the workflow was cancelled.", Read);
@@ -113,13 +102,11 @@ public interface AtsAttributeTypes {
    AttributeTypeString ChangeType = ats.createString(1152921504606847180L, "ats.Change Type", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean ClosureActive = ats.createBoolean(1152921875139002555L, "ats.Closure Active", TEXT_PLAIN, "Closure Active status of Program", Config);
    ClosureStateAttributeType ClosureState = ats.createEnum(new ClosureStateAttributeType(), Config);
-   AttributeTypeString CognosUniqueId = ats.createString(72063457009467630L, "ats.Cognos Unique Id", TEXT_PLAIN, "", Config);
    AttributeTypeString CogPriority = ats.createString(2791847630799256806L, "ats.COG Priority", TEXT_PLAIN, "", Edit);
    AttributeTypeString CommitOverride = ats.createString(104739333325561L, "ats.Commit Override", TEXT_PLAIN, "Commit was overridden by user.", Read);
    AttributeTypeString CompletedBy = ats.createString(1152921504606847167L, "ats.Completed By", TEXT_PLAIN, "UserId of the user who completed workflow.", Read, UserUserId);
    AttributeTypeDate CompletedDate = ats.createDate(1152921504606847166L, "ats.Completed Date", TEXT_CALENDAR, "Date the workflow was completed.", Read);
    AttributeTypeString CompletedFromState = ats.createString(1152921504606847168L, "ats.Completed From State", TEXT_PLAIN, "State workflow was in when completed.", Read);
-   AttributeTypeString ControlAccount = ats.createString(3475568422796552185L, "ats.Control Account", TEXT_PLAIN, "", Edit);
    AttributeTypeString CreatedBy = ats.createString(1152921504606847174L, "ats.Created By", TEXT_PLAIN, "UserId of the user who created the workflow.", Read, UserUserId);
    AttributeTypeDate CreatedDate = ats.createDate(1152921504606847173L, "ats.Created Date", TEXT_CALENDAR, "Date the workflow was created.", Read);
    AttributeTypeBoolean CurrentSprint = ats.createBoolean(6939385903286837736L, "ats.Current Sprint", TEXT_PLAIN, "True if sprint is the current sprint .", Read);
@@ -172,7 +159,6 @@ public interface AtsAttributeTypes {
    //ComputedCharacteristicDelta LocRemaining = ats.createComp(ComputedCharacteristicDelta::new, 89273067834049579L, "demo.code.LOC Remaining", "Total Lines of Code Remaining", LocAffected, LocReviewed);
    AttributeTypeString Location = ats.createString(1152921504606847223L, "ats.Location", TEXT_PLAIN, "Enter location of materials to review.", MultiLine, Edit);
    AttributeTypeString Log = ats.createString(1152921504606847202L, "ats.Log", MediaType.TEXT_XML, "", Edit);
-   AttributeTypeString MeetingAttendeeUserId = ats.createString(1152921504606847225L, "ats.Meeting Attendee UserId", TEXT_PLAIN, "Attendee of meeting.", Read);
    AttributeTypeArtifactId MeetingAttendeeId = ats.createArtifactId(333878714647126685L, "ats.Meeting Attendee Id", TEXT_PLAIN, "Art Id of meeting attendee.", Edit, UserArtId);
    AttributeTypeDate MeetingDate = ats.createDate(5605018543870805270L, "ats.Meeting Date", TEXT_CALENDAR, "", Edit);
    AttributeTypeDouble MeetingLength = ats.createDouble(1152921504606847188L, "ats.Meeting Length", TEXT_PLAIN, "Length of meeting.", Edit);
@@ -195,8 +181,7 @@ public interface AtsAttributeTypes {
    AttributeTypeInteger PercentComplete = ats.createInteger(1152921504606847183L, "ats.Percent Complete", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger PercentRework = ats.createInteger(1152921504606847189L, "ats.Percent Rework", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger PlannedPoints = ats.createInteger(232851836925913430L, "ats.Planned Points", TEXT_PLAIN, "", Edit);
-   PointAttributeType Points = ats.createEnum(new PointAttributeType(), Edit);
-   AttributeTypeString PointsAttributeType = ats.createString(1152921573057888257L, "ats.Points Attribute Type", TEXT_PLAIN, "Used to store the agile points type name (ats.Points or ats.Points Numeric).", Edit);
+   AttributeTypeString PointsEnum = ats.createString(1152921504606847178L, "ats.Points", TEXT_PLAIN, "",Edit);
    AttributeTypeDouble PointsNumeric = ats.createDouble(1728793301637070003L, "ats.Points Numeric", TEXT_PLAIN, "Abstract value that describes risk, complexity, and size of Actions as float.", DisplayHint.SingleLine, Edit);
    AttributeTypeString Priority = ats.createString(1152921504606847179L, "ats.Priority", TEXT_PLAIN, "", Edit);
    AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", TEXT_PLAIN, "Problem found during analysis.", MultiLine, Edit);
@@ -241,7 +226,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean TeamUsesVersions = ats.createBoolean(1152921504606847158L, "ats.Team Uses Versions", TEXT_PLAIN, "", Config);
    AttributeTypeString TaskAutoGenType = ats.createString(175464975663435993L, "ats.Task Auto Gen Type", TEXT_PLAIN, "", Read);
    AttributeTypeString TeamWorkflowArtifactType = ats.createString(1152921504606847148L, "ats.Team Workflow Artifact Type", TEXT_PLAIN, "Specific Artifact Type to use in creation of Team Workflow", Config);
-   AttributeTypeDate TestDate = ats.createDateNoTag(153597844730396747L, "lba.Test Date", MediaType.TEXT_PLAIN, "", Edit);
+   AttributeTypeDate TestDate = ats.createDateNoTag(153597844730396747L, "Test Date", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString TestNumber = ats.createString(2762697107597452065L, "Test Number", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916L, "ats.Test Run To Source Locator", TEXT_PLAIN, "Enter clear and concise title that can be generally understood.", Edit);
    AttributeTypeString Title = CoreAttributeTypes.Name;
@@ -261,10 +246,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString WebExportReviewed = ats.createString(482443496392184729L, "ats.Web Export Reviewed", TEXT_PLAIN, "List of review tags configured on Team Definition", Edit);
    AttributeTypeString Workaround = ats.createString(1311070965L, "ats.Workaround", TEXT_PLAIN, "", Edit);
    AttributeTypeString WorkPackage = ats.createString(1152921504606847206L, "ats.Work Package", TEXT_PLAIN, "Designated accounting work package for completing workflow.", DisplayHint.SingleLine, Edit);
-   AttributeTypeString WorkPackageId = ats.createString(1152921504606847872L, "ats.Work Package Id", TEXT_PLAIN, "", Read);
-   AttributeTypeString WorkPackageProgram = ats.createString(1152921504606847873L, "ats.Work Package Program", TEXT_PLAIN, "", Read);
-   AttributeTypeArtifactId WorkPackageReference = ats.createArtifactId(473096133909456789L, "ats.Work Package Reference", TEXT_PLAIN, "Designated accounting work package for completing workflow.", Read);
-   WorkPackageTypeAttributeType WorkPackageType = ats.createEnum(new WorkPackageTypeAttributeType(), Edit);
    AttributeTypeArtifactId WorkflowDefinitionReference = ats.createArtifactId(53049621055799825L, "ats.Workflow Definition Reference", TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact", Read);
    AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Notes", TEXT_PLAIN, "Notes applicable to ATS Workflow", MultiLine, Edit);
    AttributeTypeLong WorkflowNoteColor = ats.createLong(8814630952882602L, "ats.Notes Color", TEXT_PLAIN, "Color to apply to Notes Cell", Edit);

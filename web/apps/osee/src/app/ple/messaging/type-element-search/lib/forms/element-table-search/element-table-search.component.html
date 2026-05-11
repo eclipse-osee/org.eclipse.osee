@@ -17,7 +17,7 @@
 		type="text"
 		(keyup)="applyFilter($event)"
 		#input
-		[value]="searchTerm" />
+		[value]="searchTerm()" />
 	<mat-icon matPrefix>filter_list</mat-icon>
 	<mat-hint>Enter text to filter Types</mat-hint>
 </mat-form-field>

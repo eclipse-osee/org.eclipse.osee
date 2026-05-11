@@ -29,7 +29,7 @@ public class CompositeLayoutItem extends LayoutItem {
    }
 
    public CompositeLayoutItem(int numColumns) {
-      super("Composite");
+      super("");
       this.numColumns = numColumns;
    }
 

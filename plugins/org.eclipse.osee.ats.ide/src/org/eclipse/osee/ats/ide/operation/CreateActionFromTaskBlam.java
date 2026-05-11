@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkChangeTypeSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -53,7 +54,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -170,8 +170,8 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
 
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(TASKS) && taskArtifacts != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;
          viewer.setInput(taskArtifacts);
@@ -201,14 +201,14 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
    }
 
    @Override
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
       wb.andWidget(TASKS, "XListDropViewer");
       wb.andXHyperlinkActionableItemActive().andRequired().endWidget();
       wb.andXText(TITLE).andDefault(getDefaultTitle()).andRequired().endWidget();
       wb.andChangeType(ChangeTypes.DEFAULT_CHANGE_TYPES).andRequired().endWidget();
       wb.andPriority().andRequired().endWidget();
-      return wb.getItems();
+      return wb.getXWidgetDatas();
    }
 
    /**

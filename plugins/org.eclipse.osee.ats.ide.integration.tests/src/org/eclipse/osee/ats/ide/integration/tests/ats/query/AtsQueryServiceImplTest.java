@@ -13,17 +13,30 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
-import java.util.List;
-import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.query.AtsSearchUtil;
-import org.eclipse.osee.ats.api.util.AtsUtil;
+import java.util.Collection;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.HoldState;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
+import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test for client {@link AtsQueryServiceImpl}
- *
  * @author Donald G. Dunne
  */
 public class AtsQueryServiceImplTest {
@@ -41,52 +54,129 @@ public class AtsQueryServiceImplTest {
     */
 
    /**
-    * Test Cases for<br/>
-    * 1. saveSearch<br/>
-    * 2. getSearches<br/>
-    * 3. getSearch(user, id)<br/>
-    * 4. removeSearch(user, data)<br/>
-    * 5. getAttrById - indirectly tested by removeSearch
+    * Test for CriteriaAttributeTypeExists<br/>
+    * Test for CriteriaAttributeTypeNotExists<br/>
+    * getItems()<br/>
+    * getItemIds()<br/>
+    * getItemsNew()<br/>
+    * getResultArtifacts()<br/>
+    * getResultArtifactsNew()<br/>
     */
    @Test
-   public void testSaveSearchAndGetSavedSearchesAndRemoveSearch() {
-      AtsUtil.setIsInTest(true);
+   public void testAtsQueryAndQueryBuilderCriteria() {
+      AtsApi atsApi = AtsApiService.get();
+      String name = getClass().getSimpleName() + "-testAtsQuery";
+      AtsTestUtil.cleanupAndReset(name);
 
-      String namespace = AtsSearchUtil.ATS_QUERY_NAMESPACE;
-      List<AtsSearchData> savedSearches = AtsApiService.get().getQueryService().getSavedSearches(namespace);
-      Assert.assertEquals(savedSearches.toString(), 0, savedSearches.size());
+      TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
+      IAtsChangeSet changes = atsApi.createChangeSet("set hold");
+      changes.setSoleAttributeValue((IAtsWorkItem) teamWf, AtsAttributeTypes.HoldReason, "the hold reason");
+      TransactionToken tx = changes.execute();
+      Assert.assertTrue(tx.isValid());
 
-      AtsSearchData data = new AtsSearchData("my search");
-      data.setColorTeam("blue");
-      data.setNamespace(namespace);
-      AtsApiService.get().getQueryService().saveSearch(data);
+      IAtsQueryService querySvc = atsApi.getQueryService();
+      IAtsQuery query = querySvc.createQuery(WorkItemType.TeamWorkflow);
+      // CriteriaAttributeTypeExists
+      query.andHoldState(HoldState.On_Hold);
+      Collection<IAtsWorkItem> items = query.getItems();
+      Assert.assertTrue(items.size() == 1);
+      Assert.assertTrue(items.iterator().next().getName().contains(name));
 
-      savedSearches = AtsApiService.get().getQueryService().getSavedSearches(namespace);
-      Assert.assertEquals(savedSearches.toString(), 1, savedSearches.size());
+      querySvc = atsApi.getQueryService();
+      query = querySvc.createQuery(WorkItemType.TeamWorkflow);
+      query.andHoldState(HoldState.On_Hold);
+      Collection<ArtifactId> itemIds = query.getItemIds();
+      Assert.assertTrue(itemIds.size() == 1);
+      Assert.assertEquals(teamWf, itemIds.iterator().next());
 
-      AtsSearchData data2 = new AtsSearchData("my search 2");
-      data2.setColorTeam("green");
-      data2.setNamespace(namespace);
-      AtsApiService.get().getQueryService().saveSearch(data2);
+      querySvc = atsApi.getQueryService();
+      query = querySvc.createQuery(WorkItemType.TeamWorkflow);
+      query.andHoldState(HoldState.On_Hold);
+      Collection<IAtsWorkItem> itemsNew = query.getItemsNew();
+      Assert.assertTrue(itemsNew.size() == 1);
+      Assert.assertEquals(teamWf, itemsNew.iterator().next());
 
-      savedSearches = AtsApiService.get().getQueryService().getSavedSearches(namespace);
-      Assert.assertEquals(savedSearches.toString(), 2, savedSearches.size());
+      querySvc = atsApi.getQueryService();
+      query = querySvc.createQuery(WorkItemType.TeamWorkflow);
+      query.andHoldState(HoldState.On_Hold);
+      Collection<ArtifactToken> itemsResultArts = query.getResultArtifacts().getList();
+      Assert.assertTrue(itemsResultArts.size() == 1);
+      Assert.assertEquals(teamWf, itemsResultArts.iterator().next());
 
-      String namespace2 = AtsSearchUtil.ATS_QUERY_GOAL_NAMESPACE;
-      data = new AtsSearchData("my search 3");
-      data.setColorTeam("gold");
-      data.setNamespace(namespace2);
-      AtsApiService.get().getQueryService().saveSearch(data);
+      querySvc = atsApi.getQueryService();
+      query = querySvc.createQuery(WorkItemType.TeamWorkflow);
+      query.andHoldState(HoldState.On_Hold);
+      Collection<ArtifactToken> itemsResultArtsNew = query.getResultArtifactsNew().getList();
+      Assert.assertTrue(itemsResultArtsNew.size() == 1);
+      Assert.assertEquals(teamWf, itemsResultArtsNew.iterator().next());
 
-      savedSearches = AtsApiService.get().getQueryService().getSavedSearches(namespace2);
-      Assert.assertEquals(savedSearches.toString(), 1, savedSearches.size());
-
-      // retrieve the saved search cause it has the search it
-      data = savedSearches.iterator().next();
-
-      AtsApiService.get().getQueryService().removeSearch(data);
-
-      savedSearches = AtsApiService.get().getQueryService().getSavedSearches(namespace2);
-      Assert.assertEquals(savedSearches.toString(), 0, savedSearches.size());
+      querySvc = atsApi.getQueryService();
+      query = querySvc.createQuery(WorkItemType.TeamWorkflow);
+      // CriteriaAttributeTypeNotExists
+      query.andHoldState(HoldState.Not_On_Hold);
+      itemIds = query.getItemIds();
+      Assert.assertTrue(itemIds.size() > 10);
+      Assert.assertFalse(itemIds.contains(teamWf));
    }
+
+   @Test
+   public void testGetArtifact() {
+      AtsApi atsApi = AtsApiService.get();
+      IAtsQueryService querySvc = atsApi.getQueryService();
+
+      ArtifactId art = querySvc.getArtifact(DemoArtifactToken.SAW_PL_TeamDef);
+      Assert.assertNotNull(art);
+      Assert.assertEquals(DemoArtifactToken.SAW_PL_TeamDef, art);
+
+      Assert.assertTrue(art instanceof Artifact);
+
+      @Nullable
+      ArtifactToken art2 = querySvc.getArtifact(art);
+      Assert.assertNotNull(art2);
+      Assert.assertTrue(art2 instanceof Artifact);
+      Assert.assertEquals(DemoArtifactToken.SAW_PL_TeamDef, art2);
+
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
+
+      @Nullable
+      ArtifactToken art4 = querySvc.getArtifact(workItem);
+      Assert.assertNotNull(art4);
+      Assert.assertEquals(DemoArtifactToken.SAW_NoBranch_Code_TeamWf, art4);
+
+      ArtifactId artId = ArtifactId.valueOf(DemoArtifactToken.SAW_NoBranch_Code_TeamWf.getId());
+      ArtifactToken art3 = querySvc.getArtifact(artId);
+      Assert.assertNotNull(art3);
+      Assert.assertEquals(DemoArtifactToken.SAW_NoBranch_Code_TeamWf, art3);
+   }
+
+   @Test
+   public void testGetArtifactByAtsId() {
+      TeamWorkflow teamWf = DemoUtil.getSawCodeUnCommittedWf();
+      Assert.assertNotNull(teamWf);
+      TeamWorkFlowArtifact teamWf2 =
+         (TeamWorkFlowArtifact) AtsApiService.get().getQueryService().getArtifactByAtsId(teamWf.getAtsId());
+      Assert.assertNotNull(teamWf2);
+      Assert.assertEquals(DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, teamWf2.getName());
+   }
+
+   @SuppressWarnings("unlikely-arg-type")
+   @Test
+   public void testGetArtifactByLegacyPcrIdAndIds() {
+      TeamWorkflow teamWf = DemoUtil.getSawCodeUnCommittedWf();
+      Assert.assertNotNull(teamWf);
+      teamWf.setSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "ASDF", "Set Legacy");
+      TeamWorkFlowArtifact resultTewmWf =
+         (TeamWorkFlowArtifact) AtsApiService.get().getQueryService().getArtifactByLegacyPcrId("ASDF");
+      Assert.assertNotNull(resultTewmWf);
+      Assert.assertEquals(DemoArtifactToken.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, resultTewmWf.getName());
+
+      TeamWorkflow teamWf2 = DemoUtil.getSawReqUnCommittedWf();
+      Assert.assertNotNull(teamWf2);
+      teamWf2.setSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "ASDF", "Set Legacy");
+      Collection<ArtifactToken> arts = AtsApiService.get().getQueryService().getArtifactsByLegacyPcrId("ASDF");
+      Assert.assertEquals(2, arts.size());
+      Assert.assertTrue(arts.contains(teamWf));
+      Assert.assertTrue(arts.contains(teamWf2));
+   }
+
 }

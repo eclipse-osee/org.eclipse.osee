@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.links;
 import java.util.logging.Level;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.Link;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -31,7 +31,7 @@ public class LinksNavigateViewItem extends XNavigateItemAction {
    private static LinksNavigateViewItem topNavigateItem;
 
    public LinksNavigateViewItem() {
-      super("Links", FrameworkImage.LINK, NAME, XNavItemCat.BOT);
+      super("Links", CoreImage.LINK, NAME, XNavItemCat.BOT);
       topNavigateItem = this;
       refresh();
    }
@@ -71,7 +71,7 @@ public class LinksNavigateViewItem extends XNavigateItemAction {
          AccountWebPreferences data = LinkUtil.getAccountsPreferencesData(false);
          for (Link link : data.getLinks().values()) {
             XNavigateUrlItem urlItem = new XNavigateUrlItem(link.getName() + getTagsStr(link, false), link.getUrl(),
-               true, FrameworkImage.LINK, NAME);
+               true, CoreImage.LINK, NAME);
             addChild(urlItem);
             urlItem.addMenuItem(new LinksXNavigateMenuItem());
             urlItem.setData(link);
@@ -84,7 +84,7 @@ public class LinksNavigateViewItem extends XNavigateItemAction {
          AccountWebPreferences data = LinkUtil.getAccountsPreferencesData(true);
          for (Link link : data.getLinks().values()) {
             XNavigateUrlItem urlItem = new XNavigateUrlItem(link.getName() + getTagsStr(link, true), link.getUrl(),
-               true, FrameworkImage.LINK, NAME);
+               true, CoreImage.LINK, NAME);
             addChild(urlItem);
             urlItem.setData(link);
             urlItem.addMenuItem(new LinksXNavigateMenuItem());

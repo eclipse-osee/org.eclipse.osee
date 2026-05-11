@@ -12,11 +12,14 @@
  **********************************************************************/
 package org.eclipse.osee.ats.api.report;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -34,4 +37,15 @@ public interface AtsReportEndpointApi {
    @Produces(MediaType.TEXT_HTML)
    public String getAttrDiffReport(@QueryParam("date") String date, @QueryParam("artTypeId") String artTypeId,
       @QueryParam("attrTypeIds") String attrTypeIds);
+
+   @Path("RestCoverageReport")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData getRestCoverageReport();
+
+   @Path("BuildMemo")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.TEXT_HTML)
+   String getBuildMemo(BuildMemoRequest request);
 }

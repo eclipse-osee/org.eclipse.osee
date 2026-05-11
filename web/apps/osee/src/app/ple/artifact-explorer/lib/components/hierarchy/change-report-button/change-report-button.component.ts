@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	inject,
+	input,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { map } from 'rxjs';
@@ -18,38 +24,55 @@ import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'osee-change-report-button',
-	imports: [MatButton, MatIcon, MatTooltip],
+	imports: [MatButton, MatIcon, MatTooltip, RouterLink],
 	template: `@if (branchId() && branchType()) {
-		<button
-			mat-flat-button
-			class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
-			(click)="openChangeReport()"
-			matTooltip="Change Report">
-			<mat-icon class="material-icons-outlined">differences</mat-icon>
-		</button>
+		<a
+			[routerLink]="'/ple/change-report/' + branchId()"
+			target="_blank">
+			<button
+				mat-flat-button
+				class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
+				matTooltip="Change Report">
+				<mat-icon class="material-icons-outlined">differences</mat-icon>
+			</button>
+		</a>
 	}`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeReportButtonComponent {
+	inputBranchType = input<string>('');
+	inputBranchId = input<string>('');
+
 	private currentBranchService = inject(CurrentBranchInfoService);
 	private tabService = inject(ArtifactExplorerTabService);
 	private uiService = inject(UiService);
 
-	protected branchType = toSignal(this.uiService.type, { initialValue: '' });
-	protected branchId = toSignal(this.uiService.id, { initialValue: '' });
+	protected serviceBranchType = toSignal(this.uiService.type, {
+		initialValue: '',
+	});
+	protected serviceBranchId = toSignal(this.uiService.id, {
+		initialValue: '',
+	});
+
+	protected branchType = computed(() =>
+		this.inputBranchType() === ''
+			? this.serviceBranchType()
+			: this.inputBranchType()
+	);
+
+	protected branchId = computed(() =>
+		this.inputBranchId() === ''
+			? this.serviceBranchId()
+			: this.inputBranchId()
+	);
 
 	branchName = toSignal(
 		this.currentBranchService.currentBranch.pipe(
 			map((branch) => branch.name)
 		)
 	);
-
-	openChangeReport() {
-		this.tabService.addChangeReportTab(
-			'Change Report - ' + this.branchName()
-		);
-	}
 }

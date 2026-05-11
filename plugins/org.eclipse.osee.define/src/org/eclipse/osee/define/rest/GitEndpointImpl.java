@@ -50,6 +50,18 @@ public class GitEndpointImpl implements GitEndpoint {
    }
 
    @Override
+   public ArtifactId importBundleFile(BranchId branch, String repositoryName, String refSpec,
+      String gitBranchName, byte[] bundleData) {
+      return gitOps.importBundleFile(branch, gitOps.getRepoArtifact(branch, repositoryName), bundleData, refSpec,
+         gitBranchName);
+   }
+
+   @Override
+   public String getLatestCommitSha(BranchId branch, String repositoryName) {
+      return gitOps.getLatestCommitSha(branch, gitOps.getRepoArtifact(branch, repositoryName));
+   }
+
+   @Override
    public List<String> getRemoteBranches(BranchId branch, String repositoryName) {
       return gitOps.getRemoteBranches(branch, gitOps.getRepoArtifact(branch, repositoryName));
 

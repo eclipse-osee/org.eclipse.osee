@@ -19,10 +19,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.account.rest.model.Link;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +32,7 @@ public class AddNewLinkNavigateItem extends XNavigateItem {
    public static final XNavItemCat LINKS = new XNavItemCat("Links");
 
    public AddNewLinkNavigateItem() {
-      super("Add New Link", FrameworkImage.GREEN_PLUS, LINKS);
+      super("Add New Link", CoreImage.GREEN_PLUS, LINKS);
    }
 
    @Override

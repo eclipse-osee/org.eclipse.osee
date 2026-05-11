@@ -22,7 +22,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EnumToken;
-import org.eclipse.osee.orcs.core.ds.Attribute;
+import org.eclipse.osee.orcs.data.AttributeContainer;
+import org.eclipse.osee.orcs.search.ds.Attribute;
 
 /**
  * @author Roberto E. Escobar

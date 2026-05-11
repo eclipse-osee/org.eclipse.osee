@@ -30,14 +30,14 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.DynamicData;
-import org.eclipse.osee.orcs.core.ds.DynamicDataHandler;
-import org.eclipse.osee.orcs.core.ds.DynamicObject;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectField;
 import org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver;
+import org.eclipse.osee.orcs.search.ds.DynamicData;
+import org.eclipse.osee.orcs.search.ds.DynamicDataHandler;
+import org.eclipse.osee.orcs.search.ds.DynamicObject;
+import org.eclipse.osee.orcs.search.ds.Options;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
+import org.eclipse.osee.orcs.search.ds.ResultObjectDescription;
 
 /**
  * @author Roberto E. Escobar

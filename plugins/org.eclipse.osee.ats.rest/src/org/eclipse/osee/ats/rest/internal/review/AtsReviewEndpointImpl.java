@@ -45,7 +45,7 @@ public class AtsReviewEndpointImpl implements AtsReviewEndpointApi {
 
    @Override
    public Collection<IAtsAbstractReview> getReviews(String ids) {
-      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getWorkItemService().getWorkItemsByIds(ids);
       List<IAtsAbstractReview> reviews = new ArrayList<>();
 
       workItems.stream().filter(w -> w.isReview()).forEach(r -> reviews.add((IAtsAbstractReview) r));

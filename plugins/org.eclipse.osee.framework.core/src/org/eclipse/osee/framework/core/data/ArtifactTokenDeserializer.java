@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 
 /**
  * @author Donald G. Dunne
@@ -26,13 +27,10 @@ import java.io.IOException;
 public class ArtifactTokenDeserializer extends StdDeserializer<ArtifactToken> {
 
    private static final long serialVersionUID = 596564602216588283L;
+   private static OrcsTokenService tokenService;
 
    public ArtifactTokenDeserializer() {
-      this(ArtifactToken.class);
-   }
-
-   public ArtifactTokenDeserializer(Class<?> object) {
-      super(object);
+      super(ArtifactToken.class);
    }
 
    @Override
@@ -41,14 +39,15 @@ public class ArtifactTokenDeserializer extends StdDeserializer<ArtifactToken> {
       JsonNode readTree = jp.getCodec().readTree(jp);
       Long id = readTree.get("id").asLong();
       String name = readTree.get("name").textValue();
-      Long typeId = ArtifactToken.SENTINEL.getId();
-      String typeName = ArtifactToken.SENTINEL.getName();
+      ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
       if (readTree.has("typeId")) {
-         typeId = readTree.get("typeId").asLong();
+         Long typeId = readTree.get("typeId").asLong();
+         artifactType = tokenService.getArtifactType(typeId);
       }
-      if (readTree.has("typeName")) {
-         typeName = readTree.get("typeName").textValue();
-      }
-      return ArtifactToken.valueOf(id, name, ArtifactTypeToken.valueOf(typeId, typeName));
+      return ArtifactToken.valueOf(id, name, artifactType);
+   }
+
+   public static void setTokenService(OrcsTokenService tokenService) {
+      ArtifactTokenDeserializer.tokenService = tokenService;
    }
 }

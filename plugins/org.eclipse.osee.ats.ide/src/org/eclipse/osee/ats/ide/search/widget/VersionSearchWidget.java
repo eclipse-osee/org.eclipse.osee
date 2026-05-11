@@ -28,30 +28,27 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionLabelProvider;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class VersionSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<IAtsVersion> {
+public class VersionSearchWidget extends AbstractXHyperlinkWfdSearchWidget<IAtsVersion> implements TeamDefListener {
 
-   public static final String VERSION = "Version";
-   private XHyperlabelTeamDefinitionSelection teamSelection;
+   public static SearchWidget VersionWidget = new SearchWidget(9233478, "Version", "XHyperlinkWfdForObject");
    private XHyperlabelActionableItemSelection actionableSelection;
 
    public VersionSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(VERSION, searchItem);
+      super(VersionWidget, searchItem);
    }
 
    @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
-         setup(getWidget());
          if (data.getVersionId() > 0) {
             IAtsVersion version =
                AtsApiService.get().getVersionService().getVersionById(ArtifactId.valueOf(data.getVersionId()));
@@ -60,26 +57,6 @@ public class VersionSearchWidget extends AbstractXHyperlinkSelectionSearchWidget
             }
          }
       }
-   }
-
-   public void setupActionableItems(XWidget teamCombo) {
-      this.actionableSelection = (XHyperlabelActionableItemSelection) teamCombo;
-      teamCombo.addXModifiedListener(new XModifiedListener() {
-         @Override
-         public void widgetModified(XWidget widget) {
-            setup(getWidget());
-         }
-      });
-   }
-
-   public void setupTeamDef(XWidget teamCombo) {
-      this.teamSelection = (XHyperlabelTeamDefinitionSelection) teamCombo;
-      teamCombo.addXModifiedListener(new XModifiedListener() {
-         @Override
-         public void widgetModified(XWidget widget) {
-            setup(getWidget());
-         }
-      });
    }
 
    private List<IAtsVersion> getSortedVersions(IAtsTeamDefinition teamDefHoldingVersions) {
@@ -101,10 +78,7 @@ public class VersionSearchWidget extends AbstractXHyperlinkSelectionSearchWidget
    }
 
    public Collection<IAtsTeamDefinition> getSelectedTeamDefinitions() {
-      if (teamSelection == null) {
-         return java.util.Collections.emptyList();
-      }
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(teamSelection.getSelectedTeamDefintions());
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(searchItem.getTeamDefs());
    }
 
    public Collection<IAtsActionableItem> getSelectedActionableItems() {
@@ -115,13 +89,9 @@ public class VersionSearchWidget extends AbstractXHyperlinkSelectionSearchWidget
    }
 
    @Override
-   public void setup(XWidget widget) {
-      super.setup(widget);
-      if (teamSelection != null) {
-         getHypWidget().setSelectable(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getSelectable()));
-      }
-      if (getHypWidget().getLabelHyperlink() != null) {
-         getHypWidget().setToolTip("Select Team Definition to populate Version list");
+   public void updateAisOrTeamDefs() {
+      if (searchItem.getTeamDefWidget() != null && getWidget() != null) {
+         getWidget().setSelectable(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getSelectable()));
       }
    }
 
@@ -161,8 +131,9 @@ public class VersionSearchWidget extends AbstractXHyperlinkSelectionSearchWidget
    }
 
    @Override
-   protected String getLabel() {
-      return VERSION;
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      xWidget.setLabelProvider(new VersionLabelProvider());
    }
 
 }

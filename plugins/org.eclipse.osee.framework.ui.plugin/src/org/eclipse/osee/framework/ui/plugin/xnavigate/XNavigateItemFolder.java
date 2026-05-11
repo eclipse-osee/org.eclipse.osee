@@ -41,6 +41,10 @@ public class XNavigateItemFolder extends XNavigateItem {
       super(name, ImageManager.create(oseeImage), xNavItemCat);
    }
 
+   public XNavigateItemFolder(String name, OseeImage oseeImage, Collection<IUserGroupArtifactToken> groups, XNavItemCat... xNavItemCat) {
+      super(name, ImageManager.create(oseeImage), xNavItemCat);
+   }
+
    public XNavigateItemFolder(String name, KeyedImage oseeImage, Collection<IUserGroupArtifactToken> groups, XNavItemCat... xNavItemCat) {
       super(name, oseeImage, xNavItemCat);
       this.groups = groups;

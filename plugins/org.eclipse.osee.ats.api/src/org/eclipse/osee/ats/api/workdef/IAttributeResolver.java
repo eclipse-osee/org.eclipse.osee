@@ -137,4 +137,6 @@ public interface IAttributeResolver {
 
    boolean hasAttribute(IAtsWorkItem workItem, AttributeTypeToken... attrTypes);
 
+   List<IAttribute<?>> getAttributesNew(IAtsWorkItem workItem);
+
 }

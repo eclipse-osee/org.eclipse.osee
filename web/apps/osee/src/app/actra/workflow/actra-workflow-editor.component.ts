@@ -22,16 +22,16 @@ import {
 import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, repeat, switchMap, take, tap } from 'rxjs';
-import { BranchRoutedUIService, UiService } from '@osee/shared/services';
+import { filter, map, repeat, shareReplay, switchMap, take, tap } from 'rxjs';
+import {
+	ArtifactUiService,
+	BranchRoutedUIService,
+	UiService,
+} from '@osee/shared/services';
 import { AttributesEditorComponent } from '@osee/shared/components';
-import { WorkflowService } from '../services/workflow.service';
 import { MatIcon } from '@angular/material/icon';
 import { TransactionService } from '@osee/transactions/services';
-import {
-	CommitManagerButtonComponent,
-	CreateActionWorkingBranchButtonComponent,
-} from '@osee/configuration-management/components';
+import { CommitManagerButtonComponent } from '@osee/configuration-management/components';
 import { attribute } from '@osee/shared/types';
 import {
 	legacyAttributeType,
@@ -48,16 +48,17 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
+import { ActraPageTitleComponent } from '../actra-page-title/actra-page-title.component';
 import { WorkflowAttachmentsComponent } from '../components/workflow-attachments/workflow-attachments.component';
+import { CreateWorkingBranchFromWorkflowButtonComponent } from '../../configuration-management/components/create-working-branch-from-workflow-button/create-working-branch-from-workflow-button';
+import { ChangeReportButtonComponent } from '../../ple/artifact-explorer/lib/components/hierarchy/change-report-button/change-report-button.component';
 
 @Component({
 	selector: 'osee-actra-workflow-editor',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		ExpansionPanelComponent,
-		CreateActionWorkingBranchButtonComponent,
+		CreateWorkingBranchFromWorkflowButtonComponent,
 		ActionDropDownComponent,
 		AttributesEditorComponent,
 		UpdateFromParentButtonComponent,
@@ -69,18 +70,19 @@ import { WorkflowAttachmentsComponent } from '../components/workflow-attachments
 		MatIconButton,
 		ActraPageTitleComponent,
 		RouterLink,
+		ChangeReportButtonComponent,
 	],
 	templateUrl: './actra-workflow-editor.component.html',
 })
 export class ActraWorkflowEditorComponent implements OnInit {
 	actionService = inject(ActionService);
-	wfService = inject(WorkflowService);
 	txService = inject(TransactionService);
 	uiService = inject(UiService);
 	routeUrl = inject(ActivatedRoute);
 	router = inject(Router);
 	branchedRouter = inject(BranchRoutedUIService);
 	dialog = inject(MatDialog);
+	artifactUiService = inject(ArtifactUiService);
 
 	ngOnInit(): void {
 		this.uiService.idValue = '570';
@@ -140,10 +142,11 @@ export class ActraWorkflowEditorComponent implements OnInit {
 
 	twAttributeTypes = toSignal(
 		this.workflow$.pipe(
-			switchMap((_) =>
-				this.wfService.allTeamWorkflowAttributes.pipe(
-					map((attrs) => structuredClone(attrs))
-				)
+			switchMap((wf) =>
+				this.artifactUiService
+					.getArtifactTypeAttributes(wf.artifact.typeId)
+					.pipe(shareReplay({ bufferSize: 1, refCount: true }))
+					.pipe(map((attrs) => structuredClone(attrs)))
 			)
 		)
 	);

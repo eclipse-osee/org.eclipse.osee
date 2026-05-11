@@ -12,17 +12,24 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.users;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.user.UserActivityData;
+import org.eclipse.osee.ats.api.user.UserUsageType;
 import org.eclipse.osee.ats.core.users.SyncOseeAndUserDB;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,12 +54,12 @@ public class SyncOseeAndUserDBDemo extends SyncOseeAndUserDB {
    }
 
    @Override
-   protected void testUserGroups(List<UserToken> regUsers) {
+   protected void updateUserGroups() {
       // do nothing
    }
 
    @Override
-   protected AtsUser getUserByUserId(String userId) {
+   protected AtsUser getWssoUserByUserId(String userId) {
       if (userId.equals(DemoUsers.Kay_Wheeler.getUserId())) {
          AtsUser userByToken = atsApi.getUserService().getUserByToken(DemoUsers.Kay_Wheeler);
          userByToken.setEmail("kay.wheeler@google.com");
@@ -74,6 +81,33 @@ public class SyncOseeAndUserDBDemo extends SyncOseeAndUserDB {
    @Override
    protected Date getTxDate(ArtifactToken art) {
       return ((Artifact) art).getLastModified();
+   }
+
+   @Override
+   protected List<AtsUser> getUsersByUserIds(String userIds) {
+      List<AtsUser> users = new ArrayList<>();
+      for (String userId : userIds.split(",")) {
+         users.add(getWssoUserByUserId(userId));
+      }
+      return users;
+   }
+
+   @Override
+   protected void loadUsers() {
+      super.loadUsers();
+      // Set activity so other attributes are checked
+      UserActivityData user = userArtIdToUserAct.get(DemoUsers.Kay_Wheeler.getArtifactId());
+      user.addUsageType(UserUsageType.IDE_CLIENT_USE, 25);
+   }
+
+   @Override
+   protected List<ArtifactToken> queryUsersWithTxsDetails() {
+      return Collections.castAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, atsApi.getAtsBranch()));
+   }
+
+   @Override
+   protected Collection<IUserGroupArtifactToken> getAdditionalUserGroups() {
+      return java.util.Collections.emptyList();
    }
 
 }

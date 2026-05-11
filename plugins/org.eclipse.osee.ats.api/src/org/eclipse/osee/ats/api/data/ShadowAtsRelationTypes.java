@@ -23,7 +23,6 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileStory;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsArtifact;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsConfigArtifact;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsTeamDefinitionOrAi;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.BuildImpactData;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Country;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Insertion;
@@ -136,10 +135,6 @@ public interface ShadowAtsRelationTypes {
     RelationTypeSide NewAgileBacklog_AgileBacklog = NewGoalRel_Goal;
     RelationTypeSide NewAgileBacklog_Item = NewAgileBacklog_AgileBacklog.getOpposite();
 
-   RelationTypeToken InsertionActivityToWorkPackageRel = ats.addNewRelationType(4400405161969600853L, "Insertion Activity To Work Package", ONE_TO_MANY, UNORDERED, InsertionActivity, "Insertion Activity", AtsArtifactTypes.WorkPackage, "Work Package",AtsRelationTypes.InsertionActivityToWorkPackage);
-   RelationTypeSide InsertionActivityToWorkPackageRel_InsertionActivity = RelationTypeSide.create(InsertionActivityToWorkPackageRel, SIDE_A);
-   RelationTypeSide InsertionActivityToWorkPackageRel_WorkPackage = RelationTypeSide.create(InsertionActivityToWorkPackageRel, SIDE_B);
-
    RelationTypeToken InsertionToInsertionActivityRel = ats.addNewRelationType(4400405161969600854L, "Insertion To Insertion Activity", ONE_TO_MANY, UNORDERED, Insertion, "Insertion", InsertionActivity, "Insertion Activity",AtsRelationTypes.InsertionToInsertionActivity);
    RelationTypeSide InsertionToInsertionActivityRel_Insertion = RelationTypeSide.create(InsertionToInsertionActivityRel, SIDE_A);
    RelationTypeSide InsertionToInsertionActivityRel_InsertionActivity = RelationTypeSide.create(InsertionToInsertionActivityRel, SIDE_B);
@@ -223,10 +218,6 @@ public interface ShadowAtsRelationTypes {
    RelationTypeToken TeamWorkflowToReviewRel = ats.addNewRelationType(4400405161969600872L, "TeamWorkflowToReview", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team Workflow", AbstractReview, "Review",AtsRelationTypes.TeamWorkflowToReview);
    RelationTypeSide TeamWorkflowToReviewRel_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToReviewRel, SIDE_A);
    RelationTypeSide TeamWorkflowToReviewRel_Review = RelationTypeSide.create(TeamWorkflowToReviewRel, SIDE_B);
-
-   RelationTypeToken TeamDefinitionToWorkPackageRel = ats.addNewRelationType(4400405161969600873L, "TeamDefinitionToWorkPackage", MANY_TO_MANY, UNORDERED, AtsArtifactTypes.WorkPackage, "Work Package", AtsTeamDefinitionOrAi, "ATS Team Def or AI",AtsRelationTypes.TeamDefinitionToWorkPackage);
-   RelationTypeSide TeamDefinitionToWorkPackageRel_WorkPackage = RelationTypeSide.create(TeamDefinitionToWorkPackageRel, SIDE_A);
-   RelationTypeSide TeamDefinitionToWorkPackageRel_AtsTeamDefOrAi = RelationTypeSide.create(TeamDefinitionToWorkPackageRel, SIDE_B);
 
    RelationTypeToken UserGroupToActionableItemRel = ats.addNewRelationType(4400405161969600874L, "UserGroupToActionableItem", MANY_TO_ONE, UNORDERED, CoreArtifactTypes.UserGroup, "User Group", ActionableItem, "ActionableItem",AtsRelationTypes.UserGroupToActionableItem);
    RelationTypeSide UserGroupToActionableItemRel_UserGroup = RelationTypeSide.create(UserGroupToActionableItemRel, SIDE_A);

@@ -26,6 +26,9 @@ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -185,6 +188,26 @@ public interface IAtsTask extends IAtsWorkItem {
          @Override
          public AtsUser getUserByUserId(String userId) {
             return null;
+         }
+
+         @Override
+         public void reload() {
+            // do nothing
+         }
+
+         @Override
+         public List<String> getAttributesToStringList(AttributeTypeId attributeType) {
+            return null;
+         }
+
+         @Override
+         public TransactionToken setSoleAttributeValue(AttributeTypeString attrType, Object value, String txComment) {
+            return null;
+         }
+
+         @Override
+         public int getAttributeCount(AttributeTypeId attributeType) {
+            return 0;
          }
 
       }

@@ -28,12 +28,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class AtsNotificationEventFactory {
 
    public static AtsNotificationEvent getNotificationEvent(AtsUser fromUser, Collection<AtsUser> users, String id,
-      String type, String description, String descriptionAbridged) {
+      String type, String description, String sanitizedDescription) {
       AtsNotificationEvent event = new AtsNotificationEvent();
       event.setSubjectType(type);
       event.setId(id);
       event.setSubjectDescription(description);
-      event.setSubjectDescriptionAbridged(descriptionAbridged);
+      event.setSanitizedSubjectDescription(sanitizedDescription);
       event.setFromEmailAddress(fromUser.getEmail());
       for (AtsUser user : users) {
          if (!AtsCoreUsers.isAtsCoreUser(user)) {
@@ -47,8 +47,8 @@ public class AtsNotificationEventFactory {
    }
 
    public static AtsNotificationEvent getNotificationEvent(AtsUser fromUser, Collection<AtsUser> users, String id,
-      String type, String url, String cancelUrl, String description, String descriptionAbridged) {
-      AtsNotificationEvent event = getNotificationEvent(fromUser, users, id, type, description, descriptionAbridged);
+      String type, String url, String cancelUrl, String description, String sanitizedDescription) {
+      AtsNotificationEvent event = getNotificationEvent(fromUser, users, id, type, description, sanitizedDescription);
       event.setUrl(url);
       return event;
    }

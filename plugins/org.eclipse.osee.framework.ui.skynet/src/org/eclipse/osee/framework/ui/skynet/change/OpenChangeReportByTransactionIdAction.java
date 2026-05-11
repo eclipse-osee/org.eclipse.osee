@@ -16,10 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -27,24 +27,28 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  * @author Donald G. Dunne
  */
 public class OpenChangeReportByTransactionIdAction extends Action {
-   private static final String NAME = "Open Change Report by Transaction Id";
+   private static final String NAME = "Open Change Report by Transaction Id(s)";
 
    public OpenChangeReportByTransactionIdAction() {
       super(NAME, IAction.AS_PUSH_BUTTON);
       setId("open.by.transaction.id");
       setToolTipText(NAME);
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.OPEN));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.OPEN));
    }
 
    @Override
    public void run() {
-      EntryDialog dialog = new EntryDialog(NAME, "Enter Transaction Id");
+      EntryDialog dialog = new EntryDialog(NAME, "Enter Transaction Id(s) (comma delimited)");
       if (dialog.open() == Window.OK) {
          String entry = dialog.getEntry();
-         if (Strings.isNumeric(entry)) {
-            ChangeUiUtil.open(TransactionManager.getTransaction(Long.valueOf(entry)));
-         } else {
-            AWorkbench.popup("Entry must be numeric.");
+         for (String str : entry.split(",")) {
+            str = str.replaceAll("^\\s+", "");
+            str = str.replaceAll("\\s+$", "");
+            if (Strings.isNumeric(str)) {
+               ChangeUiUtil.open(TransactionManager.getTransaction(Long.valueOf(str)));
+            } else {
+               AWorkbench.popup("Entry must be numeric.");
+            }
          }
       }
    }

@@ -15,8 +15,8 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
+import org.eclipse.osee.orcs.search.QueryData;
 
 /**
  * @author Roberto E. Escobar

@@ -27,7 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
    PublishingMarkdownTest.class,
    PublishingMarkdownAsHtmlTest.class,
    PublishingMarkdownAsPdfTest.class,
-   MarkdownCleanerTest.class,
+   MarkdownSanitizerTest.class,
    WordTemplateContentToMarkdownContentConversionTest.class})
 public class PublishingMarkdownTestSuite {
    @BeforeClass

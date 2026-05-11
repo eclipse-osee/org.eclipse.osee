@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -184,7 +184,7 @@ public class SkyWalkerView extends GenericViewPart {
       };
       filterAction.setChecked(options.isFilterEnabled());
       filterAction.setToolTipText("Enable Filters");
-      filterAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
+      filterAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.FILTERS));
       tbm.add(filterAction);
 
       Action action = new Action() {
@@ -201,7 +201,7 @@ public class SkyWalkerView extends GenericViewPart {
       };
       action.setText("Open Selected");
       action.setToolTipText("Open Selected");
-      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT2));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.EDIT2));
       tbm.add(action);
 
       action = new Action() {
@@ -216,7 +216,7 @@ public class SkyWalkerView extends GenericViewPart {
       };
       action.setText("Back");
       action.setToolTipText("Back");
-      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BACK));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.BACK));
       tbm.add(action);
 
       action = new Action() {
@@ -227,7 +227,7 @@ public class SkyWalkerView extends GenericViewPart {
       };
       action.setText("Save Options");
       action.setToolTipText("Save Options");
-      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVE));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.SAVE));
       tbm.add(action);
 
       action = new Action() {
@@ -238,7 +238,7 @@ public class SkyWalkerView extends GenericViewPart {
       };
       action.setText("Load Options");
       action.setToolTipText("Load Options");
-      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.LOAD));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.LOAD));
       tbm.add(action);
 
       action = new Action() {

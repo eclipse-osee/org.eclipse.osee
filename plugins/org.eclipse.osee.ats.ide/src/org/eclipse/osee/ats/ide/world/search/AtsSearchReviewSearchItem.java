@@ -69,20 +69,17 @@ public class AtsSearchReviewSearchItem extends AtsSearchWorkflowSearchItem {
 
    @Override
    protected void addWidgets() {
-      getWorkItemType().addWidget(1);
-      getReviewType().addWidgetEndComposite();
-      getTitle().addWidget();
-      getAi().addWidget(3);
-      getTeamDef().addWidget(2);
-      getVersion().addWidget(4);
-      getStateType().addWidget();
-      getChangeType().addWidget(6);
-      getUser().addWidget();
-      getUserType().addWidget();
-      getStateName().addWidget();
-      getProgram().addWidget(8);
-      getInsertion().addWidget();
-      getInsertionActivity().addWidget();
+      getWorkItemTypeWidget().addWidget(1);
+      getReviewTypeWidget().addWidgetEndComposite();
+      getTitleWidget().addWidget();
+      getAiWidget().addWidget(3);
+      getTeamDefWidget().addWidget(2);
+      getVersionWidget().addWidget(4);
+      getStateTypeWidget().addWidget();
+      getChangeTypeWidget().addWidget(6);
+      getUserWidget().addWidget();
+      getUserTypeWidget().addWidget();
+      getStateNameWidget().addWidget();
    }
 
 }

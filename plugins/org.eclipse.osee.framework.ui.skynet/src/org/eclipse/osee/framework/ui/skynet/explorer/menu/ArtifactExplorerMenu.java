@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,7 +54,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -575,7 +575,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
    private void createAccessControlMenuItem(Menu parentMenu) {
       accessControlMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      accessControlMenuItem.setImage(ImageManager.getImage(FrameworkImage.AUTHENTICATED));
+      accessControlMenuItem.setImage(ImageManager.getImage(CoreImage.AUTHENTICATED));
       accessControlMenuItem.setText("&Access Control ");
       // accessControlMenuItem.setEnabled(false);
       accessControlMenuItem.addSelectionListener(new SelectionAdapter() {
@@ -599,7 +599,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
    private void createShowAccessControlMenuItem(Menu parentMenu) {
       showAccessControlMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      showAccessControlMenuItem.setImage(ImageManager.getImage(FrameworkImage.LOCK_DETAILS));
+      showAccessControlMenuItem.setImage(ImageManager.getImage(CoreImage.LOCK_DETAILS));
       showAccessControlMenuItem.setText(AccessControlDetails.NAME);
       showAccessControlMenuItem.addSelectionListener(new SelectionAdapter() {
 
@@ -754,7 +754,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
    private void createExpandAllMenuItem(Menu parentMenu) {
       MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
-      menuItem.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
+      menuItem.setImage(ImageManager.getImage(CoreImage.EXPAND_ALL));
       menuItem.setText("Expand All\tCtrl+Shift+'+'");
       menuItem.addSelectionListener(new ExpandListener());
    }
@@ -785,7 +785,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
    private void createCollapseAllMenuItem(Menu parentMenu) {
       MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
-      menuItem.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
+      menuItem.setImage(ImageManager.getImage(CoreImage.COLLAPSE_ALL));
       menuItem.setText("Collapse All\tCtrl-");
       menuItem.addSelectionListener(new CollapseListener());
    }

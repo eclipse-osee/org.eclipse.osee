@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.internal.proxy.impl.ArtifactReadOnlyImpl;
+import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -514,6 +515,8 @@ public class UserServiceImpl implements UserService {
       ArtifactReadable user = null;
       if (userArt instanceof ArtifactReadOnlyImpl) {
          user = (ArtifactReadOnlyImpl) userArt;
+      } else if (userArt instanceof ArtifactReadableImpl) {
+         user = (ArtifactReadableImpl) userArt;
       } else {
          user = (ArtifactReadable) orcsApi.getQueryFactory().fromBranch(COMMON).andId(userArt).getArtifactOrNull();
       }
@@ -528,6 +531,7 @@ public class UserServiceImpl implements UserService {
          roles.add(userGroup);
       }
       UserToken userToken = UserToken.create(user.getId(), name, email, userId, active, roles);
+      userToken.getLoginIds().addAll(user.getAttributeValues(CoreAttributeTypes.LoginId));
       return userToken;
    }
 

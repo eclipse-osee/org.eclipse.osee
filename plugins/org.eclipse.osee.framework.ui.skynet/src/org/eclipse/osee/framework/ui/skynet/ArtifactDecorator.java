@@ -35,6 +35,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.OseeImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -48,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -158,25 +159,25 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private void checkActionsCreated(IBranchProvider branchProvider) {
       if (showArtType == null) {
-         showArtType = new DecoratorAction("Artifact Type", FrameworkImage.FILTERS, false);
+         showArtType = new DecoratorAction("Artifact Type", CoreImage.FILTERS, false);
       }
       if (showArtBranch == null) {
-         showArtBranch = new DecoratorAction("Artifact Branch", FrameworkImage.FILTERS, false);
+         showArtBranch = new DecoratorAction("Artifact Branch", CoreImage.FILTERS, false);
       }
       if (showArtVersion == null) {
-         showArtVersion = new DecoratorAction("Artifact Version", FrameworkImage.FILTERS, false);
+         showArtVersion = new DecoratorAction("Artifact Version", CoreImage.FILTERS, false);
       }
 
       if (showRelations == null && !isSearch) {
-         showRelations = new DecoratorAction("Relations", FrameworkImage.FILTERS, false);
+         showRelations = new DecoratorAction("Relations", CoreImage.FILTERS, false);
       }
 
       if (attributesAction == null && branchProvider != null) {
-         attributesAction = new ShowAttributeAction(branchProvider, FrameworkImage.FILTERS);
+         attributesAction = new ShowAttributeAction(branchProvider, CoreImage.FILTERS);
       }
 
       if (showArtIds == null) {
-         showArtIds = new DecoratorAction("Artifact Ids", FrameworkImage.FILTERS, false);
+         showArtIds = new DecoratorAction("Artifact Ids", CoreImage.FILTERS, false);
       }
       if (saveSettingsAction == null) {
          saveSettingsAction = new SetSettingsAsDefault();
@@ -290,7 +291,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       private final String name;
       private boolean isSelected;
 
-      public DecoratorAction(String name, KeyedImage image, boolean defaultValue) {
+      public DecoratorAction(String name, OseeImage image, boolean defaultValue) {
          super(name, IAction.AS_PUSH_BUTTON);
          this.name = name;
          this.isSelected = defaultValue;
@@ -328,7 +329,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       private final Set<AttributeTypeToken> selectedTypes;
       private final IBranchProvider branchProvider;
 
-      public ShowAttributeAction(IBranchProvider branchProvider, KeyedImage image) {
+      public ShowAttributeAction(IBranchProvider branchProvider, OseeImage image) {
          super("Show Attributes", IAction.AS_PUSH_BUTTON);
          this.branchProvider = branchProvider;
          this.selectedTypes = new HashSet<>();
@@ -404,7 +405,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
       public SetSettingsAsDefault() {
          super("Store Label Settings", IAction.AS_PUSH_BUTTON);
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVE));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.SAVE));
       }
 
       @Override

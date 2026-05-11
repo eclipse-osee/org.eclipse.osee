@@ -15,6 +15,11 @@ package org.eclipse.osee.orcs.core.ds;
 
 import static org.mockito.Mockito.verify;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.orcs.search.ds.ArtifactData;
+import org.eclipse.osee.orcs.search.ds.AttributeData;
+import org.eclipse.osee.orcs.search.ds.LoadDataHandler;
+import org.eclipse.osee.orcs.search.ds.LoadDescription;
+import org.eclipse.osee.orcs.search.ds.RelationData;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

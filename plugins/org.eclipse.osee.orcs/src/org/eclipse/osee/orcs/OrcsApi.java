@@ -16,10 +16,12 @@ package org.eclipse.osee.orcs;
 import java.lang.ref.WeakReference;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApi;
+import org.eclipse.osee.framework.core.util.IOseeEmailService;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.eclipse.osee.orcs.utility.EmailCertificateService;
 import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
@@ -50,6 +52,8 @@ public interface OrcsApi extends OseeApi {
 
    JdbcService getJdbcService();
 
+   EmailCertificateService getEmailCertificateService();
+
    ActivityLog getActivityLog();
 
    OrcsPurgeOps getPurgeOps();
@@ -69,5 +73,7 @@ public interface OrcsApi extends OseeApi {
     */
 
    WeakReference<ResourcesOperations> getResourcesOperations();
+
+   IOseeEmailService getEmailService();
 
 }

@@ -98,7 +98,6 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
       ActionableItem ai = new ActionableItem(aiArt, atsApi);
       ai.setName(aiArt.getName());
       ai.setId(aiArt.getId());
-      ai.setGuid(aiArt.getGuid());
       ArtifactId programId =
          atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, AtsAttributeTypes.ProgramId, ArtifactId.SENTINEL);
       if (programId.isValid()) {

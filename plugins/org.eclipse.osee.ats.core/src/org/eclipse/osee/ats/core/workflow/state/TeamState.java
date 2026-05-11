@@ -26,6 +26,7 @@ public class TeamState extends StateTypeAdapter {
    public static TeamState Open = new TeamState("Open", StateType.Working);
    public static TeamState Prepare = new TeamState("Prepare", StateType.Working);
    public static TeamState Analyze = new TeamState("Analyze", StateType.Working);
+   public static TeamState Analyzed = new TeamState("Analyzed", StateType.Working);
    public static TeamState Authorize = new TeamState("Authorize", StateType.Working);
    public static TeamState Implement = new TeamState("Implement", StateType.Working);
    public static TeamState Review = new TeamState("Review", StateType.Working);

@@ -13,11 +13,14 @@
 
 package org.eclipse.osee.ats.core.query;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
@@ -28,11 +31,17 @@ import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -82,8 +91,24 @@ public class AtsSearchDataSearch {
       IAtsQuery query = result.getFirst();
       setUserType(data.getUserType(), query);
 
-      Set<ArtifactToken> results = new HashSet<>();
-      results.addAll(Collections.castAll(query.getResultArtifactsNew().getList()));
+      Map<String, String> bidNametoBidState = new HashMap<>();
+      loadBidNameToStateMap(bidNametoBidState, data);
+      boolean hasBuildImpactCriteria = !bidNametoBidState.isEmpty();
+
+      ResultSet<ArtifactToken> resultSet = query.getResultArtifactsNew();
+      Set<ArtifactToken> resultPrArts = new HashSet<>();
+
+      boolean debugBuildImpactMatch = true;
+
+      /**
+       * If BuildImpact, query loaded all related; now filter out those that don't match.</br>
+       * NOTE: Build Impact can match by just name or name and state
+       */
+      if (hasBuildImpactCriteria) {
+         filterByBuildImpactCriteria(bidNametoBidState, resultSet, resultPrArts, debugBuildImpactMatch);
+      } else {
+         resultPrArts.addAll(Collections.castAll(resultSet.getList()));
+      }
 
       /**
        * Perform a second search (see above) and add results to return set. This is because the framework search api
@@ -92,11 +117,71 @@ public class AtsSearchDataSearch {
       if (assigneesWithCompletedOrCancelled) {
          Pair<IAtsQuery, Boolean> result2 = createAtsQuery();
          IAtsQuery query2 = result2.getFirst();
-         setUserType(AtsSearchUserType.AssigneeWas, query);
-         results.addAll(Collections.castAll(query2.getResultArtifactsNew().getList()));
+         setUserType(AtsSearchUserType.AssigneeWas, query2);
+         resultPrArts.addAll(Collections.castAll(query2.getResultArtifactsNew().getList()));
       }
-      List<ArtifactToken> arts = Collections.castAll(AtsObjects.getArtifacts(results));
+      List<ArtifactToken> arts = Collections.castAll(AtsObjects.getArtifacts(resultPrArts));
       return new AtsSearchDataResults(arts, rd);
+   }
+
+   private void filterByBuildImpactCriteria(Map<String, String> bidNametoBidState, ResultSet<ArtifactToken> resultSet,
+      Set<ArtifactToken> resultPrArts, boolean debugBuildImpactMatch) {
+      XResultData buildImpactDebug = new XResultData(false);
+      if (debugBuildImpactMatch) {
+         buildImpactDebug.logf("Match criteria %s\n", bidNametoBidState);
+      }
+      for (ArtifactToken prArtTok : resultSet.getList()) {
+         if (debugBuildImpactMatch) {
+            buildImpactDebug.logf("\nChecking PR %s\n", prArtTok.toStringWithId());
+         }
+         ArtifactReadable prArt = (ArtifactReadable) prArtTok;
+         // If one BID's name matches name in query, add to results
+         for (ArtifactReadable bidArt : prArt.getRelated(AtsRelationTypes.ProblemReportToBid_Bid)) {
+            if (debugBuildImpactMatch) {
+               buildImpactDebug.logf("--- Checking BIT %s\n", bidArt.toStringWithId());
+            }
+            // If BID name matches one we're looking for, see if match and thus add to PR results
+            if (bidNametoBidState.containsKey(bidArt.getName())) {
+               String buildImpactStateName = bidNametoBidState.get(bidArt.getName());
+               // If state is specified, check against state name
+               if (Strings.isValid(buildImpactStateName)) {
+                  // only add if state matches
+                  String bidArtState = atsApi.getAttributeResolver().getSoleAttributeValueAsString(bidArt,
+                     AtsAttributeTypes.BitState, "");
+                  if (bidArtState.equals(buildImpactStateName)) {
+                     if (debugBuildImpactMatch) {
+                        buildImpactDebug.logf("--- Name [%s] and State [%s] Match; Adding PR \n", bidArt.getName(),
+                           buildImpactStateName);
+                     }
+                     resultPrArts.add(prArt);
+                     break;
+                  }
+               }
+               // Else no state specified, add
+               else {
+                  if (debugBuildImpactMatch) {
+                     buildImpactDebug.logf("--- Name [%s] (no State specified) Match; Adding PR \n", bidArt.getName());
+                  }
+                  resultPrArts.add(prArt);
+                  break;
+               }
+            }
+         }
+      }
+   }
+
+   private void loadBidNameToStateMap(Map<String, String> bidNametoBidState, AtsSearchData data2) {
+      String buildImpactName = data.getBuildImpact();
+      String buildImpactState = data.getBuildImpactState();
+      if (Strings.isValid(buildImpactName)) {
+         bidNametoBidState.put(buildImpactName, buildImpactState);
+      }
+
+      String buildImpactName2 = data.getBuildImpact2();
+      String buildImpactState2 = data.getBuildImpactState2();
+      if (Strings.isValid(buildImpactName2)) {
+         bidNametoBidState.put(buildImpactName2, buildImpactState2);
+      }
    }
 
    public void setUserType(AtsSearchUserType userType, IAtsQuery query) {
@@ -137,8 +222,19 @@ public class AtsSearchDataSearch {
       if (workItemTypes.isEmpty()) {
          workItemTypes.add(WorkItemType.WorkItem);
       }
-      IAtsQuery query = atsApi.getQueryService().createQuery(data.getWorkItemTypes().iterator().next(),
-         workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
+      IAtsQuery query = null;
+      BranchViewToken configTok = data.getConfiguration();
+      if (configTok.isValid()) {
+         Long configBranchId = data.getConfiguration().getId();
+         Conditions.assertTrue(configBranchId > 0, "Configuration Branch must be specified");
+         BranchToken branch = atsApi.getBranchService().getBranch(BranchId.valueOf(configBranchId));
+         Conditions.assertTrue(branch.isValid(), "Configuration Branch must valid");
+         query = atsApi.getQueryService().createQueryWithApplic(configTok, branch);
+         query.andWorkItemType(workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
+      } else {
+         query = atsApi.getQueryService().createQuery(data.getWorkItemTypes().iterator().next(),
+            workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
+      }
       if (Strings.isValid(data.getTitle())) {
          query.andAttr(AtsAttributeTypes.Title, data.getTitle(), QueryOption.CONTAINS_MATCH_OPTIONS);
       }
@@ -175,8 +271,11 @@ public class AtsSearchDataSearch {
       if (data.getInsertionActivityId() > 0L) {
          query.andInsertionActivity(data.getInsertionActivityId());
       }
-      if (data.getWorkPackageId() > 0L) {
-         query.andWorkPackage(data.getWorkPackageId());
+      if (Strings.isValid(data.getWorkPackage())) {
+         query.andWorkPackage(data.getWorkPackage());
+      }
+      if (Strings.isValid(data.getBuildImpact()) || Strings.isValid(data.getBuildImpact2())) {
+         query.andBuildImpact();
       }
       for (AttributeValue attrVal : data.getAttrValues().getAttributes()) {
          if (attrVal.isNotExists()) {

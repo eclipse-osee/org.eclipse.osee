@@ -5,9 +5,12 @@ Bundle-SymbolicName: org.eclipse.osee.orcs;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.databind.annotation,
+ com.google.common.base,
+ com.google.common.collect,
+ com.google.common.io,
  jakarta.xml.bind,
  jakarta.xml.bind.annotation,
  javax.ws.rs.core,
@@ -26,6 +29,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.framework.core.model.access,
  org.eclipse.osee.framework.core.model.change,
  org.eclipse.osee.framework.core.model.dto,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
@@ -35,6 +39,8 @@ Import-Package: com.fasterxml.jackson.annotation,
 Export-Package: org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.search.ds,
+ org.eclipse.osee.orcs.search.ds.criteria,
  org.eclipse.osee.orcs.statistics,
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.orcs.utility

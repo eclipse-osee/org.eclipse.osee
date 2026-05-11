@@ -13,10 +13,10 @@
 package org.eclipse.osee.ats.ide.column;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -27,7 +27,7 @@ public class ToggleXViewerColumnLoadingDebug extends XNavigateItemAction {
    public static final String DEBUG_COLUMN_LOADING = "DebugLoading";
 
    public ToggleXViewerColumnLoadingDebug() {
-      super("Toggle XViewer Column Loading Debug", FrameworkImage.GEAR, XNavigateItem.UTILITY);
+      super("Toggle XViewer Column Loading Debug", CoreImage.GEAR, XNavigateItem.UTILITY);
    }
 
    @Override

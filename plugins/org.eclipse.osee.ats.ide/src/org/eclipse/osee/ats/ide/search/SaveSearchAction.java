@@ -19,11 +19,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.navigate.SavedActionSearchNavigateItem;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -57,7 +57,7 @@ public final class SaveSearchAction extends Action {
             AWorkbench.popup("Invalid Search Name");
             return;
          }
-         AtsSearchData data = AtsApiService.get().getQueryService().createSearchData(searchItem.getNamespace(),
+         AtsSearchData data = AtsApiService.get().getAtsSearchDataService().createSearchData(searchItem.getNamespace(),
             searchItem.getSearchName());
          searchItem.loadSearchData(data);
          data.setSearchName(dialog.getEntry());
@@ -66,7 +66,7 @@ public final class SaveSearchAction extends Action {
          }
          Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "Search Name");
-         AtsApiService.get().getQueryService().saveSearch(data);
+         AtsApiService.get().getAtsSearchDataService().saveSearch(data, AtsApiService.get().user().getArtifactToken());
 
          SavedActionSearchNavigateItem.refreshItems();
 
@@ -76,6 +76,6 @@ public final class SaveSearchAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.SAVE);
+      return ImageManager.getImageDescriptor(CoreImage.SAVE);
    }
 };

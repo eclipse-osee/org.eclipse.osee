@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
@@ -20,6 +21,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
  */
 public interface IXWidgetProvider {
 
-   public XWidget createXWidget(String xWidgetName, String name, XWidgetRendererItem xWidgetLayoutData);
+   public XWidget createXWidget(String xWidgetName, String name, XWidgetData widData);
 
 }

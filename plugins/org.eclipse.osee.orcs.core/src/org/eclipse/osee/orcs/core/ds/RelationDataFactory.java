@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.orcs.search.ds.RelationData;
 
 /**
  * @author Roberto E. Escobar

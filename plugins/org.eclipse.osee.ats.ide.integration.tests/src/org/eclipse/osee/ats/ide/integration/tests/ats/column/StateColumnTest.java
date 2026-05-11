@@ -16,10 +16,10 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -35,10 +35,9 @@ public class StateColumnTest {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
       IAtsColumnService columnService = AtsApiService.get().getColumnService();
 
-      TeamWorkFlowArtifact reqArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
+      IAtsTeamWorkflow reqWf = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(TeamState.Implement.getName(),
-         columnService.getColumnText(AtsColumnTokensDefault.StateColumn, reqArt));
+         columnService.getColumnText(AtsColumnTokensDefault.StateColumn, reqWf));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

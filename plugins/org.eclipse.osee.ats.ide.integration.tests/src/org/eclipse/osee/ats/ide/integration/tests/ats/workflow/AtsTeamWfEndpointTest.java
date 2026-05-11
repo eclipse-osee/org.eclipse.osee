@@ -35,12 +35,12 @@ import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkflowAttachment;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -63,14 +63,14 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
 
    private static AtsTeamWfEndpointApi teamWfEp;
    private static AtsApiIde atsApi;
-   private static TeamWorkFlowArtifact codeTeamWorkFlow;
+   private static TeamWorkflow codeTeamWorkFlow;
    private static JaxRsApi jaxRsApi;
 
    @BeforeClass
    public static void setup() {
       atsApi = AtsApiService.get();
       teamWfEp = AtsApiService.get().getServerEndpoints().getTeamWfEp();
-      codeTeamWorkFlow = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
+      codeTeamWorkFlow = DemoUtil.getSawCodeUnCommittedWf();
 
       jaxRsApi = ServiceUtil.getOseeClient().jaxRsApi();
    }
@@ -90,7 +90,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       IAtsTeamWorkflow buttonSTeamWf = DemoTestUtil.getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 44);
+      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 45);
    }
 
    //   @Path("ids/{id}/")
@@ -125,10 +125,11 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       IAtsTeamWorkflow buttonSTeamWf = DemoTestUtil.getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 50);
+      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 51);
    }
 
    //   @Path("release/{release}")
+   @SuppressWarnings("unlikely-arg-type")
    @Test
    public void testGetWfByRelease() {
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
@@ -147,6 +148,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       changes.execute();
    }
 
+   @SuppressWarnings("unlikely-arg-type")
    @Test
    public void testGetWfByReleaseById() {
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
@@ -210,8 +212,8 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
       assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
 
-      List<WorkflowAttachment> attachments =
-         teamWfEp.getWfAttachments(ArtifactId.valueOf(DemoArtifactToken.WorkingWithDiagramTreeForBld2_TeamWf.getId()), false);
+      List<WorkflowAttachment> attachments = teamWfEp.getWfAttachments(
+         ArtifactId.valueOf(DemoArtifactToken.WorkingWithDiagramTreeForBld2_TeamWf.getId()), false);
 
       int attachmentsCount = attachments.size();
       int expectedCount = 2;

@@ -35,7 +35,7 @@ public class AtsXPointsAttrValidator extends AtsXWidgetValidator {
       WidgetResult result = WidgetResult.Success;
       if ("XEstimatedPointsWidget".equals(widgetDef.getXWidgetName())) {
          boolean found = false;
-         for (AttributeTypeToken attrType : Arrays.asList(AtsAttributeTypes.Points, AtsAttributeTypes.PointsNumeric)) {
+         for (AttributeTypeToken attrType : Arrays.asList(AtsAttributeTypes.PointsEnum, AtsAttributeTypes.PointsNumeric)) {
             if (atsApi.getAttributeResolver().getAttributeCount(workItem, attrType) > 0) {
                found = true;
                break;

@@ -18,13 +18,13 @@ import java.util.HashSet;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.NumberOfTasksColumnUI;
 import org.eclipse.osee.ats.ide.column.NumberOfTasksRemainingColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task.TaskTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,8 +42,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
    public void getColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      TeamWorkFlowArtifact codeArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
+      IAtsTeamWorkflow codeArt = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals("6", NumberOfTasksColumnUI.getInstance().getColumnText(codeArt, null, 0));
       Assert.assertEquals("6", NumberOfTasksRemainingColumnUI.getInstance().getColumnText(codeArt, null, 0));
 
@@ -62,8 +61,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Assert.assertEquals("6", NumberOfTasksColumnUI.getInstance().getColumnText(codeArt, null, 0));
       Assert.assertEquals("6", NumberOfTasksRemainingColumnUI.getInstance().getColumnText(codeArt, null, 0));
 
-      TeamWorkFlowArtifact testArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
+      IAtsTeamWorkflow testArt = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
       Assert.assertEquals("", NumberOfTasksColumnUI.getInstance().getColumnText(testArt, null, 0));
       Assert.assertEquals("", NumberOfTasksRemainingColumnUI.getInstance().getColumnText(testArt, null, 0));
 

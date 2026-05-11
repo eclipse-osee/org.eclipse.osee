@@ -15,7 +15,7 @@
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"outDir": "./out-tsc/spec",
-		"types": ["jasmine"],
+		"types": ["vitest/globals"],
 		"paths": {
 			"@osee/core": ["src/app/core"],
 			"@osee/attributes/types": ["src/app/attributes/types"],

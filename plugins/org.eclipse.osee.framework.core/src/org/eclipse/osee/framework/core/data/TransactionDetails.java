@@ -106,4 +106,9 @@ public class TransactionDetails {
       this.author = author;
    }
 
+   @Override
+   public String toString() {
+      return "TransactionDetails [txId=" + txId + ", branch=" + branch + ", time=" + time + ", oseeComment=" + oseeComment + ", txType=" + txType + ", commitArtId=" + commitArtId + ", build_id=" + build_id + ", author=" + author + "]";
+   }
+
 }

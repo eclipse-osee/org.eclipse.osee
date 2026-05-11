@@ -271,4 +271,11 @@ public class ScriptResultApiImpl implements ScriptResultApi {
       return this.accessor.getAllByFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name), viewId);
    }
 
+   @Override
+   public int getCountWithPrefixFilter(BranchId branch, ArtifactId viewId, String filter)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.accessor.getAllByPrefixFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name), viewId);
+   }
+
 }

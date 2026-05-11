@@ -23,14 +23,13 @@ import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.access.AtsAccessService;
 import org.eclipse.osee.ats.core.access.demo.DemoAtsAccessContextTokens;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.junit.Assert;
@@ -47,8 +46,7 @@ public class AtsBranchAccessManagerTest {
       Assert.assertFalse(mgr.isApplicable(AtsApiService.get().getAtsBranch()));
       Assert.assertFalse(mgr.isApplicable(SAW_Bld_1));
 
-      TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
+      IAtsTeamWorkflow teamArt = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertNotNull(teamArt);
 
       BranchId branch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt);
@@ -60,24 +58,24 @@ public class AtsBranchAccessManagerTest {
    @Test
    public void testGetContextIds() throws Exception {
       IAtsAccessService accessService = AtsApiService.get().getAtsAccessService();
-      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) DemoUtil.getButtonWDoesntWorkOnSituationPageWf();
-      IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
-      IAtsActionableItem ai = teamArt.getActionableItems().iterator().next();
+      IAtsTeamWorkflow teamWf = DemoUtil.getButtonWDoesntWorkOnSituationPageWf();
+      IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
+      IAtsActionableItem ai = teamWf.getActionableItems().iterator().next();
 
       // confirm that deny context id is returned cause no branch
-      Collection<AccessContextToken> contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
+      Collection<AccessContextToken> contextIds = accessService.getContextIds(teamWf.getWorkingBranch(), false);
       Assert.assertEquals(1, contextIds.size());
       Assert.assertTrue(contextIds.contains(AtsAccessContextTokens.ATS_BRANCH_READ));
 
       // create branch
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - set target ver");
       IAtsVersion ver = AtsApiService.get().getVersionService().getVersionById(DemoArtifactToken.CIS_Bld_1);
-      AtsApiService.get().getVersionService().setTargetedVersion(teamArt, ver, changes);
+      AtsApiService.get().getVersionService().setTargetedVersion(teamWf, ver, changes);
       changes.execute();
-      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(teamArt, true);
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(teamWf, true);
 
       // confirm 0 contexts
-      contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
+      contextIds = accessService.getContextIds(teamWf.getWorkingBranch(), false);
       Assert.assertEquals(0, contextIds.size());
 
       // set 2 on team def
@@ -85,7 +83,7 @@ public class AtsBranchAccessManagerTest {
          DemoAtsAccessContextTokens.DEMO_TEST_CONTEXT);
 
       // 2 returned
-      contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
+      contextIds = accessService.getContextIds(teamWf.getWorkingBranch(), false);
       Assert.assertEquals(2, contextIds.size());
       Assert.assertTrue(contextIds.contains(DemoAtsAccessContextTokens.DEMO_CODE_CONTEXT));
       Assert.assertTrue(contextIds.contains(DemoAtsAccessContextTokens.DEMO_TEST_CONTEXT));
@@ -94,22 +92,22 @@ public class AtsBranchAccessManagerTest {
       AtsApiService.get().getAtsAccessService().setContextIds(ai, DemoAtsAccessContextTokens.DEMO_SYSTEMS_CONTEXT);
 
       // only 1 cause AI overrides Team Def
-      contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
+      contextIds = accessService.getContextIds(teamWf.getWorkingBranch(), false);
       Assert.assertEquals(1, contextIds.size());
       Assert.assertTrue(contextIds.contains(DemoAtsAccessContextTokens.DEMO_SYSTEMS_CONTEXT));
 
       // set 1 on workflow
-      AtsApiService.get().getAtsAccessService().setContextIds(teamArt,
+      AtsApiService.get().getAtsAccessService().setContextIds(teamWf,
          DemoAtsAccessContextTokens.DEMO_REQUIREMENT_CONTEXT);
 
       // only 1 cause workflow overrides AI and Team Def
-      contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
+      contextIds = accessService.getContextIds(teamWf.getWorkingBranch(), false);
       Assert.assertEquals(1, contextIds.size());
       Assert.assertTrue(contextIds.contains(DemoAtsAccessContextTokens.DEMO_REQUIREMENT_CONTEXT));
 
       // cleanup
       changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - cleanup");
-      changes.deleteAttributes((ArtifactId) teamArt, CoreAttributeTypes.AccessContextId);
+      changes.deleteAttributes(teamWf.getArtifactId(), CoreAttributeTypes.AccessContextId);
       changes.deleteAttributes(teamDef, CoreAttributeTypes.AccessContextId);
       changes.deleteAttributes(ai, CoreAttributeTypes.AccessContextId);
       changes.execute();

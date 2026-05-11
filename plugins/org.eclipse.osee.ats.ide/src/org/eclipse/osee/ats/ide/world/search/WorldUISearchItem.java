@@ -58,6 +58,10 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
 
    public abstract Collection<Artifact> performSearch(SearchType searchType);
 
+   public Collection<Artifact> performSearchAsArtifacts(SearchType searchType) {
+      throw new UnsupportedOperationException();
+   }
+
    public Collection<Artifact> performSearchGetResults() {
       return performSearchGetResults(false, SearchType.Search);
    }
@@ -85,6 +89,31 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
          return Collections.emptySet();
       }
       return performSearch(searchType);
+   }
+
+   public Collection<Artifact> performSearchGetResultsAsArtifacts(boolean performUi) {
+      return performSearchGetResultsAsArtifacts(performUi, SearchType.Search);
+   }
+
+   public Collection<Artifact> performSearchGetResultsAsArtifacts(boolean performUi, final SearchType searchType) {
+      cancelled = false;
+      if (performUi) {
+         Displays.pendInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               try {
+                  performUI(searchType);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         });
+
+      }
+      if (cancelled) {
+         return Collections.emptySet();
+      }
+      return performSearchAsArtifacts(searchType);
    }
 
    public void performUI(SearchType searchType) {

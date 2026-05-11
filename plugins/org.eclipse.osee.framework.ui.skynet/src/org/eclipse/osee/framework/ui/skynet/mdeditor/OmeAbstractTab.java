@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.mdeditor;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -50,7 +50,7 @@ public abstract class OmeAbstractTab extends FormPage implements IOmeEditorTab {
          String displayableTitle = Strings.escapeAmpersands(titleString);
          managedForm.getForm().setToolTipText(displayableTitle);
          managedForm.getForm().setText(displayableTitle);
-         managedForm.getForm().setImage(ImageManager.getImage(FrameworkImage.OSEE_MARKDOWN_EDIT));
+         managedForm.getForm().setImage(ImageManager.getImage(CoreImage.OSEE_MARKDOWN_EDIT));
       }
    }
 

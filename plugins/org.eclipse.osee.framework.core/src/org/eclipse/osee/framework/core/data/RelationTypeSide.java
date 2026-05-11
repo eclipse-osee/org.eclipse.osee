@@ -129,4 +129,20 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
       return type.getOldRelationTypeToken();
    }
 
+   public RelationTypeToken getType() {
+      return type;
+   }
+
+   public void setType(RelationTypeToken type) {
+      this.type = type;
+   }
+
+   public void setSide(RelationSide side) {
+      this.side = side;
+   }
+
+   public void setOpposite(RelationTypeSide opposite) {
+      this.opposite = opposite;
+   }
+
 }

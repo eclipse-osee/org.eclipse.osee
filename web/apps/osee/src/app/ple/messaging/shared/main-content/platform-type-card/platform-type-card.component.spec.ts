@@ -303,7 +303,7 @@ describe('PlatformTypeCardComponent', () => {
 		expect(await card.getSubtitleText()).toEqual('enumeration');
 	});
 
-	xit('should contain text that has minimum value, maximum value, byte size, default value, msb value, resolution, comp rate, analog accuracy, edit and Create New Type From Base', async () => {
+	it.skip('should contain text that has minimum value, maximum value, byte size, default value, msb value, resolution, comp rate, analog accuracy, edit and Create New Type From Base', async () => {
 		fixture.detectChanges();
 		const card = await loader.getHarness(MatCardHarness);
 		expect(await card.getText()).toContain('Random enumeration');
@@ -322,14 +322,4 @@ describe('PlatformTypeCardComponent', () => {
 			'View Related Enumeration Set Attributes'
 		);
 	});
-
-	//re-enable if we re-activate platform type editing
-	// it('should open dialog and create an edit of an existing type', async() => {
-	//   const openDialog = spyOn(component, 'openDialog').and.callThrough();
-	//   let dialogRefSpy = jasmine.createSpyObj({ afterClosed: of<editPlatformTypeDialogData>({mode:editPlatformTypeDialogDataMode.edit,type:{name:'',description:'',interfaceLogicalType:'',interfacePlatform2sComplement:false,interfacePlatformTypeAnalogAccuracy:'',interfacePlatformTypeBitSize:'0',interfacePlatformTypeBitsResolution:'',interfacePlatformTypeCompRate:'',interfaceDefaultValue:'0',interfacePlatformTypeEnumLiteral:'',interfacePlatformTypeMaxval:'',interfacePlatformTypeMinval:'',interfacePlatformTypeMsbValue:'',interfacePlatformTypeUnits:'',interfacePlatformTypeValidRangeDescription:''}}), close: null });
-	//   let dialogSpy = spyOn(TestBed.inject(MatDialog), 'open').and.returnValue(dialogRefSpy)
-	//   const button = await (await loader.getHarness(MatCardHarness)).getHarness(MatButtonHarness.with({ text: new RegExp("Edit") }));
-	//   await button.click();
-	//   expect(openDialog).toHaveBeenCalledWith(editPlatformTypeDialogDataMode.edit);
-	// })
 });

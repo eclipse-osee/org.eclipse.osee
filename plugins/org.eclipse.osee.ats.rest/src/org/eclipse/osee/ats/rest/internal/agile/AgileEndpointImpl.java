@@ -18,11 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -80,7 +78,6 @@ import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ILineChart;
@@ -434,41 +431,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   @Path("team/{teamId}/workpackage")
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   public List<IAtsWorkPackage> getWorkPackages(@PathParam("teamId") ArtifactId teamId) {
-      IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(teamId);
-      Set<IAtsWorkPackage> wps = new HashSet<>();
-      for (Long atsTeamId : aTeam.getAtsTeamIds()) {
-         IAtsTeamDefinition teamDef = atsApi.getQueryService().getConfigItem(atsTeamId);
-         if (teamDef != null) {
-            for (ArtifactId wpArt : atsApi.getRelationResolver().getRelated(teamDef,
-               AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
-               IAtsWorkPackage wp = atsApi.getQueryService().getConfigItem(wpArt);
-               if (wp != null && wp.isActive()) {
-                  wps.add(wp);
-               }
-            }
-            for (IAtsActionableItem ai : atsApi.getActionableItemService().getActiveActionableItemsAndChildren(
-               teamDef)) {
-               for (ArtifactId wpArt : atsApi.getRelationResolver().getRelated(ai,
-                  AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
-                  IAtsWorkPackage wp = atsApi.getQueryService().getConfigItem(wpArt);
-                  if (wp != null && wp.isActive()) {
-                     wps.add(wp);
-                  }
-               }
-            }
-         }
-      }
-      List<IAtsWorkPackage> wpList = new LinkedList<>();
-      wpList.addAll(wps);
-      Collections.sort(wpList, new NamedComparator(SortOrder.ASCENDING));
-      return wpList;
-   }
-
-   @Override
    @GET
    @Path("team/{teamId}/member")
    @Produces(MediaType.APPLICATION_JSON)
@@ -557,7 +519,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public List<JaxAgileFeatureGroup> getFeatureGroups(long teamId) {
       List<JaxAgileFeatureGroup> groups = new LinkedList<>();
-      ArtifactToken agileTeamArt = atsApi.getQueryService().getArtifact(teamId);
+      ArtifactToken agileTeamArt = atsApi.getQueryService().getArtifactNewFollowAll(teamId);
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(agileTeamArt)) {
          if (child.getName().equals(IAgileService.FEATURE_GROUP_FOLDER_NAME)) {
             for (ArtifactToken subChild : atsApi.getRelationResolver().getChildren(child)) {
@@ -608,6 +570,18 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       URI location = builder.path("teams").path(String.valueOf(newGroup.getTeamId())).path("features").path(
          String.valueOf(newGroup.getId())).build();
       return Response.created(location).entity(newGroup).build();
+   }
+
+   @Override
+   public JaxAgileFeatureGroup getFeatureGroup(long featureId) {
+      IAgileFeatureGroup feature =
+         atsApi.getAgileService().getAgileFeatureGroups(Arrays.asList(featureId)).iterator().next();
+      JaxAgileFeatureGroup created = new JaxAgileFeatureGroup();
+      created.setName(feature.getName());
+      created.setId(feature.getId());
+      created.setTeamId(feature.getTeamId());
+      created.setActive(feature.isActive());
+      return created;
    }
 
    @Override
@@ -1177,8 +1151,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
       IAgileItem item = atsApi.getWorkItemService().getAgileItem(itemArt);
-      IAgileTeam team = atsApi.getAgileService().getAgileTeam(item);
-      AttributeTypeToken agileTeamPointsAttributeType = atsApi.getAgileService().getAgileTeamPointsAttributeType(team);
+      AttributeTypeToken agileTeamPointsAttributeType = atsApi.getAgileService().getPointsAttrType(item);
       IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
       changes.setSoleAttributeValue(item, agileTeamPointsAttributeType, points);
       changes.execute();

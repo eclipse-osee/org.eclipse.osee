@@ -21,6 +21,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { SearchService } from '../../services/search.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-typesearch-element-table-search',
@@ -40,15 +41,7 @@ export class ElementTableSearchComponent {
 	private searchService = inject(SearchService);
 
 	//TODO: Luciano refactor searchTerm to be a signal here, this can be a lot more ergonomic
-	searchTerm = '';
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-	constructor() {
-		this.searchService.searchTerm.subscribe((val) => {
-			this.searchTerm = val;
-		});
-	}
+	searchTerm = toSignal(this.searchService.searchTerm);
 
 	applyFilter(event: Event) {
 		this.searchService.search = (event.target as HTMLInputElement).value;

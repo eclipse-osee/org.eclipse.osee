@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +33,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Loren K. Ashley
  */
 
+@JsonSerialize(using = BranchTokenSerializer.class)
+@JsonDeserialize(using = BranchTokenDeserializer.class)
 public interface BranchToken extends BranchId, NamedId {
 
    /**

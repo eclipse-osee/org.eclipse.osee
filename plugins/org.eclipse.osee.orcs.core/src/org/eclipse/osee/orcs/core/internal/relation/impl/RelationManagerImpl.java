@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
@@ -70,6 +69,7 @@ import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData;
+import org.eclipse.osee.orcs.search.ds.RelationData;
 
 /**
  * @author Andrew M. Finkbeiner

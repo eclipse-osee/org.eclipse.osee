@@ -91,7 +91,6 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
       TeamDefinition teamDef = new TeamDefinition(teamDefArt, atsApi);
       teamDef.setName(teamDefArt.getName());
       teamDef.setId(teamDefArt.getId());
-      teamDef.setGuid(teamDefArt.getGuid());
       teamDef.setActive(
          atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt, AtsAttributeTypes.Active, true));
       for (String workTypeStr : atsApi.getAttributeResolver().getAttributesToStringList(teamDefArt,

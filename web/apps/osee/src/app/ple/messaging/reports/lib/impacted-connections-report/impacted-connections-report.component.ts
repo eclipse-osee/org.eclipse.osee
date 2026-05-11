@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, effect, inject } from '@angular/core';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { ReportsService } from '@osee/messaging/shared/services';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { map } from 'rxjs';
@@ -30,16 +30,15 @@ export class ImpactedConnectionsReportComponent {
 	private reportsService = inject(ReportsService);
 	private branchService = inject(CurrentBranchInfoService);
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		this.route.paramMap.subscribe((params) => {
-			this.ui.idValue = params.get('branchId') || '';
-			this.ui.typeValue =
-				(params.get('branchType') as 'working' | 'baseline' | '') || '';
-		});
-	}
+	private paramMap = toSignal(this.route.paramMap, {
+		initialValue: convertToParamMap({}),
+	});
+	private _updateParams = effect(() => {
+		const params = this.paramMap();
+		this.ui.idValue = params.get('branchId') || '';
+		this.ui.typeValue =
+			(params.get('branchType') as 'working' | 'baseline' | '') || '';
+	});
 
 	branchName = this.branchService.currentBranch.pipe(map((br) => br.name));
 	_impactedConnections$ = this.reportsService.impactedConnectionsArtifacts;

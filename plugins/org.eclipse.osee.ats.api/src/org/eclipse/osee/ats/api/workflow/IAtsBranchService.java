@@ -53,7 +53,7 @@ public interface IAtsBranchService {
 
    BranchToken getBranch(IAtsConfigObject configObject);
 
-   BranchId getBranch(CommitConfigItem configObject);
+   BranchToken getBranch(CommitConfigItem configObject);
 
    String getBranchShortName(CommitConfigItem commitConfigArt);
 
@@ -75,7 +75,7 @@ public interface IAtsBranchService {
 
    Collection<TransactionRecord> getTransactionIds(IAtsTeamWorkflow teamWf, boolean forMergeBranches);
 
-   boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchId branchToExclude);
+   boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchToken branchToExclude);
 
    Collection<BranchToken> getBranchesCommittedTo(IAtsTeamWorkflow teamWf);
 
@@ -85,11 +85,11 @@ public interface IAtsBranchService {
 
    CommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(IAtsTeamWorkflow teamWf);
 
-   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch, CommitConfigItem configArt);
+   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchToken destinationBranch, CommitConfigItem configArt);
 
    BranchToken getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates);
 
-   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch);
+   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchToken destinationBranch);
 
    Collection<Object> getCommitTransactionsAndConfigItemsForTeamWf(IAtsTeamWorkflow teamWf);
 
@@ -135,14 +135,14 @@ public interface IAtsBranchService {
 
    TransactionRecord getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch);
 
-   Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf);
+   Collection<BranchToken> getBranchesToCommitTo(IAtsTeamWorkflow teamWf);
 
    Collection<BranchId> getBranchesInCommit();
 
    boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf,
-      BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds);
+      BranchToken destinationBranch, Collection<? extends TransactionToken> commitTransactionIds);
 
-   BranchId getParentBranch(BranchId branch);
+   BranchToken getParentBranch(BranchToken branch);
 
    TransactionToken getBaseTransaction(BranchId branch);
 
@@ -160,7 +160,7 @@ public interface IAtsBranchService {
 
    BranchToken getWorkingBranchInWork(IAtsTeamWorkflow teamWf);
 
-   List<ChangeItem> getChangeData(BranchId branch);
+   List<ChangeItem> getChangeData(BranchToken branch);
 
    List<ChangeItem> getChangeData(TransactionId transaction);
 

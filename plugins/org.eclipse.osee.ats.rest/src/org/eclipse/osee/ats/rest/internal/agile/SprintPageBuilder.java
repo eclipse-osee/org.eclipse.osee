@@ -94,17 +94,15 @@ public class SprintPageBuilder {
 
    private double getPointsFromAction(ArtifactReadable item) {
       double points = 0;
-      ArtifactReadable agileTeam =
-         sprint.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
-      if (agileTeam.isValid()) {
-         String pointsAttrType = agileTeam.getSoleAttributeAsString(AtsAttributeTypes.PointsAttributeType, "");
-         if (Strings.isValid(pointsAttrType) && pointsAttrType.equals(AtsAttributeTypes.PointsNumeric.getName())) {
-            points = item.getSoleAttributeValue(AtsAttributeTypes.PointsNumeric, 0.0);
-         } else {
-            String value = item.getSoleAttributeAsString(AtsAttributeTypes.Points, "0");
-            if (Strings.isNumeric(value)) {
-               points = Double.parseDouble(value);
-            }
+      if (item.isAttributeTypeValid(AtsAttributeTypes.PointsNumeric)) {
+         String value = item.getSoleAttributeAsString(AtsAttributeTypes.PointsNumeric, "0.0");
+         if (Strings.isNumeric(value)) {
+            points = Double.parseDouble(value);
+         }
+      } else {
+         String value = item.getSoleAttributeAsString(AtsAttributeTypes.PointsEnum, "0");
+         if (Strings.isNumeric(value)) {
+            points = Double.parseDouble(value);
          }
       }
       return points;

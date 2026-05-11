@@ -813,7 +813,7 @@ public class WordRenderArtifactWrapperClientImpl extends PublishingArtifactBase 
    }
 
    @Override
-   public TransactionDetails getTxDetails() {
+   public TransactionDetails getLatestTxDetails() {
       throw new UnsupportedOperationException();
    }
 
@@ -1021,6 +1021,27 @@ public class WordRenderArtifactWrapperClientImpl extends PublishingArtifactBase 
    public GammaId getGamma() {
       throw new UnsupportedOperationException();
    }
+
+   @Override
+   public boolean isLoaded() {
+      return false;
+   }
+
+   @Override
+   public boolean isNotLoaded() {
+      return false;
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew() {
+      return null;
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType) {
+      throw new UnsupportedOperationException();
+   }
+
 }
 
 /* EOF */

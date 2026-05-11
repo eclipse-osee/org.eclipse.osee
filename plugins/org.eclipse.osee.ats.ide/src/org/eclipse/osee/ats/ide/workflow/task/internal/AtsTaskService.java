@@ -105,7 +105,7 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
          // Determine if multiple work defs and/or miss-matched work defs
          Collection<WorkDefinition> taskWorkDefs = atsApi.getTaskService().calculateTaskWorkDefs(teamWf);
          String comment = "Create New Task";
-         if (taskWorkDefs.size() == 0 || taskWorkDefs.size() == 1) {
+         if (taskWorkDefs.isEmpty() || taskWorkDefs.size() == 1) {
             ed = new EntryComboDialog(comment, "Enter Task Title", RelatedToStateColumnUI.RELATED_TO_STATE_SELECTION);
             List<String> validStates =
                RelatedToStateColumnUI.getValidInWorkStates((TeamWorkFlowArtifact) teamWf.getStoreObject());

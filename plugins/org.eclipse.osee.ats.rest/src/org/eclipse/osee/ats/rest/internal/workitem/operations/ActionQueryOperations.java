@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 
 /**
  * @author Donald G. Dunne
@@ -37,10 +36,7 @@ public class ActionQueryOperations {
    }
 
    public XResultData getIds() {
-      ElapsedTime time = new ElapsedTime(getClass().getSimpleName() + " - search");
       AtsSearchDataResults results = atsApi.getQueryService().getArtifactsNew(data, null);
-      System.err.println("Results: " + results.getArtifacts().size());
-      time.endSec();
       XResultData rd = new XResultData();
       for (ArtifactToken art : results.getArtifacts()) {
          rd.getIds().add(art.getIdString());

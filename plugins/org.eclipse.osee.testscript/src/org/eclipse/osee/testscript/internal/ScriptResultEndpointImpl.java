@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,8 +58,9 @@ public class ScriptResultEndpointImpl implements ScriptResultEndpoint {
    }
 
    @Override
-   public int getCount(String filter, ArtifactId viewId) {
-      return scriptResultTypeApi.getCountWithFilter(branch, viewId, filter);
+   public int getCount(String filter, ArtifactId viewId) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return scriptResultTypeApi.getCountWithPrefixFilter(branch, viewId, filter);
    }
 
    @Override

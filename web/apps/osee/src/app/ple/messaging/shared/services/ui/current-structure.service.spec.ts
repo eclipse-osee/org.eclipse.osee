@@ -161,7 +161,7 @@ servicesUnderTest.forEach((testCase) => {
 		});
 
 		//TODO: test doesn't work with signals...
-		xit('should get filtered structures', () => {
+		it.skip('should get filtered structures', () => {
 			scheduler.run(() => {
 				service.branchId = '10';
 				service.structureFilter.set('0');
@@ -244,7 +244,7 @@ servicesUnderTest.forEach((testCase) => {
 			});
 		});
 		//TODO: test doesn't work with signals...
-		xit('should relate a structure', () => {
+		it.skip('should relate a structure', () => {
 			scheduler.run(() => {
 				const expectedObservable = { a: transactionResultMock };
 				const expectedMarble = '(a|)';
@@ -543,7 +543,7 @@ servicesUnderTest.forEach((testCase) => {
 		/**
 		 * @todo Luciano fix or disable?
 		 */
-		xit('should fetch structures array with diff', () => {
+		it.skip('should fetch structures array with diff', () => {
 			service.DiffMode = true;
 			service.difference = changeReportMock;
 			service.subMessageId = '201301';

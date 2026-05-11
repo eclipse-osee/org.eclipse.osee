@@ -17,10 +17,8 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
-import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
-import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,28 +29,18 @@ public class TeamWorkflowTest {
 
    @Test
    public void testGetActionableItems() {
-      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      IAtsTeamWorkflow teamWf = DemoUtil.getSawCodeCommittedWf();
       Set<IAtsActionableItem> ais = teamWf.getActionableItems();
       Assert.assertEquals(1, ais.size());
       Assert.assertEquals(DemoArtifactToken.SAW_Code_AI, ais.iterator().next());
-
-      TeamWorkflow tWf = new TeamWorkflow(AtsApiService.get().getLogger(), AtsApiService.get(), teamWf);
-      Set<IAtsActionableItem> ais1 = tWf.getActionableItems();
-      Assert.assertEquals(1, ais1.size());
-      Assert.assertEquals(DemoArtifactToken.SAW_Code_AI, ais1.iterator().next());
    }
 
    @Test
    public void testGetTeamDefinition() {
-      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      IAtsTeamWorkflow teamWf = DemoUtil.getSawCodeCommittedWf();
       IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
       Assert.assertNotNull(teamDef);
       Assert.assertEquals(DemoArtifactToken.SAW_Code, teamDef);
-
-      TeamWorkflow tWf = new TeamWorkflow(AtsApiService.get().getLogger(), AtsApiService.get(), teamWf);
-      IAtsTeamDefinition teamDef1 = tWf.getTeamDefinition();
-      Assert.assertNotNull(teamDef1);
-      Assert.assertEquals(DemoArtifactToken.SAW_Code, teamDef1);
    }
 
 }

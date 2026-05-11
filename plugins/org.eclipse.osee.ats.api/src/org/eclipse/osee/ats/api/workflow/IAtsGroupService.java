@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 
 /**
@@ -33,6 +32,6 @@ public interface IAtsGroupService {
 
    ArtifactToken addGroup(ArtifactToken groupToken, BranchToken branch, IAtsChangeSet changes);
 
-   ArtifactToken getTopUniversalGroupArtifact(BranchId branch);
+   ArtifactToken getTopUniversalGroupArtifact(BranchToken branch);
 
 }

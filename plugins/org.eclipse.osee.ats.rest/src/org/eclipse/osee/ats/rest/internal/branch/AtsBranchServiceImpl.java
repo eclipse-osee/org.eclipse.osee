@@ -177,13 +177,13 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public BranchId getParentBranch(BranchId branch) {
+   public BranchToken getParentBranch(BranchToken branch) {
       if (branch instanceof Branch) {
-         return ((Branch) branch).getParentBranch();
+         return getBranch(((Branch) branch).getParentBranch());
       }
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       Branch fullBranch = query.andId(branch).getResults().getExactlyOne();
-      return fullBranch.getParentBranch();
+      return getBranch(fullBranch.getParentBranch());
    }
 
    @Override
@@ -240,10 +240,10 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public List<ChangeItem> getChangeData(BranchId branch) {
+   public List<ChangeItem> getChangeData(BranchToken branch) {
       TransactionQuery transactionQuery2 = orcsApi.getQueryFactory().transactionQuery();
       TransactionQuery transactionQuery3 = orcsApi.getQueryFactory().transactionQuery();
-      BranchId parentBranch = atsApi.getBranchService().getParentBranch(branch);
+      BranchToken parentBranch = atsApi.getBranchService().getParentBranch(branch);
       TransactionReadable startTx = transactionQuery2.andIsHead(branch).getResults().getExactlyOne();
       TransactionReadable endTx = transactionQuery3.andIsHead(parentBranch).getResults().getExactlyOne();
       List<ChangeItem> results = orcsApi.getTransactionFactory().compareTxs(startTx, endTx);

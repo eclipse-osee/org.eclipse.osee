@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.explorer;
 
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -38,7 +38,7 @@ public class BranchWarningComposite extends Composite {
 
       Label image = new Label(this, SWT.NONE);
       image.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
-      image.setImage(ImageManager.getImage(FrameworkImage.LOCKED_KEY));
+      image.setImage(ImageManager.getImage(CoreImage.LOCKED_KEY));
       image.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       branchWarningLabel = new Label(this, SWT.NONE);

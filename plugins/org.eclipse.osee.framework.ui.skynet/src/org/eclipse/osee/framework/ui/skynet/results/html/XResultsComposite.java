@@ -17,13 +17,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -117,7 +117,7 @@ public class XResultsComposite extends Composite {
 
       MenuItem item = new MenuItem(menu, SWT.NONE);
       item.setText("Copy");
-      item.setImage(ImageManager.getImage(FrameworkImage.COPYTOCLIPBOARD));
+      item.setImage(ImageManager.getImage(CoreImage.COPYTOCLIPBOARD));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -137,7 +137,7 @@ public class XResultsComposite extends Composite {
 
       item = new MenuItem(menu, SWT.NONE);
       item.setText("View Source");
-      item.setImage(ImageManager.getImage(FrameworkImage.DOCUMENT));
+      item.setImage(ImageManager.getImage(CoreImage.DOCUMENT));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -158,7 +158,7 @@ public class XResultsComposite extends Composite {
 
       item = new MenuItem(menu, SWT.NONE);
       item.setText("Print");
-      item.setImage(ImageManager.getImage(FrameworkImage.PRINT));
+      item.setImage(ImageManager.getImage(CoreImage.PRINT));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -173,7 +173,7 @@ public class XResultsComposite extends Composite {
 
       item = new MenuItem(menu, SWT.NONE);
       item.setText("Email");
-      item.setImage(ImageManager.getImage(FrameworkImage.EMAIL));
+      item.setImage(ImageManager.getImage(CoreImage.EMAIL));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -190,7 +190,7 @@ public class XResultsComposite extends Composite {
       });
       item = new MenuItem(menu, SWT.NONE);
       item.setText("Export Table");
-      item.setImage(ImageManager.getImage(FrameworkImage.EXPORT_TABLE));
+      item.setImage(ImageManager.getImage(CoreImage.EXPORT_TABLE));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -200,7 +200,7 @@ public class XResultsComposite extends Composite {
       });
       item = new MenuItem(menu, SWT.NONE);
       item.setText("Save to File");
-      item.setImage(ImageManager.getImage(FrameworkImage.SAVE));
+      item.setImage(ImageManager.getImage(CoreImage.SAVE));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override

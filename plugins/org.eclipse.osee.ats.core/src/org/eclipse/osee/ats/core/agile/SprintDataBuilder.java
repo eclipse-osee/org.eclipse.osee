@@ -81,10 +81,6 @@ public class SprintDataBuilder {
             atsApi.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.PlannedPoints, 0);
          sprintData.setPlannedPoints(plannedPoints);
 
-         // store points attribute name
-         sprintData.setPointsAttrTypeName(atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
-            AtsAttributeTypes.PointsAttributeType, AtsAttributeTypes.Points.getName()));
-
          int totalPoints = unPlannedPoints + plannedPoints;
          long oneDay = 24 * 60 * 60 * 1000;
 
@@ -231,7 +227,7 @@ public class SprintDataBuilder {
    }
 
    private double getPoints(AgileSprintData burn, IAgileItem item) {
-      AttributeTypeToken pointsType = atsApi.tokenService().getAttributeType(burn.getPointsAttrTypeName());
+      AttributeTypeToken pointsType = atsApi.getAgileService().getPointsAttrType(item);
       Object value = atsApi.getAttributeResolver().getSoleAttributeValue(item, pointsType, "");
       if (value instanceof Double) {
          return (Double) value;

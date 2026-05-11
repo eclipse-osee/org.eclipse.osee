@@ -12,10 +12,10 @@
 -->
 <h1 mat-dialog-title>Feature Constraints</h1>
 <div mat-dialog-content>
-	@if (applicsToDisplay.length > 0) {
+	@if (applicsToDisplay().length > 0) {
 		<table
 			mat-table
-			[dataSource]="applicsToDisplay"
+			[dataSource]="applicsToDisplay()"
 			class="mat-elevation-z8 tw-w-full">
 			<ng-container matColumnDef="childApplic">
 				<th

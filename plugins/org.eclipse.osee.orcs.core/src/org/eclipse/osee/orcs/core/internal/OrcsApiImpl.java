@@ -17,10 +17,12 @@ import java.lang.ref.WeakReference;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
+import org.eclipse.osee.framework.core.data.ArtifactTokenDeserializer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
+import org.eclipse.osee.framework.core.util.IOseeEmailService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
@@ -65,9 +67,11 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl.Transact
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
+import org.eclipse.osee.orcs.core.internal.util.OseeEmailService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.eclipse.osee.orcs.utility.EmailCertificateService;
 import org.eclipse.osee.orcs.utility.KeyValueService;
 
 /**
@@ -101,11 +105,13 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private WeakReference<ResourcesOperations> resourcesOperations;
 
    private UserService userService;
+   private EmailCertificateService emailCertificateService;
    private ActivityLog activityLog;
    private OrcsTypes orcsTypes;
    AccessControlServiceImpl accessControlService;
 
    ExternalArtifactManager proxyManager;
+   private IOseeEmailService emailService;
 
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService) {
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi) {
@@ -132,6 +138,9 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    public void start() {
       systemSession = createSession();
+
+      ArtifactTokenDeserializer.setTokenService(tokenService());
+
       module = dataStore.createDataModule(tokenService());
 
       orcsTypes = new OrcsTypesImpl(getSession(), dataStore.getTypesDataStore());
@@ -199,6 +208,9 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
       userService = new UserServiceImpl(this);
 
+      emailCertificateService = new EmailCertificateServiceImpl(this);
+      emailService = new OseeEmailService(this);
+
       accessControlService = new AccessControlServiceImpl(this);
       accessControlService.bindUserService(userService);
    }
@@ -241,8 +253,8 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public TransactionFactory getTransactionFactory() {
       OrcsSession session = getSession();
-      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, this, getBranchOps(),
-         keyValueSvc(), module.getTxDataStore());
+      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, this, getBranchOps(), keyValueSvc(),
+         module.getTxDataStore());
    }
 
    @Override
@@ -304,6 +316,11 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    }
 
    @Override
+   public EmailCertificateService getEmailCertificateService() {
+      return emailCertificateService;
+   }
+
+   @Override
    public JdbcService getJdbcService() {
       return dataStore.getJdbcService();
    }
@@ -334,6 +351,11 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public WeakReference<ResourcesOperations> getResourcesOperations() {
       return this.resourcesOperations;
+   }
+
+   @Override
+   public IOseeEmailService getEmailService() {
+      return emailService;
    }
 
 }

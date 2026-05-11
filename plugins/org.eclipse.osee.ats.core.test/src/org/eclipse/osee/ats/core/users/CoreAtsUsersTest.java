@@ -33,9 +33,9 @@ public class CoreAtsUsersTest {
 
    @Test
    public void testIsActive() {
-      AtsCoreUsers.SYSTEM_USER.isActive();
-      AtsCoreUsers.UNASSIGNED_USER.isActive();
-      new TestUser().isActive();
+      Assert.assertEquals(false, AtsCoreUsers.SYSTEM_USER.isActive());
+      Assert.assertEquals(true, AtsCoreUsers.UNASSIGNED_USER.isActive());
+      Assert.assertEquals(true, new TestUser().isActive());
    }
 
    @Test

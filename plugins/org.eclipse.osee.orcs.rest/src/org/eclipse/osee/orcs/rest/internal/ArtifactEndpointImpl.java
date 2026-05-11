@@ -15,14 +15,24 @@ package org.eclipse.osee.orcs.rest.internal;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -34,8 +44,12 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.define.rest.importing.parsers.ArtifactImportExportUtils;
+import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentCleaner;
 import org.eclipse.osee.define.rest.importing.parsers.WordTemplateContentToMarkdownContentConverter;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.attribute.sanitizer.AttributeSanitizerOptions;
+import org.eclipse.osee.framework.core.attribute.sanitizer.MarkdownSanitizer;
+import org.eclipse.osee.framework.core.attribute.sanitizer.TextSanitizer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -47,6 +61,7 @@ import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -58,17 +73,19 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.data.OrcsPurgeResult;
+import org.eclipse.osee.orcs.rest.internal.operations.ArtifactValidityReport;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
@@ -82,6 +99,8 @@ import org.eclipse.osee.orcs.search.ArtifactTable;
 import org.eclipse.osee.orcs.search.ArtifactTableOptions;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.FollowAllCriteria;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -512,7 +531,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andId(artifact);
       if (includeRelations) {
-         query = query.followAll(true);
+         query = query.followAll(FollowAllCriteria.OneLevel);
       }
       ArtifactReadable art = query.asArtifactOrSentinel();
       return new ArtifactWithRelations(art, this.tokenService, includeRelations);
@@ -596,7 +615,9 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public Response exportArtifactRecordsAsZip(BranchId branchId, ArtifactId artifact) {
       // Require user to have OseeAdmin role before performing any operations
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
 
       byte[] zipData = ArtifactImportExportUtils.exportArtifactRecordsAsZip(branchId, artifact, orcsApi);
 
@@ -608,7 +629,9 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public Response importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(InputStream zipInputStream,
       Boolean deleteWordTemplateContent, Boolean deleteConversionMarkdownContentAndImages) {
       // Require user to have OseeAdmin role before performing any operations
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
 
       try {
          // Read records from zip
@@ -646,9 +669,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          class MarkdownResult {
             private final ArtifactId artifactId;
             private final String markdownContent;
-            public MarkdownResult(ArtifactId artifactId, String markdownContent) {
+            private final String errorTrace; // null if succeeded
+
+            public MarkdownResult(ArtifactId artifactId, String markdownContent, String errorTrace) {
                this.artifactId = artifactId;
                this.markdownContent = markdownContent;
+               this.errorTrace = errorTrace;
             }
 
             public ArtifactId getArtifactId() {
@@ -658,42 +684,101 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             public String getMarkdownContent() {
                return markdownContent;
             }
-         }
 
-         // Submit conversion tasks in parallel
-         List<Future<MarkdownResult>> futures = new ArrayList<>();
-         for (ArtifactImportExportUtils.ArtifactRecord record : records) {
-            futures.add(executor.submit(() -> {
-               String md = "";
-               if (record.getWordTemplateContent() != null) {
-                  md = conv.run(record.getWordTemplateContent(), record.getArtifactId());
-               }
-               return new MarkdownResult(record.getArtifactId(), md);
-            }));
-         }
-
-         // Wait for all conversions to finish, then apply to transaction in a single thread
-         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
-            CoreAttributeTypes.WordTemplateContent.getName() + " attribute to " + CoreAttributeTypes.MarkdownContent.getName() + " conversion.");
-
-         for (Future<MarkdownResult> future : futures) {
-            try {
-               MarkdownResult result = future.get();
-               if (!result.getMarkdownContent().equals("")) {
-                  tx.setSoleAttributeFromString(result.getArtifactId(), CoreAttributeTypes.MarkdownContent,
-                     result.getMarkdownContent());
-               }
-               if (deleteWordTemplateContent) {
-                  tx.deleteAttributes(result.getArtifactId(), CoreAttributeTypes.WordTemplateContent);
-               }
-            } catch (Exception e) {
-               e.printStackTrace();
+            public String getErrorTrace() {
+               return errorTrace;
             }
          }
 
-         TransactionToken txToken = tx.commit();
+         CompletionService<MarkdownResult> completionService = new ExecutorCompletionService<>(executor);
 
-         executor.shutdown();
+         try {
+            // Submit all tasks
+            for (ArtifactImportExportUtils.ArtifactRecord record : records) {
+               completionService.submit(() -> {
+                  ArtifactId artifactId = record.getArtifactId();
+                  try {
+                     String md = "";
+                     if (record.getWordTemplateContent() != null) {
+                        md = conv.run(record.getWordTemplateContent(), artifactId);
+                     }
+                     return new MarkdownResult(artifactId, md, null);
+                  } catch (Exception ex) {
+                     // Capture stack trace to a string so we can return it
+                     StringWriter sw = new StringWriter();
+                     ex.printStackTrace(new PrintWriter(sw));
+                     return new MarkdownResult(artifactId, null, sw.toString());
+                  }
+               });
+            }
+
+            // Wait for all conversions to finish, then apply to transaction in a single thread
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+               CoreAttributeTypes.WordTemplateContent.getName() + " attribute to " + CoreAttributeTypes.MarkdownContent.getName() + " conversion.");
+
+            // Collect results as they complete
+            Map<ArtifactId, String> resultMap = new HashMap<>();
+            List<String> globalErrors = new ArrayList<>();
+
+            int tasks = records.size();
+            for (int i = 0; i < tasks; i++) {
+               try {
+                  Future<MarkdownResult> completedFuture = completionService.take(); // blocks until next is done
+                  MarkdownResult result = completedFuture.get(); // should return immediately since take() gave a completed future
+
+                  if (result.getErrorTrace() != null) {
+                     // store the stack trace as the value for this artifact
+                     resultMap.put(result.getArtifactId(), result.getErrorTrace());
+                  } else {
+                     // store the markdown (may be empty string)
+                     String content = result.getMarkdownContent();
+                     if (!content.isEmpty()) {
+                        tx.setSoleAttributeFromString(result.getArtifactId(), CoreAttributeTypes.MarkdownContent,
+                           content);
+                     }
+                     if (deleteWordTemplateContent) {
+                        tx.deleteAttributes(result.getArtifactId(), CoreAttributeTypes.WordTemplateContent);
+                     }
+                  }
+               } catch (ExecutionException ee) {
+                  // This block is unlikely here because the callable catches exceptions and returns TaskResult.
+                  // But if something went wrong outside that (e.g., RejectedExecutionException earlier), capture a generic message.
+                  StringWriter sw = new StringWriter();
+                  ee.printStackTrace(new PrintWriter(sw));
+                  globalErrors.add(sw.toString());
+               } catch (InterruptedException ex) {
+                  globalErrors.add("Markdown result threw an interrupted exception");
+               }
+            }
+            for (Map.Entry<ArtifactId, String> e : resultMap.entrySet()) {
+               conv.logError(e.getValue(), e.getKey());
+            }
+            for (String error : globalErrors) {
+               conv.logError(error, ArtifactId.SENTINEL);
+            }
+            TransactionToken txToken = tx.commit();
+            if (txToken.isInvalid()) {
+               conv.logError("Commit failed for this import", ArtifactId.SENTINEL);
+            }
+
+         } finally {
+            // Clean shutdown
+            executor.shutdown(); // stop accepting new tasks
+            try {
+               if (!executor.awaitTermination(100, TimeUnit.SECONDS)) {
+                  // timed out - force shutdown
+                  List<Runnable> dropped = executor.shutdownNow();
+                  // Optionally log how many were dropped
+                  conv.logError(
+                     "Executor did not terminate in time; forced shutdown. Dropped " + dropped.size() + " tasks.",
+                     ArtifactId.SENTINEL);
+                  // Wait again briefly
+                  executor.awaitTermination(5, TimeUnit.SECONDS);
+               }
+            } catch (InterruptedException ex) {
+               conv.logError("Executor did not terminate in time, then interrupted", ArtifactId.SENTINEL);
+            }
+         }
 
          return Response.ok(conv.getErrorLog()).build();
       } catch (IOException e) {
@@ -706,37 +791,46 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public Response convertWordTemplateContentToMarkdownContent(BranchId branchId, ArtifactId artifact,
       Boolean deleteWordTemplateContent, Boolean deleteConversionMarkdownContentAndImages) {
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
 
       // 1) Export the artifact records as ZIP
-      Response exportResponse = exportArtifactRecordsAsZip(branchId, artifact);
+      try (Response exportResponse = exportArtifactRecordsAsZip(branchId, artifact);) {
 
-      // If export failed, propagate the error
-      if (exportResponse.getStatus() != Status.OK.getStatusCode()) {
-         // Pass through the original status and entity (if any)
+         // If export failed, propagate the error
+         if (exportResponse.getStatus() != Status.OK.getStatusCode()) {
+            // Pass through the original status and entity (if any)
+            Object entity = exportResponse.getEntity();
+            return Response.status(exportResponse.getStatus()).entity(
+               entity != null ? entity : "Export failed with status: " + exportResponse.getStatus()).build();
+         }
+
+         // 2) Extract the ZIP bytes from the export response
          Object entity = exportResponse.getEntity();
-         return Response.status(exportResponse.getStatus()).entity(
-            entity != null ? entity : "Export failed with status: " + exportResponse.getStatus()).build();
-      }
+         if (!(entity instanceof byte[])) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
+               "Unexpected export entity type; expected byte[] ZIP.").build();
+         }
 
-      // 2) Extract the ZIP bytes from the export response
-      Object entity = exportResponse.getEntity();
-      if (!(entity instanceof byte[])) {
-         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
-            "Unexpected export entity type; expected byte[] ZIP.").build();
-      }
+         byte[] zipBytes = (byte[]) entity;
 
-      byte[] zipBytes = (byte[]) entity;
-
-      // 3) Pipe the ZIP into the import method
-      try (InputStream zipInputStream = new ByteArrayInputStream(zipBytes)) {
-         return importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(zipInputStream,
-            deleteWordTemplateContent, deleteConversionMarkdownContentAndImages);
-      } catch (IOException e) {
-         e.printStackTrace();
-         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
-            "Failed to prepare ZIP for import: " + e.getMessage()).build();
+         // 3) Pipe the ZIP into the import method
+         try (InputStream zipInputStream = new ByteArrayInputStream(zipBytes)) {
+            return importArtifactRecordsZipAndConvertWordTemplateContentToMarkdownContent(zipInputStream,
+               deleteWordTemplateContent, deleteConversionMarkdownContentAndImages);
+         } catch (IOException e) {
+            e.printStackTrace();
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
+               "Failed to prepare ZIP for import: " + e.getMessage()).build();
+         }
       }
+   }
+
+   @Override
+   public XResultData convertWMZChildAttribute(BranchId branch, ArtifactId artifact, String scriptPath) {
+      WmzConverter converter = new WmzConverter(orcsApi);
+      return converter.convertWMZChildAttribute(branch, artifact, scriptPath);
    }
 
    @Override
@@ -768,6 +862,409 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       query.andIsOfType(artifactType);
       query.andRelationExists(relationType);
       return query.getCount();
+   }
+
+   @Override
+   public String getArtifactValidityReport(ArtifactId artifactId) {
+      ArtifactValidityReport ops = new ArtifactValidityReport(branch, artifactId, orcsApi);
+      return ops.getReport();
+   }
+
+   @Override
+   public Response exportArtifactRecordsWhoseWordTemplateContentChangedFromSpecifiedDateToPresent(BranchId branchId,
+      String fromDate) {
+      // Require user to have OseeAdmin role before performing any operations
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+
+      byte[] zipData = ArtifactImportExportUtils.exportArtifactRecordsWhoseWordTemplateContentChangedSinceDateAsZip(
+         branchId, fromDate, orcsApi);
+
+      return Response.ok(zipData, "application/zip").header("Content-Disposition",
+         "attachment; filename=\"artifactRecords.zip\"").build();
+   }
+
+   @Override
+   public Response importArtifactRecordsZipAndRemoveEmptyPageAndSectionBreaksFromWtc(InputStream zipInputStream) {
+      // Require user to have OseeAdmin role before performing any operations
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+
+      try {
+         // Read records from zip
+         byte[] zipBytes = zipInputStream.readAllBytes();
+         List<ArtifactImportExportUtils.ArtifactRecord> records =
+            ArtifactImportExportUtils.readArtifactRecordsFromZip(zipBytes);
+
+         WordTemplateContentCleaner cleaner = new WordTemplateContentCleaner(branch);
+
+         int numThreads = Math.min(records.size(), Runtime.getRuntime().availableProcessors());
+         if (numThreads < 1) {
+            return Response.status(Status.BAD_REQUEST).entity("No artifact records found in ZIP.").build();
+         }
+         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+
+         // Result class to hold both artifactId and updated wordTemplateContent
+         class WtcResult {
+            private final ArtifactId artifactId;
+            private final String wordTemplateContent;
+            private final String errorTrace; // null if succeeded
+
+            public WtcResult(ArtifactId artifactId, String wordTemplateContent, String errorTrace) {
+               this.artifactId = artifactId;
+               this.wordTemplateContent = wordTemplateContent;
+               this.errorTrace = errorTrace;
+            }
+
+            public ArtifactId getArtifactId() {
+               return artifactId;
+            }
+
+            public String getWordTemplateContent() {
+               return wordTemplateContent;
+            }
+
+            public String getErrorTrace() {
+               return errorTrace;
+            }
+         }
+
+         CompletionService<WtcResult> completionService = new ExecutorCompletionService<>(executor);
+
+         try {
+            // Submit all tasks
+            for (ArtifactImportExportUtils.ArtifactRecord record : records) {
+               completionService.submit(() -> {
+                  ArtifactId artifactId = record.getArtifactId();
+                  try {
+                     String cleanedWtc = "";
+                     if (record.getWordTemplateContent() != null) {
+                        cleanedWtc = cleaner.trimUnwantedSectionsFromEnd(record.getWordTemplateContent(), record);
+                     }
+                     return new WtcResult(artifactId, cleanedWtc, null);
+                  } catch (Exception ex) {
+                     // Capture stack trace to a string so we can return it
+                     StringWriter sw = new StringWriter();
+                     ex.printStackTrace(new PrintWriter(sw));
+                     return new WtcResult(artifactId, null, sw.toString());
+                  }
+               });
+            }
+
+            // Wait for all conversions to finish, then apply to transaction in a single thread
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+               "Word Template Content cleanup: Removing page breaks and section breaks from the end of word template content text.");
+
+            // Collect results as they complete
+            Map<ArtifactId, String> resultMap = new HashMap<>();
+            List<String> globalErrors = new ArrayList<>();
+
+            int tasks = records.size();
+            for (int i = 0; i < tasks; i++) {
+               try {
+                  Future<WtcResult> completedFuture = completionService.take(); // blocks until next is done
+                  WtcResult result = completedFuture.get(); // should return immediately since take() gave a completed future
+
+                  if (result.getErrorTrace() != null) {
+                     // store the stack trace as the value for this artifact
+                     resultMap.put(result.getArtifactId(), result.getErrorTrace());
+                  } else {
+                     // update the wtc with cleaned result
+                     String content = result.getWordTemplateContent();
+                     if (!content.isEmpty()) {
+                        tx.setSoleAttributeFromString(result.getArtifactId(), CoreAttributeTypes.WordTemplateContent,
+                           content);
+                     }
+                  }
+               } catch (ExecutionException ee) {
+                  // This block is unlikely here because the callable catches exceptions and returns TaskResult.
+                  // But if something went wrong outside that (e.g., RejectedExecutionException earlier), capture a generic message.
+                  StringWriter sw = new StringWriter();
+                  ee.printStackTrace(new PrintWriter(sw));
+                  globalErrors.add(sw.toString());
+               } catch (InterruptedException ex) {
+                  globalErrors.add("Word Template Content result threw an interrupted exception");
+               }
+            }
+            for (Map.Entry<ArtifactId, String> e : resultMap.entrySet()) {
+               cleaner.logError(e.getValue(), e.getKey());
+            }
+            for (String error : globalErrors) {
+               cleaner.logError(error, ArtifactId.SENTINEL);
+            }
+            TransactionToken txToken = tx.commit();
+            if (txToken.isInvalid()) {
+               cleaner.logError("Commit failed for this import", ArtifactId.SENTINEL);
+            }
+
+         } finally {
+            // Clean shutdown
+            executor.shutdown(); // stop accepting new tasks
+            try {
+               if (!executor.awaitTermination(100, TimeUnit.SECONDS)) {
+                  // timed out - force shutdown
+                  List<Runnable> dropped = executor.shutdownNow();
+                  // Optionally log how many were dropped
+                  cleaner.logError(
+                     "Executor did not terminate in time; forced shutdown. Dropped " + dropped.size() + " tasks.",
+                     ArtifactId.SENTINEL);
+                  // Wait again briefly
+                  executor.awaitTermination(5, TimeUnit.SECONDS);
+               }
+            } catch (InterruptedException ex) {
+               cleaner.logError("Executor did not terminate in time, then interrupted", ArtifactId.SENTINEL);
+            }
+         }
+
+         return Response.ok(cleaner.getErrorLog()).build();
+      } catch (IOException e) {
+         e.printStackTrace();
+         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(
+            "Failed to process the uploaded ZIP file: " + e.getMessage()).build();
+      }
+   }
+
+   @Override
+   public String cleanMdArtifacts(BranchId branchId) {
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+      Conditions.assertTrue(branchId.isInvalid(), "branch id is invalid");
+
+      StringBuilder outputLog = new StringBuilder();
+
+      List<ArtifactReadable> markdownArtifacts = this.orcsApi.getQueryFactory().fromBranch(branchId).andExists(
+         CoreAttributeTypes.MarkdownContent).asArtifacts();
+      TransactionBuilder tx = this.orcsApi.getTransactionFactory().createTransaction(branchId,
+         "Cleaning and updating Markdown artifacts on branch that have special (non-Markdown) characters.");
+
+      int artifactsCleaned = 0;
+
+      for (ArtifactReadable art : markdownArtifacts) {
+         boolean isArtifactCleaned = false;
+
+         if (art.getExistingAttributeTypes().contains(CoreAttributeTypes.MarkdownContent)) {
+            String mdContent = art.getSoleAttributeValue(CoreAttributeTypes.MarkdownContent, Strings.EMPTY_STRING);
+            String name = art.getName();
+
+            if (Strings.isValid(mdContent)) {
+               boolean hasSpecialCharsInContent = TextSanitizer.shouldSanitizeToAscii(mdContent);
+
+               if (hasSpecialCharsInContent) {
+                  outputLog.append("Issues detected in the Markdown content: ").append(mdContent).append("\n");
+                  String cleanedMarkdownContent = TextSanitizer.sanitizeToAscii(mdContent, " ");
+                  outputLog.append("Cleaned Markdown content: ").append(cleanedMarkdownContent).append("\n");
+                  tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.MarkdownContent),
+                     cleanedMarkdownContent);
+                  isArtifactCleaned = true;
+               } else {
+                  outputLog.append("No special characters detected in the Markdown content.\n");
+               }
+            }
+
+            if (Strings.isValid(name)) {
+               boolean hasSpecialCharsInName = TextSanitizer.shouldSanitizeToAscii(name);
+
+               if (hasSpecialCharsInName) {
+                  outputLog.append("Issues detected in the name: ").append(name).append("\n");
+                  String cleanedName = TextSanitizer.sanitizeToAscii(name, " ");
+                  outputLog.append("Cleaned name: ").append(cleanedName).append("\n");
+                  tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.Name),
+                     cleanedName);
+                  isArtifactCleaned = true;
+               } else {
+                  outputLog.append("No special characters detected in the name.\n");
+               }
+            }
+         }
+
+         if (isArtifactCleaned) {
+            artifactsCleaned++;
+         }
+      }
+      tx.commit();
+
+      outputLog.append("Finished processing artifacts.\nTotal artifacts processed: ").append(
+         markdownArtifacts.size()).append("\nTotal artifacts cleaned: ").append(artifactsCleaned);
+
+      return outputLog.toString();
+   }
+
+   @Override
+   public String removeMdBoldSymbols(BranchId branchId) {
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+      Conditions.assertTrue(branchId.isInvalid(), "branch id is invalid");
+
+      StringBuilder outputLog = new StringBuilder();
+
+      List<ArtifactReadable> markdownArtifacts = this.orcsApi.getQueryFactory().fromBranch(branchId).andExists(
+         CoreAttributeTypes.MarkdownContent).asArtifacts();
+      TransactionBuilder tx = this.orcsApi.getTransactionFactory().createTransaction(branchId,
+         "Removing bold symbols (**) from all Markdown artifacts on branch.");
+
+      int artifactsProcessed = 0;
+      int artifactsCleaned = 0;
+
+      for (ArtifactReadable art : markdownArtifacts) {
+         artifactsProcessed++;
+         boolean isArtifactCleaned = false;
+
+         if (art.getExistingAttributeTypes().contains(CoreAttributeTypes.MarkdownContent)) {
+            String mdContent = art.getSoleAttributeValue(CoreAttributeTypes.MarkdownContent, Strings.EMPTY_STRING);
+            String name = art.getName();
+
+            if (!mdContent.equals(Strings.EMPTY_STRING)) {
+               boolean hasMarkdownBoldsInContent = MarkdownSanitizer.containsMarkdownBolds(mdContent);
+
+               if (hasMarkdownBoldsInContent) {
+                  outputLog.append("Markdown bold symbols detected in the Markdown content: ").append(mdContent).append(
+                     "\n");
+                  String cleanedMarkdownContent = MarkdownSanitizer.removeMarkdownBolds(mdContent);
+                  outputLog.append("Cleaned Markdown content: ").append(cleanedMarkdownContent).append("\n");
+                  tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.MarkdownContent),
+                     cleanedMarkdownContent);
+                  isArtifactCleaned = true;
+               } else {
+                  outputLog.append("No Markdown bold symbols detected in the Markdown content.\n");
+               }
+            }
+
+            if (Strings.isValid(name)) {
+               boolean hasMarkdownBoldsInName = MarkdownSanitizer.containsMarkdownBolds(name);
+
+               if (hasMarkdownBoldsInName) {
+                  outputLog.append("Markdown bold symbols detected in the name: ").append(name).append("\n");
+                  String cleanedName = MarkdownSanitizer.removeMarkdownBolds(name);
+                  outputLog.append("Cleaned name: ").append(cleanedName).append("\n");
+                  tx.setAttributeById(art.getArtifactId(), art.getSoleAttributeId(CoreAttributeTypes.Name),
+                     cleanedName);
+                  isArtifactCleaned = true;
+               } else {
+                  outputLog.append("No Markdown bold symbols detected in the name.\n");
+               }
+            }
+         }
+
+         if (isArtifactCleaned) {
+            artifactsCleaned++;
+         }
+      }
+      tx.commit();
+
+      outputLog.append("Finished processing artifacts.\nTotal artifacts processed: ").append(artifactsProcessed).append(
+         "\nTotal artifacts cleaned: ").append(artifactsCleaned);
+
+      return outputLog.toString();
+   }
+
+   @Override
+   public String sanitizeAttributeTextToAscii(BranchId branchId, AttributeSanitizerOptions options) {
+      if (orcsApi.getJdbcService().getClient().getConfig().isProduction()) {
+         orcsApi.userService().requireRole(CoreUserGroups.OseeAdmin);
+      }
+      Conditions.assertTrue(branchId.isInvalid(), "branch id is invalid");
+
+      StringBuilder outputLog = new StringBuilder();
+      final Set<ArtifactId> artifactIdsWithIssues = new LinkedHashSet<>();
+
+      QueryBuilder query = this.orcsApi.getQueryFactory().fromBranch(branchId);
+
+      List<ArtifactTypeToken> artifactTypes = options.getArtifactTypes();
+      if (artifactTypes != null && !artifactTypes.isEmpty()) {
+         query.andTypeEquals(artifactTypes);
+      }
+
+      List<ArtifactId> artifactIds = options.getArtifactIds();
+      if (artifactIds != null && !artifactIds.isEmpty()) {
+         query.andIds(artifactIds);
+      }
+
+      List<ArtifactReadable> artifacts = query.asArtifacts();
+
+      TransactionBuilder tx = this.orcsApi.getTransactionFactory().createTransaction(branchId,
+         "OSEE Admin Utility - Cleaning attribute text to Ascii.");
+
+      List<AttributeTypeToken> attributeTypes = options.getAttributeTypes();
+      final Set<AttributeTypeToken> wantedTypes =
+         (attributeTypes != null && !attributeTypes.isEmpty()) ? new HashSet<>(attributeTypes) : null;
+
+      boolean anyChange = false;
+
+      for (ArtifactReadable art : artifacts) {
+         for (IAttribute<?> attribute : art.getAttributesNew()) {
+            final AttributeTypeToken type = attribute.getAttributeType();
+
+            if (wantedTypes != null && !wantedTypes.contains(type)) {
+               continue;
+            }
+
+            final Object rawValue = attribute.getValue();
+            if (!(rawValue instanceof String)) {
+               continue;
+            }
+
+            final String value = (String) rawValue;
+            if (value.isEmpty()) {
+               continue;
+            }
+
+            if (!TextSanitizer.shouldSanitizeToAscii(value)) {
+               continue;
+            }
+
+            final String sanitizedValue = TextSanitizer.sanitizeToAscii(value, " ");
+            if (value.equals(sanitizedValue)) {
+               continue;
+            }
+
+            artifactIdsWithIssues.add(art.getArtifactId());
+
+            outputLog.append("\n")//
+               .append("============================================================\n")//
+               .append("Non-ascii character(s) detected\n")//
+               .append("------------------------------------------------------------\n")//
+               .append("Artifact   : ").append(art.getName()).append(" (").append(art.getId()).append(")\n")//
+               .append("Attribute  : ").append(type.getName()).append(" (").append(type.getId()).append(")\n")//
+               .append("------------------------------------------------------------\n")//
+               .append("Before:\n")//
+               .append("------------------------------------------------------------\n")//
+               .append(value).append('\n')//
+               .append("------------------------------------------------------------\n")//
+               .append("After:\n")//
+               .append("------------------------------------------------------------\n")//
+               .append(sanitizedValue).append('\n')//
+               .append("============================================================\n");
+
+            tx.setSoleAttributeValue(art, type, sanitizedValue);
+
+            anyChange = true;
+         }
+      }
+
+      if (anyChange) {
+         tx.commit();
+      }
+
+      outputLog.append("\n")//
+         .append("============================================================\n")//
+         .append("Summary\n")//
+         .append("------------------------------------------------------------\n")//
+         .append("Artifacts with issues: ").append(artifactIdsWithIssues.size()).append('\n');
+
+      if (!artifactIdsWithIssues.isEmpty()) {
+         outputLog.append("Artifact IDs:\n");
+         for (ArtifactId id : artifactIdsWithIssues) {
+            outputLog.append(" - ").append(id).append('\n');
+         }
+      }
+
+      outputLog.append("============================================================\n");
+
+      return outputLog.toString();
    }
 
 }

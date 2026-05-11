@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.search;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -32,11 +34,13 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
+import org.eclipse.osee.orcs.search.ds.FollowAllCriteria;
 
 /**
  * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  */
+@JsonDeserialize(as = QueryData.class)
 public interface QueryBuilder extends Query {
 
    ArtifactToken asArtifactToken();
@@ -100,20 +104,25 @@ public interface QueryBuilder extends Query {
    /**
     * @return artifact search results
     */
+   @JsonIgnore
    ResultSet<ArtifactReadable> getResults();
 
+   @JsonIgnore
    ArtifactReadable getArtifact();
 
    /**
     * @return artifact search results with match locations
     */
+   @JsonIgnore
    ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches();
 
+   @JsonIgnore
    ArtifactToken getArtifactOrNull();
 
    /**
     * @return first artifact or sentinal
     */
+   @JsonIgnore
    ArtifactToken getArtifactOrSentinal();
 
    public static AttributeTypeToken ANY_ATTRIBUTE_TYPE =
@@ -362,7 +371,7 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder followAll();
 
-   QueryBuilder followAll(Boolean singleLevel);
+   QueryBuilder followAll(FollowAllCriteria criteria);
 
    /**
     * @param relationTypeSide side of of the relation following to (not starting from)

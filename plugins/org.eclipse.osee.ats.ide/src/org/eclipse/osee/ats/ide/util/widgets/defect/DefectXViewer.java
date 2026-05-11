@@ -13,16 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets.defect;
 
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Closed_Col;
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Created_Date_Col;
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Description_Col;
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Disposition_Col;
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Injection_Activity_Col;
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Location_Col;
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Notes_Col;
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Resolution_Col;
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Severity_Col;
-import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.User_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

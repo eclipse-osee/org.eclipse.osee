@@ -42,7 +42,8 @@ public class AtsReportOperations {
     * @param date like 2025-07-15
     */
    public String getAttrDiffReport(String date, ArtifactTypeToken artType, List<AttributeTypeToken> attrTypes) {
-      List<Map<String, String>> query = atsApi.getQueryService().query(getAttrFieldQuery(date, artType, attrTypes));
+      List<Map<String, String>> query =
+         atsApi.getQueryServiceServer().query(getAttrFieldQuery(date, artType, attrTypes));
       XResultData rd = new XResultData();
       rd.logf("Attr Diff Report - Run: %s", new Date());
       rd.logf("<br/><br/>Begin Date - %s", date);

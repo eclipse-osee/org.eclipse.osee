@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
@@ -217,7 +217,7 @@ public class QuickSearchOptionComposite extends Composite {
          Button filterConfig = new Button(mainComposite, SWT.PUSH);
          String configToolTip = configHandler.getConfigToolTip();
          filterConfig.setToolTipText(Strings.isValid(configToolTip) ? configToolTip : CONFIG_BUTTON_TOOLTIP);
-         filterConfig.setImage(ImageManager.getImage(FrameworkImage.GEAR));
+         filterConfig.setImage(ImageManager.getImage(CoreImage.GEAR));
          filterConfig.addSelectionListener(new TypeSelectionFilter(option, configHandler));
 
          Text searchText = new Text(mainComposite, SWT.READ_ONLY | SWT.BORDER);

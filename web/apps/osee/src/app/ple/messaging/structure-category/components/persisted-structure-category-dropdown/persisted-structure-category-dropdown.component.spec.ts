@@ -20,6 +20,7 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { attribute } from '@osee/attributes/types';
 
 describe('PersistedStructureCategoryDropdownComponent', () => {
 	let component: ParentDriverComponent;
@@ -38,7 +39,12 @@ describe('PersistedStructureCategoryDropdownComponent', () => {
 	class ParentDriverComponent {
 		artifactId = signal(`1` as const);
 		artifactApplicability = signal(applicabilitySentinel);
-		value = signal({
+		value = signal<
+			attribute<
+				string,
+				typeof ATTRIBUTETYPEIDENUM.INTERFACESTRUCTURECATEGORY
+			>
+		>({
 			id: '-1',
 			typeId: ATTRIBUTETYPEIDENUM.INTERFACESTRUCTURECATEGORY,
 			gammaId: '-1',

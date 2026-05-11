@@ -6,7 +6,7 @@ Automatic-Module-Name: org.eclipse.osee.ats.api
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.access,
@@ -39,6 +39,7 @@ Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.review,
  org.eclipse.osee.ats.api.rule,
  org.eclipse.osee.ats.api.rule.validation,
+ org.eclipse.osee.ats.api.store,
  org.eclipse.osee.ats.api.task,
  org.eclipse.osee.ats.api.task.create,
  org.eclipse.osee.ats.api.task.related,
@@ -52,6 +53,7 @@ Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.workdef,
  org.eclipse.osee.ats.api.workdef.model,
  org.eclipse.osee.ats.api.workdef.model.conditions,
+ org.eclipse.osee.ats.api.workdef.model.web,
  org.eclipse.osee.ats.api.workflow,
  org.eclipse.osee.ats.api.workflow.attr,
  org.eclipse.osee.ats.api.workflow.clone,
@@ -112,6 +114,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs.rest.model,
+ org.eclipse.osee.orcs.rest.model.search.builder,
+ org.eclipse.osee.orcs.search,
  org.osgi.framework,
  org.osgi.service.event
 

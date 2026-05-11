@@ -14,33 +14,21 @@
 package org.eclipse.osee.ats.core.workdef.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.core.workdef.WorkDefTaskDemoForCrEstimating;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamMIM;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamProductLine;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamSimpleInWork;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefGoal;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewDecision;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerDemoSwDesign;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerToPeer;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerToPeerDemo;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefSprint;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskAtsConfig2Example;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDemoSwDesign;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamAtsConfig2Example;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDefault;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoChangeRequest;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoCode;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoProblemReport;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoReq;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoReqSimple;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoSwDesign;
-import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamDemoTest;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimple;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTeamSimpleAnalyze;
 
@@ -51,46 +39,26 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
 
    @Override
    public Collection<WorkDefinition> getWorkDefinitions() {
-      // return empty if not AtsDB
-      List<WorkDefinition> ret = new ArrayList<WorkDefinition>();
-      // @formatter:off
-         ret.addAll(Arrays.asList(
-            new WorkDefGoal().build(),
-            // Review
-            new WorkDefReviewDecision().build(),
-            new WorkDefReviewPeerToPeer().build(),
-            // Agile
-            new WorkDefSprint().build(),
-            // Task
-            new WorkDefTaskAtsConfig2Example().build(),
-            new WorkDefTaskDefault().build(),
-            // Team Wf
-            new WorkDefTeamAtsConfig2Example().build(),
-            new WorkDefTeamDefault().build(),
-            new WorkDefTeamProductLine().build(),
-            new WorkDefTeamMIM().build(),
-            new WorkDefTeamSimpleInWork().build(),
-            new WorkDefTeamSimple().build(),
-            new WorkDefTeamSimpleAnalyze().build()));
-         if (System.getProperty("osee.db","").equals("orgdemo")) {
-            ret.addAll(Arrays.asList(
-            // Team Wf
-            new WorkDefTeamDemoProblemReport().build(),
-            new WorkDefTeamDemoChangeRequest().build(),
-            new WorkDefTeamDemoCode().build(),
-            new WorkDefTeamDemoReq().build(),
-            new WorkDefTeamDemoReqSimple().build(),
-            new WorkDefTeamDemoSwDesign().build(),
-            new WorkDefTeamDemoTest().build(),
-            // Review
-            new WorkDefReviewPeerToPeerDemo().build(),
-            new WorkDefReviewPeerDemoSwDesign().build(),
-            // Task
-            new WorkDefTaskDemoSwDesign().build(),
-            new WorkDefTaskDemoForCrEstimating().build()));
-      }
-      // @formatter:on
-      return ret;
+      List<WorkDefinition> workDefs = new ArrayList<WorkDefinition>();
+      // Goal
+      workDefs.add(new WorkDefGoal().build());
+      // Reviews
+      workDefs.add(new WorkDefReviewDecision().build());
+      workDefs.add(new WorkDefReviewPeerToPeer().build());
+      // Agile
+      workDefs.add(new WorkDefSprint().build());
+      // Tasks
+      workDefs.add(new WorkDefTaskAtsConfig2Example().build());
+      workDefs.add(new WorkDefTaskDefault().build());
+      // Team Workflows
+      workDefs.add(new WorkDefTeamAtsConfig2Example().build());
+      workDefs.add(new WorkDefTeamDefault().build());
+      workDefs.add(new WorkDefTeamProductLine().build());
+      workDefs.add(new WorkDefTeamMIM().build());
+      workDefs.add(new WorkDefTeamSimpleInWork().build());
+      workDefs.add(new WorkDefTeamSimple().build());
+      workDefs.add(new WorkDefTeamSimpleAnalyze().build());
+      return workDefs;
    }
 
 }

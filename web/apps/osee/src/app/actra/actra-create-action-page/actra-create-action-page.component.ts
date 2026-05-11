@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, Location } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { CreateActionService } from '@osee/configuration-management/services';
 import { CreateAction } from '@osee/configuration-management/types';
 import { map, tap } from 'rxjs';
-import { CreateActionFormComponent } from '../../configuration-management/components/create-action-button/create-action-form/create-action-form.component';
-import ActraPageTitleComponent from '../actra-page-title/actra-page-title.component';
+import { CreateActionFormComponent } from '@osee/configuration-management/components';
+import { ActraPageTitleComponent } from '../actra-page-title/actra-page-title.component';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -63,6 +63,7 @@ export class ActraCreateActionPageComponent {
 
 	private createActionService = inject(CreateActionService);
 	router = inject(Router);
+	location = inject(Location);
 
 	createActionData = this.createActionService.user.pipe(
 		map((thisUser) => {
@@ -83,8 +84,10 @@ export class ActraCreateActionPageComponent {
 								queryParams: { id: newWfId },
 							}
 						);
-						const url = this.router.serializeUrl(urlTree);
-						window.open(url, '_blank', 'noreferrer');
+						const relativeUrl = this.router.serializeUrl(urlTree);
+						const externalUrl =
+							this.location.prepareExternalUrl(relativeUrl);
+						window.open(externalUrl, '_blank', 'noopener');
 					})
 				)
 				.subscribe();

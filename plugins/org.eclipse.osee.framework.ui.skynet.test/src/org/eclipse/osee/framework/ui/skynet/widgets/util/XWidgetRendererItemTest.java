@@ -13,11 +13,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit Test for {@link XWidgetRendererItem}
+ * Unit Test for {@link XWidgetData}
  *
  * @author Donald G. Dunne
  */
@@ -25,7 +26,7 @@ public class XWidgetRendererItemTest {
 
    @Test
    public void testSetGetName() {
-      XWidgetRendererItem item = new XWidgetRendererItem(null);
+      XWidgetData item = new XWidgetData();
       item.setName("My Name");
 
       Assert.assertEquals("My Name", item.getName());
@@ -37,7 +38,7 @@ public class XWidgetRendererItemTest {
 
    @Test
    public void testSetGetStoreName() {
-      XWidgetRendererItem item = new XWidgetRendererItem(null);
+      XWidgetData item = new XWidgetData();
       item.setStoreName("My Name");
 
       Assert.assertEquals("My Name", item.getStoreName());

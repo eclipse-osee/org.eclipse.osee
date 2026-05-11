@@ -22,23 +22,19 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class TeamDefinitionSearchWidget {
+public class TeamDefinitionSearchWidget extends AbstractSearchWidget<XHyperlabelTeamDefinitionSelection, Object> {
 
-   public static final String TEAM_DEFINITIONS = "Team Definition(s)";
-   private final WorldEditorParameterSearchItem searchItem;
+   public static SearchWidget TeamDefintiionWidget =
+      new SearchWidget(3492378, "Team Definition(s)", "XHyperlabelTeamDefinitionSelection");
 
    public TeamDefinitionSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      this.searchItem = searchItem;
-   }
-
-   public void addWidget(int beginComposite) {
-      searchItem.addWidgetXml(String.format(
-         "<XWidget displayName=\"%s\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\" %s />",
-         TEAM_DEFINITIONS, searchItem.getBeginComposite(beginComposite)));
+      super(TeamDefintiionWidget, searchItem);
    }
 
    public Collection<Long> getIds() {
@@ -51,22 +47,19 @@ public class TeamDefinitionSearchWidget {
       return ids;
    }
 
-   public Collection<IAtsTeamDefinition> get() {
+   public Collection<TeamDefinition> get() {
       XHyperlabelTeamDefinitionSelection widget = getWidget();
       if (widget != null) {
-         return AtsApiService.get().getTeamDefinitionService().getTeamDefs(widget.getSelectedTeamDefintions());
+         return widget.getSelectedTeamDefintions();
       }
       return null;
-   }
-
-   public XHyperlabelTeamDefinitionSelection getWidget() {
-      return (XHyperlabelTeamDefinitionSelection) searchItem.getxWidgets().get(TEAM_DEFINITIONS);
    }
 
    public void set(Collection<TeamDefinition> teamDefs) {
       getWidget().setSelectedTeamDefs(teamDefs);
    }
 
+   @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          getWidget().handleClear();
@@ -82,8 +75,16 @@ public class TeamDefinitionSearchWidget {
       }
    }
 
-   public void setTeamDefs(List<TeamDefinition> teamDefs) {
-      getWidget().setTeamDefs(teamDefs);
+   @Override
+   public void widgetCreated(XWidget xWidget) {
+      super.widgetCreated(xWidget);
+      getWidget().addXModifiedListener(new XModifiedListener() {
+
+         @Override
+         public void widgetModified(XWidget widget) {
+            searchItem.updateAisOrTeamDefs();
+         }
+      });
    }
 
 }

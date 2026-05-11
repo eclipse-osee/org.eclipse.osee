@@ -45,7 +45,9 @@ public interface IAtsTaskService {
 
    Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf);
 
-   Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state);
+   Collection<IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state);
+
+   public void setTaskProviders(Collection<IAtsTaskProvider> providers);
 
    boolean isRelatedToState(IAtsTask task, String stateName);
 

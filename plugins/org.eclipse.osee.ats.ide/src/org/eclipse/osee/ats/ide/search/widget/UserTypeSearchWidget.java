@@ -22,17 +22,16 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 /**
  * @author Donald G. Dunne
  */
-public class UserTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<AtsSearchUserType> {
+public class UserTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<AtsSearchUserType> {
 
-   public static final String USER_TYPE = "User Type";
+   public static SearchWidget UserTypeWidget = new SearchWidget(982384, "User Type", "XHyperlinkWfdForObject");
 
    public UserTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(USER_TYPE, searchItem);
+      super(UserTypeWidget, searchItem);
    }
 
    @Override
    public void set(AtsSearchData data) {
-      setup(getWidget());
       if (data.getUserType() != null) {
          getWidget().setSelected(data.getUserType());
       }
@@ -47,11 +46,6 @@ public class UserTypeSearchWidget extends AbstractXHyperlinkSelectionSearchWidge
    @Override
    boolean isMultiSelect() {
       return false;
-   }
-
-   @Override
-   protected String getLabel() {
-      return USER_TYPE;
    }
 
 }

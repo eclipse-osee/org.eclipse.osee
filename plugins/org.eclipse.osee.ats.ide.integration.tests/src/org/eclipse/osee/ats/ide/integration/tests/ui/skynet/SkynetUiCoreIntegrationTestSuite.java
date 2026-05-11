@@ -33,7 +33,6 @@ import org.junit.runners.Suite;
    WordEditTest.class,
    WordOutlineAndStyleTest.class,
    WordTrackedChangesTest.class,
-   FrameworkImageTest.class,
    HtmlRendererTest.class,
    ArtifactRendererTest.class,
    WordApplicabilityTest.class,

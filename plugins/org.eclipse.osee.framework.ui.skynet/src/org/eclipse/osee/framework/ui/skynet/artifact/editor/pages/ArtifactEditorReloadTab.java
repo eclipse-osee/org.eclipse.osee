@@ -22,13 +22,13 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
@@ -81,7 +81,7 @@ public class ArtifactEditorReloadTab extends FormPage {
 
          Button reloadButton = new Button(bodyComp, SWT.PUSH);
          reloadButton.setText("Reload");
-         reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
+         reloadButton.setImage(ImageManager.getImage(CoreImage.REFRESH));
          reloadButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -110,7 +110,7 @@ public class ArtifactEditorReloadTab extends FormPage {
       String displayableTitle = Strings.escapeAmpersands(title);
       if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
          managedForm.getForm().setText(displayableTitle);
-         managedForm.getForm().setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EDITOR));
+         managedForm.getForm().setImage(ImageManager.getImage(CoreImage.ARTIFACT_EDITOR));
       }
       setPartName(displayableTitle);
    }

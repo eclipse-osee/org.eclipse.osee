@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
@@ -28,7 +27,6 @@ import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
-import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.agile.AgileFactory;
@@ -36,6 +34,7 @@ import org.eclipse.osee.ats.ide.column.BackgroundLoadingPreComputedColumnUI;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.IAtsWorldArtifactEventColumn;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
@@ -180,16 +179,13 @@ public class AgileFeatureGroupColumnUI extends BackgroundLoadingPreComputedColum
 
    public static FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> openSelectionDialog(long teamId,
       Collection<? extends AbstractWorkflowArtifact> awas) {
-      AtsConfigurations configurations = AtsApiService.get().getConfigService().getConfigurations();
+      AtsApiIde atsApi = AtsApiService.get();
+      List<JaxAgileFeatureGroup> featureGroups =
+         atsApi.getServerEndpoints().getAgileEndpoint().getFeatureGroups(teamId);
       List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<>();
-      for (Entry<Long, Long> entry : configurations.getFeatureToAgileTeam().entrySet()) {
-         Long featureId = entry.getKey();
-         Long agileTeamId = entry.getValue();
-         if (agileTeamId.equals(teamId)) {
-            JaxAgileFeatureGroup feature = configurations.getIdToAgileFeature().get(featureId);
-            if (feature.isActive()) {
-               activeFeatureGroups.add(feature);
-            }
+      for (JaxAgileFeatureGroup feature : featureGroups) {
+         if (feature.isActive()) {
+            activeFeatureGroups.add(feature);
          }
       }
 

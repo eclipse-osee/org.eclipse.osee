@@ -14,20 +14,20 @@
 <mat-dialog-content>
 	<div class="tw-flex tw-flex-col tw-items-start">
 		<mat-checkbox
-			[(ngModel)]="data.editable"
+			[(ngModel)]="editable"
 			[disabled]="(editability | async) === false || false"
 			class="primary-checkbox">
 			<mat-label>Edit Mode</mat-label>
 		</mat-checkbox>
 		<mat-checkbox
-			[(ngModel)]="data.wordWrap"
+			[(ngModel)]="wordWrap"
 			matTooltip="Turn on to view full length content in tables"
 			[matTooltipPosition]="'right'"
 			class="primary-checkbox">
 			<mat-label>Word Wrap</mat-label>
 		</mat-checkbox>
 	</div>
-	@if (data.headersTableActive) {
+	@if (data$().headersTableActive) {
 		<div
 			class="tw-flex tw-justify-between tw-justify-items-center tw-px-0 tw-pb-1 tw-pt-2">
 			<h2 class="tw-m-0">Column Preferences</h2>
@@ -41,16 +41,16 @@
 		<table class="mat-table mat-elevation-z8">
 			<tr class="mat-header-row">
 				<th class="mat-header-cell">
-					<mat-label>{{ data.headers1Label }}:</mat-label>
+					<mat-label>{{ data$().headers1Label }}:</mat-label>
 				</th>
 				<th class="mat-header-cell">
-					<mat-label>{{ data.headers2Label }}:</mat-label>
+					<mat-label>{{ data$().headers2Label }}:</mat-label>
 				</th>
 			</tr>
 			<tr class="mat-row">
 				<td class="mat-cell tw-align-top">
-					<mat-selection-list [(ngModel)]="data.allowedHeaders1">
-						@for (header of data.allHeaders1; track header) {
+					<mat-selection-list [(ngModel)]="allowedHeaders1">
+						@for (header of data$().allHeaders1; track header) {
 							@if (isString(header)) {
 								<mat-list-option
 									[value]="header"
@@ -70,8 +70,8 @@
 					</mat-selection-list>
 				</td>
 				<td class="mat-cell tw-align-top">
-					<mat-selection-list [(ngModel)]="data.allowedHeaders2">
-						@for (header of data.allHeaders2; track header) {
+					<mat-selection-list [(ngModel)]="allowedHeaders2">
+						@for (header of data$().allHeaders2; track header) {
 							<mat-list-option
 								[value]="header"
 								[attr.data-cy]="'header-' + header"
@@ -99,7 +99,7 @@
 	</button>
 	<button
 		mat-flat-button
-		[mat-dialog-close]="data"
+		[mat-dialog-close]="result()"
 		class="primary-button"
 		data-cy="submit-btn">
 		Ok

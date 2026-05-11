@@ -121,10 +121,9 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       Version version = new Version(verArt, atsApi);
       version.setName(verArt.getName());
       version.setId(verArt.getId());
-      version.setGuid(verArt.getGuid());
       version.setActive(atsApi.getAttributeResolver().getSoleAttributeValue(verArt, Active, true));
       version.setClosureState(
-         atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.ClosureState, ""));
+         atsApi.getAttributeResolver().getSoleAttributeValueAsString(verArt, AtsAttributeTypes.ClosureState, ""));
       version.setAllowCreateBranch(
          atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.AllowCreateBranch, false));
       version.setAllowCommitBranch(
@@ -200,17 +199,16 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes) {
-      Collection<ArtifactToken> previousVersions =
-         atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-
-      ArtifactId previousVersion = ArtifactId.SENTINEL;
-      if (!previousVersions.isEmpty()) {
-         previousVersion = ArtifactId.create(previousVersions.iterator().next());
-         if (version.getArtifactId().equals(previousVersion)) {
-            return version;
-         }
+      if (atsApi.getRelationResolver().areRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
+         version)) {
+         return version;
       }
-      changes.setRelation(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, version);
+      ArtifactToken previousVersion = atsApi.getRelationResolver().getRelatedOrSentinel(teamWf,
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+      if (previousVersion.isValid()) {
+         changes.unrelate(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, previousVersion);
+      }
+      changes.relate(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, version);
       changes.addExecuteListener(getPostPersistExecutionListener(teamWf, version, previousVersion));
       return version;
    }

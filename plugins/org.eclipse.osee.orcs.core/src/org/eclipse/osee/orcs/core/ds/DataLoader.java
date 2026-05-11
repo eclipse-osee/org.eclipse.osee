@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.orcs.search.ds.Options;
 
 /**
  * @author Andrew M. Finkbeiner

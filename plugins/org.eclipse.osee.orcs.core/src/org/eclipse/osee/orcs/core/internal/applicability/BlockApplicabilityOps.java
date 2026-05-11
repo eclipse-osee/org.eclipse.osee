@@ -30,9 +30,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -54,17 +52,18 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 
 /**
  * @author Ryan D. Brooks
  */
 public class BlockApplicabilityOps {
-   private static String SCRIPT_ENGINE_NAME = "JavaScript";
-
    /**
     * Regex for use withing BlockApplicability.<br/>
     * (?!Group) is included within Configuration in order to void matching ConfigurationGroup text but leaving 'Group'
@@ -113,7 +112,6 @@ public class BlockApplicabilityOps {
 
    private final OrcsApi orcsApi;
    private final Log logger;
-   private final ScriptEngine se;
    private final BranchId branch;
    private final ArtifactToken view;
    private final List<FeatureDefinition> featureDefinition;
@@ -131,8 +129,6 @@ public class BlockApplicabilityOps {
       this.logger = logger;
       this.branch = branch;
       this.view = view;
-      ScriptEngineManager sem = new ScriptEngineManager();
-      this.se = sem.getEngineByName(SCRIPT_ENGINE_NAME);
       this.featureDefinition = cache.getFeatureDefinition();
       this.viewApplicabilitiesMap = cache.getViewApplicabilitiesMap();
       this.configurationMap = cache.getConfigurationMap();
@@ -148,7 +144,6 @@ public class BlockApplicabilityOps {
       this.branch = branch;
       this.view = view;
       ScriptEngineManager sem = new ScriptEngineManager();
-      this.se = sem.getEngineByName(SCRIPT_ENGINE_NAME);
       this.featureDefinition = orcsApi.getApplicabilityOps().getFeatureDefinitionData(branch);
       this.viewApplicabilitiesMap =
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branch, view);
@@ -304,7 +299,7 @@ public class BlockApplicabilityOps {
 
          if (isInTable) {
             String temp = fullText.substring(0, match.end());
-            // Find last occurence of table row
+            // Find last occurrence of table row
             int lastIndexOf = temp.lastIndexOf(WordCoreUtil.START_TABLE_ROW);
             if (lastIndexOf != -1) {
                elseText = fullText.substring(lastIndexOf);
@@ -323,10 +318,14 @@ public class BlockApplicabilityOps {
       String expression = createFeatureExpression(featureIdValuesMap, featureOperators);
 
       boolean result = false;
+      Context context = Context.enter();
       try {
-         result = (boolean) se.eval(expression);
-      } catch (ScriptException ex) {
-         logger.error("Failed to parse expression: " + expression);
+         context.setOptimizationLevel(-1);
+         Scriptable scope = context.initStandardObjects();
+         Object evalResult = context.evaluateString(scope, expression, "JavaScript", 1, null);
+         result = Context.toBoolean(evalResult);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to parse expression: " + expression);
       }
 
       StringBuilder toReturn = new StringBuilder();
@@ -489,10 +488,16 @@ public class BlockApplicabilityOps {
 
          boolean result = false;
 
+         Context context = Context.enter();
          try {
-            result = (boolean) se.eval(valueExpression);
-         } catch (ScriptException ex) {
-            logger.error("Failed to parse expression: " + valueExpression);
+            context.setOptimizationLevel(-1);
+            Scriptable scope = context.initStandardObjects();
+            Object evalResult = context.evaluateString(scope, valueExpression, "JavaScript", 1, null);
+            result = Context.toBoolean(evalResult);
+         } catch (Exception ex) {
+            throw new OseeCoreException("Failed to parse expression: " + valueExpression);
+         } finally {
+            Context.exit();
          }
 
          myFeatureExpression += result + " ";

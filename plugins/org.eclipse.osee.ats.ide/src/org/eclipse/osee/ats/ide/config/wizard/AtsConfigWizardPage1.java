@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -109,7 +108,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         page = new XWidgetPage(xWidgetXml, ATSXWidgetOptionResolver.getInstance());
+         page = new XWidgetPage(xWidgetXml);
          page.createBody(null, comp, null, xModListener, true);
 
          Button populateExampleButton = new Button(comp, SWT.PUSH);
@@ -141,7 +140,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       if (page == null) {
          throw new OseeArgumentException("WorkPage == null");
       }
-      return page.getLayoutData(attrName).getXWidget();
+      return page.getXWidget(attrName);
    }
 
    @Override

@@ -17,8 +17,8 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -53,8 +53,9 @@ public class ParentStateColumnUI extends XViewerAtsColumn implements IXViewerVal
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
-            return ((AbstractWorkflowArtifact) element).getParentAWA().getCurrentStateName();
+         if (element instanceof IAtsWorkItem && ((IAtsWorkItem) element).getParentTeamWorkflow() != null && !element.equals(
+            ((IAtsWorkItem) element).getParentTeamWorkflow())) {
+            return ((IAtsWorkItem) element).getParentTeamWorkflow().getCurrentStateName();
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

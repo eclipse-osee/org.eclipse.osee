@@ -102,8 +102,7 @@
 			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.transforms.hook_1.0.300.v20100719.jar"/>
 			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.weaving.hook_1.0.100.v20110502.jar"/>
 			<pathelement path="../../../../OSEE/plugins/org.slf4j.jcl_1.6.1.v20100831-0715.jar"/>
-			<pathelement path="../../../../OSEE/plugins/org.slf4j.api_1.6.1.v20100831-0715.jar"/>
-			<pathelement path="../../../../OSEE/plugins/ch.qos.logback.slf4j_0.9.27.v20110224-1110.jar"/>
+			<pathelement path="../../../../OSEE/plugins/slf4j.api_1.6.1.v20100831-0715.jar"/>
 			<pathelement path="../../../../OSEE/plugins/ch.qos.logback.classic_0.9.27.v20110224-1110.jar"/>
 			<pathelement path="../../../../OSEE/plugins/org.eclipse.osee.logback.config_0.9.8.v201109031253.jar"/>
 			<pathelement path="../../../../OSEE/plugins/ch.qos.logback.core_0.9.27.v20110224-1110.jar"/>
@@ -287,7 +286,7 @@
 			<property name="build.result.folder" value="${build.result.folder}"/>
 			<property name="target.folder" value="${build.result.folder}/org.eclipse.osee.framework.messaging_0.9.9.201109130810"/>
 		</subant>
-		<eclipse.gatherBundle 
+		<eclipse.gatherBundle
 		   metadataRepository="${p2.build.repo}"
 		   artifactRepository="${p2.build.repo}"
 		   buildResultFolder="${build.result.folder}"

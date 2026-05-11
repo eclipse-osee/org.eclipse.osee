@@ -33,7 +33,6 @@ public class AgileSprintData {
    private String endDate;
    private Date eDate;
    private List<Date> holidays = new LinkedList<>();
-   private String pointsAttrTypeName;
    private Integer plannedPoints = 0;
    private Integer unPlannedPoints = null;
    private List<AgileSprintDateData> dates = new ArrayList<>();
@@ -42,7 +41,6 @@ public class AgileSprintData {
    public XResultData validate() {
       results.validateNotNull(getStartDateAsDate(), "Start Date");
       results.validateNotNull(getEndDateAsDate(), "End Date");
-      results.validateNotNullOrEmpty(pointsAttrTypeName, "Points Attribute Type");
       results.validateNotNull(plannedPoints, "Planned Points");
       return results;
    }
@@ -69,14 +67,6 @@ public class AgileSprintData {
 
    public void setHolidays(List<Date> holidays) {
       this.holidays = holidays;
-   }
-
-   public String getPointsAttrTypeName() {
-      return pointsAttrTypeName;
-   }
-
-   public void setPointsAttrTypeName(String pointsAttrTypeName) {
-      this.pointsAttrTypeName = pointsAttrTypeName;
    }
 
    public Integer getPlannedPoints() {

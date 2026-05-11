@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.util.AtsUserLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -78,7 +78,7 @@ public abstract class AbstractXAssigneesListWidget extends XListViewer {
       mComp.setBackgroundMode(SWT.INHERIT_FORCE);
 
       Button modifyList = new Button(mComp, SWT.PUSH);
-      modifyList.setImage(ImageManager.getImage(FrameworkImage.EDIT));
+      modifyList.setImage(ImageManager.getImage(CoreImage.EDIT));
       modifyList.setToolTipText("Select to modify");
       modifyList.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, false, false));
       modifyList.addSelectionListener(new SelectionAdapter() {
@@ -92,7 +92,7 @@ public abstract class AbstractXAssigneesListWidget extends XListViewer {
 
       if (includeEmailButton()) {
          Button emailSelected = new Button(mComp, SWT.PUSH);
-         emailSelected.setImage(ImageManager.getImage(FrameworkImage.EMAIL));
+         emailSelected.setImage(ImageManager.getImage(CoreImage.EMAIL));
          emailSelected.setToolTipText("Email");
          emailSelected.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, false, false));
          emailSelected.addSelectionListener(new SelectionAdapter() {

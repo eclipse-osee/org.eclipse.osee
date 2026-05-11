@@ -22,12 +22,12 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -50,7 +50,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
       super("Email " + (teamDef == null ? "Team " : "\"" + teamDef + "\" Team ") + (Arrays.asList(memberType).contains(
          MemberType.Both) ? "Leads / Members" : Arrays.asList(memberType).contains(
             MemberType.Leads) ? "Leads" : "Members"),
-         FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
+         CoreImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
       memberTypes = Arrays.asList(memberType);
       this.teamDef = teamDef;
    }

@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.orcs.db;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.google.common.base,
  com.google.common.collect,
@@ -47,9 +47,10 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.ds,
- org.eclipse.osee.orcs.core.ds.criteria,
  org.eclipse.osee.orcs.core.internal.tuple,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.utility,
+ org.eclipse.osee.orcs.search.ds,
+ org.eclipse.osee.orcs.search.ds.criteria,
  org.osgi.framework

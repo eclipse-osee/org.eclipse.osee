@@ -162,26 +162,6 @@ public interface PublishingOperations {
    public Attachment publishMarkdownAsPdf(PublishingRequestData publishingRequestData);
 
    /**
-    * Cleans all Markdown artifacts for the specified branch by removing special characters from both the content and
-    * names of the artifacts. Special characters are replaced with appropriate alternatives or removed entirely. Admin
-    * role is required.
-    *
-    * @param branchId the ID of the branch to process
-    * @return a log of the processing results, including details about processed and cleaned artifacts
-    */
-   public String cleanAllMarkdownArtifactsForBranch(BranchId branchId);
-
-   /**
-    * Removes Markdown bold symbols from all Markdown artifacts for the specified branch. This method processes both the
-    * content and names of the artifacts to remove Markdown bold symbols and then logs the results. Admin role is
-    * required.
-    *
-    * @param branchId the ID of the branch to process
-    * @return a log of the processing results, including details about processed and cleaned artifacts
-    */
-   public String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(BranchId branchId);
-
-   /**
     * Publishes the artifact(s) (along with its children) whose {@link ArtifactId} is specified in the
     * {@link PublishingRequestData}. The whole document will be rendered as Markdown.
     *

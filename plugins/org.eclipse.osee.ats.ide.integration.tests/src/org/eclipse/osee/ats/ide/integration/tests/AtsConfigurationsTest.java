@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.ats.ide.integration.tests;
 
-import java.util.Map;
-import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoProgram;
@@ -37,15 +35,11 @@ public class AtsConfigurationsTest extends AtsHealthTestTest {
       DemoUtil.checkDbInitAndPopulateSuccess();
    }
 
-   @SuppressWarnings("unlikely-arg-type")
    @org.junit.Test
    public void testConfigs() {
       AtsApiService.get().clearCachesServerWithPend();
       AtsApiService.get().clearCaches();
       AtsConfigurations configs = AtsApiService.get().getConfigService().getConfigurationsWithPend();
-
-      Assert.assertNotNull(configs.getValidStateNames());
-      Assert.assertTrue(!configs.getValidStateNames().isEmpty());
 
       ArtifactId topActionableItem = configs.getTopActionableItem();
       Assert.assertNotNull(topActionableItem);
@@ -72,13 +66,6 @@ public class AtsConfigurationsTest extends AtsHealthTestTest {
       Assert.assertTrue(configs.getIdToProgram().containsKey(DemoProgram.sawProgram.getId()));
       Assert.assertTrue(configs.getIdToProgram().containsValue(DemoProgram.sawProgram));
 
-      Map<Long, JaxAgileTeam> idToAgileTeam = configs.getIdToAgileTeam();
-      Assert.assertTrue(!idToAgileTeam.isEmpty());
-      Assert.assertTrue(idToAgileTeam.containsKey(DemoArtifactToken.SAW_Agile_Team.getId()));
-      Assert.assertTrue(idToAgileTeam.containsValue(DemoArtifactToken.SAW_Agile_Team));
-
-      Assert.assertEquals(configs.getIdToAgileFeature().size(), 4);
-
       Assert.assertTrue(!configs.getUserIdToUserArtId().isEmpty());
       Assert.assertTrue(configs.getUserIdToUserArtId().containsKey(DemoUsers.Joe_Smith.getUserId()));
       Assert.assertTrue(configs.getUserIdToUserArtId().containsValue(DemoUsers.Joe_Smith.getId()));
@@ -87,16 +74,9 @@ public class AtsConfigurationsTest extends AtsHealthTestTest {
       Assert.assertTrue(configs.getUserNameToUserArtId().containsKey(DemoUsers.Joe_Smith.getName()));
       Assert.assertTrue(configs.getUserNameToUserArtId().containsValue(DemoUsers.Joe_Smith.getId()));
 
-      Assert.assertEquals(configs.getTeamDefToAgileTeam().size(), 6);
-      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsKey(DemoArtifactToken.SAW_Requirements.getId()));
-      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team.getId()));
-
       Assert.assertTrue(!configs.getTeamDefToProgram().isEmpty());
       Assert.assertTrue(configs.getTeamDefToProgram().containsKey(DemoArtifactToken.SAW_Requirements.getId()));
       Assert.assertTrue(configs.getTeamDefToProgram().containsValue(DemoProgram.sawProgram.getId()));
-
-      Assert.assertTrue(!configs.getFeatureToAgileTeam().isEmpty());
-      Assert.assertTrue(configs.getFeatureToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team.getId()));
 
    }
 

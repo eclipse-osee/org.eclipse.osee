@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -52,7 +52,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       if (dCol.equals(PeerReviewDefectXViewerColumns.Severity_Col)) {
          return DefectSeverityToImage.getImage(defectItem.getSeverity());
       } else if (dCol.equals(PeerReviewDefectXViewerColumns.Injection_Activity_Col)) {
-         return ImageManager.getImage(FrameworkImage.INFO_SM);
+         return ImageManager.getImage(CoreImage.INFO_SM);
       } else if (dCol.equals(PeerReviewDefectXViewerColumns.Disposition_Col)) {
          return DefectDispositionToImage.getImage(defectItem.getDisposition());
       } else if (dCol.equals(PeerReviewDefectXViewerColumns.Closed_Col)) {

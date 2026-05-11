@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -75,8 +74,8 @@ public class NumberOfTasksRemainingColumnUI extends XViewerAtsColumn implements 
             }
             return Collections.toString(", ", strs);
          }
-         if (element instanceof TeamWorkFlowArtifact) {
-            int num = getNumTasksInWork((TeamWorkFlowArtifact) element);
+         if (element instanceof IAtsTeamWorkflow) {
+            int num = getNumTasksInWork((IAtsTeamWorkflow) element);
             if (num == 0) {
                return "";
             }
@@ -88,7 +87,7 @@ public class NumberOfTasksRemainingColumnUI extends XViewerAtsColumn implements 
       return "";
    }
 
-   public int getNumTasksInWork(TeamWorkFlowArtifact teamWf) {
+   public int getNumTasksInWork(IAtsTeamWorkflow teamWf) {
       int num = 0;
       try {
          for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf)) {

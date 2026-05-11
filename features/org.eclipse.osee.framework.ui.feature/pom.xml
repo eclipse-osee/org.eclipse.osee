@@ -17,23 +17,25 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.eclipse.tycho.extras</groupId>
-				<artifactId>tycho-source-feature-plugin</artifactId>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>package</phase>
-						<id>source-feature</id>
+						<id>feature-source</id>
 						<goals>
-							<goal>source-feature</goal>
+							<goal>feature-source</goal>
 						</goals>
 						<configuration>
 							<excludes>
 								<plugin id="org.eclipse.osee.framework.ui.product" />
 								<plugin id="org.eclipse.osee.framework.dev.help.ui" />
-							   <plugin id="org.eclipse.sdk" />
-							   <plugin id="org.antlr.runtime" />							
-							   <plugin id="org.eclipse.swt" />
-							  <plugin id="com.fasterxml.jackson.core.jackson-core" />
+								<plugin id="org.eclipse.sdk" />
+								<plugin id="org.antlr.runtime" />
+								<plugin id="org.eclipse.swt" />
+								<plugin id="org.eclipse.swt.tools.base" />
+								<plugin id="com.fasterxml.jackson.core.jackson-core" />
+								<plugin id="jakarta.ws.rs-api" />
 							</excludes>
 						</configuration>
 					</execution>

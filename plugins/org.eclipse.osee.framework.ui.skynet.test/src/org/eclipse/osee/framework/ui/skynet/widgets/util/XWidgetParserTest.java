@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,29 +26,28 @@ import org.junit.Test;
 public class XWidgetParserTest {
 
    @Test
-   public void testExtractlayoutData() {
-      XWidgetRendererItem layoutData = XWidgetParser.extractlayoutData(null,
-         "<XWidget displayName=\"My Name\" storageName=\"My Store Name\" fill=\"Vertically\" />");
+   public void testExtractWidData() {
+      XWidgetData widData = XWidgetParser.extractWidgetData("<XWidget displayName=\"My Name\" storageName=\"My Store Name\" fill=\"Vertically\" />");
 
-      Assert.assertEquals("My Name", layoutData.getName());
-      Assert.assertEquals("My Store Name", layoutData.getStoreName());
+      Assert.assertEquals("My Name", widData.getName());
+      Assert.assertEquals("My Store Name", widData.getStoreName());
    }
 
    @Test
-   public void testExtractlayoutDataNameOnly() {
-      XWidgetRendererItem layoutData =
-         XWidgetParser.extractlayoutData(null, "<XWidget displayName=\"My Name\" fill=\"Vertically\" />");
+   public void testExtractWidDataNameOnly() {
+      XWidgetData widData =
+         XWidgetParser.extractWidgetData("<XWidget displayName=\"My Name\" fill=\"Vertically\" />");
 
-      Assert.assertEquals("My Name", layoutData.getName());
-      Assert.assertEquals("My Name", layoutData.getStoreName());
+      Assert.assertEquals("My Name", widData.getName());
+      Assert.assertEquals("My Name", widData.getStoreName());
    }
 
-   public void testExtractlayoutDataStoreNameOnly() {
-      XWidgetRendererItem layoutData =
-         XWidgetParser.extractlayoutData(null, "<XWidget storageName=\"My Store Name\" fill=\"Vertically\" />");
+   public void testExtractWidDataStoreNameOnly() {
+      XWidgetData widData =
+         XWidgetParser.extractWidgetData("<XWidget storageName=\"My Store Name\" fill=\"Vertically\" />");
 
-      Assert.assertEquals("Unknown", layoutData.getName());
-      Assert.assertEquals("My Store Name", layoutData.getStoreName());
+      Assert.assertEquals("Unknown", widData.getName());
+      Assert.assertEquals("My Store Name", widData.getStoreName());
    }
 
 }

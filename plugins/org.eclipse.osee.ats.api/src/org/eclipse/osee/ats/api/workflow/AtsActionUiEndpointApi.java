@@ -27,10 +27,6 @@ import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 @Swagger
 public interface AtsActionUiEndpointApi {
 
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   String get();
-
    /**
     * @param id (artId, atsId) of action to display
     * @return html representation of the action

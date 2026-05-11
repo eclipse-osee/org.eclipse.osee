@@ -17,9 +17,9 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PlatformUI;
@@ -34,7 +34,7 @@ public abstract class AbstractEditSubStatusAction extends AbstractAtsAction {
    private final String positive;
    private final String negative;
 
-   public AbstractEditSubStatusAction(ISelectedAtsArtifacts selectedAtsArtifacts, String positive, String negative, FrameworkImage image, AttributeTypeString attrType) {
+   public AbstractEditSubStatusAction(ISelectedAtsArtifacts selectedAtsArtifacts, String positive, String negative, CoreImage image, AttributeTypeString attrType) {
       super(positive + "/" + negative + " Workflow", selectedAtsArtifacts);
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       this.attrType = attrType;

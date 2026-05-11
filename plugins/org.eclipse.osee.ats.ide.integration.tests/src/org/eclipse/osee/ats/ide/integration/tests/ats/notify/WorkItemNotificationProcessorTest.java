@@ -121,7 +121,7 @@ public class WorkItemNotificationProcessorTest {
       String toStrAtsId = teamWf.toStringWithAtsId();
 
       String msg = notifyEvent.getSubjectDescription();
-      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      String msgAbridged = notifyEvent.getSanitizedSubjectDescription();
 
       String msgAbridgedExpected = String.format(WORKFLOW_ORIGINATOR, artType, currState, atsId);
       String msgExpected = String.format(WORKFLOW_ORIGINATOR, artType, currState, toStrAtsId);
@@ -177,7 +177,7 @@ public class WorkItemNotificationProcessorTest {
       String toStrAtsId = teamWf.toStringWithAtsId();
 
       String msg = notifyEvent.getSubjectDescription();
-      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      String msgAbridged = notifyEvent.getSanitizedSubjectDescription();
 
       String msgAbridgedExpected = String.format(WORKFLOW_ASSIGNEE, artType, currState, atsId);
       String msgExpected = String.format(WORKFLOW_ASSIGNEE, artType, currState, toStrAtsId);
@@ -187,7 +187,7 @@ public class WorkItemNotificationProcessorTest {
 
       /////////////////////////////////////////////////////////////////
       // Two notifications should be created, one for each assignee
-      IAtsPeerToPeerReview rev = (IAtsPeerToPeerReview) atsApi.getQueryService().getWorkItemByAtsId("RVW14");
+      IAtsPeerToPeerReview rev = (IAtsPeerToPeerReview) atsApi.getWorkItemService().getWorkItemByAtsId("RVW14");
       Assert.assertNotNull(rev);
       Assert.assertTrue(rev.getName().startsWith("2 - Peer Review"));
 
@@ -215,7 +215,7 @@ public class WorkItemNotificationProcessorTest {
          notifyEvent.getEmailAddresses()));
 
       msg = notifyEvent.getSubjectDescription();
-      msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      msgAbridged = notifyEvent.getSanitizedSubjectDescription();
 
       msgAbridgedExpected = String.format(WORKFLOW_ASSIGNEE, artType, currState, atsId);
       msgExpected = String.format(WORKFLOW_ASSIGNEE, artType, currState, toStrAtsId);
@@ -264,7 +264,7 @@ public class WorkItemNotificationProcessorTest {
       String toStrAtsId = teamWf.toStringWithAtsId();
 
       String msg = notifyEvent.getSubjectDescription();
-      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      String msgAbridged = notifyEvent.getSanitizedSubjectDescription();
 
       String msgAbridgedExpected = String.format(SUBSCRIBED_WORKFLOW, artType, currState, atsId);
       String msgExpected = String.format(SUBSCRIBED_WORKFLOW, artType, currState, toStrAtsId);
@@ -321,7 +321,7 @@ public class WorkItemNotificationProcessorTest {
       String msg = notifyEvent.getSubjectDescription();
       String msgExpected = String.format(WORKFLOW_COMPLETED, artType, currState, toStrAtsId);
 
-      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      String msgAbridged = notifyEvent.getSanitizedSubjectDescription();
       String msgAbridgedExpected = String.format(WORKFLOW_COMPLETED, artType, currState, atsId);
 
       Assert.assertEquals(msgExpected, msg);
@@ -374,7 +374,7 @@ public class WorkItemNotificationProcessorTest {
       String msgExpected =
          String.format(WORKFLOW_CANCELLED_WITH_REASON, artType, currState, cancFrom, cancReas, toStrAtsId);
 
-      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      String msgAbridged = notifyEvent.getSanitizedSubjectDescription();
       String msgAbridgedExpected = String.format(WORKFLOW_CANCELLED_WITH_ATSID, artType, currState, cancFrom, atsId);
 
       Assert.assertEquals(msgExpected, msg);
@@ -422,7 +422,7 @@ public class WorkItemNotificationProcessorTest {
       Assert.assertTrue(notifyEvent.getEmailAddresses().contains(joeSmith_CurrentUser.getEmail()));
 
       String msg = notifyEvent.getSubjectDescription();
-      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      String msgAbridged = notifyEvent.getSanitizedSubjectDescription();
 
       String msgAbridgedExpected = String.format(SUBSCRIBED_FOR_AI_EMAIL, ai.getName(), teamWf.getAtsId());
       String msgExpected = String.format(SUBSCRIBED_FOR_AI_EMAIL, ai.getName(), teamWf.toStringWithAtsId());
@@ -441,7 +441,7 @@ public class WorkItemNotificationProcessorTest {
       Assert.assertTrue(notifyEvent.getEmailAddresses().contains(kay_ValidEmail.getEmail()));
 
       msg = notifyEvent.getSubjectDescription();
-      msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      msgAbridged = notifyEvent.getSanitizedSubjectDescription();
 
       msgAbridgedExpected = String.format(SUBSCRIBED_FOR_TEAM_EMAIL, teamDefName, teamWf.getAtsId());
       msgExpected = String.format(SUBSCRIBED_FOR_TEAM_EMAIL, teamDefName, teamWf.toStringWithAtsId());

@@ -66,6 +66,8 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
       attributeTypes.put(AttributeTypeToken.SENTINEL.getId(), AttributeTypeToken.SENTINEL);
       relationTypes.put(RelationTypeToken.SENTINEL.getId(), RelationTypeToken.SENTINEL);
       new CoreTypeTokenProvider().registerTypes(this);
+
+      ArtifactTokenDeserializer.setTokenService(this);
    }
 
    public void addTypeTokenProvider(OrcsTypeTokenProvider typeProvider) {

@@ -35,4 +35,3 @@ export class ActraPageTitleComponent {
 	icon = input.required<string>();
 	title = input.required<string>();
 }
-export default ActraPageTitleComponent;

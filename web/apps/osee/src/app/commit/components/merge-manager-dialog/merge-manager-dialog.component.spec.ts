@@ -15,6 +15,7 @@ import { MergeManagerDialogComponent } from './merge-manager-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommitBranchService } from '@osee/commit/services';
 import { commitBranchServiceMock } from '@osee/commit/testing';
+import { testBranchInfo } from '@osee/shared/testing';
 
 describe('MergeManagerDialogComponent', () => {
 	let component: MergeManagerDialogComponent;
@@ -27,8 +28,8 @@ describe('MergeManagerDialogComponent', () => {
 				{
 					provide: MAT_DIALOG_DATA,
 					useValue: {
-						sourceBranch: '1234',
-						parentBranch: '5678',
+						sourceBranch: testBranchInfo,
+						destBranch: testBranchInfo,
 						validateResults: {
 							committable: true,
 							conflictCount: 2,

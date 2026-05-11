@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -228,7 +228,7 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
     */
 
    @Override
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       //@formatter:off
       return
          new XWidgetBuilder()
@@ -236,7 +236,7 @@ public class PublishingAttributeContentBlam extends AbstractBlam {
                 .andWidget( PublishingAttributeContentBlam.variableArtifactIdentifier,      "XText" ).endWidget()
                 .andWidget( PublishingAttributeContentBlam.variableAttributeTypeIdentifier, "XText" ).endWidget()
                 .andWidget( PublishingAttributeContentBlam.variableTransactionIdentifier,   "XText" ).endWidget()
-                .getItems();
+                .getXWidgetDatas();
       //@formatter:on
    }
 

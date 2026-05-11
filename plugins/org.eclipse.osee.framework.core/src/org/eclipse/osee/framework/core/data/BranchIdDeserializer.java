@@ -25,6 +25,7 @@ import org.eclipse.jdt.annotation.NonNull;
 /**
  * @author Morgan E. Cook
  */
+@SuppressWarnings("serial")
 public class BranchIdDeserializer extends StdDeserializer<@NonNull BranchId> {
 
    public BranchIdDeserializer() {

@@ -40,6 +40,8 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkWfdForProgramAi;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.util.BooleanState;
+import org.eclipse.osee.framework.core.widget.ISelectableValueProvider;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -50,7 +52,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelEnumeratedArt;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
@@ -59,7 +60,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -102,7 +102,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    }
 
    @Override
-   public List<XWidgetRendererItem> getXWidgetItems() {
+   public List<XWidgetData> getXWidgetItems() {
       wb = new XWidgetBuilder();
 
       wb.andWidget(PROGRAM, XHyperlinkWfdForProgramAi.class.getSimpleName()).andValueProvider(
@@ -121,13 +121,13 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       wb.andXHyperlinkTriStateBoolean(
          AtsAttributeTypes.CrashOrBlankDisplay.getUnqualifiedName()).andRequired().endWidget();
 
-      return wb.getItems();
+      return wb.getXWidgetDatas();
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, xModListener, isEditable);
       if (xWidget.getLabel().equals(TITLE)) {
          titleWidget = (XText) xWidget;
       } else if (xWidget.getLabel().equals(DESCRIPTION)) {
@@ -385,7 +385,7 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
    }
 
    @Override
-   public Collection<Object> getSelectable(XWidget widget) {
+   public Collection<Object> getSelectable(Object widget) {
       if (widget instanceof XHyperlinkWfdForProgramAi) {
          return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getProgramCrAis());
       }

@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -174,7 +174,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          }
       });
       Button helpButton = new Button(composite, SWT.NONE);
-      helpButton.setImage(ImageManager.getImage(FrameworkImage.HELP));
+      helpButton.setImage(ImageManager.getImage(CoreImage.HELP));
       helpButton.addSelectionListener(new SelectionAdapter() {
 
          @Override

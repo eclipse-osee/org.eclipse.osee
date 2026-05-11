@@ -14,7 +14,10 @@
 package org.eclipse.osee.orcs.account.admin.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.Subscription;
@@ -42,7 +45,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
 
    @Override
    public ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId) {
-      ArtifactReadable account = newQuery().andTypeEquals(CoreArtifactTypes.User).andId(accountId).getArtifact();
+      ArtifactReadable account = newQuery().andTypeEquals(CoreArtifactTypes.User).andId(accountId).follow(CoreRelationTypes.Users_Artifact).asArtifact();
 
       List<Subscription> subscriptions = new ArrayList<>();
       for (ArtifactReadable group : account.getRelated(CoreRelationTypes.Users_Artifact)) {
@@ -50,6 +53,22 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       }
 
       return ResultSets.newResultSet(subscriptions);
+   }
+
+   @Override
+   public Map<ArtifactId, ResultSet<Subscription>> getSubscriptionsByAccountIds(Collection<ArtifactId> accountIds) {
+      Map<ArtifactId, ResultSet<Subscription>> result = new HashMap<>();
+      for (ArtifactReadable account : newQuery().andTypeEquals(CoreArtifactTypes.User).andIds(
+         accountIds).follow(CoreRelationTypes.Users_Artifact).asArtifacts()) {
+         List<Subscription> subscriptions = new ArrayList<>();
+         for (ArtifactReadable group : account.getRelated(CoreRelationTypes.Users_Artifact)) {
+            subscriptions.add(SubscriptionUtil.fromArtifactData(account, group, true));
+         }
+         if (!subscriptions.isEmpty()) {
+            result.put(ArtifactId.valueOf(account.getId()), ResultSets.newResultSet(subscriptions));
+         }
+      }
+      return result;
    }
 
    @Override

@@ -59,6 +59,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -79,6 +81,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final HashCollection<AttributeId, ArtifactReadable> referenceAttributes = new HashCollection<>();
    private final HashCollection<AttributeTypeToken, ArtifactReadable> referenceAttributeByType = new HashCollection<>();
    private final GammaId gamma;
+   private boolean loaded = false;
 
    public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
       super(id);
@@ -87,8 +90,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.view = view;
       this.applicability = applicability;
       this.txId = txId;
-      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, null, null, -1, ArtifactId.SENTINEL,
-         -1L, ArtifactId.SENTINEL);
+      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, DateUtil.getSentinalDate(),
+         Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
       this.modType = modType;
       this.queryFactory = queryFactory;
       this.gamma = GammaId.SENTINEL;
@@ -101,8 +104,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.view = view;
       this.applicability = ApplicabilityToken.valueOf(applicability.getId(), "");
       this.txId = txId;
-      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, null, null, -1, ArtifactId.SENTINEL,
-         -1L, ArtifactId.SENTINEL);
+      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, DateUtil.getSentinalDate(),
+         Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
       this.modType = modType;
       this.queryFactory = queryFactory;
       this.gamma = gamma;
@@ -341,6 +344,22 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    @Override
    public AttributeReadable<Object> getAttributeById(AttributeId attributeId) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew() {
+      return attributes.getValues();
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType) {
+      List<IAttribute<?>> attrs = new ArrayList<>();
+      for (IAttribute<?> attr : attributes.getValues()) {
+         if (attr.getAttributeType().equals(attrType)) {
+            attrs.add(attr);
+         }
+      }
+      return attrs;
    }
 
    @Override
@@ -584,7 +603,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public TransactionDetails getTxDetails() {
+   public TransactionDetails getLatestTxDetails() {
       return latestTxDetails;
    }
 
@@ -603,5 +622,27 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
          return referenceAttributes.getValues(attributeId).get(0);
       }
       return ArtifactReadable.SENTINEL;
+   }
+
+   @Override
+   public boolean isNotLoaded() {
+      return !isLoaded();
+   }
+
+   /**
+    * Denotes that both attributes and relations have been loaded
+    */
+   @Override
+   public boolean isLoaded() {
+      return loaded;
+   }
+
+   public void internalSetLoaded(boolean loaded) {
+      this.loaded = loaded;
+   }
+
+   @Override
+   public String toString() {
+      return String.format("%s - [%s]", getId(), (isLoaded() ? getName() : "<unloaded>"));
    }
 }

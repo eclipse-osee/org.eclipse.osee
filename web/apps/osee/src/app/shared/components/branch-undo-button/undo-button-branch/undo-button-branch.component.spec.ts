@@ -57,7 +57,7 @@ describe('UndoButtonBranchComponent', () => {
 	});
 
 	it('should undo a change', async () => {
-		const spy = spyOn(component, 'undo').and.callThrough();
+		const spy = vi.spyOn(component, 'undo');
 		await (await loader.getHarness(MatButtonHarness)).click();
 		expect(spy).toHaveBeenCalled();
 	});

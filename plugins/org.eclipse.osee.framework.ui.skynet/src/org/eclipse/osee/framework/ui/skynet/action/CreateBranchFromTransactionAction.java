@@ -23,13 +23,13 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -47,13 +47,13 @@ public class CreateBranchFromTransactionAction extends Action {
       super(TITLE);
       this.txs = txs;
       this.branchId = branchId;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GEAR));
       setToolTipText(TITLE);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.BRANCH);
+      return ImageManager.getImageDescriptor(CoreImage.BRANCH);
    }
 
    @Override

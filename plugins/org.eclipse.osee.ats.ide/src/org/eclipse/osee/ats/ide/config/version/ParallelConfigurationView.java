@@ -139,7 +139,7 @@ public class ParallelConfigurationView extends XNavigateItemAction {
 
       @Override
       public boolean hasChildren() {
-         return getChildren().size() > 0;
+         return !getChildren().isEmpty();
       }
 
       @Override

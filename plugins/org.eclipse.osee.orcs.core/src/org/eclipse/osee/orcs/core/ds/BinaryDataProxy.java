@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.nio.ByteBuffer;
+import org.eclipse.osee.orcs.search.ds.DataProxy;
 
 /**
  * @author Roberto E. Escobar

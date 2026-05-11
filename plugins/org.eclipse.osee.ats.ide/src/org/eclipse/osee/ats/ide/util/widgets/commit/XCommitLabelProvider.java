@@ -29,11 +29,11 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -53,19 +53,19 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
-      BranchId branch = null;
+      BranchToken branch = null;
       if (element instanceof CommitConfigItem) {
          CommitConfigItem configItem = (CommitConfigItem) element;
          branch = AtsApiService.get().getBranchService().getBranch(configItem);
       } else if (element instanceof TransactionToken) {
          TransactionToken txRecord = (TransactionToken) element;
-         branch = txRecord.getBranch();
+         branch = AtsApiService.get().getBranchService().getBranch(txRecord.getBranch());
       } else {
          throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
       }
 
       if (xCol.equals(CommitXManagerFactory.Action_Col)) {
-         return ImageManager.getImage(FrameworkImage.ARROW_RIGHT_YELLOW);
+         return ImageManager.getImage(CoreImage.ARROW_RIGHT_YELLOW);
       }
       if (branch == null) {
          return null;
@@ -77,15 +77,15 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             if (commitStatus == CommitStatus.Branch_Not_Configured || commitStatus == CommitStatus.Branch_Commit_Disabled ||
             //
                commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Working_Branch_Not_Created) {
-               return ImageManager.getImage(FrameworkImage.DOT_RED);
+               return ImageManager.getImage(CoreImage.DOT_RED);
             }
 
             if (commitStatus == CommitStatus.Merge_In_Progress) {
-               return ImageManager.getImage(FrameworkImage.DOT_YELLOW);
+               return ImageManager.getImage(CoreImage.DOT_YELLOW);
             }
 
             if (commitStatus == CommitStatus.Committed || commitStatus == CommitStatus.Committed_With_Merge || commitStatus == CommitStatus.No_Commit_Needed || commitStatus == CommitStatus.Commit_Overridden) {
-               return ImageManager.getImage(FrameworkImage.DOT_GREEN);
+               return ImageManager.getImage(CoreImage.DOT_GREEN);
             }
             return null;
          } catch (Exception ex) {
@@ -96,7 +96,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             CommitStatus commitStatus = AtsApiService.get().getBranchService().getCommitStatus(
                commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
-               return ImageManager.getImage(FrameworkImage.OUTGOING_MERGED);
+               return ImageManager.getImage(CoreImage.OUTGOING_MERGED);
             }
             return null;
          } catch (Exception ex) {
@@ -108,17 +108,17 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
-      BranchId branch;
+      BranchToken branch;
       if (element instanceof CommitConfigItem) {
          CommitConfigItem configItem = (CommitConfigItem) element;
          if (!AtsApiService.get().getBranchService().isBranchValid(configItem)) {
             return String.format("Branch not configured for [%s]", element);
          } else {
-            branch = configItem.getBaselineBranchId();
+            branch = AtsApiService.get().getBranchService().getBranch(configItem.getBaselineBranchId());
          }
       } else if (element instanceof TransactionToken) {
          TransactionToken txRecord = (TransactionToken) element;
-         branch = txRecord.getBranch();
+         branch = AtsApiService.get().getBranchService().getBranch(txRecord.getBranch());
       } else {
          throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
       }
@@ -223,7 +223,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
    }
 
-   private String handleActionColumn(BranchId branch) {
+   private String handleActionColumn(BranchToken branch) {
       CommitStatus commitStatus =
          AtsApiService.get().getBranchService().getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (commitStatus == CommitStatus.Rebaseline_In_Progress) {

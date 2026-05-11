@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -25,6 +24,8 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -45,7 +46,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.LabelAfterWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonWithLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -59,7 +59,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.w3c.dom.Document;
@@ -71,23 +70,20 @@ import org.w3c.dom.Element;
 public class SwtXWidgetRenderer {
    public static final String XWIDGET = "XWidget";
 
-   private final Set<XWidgetRendererItem> datas = new LinkedHashSet<>();
-   private final Map<String, XWidgetRendererItem> nameToLayoutData = new HashMap<>();
-
-   private final Collection<ArrayList<String>> orRequired = new ArrayList<>();
-   private final Collection<ArrayList<String>> xorRequired = new ArrayList<>();
+   private final Set<XWidgetData> xWidgetDatas = new LinkedHashSet<>();
+   private final Map<String, XWidgetData> nameToLayoutData = new HashMap<>();
 
    private final IDynamicWidgetLayoutListener dynamicWidgetLayoutListener;
-   private final IXWidgetOptionResolver optionResolver;
    private final Collection<XWidget> xWidgets = new ArrayList<>();
+   private final Map<XWidgetData, XWidget> widDataToXWidget = new HashMap<>();
+   private static final FrameworkXWidgetProvider xWidgetFactory = FrameworkXWidgetProvider.getInstance();
 
    public SwtXWidgetRenderer() {
-      this(null, new DefaultXWidgetOptionResolver());
+      this(null);
    }
 
-   public SwtXWidgetRenderer(IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, IXWidgetOptionResolver optionResolver) {
+   public SwtXWidgetRenderer(IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       this.dynamicWidgetLayoutListener = dynamicWidgetLayoutListener;
-      this.optionResolver = optionResolver;
    }
 
    private Composite createComposite(Composite parent, FormToolkit toolkit) {
@@ -129,50 +125,52 @@ public class SwtXWidgetRenderer {
       return outComp;
    }
 
-   protected XWidget setupXWidget(XWidgetRendererItem rItem, boolean isEditable) {
-      XWidget xWidget = rItem.getXWidget();
+   public XWidget setupXWidget(XWidgetData widData, boolean isEditable) {
+      XWidget xWidget = xWidgetFactory.createXWidget(widData, this);
+      widDataToXWidget.put(widData, xWidget);
+
       xWidgets.add(xWidget);
 
-      if (Strings.isValid(rItem.getName())) {
-         setName(xWidget, rItem.getName());
+      if (Strings.isValid(widData.getName())) {
+         setName(xWidget, widData.getName());
       } else if (Strings.isValid(xWidget.getLabel())) {
          setName(xWidget, xWidget.getLabel());
       }
 
-      if (Strings.isValid(rItem.getToolTip())) {
-         xWidget.setToolTip(rItem.getToolTip());
+      if (Strings.isValid(widData.getToolTip())) {
+         xWidget.setToolTip(widData.getToolTip());
       }
 
-      xWidget.setRequiredEntry(rItem.isRequired());
-      xWidget.setEditable(rItem.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
-      xWidget.setNoSelect(rItem.getXOptionHandler().contains(XOption.NO_SELECT));
-      xWidget.setSingleSelect(rItem.getXOptionHandler().contains(XOption.SINGLE_SELECT));
-      xWidget.setMultiSelect(rItem.getXOptionHandler().contains(XOption.MULTI_SELECT));
-      xWidget.setAutoSave(rItem.getXOptionHandler().contains(XOption.AUTO_SAVE));
-      xWidget.setFillHorizontally(rItem.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
-      xWidget.setValidateDate(rItem.getXOptionHandler().contains(XOption.VALIDATE_DATE));
-      xWidget.setFillVertically(rItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY));
+      xWidget.setRequiredEntry(widData.isRequired());
+      xWidget.setEditable(widData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
+      xWidget.setNoSelect(widData.getXOptionHandler().contains(XOption.NO_SELECT));
+      xWidget.setSingleSelect(widData.getXOptionHandler().contains(XOption.SINGLE_SELECT));
+      xWidget.setMultiSelect(widData.getXOptionHandler().contains(XOption.MULTI_SELECT));
+      xWidget.setAutoSave(widData.getXOptionHandler().contains(XOption.AUTO_SAVE));
+      xWidget.setFillHorizontally(widData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
+      xWidget.setValidateDate(widData.getXOptionHandler().contains(XOption.VALIDATE_DATE));
+      xWidget.setFillVertically(widData.getXOptionHandler().contains(XOption.FILL_VERTICALLY));
       if (xWidget instanceof LabelAfterWidget) {
-         ((LabelAfterWidget) xWidget).setLabelAfter(rItem.getXOptionHandler().contains(XOption.LABEL_AFTER));
+         ((LabelAfterWidget) xWidget).setLabelAfter(widData.getXOptionHandler().contains(XOption.LABEL_AFTER));
       }
-      xWidget.setDefaultValueObj(rItem.getDefaultValueObj());
-      xWidget.setValueProvider(rItem.getValueProvider());
-      xWidget.setArtifactType(rItem.getArtifactType());
-      xWidget.setAttributeType(rItem.getAttributeType());
-      xWidget.setAttributeType2(rItem.getAttributeType2());
-      xWidget.setEnumeratedArt(rItem.getEnumeratedArt());
-      xWidget.setOseeImage(rItem.getOseeImage());
-      xWidget.setTeamId(rItem.getTeamId());
-      xWidget.setValues(rItem.getValues());
-      xWidget.setConditions(rItem.getConditions());
+      xWidget.setDefaultValueObj(widData.getDefaultValueObj());
+      xWidget.setValueProvider(widData.getValueProvider());
+      xWidget.setArtifactType(widData.getArtifactType());
+      xWidget.setAttributeType(widData.getAttributeType());
+      xWidget.setAttributeType2(widData.getAttributeType2());
+      xWidget.setEnumeratedArt(widData.getEnumeratedArt());
+      xWidget.setOseeImage(widData.getOseeImage());
+      xWidget.setTeamId(widData.getTeamId());
+      xWidget.setValues(widData.getValues());
+      xWidget.setConditions(widData.getConditions());
       if (xWidget instanceof XButtonWithLabelDam) {
-         ((XButtonWithLabelDam) xWidget).setUserGroup(rItem.getUserGroup());
+         ((XButtonWithLabelDam) xWidget).setUserGroup(widData.getUserGroup());
       }
       if (xWidget instanceof XCheckBoxDam) {
-         ((XCheckBoxDam) xWidget).setUserGroup(rItem.getUserGroup());
+         ((XCheckBoxDam) xWidget).setUserGroup(widData.getUserGroup());
       }
-      xWidget.getWidgetHints().addAll(rItem.getWidgetHints());
-      xWidget.getParameters().putAll(rItem.getParameters());
+      xWidget.getWidgetHints().addAll(widData.getWidgetHints());
+      xWidget.getParameters().putAll(widData.getParameters());
 
       return xWidget;
    }
@@ -203,21 +201,21 @@ public class SwtXWidgetRenderer {
       Composite childComp = null;
       Group groupComp = null;
       // Create Attributes
-      Set<XWidgetRendererItem> layoutDatas = getLayoutDatas();
-      for (XWidgetRendererItem rItem : layoutDatas) {
+      Set<XWidgetData> widDatas = getXWidgetDatas();
+      for (XWidgetData widData : widDatas) {
          Composite currentComp = null;
 
          // first, check if this one is a group, if so, we set the group up and are done with this loop iteration
 
-         int i = rItem.getBeginGroupComposite();
+         int i = widData.getBeginGroupComposite();
          if (i > 0) {
             inGroupComposite = true;
-            groupComp = buildGroupComposite(topLevelComp, rItem.getName(), i, toolkit);
+            groupComp = buildGroupComposite(topLevelComp, widData.getName(), i, toolkit);
             continue;
          }
          if (inGroupComposite) {
             currentComp = groupComp;
-            if (rItem.isEndGroupComposite()) {
+            if (widData.isEndGroupComposite()) {
                inGroupComposite = false;
                currentComp = topLevelComp;
                // No XWidget associated, so go to next one
@@ -231,12 +229,12 @@ public class SwtXWidgetRenderer {
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
          currentComp.setLayoutData(gd);
 
-         if (rItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+         if (widData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
             gd.grabExcessVerticalSpace = true;
          }
 
-         int columns = rItem.getBeginComposite();
-         boolean border = rItem.isBorder();
+         int columns = widData.getBeginComposite();
+         boolean border = widData.isBorder();
          if (columns > 0) {
             inChildComposite = true;
             childComp = buildChildComposite(currentComp, columns, toolkit, border);
@@ -244,10 +242,10 @@ public class SwtXWidgetRenderer {
 
          if (inChildComposite) {
             currentComp = childComp;
-            if (rItem.isEndComposite()) {
+            if (widData.isEndComposite()) {
                inChildComposite = false;
             }
-         } else if (rItem.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
+         } else if (widData.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
             currentComp = createComposite(topLevelComp, toolkit);
             currentComp.setLayout(ALayout.getZeroMarginLayout(2, false));
             currentComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -256,48 +254,47 @@ public class SwtXWidgetRenderer {
             }
          }
 
-         XWidget xWidget = setupXWidget(rItem, isEditable);
-         xWidget.setId(rItem.getId());
-         if (rItem.getObject() != null) {
-            xWidget.setObject(rItem.getObject());
+         XWidget xWidget = setupXWidget(widData, isEditable);
+         xWidget.setId(widData.getId());
+         if (widData.getObject() != null) {
+            xWidget.setObject(widData.getObject());
          }
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);
          }
 
-         setupArtifactInfo(artifact, rItem, xWidget);
+         setupArtifactInfo(artifact, widData, xWidget);
 
          if (xWidget instanceof XText) {
             XText xText = (XText) xWidget;
-            if (rItem.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
+            if (widData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
                xText.setFillHorizontally(true);
             }
-            if (rItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+            if (widData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
                xText.setFillVertically(true);
             }
-            if (rItem.isHeightSet()) {
-               xText.setHeight(rItem.getHeight());
+            if (widData.isHeightSet()) {
+               xText.setHeight(widData.getHeight());
             }
             xText.setDynamicallyCreated(true);
          }
 
          xWidget.createWidgets(managedForm, currentComp, 2);
-         setAttrToolTip(xWidget, rItem);
+         setAttrToolTip(xWidget, widData);
 
          if (xModListener != null) {
             xWidget.addXModifiedListener(xModListener);
          }
-         xWidget.addXModifiedListener(refreshRequiredModListener);
 
-         if (Strings.isValid(rItem.getDoubleClickText())) {
+         if (Strings.isValid(widData.getDoubleClickText())) {
             if (Widgets.isAccessible(xWidget.getLabelWidget())) {
                xWidget.getLabelWidget().addMouseListener(new MouseAdapter() {
                   @Override
                   public void mouseDoubleClick(MouseEvent e) {
                      super.mouseDoubleClick(e);
                      ResultsEditor.open("Error", "Error: " + xWidget.getLabel(),
-                        AHTML.simplePage(rItem.getDoubleClickText()));
+                        AHTML.simplePage(widData.getDoubleClickText()));
                   }
                });
             }
@@ -305,7 +302,7 @@ public class SwtXWidgetRenderer {
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreated(xWidget, toolkit, artifact, this, xModListener, isEditable);
-            dynamicWidgetLayoutListener.createXWidgetLayoutData(rItem, xWidget, toolkit, artifact, xModListener,
+            dynamicWidgetLayoutListener.createXWidgetLayoutData(widData, xWidget, toolkit, artifact, xModListener,
                isEditable);
          }
       }
@@ -319,10 +316,10 @@ public class SwtXWidgetRenderer {
                if (managedForm != null) {
                   managedForm.getMessageManager().setAutoUpdate(false);
                }
-               for (XWidgetRendererItem xWidgetLayoutData : getLayoutDatas()) {
-                  xWidgetLayoutData.getXWidget().validate();
+               for (XWidgetData widData : getXWidgetDatas()) {
+                  XWidget widget = widDataToXWidget.get(widData);
+                  widget.validate();
                }
-               refreshOrAndXOrRequiredFlags();
                if (managedForm != null) {
                   try {
                      managedForm.getMessageManager().setAutoUpdate(true);
@@ -339,17 +336,17 @@ public class SwtXWidgetRenderer {
       });
    }
 
-   protected void setAttrToolTip(XWidget xWidget, XWidgetRendererItem layoutData) {
+   protected void setAttrToolTip(XWidget xWidget, XWidgetData widData) {
       String description = "";
-      if (AttributeTypeManager.typeExists(layoutData.getStoreName())) {
+      if (AttributeTypeManager.typeExists(widData.getStoreName())) {
          try {
             AttributeTypeToken type = null;
-            if (layoutData.getStoreId() > 0) {
-               type = AttributeTypeManager.getAttributeType(layoutData.getStoreId());
+            if (widData.getStoreId() > 0) {
+               type = AttributeTypeManager.getAttributeType(widData.getStoreId());
             }
-            if (type == null && Strings.isValid(layoutData.getStoreName())) {
+            if (type == null && Strings.isValid(widData.getStoreName())) {
                try {
-                  type = AttributeTypeManager.getType(layoutData.getStoreName());
+                  type = AttributeTypeManager.getType(widData.getStoreName());
                } catch (ItemDoesNotExist ex) {
                   // do nothing
                }
@@ -359,7 +356,7 @@ public class SwtXWidgetRenderer {
             }
             if (Strings.isValid(description)) {
                xWidget.setToolTip(description);
-               layoutData.setToolTip(description);
+               widData.setToolTip(description);
             }
          } catch (Exception ex) {
             String msg = String.format("Error setting tooltip for widget [%s].  Error %s (see log for details)",
@@ -369,7 +366,7 @@ public class SwtXWidgetRenderer {
       }
    }
 
-   private void setupArtifactInfo(Artifact artifact, XWidgetRendererItem item, XWidget xWidget) {
+   private void setupArtifactInfo(Artifact artifact, XWidgetData item, XWidget xWidget) {
       if (artifact == null) {
          return;
       }
@@ -425,60 +422,13 @@ public class SwtXWidgetRenderer {
          }
       }
    }
-   private final XModifiedListener refreshRequiredModListener = new XModifiedListener() {
-      @Override
-      public void widgetModified(XWidget widget) {
-         try {
-            refreshOrAndXOrRequiredFlags();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
-   };
-
-   /**
-    * Required flags are set per XWidget and the labels change from Red to Black when the widget has been edited
-    * successfully. When a page is made up of two or more widgets that need to work together, these required flags need
-    * to be set/unset whenever a widget from the group gets modified.
-    */
-   private void refreshOrAndXOrRequiredFlags() {
-      // Handle orRequired
-      for (Collection<String> orReq : orRequired) {
-         // If group is complete, change all to black, else all red
-         boolean isComplete = isOrGroupFromAttrNameComplete(orReq.iterator().next());
-         for (String aName : orReq) {
-            XWidgetRendererItem layoutData = getLayoutData(aName);
-            Label label = layoutData.getXWidget().getLabelWidget();
-            if (label != null && !label.isDisposed()) {
-               label.setForeground(isComplete ? null : Displays.getSystemColor(SWT.COLOR_RED));
-            }
-         }
-      }
-      // Handle xorRequired
-      for (Collection<String> xorReq : xorRequired) {
-         // If group is complete, change all to black, else all red
-         boolean isComplete = isXOrGroupFromAttrNameComplete(xorReq.iterator().next());
-         for (String aName : xorReq) {
-            XWidgetRendererItem layoutData = getLayoutData(aName);
-            Label label = layoutData.getXWidget().getLabelWidget();
-            if (label != null && !label.isDisposed()) {
-               label.setForeground(isComplete ? null : Displays.getSystemColor(SWT.COLOR_RED));
-            }
-         }
-      }
-   }
 
    public IStatus isPageComplete() {
       try {
-         for (XWidgetRendererItem data : datas) {
-            IStatus valid = data.getXWidget().isValid();
-            if (!valid.isOK()) {
-               // Check to see if widget is part of a completed OR or XOR group
-               if (!isOrGroupFromAttrNameComplete(data.getStoreName()) && !isXOrGroupFromAttrNameComplete(
-                  data.getStoreName())) {
-                  return valid;
-               }
-            }
+         for (XWidgetData widData : xWidgetDatas) {
+            XWidget widget = widDataToXWidget.get(widData);
+            IStatus valid = widget.isValid();
+            return valid;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -486,143 +436,69 @@ public class SwtXWidgetRenderer {
       return Status.OK_STATUS;
    }
 
-   public Set<XWidgetRendererItem> getLayoutDatas() {
-      return datas;
+   public Set<XWidgetData> getXWidgetDatas() {
+      return xWidgetDatas;
    }
 
-   public void setLayoutDatas(List<XWidgetRendererItem> datas) {
-      this.datas.clear();
-      for (XWidgetRendererItem data : datas) {
-         data.setDynamicXWidgetLayout(this);
-         this.datas.add(data);
+   public void setWidgetDatas(List<XWidgetData> widDatas) {
+      this.xWidgetDatas.clear();
+      for (XWidgetData widData : widDatas) {
+         addXWidgetData(widData);
+         this.xWidgetDatas.add(widData);
       }
    }
 
-   public void addWorkLayoutDatas(List<XWidgetRendererItem> datas) {
-      this.datas.addAll(datas);
+   public void addXWidgetDatas(List<XWidgetData> widDatas) {
+      this.xWidgetDatas.addAll(widDatas);
    }
 
-   public void addWorkLayoutData(XWidgetRendererItem data) {
-      this.datas.add(data);
+   public void addXWidgetData(XWidgetData widData) {
+      this.xWidgetDatas.add(widData);
    }
 
-   public XWidgetRendererItem getLayoutData(String displayName) {
-      for (XWidgetRendererItem layoutData : datas) {
-         if (layoutData.getName().equals(displayName)) {
-            return layoutData;
+   public XWidgetData getXWidgetData(String displayName) {
+      for (XWidgetData widData : xWidgetDatas) {
+         if (widData.getName().equals(displayName)) {
+            return widData;
          }
       }
       return null;
    }
 
-   public boolean isOrRequired(String attrName) {
-      return !getOrRequiredGroup(attrName).isEmpty();
-   }
-
-   public boolean isXOrRequired(String attrName) {
-      return !getXOrRequiredGroup(attrName).isEmpty();
-   }
-
-   private Collection<String> getOrRequiredGroup(String attrName) {
-      return getRequiredGroup(orRequired, attrName);
-   }
-
-   private Collection<String> getXOrRequiredGroup(String attrName) {
-      return getRequiredGroup(xorRequired, attrName);
-   }
-
-   private Collection<String> getRequiredGroup(Collection<ArrayList<String>> requiredList, String attrName) {
-      for (Collection<String> list : requiredList) {
-         for (String aName : list) {
-            if (aName.equals(attrName)) {
-               return list;
-            }
-         }
-      }
-      return Collections.emptyList();
-   }
-
-   /**
-    * @return true if ANY item in group is entered
-    */
-   public boolean isOrGroupFromAttrNameComplete(String name) {
-      for (String aName : getOrRequiredGroup(name)) {
-         XWidgetRendererItem layoutData = getLayoutData(aName);
-         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   /**
-    * @return true if only ONE item in group is entered
-    */
-   public boolean isXOrGroupFromAttrNameComplete(String attrName) {
-      boolean oneFound = false;
-      for (String aName : getXOrRequiredGroup(attrName)) {
-         XWidgetRendererItem layoutData = getLayoutData(aName);
-         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) {
-            // If already found one, return false
-            if (oneFound) {
-               return false;
-            } else {
-               oneFound = true;
-            }
-         }
-      }
-      return oneFound;
-   }
-
-   protected void processOrRequired(String instr) {
-      ArrayList<String> names = new ArrayList<>();
-      for (String attr : instr.split(";")) {
-         if (!attr.contains("[ \\s]*")) {
-            names.add(attr);
-         }
-      }
-      orRequired.add(names);
-   }
-
-   protected void processXOrRequired(String instr) {
-      ArrayList<String> names = new ArrayList<>();
-      for (String attr : instr.split(";")) {
-         if (!attr.contains("[ \\s]*")) {
-            names.add(attr);
-         }
-      }
-      xorRequired.add(names);
-   }
-
-   public void processlayoutDatas(String xWidgetXml) {
+   public void processXWidgetDatas(String xWidgetXml) {
       try {
          Document document = Jaxp.readXmlDocument(xWidgetXml);
          Element rootElement = document.getDocumentElement();
 
-         List<XWidgetRendererItem> attrs = XWidgetParser.extractlayoutDatas(this, rootElement);
-         for (XWidgetRendererItem attr : attrs) {
+         List<XWidgetData> attrs = XWidgetParser.extractXWidgetDatas(rootElement);
+         for (XWidgetData attr : attrs) {
             nameToLayoutData.put(attr.getName(), attr);
-            datas.add(attr);
+            xWidgetDatas.add(attr);
          }
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
    }
 
-   public void processLayoutDatas(Element element) {
-      List<XWidgetRendererItem> layoutDatas = XWidgetParser.extractlayoutDatas(this, element);
-      for (XWidgetRendererItem layoutData : layoutDatas) {
-         nameToLayoutData.put(layoutData.getName(), layoutData);
-         datas.add(layoutData);
+   public void processXWidgetDatas(Element element) {
+      List<XWidgetData> widDatas = XWidgetParser.extractXWidgetDatas(element);
+      for (XWidgetData widData : widDatas) {
+         nameToLayoutData.put(widData.getName(), widData);
+         xWidgetDatas.add(widData);
       }
-   }
-
-   public IXWidgetOptionResolver getOptionResolver() {
-      return optionResolver;
    }
 
    public Collection<XWidget> getXWidgets() {
       return xWidgets;
    }
 
+   public XWidget getXWidget(String widgetLabel) {
+      XWidgetData widData = getXWidgetData(widgetLabel);
+      XWidget widget = widDataToXWidget.get(widData);
+      return widget;
+   }
+
+   public XWidget getXWidget(XWidgetData widData) {
+      return widDataToXWidget.get(widData);
+   }
 }

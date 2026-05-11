@@ -60,33 +60,36 @@ describe('DialogService', () => {
 
 	it('should open the config menu in config mode', () => {
 		scheduler.run(({ expectObservable }) => {
-			const dialogRefSpy = jasmine.createSpyObj({
-				afterClosed: of<PLEditConfigData>({
-					editable: true,
-					currentBranch: '',
-					currentConfig: {
-						id: '-1',
-						name: '',
-						description: '',
-						hasFeatureApplicabilities: false,
-						groups: [],
-					},
-					copyFrom: {
-						id: '-1',
-						name: '',
-						description: '',
-						hasFeatureApplicabilities: false,
-					},
-					group: [{ id: '-1', name: '', description: '' }],
-					productApplicabilities: [],
-				}),
-				close: null,
-			});
-			const _dialogSpy = spyOn(
-				TestBed.inject(MatDialog),
-				'open'
-			).and.returnValue(dialogRefSpy);
-			const expectedValues: { a: XResultData } = { a: MockXResultData };
+			const dialogRefSpy = {
+				afterClosed: vi.fn().mockReturnValue(
+					of<PLEditConfigData>({
+						editable: true,
+						currentBranch: '',
+						currentConfig: {
+							id: '-1',
+							name: '',
+							description: '',
+							hasFeatureApplicabilities: false,
+							groups: [],
+						},
+						copyFrom: {
+							id: '-1',
+							name: '',
+							description: '',
+							hasFeatureApplicabilities: false,
+						},
+						group: [{ id: '-1', name: '', description: '' }],
+						productApplicabilities: [],
+					})
+				),
+				close: vi.fn().mockReturnValue(null),
+			};
+			const _dialogObject = TestBed.inject(MatDialog);
+			const openSpy = vi.fn().mockReturnValue(dialogRefSpy);
+			vi.spyOn(_dialogObject, 'open').mockImplementation(openSpy);
+			const expectedValues: {
+				a: XResultData;
+			} = { a: MockXResultData };
 			expectObservable(
 				service.openEditConfigDialog('Product D', true)
 			).toBe('(a|)', expectedValues);
@@ -94,31 +97,34 @@ describe('DialogService', () => {
 	});
 	it('should open the config menu in group mode mode', () => {
 		scheduler.run(({ expectObservable }) => {
-			const dialogRefSpy = jasmine.createSpyObj({
-				afterClosed: of<CfgGroupDialog>({
-					editable: true,
-					configGroup: {
-						name: 'abGroup',
-						id: '123',
-						description: '',
-						views: [
-							{
-								id: '123',
-								name: 'Product A',
-								description: '',
-								hasFeatureApplicabilities: false,
-							},
-						],
-						configurations: [],
-					},
-				}),
-				close: null,
-			});
-			const _dialogSpy = spyOn(
-				TestBed.inject(MatDialog),
-				'open'
-			).and.returnValue(dialogRefSpy);
-			const expectedValues: { a: XResultData } = { a: MockXResultData };
+			const dialogRefSpy = {
+				afterClosed: vi.fn().mockReturnValue(
+					of<CfgGroupDialog>({
+						editable: true,
+						configGroup: {
+							name: 'abGroup',
+							id: '123',
+							description: '',
+							views: [
+								{
+									id: '123',
+									name: 'Product A',
+									description: '',
+									hasFeatureApplicabilities: false,
+								},
+							],
+							configurations: [],
+						},
+					})
+				),
+				close: vi.fn().mockReturnValue(null),
+			};
+			const _dialogObject = TestBed.inject(MatDialog);
+			const openSpy = vi.fn().mockReturnValue(dialogRefSpy);
+			vi.spyOn(_dialogObject, 'open').mockImplementation(openSpy);
+			const expectedValues: {
+				a: XResultData;
+			} = { a: MockXResultData };
 			expectObservable(
 				service.openEditConfigGroupDialog('abGroup', true)
 			).toBe('(a|)', expectedValues);
@@ -127,19 +133,22 @@ describe('DialogService', () => {
 
 	it('should open the feature menu', () => {
 		scheduler.run(({ expectObservable }) => {
-			const dialogRefSpy = jasmine.createSpyObj({
-				afterClosed: of<PLEditFeatureData>({
-					editable: true,
-					feature: new modifyFeature(),
-					currentBranch: '',
-				}),
-				close: null,
-			});
-			const _dialogSpy = spyOn(
-				TestBed.inject(MatDialog),
-				'open'
-			).and.returnValue(dialogRefSpy);
-			const expectedValues: { a: XResultData } = { a: MockXResultData };
+			const dialogRefSpy = {
+				afterClosed: vi.fn().mockReturnValue(
+					of<PLEditFeatureData>({
+						editable: true,
+						feature: new modifyFeature(),
+						currentBranch: '',
+					})
+				),
+				close: vi.fn().mockReturnValue(null),
+			};
+			const _dialogObject = TestBed.inject(MatDialog);
+			const openSpy = vi.fn().mockReturnValue(dialogRefSpy);
+			vi.spyOn(_dialogObject, 'open').mockImplementation(openSpy);
+			const expectedValues: {
+				a: XResultData;
+			} = { a: MockXResultData };
 			expectObservable(service.displayFeatureDialog('')).toBe(
 				'(a|)',
 				expectedValues

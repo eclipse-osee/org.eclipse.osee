@@ -21,15 +21,15 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetPrior;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.search.Operator;
+import org.eclipse.osee.orcs.search.QueryData;
 import org.eclipse.osee.orcs.search.TxQueryBuilder;
+import org.eclipse.osee.orcs.search.ds.Criteria;
+import org.eclipse.osee.orcs.search.ds.Options;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAuthorIds;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaCommitIds;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaTxGetPrior;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaTxIds;
 
 /**
  * @author Roberto E. Escobar

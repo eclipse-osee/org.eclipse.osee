@@ -17,8 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.ats.api.agile.IAgileTeam;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
@@ -50,7 +48,6 @@ public abstract class XTaskEstWidget extends XMiniTaskWidget {
    public static final String WIDGET_ID = XTaskEstWidget.class.getSimpleName();
    private static final String INFO_STRING =
       "Select to create estimating tasks.  Complete all estimates/tasks.  Double-Click to open/edit task/fields.";
-   private AttributeTypeToken pointsAttrType;
    private final List<Object> input = new ArrayList<>();
    public static String NAME = "Estimate Manager";
 
@@ -174,23 +171,11 @@ public abstract class XTaskEstWidget extends XMiniTaskWidget {
 
       float points = 0;
       for (IAtsTask task : atsApi.getTaskService().getTasks(teamWf)) {
+         AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(task);
          points +=
-            Float.valueOf(atsApi.getAttributeResolver().getSoleAttributeValueAsString(task, getPointsAttrType(), "0"));
+            Float.valueOf(atsApi.getAttributeResolver().getSoleAttributeValueAsString(task, pointsAttrType, "0"));
       }
       pointsLabel.setValueText(String.valueOf(points));
-   }
-
-   public AttributeTypeToken getPointsAttrType() {
-      if (pointsAttrType == null) {
-         IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
-         if (agileTeam != null) {
-            pointsAttrType = atsApi.getAgileService().getAgileTeamPointsAttributeType(agileTeam);
-         }
-         if (pointsAttrType == null) {
-            pointsAttrType = AtsAttributeTypes.PointsNumeric;
-         }
-      }
-      return pointsAttrType;
    }
 
    private void updateExtraInfoLabel(final int color, final String infoStr) {
@@ -200,8 +185,8 @@ public abstract class XTaskEstWidget extends XMiniTaskWidget {
             if (Widgets.isAccessible(extraInfoLabel)) {
                String currentString = extraInfoLabel.getText();
                if (infoStr == null && currentString != null || //
-               infoStr != null && currentString == null || //
-               infoStr != null && currentString != null && !infoStr.equals(currentString)) {
+                  infoStr != null && currentString == null || //
+                  infoStr != null && currentString != null && !infoStr.equals(currentString)) {
                   extraInfoLabel.setText(INFO_STRING);
                }
                extraInfoLabel.setForeground(Displays.getSystemColor(color));

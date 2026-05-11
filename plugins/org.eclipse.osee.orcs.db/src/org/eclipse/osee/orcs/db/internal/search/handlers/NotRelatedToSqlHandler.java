@@ -14,9 +14,9 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaNotRelatedTo;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaNotRelatedTo;
 
 public class NotRelatedToSqlHandler extends SqlHandler<CriteriaNotRelatedTo> {
    private CriteriaNotRelatedTo criteria;

@@ -17,13 +17,14 @@ import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
-import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
+import org.eclipse.osee.ats.api.store.AtsRelationEndpointApi;
+import org.eclipse.osee.ats.api.store.AtsStoreEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
@@ -34,8 +35,10 @@ import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.pr.AtsPrEndpointApi;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
+import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
 
 /**
  * Client provider for server endpoints.
@@ -56,8 +59,6 @@ public interface IAtsServerEndpointProvider {
    public AtsConfigEndpointApi getConfigEndpoint();
 
    public AgileEndpointApi getAgileEndpoint();
-
-   public AtsWorkPackageEndpointApi getWorkPackageEndpoint();
 
    public AtsActionEndpointApi getActionEndpoint();
 
@@ -96,5 +97,13 @@ public interface IAtsServerEndpointProvider {
    AtsReportEndpointApi getReportEp();
 
    AtsWorkTypeEndpoint getWorkTypeEp();
+
+   QueryEndpoint getQueryEp();
+
+   AtsStoreEndpointApi getStoreEp();
+
+   AtsRelationEndpointApi getRelationEp();
+
+   BranchEndpoint getBrchEp();
 
 }

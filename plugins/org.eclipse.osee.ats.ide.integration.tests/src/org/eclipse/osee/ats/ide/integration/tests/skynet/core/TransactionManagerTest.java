@@ -64,12 +64,12 @@ public class TransactionManagerTest {
 
       // Change attr only; tx should show new persist comment (be updated to latest tx record)
       String comment2 = comment + " - 2";
-      art.addAttribute(CoreAttributeTypes.StaticId, "here");
+      art.addAttribute(CoreAttributeTypes.StaticId, "my static id");
       txId = art.persist(comment2);
       Assert.assertTrue(txId.isValid());
       txRec = TransactionManager.getTransactionRecord(TransactionId.valueOf(txId.getId()));
       Assert.assertEquals(comment2, txRec.getComment());
-      Assert.assertEquals("here", art.getAttributesToString(CoreAttributeTypes.StaticId));
+      Assert.assertEquals("my static id", art.getAttributesToString(CoreAttributeTypes.StaticId));
 
       // Change rel only; tx should show new persist comment (be updated to latest tx record)
       String comment3 = comment + " - 3";

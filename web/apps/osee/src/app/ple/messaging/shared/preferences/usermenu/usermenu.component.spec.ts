@@ -52,6 +52,7 @@ describe('UsermenuComponent', () => {
 					provide: PreferencesUIService,
 					useValue: preferencesUiServiceMock,
 				},
+				UiService,
 			],
 			declarations: [],
 		}).compileComponents();
@@ -61,6 +62,7 @@ describe('UsermenuComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(UsermenuComponent);
 		component = fixture.componentInstance;
+		routeState.idValue = '10';
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
@@ -70,34 +72,30 @@ describe('UsermenuComponent', () => {
 	});
 
 	it('should open settings dialog', async () => {
-		routeState.idValue = '10';
-		const dialogRefSpy = jasmine.createSpyObj({
-			afterClosed: of({
-				branchId: '10',
-				allowedHeaders1: [],
-				allowedHeaders2: [],
-				allHeaders1: [],
-				allHeaders2: [],
-				editable: true,
-				headers1Label: '',
-				headers2Label: '',
-				headersTableActive: false,
-			}),
-			close: null,
-		});
-		const _dialogSpy = spyOn(
-			TestBed.inject(MatDialog),
-			'open'
-		).and.returnValue(dialogRefSpy);
-		const spy = spyOn(component, 'openSettingsDialog').and.callThrough();
-		await fixture.whenStable();
-		fixture.detectChanges();
-		await fixture.whenStable();
-		await (
-			await loader.getHarness(
-				MatMenuItemHarness.with({ text: new RegExp('Settings') })
-			)
-		).click();
+		const dialogRefSpy = {
+			afterClosed: vi.fn().mockReturnValue(
+				of({
+					branchId: '10',
+					allowedHeaders1: [],
+					allowedHeaders2: [],
+					allHeaders1: [],
+					allHeaders2: [],
+					editable: true,
+					headers1Label: '',
+					headers2Label: '',
+					headersTableActive: false,
+				})
+			),
+			close: vi.fn().mockReturnValue(null),
+		};
+		const _dialogObject = TestBed.inject(MatDialog);
+		const openSpy = vi.fn().mockReturnValue(dialogRefSpy);
+		vi.spyOn(_dialogObject, 'open').mockImplementation(openSpy);
+		const spy = vi.spyOn(component, 'openSettingsDialog');
+		const button = await loader.getHarness(
+			MatMenuItemHarness.with({ text: new RegExp('Settings') })
+		);
+		await button.click();
 		expect(spy).toHaveBeenCalled();
 	});
 });

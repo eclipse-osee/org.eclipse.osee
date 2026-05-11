@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -28,15 +29,15 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OseeDb;
-import org.eclipse.osee.orcs.core.ds.HasOptions;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.handlers.GetReferenceDetailsHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.HasOptions;
+import org.eclipse.osee.orcs.search.ds.Options;
+import org.eclipse.osee.orcs.search.ds.OptionsUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -60,7 +61,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private String tupleTxsAlias;
    private String multiTableHintParameter = "";
    private static final SqlHandlerComparator HANDLER_COMPARATOR = new SqlHandlerComparator();
-   public static final String validApplicabilities = "valid_applicabilities";
 
    public AbstractSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData rootQueryData) {
       this.joinFactory = joinFactory;
@@ -143,9 +143,12 @@ public abstract class AbstractSqlWriter implements HasOptions {
       setHandlerLevel(handler);
       handler.startWithPreSelect(this);
       handler.addTables(this);
+      if (queryDataCursor.getView().isValid()) {
+         tupleAlias = addTable(OseeDb.TUPLE2);
+         tupleTxsAlias = addTable(OseeDb.TXS_TABLE);
+      }
       handler.writeSelectFields(this);
       handler.writeFromClause(this);
-
       write("\n WHERE ");
       handler.addPredicates(this);
 
@@ -370,6 +373,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
          setHandlerLevel(handler);
          handler.addTables(this);
       }
+      if (queryDataCursor.getView().isValid()) {
+         tupleAlias = addTable(OseeDb.TUPLE2);
+         tupleTxsAlias = addTable(OseeDb.TXS_TABLE);
+      }
    }
 
    protected void setHandlerLevel(SqlHandler<?> handler) {
@@ -414,7 +421,23 @@ public abstract class AbstractSqlWriter implements HasOptions {
             writeAnd();
             writeEqualsParameter(mainTxsAlias, "app_id", queryDataCursor.getAppId());
          }
+         if (queryDataCursor.getView().isValid()) {
+            writeAnd();
+            writeEqualsParameterAnd(tupleAlias, "tuple_type", CoreTupleTypes.ViewApplicability);
+            writeEqualsParameterAnd(tupleAlias, "e1", queryDataCursor.getView());
+            writeEqualsAnd(tupleAlias, tupleTxsAlias, "gamma_id");
+            writeEqualsAnd(tupleAlias, "e2", getMainTableAlias(OseeDb.TXS_TABLE), "app_id");
+            if (rootQueryData.getApplicabilityBranch().isValid()) {
+               writeTxCurrentFilter(tupleTxsAlias, false);
+               writeAnd();
+               write(tupleTxsAlias + ".branch_id = ? ");
+               addParameter(rootQueryData.getApplicabilityBranch());
+            } else {
+               writeTxBranchFilter(tupleTxsAlias);
+            }
+         }
       }
+
    }
 
    protected boolean mainTableAliasExists(SqlTable table) {

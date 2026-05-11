@@ -15,9 +15,9 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -33,18 +33,16 @@ public class TargetedVersionColumnTest {
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      TeamWorkFlowArtifact reqArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
+      IAtsTeamWorkflow reqArt = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(SAW_Bld_2.getName(), TargetedVersionColumnUI.getInstance().getValue(reqArt));
 
-      TeamWorkFlowArtifact codeArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
+      IAtsTeamWorkflow codeArt = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals(SAW_Bld_2.getName(), TargetedVersionColumnUI.getInstance().getValue(codeArt));
 
       Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
       Assert.assertEquals(SAW_Bld_2.getName(), TargetedVersionColumnUI.getInstance().getValue(actionArt));
 
-      TeamWorkFlowArtifact toolsArt = DemoTestUtil.getToolsTeamWorkflow();
+      IAtsTeamWorkflow toolsArt = DemoTestUtil.getToolsTeamWorkflow();
       Assert.assertEquals("", TargetedVersionColumnUI.getInstance().getValue(toolsArt));
 
       actionArt = (Artifact) toolsArt.getParentAction().getStoreObject();

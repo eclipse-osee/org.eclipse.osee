@@ -39,7 +39,8 @@ public class CreateNewActionProviderDemo implements CreateNewActionProvider {
          teamDef.getArtifactId()).andRequired().endWidget();
       wb.andWidget("Targeted Version", "XTargetedVersionHyperlinkWidget").andTeamId(
          teamDef.getArtifactId()).endWidget();
-      wb.andXHyperLinkEnumAttr(AtsAttributeTypes.Points).andTeamId(teamDef.getArtifactId()).endWidget();
+      wb.andWidget("Points", "XText").andAttrType(AtsAttributeTypes.PointsNumeric).andTeamId(
+         teamDef.getArtifactId()).endWidget();
       wb.andXBoolean(AtsAttributeTypes.UnplannedWork).andTeamId(teamDef.getArtifactId()).endWidget();
       wb.andXText(AtsAttributeTypes.WorkPackage).andTeamId(teamDef.getArtifactId()).endWidget();
       wb.andWidget("Sprint", "XSprintHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();

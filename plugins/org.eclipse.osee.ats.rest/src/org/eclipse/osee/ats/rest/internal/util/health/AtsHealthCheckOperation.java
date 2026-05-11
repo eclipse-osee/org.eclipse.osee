@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.rest.internal.notify.OseeEmailServer;
 import org.eclipse.osee.ats.rest.internal.util.AtsOperationCache;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
 import org.eclipse.osee.ats.rest.internal.util.health.check.TestDuplicateAttributesWithPersist;
@@ -62,7 +61,7 @@ import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.IOseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
@@ -645,8 +644,8 @@ public class AtsHealthCheckOperation {
 
       @Override
       public boolean checkBefore(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
-         List<ArtifactId> artIds =
-            atsApi.getQueryService().getArtifactIdsFromQuery(AtsHealthQueries.getMultipleArtEntriesonCommon(atsApi));
+         List<ArtifactId> artIds = atsApi.getQueryServiceServer().getArtifactIdsFromQuery(
+            AtsHealthQueries.getMultipleArtEntriesonCommon(atsApi));
          if (!artIds.isEmpty()) {
             results.log("TestDuplicateArtEntries",
                String.format("Error: Duplicate Art Ids [%s]", Collections.toString(",", artIds)));
@@ -836,8 +835,8 @@ public class AtsHealthCheckOperation {
       if (Strings.isInValid(fromReplyEmail)) {
          fromReplyEmail = emails.iterator().next();
       }
-      OseeEmail emailMessage = OseeEmailServer.create(emails, fromReplyEmail, fromReplyEmail,
-         dbName + " - ATS Health Check", html, BodyType.Html, java.util.Collections.emptySet(), "N/A", "");
+      IOseeEmail emailMessage = orcsApi.getEmailService().create(emails, fromReplyEmail, fromReplyEmail,
+         dbName + " - ATS Health Check", html, BodyType.Html, java.util.Collections.emptySet(), "");
       emailMessage.send();
    }
 

@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.util.widgets.dialog;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
@@ -53,11 +53,11 @@ public class VersionLabelProvider extends LabelProvider {
       if (element instanceof IAtsVersion) {
          IAtsVersion version = (IAtsVersion) element;
          if (version.isNextVersion()) {
-            return ImageManager.getImage(FrameworkImage.VERSION_NEXT);
+            return ImageManager.getImage(CoreImage.VERSION_NEXT);
          }
          if (version.isReleased()) {
             if (releasedVersion == null) {
-               OverlayImage overlay = new OverlayImage(ImageManager.getImage(FrameworkImage.VERSION),
+               OverlayImage overlay = new OverlayImage(ImageManager.getImage(CoreImage.VERSION),
                   ImageManager.getImageDescriptor(AtsImage.RELEASED), Location.BOT_RIGHT);
                releasedVersion = overlay.createImage();
             }
@@ -65,13 +65,13 @@ public class VersionLabelProvider extends LabelProvider {
          }
          if (version.isLocked()) {
             if (lockedVersion == null) {
-               OverlayImage overlay = new OverlayImage(ImageManager.getImage(FrameworkImage.VERSION),
+               OverlayImage overlay = new OverlayImage(ImageManager.getImage(CoreImage.VERSION),
                   ImageManager.getImageDescriptor(AtsImage.VERSION_LOCKED), Location.BOT_RIGHT);
                lockedVersion = overlay.createImage();
             }
             return lockedVersion;
          }
-         return ImageManager.getImage(FrameworkImage.VERSION);
+         return ImageManager.getImage(CoreImage.VERSION);
       }
       return null;
    }

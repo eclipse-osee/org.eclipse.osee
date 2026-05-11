@@ -13,44 +13,18 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatInputHarness } from '@angular/material/input/testing';
-import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
-import { MatSliderHarness } from '@angular/material/slider/testing';
-import { MatSliderModule } from '@angular/material/slider';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { PlatformTypeQueryComponent } from './platform-type-query.component';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-
-import { UserDataAccountService } from '@osee/auth';
-import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
-import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
-import {
-	MimPreferencesServiceMock,
-	typesServiceMock,
-	enumerationSetServiceMock,
-	platformTypesMock,
-} from '@osee/messaging/shared/testing';
-import { userDataAccountServiceMock } from '@osee/auth/testing';
-import {
-	MimPreferencesService,
-	TypesService,
-	EnumerationSetService,
-} from '@osee/messaging/shared/services';
-import { ApplicabilityListService } from '@osee/shared/services';
-import { applicabilityListServiceMock } from '@osee/shared/testing';
+import { platformTypesMock } from '@osee/messaging/shared/testing';
 import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
 import { UnitDropdownComponent } from '@osee/messaging/units/dropdown';
 
-describe('PlatformTypeQueryComponent', () => {
+// TODO: get this test working if we decide to re-activate this functionality
+describe.skip('PlatformTypeQueryComponent', () => {
 	let component: PlatformTypeQueryComponent;
 	let fixture: ComponentFixture<PlatformTypeQueryComponent>;
 	let loader: HarnessLoader;
@@ -65,42 +39,7 @@ describe('PlatformTypeQueryComponent', () => {
 			},
 		})
 			.configureTestingModule({
-				imports: [
-					MatSelectModule,
-					MatFormFieldModule,
-					FormsModule,
-					MatDividerModule,
-					MatButtonModule,
-					MatIconModule,
-					MatSliderModule,
-					MatDividerModule,
-					MatInputModule,
-					MatAutocompleteModule,
-					NoopAnimationsModule,
-				],
-				providers: [
-					{
-						provide: TransactionBuilderService,
-						useValue: transactionBuilderMock,
-					},
-					{
-						provide: MimPreferencesService,
-						useValue: MimPreferencesServiceMock,
-					},
-					{
-						provide: UserDataAccountService,
-						useValue: userDataAccountServiceMock,
-					},
-					{ provide: TypesService, useValue: typesServiceMock },
-					{
-						provide: EnumerationSetService,
-						useValue: enumerationSetServiceMock,
-					},
-					{
-						provide: ApplicabilityListService,
-						useValue: applicabilityListServiceMock,
-					},
-				],
+				providers: [provideNoopAnimations()],
 			})
 			.compileComponents();
 	});
@@ -109,7 +48,7 @@ describe('PlatformTypeQueryComponent', () => {
 		fixture = TestBed.createComponent(PlatformTypeQueryComponent);
 		component = fixture.componentInstance;
 		loader = TestbedHarnessEnvironment.loader(fixture);
-		component.platformTypes = platformTypesMock;
+		fixture.componentRef.setInput('platformTypes', platformTypesMock);
 		fixture.detectChanges();
 	});
 
@@ -149,8 +88,7 @@ describe('PlatformTypeQueryComponent', () => {
 		await testSelect('default-val', 'false', 1, '=');
 		const input = await loader.getHarness(MatInputHarness);
 		await input.setValue('8');
-		const _slider = await loader.getHarness(MatSliderHarness);
-		component.name = 'abcd'; // no enumerations are in the mock currently
+		component.name.set('abcd'); // no enumerations are in the mock currently
 		const queryButton = await loader.getHarness(
 			MatButtonHarness.with({ selector: '.query-button' })
 		);

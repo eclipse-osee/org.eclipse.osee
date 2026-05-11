@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
@@ -410,8 +411,14 @@ public class ActionPage {
          try {
             addDetail(sb, "Artifact Type", artifact.getArtifactType().getName());
             sb.append("</br><b>Attribute Raw Data:</b></br>");
-            for (AttributeReadable<?> attr : artifact.getAttributes()) {
-               addDetail(sb, attr.getAttributeType().getName(), AHTML.textToHtml(String.valueOf(attr.getValue())));
+            if (artifact.isLegacyArtRead()) {
+               for (AttributeReadable<?> attr : artifact.getAttributes()) {
+                  addDetail(sb, attr.getAttributeType().getName(), AHTML.textToHtml(String.valueOf(attr.getValue())));
+               }
+            } else {
+               for (IAttribute<?> attr : artifact.getAttributesNew()) {
+                  addDetail(sb, attr.getAttributeType().getName(), AHTML.textToHtml(String.valueOf(attr.getValue())));
+               }
             }
          } catch (OseeCoreException ex) {
             sb.append("exception: " + ex.getLocalizedMessage());

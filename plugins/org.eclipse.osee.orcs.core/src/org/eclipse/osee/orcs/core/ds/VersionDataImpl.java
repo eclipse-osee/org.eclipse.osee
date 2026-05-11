@@ -14,11 +14,11 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import static org.eclipse.osee.framework.core.data.RelationalConstants.IS_HISTORICAL_DEFAULT;
-
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.orcs.search.ds.VersionData;
 
 /**
  * @author Roberto E. Escobar

@@ -31,20 +31,19 @@ import { testBranchApplicability } from '../../testing/mockBranchService';
 import { plConfigTypesServiceMock } from '../../testing/pl-config-types.service.mock';
 
 import { EditConfigurationDialogComponent } from './edit-config-dialog.component';
+import { MockedObject, vi } from 'vitest';
 
 describe('EditConfigDialogComponent', () => {
 	let component: EditConfigurationDialogComponent;
 	let fixture: ComponentFixture<EditConfigurationDialogComponent>;
+	let currentBranchService: MockedObject<PlConfigCurrentBranchService>;
 
 	beforeEach(async () => {
-		const currentBranchService = jasmine.createSpyObj(
-			'PlConfigCurrentBranchService',
-			[],
-			['cfgGroups']
-		);
-		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
-			'getBranchApplicability',
-		]);
+		const branchService = {
+			getBranchApplicability: vi
+				.fn()
+				.mockName('PlConfigBranchService.getBranchApplicability'),
+		};
 		await TestBed.configureTestingModule({
 			imports: [
 				MatFormFieldModule,
@@ -59,10 +58,7 @@ describe('EditConfigDialogComponent', () => {
 			providers: [
 				provideNoopAnimations(),
 				{ provide: PlConfigBranchService, useValue: branchService },
-				{
-					provide: PlConfigCurrentBranchService,
-					useValue: currentBranchService,
-				},
+				PlConfigCurrentBranchService,
 				{
 					provide: PlConfigTypesService,
 					useValue: plConfigTypesServiceMock,
@@ -94,6 +90,13 @@ describe('EditConfigDialogComponent', () => {
 				},
 			],
 		}).compileComponents();
+		const currentBranchServiceReal = TestBed.inject(
+			PlConfigCurrentBranchService
+		);
+		currentBranchService = vi.mockObject(currentBranchServiceReal, {
+			spy: true,
+		});
+		vi.spyOn(currentBranchService, 'cfgGroups', 'get');
 	});
 
 	beforeEach(() => {

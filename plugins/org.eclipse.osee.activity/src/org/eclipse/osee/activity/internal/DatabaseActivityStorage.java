@@ -48,10 +48,8 @@ public class DatabaseActivityStorage implements ActivityStorage {
    private static final String DELETE_ENTRIES = "DELETE FROM osee_activity WHERE start_timestamp <= ?";
 
    private JdbcClient jdbcClient;
-   private JdbcService jdbcService;
 
    public void setJdbcService(JdbcService jdbcService) {
-      this.jdbcService = jdbcService;
       this.jdbcClient = jdbcService.getClient();
    }
 

@@ -43,13 +43,13 @@ import org.eclipse.osee.ats.ide.workflow.cr.XCreateEscapeDemoWfXButton;
 import org.eclipse.osee.ats.ide.workflow.cr.demo.XTaskEstDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.cr.demo.XTaskEstSiblingWorldDemoWidget;
 import org.eclipse.osee.ats.ide.workflow.task.widgets.XCheckBoxesWithTaskGenExample;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateWithValidateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForObject;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * @author Donald G. Dunne
@@ -69,6 +69,7 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XArtifactReferencedAtsObjectAttributeWidget.class);
       register(XHyperlinkApplicabilityWidget.class);
       register(XHyperlinkApplicabilityWidgetDam.class);
+      register(XHyperlinkConfigurationWidget.class);
       register(XAssigneesHyperlinkWidget.class);
       register(XAssigneesListWidget.class);
       register(XAtsProgramComboWidget.class);
@@ -109,11 +110,8 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XOpenStoredSprintReportsButton.class);
       register(XOriginatorHyperlinkWidget.class);
       register(XProgramSelectionWidget.class);
-      register(XReviewStateSearchCombo.class);
       register(XSignByAndDateWidget.class);
       register(XSprintHyperlinkWidget.class);
-      register(XStateCombo.class);
-      register(XStateSearchCombo.class);
       register(XStoreSprintReportsButton.class);
       register(XTargetedVersionHyperlinkWidget.class);
       register(XTargetedVersionWithPersistWidget.class);
@@ -173,10 +171,13 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XSprintHyperlinkWidgetDam.class);
       register(XHyperlinkBranchViewSelect.class);
       register(XHyperlinkWfdForObject.class);
+      register(XHyperlinkBuildImpactWidget.class);
+      register(XHyperlinkBuildImpactStateWidget.class);
+      register(XHyperlinkPrBuildSelection.class);
    }
 
    @Override
-   public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem item) {
+   public XWidget createXWidget(String widgetName, String name, XWidgetData item) {
       XWidget widget = super.createXWidget(widgetName, name, item);
       if (widget != null) {
          return widget;

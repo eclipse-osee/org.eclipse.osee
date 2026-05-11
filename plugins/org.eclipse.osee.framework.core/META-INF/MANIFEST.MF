@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.core;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.core.type,
@@ -88,6 +88,7 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.access.object,
  org.eclipse.osee.framework.core.access.operation,
  org.eclipse.osee.framework.core.applicability,
+ org.eclipse.osee.framework.core.attribute.sanitizer,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.data.computed,
  org.eclipse.osee.framework.core.data.conditions,
@@ -110,9 +111,13 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.core.util.result,
  org.eclipse.osee.framework.core.util.toggles,
+ org.eclipse.osee.framework.core.widget,
  org.eclipse.osee.framework.core.xml.publishing
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: javax.activation,
- javax.ws.rs,
+ jakarta.ws.rs-api,
  com.fasterxml.jackson.core.jackson-databind,
- org.eclipse.osgi
+ org.eclipse.osgi,
+ bcpkix,
+ bcprov,
+ bcmail

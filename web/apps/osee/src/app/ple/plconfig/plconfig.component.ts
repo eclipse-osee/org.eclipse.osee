@@ -51,7 +51,6 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 	private route = inject(ActivatedRoute);
 
 	_updateRequired: Observable<boolean> = this.uiStateService.updateReq;
-	_branchType = '';
 	branchType = this.uiStateService.viewBranchType;
 	branchId = this.uiStateService.branchId;
 	private _done = new Subject();
@@ -76,15 +75,6 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 	diff = './diff';
 	currentRoute = this.route;
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-	constructor() {
-		this.uiStateService.branchIdNum = '';
-		this.uiStateService.viewBranchTypeString = '';
-		this.uiStateService.viewBranchType.subscribe((id) => {
-			this._branchType = id;
-		});
-	}
 	ngOnDestroy(): void {
 		this._done.next('');
 		this._done.complete();

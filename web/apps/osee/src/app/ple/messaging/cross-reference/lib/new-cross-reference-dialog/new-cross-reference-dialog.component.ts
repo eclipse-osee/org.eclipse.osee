@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject } from '@angular/core';
+import {
+	Component,
+	computed,
+	inject,
+	linkedSignal,
+	signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton, MatMiniFabButton } from '@angular/material/button';
 import {
@@ -49,57 +55,77 @@ import type {
 	templateUrl: './new-cross-reference-dialog.component.html',
 })
 export class NewCrossReferenceDialogComponent {
-	data = inject<{ crossRef: CrossReference }>(MAT_DIALOG_DATA);
+	data = inject<{ crossRef?: CrossReference } | undefined>(MAT_DIALOG_DATA);
 	dialogRef =
 		inject<MatDialogRef<NewCrossReferenceDialogComponent>>(MatDialogRef);
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		if (this.data && this.data.crossRef) {
-			this.crossReference.id = this.data.crossRef.id;
-			this.crossReference.name = this.data.crossRef.name;
-			this.crossReference.crossReferenceValue =
-				this.data.crossRef.crossReferenceValue;
-			this.crossReference.crossReferenceArrayValues =
-				this.data.crossRef.crossReferenceArrayValues;
-
-			this.data.crossRef.crossReferenceArrayValues
-				.split(';')
-				.forEach((a) => {
-					this.arrayValues.push({
-						key: a.split('=')[0],
-						value: a.split('=')[1],
-					});
-				});
-		}
-	}
-
-	crossReference: CrossReference = {
-		name: '',
-		crossReferenceValue: '',
-		crossReferenceArrayValues: '',
-		crossReferenceAdditionalContent: '',
-		applicability: {
-			id: '1',
-			name: 'Base',
-		},
-	};
-
-	arrayValues: CrossRefKeyValue[] = [];
+	inputCrossRef = signal(
+		this.data?.crossRef ||
+			({
+				name: '',
+				crossReferenceValue: '',
+				crossReferenceArrayValues: '',
+				crossReferenceAdditionalContent: '',
+				applicability: {
+					id: '1',
+					name: 'Base',
+				},
+			} as CrossReference)
+	);
+	crossRefName = linkedSignal(() => this.inputCrossRef().name);
+	crossRefValue = linkedSignal(
+		() => this.inputCrossRef().crossReferenceValue
+	);
+	crossRefAdditionalContent = linkedSignal(
+		() => this.inputCrossRef().crossReferenceAdditionalContent
+	);
+	crossRefApplicability = linkedSignal(
+		() => this.inputCrossRef().applicability
+	);
+	crossRefArray = linkedSignal(() =>
+		this.inputCrossRef()
+			.crossReferenceArrayValues.split(';')
+			.map((x) => {
+				return {
+					key: x.split('=')[0],
+					value: x.split('=')[1],
+				} as CrossRefKeyValue;
+			})
+	);
 
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
-
-	updateArrayString() {
-		this.crossReference.crossReferenceArrayValues = this.arrayValues
-			.map((v) => v.key + '=' + v.value)
-			.join(';');
+	crossRefResults = computed<CrossReference>(() => {
+		return {
+			name: this.crossRefName(),
+			crossReferenceValue: this.crossRefValue(),
+			crossReferenceAdditionalContent: this.crossRefAdditionalContent(),
+			applicability: this.crossRefApplicability(),
+			crossReferenceArrayValues: this.crossRefArray()
+				.map((v) => v.key + '=' + v.value)
+				.join(';'),
+		};
+	});
+	updateKey(key: string, index: number) {
+		const array = this.crossRefArray();
+		if (index < 0 || index > array.length) {
+			return;
+		}
+		array[index].key = key;
+		this.crossRefArray.set(array);
+	}
+	updateValue(value: string, index: number) {
+		const array = this.crossRefArray();
+		if (index < 0 || index > array.length) {
+			return;
+		}
+		array[index].value = value;
+		this.crossRefArray.set(array);
 	}
 
 	addArrayValue() {
-		this.arrayValues.push({ key: '', value: '' });
+		const array = this.crossRefArray();
+		array.push({ key: '', value: '' });
+		this.crossRefArray.set(array);
 	}
 }

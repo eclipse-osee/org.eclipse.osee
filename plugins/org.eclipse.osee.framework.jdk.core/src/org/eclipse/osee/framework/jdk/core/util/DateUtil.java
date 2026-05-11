@@ -156,6 +156,9 @@ public class DateUtil {
       return result;
    }
 
+   /**
+    * @return days between
+    */
    public static int getDifference(Date a, Date b) {
       int tempDifference = 0;
       int difference = 0;

@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results.example;
 
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 
 /**
@@ -27,7 +27,7 @@ public final class XResultDataDialogExample extends XNavigateItemAction {
    public static final String TITLE = "XResultDialogData Example";
 
    public XResultDataDialogExample() {
-      super(TITLE, FrameworkImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
+      super(TITLE, CoreImage.EXAMPLE, XNavigateItem.UTILITY_EXAMPLES);
    }
 
    @Override

@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 
 /**
  * @author Donald G. Dunne
@@ -25,6 +26,6 @@ public interface IAttributeXWidgetProvider {
    /**
     * Return widget layout data or empty list if this provider doesn't provide for this attribute type
     */
-   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType,
+   public List<XWidgetData> getDynamicXWidgetLayoutData(ArtifactTypeToken artType,
       AttributeTypeToken attributeType);
 }

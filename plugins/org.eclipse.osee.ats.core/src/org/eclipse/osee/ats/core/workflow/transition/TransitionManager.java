@@ -592,8 +592,7 @@ public class TransitionManager implements IAtsChangeSetListener {
          if (widgetDef != null) {
             if (widgetDef.is(WidgetOption.RFT) || (widgetDef.is(
                WidgetOption.REQUIRED_FOR_FORMAL_REVIEW) && atsApi.getReviewService().isFormalReview(workItem))) {
-               if (atsApi.getAttributeResolver().hasNoAttribute(workItem, AtsAttributeTypes.MeetingAttendeeId,
-                  AtsAttributeTypes.MeetingAttendeeUserId)) {
+               if (atsApi.getAttributeResolver().hasNoAttribute(workItem, AtsAttributeTypes.MeetingAttendeeId)) {
                   results.addResult(workItem, TransitionResult.REVIEW_REQUIRES_MEETING_ATTENDEES);
                }
             }

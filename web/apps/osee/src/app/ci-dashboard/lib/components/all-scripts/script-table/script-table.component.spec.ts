@@ -14,6 +14,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScriptTableComponent } from './script-table.component';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CiDetailsTableService } from '../../../services/ci-details-table.service';
+import { UserDataAccountService } from '../../../../../auth/user-data-account.service';
+import { userDataAccountServiceMock } from '../../../../../auth/user-data-account.service.mock';
+
 import {
 	SubsystemSelectorMockComponent,
 	TeamSelectorMockComponent,
@@ -84,6 +87,10 @@ describe('ScriptTableComponent', () => {
 				{
 					provide: CiDetailsTableService,
 					useValue: ciDetailsServiceMock,
+				},
+				{
+					provide: UserDataAccountService,
+					useValue: userDataAccountServiceMock,
 				},
 			],
 		});

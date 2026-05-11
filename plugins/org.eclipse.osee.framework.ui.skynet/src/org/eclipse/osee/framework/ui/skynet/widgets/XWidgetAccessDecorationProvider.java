@@ -17,13 +17,13 @@ import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -41,8 +41,8 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XWidgetAccessDecorationProvider implements XWidgetDecorator.DecorationProvider {
 
-   private static final Image LOCK_IMAGE = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);
-   private static final Image UNLOCK_IMAGE = ImageManager.getImage(FrameworkImage.LOCK_UNLOCKED);
+   private static final Image LOCK_IMAGE = ImageManager.getImage(CoreImage.LOCK_OVERLAY);
+   private static final Image UNLOCK_IMAGE = ImageManager.getImage(CoreImage.LOCK_UNLOCKED);
 
    @Override
    public int getPriority() {

@@ -10,7 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import {
+	enableProdMode,
+	importProvidersFrom,
+	provideZoneChangeDetection,
+} from '@angular/core';
 
 import { environment, UserHeaderService } from '@osee/environments';
 import { AppComponent } from './app/app.component';
@@ -39,6 +43,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
 	providers: [
+		provideZoneChangeDetection(),
 		importProvidersFrom(...extra_auth_deps),
 		{ provide: UserHeaderService, useClass: environment.headerService },
 		{ provide: UrlSerializer, useClass: OseeUrlSerializer },

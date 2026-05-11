@@ -10,34 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.net.URI;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.client.AccountClient.UnsubscribeInfo;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 public class EmailGroupsData {
 
    private String replyToAddress, fromAddress;
    private String subject;
-   private String subjectAbridged;
    private String body;
    private String bodyAbridged = OseeEmail.EMAIL_BODY_REDACTED_FOR_ABRIDGED_EMAIL;
    private boolean bodyIsHtml;
    private final Set<Artifact> groups = new HashSet<>(5);
+   private HashCollection<Artifact, Artifact> cachedUserToGroupMap;
 
    public String getSubject() {
       return subject;
@@ -68,16 +65,25 @@ public class EmailGroupsData {
    }
 
    public HashCollection<Artifact, Artifact> getUserToGroupMap() {
-      HashCollection<Artifact, Artifact> userToGroupMap = new HashCollection<>();
-      for (Artifact group : groups) {
-         for (Artifact user : group.getRelatedArtifacts(CoreRelationTypes.Users_User)) {
-            Boolean isActive = user.getSoleAttributeValue(CoreAttributeTypes.Active);
-            if (isActive) {
-               userToGroupMap.put(user, group);
+      if (cachedUserToGroupMap == null) {
+         cachedUserToGroupMap = new HashCollection<>();
+         for (Artifact group : groups) {
+            for (Artifact user : group.getRelatedArtifacts(CoreRelationTypes.Users_User)) {
+               Boolean isActive = user.getSoleAttributeValue(CoreAttributeTypes.Active);
+               if (isActive) {
+                  cachedUserToGroupMap.put(user, group);
+               }
             }
          }
       }
-      return userToGroupMap;
+      return cachedUserToGroupMap;
+   }
+
+   /**
+    * Invalidate cached user-to-group map (e.g. after reloading group artifacts)
+    */
+   public void clearUserToGroupMapCache() {
+      cachedUserToGroupMap = null;
    }
 
    public Result isValid() {
@@ -105,9 +111,9 @@ public class EmailGroupsData {
       return Result.TrueResult;
    }
 
-   public String getHtmlResult(Artifact user) {
+   public String getHtmlResult(String userName, List<UnsubscribeInfo> unsubscribeInfos) {
       StringBuilder html = new StringBuilder();
-      String customizedBody = getCustomizedBody(body, user);
+      String customizedBody = getCustomizedBody(body, userName);
 
       if (bodyIsHtml) {
          html.append(customizedBody);
@@ -117,32 +123,27 @@ public class EmailGroupsData {
          html.append("</pre>");
       }
 
-      Set<String> groupsAllowed = new HashSet<>();
-      for (Artifact group : groups) {
-         groupsAllowed.add(group.getName());
-      }
-
-      AccountClient client = ServiceUtil.getAccountClient();
-      ResultSet<UnsubscribeInfo> results = client.getUnsubscribeUris(user.getId(), groupsAllowed);
-      for (UnsubscribeInfo entry : results) {
-         String subscriptionName = entry.getName();
-         URI unsubscribeUri = entry.getUnsubscribeUri();
-         writeUnsubscribeSection(html, subscriptionName, unsubscribeUri.toASCIIString());
+      if (unsubscribeInfos != null && !unsubscribeInfos.isEmpty()) {
+         html.append("<br/><br/>");
+         for (UnsubscribeInfo entry : unsubscribeInfos) {
+            writeUnsubscribeSection(html, entry.getName(), entry.getUnsubscribeUri().toASCIIString());
+         }
       }
       return html.toString();
    }
 
    private void writeUnsubscribeSection(StringBuilder html, String subscriptionName, String unsubscribeUri) {
-      html.append("</br>Click <a href=\"");
+      html.append("<p>");
+      html.append("Click <a href=\"");
       html.append(unsubscribeUri);
       html.append("\">unsubscribe</a> to stop receiving all emails for the topic <b>\"");
       html.append(subscriptionName);
       html.append("\"</b>");
+      html.append("</p>");
    }
 
-   private String getCustomizedBody(String bodyTemplate, Artifact user) {
-      String fullName = user.getName();
-      String firstName = fullName.replaceAll("[^,]+, ([^ ]+).*", "$1");
+   private String getCustomizedBody(String bodyTemplate, String userName) {
+      String firstName = userName.replaceAll("[^,]+, ([^ ]+).*", "$1");
       return bodyTemplate.replace("<firstName/>", firstName);
    }
 
@@ -162,14 +163,6 @@ public class EmailGroupsData {
       this.fromAddress = fromAddress;
    }
 
-   public String getSubjectAbridged() {
-      return subjectAbridged;
-   }
-
-   public void setSubjectAbridged(String abridgedSubject) {
-      this.subjectAbridged = abridgedSubject;
-   }
-
    public String getBodyAbridged() {
       return bodyAbridged;
    }
@@ -177,5 +170,4 @@ public class EmailGroupsData {
    public void setBodyAbridged(String bodyAbridged) {
       this.bodyAbridged = bodyAbridged;
    }
-
 }

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
-import org.eclipse.osee.accessor.types.AttributePojo;
+import org.eclipse.osee.framework.core.data.AttributePojo;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;

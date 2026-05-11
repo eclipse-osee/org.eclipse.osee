@@ -22,22 +22,19 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemSearchWidget {
+public class ActionableItemSearchWidget extends AbstractSearchWidget<XHyperlabelActionableItemSelection, IAtsActionableItem> {
 
-   private final WorldEditorParameterSearchItem searchItem;
+   public static SearchWidget ActionableItemWidget =
+      new SearchWidget(123423452, "Actionable Item(s)", "XHyperlabelActionableItemSelection");
 
    public ActionableItemSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      this.searchItem = searchItem;
-   }
-
-   public void addWidget(int beginComposite) {
-      searchItem.addWidgetXml(String.format(
-         "<XWidget displayName=\"Actionable Item(s)\" xwidgetType=\"XHyperlabelActionableItemSelection\" horizontalLabel=\"true\" %s />",
-         searchItem.getBeginComposite(beginComposite)));
+      super(ActionableItemWidget, searchItem);
    }
 
    public Collection<Long> getIds() {
@@ -58,16 +55,13 @@ public class ActionableItemSearchWidget {
       return null;
    }
 
-   public XHyperlabelActionableItemSelection getWidget() {
-      return (XHyperlabelActionableItemSelection) searchItem.getxWidgets().get("Actionable Item(s)");
-   }
-
    public void set(Collection<IAtsActionableItem> ais) {
       if (getWidget() != null) {
          getWidget().setSelectedAIs(ais);
       }
    }
 
+   @Override
    public void set(AtsSearchData data) {
       List<IAtsActionableItem> ais = new LinkedList<>();
       for (Long id : data.getAiIds()) {
@@ -78,6 +72,18 @@ public class ActionableItemSearchWidget {
          }
       }
       set(ais);
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget) {
+      super.widgetCreated(xWidget);
+      getWidget().addXModifiedListener(new XModifiedListener() {
+
+         @Override
+         public void widgetModified(XWidget widget) {
+            searchItem.updateAisOrTeamDefs();
+         }
+      });
    }
 
 }

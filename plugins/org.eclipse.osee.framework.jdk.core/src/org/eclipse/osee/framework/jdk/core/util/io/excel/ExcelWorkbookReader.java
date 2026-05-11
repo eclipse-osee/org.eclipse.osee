@@ -18,11 +18,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 
 public class ExcelWorkbookReader {
@@ -68,6 +71,19 @@ public class ExcelWorkbookReader {
 
    public int getNumberOfSheets() {
       return workbook.getNumberOfSheets();
+   }
+
+   public Pair<Integer, Integer> getCellWithRegEx(String regex) {
+      for (Row row : getActiveSheet()) {
+         for (Cell cell : row) {
+            if (cell.getCellType() == CellType.STRING) {
+               if (cell.getStringCellValue().matches(regex)) {
+                  return new Pair<Integer, Integer>(cell.getRowIndex(), cell.getColumnIndex());
+               }
+            }
+         }
+      }
+      return Pair.empty();
    }
 
    public String getActiveSheetName() {
@@ -132,7 +148,11 @@ public class ExcelWorkbookReader {
    public String getCellHyperlinkString(int rowIndex, int cellIndex) {
       checkActiveSheet();
       Cell cell = getCell(rowIndex, cellIndex);
-      return cell.getHyperlink().getAddress();
+      Hyperlink hyperlink = cell.getHyperlink();
+      if (hyperlink != null) {
+         return cell.getHyperlink().getAddress();
+      }
+      return "";
    }
 
    private Cell getCell(int rowIndex, int cellIndex) {
@@ -148,6 +168,28 @@ public class ExcelWorkbookReader {
             "Cell index " + cellIndex + " is invalid for row " + rowIndex + " on sheet " + activeSheet.getSheetName());
       }
       return cell;
+   }
+
+   public Pair<Integer, Integer> findFirstEmptyCellInColumn(int columnIndex, int startRowIndex) {
+      // Iterate through rows starting from the specified row index
+      checkActiveSheet();
+      if (startRowIndex >= activeSheet.getLastRowNum()) {
+         return Pair.empty();
+      }
+      for (int rowNum = startRowIndex; rowNum <= activeSheet.getLastRowNum(); rowNum++) {
+         Row row = activeSheet.getRow(rowNum);
+         if (row == null) {
+            return new Pair<Integer, Integer>(rowNum, 0);
+         }
+         if (columnIndex >= row.getLastCellNum()) {
+            return Pair.empty();
+         }
+         Cell cell = row.getCell(columnIndex);
+         if (cell == null || cell.getCellType() == CellType.BLANK) {
+            return new Pair<Integer, Integer>(rowNum, columnIndex);
+         }
+      }
+      return new Pair<Integer, Integer>(activeSheet.getLastRowNum() + 1, columnIndex);
    }
 
    public boolean rowExists(int rowIndex) {

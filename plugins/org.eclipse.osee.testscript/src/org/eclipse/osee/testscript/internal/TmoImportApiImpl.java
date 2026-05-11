@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.testscript.internal;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +35,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -54,12 +53,16 @@ import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import org.eclipse.osee.testscript.DashboardApi;
 import org.eclipse.osee.testscript.ScriptDefApi;
 import org.eclipse.osee.testscript.ScriptDefToken;
 import org.eclipse.osee.testscript.ScriptResultToken;
 import org.eclipse.osee.testscript.TmoFileApi;
 import org.eclipse.osee.testscript.TmoImportApi;
 import org.eclipse.osee.testscript.ats.AtsScriptApi;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Ryan T. Baldwin
@@ -70,13 +73,15 @@ public class TmoImportApiImpl implements TmoImportApi {
    private final ScriptDefApi scriptDefApi;
    private final TmoFileApi fileUtil;
    private final AtsScriptApi atsScriptApi;
+   private final DashboardApi dashboardApi;
    private int keyIndex = 0;
 
-   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi, TmoFileApi fileUtil, AtsScriptApi atsScriptApi) {
+   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi, TmoFileApi fileUtil, AtsScriptApi atsScriptApi, DashboardApi dashboardApi) {
       this.orcsApi = orcsApi;
       this.scriptDefApi = scriptDefApi;
       this.fileUtil = fileUtil;
       this.atsScriptApi = atsScriptApi;
+      this.dashboardApi = dashboardApi;
    }
 
    @Override
@@ -199,6 +204,9 @@ public class TmoImportApiImpl implements TmoImportApi {
          txResult.setTx(token);
          resultData.setIds(
             tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
+         if (!txResult.isFailed()) {
+            triggerTimelineUpdate(branch, ciSetId, resultData);
+         }
       } catch (JsonProcessingException ex) {
          resultData.error("Error processing tx json");
       }
@@ -354,6 +362,9 @@ public class TmoImportApiImpl implements TmoImportApi {
             resultData.setIds(
                tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
          }
+         if (!txResult.isFailed()) {
+            triggerTimelineUpdate(branch, ciSetId, resultData);
+         }
 
          // If the tx failed, remove files.
          if (txResult.isFailed()) {
@@ -380,26 +391,27 @@ public class TmoImportApiImpl implements TmoImportApi {
 
       int passCount = scriptResult.getPassedCount();
       int failCount = scriptResult.getFailedCount();
-
-      if (failCount <= 0 && passCount <= 0) {
-         return;
-      }
+      boolean aborted = scriptResult.getScriptAborted();
+      boolean empty = (passCount + failCount) == 0;
 
       ArtifactToken scriptToken =
          orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(CoreArtifactTypes.TestScriptDef).andNameEquals(
             scriptDef.getName()).getArtifactOrSentinal();
 
-      if (failCount <= 0 && passCount > 0) {
+      if (!aborted && failCount <= 0 && passCount > 0) {
          atsScriptApi.getScriptTaskTrackingApi().setScriptTaskCompleted(branch, ciSetId, scriptToken);
          return;
       }
 
-      //Format workflow status details
-      String workflowStatus = String.format("Total: %d%nPass: %d%nFail: %d%nAborted: %s%nExecution Date: %s%n",
-         passCount + failCount, passCount, failCount, scriptResult.getScriptAborted(), scriptResult.getExecutionDate());
+      if (aborted || failCount > 0 || empty) {
+         String totalLabel = empty ? "0 (NO RESULTS)" : String.valueOf(passCount + failCount);
+         String workflowStatus = String.format("Total: %s%nPass: %d%nFail: %d%nAborted: %s%nExecution Date: %s%n",
+            totalLabel, passCount, failCount, aborted, scriptResult.getExecutionDate());
 
-      //Create failure tasks
-      atsScriptApi.getScriptTaskTrackingApi().createFailureTasks(branch, ciSetId, scriptToken, workflowStatus);
+         //Create failure tasks
+         atsScriptApi.getScriptTaskTrackingApi().createFailureTasks(branch, ciSetId, scriptToken, workflowStatus);
+      }
+
    }
 
    /**
@@ -442,4 +454,11 @@ public class TmoImportApiImpl implements TmoImportApi {
       return rel;
    }
 
+   private void triggerTimelineUpdate(BranchId branch, ArtifactId ciSetId, XResultData resultData) {
+      try {
+         dashboardApi.updateTimelineStats(branch, ciSetId);
+      } catch (Exception e) {
+         resultData.warning("Timeline update failed: " + e.getMessage());
+      }
+   }
 }

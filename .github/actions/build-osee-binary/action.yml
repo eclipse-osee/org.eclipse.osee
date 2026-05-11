@@ -1,45 +1,45 @@
 name: Build OSEE Binary
-description: 'This action builds the osee binary the using supplied configuration inputs.'
+description: "This action builds the osee binary the using supplied configuration inputs."
 inputs:
   ANGULAR_BUILD_TYPE:
-    description: 'The type of angular build to run.'
+    description: "The type of angular build to run."
     required: false
-    default: 'forced_sso_java_release'
+    default: "forced_sso_java_release"
   BUILD_ALIAS:
-    description: 'The build alias applied to OSEE build.'
+    description: "The build alias applied to OSEE build."
     required: false
-    default: '-TEMP'
+    default: "-TEMP"
   OSEE_VERSION:
-    description: 'The version applied to the OSEE build.'
+    description: "The version applied to the OSEE build."
     required: false
-    default: 'no_update'
+    default: "no_update"
   SKIP_ANGULAR_BUILD:
-    description: 'Whether or not to skip the OSEE Angular build.'
+    description: "Whether or not to skip the OSEE Angular build."
     required: false
-    default: 'false'
+    default: "false"
   SKIP_ANGULAR_TESTS:
-    description: 'Whether or not to skip the OSEE Angular tests.'
+    description: "Whether or not to skip the OSEE Angular tests."
     required: false
-    default: 'false'
+    default: "false"
   RUN_ANGULAR_STATIC_ANALYSIS:
-    description: 'Whether or not to run the OSEE Angular static analysis like linting and formatting.'
+    description: "Whether or not to run the OSEE Angular static analysis like linting and formatting."
     required: false
-    default: 'false'
+    default: "false"
   SKIP_JAVA_BUILD:
-    description: 'Whether or not to skip the OSEE Java build.'
+    description: "Whether or not to skip the OSEE Java build."
     required: false
-    default: 'false'
+    default: "false"
   SKIP_JAVA_TESTS:
-    description: 'Whether or not to skip the OSEE Java tests.'
+    description: "Whether or not to skip the OSEE Java tests."
     required: false
-    default: 'false'
+    default: "false"
   SKIP_PRODUCT_BUILD:
-    description: 'Whether or not to skip the OSEE product build.'
+    description: "Whether or not to skip the OSEE product build."
     required: false
-    default: 'false'
+    default: "false"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Set Environment Variables
       shell: bash
@@ -53,7 +53,7 @@ runs:
 
     - name: Cache Maven Dependencies
       if: inputs.SKIP_JAVA_BUILD == 'false'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ~/.m2/repository
@@ -65,7 +65,7 @@ runs:
 
     - name: Cache pnpm Dependencies
       if: inputs.SKIP_ANGULAR_BUILD == 'false'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ${{ env.GITHUB_WORKSPACE }}/.pnpm-store
@@ -129,7 +129,6 @@ runs:
         mkdir ${GITHUB_WORKSPACE}/Latest_Certs
         cd ${GITHUB_WORKSPACE}/Latest_Certs
         openssl s_client -connect eclipse.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > eclipse-org.pem
-        openssl s_client -connect s3.amazonaws.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > s3-amazonaws-com.pem
         openssl s_client -connect api.adoptium.net:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > api-adoptium-net.pem
         openssl s_client -connect github.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > github-com.pem
         openssl s_client -connect raw.githubusercontent.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > githubusercontent.pem
@@ -137,20 +136,20 @@ runs:
         openssl s_client -connect oss.sonatype.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > oss-sonatype-org.pem
         openssl s_client -connect nodejs.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > nodejs-org.pem
         openssl s_client -connect registry.npmjs.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > npmjs-org.pem
+        openssl s_client -connect vrapper.sourceforge.net:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > vrapper.pem
 
     - name: Add General Certs
       shell: bash
       run: |
         : Add General Certs
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias eclipsePem -file ${GITHUB_WORKSPACE}/Latest_Certs/eclipse-org.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias s3Pem -file ${GITHUB_WORKSPACE}/Latest_Certs/s3-amazonaws-com.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias adoptiumPem -file ${GITHUB_WORKSPACE}/Latest_Certs/api-adoptium-net.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubPem -file ${GITHUB_WORKSPACE}/Latest_Certs/github-com.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubUserContentPem -file ${GITHUB_WORKSPACE}/Latest_Certs/githubusercontent.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias repoMavenPem -file ${GITHUB_WORKSPACE}/Latest_Certs/repo-maven-apache-org.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias ossSonyatypePem -file ${GITHUB_WORKSPACE}/Latest_Certs/oss-sonatype-org.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias nodejsPem -file ${GITHUB_WORKSPACE}/Latest_Certs/nodejs-org.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias npmjsPem -file ${GITHUB_WORKSPACE}/Latest_Certs/npmjs-org.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias vrapperPem -file ${GITHUB_WORKSPACE}/Latest_Certs/vrapper.pem -noprompt
 
     - name: Prepare For Angular Build
       if: inputs.SKIP_ANGULAR_BUILD == 'false'
@@ -177,7 +176,7 @@ runs:
       shell: bash
       run: |
         : Osee Web Testing
-        pnpm -r run test --browsers=ChromeHeadlessNoSandbox --watch=false
+        pnpm -r run test --watch=false
 
     - name: Set Angular Build Information
       if: inputs.SKIP_ANGULAR_BUILD == 'false'

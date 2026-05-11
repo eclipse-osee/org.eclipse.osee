@@ -10,12 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-
 import { AttachmentService } from '../attachment.service';
+import { httpResource } from '@angular/common/http';
 
 export const AttachmentServiceMock: Partial<AttachmentService> = {
-	listAttachments() {
-		return of([]);
+	getAttachmentsResource() {
+		return httpResource(() => {
+			return '';
+		});
 	},
 };

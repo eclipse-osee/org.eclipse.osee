@@ -23,19 +23,21 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
+   ArtifactSearchCriteriaTest.class,
    AtsActionEndpointImplTest.class,
    AtsActionUiEndpointTest.class,
    AtsProductLineEndpointImplTest.class,
    AtsAttributeEndpointImplTest.class,
    AtsActionEndpointImplOptionsTest.class,
-   AtsWorkItemFilterTest.class,
    WorldSearchItemTest.class,
    AtsQueryServiceImplTest.class,
+   AtsSearchDataServiceImplTest.class,
    AtsConfigQueryImplTest.class,
    AtsQueryImplTest.class,
    MyFavoritesSearchItemTest.class,
    MyWorldSearchItemTest.class,
    MySubscribedSearchItemTest.class,
+   MultipleIdSearchOperationTest.class,
    NextVersionSearchItemTest.class,
    VersionTargetedForTeamSearchItemTest.class,
    ShowOpenWorkflowsByArtifactTypeTest.class,

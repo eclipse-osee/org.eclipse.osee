@@ -21,10 +21,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.navigate.SavedActionSearchNavigateItem;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -47,7 +47,7 @@ public final class DeleteSearchAction extends Action {
    @Override
    public void run() {
       List<AtsSearchData> searchDatas =
-         AtsApiService.get().getQueryService().getSavedSearches(searchItem.getNamespace());
+         AtsApiService.get().getAtsSearchDataService().getSavedSearches(searchItem.getNamespace());
       Collections.sort(searchDatas, new QuickSearchDataComparator());
       FilteredTreeDialog dialog = new FilteredTreeDialog("Delete Saved Search", "Select Search to Delete",
          new ArrayTreeContentProvider(), new StringLabelProvider());
@@ -55,7 +55,8 @@ public final class DeleteSearchAction extends Action {
 
       if (dialog.open() == Window.OK) {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
-         AtsApiService.get().getQueryService().removeSearch(selected);
+         AtsApiService.get().getAtsSearchDataService().removeSearch(selected,
+            AtsApiService.get().user().getArtifactToken());
 
          SavedActionSearchNavigateItem.refreshItems();
 
@@ -65,6 +66,6 @@ public final class DeleteSearchAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.DELETE);
+      return ImageManager.getImageDescriptor(CoreImage.DELETE);
    }
 };

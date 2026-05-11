@@ -16,39 +16,22 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkApplicabilityWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class ApplicabilitySearchWidget {
+public class ApplicabilitySearchWidget extends AbstractSearchWidget<XHyperlinkApplicabilityWidget, Long> implements TeamDefListener {
 
-   public static final String APPLICABILITY = "Applicability";
-   private final WorldEditorParameterSearchItem searchItem;
-   private XHyperlabelTeamDefinitionSelection teamSelection;
+   public static SearchWidget ApplicabilityWidget =
+      new SearchWidget(1234124, "Applicability", "XHyperlinkApplicabilityWidget");
 
    public ApplicabilitySearchWidget(WorldEditorParameterSearchItem searchItem) {
-      this.searchItem = searchItem;
+      super(ApplicabilityWidget, searchItem);
    }
 
-   public void addWidget() {
-      addWidget(0);
-   }
-
-   public void addWidget(int beginComposite) {
-      String beginComp = (beginComposite > 0 ? "beginComposite=\"" + beginComposite + "\"" : "");
-      searchItem.addWidgetXml(
-         "<XWidget xwidgetType=\"XHyperlinkApplicabilityWidget\" " + beginComp + " displayName=\"" + APPLICABILITY + "\" horizontalLabel=\"true\"/>");
-   }
-
-   public XHyperlinkApplicabilityWidget getWidget() {
-      return (XHyperlinkApplicabilityWidget) searchItem.getxWidgets().get(APPLICABILITY);
-   }
-
+   @Override
    public void set(AtsSearchData data) {
       XHyperlinkApplicabilityWidget widget = getWidget();
       if (widget != null) {
@@ -56,19 +39,9 @@ public class ApplicabilitySearchWidget {
       }
    }
 
-   public void setupTeamDef(XWidget teamWidget) {
-      this.teamSelection = (XHyperlabelTeamDefinitionSelection) teamWidget;
-      teamWidget.addXModifiedListener(new XModifiedListener() {
-         @Override
-         public void widgetModified(XWidget widget) {
-            setup(getWidget());
-         }
-      });
-   }
-
-   public void setup(XWidget widget) {
-      getWidget().setToolTip("Select Single Team to populate Applicability list");
-      Collection<TeamDefinition> teamDefs = teamSelection.getSelectedTeamDefintions();
+   @Override
+   public void updateAisOrTeamDefs() {
+      Collection<TeamDefinition> teamDefs = searchItem.getTeamDefs();
       if (teamDefs.size() == 1) {
          getWidget().setTeamDef(teamDefs.iterator().next());
       }

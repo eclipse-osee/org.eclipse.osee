@@ -11,7 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import {
+	Component,
+	inject,
+	linkedSignal,
+	signal,
+	computed,
+	effect,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -68,20 +75,40 @@ export class ColumnPreferencesDialogComponent {
 	dialogRef =
 		inject<MatDialogRef<ColumnPreferencesDialogComponent>>(MatDialogRef);
 	data = inject<settingsDialogData>(MAT_DIALOG_DATA);
+	protected data$ = signal(this.data);
+	protected editable = linkedSignal(() => this.data$().editable);
+	protected wordWrap = linkedSignal(() => this.data$().wordWrap);
+	protected allowedHeaders1 = linkedSignal(
+		() => this.data$().allowedHeaders1
+	);
+	protected allowedHeaders2 = linkedSignal(
+		() => this.data$().allowedHeaders2
+	);
+	private _branchId = computed(() => {
+		return this.data$().branchId;
+	});
+	private _updateBranchId = effect(() => {
+		this.editAuthService.BranchIdString = this._branchId();
+	});
+	public result = computed<settingsDialogData>(() => {
+		return {
+			branchId: this.data$().branchId,
+			allowedHeaders1: this.allowedHeaders1(),
+			allowedHeaders2: this.allowedHeaders2(),
+			allHeaders1: this.data$().allHeaders1,
+			allHeaders2: this.data$().allHeaders2,
+			editable: this.editable(),
+			headers1Label: this.data$().headers1Label,
+			headers2Label: this.data$().headers2Label,
+			headersTableActive: this.data$().headersTableActive,
+			wordWrap: this.wordWrap(),
+		};
+	});
 	private editAuthService = inject(EditAuthService);
 	private _headerService = inject(HeaderService);
 
 	editability: Observable<boolean> =
 		this.editAuthService.branchEditability.pipe(map((x) => x?.editable));
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		const data = this.data;
-
-		this.editAuthService.BranchIdString = data.branchId;
-	}
 
 	onNoClick() {
 		this.dialogRef.close();
@@ -108,12 +135,12 @@ export class ColumnPreferencesDialogComponent {
 
 	resetToDefaultHeaders(_event: MouseEvent) {
 		if (this.data.editable) {
-			this.data.allowedHeaders1 = defaultEditStructureProfile;
-			this.data.allowedHeaders2 = defaultEditElementProfile;
+			this.allowedHeaders1.set(defaultEditStructureProfile);
+			this.allowedHeaders2.set(defaultEditElementProfile);
 			return;
 		}
-		this.data.allowedHeaders1 = defaultViewStructureProfile;
-		this.data.allowedHeaders2 = defaultViewElementProfile;
+		this.allowedHeaders1.set(defaultViewStructureProfile);
+		this.allowedHeaders2.set(defaultViewElementProfile);
 	}
 
 	/**
@@ -162,11 +189,11 @@ export class ColumnPreferencesDialogComponent {
 		if (columnNumber) {
 			//typescript doesn't understand class functions well..
 			//@ts-expect-error need to be smarter with type narrowing
-			return this.data.allowedHeaders2;
+			return this.allowedHeaders2();
 		}
 		//typescript doesn't understand class functions well..
 		//@ts-expect-error need to be smarter with type narrowing
-		return this.data.allowedHeaders1;
+		return this.allowedHeaders1();
 	}
 
 	protected isString(value: unknown): value is string {

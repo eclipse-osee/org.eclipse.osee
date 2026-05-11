@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.demo.DemoUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -236,7 +235,7 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
        * Setup for testing the CommitBranchHttpRequestOperation cache update code after commit. Load ArtifactToken from
        * parent branch which is being changed on the working branch.
        */
-      BranchId parentBranch =
+      BranchToken parentBranch =
          atsApi.getBranchService().getBranch(atsApi.getVersionService().getTargetedVersion(reqTeamArt));
       ArtifactToken parentArtifactToken = atsApi.getQueryService().getArtifact(testArtifact.getToken(), parentBranch);
       String subsystemStrBefore =

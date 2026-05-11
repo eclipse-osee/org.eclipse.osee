@@ -53,6 +53,7 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.publishing,
  org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.core.widget,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.artifact,
@@ -85,4 +86,4 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.ote.define.artifacts,
  org.eclipse.ui.forms.widgets
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21

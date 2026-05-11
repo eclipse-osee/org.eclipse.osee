@@ -43,6 +43,7 @@ import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 import org.eclipse.osee.orcs.rest.model.UserEndpoint;
+import org.eclipse.osee.orcs.rest.model.search.builder.QueryEndpoint;
 
 /**
  * Single entry point for all Server Endpoint services for IDE Client. All code should migrate to use this and not all
@@ -54,6 +55,7 @@ public class IdeServerEndpointsImpl implements IdeServerEndpoints {
 
    private static IdeServerEndpointsImpl instance;
    private static JaxRsApi jaxRsApi;
+   private QueryEndpoint queryEp;
 
    public IdeServerEndpointsImpl() {
       // for jax-rs
@@ -83,6 +85,14 @@ public class IdeServerEndpointsImpl implements IdeServerEndpoints {
 
    private <T> T getOrcsEndpoint(Class<T> clazz) {
       return getJaxRs().newProxy("orcs", clazz);
+   }
+
+   @Override
+   public QueryEndpoint getQueryEndpoint() {
+      if (queryEp == null) {
+         queryEp = getOrcsEndpoint(QueryEndpoint.class);
+      }
+      return queryEp;
    }
 
    @Override

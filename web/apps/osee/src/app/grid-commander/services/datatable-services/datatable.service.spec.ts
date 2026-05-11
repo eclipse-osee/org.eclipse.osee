@@ -40,7 +40,7 @@ describe('DataTableService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('will set bs _combinedDataTable to the data of type ResponseTableData that is passed in', (done: DoneFn) => {
+	it('will set bs _combinedDataTable to the data of type ResponseTableData that is passed in', async () => {
 		const mockResponseTableData: ResponseTableData = {
 			tableOptions: {
 				columns: [{ name: 'testKey', type: 'testType' }],
@@ -61,26 +61,23 @@ describe('DataTableService', () => {
 		service._combinedDataTable.subscribe((val) => {
 			expect(val).toBeInstanceOf(Object);
 			expect(val).toEqual(mockResponseTableData);
-			done();
 		});
 	});
 
-	it('get columnSchema should return array of length >= 0', (done: DoneFn) => {
+	it('get columnSchema should return array of length >= 0', async () => {
 		service.columnSchemaVals = columnDataMock;
 		service.columnSchema.subscribe((val) => {
 			expect(val).toBeInstanceOf(Array);
 			expect(val.length).toBeGreaterThanOrEqual(0);
-			done();
 		});
 	});
 
-	it('get displayedCols should return an array of strings', (done: DoneFn) => {
+	it('get displayedCols should return an array of strings', async () => {
 		service.displayedColumns = ['testCol1', 'testCol2', 'testCol3'];
 
 		service.displayedCols.subscribe((val) => {
 			expect(val).toBeInstanceOf(Array);
 			expect(val.length).toBeGreaterThanOrEqual(0);
-			done();
 		});
 	});
 });

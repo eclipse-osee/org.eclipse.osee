@@ -14,8 +14,8 @@
 package org.eclipse.osee.orcs.db.internal.search;
 
 import org.eclipse.osee.orcs.core.ds.CountingLoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.search.QueryData;
+import org.eclipse.osee.orcs.search.ds.LoadDataHandler;
 
 /**
  * @author Roberto E. Escobar

@@ -14,20 +14,27 @@
 package org.eclipse.osee.ats.core.config;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.config.tx.AtsConfigTxImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.OseeTypeEnumArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 
 /**
  * @author Donald G. Dunne
@@ -37,6 +44,7 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
    protected AtsConfigurations atsConfigurations;
    protected AtsApi atsApi;
    public static Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)", Pattern.DOTALL);
+   private Map<ArtifactTypeToken, ArtifactImage> artTypeToImage;
 
    @Override
    public void setAtsApi(AtsApi atsApi) {
@@ -94,6 +102,28 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
          }
       }
       changes.execute();
+   }
+
+   @Override
+   public Map<ArtifactTypeToken, ArtifactImage> getArtTypeToImage() {
+      if (artTypeToImage == null) {
+         artTypeToImage = new HashMap<>(50);
+         // Set all Team Workflows
+         for (ArtifactTypeToken artifactType : AtsArtifactTypes.TeamWorkflow.getAllDescendantTypes()) {
+            OseeImage image = artifactType.getImage();
+            if (image != null) {
+               artTypeToImage.put(artifactType, ArtifactImage.construct(artifactType, image.getName(), "ats/images"));
+            } else {
+               artTypeToImage.put(artifactType, ArtifactImage.construct(artifactType,
+                  AtsArtifactImages.TEAM_WORKFLOW.getImageName(), AtsArtifactImages.TEAM_WORKFLOW.getBaseUrl()));
+            }
+         }
+         // Set other images and overwrite Team Workflows that are declared
+         for (ArtifactImage artImage : AtsArtifactImages.getImages()) {
+            artTypeToImage.put(artImage.getArtifactType(), artImage);
+         }
+      }
+      return artTypeToImage;
    }
 
 }

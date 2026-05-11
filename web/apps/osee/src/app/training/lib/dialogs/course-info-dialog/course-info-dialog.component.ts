@@ -43,20 +43,11 @@ export class CourseInfoDialogComponent {
 	dialogRef = inject<MatDialogRef<CourseInfoDialogComponent>>(MatDialogRef);
 	private trainingCourseService = inject(TrainingCourseService);
 
-	courses$: Observable<TrainingCourse[]>;
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		this.courses$ = this.trainingCourseService
-			.getTrainingCourses()
-			.pipe(
-				map((items) =>
-					items.filter((item) => item.courseID === this.data)
-				)
-			);
-	}
+	courses$: Observable<TrainingCourse[]> = this.trainingCourseService
+		.getTrainingCourses()
+		.pipe(
+			map((items) => items.filter((item) => item.courseID === this.data))
+		);
 
 	goToLink(url: string) {
 		window.open(url, '_blank');

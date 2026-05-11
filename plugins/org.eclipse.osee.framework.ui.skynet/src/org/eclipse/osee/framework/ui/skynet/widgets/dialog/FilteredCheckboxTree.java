@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -84,7 +84,7 @@ public class FilteredCheckboxTree extends FilteredTree {
 
       Label expandAll = new Label(comp, SWT.PUSH);
       expandAll.setBackground(background);
-      expandAll.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
+      expandAll.setImage(ImageManager.getImage(CoreImage.EXPAND_ALL));
       expandAll.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
          @Override
          public void mouseUp(MouseEvent e) {
@@ -95,7 +95,7 @@ public class FilteredCheckboxTree extends FilteredTree {
 
       Label collapseAll = new Label(comp, SWT.PUSH);
       collapseAll.setBackground(background);
-      collapseAll.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
+      collapseAll.setImage(ImageManager.getImage(CoreImage.COLLAPSE_ALL));
       collapseAll.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
          @Override
          public void mouseUp(MouseEvent e) {

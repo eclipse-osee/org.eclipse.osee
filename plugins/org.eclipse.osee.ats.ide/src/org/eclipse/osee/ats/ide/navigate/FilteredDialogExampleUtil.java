@@ -44,7 +44,7 @@ public class FilteredDialogExampleUtil {
       for (Object obj : checked) {
          rd.log("SELECTED=" + obj.toString());
       }
-      if (checked.size() == 0) {
+      if (checked.isEmpty()) {
          rd.log("NONE SELECTED");
       }
       XResultDataUI.report(rd, title);
@@ -58,7 +58,7 @@ public class FilteredDialogExampleUtil {
       for (Object obj : selected) {
          rd.log("SELECTED=" + obj.toString());
       }
-      if (dialog.getSelected().size() == 0) {
+      if (dialog.getSelected().isEmpty()) {
          rd.log("NONE SELECTED");
       }
       XResultDataUI.report(rd, title);

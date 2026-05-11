@@ -44,7 +44,7 @@ public class HealthOperations {
       rd.logf("New Artifact Id [%s]\n", newArtId);
 
       List<Map<String, String>> artRows =
-         atsApi.getQueryService().query("select * from osee_artifact where art_id = ?", id.getIdString());
+         atsApi.getQueryServiceServer().query("select * from osee_artifact where art_id = ?", id.getIdString());
 
       // Artifact data
       int x = 1;
@@ -60,13 +60,13 @@ public class HealthOperations {
          String gammaStr = rowMap.get("GAMMA_ID");
          Long gammaId = Long.valueOf(gammaStr);
 
-         List<Map<String, String>> txsRows =
-            atsApi.getQueryService().query("select * from osee_txs where branch_id = 570 and gamma_id = ?", gammaId);
+         List<Map<String, String>> txsRows = atsApi.getQueryServiceServer().query(
+            "select * from osee_txs where branch_id = 570 and gamma_id = ?", gammaId);
          rd.logf("TXS: %s\n", txsRows);
 
          for (Map<String, String> txRow : txsRows) {
             String transId = txRow.get("TRANSACTION_ID");
-            List<Map<String, String>> txDetailsRows = atsApi.getQueryService().query(
+            List<Map<String, String>> txDetailsRows = atsApi.getQueryServiceServer().query(
                "select * from osee_tx_details where branch_id = 570 and transaction_id = ?", transId);
             rd.logf("TX_DETAILS: %s\n", txDetailsRows);
          }
@@ -86,7 +86,7 @@ public class HealthOperations {
       // Attribute data
       rd.log("\nAttributes \n============");
       List<Map<String, String>> attrRows =
-         atsApi.getQueryService().query("select * from osee_attribute where art_id = ?", id.getIdString());
+         atsApi.getQueryServiceServer().query("select * from osee_attribute where art_id = ?", id.getIdString());
       for (Map<String, String> attrRow : attrRows) {
          rd.logf("ATTR: %s\n", attrRow);
          String gammaStr = attrRow.get("GAMMA_ID");
@@ -101,7 +101,7 @@ public class HealthOperations {
 
       // Relation data
       rd.log("\nRelation \n============");
-      List<Map<String, String>> relRows = atsApi.getQueryService().query(
+      List<Map<String, String>> relRows = atsApi.getQueryServiceServer().query(
          "select * from osee_relation_link where a_art_id = ? or b_art_id = ?", id.getIdString(), id.getIdString());
       for (Map<String, String> relRow : relRows) {
          rd.logf("REL: %s\n", relRow);
@@ -117,7 +117,7 @@ public class HealthOperations {
 
       for (String transId : transToGamma.keySet()) {
 
-         List<Map<String, String>> txDetailsRows = atsApi.getQueryService().query(
+         List<Map<String, String>> txDetailsRows = atsApi.getQueryServiceServer().query(
             "select * from osee_tx_details where branch_id = 570 and transaction_id = ?", transId);
 
          // Store transId to details for use later
@@ -184,7 +184,7 @@ public class HealthOperations {
 
    public Map<String, String> getTxDetailsRow(String transId, XResultData rd) {
       List<Map<String, String>> txDetailsRows =
-         atsApi.getQueryService().query("select * from osee_tx_details where transaction_id = ?", transId);
+         atsApi.getQueryServiceServer().query("select * from osee_tx_details where transaction_id = ?", transId);
       if (txDetailsRows.size() != 1) {
          rd.errorf("Unexpected %s txDetailsRows returned for transId %s\n", txDetailsRows.size(), transId);
       }
@@ -192,8 +192,8 @@ public class HealthOperations {
    }
 
    public Map<String, String> getTxsRow(String gammaStr, XResultData rd) {
-      List<Map<String, String>> txsRows =
-         atsApi.getQueryService().query("select * from osee_txs where branch_id = 570 and gamma_id = ?", gammaStr);
+      List<Map<String, String>> txsRows = atsApi.getQueryServiceServer().query(
+         "select * from osee_txs where branch_id = 570 and gamma_id = ?", gammaStr);
       if (txsRows.size() != 1) {
          rd.errorf("Unexpected %s txRows returned for gamma %s\n", txsRows.size(), gammaStr);
       }

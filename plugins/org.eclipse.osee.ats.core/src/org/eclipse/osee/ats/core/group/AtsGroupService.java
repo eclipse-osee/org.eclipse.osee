@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.ats.core.group;
 
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,7 +21,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsGroupService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -49,7 +47,7 @@ public class AtsGroupService implements IAtsGroupService {
       try {
          artifacts = atsApi.getQueryService().getArtifacts(CoreArtifactTypes.UniversalGroup, branch);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
          artifacts = new LinkedList<>();
       }
       return artifacts;
@@ -72,7 +70,7 @@ public class AtsGroupService implements IAtsGroupService {
          return atsApi.getQueryService().getArtifactsFromTypeAndName(CoreArtifactTypes.UniversalGroup, groupName,
             branch, QueryOption.EXACT_MATCH_OPTIONS);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
       }
       return new ArrayList<>();
    }
@@ -101,7 +99,7 @@ public class AtsGroupService implements IAtsGroupService {
    }
 
    @Override
-   public ArtifactToken getTopUniversalGroupArtifact(BranchId branch) {
+   public ArtifactToken getTopUniversalGroupArtifact(BranchToken branch) {
       return atsApi.getQueryService().getArtifact(CoreArtifactTokens.UniversalGroupRoot, branch);
    }
 

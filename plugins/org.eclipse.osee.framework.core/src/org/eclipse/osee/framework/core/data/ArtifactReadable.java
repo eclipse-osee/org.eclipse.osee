@@ -50,7 +50,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    TransactionId getLastModifiedTransaction();
 
-   TransactionDetails getTxDetails();
+   TransactionDetails getLatestTxDetails();
 
    int getAttributeCount(AttributeTypeToken type);
 
@@ -141,6 +141,15 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    default ArtifactReadable getParent() {
       return org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne(
          getRelated(CoreRelationTypes.DefaultHierarchical_Parent, ArtifactTypeToken.SENTINEL));
+   }
+
+   default ArtifactReadable getParentOrNull() {
+      List<ArtifactReadable> related =
+         getRelated(CoreRelationTypes.DefaultHierarchical_Parent, ArtifactTypeToken.SENTINEL);
+      if (related.isEmpty()) {
+         return null;
+      }
+      return related.iterator().next();
    }
 
    @JsonIgnore
@@ -241,11 +250,23 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId);
 
    default boolean isLegacyArtRead() {
-      return isNewArtRead();
+      return false;
    }
 
    default boolean isNewArtRead() {
-      return (this instanceof ArtifactReadableImpl);
+      return false;
+   }
+
+   List<IAttribute<?>> getAttributesNew();
+
+   List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType);
+
+   default boolean isLoaded() {
+      return true;
+   }
+
+   default boolean isNotLoaded() {
+      return !isLoaded();
    }
 
    public static class ArtifactReadableImpl extends NamedIdBase implements ArtifactReadable {
@@ -530,7 +551,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       }
 
       @Override
-      public TransactionDetails getTxDetails() {
+      public TransactionDetails getLatestTxDetails() {
          return new TransactionDetails();
       }
 
@@ -553,6 +574,27 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
          return null;
       }
+
+      @Override
+      public boolean isLoaded() {
+         return false;
+      }
+
+      @Override
+      public boolean isNotLoaded() {
+         return false;
+      }
+
+      @Override
+      public List<IAttribute<?>> getAttributesNew() {
+         return null;
+      }
+
+      @Override
+      public List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType) {
+         return null;
+      }
+
    }
 
 }

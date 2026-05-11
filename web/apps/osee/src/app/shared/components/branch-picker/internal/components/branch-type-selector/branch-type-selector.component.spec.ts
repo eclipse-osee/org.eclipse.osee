@@ -27,7 +27,6 @@ describe('BranchTypeSelectorComponent', () => {
 	@Component({
 		selector: 'osee-dummy',
 		template: '<div>Dummy</div>',
-		standalone: false,
 	})
 	class DummyComponent {}
 
@@ -61,9 +60,9 @@ describe('BranchTypeSelectorComponent', () => {
 	});
 
 	it('should change the branch type to hello', () => {
-		const _spy = spyOn(router, 'navigate').and.returnValue(
-			new Promise(() => true)
-		);
+		const _spy = vi
+			.spyOn(router, 'navigate')
+			.mockReturnValue(new Promise(() => true));
 		component.changeBranchType('baseline');
 		expect(component.branchType).toEqual('baseline');
 	});

@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BlockApplicabilityStageRequest;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
 import org.eclipse.osee.framework.core.data.CreateViewDefinition;
 import org.eclipse.osee.framework.core.data.OseeClient;
@@ -157,6 +158,25 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public List<ArtifactToken> getViews() {
       return this.getViews(CoreAttributeTypes.Name);
+   }
+
+   @Override
+   public List<BranchViewToken> getBranchViewTokens() {
+      List<BranchViewToken> tokens = new ArrayList<>();
+      for (ArtifactToken branchViewArt : getViews()) {
+         tokens.add(new BranchViewToken(branch, branchViewArt.getName(), ArtifactId.valueOf(branchViewArt.getId())));
+      }
+      return tokens;
+   }
+
+   @Override
+   public BranchViewToken getBranchViewToken(Long id) {
+      ArtifactReadable branchViewArt =
+         orcsApi.getQueryFactory().fromBranch(branch).andId(ArtifactId.valueOf(id)).asArtifactOrSentinel();
+      if (branchViewArt.isValid()) {
+         return new BranchViewToken(branch, branchViewArt.getName(), ArtifactId.valueOf(branchViewArt.getId()));
+      }
+      return BranchViewToken.SENTINEL;
    }
 
    @Override

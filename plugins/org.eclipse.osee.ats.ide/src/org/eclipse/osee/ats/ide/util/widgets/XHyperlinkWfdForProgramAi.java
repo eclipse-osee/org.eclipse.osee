@@ -14,8 +14,8 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.framework.core.widget.ISelectableValueProvider;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWithFilteredDialog;
 
 /**

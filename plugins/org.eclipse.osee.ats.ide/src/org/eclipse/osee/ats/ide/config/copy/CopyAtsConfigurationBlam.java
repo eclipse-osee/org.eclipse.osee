@@ -77,7 +77,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       try {
-         if (ArtifactCache.getDirtyArtifacts().size() > 0) {
+         if (!ArtifactCache.getDirtyArtifacts().isEmpty()) {
             AWorkbench.popup(
                "Dirty artifacts found in cache, save all artifacts before running this operation (may need to restart)");
             return;
@@ -116,8 +116,8 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
 
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals("Top Team Definition to Copy From (most like new config)")) {
          xTeamDefinitionCombo = (XTeamDefinitionCombo) xWidget;
       }

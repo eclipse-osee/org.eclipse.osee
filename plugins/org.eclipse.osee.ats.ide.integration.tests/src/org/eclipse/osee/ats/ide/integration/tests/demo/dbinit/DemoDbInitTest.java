@@ -1,0 +1,101 @@
+/*********************************************************************
+ * Copyright (c) 2011 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+
+package org.eclipse.osee.ats.ide.integration.tests.demo.dbinit;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.ide.demo.DemoChoice;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.UserService;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
+import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+
+/**
+ * @author Donald G. Dunne
+ */
+public class DemoDbInitTest {
+
+   @BeforeClass
+   public static void setup() throws Exception {
+      OseeProperties.setInDbInit(true);
+      OseeProperties.setIsInTest(true);
+      assertTrue("Demo Application Server must be running",
+         ClientSessionManager.getAuthenticationProtocols().contains("orgdemo"));
+
+      assertFalse("Not to be run on a production database.", ClientSessionManager.isProductionDataStore());
+
+      RenderingUtil.setPopupsAllowed(false);
+   }
+
+   @org.junit.Test
+   public void demoDbInit() {
+      try {
+         OseeProperties.setInDbInit(true);
+         OseeProperties.setIsInTest(true);
+         List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
+         Assert.assertTrue("Application Server must be running. " + protocols, protocols.contains("orgdemo"));
+
+         System.out.println("\nBegin Database Initialization");
+
+         SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
+         OseeLog.registerLoggerListener(monitorLog);
+
+         DatabaseInitializationOperation.execute(DemoChoice.ATS_CLIENT_DEMO);
+
+         TestUtil.severeLoggingEnd(monitorLog);
+
+         TestUtil.setDbInitSuccessful(true);
+         OseeProperties.setInDbInit(false);
+
+         // Re-authenticate so we can continue and NOT be OSEE System
+         ClientSessionManager.releaseSession();
+         ClientSessionManager.getSession();
+         OseeApiService.userSvc().clearCaches();
+
+         AtsApi atsApi = AtsApiService.get();
+         atsApi.reloadServerAndClientCaches();
+
+         UserService userService = atsApi.userService();
+         assertNotEquals("User should not be OseeSystem here", userService.getUser(), SystemUser.OseeSystem);
+
+         OseeApiService.userSvc().setSetting(OseeProperties.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
+         OseeApiService.userSvc().saveSettings();
+
+         userService.getUserGroup(CoreUserGroups.DefaultArtifactEditor).addMember(OseeApiService.user(), true);
+
+         //Ensure that all workDefs loaded without error
+         atsApi.getWorkDefinitionService().getAllWorkDefinitions();
+
+         System.out.println("End Database Initialization\n");
+      } catch (Exception ex) {
+         Assert.fail(Lib.exceptionToString(ex));
+      }
+
+   }
+
+}

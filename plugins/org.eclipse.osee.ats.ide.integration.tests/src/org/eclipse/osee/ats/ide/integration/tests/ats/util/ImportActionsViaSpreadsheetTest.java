@@ -107,7 +107,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("What needs to be done by Test team", testWf.getDescription());
       Assert.assertEquals("5", testWf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""));
       Assert.assertEquals("Category", testWf.getSoleAttributeValue(AtsAttributeTypes.Category1, ""));
-      Assert.assertEquals("3", testWf.getSoleAttributeValue(AtsAttributeTypes.Points, ""));
+      Assert.assertEquals("3", testWf.getSoleAttributeValue(AtsAttributeTypes.PointsEnum, ""));
       Assert.assertTrue(testWf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 4.0);
       Assert.assertEquals("Improvement", testWf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       Assert.assertEquals("SAW_Bld_3", atsApi.getVersionService().getTargetedVersion(testWf).getName());
@@ -120,7 +120,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("Phase 1 of what needs to be fixed", code1Wf.getDescription());
       Assert.assertEquals("2", code1Wf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""));
       Assert.assertEquals("", code1Wf.getSoleAttributeValue(AtsAttributeTypes.Category1, ""));
-      Assert.assertEquals("3", code1Wf.getSoleAttributeValue(AtsAttributeTypes.Points, ""));
+      Assert.assertEquals("3", code1Wf.getSoleAttributeValue(AtsAttributeTypes.PointsEnum, ""));
       Assert.assertTrue(code1Wf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 23.0);
       Assert.assertEquals("Improvement", code1Wf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       Assert.assertEquals("SAW_Bld_2", atsApi.getVersionService().getTargetedVersion(code1Wf).getName());
@@ -133,7 +133,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("Phase 2 targeted for different version", code2Wf.getDescription());
       Assert.assertEquals("3", code2Wf.getSoleAttributeValue(AtsAttributeTypes.Priority, ""));
       Assert.assertEquals("", code2Wf.getSoleAttributeValue(AtsAttributeTypes.Category1, ""));
-      Assert.assertEquals("3", code2Wf.getSoleAttributeValue(AtsAttributeTypes.Points, ""));
+      Assert.assertEquals("3", code2Wf.getSoleAttributeValue(AtsAttributeTypes.PointsEnum, ""));
       Assert.assertTrue(code2Wf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 3.0);
       Assert.assertEquals("Improvement", code2Wf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       Assert.assertEquals("SAW_Bld_2", atsApi.getVersionService().getTargetedVersion(code2Wf).getName());
@@ -208,12 +208,12 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertTrue("members should be in order",
          ((IAtsObject) members.toArray()[17]).getDescription().startsWith("Phase 1"));
       Assert.assertEquals("2", atsApi.getAttributeResolver().getSoleAttributeValue((IAtsObject) members.toArray()[17],
-         AtsAttributeTypes.Points, ""));
+         AtsAttributeTypes.PointsEnum, ""));
 
       Assert.assertTrue("members should be in order",
          ((IAtsObject) members.toArray()[18]).getDescription().startsWith("Phase 2"));
       Assert.assertEquals("3", atsApi.getAttributeResolver().getSoleAttributeValue((IAtsObject) members.toArray()[18],
-         AtsAttributeTypes.Points, ""));
+         AtsAttributeTypes.PointsEnum, ""));
 
    }
 

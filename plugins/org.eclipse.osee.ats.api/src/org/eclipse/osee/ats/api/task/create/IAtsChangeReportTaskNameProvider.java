@@ -57,9 +57,10 @@ public interface IAtsChangeReportTaskNameProvider {
 
    default public Map<ArtifactId, ArtifactToken> getTasksComputedAsNeeded(ChangeReportTaskData crtd,
       ChangeReportTaskTeamWfData crttwd, AtsApi atsApi, boolean addTaskMatch) {
+      BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranchId());
       Map<ArtifactId, ArtifactToken> idToArtifact = new HashMap<>();
-      getModifiedArifactNames(crtd, crttwd, idToArtifact, atsApi, addTaskMatch);
-      getRelArtifactNames(crtd, crttwd, idToArtifact, atsApi, addTaskMatch);
+      getModifiedArtifactNames(crtd, crttwd, idToArtifact, atsApi, addTaskMatch, branch);
+      getRelArtifactNames(crtd, crttwd, idToArtifact, atsApi, addTaskMatch, branch);
       getExtensionNames(crtd, crttwd, idToArtifact, atsApi, addTaskMatch);
       getApiAndTaskNames(crtd, crttwd, idToArtifact, atsApi, addTaskMatch);
       return idToArtifact;
@@ -93,19 +94,19 @@ public interface IAtsChangeReportTaskNameProvider {
     * Compute all artifacts on an included rel that doesn't have 2 artifacts both excluded.
     */
    default void getRelArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
-      Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
+      Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch, BranchToken branch) {
       for (ArtifactId chgRptArt : getRelArts(crtd, crttwd, atsApi)) {
          logAndAddTaskName(crtd, crttwd, atsApi, ArtifactToken.valueOf(chgRptArt, ""), idToArtifact,
-            TaskChangeType.Relation.name(), addTaskMatch);
+            TaskChangeType.Relation.name(), addTaskMatch, branch);
       }
    }
 
    /**
     * Compute all artifacts modified and deleted
     */
-   default void getModifiedArifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
-      Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch) {
-      processModifiedDeletedArts(crtd, crttwd, idToArtifact, atsApi, addTaskMatch);
+   default void getModifiedArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi, boolean addTaskMatch, BranchToken branch) {
+      processModifiedDeletedArts(crtd, crttwd, idToArtifact, atsApi, addTaskMatch, branch);
    }
 
    /**
@@ -113,9 +114,8 @@ public interface IAtsChangeReportTaskNameProvider {
     */
    default ChangeReportTaskMatch logAndAddTaskName(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
       AtsApi atsApi, ArtifactToken chgRptArt, Map<ArtifactId, ArtifactToken> idToArtifact, String chgType,
-      boolean addTaskMatch) {
-      ArtifactToken art =
-         atsApi.getQueryService().getArtifact(chgRptArt, crtd.getWorkOrParentBranchId(), DeletionFlag.INCLUDE_DELETED);
+      boolean addTaskMatch, BranchToken branch) {
+      ArtifactToken art = atsApi.getQueryService().getArtifact(chgRptArt, branch, DeletionFlag.INCLUDE_DELETED);
       idToArtifact.put(art, art);
       if (addTaskMatch) {
          String safeName = getTaskName(atsApi, chgType, art);
@@ -196,7 +196,7 @@ public interface IAtsChangeReportTaskNameProvider {
 
    default ChangeReportModDelArts processModifiedDeletedArts(ChangeReportTaskData crtd,
       ChangeReportTaskTeamWfData crttwd, Map<ArtifactId, ArtifactToken> idToArtifact, //
-      AtsApi atsApi, boolean addTaskMatch) {
+      AtsApi atsApi, boolean addTaskMatch, BranchToken branch) {
 
       List<ChangeItem> changeItems = crtd.getChangeItems();
 
@@ -205,7 +205,6 @@ public interface IAtsChangeReportTaskNameProvider {
       Set<ArtifactId> delArts = new HashSet<>();
 
       if (crtd.getWorkOrParentBranchId().isValid()) {
-         BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranchId());
 
          ChangeItemData data = getChangeItemData(changeItems, branch, atsApi);
          Collection<ChangeReportRollup> rollups = data.getRollups().values();
@@ -216,14 +215,14 @@ public interface IAtsChangeReportTaskNameProvider {
                if (result.isDeleted()) {
                   delArts.add(rollup.getArtId());
                   logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact,
-                     TaskChangeType.Deleted.name(), addTaskMatch);
+                     TaskChangeType.Deleted.name(), addTaskMatch, branch);
                } else if (result.isAdded()) {
                   logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact, TaskChangeType.Add.name(),
-                     addTaskMatch);
+                     addTaskMatch, branch);
                   addArts.add(rollup.getArtId());
                } else if (result.isModified()) {
                   logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtToken(), idToArtifact, TaskChangeType.Mod.name(),
-                     addTaskMatch);
+                     addTaskMatch, branch);
                   modArts.add(rollup.getArtId());
                }
             }

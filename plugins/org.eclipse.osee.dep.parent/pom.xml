@@ -22,8 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<tycho-version>2.7.5</tycho-version>
-		<tycho-extras-version>2.7.5</tycho-extras-version>
+		<tycho-version>4.0.10</tycho-version>
+		<tycho-extras-version>4.0.10</tycho-extras-version>
 
 		<build-alias>-DEV</build-alias>
 
@@ -36,27 +36,19 @@
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
 		<maven-resources-version>2.5</maven-resources-version>
 
-		<jaxdoclet-version>0.9.0</jaxdoclet-version>
 		<maven-clean-version>2.5</maven-clean-version>
 		<orbit-version>R20181128170323</orbit-version>
-		<orbit-version2>R20220830213456</orbit-version2>
-		<subversive-version>4.0</subversive-version>
-		<polarion-version>3.0</polarion-version>
+		<orbit-version2>4.36.0</orbit-version2>
 		<nebula-version>3.1.1</nebula-version>
 
 		<orbit-site>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
-		<orbit-site2>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version2}/repository</orbit-site2>
-		<orbit-site3>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.29.0</orbit-site3>
-		<eclipse-site>https://download.eclipse.org/releases/2022-06/202206151000/</eclipse-site>
+		<orbit-site2>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/${orbit-version2}/</orbit-site2>
+		<eclipse-site>https://download.eclipse.org/releases/2025-06/202506111000/</eclipse-site>
 
 		<nebula-site>https://download.eclipse.org/nebula/updates/release/${nebula-version}</nebula-site>
 
 		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
-		<papyrus-site>https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2020-06/202006171000/</papyrus-site>
-		<subversive-site>https://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
-		<polarion-site>https://community.polarion.com/projects/subversive/download/eclipse/6.0/neon-site</polarion-site>
-		<emma-site>https://s3.amazonaws.com/update.eclemma.org</emma-site>
-		<osgi_deps>file:./../org.eclipse.osee.osgi.converter/target/repository</osgi_deps>
+		<osgi_deps>${project.basedir}/../../plugins/org.eclipse.osee.osgi.converter/target/repository</osgi_deps>
 	</properties>
 
 	<licenses>
@@ -87,18 +79,11 @@
 			<layout>p2</layout>
 			<url>${nebula-site}</url>
 		</repository>
-		
-	    
+
 		<repository>
 			<id>osgi-repo</id>
 			<layout>p2</layout>
-			<url>${osgi_deps}</url>
-		</repository>
-
-		<repository>
-			<id>jetty</id>
-			<layout>p2</layout>
-			<url>https://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.54.v20240208</url>
+			<url>file:${osgi_deps}</url>
 		</repository>
 
 		<repository>
@@ -139,29 +124,10 @@
 			<url>${eclipse-site}</url>
 		</repository>
 
-
-		<repository>
-			<id>subversive</id>
-			<layout>p2</layout>
-			<url>${subversive-site}</url>
-		</repository>
-
-		<repository>
-			<id>emma</id>
-			<layout>p2</layout>
-			<url>${emma-site}</url>
-		</repository>
-
 		<repository>
 			<id>ecf</id>
 			<layout>p2</layout>
 			<url>https://download.eclipse.org/rt/ecf/3.14.34/site.p2/3.14.34.v20221105-0315</url>
-		</repository>
-
-		<repository>
-			<id>orbit202309</id>
-			<layout>p2</layout>
-			<url>${orbit-site3}</url>
 		</repository>
 
 		<repository>
@@ -180,10 +146,6 @@
 		<sourceDirectory>src</sourceDirectory>
 
 		<plugins>
-
-
-
-
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
@@ -259,15 +221,15 @@
 				</executions>
 			</plugin>
 		  <plugin>
-				<groupId>org.eclipse.tycho.extras</groupId>
-				<artifactId>tycho-source-feature-plugin</artifactId>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
 				<version>${tycho-extras-version}</version>
 				<executions>
 					<execution>
-						<id>source-feature</id>
+						<id>feature-source</id>
 						<phase>package</phase>
 						<goals>
-							<goal>source-feature</goal>
+							<goal>feature-source</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -306,8 +268,8 @@
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho-version}</version>
 					<configuration>
-                                                <source>11</source>
-                                                <target>11</target>
+						<source>21</source>
+						<target>21</target>
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
@@ -320,8 +282,8 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<groupId>org.eclipse.tycho.extras</groupId>
-					<artifactId>tycho-source-feature-plugin</artifactId>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-source-plugin</artifactId>
 					<version>${tycho-extras-version}</version>
 				</plugin>
 				<plugin>
@@ -383,5 +345,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-   
+
 </project>

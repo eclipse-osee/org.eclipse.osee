@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.framework.ui.skynet.mdeditor.edit;
 
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -60,7 +60,7 @@ public class OmeEditComposite extends Composite {
 
          if (!enabled) {
             Label lockLabel = new Label(this, SWT.PUSH);
-            lockLabel.setImage(ImageManager.getImage(FrameworkImage.LOCK_LOCKED));
+            lockLabel.setImage(ImageManager.getImage(CoreImage.LOCK_LOCKED));
          }
 
          textWidget = omeData.createXText(enabled);

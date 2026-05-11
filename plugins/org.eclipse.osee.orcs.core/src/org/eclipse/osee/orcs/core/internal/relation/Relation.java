@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.orcs.core.ds.HasOrcsData;
-import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
+import org.eclipse.osee.orcs.data.OrcsWriteable;
+import org.eclipse.osee.orcs.search.ds.HasOrcsData;
+import org.eclipse.osee.orcs.search.ds.RelationData;
 
 /**
  * @author Roberto E. Escobar

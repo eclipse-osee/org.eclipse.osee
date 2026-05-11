@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -61,7 +61,7 @@ public class FeatureImpactReferenceColumn extends AtsCoreCodeColumn {
          atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamWf.getTeamDefinition());
       if (mainTeamDef != null) {
          for (IAtsVersion ver : atsApi.getVersionService().getVersions(mainTeamDef)) {
-            BranchId branch = atsApi.getBranchService().getBranch(ver);
+            BranchToken branch = atsApi.getBranchService().getBranch(ver);
             if (branch.isValid()) {
                return atsApi.getQueryService().getArtifact(featureImpactArtId, branch).getName();
             }

@@ -25,9 +25,11 @@ describe('SeparatedFeatureSelectorComponent', () => {
 	let fixture: ComponentFixture<SeparatedFeatureSelectorComponent>;
 
 	beforeEach(async () => {
-		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
-			'getBranchApplicability',
-		]);
+		const branchService = {
+			getBranchApplicability: vi
+				.fn()
+				.mockName('PlConfigBranchService.getBranchApplicability'),
+		};
 		await TestBed.configureTestingModule({
 			imports: [SeparatedFeatureSelectorComponent, NoopAnimationsModule],
 			providers: [

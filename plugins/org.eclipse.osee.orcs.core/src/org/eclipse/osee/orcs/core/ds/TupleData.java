@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.data.TupleTypeToken;
+import org.eclipse.osee.orcs.search.ds.OrcsData;
 
 public interface TupleData extends OrcsData<TupleTypeToken> {
 

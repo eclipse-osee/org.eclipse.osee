@@ -50,11 +50,11 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -77,6 +77,7 @@ public class CreateChangeReportTasksOperation {
    private final AtsApi atsApi;
    private final ChangeReportTaskData crtd;
    private final static String TASK_GEN_TAG = "taskgen";
+   private Collection<IAtsTaskProvider> taskProviders;
 
    public CreateChangeReportTasksOperation(ChangeReportTaskData crtd, AtsApi atsApi, IAtsChangeSet changes) {
       this.crtd = crtd;
@@ -90,6 +91,8 @@ public class CreateChangeReportTasksOperation {
    public ChangeReportTaskData run() {
       XResultData rd = crtd.getResults();
       rd.log(crtd.getOperationName() + "\n");
+
+      taskProviders = atsApi.getTaskService().getTaskProviders();
 
       try {
          if (crtd.getHostTeamWf() == null || crtd.getHostTeamWf().isInvalid()) {
@@ -287,8 +290,8 @@ public class CreateChangeReportTasksOperation {
             }
             if (changes != null && atsApi.getRelationResolver().areNotRelated(chgRptTeamWf, AtsRelationTypes.Derive_To,
                destTeamWf)) {
-               changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
-            }
+                  changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
+               }
             if (destTeamWf != null) {
                crttwd.setDestTeamWf(destTeamWf.getStoreObject());
                crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);
@@ -445,11 +448,11 @@ public class CreateChangeReportTasksOperation {
             columns.add(
                new XResultTableColumn(Columns.Action.name(), Columns.Action.name(), 200, XResultTableDataType.String));
 
+            BranchToken branch = atsApi.getBranchService().getBranch(crtd.getWorkOrParentBranchId());
             for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
                String safeName = "";
                if (taskMatch.getChgRptArt().isValid()) {
-                  safeName =
-                     atsApi.getStoreService().getSafeName(taskMatch.getChgRptArt(), crtd.getWorkOrParentBranchId());
+                  safeName = atsApi.getStoreService().getSafeName(taskMatch.getChgRptArt(), branch);
                }
                table.getRows().add(new XResultTableRow( //
                   taskMatch.getChgRptArtName(), //
@@ -626,7 +629,6 @@ public class CreateChangeReportTasksOperation {
 
       // Allow extensions to set TaskAutoGenVersion, else fail
       AutoGenVersion ver = null;
-      List<IAtsTaskProvider> taskProviders = AtsTaskProviderCollector.getTaskProviders();
       for (IAtsTaskProvider provider : taskProviders) {
          ver = provider.getAutoGenTaskVersionToSet(crtd, crttwd, taskMatch);
          if (ver != null) {
@@ -642,7 +644,7 @@ public class CreateChangeReportTasksOperation {
       task.addAttribute(AtsAttributeTypes.TaskAutoGen, true);
 
       // Allow extensions to add to generating task
-      for (IAtsTaskProvider provider : AtsTaskProviderCollector.getTaskProviders()) {
+      for (IAtsTaskProvider provider : taskProviders) {
          provider.addToAutoGeneratingTask(crtd, crttwd, taskMatch, task);
       }
       crttwd.getNewTaskSet().getNewTaskDatas().iterator().next().getTasks().add(task);

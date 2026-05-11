@@ -53,7 +53,7 @@ public class TaskRelatedToChangedArtifactTest {
    public void testCreateSawTestWf() throws Exception {
       AtsTestUtil.cleanupAndReset(getClass().getName());
 
-      TeamWorkFlowArtifact codeWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      IAtsTeamWorkflow codeWf = DemoUtil.getSawCodeCommittedWf();
       assertNotNull(codeWf);
       IAtsTask codeTask = null;
       for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(codeWf)) {
@@ -66,7 +66,7 @@ public class TaskRelatedToChangedArtifactTest {
       TeamWorkFlowArtifact reqWf = null;
       for (IAtsTeamWorkflow wf : AtsApiService.get().getActionService().getSiblingTeamWorkflows(codeWf)) {
          if (wf.getTeamDefinition().getName().contains("Requirements")) {
-            reqWf = (TeamWorkFlowArtifact) wf.getStoreObject();
+            reqWf = (TeamWorkFlowArtifact) wf;
             break;
          }
       }

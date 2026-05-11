@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.core.task;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.AbstractAtsTaskService;
 import org.eclipse.osee.ats.api.task.IAtsTaskProvider;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 
 /**
  * @author Donald G. Dunne
@@ -25,14 +25,20 @@ import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 public abstract class AbstractAtsTaskServiceCore extends AbstractAtsTaskService {
 
    protected String DE_REFERRENCED_NOTE = "No Matching Artifact; Task can be deleted.";
+   private volatile Collection<IAtsTaskProvider> taskProviders = List.of();
 
    public AbstractAtsTaskServiceCore(AtsApi atsApi) {
       super(atsApi);
    }
 
    @Override
+   public void setTaskProviders(Collection<IAtsTaskProvider> providers) {
+      this.taskProviders = providers;
+   }
+
+   @Override
    public Collection<IAtsTaskProvider> getTaskProviders() {
-      return AtsTaskProviderCollector.getTaskProviders();
+      return taskProviders;
    }
 
    @Override

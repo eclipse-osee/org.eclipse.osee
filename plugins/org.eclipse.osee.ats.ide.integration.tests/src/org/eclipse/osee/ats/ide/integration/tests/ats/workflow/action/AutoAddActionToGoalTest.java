@@ -171,12 +171,15 @@ public class AutoAddActionToGoalTest {
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       TeamWorkFlowArtifact teamWf3 = AtsTestUtil.getTeamWf3();
+      goalArt.reload();
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Goal should have two memebers", 2, memArt.size());
       Assert.assertTrue("Team Workflow with two memebers of Goal - TeamWf",
          goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member).contains(teamWf2));
       Assert.assertTrue("Team Workflow with two memebers of Goal - TeamWf2",
          goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member).contains(teamWf3));
+
+      goalArt2.reload();
       List<Artifact> memArt2 = goalArt2.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Goal2 should only have one memeber", 1, memArt2.size());
       Assert.assertTrue("Team Workflow with AI part of Goal2",

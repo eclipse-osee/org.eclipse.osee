@@ -147,7 +147,7 @@ public class ProgramOperations {
 
    private void setTaskFields(ArtifactToken taskArt, UiGridProgItem taskItem) {
       IAtsWorkItem workItem = atsApi.getQueryService().getTeamWf(taskArt);
-      String points = atsApi.getAgileService().getAgileTeamPointsStr(workItem);
+      String points = atsApi.getAgileService().getPointsStr(workItem);
       if (org.eclipse.osee.framework.jdk.core.util.Strings.isValid(points)) {
          taskItem.setAgilePoints(points);
       }

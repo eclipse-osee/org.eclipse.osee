@@ -45,6 +45,7 @@ public class MyWorldSearchItem extends UserSearchItem {
 
    @Override
    public Collection<Artifact> searchIt(AtsUser user) {
+
       Collection<Artifact> assigned = Collections.castAll(AtsApiService.get().getQueryService().getAssigned(user));
 
       Set<Artifact> results = new HashSet<>(assigned.size());

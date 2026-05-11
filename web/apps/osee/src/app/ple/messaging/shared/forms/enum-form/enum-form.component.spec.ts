@@ -79,7 +79,7 @@ describe('EnumFormComponent', () => {
 			MatButtonHarness.with({ text: new RegExp('add') })
 		);
 		expect(await addButton.isDisabled()).toBe(false);
-		const spy = spyOn(component, 'addEnum').and.callThrough();
+		const spy = vi.spyOn(component, 'addEnum');
 		await addButton.click();
 		expect(spy).toHaveBeenCalled();
 	});

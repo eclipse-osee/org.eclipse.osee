@@ -71,6 +71,13 @@ public class XText extends XWidget {
       super(displayLabel);
    }
 
+   public void updateUiEnablementFromValue(String value) {
+      if (value.length() > 1000) {
+         spellCheck = false;
+
+      }
+   }
+
    public void setEnabled(boolean enabled) {
       sText.setEnabled(enabled);
    }

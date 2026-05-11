@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,9 +34,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -48,31 +47,31 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateToken {
 
-   protected SwtXWidgetRenderer dynamicXWidgetLayout;
+   protected SwtXWidgetRenderer swtXWidgetRenderer;
    protected final StateDefinition stateDefinition;
    protected final WorkDefinition workDefinition;
    private final AbstractWorkflowArtifact awa;
 
-   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
+   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
       this.awa = awa;
       this.workDefinition = workDefinition;
       this.stateDefinition = stateDefinition;
       if (dynamicWidgetLayoutListener == null) {
-         dynamicXWidgetLayout = new SwtXWidgetRenderer(this, optionResolver);
+         swtXWidgetRenderer = new SwtXWidgetRenderer(this);
       } else {
-         dynamicXWidgetLayout = new SwtXWidgetRenderer(dynamicWidgetLayoutListener, optionResolver);
+         swtXWidgetRenderer = new SwtXWidgetRenderer(dynamicWidgetLayoutListener);
       }
    }
 
-   public StateXWidgetPage(WorkDefinition workFlowDefinition, StateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, AbstractWorkflowArtifact awa) {
-      this(workFlowDefinition, stateDefinition, xWidgetsXml, optionResolver, null, awa);
+   public StateXWidgetPage(WorkDefinition workFlowDefinition, StateDefinition stateDefinition, String xWidgetsXml, AbstractWorkflowArtifact awa) {
+      this(workFlowDefinition, stateDefinition, xWidgetsXml, null, awa);
    }
 
    /**
     * @param instructionLines input lines of WorkAttribute declarations
     */
-   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
-      this(workDefinition, stateDefinition, optionResolver, dynamicWidgetLayoutListener, awa);
+   public StateXWidgetPage(WorkDefinition workDefinition, StateDefinition stateDefinition, String xWidgetsXml, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, AbstractWorkflowArtifact awa) {
+      this(workDefinition, stateDefinition, dynamicWidgetLayoutListener, awa);
       try {
          if (xWidgetsXml != null) {
             processXmlLayoutDatas(xWidgetsXml);
@@ -83,8 +82,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
       if (art != null) {
          for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
             item.xWidgetCreated(xWidget, toolkit, stateDefinition, art, isEditable);
@@ -93,8 +92,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
       if (art != null) {
          for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
             Result result = item.xWidgetCreating(xWidget, toolkit, stateDefinition, art, isEditable);
@@ -106,7 +105,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    public void dispose() {
-      WidgetPageUtil.dispose(dynamicXWidgetLayout);
+      WidgetPageUtil.dispose(swtXWidgetRenderer);
    }
 
    @Override
@@ -119,13 +118,13 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
 
    public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
       XModifiedListener xModListener, boolean isEditable) {
-      dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
-      return dynamicXWidgetLayout;
+      swtXWidgetRenderer.createBody(managedForm, parent, artifact, xModListener, isEditable);
+      return swtXWidgetRenderer;
    }
 
    public String getHtml(String backgroundColor, String preHtml, String postHtml) {
-      return WidgetPageUtil.getHtml(backgroundColor, preHtml, postHtml, dynamicXWidgetLayout.getLayoutDatas(),
-         getName());
+      return WidgetPageUtil.getHtml(backgroundColor, preHtml, postHtml, swtXWidgetRenderer.getXWidgetDatas(), getName(),
+         swtXWidgetRenderer);
    }
 
    @Override
@@ -142,16 +141,16 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return sb.toString();
    }
 
-   public XWidgetRendererItem getLayoutData(String layoutName) {
-      return dynamicXWidgetLayout.getLayoutData(layoutName);
+   public XWidgetData getLayoutData(String layoutName) {
+      return swtXWidgetRenderer.getXWidgetData(layoutName);
    }
 
    public SwtXWidgetRenderer getDynamicXWidgetLayout() {
-      return dynamicXWidgetLayout;
+      return swtXWidgetRenderer;
    }
 
    protected void processXmlLayoutDatas(String xWidgetXml) {
-      dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
+      swtXWidgetRenderer.processXWidgetDatas(xWidgetXml);
    }
 
    @Override
@@ -211,43 +210,43 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    @Override
-   public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit,
-      Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public void createXWidgetLayoutData(XWidgetData widData, XWidget xWidget, FormToolkit toolkit, Artifact art,
+      XModifiedListener xModListener, boolean isEditable) {
       // If no tool tip, add global tool tip
       if (!Strings.isValid(xWidget.getToolTip())) {
          String description = "";
-         if (layoutData.getXWidgetName().equals(XCommitManager.class.getSimpleName())) {
+         if (widData.getXWidgetName().equals(XCommitManager.class.getSimpleName())) {
             description = XCommitManager.DESCRIPTION;
             xWidget.setToolTip(description);
-            layoutData.setToolTip(description);
+            widData.setToolTip(description);
          } else {
-            setAttrToolTip(xWidget, layoutData);
+            setAttrToolTip(xWidget, widData);
          }
       }
       // Store workAttr in control for use by help
       if (xWidget.getControl() != null) {
-         xWidget.getControl().setData(layoutData);
+         xWidget.getControl().setData(widData);
       }
 
    }
 
-   protected void setAttrToolTip(XWidget xWidget, XWidgetRendererItem layoutData) {
+   protected void setAttrToolTip(XWidget xWidget, XWidgetData widData) {
       String description = "";
-      if (AttributeTypeManager.typeExists(layoutData.getStoreName())) {
+      if (AttributeTypeManager.typeExists(widData.getStoreName())) {
          try {
             AttributeTypeToken type = null;
-            if (layoutData.getStoreId() > 0) {
-               type = AttributeTypeManager.getAttributeType(layoutData.getStoreId());
+            if (widData.getStoreId() > 0) {
+               type = AttributeTypeManager.getAttributeType(widData.getStoreId());
             }
-            if (type == null && Strings.isValid(layoutData.getStoreName())) {
-               type = AttributeTypeManager.getType(layoutData.getStoreName());
+            if (type == null && Strings.isValid(widData.getStoreName())) {
+               type = AttributeTypeManager.getType(widData.getStoreName());
             }
             if (type != null && Strings.isValid(type.getDescription())) {
                description = type.getDescription();
             }
             if (Strings.isValid(description)) {
                xWidget.setToolTip(description);
-               layoutData.setToolTip(description);
+               widData.setToolTip(description);
             }
          } catch (Exception ex) {
             String msg = String.format("Error setting tooltip for widget [%s].  Error %s (see log for details)",
@@ -271,7 +270,11 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    public void generateLayoutDatas() {
-      WidgetPageUtil.generateLayoutDatas(awa, stateDefinition.getLayoutItems(), dynamicXWidgetLayout);
+      WidgetPageUtil.generateLayoutDatas(awa, stateDefinition.getLayoutItems(), swtXWidgetRenderer);
+   }
+
+   public XWidget getWidget(String widgetLabel) {
+      return swtXWidgetRenderer.getXWidget(widgetLabel);
    }
 
 }

@@ -38,9 +38,11 @@ describe('AddCompoundApplicabilityDialogComponent', () => {
 	let fixture: ComponentFixture<AddCompoundApplicabilityDialogComponent>;
 
 	beforeEach(async () => {
-		const branchService = jasmine.createSpyObj('PlConfigBranchService', [
-			'getBranchApplicability',
-		]);
+		const branchService = {
+			getBranchApplicability: vi
+				.fn()
+				.mockName('PlConfigBranchService.getBranchApplicability'),
+		};
 
 		await TestBed.configureTestingModule({
 			imports: [

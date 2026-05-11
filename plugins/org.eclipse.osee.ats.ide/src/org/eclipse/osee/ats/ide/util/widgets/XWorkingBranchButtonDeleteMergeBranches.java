@@ -25,11 +25,11 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.model.MergeBranch;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.MergeInProgressHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxBranchDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -48,7 +48,7 @@ public class XWorkingBranchButtonDeleteMergeBranches extends XWorkingBranchButto
    @Override
    protected void initButton(final Button button) {
       button.setToolTipText("Delete Merge Branch(es)");
-      button.setImage(ImageManager.getImage(FrameworkImage.DELETE_MERGE_BRANCHES));
+      button.setImage(ImageManager.getImage(CoreImage.DELETE_MERGE_BRANCHES));
       button.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {

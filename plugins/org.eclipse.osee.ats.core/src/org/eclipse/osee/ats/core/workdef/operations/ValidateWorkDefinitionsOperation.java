@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.ats.core.workdef.operations;
 
-import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
@@ -41,7 +39,8 @@ public class ValidateWorkDefinitionsOperation {
    public XResultData run() {
       XResultData rd = new XResultData();
       validateWidgetsAndAttrs(rd);
-      validateWorkDefReferences(rd);
+      XResultData rpt = atsApi.getServerEndpoints().getTestEp().validateWorkDefReferences();
+      rd.merge(rpt);
       validateNoMissingWorkDefRefs(rd);
       return rd;
    }
@@ -51,25 +50,6 @@ public class ValidateWorkDefinitionsOperation {
       for (ArtifactToken art : atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andNotExists(
          AtsAttributeTypes.WorkflowDefinitionReference).getResultArtifacts().getList()) {
          rd.errorf("Work Def Ref NOT exists for Id = %s\n", art.getIdString());
-      }
-   }
-
-   private void validateWorkDefReferences(XResultData rd) {
-      rd.log("\n\nValidating (tx_current==1) Work Definition Reference attrs...");
-      List<Map<String, String>> query = atsApi.getQueryService().query( //
-         "SELECT DISTINCT(attr.value) FROM osee_attribute attr, osee_txs txs WHERE \n" + //
-            "txs.branch_id = 570 and attr.gamma_id = txs.gamma_id \n" + //
-            "AND txs.tx_current = 1 AND attr.ATTR_TYPE_ID = " + //
-            AtsAttributeTypes.WorkflowDefinitionReference.getIdString());
-      for (Map<String, String> entry : query) {
-         String idStr = entry.values().iterator().next();
-         Long id = Long.valueOf(idStr);
-         WorkDefinition workDef = atsApi.getWorkDefinitionService().getWorkDefinition(id);
-         if (workDef == null) {
-            rd.errorf("Work Def Id = %s - InValid\n", idStr);
-         } else {
-            rd.logf("Work Def Id = %s - Valid\n", idStr);
-         }
       }
    }
 

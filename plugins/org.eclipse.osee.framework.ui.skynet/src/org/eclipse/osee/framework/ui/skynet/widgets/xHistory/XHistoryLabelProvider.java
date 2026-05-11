@@ -22,13 +22,13 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionIdColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.XChangeLabelProvider;
@@ -153,7 +153,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          if (element instanceof Change) {
             if (xCol.getId().equals(HistoryTransactionIdColumn.ID)) {
                if (transactionImage == null) {
-                  transactionImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
+                  transactionImage = ImageManager.getImage(CoreImage.DB_ICON_BLUE);
                }
                result = transactionImage;
             } else if (xCol.equals(HistoryXViewerFactory.itemType)) {

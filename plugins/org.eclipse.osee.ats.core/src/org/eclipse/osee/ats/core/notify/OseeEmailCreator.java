@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.notify;
 
-import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.core.util.IOseeEmail;
 
 /**
  * @author Donald G. Dunne
  */
 public interface OseeEmailCreator {
 
-   public OseeEmail createOseeEmail();
+   public IOseeEmail createOseeEmail();
 
 }

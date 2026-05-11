@@ -16,7 +16,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
+import org.eclipse.osee.framework.core.widget.ISelectableValueProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWithFilteredDialog;
 
 /**

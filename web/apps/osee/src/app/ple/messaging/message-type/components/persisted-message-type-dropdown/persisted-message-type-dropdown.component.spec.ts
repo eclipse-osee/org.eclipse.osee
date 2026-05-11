@@ -20,6 +20,7 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { MockMessageTypeDropdownComponent } from '@osee/messaging/message-type/message-type-dropdown/testing';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { attribute } from '@osee/attributes/types';
 
 describe('PersistedMessageTypeDropdownComponent', () => {
 	let component: ParentDriverComponent;
@@ -38,7 +39,9 @@ describe('PersistedMessageTypeDropdownComponent', () => {
 	class ParentDriverComponent {
 		artifactId = signal(`1` as const);
 		artifactApplicability = signal(applicabilitySentinel);
-		value = signal({
+		value = signal<
+			attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGETYPE>
+		>({
 			id: '-1',
 			typeId: ATTRIBUTETYPEIDENUM.INTERFACEMESSAGETYPE,
 			gammaId: '-1',

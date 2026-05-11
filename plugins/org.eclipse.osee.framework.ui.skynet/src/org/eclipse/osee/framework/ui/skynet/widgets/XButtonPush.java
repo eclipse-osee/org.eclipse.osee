@@ -60,7 +60,11 @@ public class XButtonPush extends GenericXWidget {
 
       bComp = new Composite(parent, SWT.NONE);
       bComp.setLayout(ALayout.getZeroMarginLayout(2, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      if (isFillHorizontally()) {
+         bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      } else {
+         bComp.setLayoutData(new GridData());
+      }
       if (toolkit != null) {
          toolkit.adapt(bComp);
       }

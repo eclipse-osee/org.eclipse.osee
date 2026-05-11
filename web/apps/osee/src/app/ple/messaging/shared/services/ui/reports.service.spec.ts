@@ -14,7 +14,7 @@ import {
 	HttpTestingController,
 	provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { mimReportsMock } from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
@@ -97,12 +97,13 @@ describe('ReportsService', () => {
 		});
 	});
 
-	it('should get a requirement trace report', fakeAsync(() => {
+	it('should get a requirement trace report', () => {
+		vi.useFakeTimers();
 		const traceReport = NodeTraceReportMock;
 		service.BranchId = '10';
 		service.BranchType = 'working';
 		service.nodeTraceReportRequirements.subscribe();
-		tick(100);
+		vi.advanceTimersByTime(100);
 		const req = httpTestingController.expectOne(
 			apiURL +
 				'/mim/reports/10/allRequirementsToInterface?count=200&pageNum=1'
@@ -110,14 +111,15 @@ describe('ReportsService', () => {
 		expect(req.request.method).toEqual('GET');
 		req.flush(traceReport);
 		httpTestingController.verify();
-	}));
+	});
 
-	it('should get an interface artifact trace report', fakeAsync(() => {
+	it('should get an interface artifact trace report', () => {
+		vi.useFakeTimers();
 		const traceReport = NodeTraceReportMock;
 		service.BranchId = '10';
 		service.BranchType = 'working';
 		service.nodeTraceReportInterfaceArtifacts.subscribe();
-		tick(100);
+		vi.advanceTimersByTime(100);
 		const req = httpTestingController.expectOne(
 			apiURL +
 				'/mim/reports/10/allInterfaceToRequirements?count=200&pageNum=1'
@@ -125,5 +127,8 @@ describe('ReportsService', () => {
 		expect(req.request.method).toEqual('GET');
 		req.flush(traceReport);
 		httpTestingController.verify();
-	}));
+	});
+	afterEach(() => {
+		vi.useRealTimers();
+	});
 });

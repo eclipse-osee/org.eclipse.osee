@@ -76,7 +76,7 @@ describe('CrossReferenceService', () => {
 	});
 
 	//TODO: test doesn't work with signals
-	xit('should create a cross reference', () => {
+	it.skip('should create a cross reference', () => {
 		scheduler.run(() => {
 			service.BranchId = '10';
 			service.SelectedConnectionId = '123';

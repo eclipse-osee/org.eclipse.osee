@@ -70,18 +70,12 @@ export class ReportsComponent implements OnInit {
 	private validationService = inject(ValidationUiService);
 	private connectionService = inject(ConnectionService);
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
-	constructor() {
-		// When the branch changes, need to reset the validation results
-		this.reportsService.branchId
-			.pipe(
-				tap(() => this.startConnectionValidation.next(false)),
-				takeUntilDestroyed()
-			)
-			.subscribe();
-	}
+	private _branchId = toSignal(
+		this.reportsService.branchId.pipe(
+			tap(() => this.startConnectionValidation.next(false)),
+			takeUntilDestroyed()
+		)
+	);
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {

@@ -21,18 +21,17 @@ import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 /**
  * @author Donald G. Dunne
  */
-public class HoldStateSearchWidget extends AbstractXHyperlinkSelectionSearchWidget<HoldState> {
+public class HoldStateSearchWidget extends AbstractXHyperlinkWfdSearchWidget<HoldState> {
 
-   public static final String HOLD_STATE = "Hold State";
+   public static SearchWidget HoldStateWidget = new SearchWidget(23298234, "Hold State", "XHyperlinkWfdForObject");
 
    public HoldStateSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(HOLD_STATE, searchItem);
+      super(HoldStateWidget, searchItem);
    }
 
    @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
-         setup(getWidget());
          HoldState holdState = data.getHoldState();
          getWidget().setSelected(holdState);
       }
@@ -48,8 +47,4 @@ public class HoldStateSearchWidget extends AbstractXHyperlinkSelectionSearchWidg
       return false;
    }
 
-   @Override
-   protected String getLabel() {
-      return HOLD_STATE;
-   }
 }

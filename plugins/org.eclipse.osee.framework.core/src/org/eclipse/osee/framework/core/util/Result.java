@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.util;
 
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+
 /**
  * @author Donald G. Dunne
  */
@@ -50,6 +52,7 @@ public class Result {
    }
 
    public void set(boolean isTrue) {
+      ensureNotStaticResult();
       this.isTrue = isTrue;
    }
 
@@ -75,10 +78,12 @@ public class Result {
    }
 
    public void setText(String text) {
+      ensureNotStaticResult();
       this.text = text;
    }
 
    public void setTextWithFormat(String format, Object... objects) {
+      ensureNotStaticResult();
       this.text = String.format(format, objects);
    }
 
@@ -87,15 +92,25 @@ public class Result {
    }
 
    public void setCancelled(boolean cancelled) {
+      ensureNotStaticResult();
       this.cancelled = cancelled;
    }
 
    public void errorf(String format, String data) {
+      ensureNotStaticResult();
       isTrue = false;
       this.text += String.format(format, data);
    }
 
    public void logf(String format, String data) {
+      ensureNotStaticResult();
       this.text += String.format(format, data);
    }
+
+   private void ensureNotStaticResult() {
+      if (this.equals(FalseResult) || this.equals(TrueResult) || this.equals(CancelledResult)) {
+         throw new OseeArgumentException("Can't modifiy static Result");
+      }
+   }
+
 }

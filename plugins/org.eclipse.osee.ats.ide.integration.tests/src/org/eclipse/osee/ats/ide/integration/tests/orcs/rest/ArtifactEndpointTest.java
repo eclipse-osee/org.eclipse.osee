@@ -19,6 +19,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,6 +48,7 @@ import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -81,6 +85,7 @@ public class ArtifactEndpointTest {
       artifactEndpoint = ServiceUtil.getOseeClient().getArtifactEndpoint(COMMON);
       workingBranchArtifactEndpoint =
          ServiceUtil.getOseeClient().getArtifactEndpoint(DemoBranches.SAW_PL_Working_Branch);
+
       applicEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
    }
 
@@ -308,5 +313,36 @@ public class ArtifactEndpointTest {
       });
       Assert.assertEquals(readables.get(0).getName(), "TestFolder2");
       Assert.assertEquals(readables.get(0).getId().toString(), artId);
+   }
+
+   @Test
+   public void testWMZConverter() throws IOException {
+      //Create a new Artifact of type artType on SAWL_PL_Working_Branch
+      SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + " testing wmz conversion");
+      Artifact artifact =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Image, DemoBranches.SAW_PL_Working_Branch, "TempImage");
+      artifact.addAttributeFromString(CoreAttributeTypes.NativeContent, "This is not valid native content");
+      artifact.addAttributeFromString(CoreAttributeTypes.Extension, "wmz");
+
+      //Commit transaction and return the newly created TransactionToken
+      transaction.addArtifact(artifact);
+      transaction.execute();
+
+      Path path = Paths.get("../../tools/support/Convert-WmzEmzToPng.ps1");
+      // test just checks to make sure the script exists
+      String spath = path.toRealPath(LinkOption.NOFOLLOW_LINKS).toString();
+      Assert.assertTrue(spath.contains("Convert-WmzEmzToPng"));
+
+      XResultData result =
+         workingBranchArtifactEndpoint.convertWMZChildAttribute(DemoBranches.SAW_PL_Working_Branch, artifact, null);
+
+      /*
+       * This capability only works on a machine with Word on it, and is only intended for development monitored single
+       * run conversions. The code will be commented out in the committed file so won't be a security issue.
+       */
+
+      String results = result.toString();
+      Assert.assertTrue(results.contains("Invalid script"));
    }
 }

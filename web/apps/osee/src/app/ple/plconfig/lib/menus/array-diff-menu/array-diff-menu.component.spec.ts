@@ -91,7 +91,7 @@ describe('ArrayDiffMenuComponent', () => {
 	});
 
 	it('should open a diff sidenav', async () => {
-		const spy = spyOn(component, 'viewDiff').and.callThrough();
+		const spy = vi.spyOn(component, 'viewDiff');
 		const button = await loader.getHarness(
 			MatMenuItemHarness.with({ text: '123' })
 		);

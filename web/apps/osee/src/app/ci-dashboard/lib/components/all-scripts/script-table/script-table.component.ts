@@ -52,6 +52,14 @@ import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { UserDataAccountService } from '../../../../../auth/user-data-account.service';
+import { UserRoles } from '@osee/shared/types/auth';
+import { map } from 'rxjs/operators';
+
+const editRoles = new Set<string>([
+	UserRoles.CI_TEST_MASTER,
+	UserRoles.CI_ADMIN,
+]);
 
 @Component({
 	selector: 'osee-script-table',
@@ -124,9 +132,17 @@ import { MatSort, MatSortHeader } from '@angular/material/sort';
 									{{ def[header] }}
 								</button>
 							} @else if (header === 'subsystem') {
-								<osee-subsystem-selector [script]="def" />
+								@if (canEditScripts()) {
+									<osee-subsystem-selector [script]="def" />
+								} @else {
+									{{ def.subsystem || '' }}
+								}
 							} @else if (header === 'team') {
-								<osee-team-selector [script]="def" />
+								@if (canEditScripts()) {
+									<osee-team-selector [script]="def" />
+								} @else {
+									{{ def.team?.name?.value || '' }}
+								}
 							} @else {
 								{{ def[header] }}
 							}
@@ -156,6 +172,7 @@ export class ScriptTableComponent {
 	ciDetailsService = inject(CiDetailsTableService);
 	ciDashboardService = inject(CiDashboardUiService);
 	headerService = inject(HeaderService);
+	userData = inject(UserDataAccountService);
 	dialog = inject(MatDialog);
 	router = inject(Router);
 
@@ -169,6 +186,13 @@ export class ScriptTableComponent {
 		this.ciDetailsService.scriptDefs.pipe(takeUntilDestroyed())
 	);
 	ciSetId = this.ciDashboardService.ciSetId;
+
+	canEditScripts = toSignal(
+		this.userData.user.pipe(
+			map((u) => (u?.roles ?? []).some((r) => editRoles.has(r.id)))
+		),
+		{ initialValue: false }
+	);
 
 	datasource = new MatTableDataSource<DefReference>();
 

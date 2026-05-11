@@ -26,6 +26,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 describe('ResultsComponent', () => {
 	let component: ResultsComponent;
@@ -45,6 +46,7 @@ describe('ResultsComponent', () => {
 					MatLabel,
 					MatIcon,
 					MatInput,
+					FormsModule,
 				],
 			},
 		}).configureTestingModule({

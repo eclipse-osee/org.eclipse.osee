@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.data.conditions.EnableIfAttrValueCondition;
 import org.eclipse.osee.framework.core.enums.OseeImage;
+import org.eclipse.osee.framework.core.widget.ISelectableValueProvider;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
@@ -632,6 +633,14 @@ public abstract class XWidget {
    public void setEnumeratedArt(ArtifactToken enumeratedArt) {
       Conditions.requireNonNull(enumeratedArt, "Enumerated Art");
       this.enumeratedArt = enumeratedArt;
+   }
+
+   public void clear() {
+      // for subclass
+   }
+
+   public Hyperlink getLabelHyperlink() {
+      return labelHyperlink;
    }
 
 }

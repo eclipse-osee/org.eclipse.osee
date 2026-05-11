@@ -32,11 +32,11 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -56,7 +56,7 @@ public class PurgeTransactionAction extends Action {
    public PurgeTransactionAction(List<TransactionToken> transactions) {
       super(NAME);
       this.transactions = transactions;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.PURGE));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.PURGE));
       setToolTipText(NAME);
    }
 

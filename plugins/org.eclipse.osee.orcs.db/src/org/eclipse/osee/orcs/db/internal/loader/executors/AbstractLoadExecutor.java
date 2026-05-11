@@ -16,10 +16,10 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 import java.util.concurrent.CancellationException;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
+import org.eclipse.osee.orcs.search.ds.LoadDataHandler;
+import org.eclipse.osee.orcs.search.ds.Options;
 
 /**
  * @author Andrew M. Finkbeiner

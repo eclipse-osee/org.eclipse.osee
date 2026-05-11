@@ -33,6 +33,10 @@ describe('RelationsEditorPanelComponent', () => {
 			],
 		});
 		fixture = TestBed.createComponent(RelationsEditorPanelComponent);
+		fixture.componentRef.setInput('artifactId', '1');
+		fixture.componentRef.setInput('branchId', '8');
+		fixture.componentRef.setInput('viewId', '-1');
+		fixture.componentRef.setInput('editable', true);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

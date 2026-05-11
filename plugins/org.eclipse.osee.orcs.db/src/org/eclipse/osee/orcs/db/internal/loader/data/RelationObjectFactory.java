@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.search.ds.RelationData;
+import org.eclipse.osee.orcs.search.ds.VersionData;
 
 /**
  * @author Roberto E. Escobar

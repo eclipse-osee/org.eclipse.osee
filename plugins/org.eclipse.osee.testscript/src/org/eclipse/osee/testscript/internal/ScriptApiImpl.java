@@ -62,8 +62,8 @@ public class ScriptApiImpl implements ScriptApi {
       this.scriptResultApi = new ScriptResultApiImpl(orcsApi, tmoFileApi);
       this.testCaseApi = new TestCaseApiImpl(orcsApi);
       this.testPointApi = new TestPointApiImpl(orcsApi);
-      this.tmoImportApi = new TmoImportApiImpl(orcsApi, scriptDefApi, tmoFileApi, atsScriptApi);
       this.dashboardApi = new DashboardApiImpl(scriptResultApi, scriptProgramApi, orcsApi);
+      this.tmoImportApi = new TmoImportApiImpl(orcsApi, scriptDefApi, tmoFileApi, atsScriptApi, dashboardApi);
       this.scriptConfigApi = new ScriptConfigApiImpl(orcsApi);
       this.scriptPurgeApi = new ScriptPurgeApiImpl(orcsApi, scriptConfigApi, dashboardApi, tmoFileApi);
    }

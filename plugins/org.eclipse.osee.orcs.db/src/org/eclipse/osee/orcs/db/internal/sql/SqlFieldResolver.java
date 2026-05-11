@@ -30,11 +30,11 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.jdbc.SqlTable;
-import org.eclipse.osee.orcs.core.ds.DynamicData;
-import org.eclipse.osee.orcs.core.ds.DynamicObject;
-import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
-import org.eclipse.osee.orcs.core.ds.SelectSet;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectField.Family;
+import org.eclipse.osee.orcs.search.ds.DynamicData;
+import org.eclipse.osee.orcs.search.ds.DynamicObject;
+import org.eclipse.osee.orcs.search.ds.ResultObjectDescription;
+import org.eclipse.osee.orcs.search.ds.SelectSet;
 
 /**
  * @author Roberto E. Escobar

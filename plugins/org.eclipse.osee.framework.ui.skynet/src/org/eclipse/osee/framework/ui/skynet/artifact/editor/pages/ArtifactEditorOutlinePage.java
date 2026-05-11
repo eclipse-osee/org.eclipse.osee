@@ -26,12 +26,12 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
@@ -125,14 +125,14 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof AttributeTypeContainer) {
             AttributeTypeContainer container = (AttributeTypeContainer) element;
             containers.add(container);
-            return container.isEditable() ? ImageManager.getImage(FrameworkImage.EDIT_ARTIFACT) : ImageManager.getImage(
-               FrameworkImage.ADD_GREEN);
+            return container.isEditable() ? ImageManager.getImage(CoreImage.EDIT_ARTIFACT) : ImageManager.getImage(
+               CoreImage.ADD_GREEN);
          } else if (element instanceof AttributeTypeId) {
             AttributeTypeId type = (AttributeTypeId) element;
             for (AttributeTypeContainer container : containers) {
                if (container.contains(type)) {
                   return container.isEditable() ? ImageManager.getImage(
-                     FrameworkImage.ATTRIBUTE_SUB_A) : ImageManager.getImage(FrameworkImage.ATTRIBUTE_DISABLED);
+                     CoreImage.ATTRIBUTE_SUB_A) : ImageManager.getImage(CoreImage.ATTRIBUTE_DISABLED);
                }
             }
          }

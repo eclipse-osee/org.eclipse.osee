@@ -54,11 +54,11 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
+import org.eclipse.osee.orcs.search.ds.Attribute;
 
 /**
  * @author Megumi Telles
@@ -76,6 +76,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    private RelationManager getRelationManager() {
       return relationManager;
+   }
+
+   @Override
+   public boolean isLegacyArtRead() {
+      return true;
    }
 
    @Override
@@ -479,14 +484,14 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
       throw new UnsupportedOperationException();
    }
-   
-    @Override
+
+   @Override
    public <T> AttributeReadable<T> getSoleAttribute(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
 
    @Override
-   public TransactionDetails getTxDetails() {
+   public TransactionDetails getLatestTxDetails() {
       throw new UnsupportedOperationException();
    }
 
@@ -494,7 +499,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
-   
+
+   @Override
    public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
       throw new UnsupportedOperationException();
    }
@@ -503,10 +509,20 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
       throw new UnsupportedOperationException();
    }
-   
+
    @Override
    public GammaId getGamma() {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew() {
+      return Collections.transform(getAttributes().getList(), a -> (IAttribute<?>) a);
+   }
+
+   @Override
+   public List<IAttribute<?>> getAttributesNew(AttributeTypeToken attrType) {
+      return Collections.transform(getAttributes(attrType).getList(), a -> (IAttribute<?>) a);
    }
 
 }

@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.ide.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
-import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
@@ -62,6 +61,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.EditorWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
@@ -500,12 +500,11 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       List<StateXWidgetPage> statePages = new ArrayList<>();
       if (workItem != null) {
          WorkDefinition workDef = workItem.getWorkDefinition();
-         ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();
          for (StateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
             workDef)) {
             try {
-               StateXWidgetPage statePage = new StateXWidgetPage(workDef, stateDefinition, null, optionResolver,
-                  (AbstractWorkflowArtifact) workItem);
+               StateXWidgetPage statePage = new StateXWidgetPage(workDef, stateDefinition,
+                  (IDynamicWidgetLayoutListener) null, (AbstractWorkflowArtifact) workItem);
                statePages.add(statePage);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

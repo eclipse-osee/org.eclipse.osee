@@ -87,6 +87,10 @@ public interface CoreAttributeTypes {
    // @formatter:off
 
    AttributeTypeString AbridgedEmail = osee.createString(1867950456941316571L, "Abridged Email", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString EmailCertificateInstructions = osee.createString(9211057726662841963L, "Email Certificate Instructions", MediaType.TEXT_PLAIN, "Supplementary organization specific instructions for email certificates. Sent to users when a valid certificate is not available.", DisplayHint.MultiLine);
+   AttributeTypeString EmailCertificateUploadOverrideLink = osee.createString(3104381527452070592L, "Email Certificate Upload Override Link", MediaType.TEXT_PLAIN, "Email certificate upload link to override the default dynamic link.");
+   AttributeTypeString EmailCertificateLdapUrl = osee.createString(5692888595530430477L, "Email Certificate LDAP URL", MediaType.TEXT_PLAIN, "Email Certificate LDAP URL from which to retrieve public certificates.");
+   AttributeTypeBoolean EmailEncryptionEnabled = osee.createBoolean(8872490503810848554L, "Email Encryption Enabled", MediaType.TEXT_PLAIN, "Whether or not to use and require the encrypted email flow.");
    AttributeTypeString AccessContextId = osee.createString(1152921504606847102L, "Access Context Id", MediaType.TEXT_PLAIN, "", DisplayHint.SingleLine);
    AttributeTypeString Acronym = osee.createString(4723834159825897915L, "Acronym", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean Active = osee.createBoolean(1152921504606847065L, "Active", MediaType.TEXT_PLAIN, "");
@@ -134,6 +138,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString ElapsedDate = osee.createString(1152921504606847296L, "Elapsed Date", MediaType.TEXT_PLAIN, "Time Elapsed from the start to the end of the script");
    AttributeTypeInteger ElapsedTime = osee.createInteger(6083892673634294710L, "Elapsed Time", MediaType.TEXT_PLAIN, "Elapsed Time in Milliseconds");
    AttributeTypeString Email = osee.createString(1152921504606847082L, "Email", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString EmailPublicCertificate = osee.createString(4924086760023447151L, "Email Public Certificate", MediaType.TEXT_PLAIN, "");
    AttributeTypeString EndpointUrl = osee.createString(1103659738810857581L, "Endpoint URL", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ExcludePath = osee.createString(1152921504606847708L, "Exclude Path", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ExecutedBy = osee.createString(1152921504606847377L, "Executed By", MediaType.TEXT_PLAIN, "");
@@ -277,7 +282,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString MobilePhone = osee.createString(1152921504606847080L, "Mobile Phone", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ModifiedFlag = osee.createString(1152921504606847284L, "Modified Flag", MediaType.TEXT_PLAIN, "File Modification Flag from Repository");
    AttributeTypeString Name = osee.createString(1152921504606847088L, "Name", MediaType.TEXT_PLAIN, "Descriptive Name");
-   AttributeTypeString NameAbbrev= osee.createString(8355308043647703563L,"Name Abbrev",MediaType.TEXT_PLAIN,"");
+   AttributeTypeString NameAbbrev = osee.createString(8355308043647703563L,"Name Abbrev",MediaType.TEXT_PLAIN,"");
    AttributeTypeInputStream NativeContent = osee.createInputStreamNoTag(1152921504606847097L, "Native Content", MediaType.APPLICATION_OCTET_STREAM, "content that will be edited by a native program");
    AttributeTypeString Notes = osee.createString(1152921504606847085L, "Notes", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ObjectName = osee.createString(336479226773047054L, "Object Name", MediaType.TEXT_PLAIN, "");

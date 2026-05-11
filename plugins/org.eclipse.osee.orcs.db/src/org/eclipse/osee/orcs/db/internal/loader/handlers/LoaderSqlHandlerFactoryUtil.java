@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
@@ -23,6 +22,7 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation2;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactoryImpl;
+import org.eclipse.osee.orcs.search.ds.Criteria;
 
 /**
  * @author Roberto E. Escobar

@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.mocks;
 
-import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
+import org.eclipse.osee.orcs.search.ds.ResourceNameResolver;
 
 /**
  * @author Roberto E. Escobar

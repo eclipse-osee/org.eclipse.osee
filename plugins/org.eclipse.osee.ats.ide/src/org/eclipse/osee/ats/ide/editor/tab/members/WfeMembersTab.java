@@ -78,6 +78,7 @@ import org.eclipse.osee.ats.ide.world.WorldXViewerEventManager;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -86,7 +87,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
@@ -651,7 +651,7 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
       public DropDownAction() {
          setText("Other");
          setMenuCreator(this);
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GEAR));
          addKeyListener();
       }
 

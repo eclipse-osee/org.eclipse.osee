@@ -21,20 +21,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jface.window.Window;
-import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.BackgroundLoadingPreComputedColumnUI;
-import org.eclipse.osee.ats.ide.column.BackgroundLoadingValueProviderUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.IAtsWorldArtifactEventColumn;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
@@ -44,8 +39,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -68,19 +63,17 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class ApplicabilityColumnUI extends XViewerAtsCoreCodeXColumn implements BackgroundLoadingValueProviderUI, IXViewerPreComputedColumn, IAtsWorldArtifactEventColumn {
+public class ApplicabilityColumnUI extends BackgroundLoadingPreComputedColumnUI implements IAtsWorldArtifactEventColumn {
 
    public static ApplicabilityColumnUI instance = new ApplicabilityColumnUI();
-   public AtomicBoolean loading = new AtomicBoolean(false);
-   public AtomicBoolean loaded = new AtomicBoolean(false);
-   protected Map<Long, String> idToValueMap = new HashMap<>();
+   private final Map<Long, String> idToApplic = new HashMap<>();
 
    public static ApplicabilityColumnUI getInstance() {
       return instance;
    }
 
    private ApplicabilityColumnUI() {
-      super(AtsColumnTokensDefault.ApplicabilityColumn, AtsApiService.get());
+      super(AtsColumnTokensDefault.ApplicabilityColumn);
    }
 
    /**
@@ -97,49 +90,24 @@ public class ApplicabilityColumnUI extends XViewerAtsCoreCodeXColumn implements 
    @Override
    public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       String value = "";
-      if (workItem.isTeamWorkflow()) {
-         IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
-         ApplicabilityToken applicTok = AtsApiService.get().getStoreService().getApplicabilityToken(teamWf);
-         if (applicTok.isValid()) {
-            value = applicTok.getName();
-            idToValueMap.put(workItem.getId(), value);
+      if (Strings.isInValid(value)) {
+         if (workItem.isTeamWorkflow()) {
+            String cachedVal = idToApplic.get(workItem.getId());
+            if (Strings.isValid(cachedVal)) {
+               value = cachedVal;
+            } else {
+               IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+               ApplicabilityToken applicTok = AtsApiService.get().getStoreService().getApplicabilityToken(teamWf);
+               if (applicTok.isValid()) {
+                  value = applicTok.getName();
+               } else {
+                  value = " ";
+               }
+            }
+            idToApplic.put(workItem.getId(), value);
          }
       }
       return value;
-   }
-
-   @Override
-   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
-      this.preComputedValueMap = preComputedValueMap;
-      this.loaded.set(false);
-      this.loading.set(false);
-      for (Object obj : objects) {
-         this.preComputedValueMap.put(getKey(obj), "loading...");
-      }
-      BackgroundLoadingPreComputedColumnUI.startLoadingThread(getName(), objects, loading, loaded,
-         (WorldXViewer) getXViewer(), preComputedValueMap, this);
-   }
-
-   @Override
-   public String getColumnText(Object obj, XViewerColumn column, int columnIndex) {
-      String value =
-         BackgroundLoadingPreComputedColumnUI.getColumnText(obj, loading, loaded, preComputedValueMap, this);
-      return value;
-   }
-
-   @Override
-   public String getText(Object obj, Long key, String cachedValue) {
-      String value =
-         BackgroundLoadingPreComputedColumnUI.getColumnText(obj, loading, loaded, preComputedValueMap, this);
-      return value;
-   }
-
-   @Override
-   public Long getKey(Object obj) {
-      if (obj instanceof Id) {
-         return ((Id) obj).getId();
-      }
-      return Id.SENTINEL;
    }
 
    @Override
@@ -242,10 +210,11 @@ public class ApplicabilityColumnUI extends XViewerAtsCoreCodeXColumn implements 
       }
       for (EventBasicGuidArtifact guidArt : artifactEvent.get(EventModType.Reloaded)) {
          Artifact workflow = ArtifactCache.getActive(guidArt);
-         if (workflow != null && workflow.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         if (workflow != null && workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workflow);
             String newValue = getValue(workItem, preComputedValueMap);
             preComputedValueMap.put(workflow.getId(), newValue);
+            idToApplic.put(workItem.getId(), newValue);
             xViewer.update(workflow, null);
          }
       }
