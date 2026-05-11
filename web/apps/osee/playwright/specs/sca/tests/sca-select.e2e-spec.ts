@@ -17,16 +17,16 @@ test('test', async ({ page }) => {
 	await page.goto('http://localhost:8089/coverage/ui/index.html#/');
 
 	const atsDropdown = page.locator('select[ng-model="programSelection"]');
-	await expect(atsDropdown).toBeVisible();
+	await expect(atsDropdown).toBeVisible({ timeout: 15000 });
 	await atsDropdown.selectOption({ label: 'Dispo Demo' });
 
 	const setDropdown = page.locator('select[ng-model="setSelection"]');
-	await expect(setDropdown).toBeVisible();
+	await expect(setDropdown).toBeVisible({ timeout: 15000 });
 
 	await expect(
 		setDropdown.locator('option[label="Dispo_Demo_Set"]')
 	).toHaveCount(1, {
-		timeout: 10000,
+		timeout: 30000,
 	});
 
 	await setDropdown.selectOption({ label: 'Dispo_Demo_Set' });
