@@ -69,7 +69,6 @@ import org.eclipse.ui.part.FileEditorInput;
  * Class of utilities methods for use by {@link FileSystemRenderer} implementations for creating filenames and file
  * handles.
  *
- * @implNote This class is for OSEE client only.
  * @author Loren K. Ashley
  */
 
@@ -137,13 +136,10 @@ public final class RenderingUtil {
     * <dd>If a default workbench editor can be found for the <code>contentFile</code> type, it will be used to display
     * the document.</dd>
     * </dl>
-    *
-    * @param presentationType the {@link PresentationType} determines the type of file monitor.
-    * @param program the {@link Program} to open the <code>contentFile</code> with.
-    * @param contentFile the rendered file to be displayed.
     */
 
-   public static void displayDocument(PresentationType presentationType, Program program, IFile contentFile) {
+   public static void displayDocument(Artifact artifact, String extension, PresentationType presentationType,
+      Program program, IFile contentFile) {
 
       var contentFilePath = contentFile.getLocation().toFile().getAbsolutePath();
 
@@ -152,8 +148,13 @@ public final class RenderingUtil {
          if (RenderingUtil.arePopupsAllowed()) {
 
             RenderingUtil.ensureFilenameLimit(contentFile);
-
-            program.execute(contentFile.getLocation().toFile().getAbsolutePath());
+            if (extension.equals("xml")) {
+               // Explicitly tell OS what to open with
+               program.execute(contentFile.getLocation().toFile().getAbsolutePath());
+            } else {
+               // Let OS open with configured application for that extension
+               Program.launch(contentFile.getLocation().toFile().getAbsolutePath());
+            }
 
          } else {
 

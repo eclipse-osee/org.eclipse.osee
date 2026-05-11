@@ -172,7 +172,8 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof ArtifactEditorInput) {
+      // Check if exact class and not subclass
+      if (obj != null && obj.getClass() == ArtifactEditorInput.class) {
          ArtifactEditorInput other = (ArtifactEditorInput) obj;
          if (getArtId().notEqual(other.getArtId())) {
             return false;
