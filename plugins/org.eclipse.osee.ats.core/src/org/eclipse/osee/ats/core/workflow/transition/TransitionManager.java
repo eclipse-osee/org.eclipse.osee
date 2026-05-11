@@ -347,7 +347,7 @@ public class TransitionManager implements IAtsChangeSetListener {
       try {
          IAtsChangeSet changes = getChangeSet();
          if (changes != null) {
-            changes.addExecuteListener(this);
+            changes.addChangeSetListener(this);
          }
          for (IAtsWorkItem workItem : transData.getWorkItems()) {
             try {
@@ -829,7 +829,7 @@ public class TransitionManager implements IAtsChangeSetListener {
    }
 
    @Override
-   public void changesStoring(IAtsChangeSet changes) {
+   public void changesPersisting(IAtsChangeSet changes) {
       // Notify extension points of transitionAndPersist
       Collection<IAtsTransitionHook> transitionHooks = getTransitionHooks(transData.getWorkItems().iterator().next());
       for (IAtsTransitionHook listener : transitionHooks) {
