@@ -27,4 +27,5 @@ export type MimReport = {
 	diffAvailable: boolean;
 	requiresValidation: boolean;
 	supportsErrorColoring: boolean;
+	supportsShowingOrder: boolean;
 };

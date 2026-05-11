@@ -120,6 +120,17 @@
 									" />
 							}
 							@if (
+								selectedReport?.supportsShowingOrder
+							) {
+								<mat-checkbox
+									class="primary-checkbox tw-block"
+									[(ngModel)]="showOrder">
+									<mat-label
+										>Show Order</mat-label
+									>
+								</mat-checkbox>
+							}
+							@if (
 								connectionValidationResults().branch !== '-1'
 							) {
 								<div class="tw-text-md tw-pt-4 tw-font-bold">

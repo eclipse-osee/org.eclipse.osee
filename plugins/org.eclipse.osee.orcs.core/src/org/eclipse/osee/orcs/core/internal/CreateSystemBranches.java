@@ -129,6 +129,7 @@ public class CreateSystemBranches {
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.ProducesMediaType, "application/octet-stream");
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.RequiresValidation, true);
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.SupportsErrorColoring, true);
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.SupportsShowingOrder, true);
 
       ArtifactId mimIcdImport = tx.createArtifact(mimFolder, MimArtifactTokens.MimIcdImport);
       tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.EndpointUrl, "/mim/import/icd/<branchId>");
