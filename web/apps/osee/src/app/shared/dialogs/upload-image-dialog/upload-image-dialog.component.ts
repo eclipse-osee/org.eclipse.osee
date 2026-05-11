@@ -26,7 +26,7 @@ import {
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { DragAndDropUploadComponent } from '@osee/shared/components';
+import { DragAndDropUploadComponent } from '../../components/drag-and-drop-upload/drag-and-drop-upload.component';
 import { UiService } from '@osee/shared/services';
 import {
 	ACCEPTED_IMAGE_INPUT_TYPES,
