@@ -331,6 +331,7 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean RequireConfirmation = osee.createBooleanNoTag(188458869981239L, "Require Confirmation", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean RequiresValidation = osee.createBoolean(2822557585371250127L, "Requires Validation", MediaType.TEXT_PLAIN, "Specifies if a report requires validation before running");
    AttributeTypeBoolean SupportsErrorColoring = osee.createBoolean(2822557585371250128L, "Supports Error Coloring", MediaType.TEXT_PLAIN, "Specifies if a report supports error coloring");
+   AttributeTypeBoolean SupportsShowingOrder = osee.createBoolean(6999496723492177056L, "Supports Showing Order", MediaType.TEXT_PLAIN, "Specifies if a report supports showing order");
    AttributeTypeBoolean Scheduled = osee.createBoolean(1152921504606847360L, "Scheduled", MediaType.TEXT_PLAIN, "Should the script be run again");
    AttributeTypeDate ScheduledTime = osee.createDate(1152921504606847361L, "Scheduled Time", MediaType.TEXT_PLAIN, "Scheduled time to rerun script");
    AttributeTypeString ScheduledMachine = osee.createString(527991454069746927L, "Scheduled Machine", MediaType.TEXT_PLAIN, "Machine the script should run on next");
