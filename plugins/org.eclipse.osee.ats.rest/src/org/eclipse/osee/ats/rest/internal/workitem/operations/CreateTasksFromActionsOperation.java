@@ -94,7 +94,7 @@ public class CreateTasksFromActionsOperation {
       }
 
       @Override
-      public void changesStoring(IAtsChangeSet changes) {
+      public void changesPersisting(IAtsChangeSet changes) {
          try {
             List<IAtsWorkItem> workItems = new ArrayList<>();
             for (ArtifactToken sourceTeamWf : tfa.getSourceTeamWfs()) {

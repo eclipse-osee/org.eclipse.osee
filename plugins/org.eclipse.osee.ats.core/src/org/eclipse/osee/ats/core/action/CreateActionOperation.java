@@ -480,7 +480,7 @@ public class CreateActionOperation {
 
       // Auto-add actions to configured goals
       ElapsedTime goalsTime = new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - goalsTime", debug);
-      addActionToConfiguredGoalBackgroundOperation(teamDef, teamWf, ais);
+      addActionToConfiguredGoalBackgroundOperation(teamDef, teamWf);
       logElapsedTime(goalsTime);
 
       changes.add(teamWf);
@@ -827,25 +827,27 @@ public class CreateActionOperation {
    /**
     * Run in the background so workflow creation is not delayed by this operation
     */
-   private void addActionToConfiguredGoalBackgroundOperation(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf,
-      List<IAtsActionableItem> ais) {
-      changes.addExecuteListener(new IAtsChangeSetListener() {
+   private void addActionToConfiguredGoalBackgroundOperation(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf) {
+      changes.addChangeSetListener(new IAtsChangeSetListener() {
 
          @Override
-         public void changesStoring(IAtsChangeSet changes) {
-
+         public void changesPersisting(IAtsChangeSet changes) {
             String opName = "AddActionToConfiguredGoalOperation";
-            Thread addtoGoal = new Thread(opName) {
+            if (atsApi.isInTest()) {
+               atsApi.getActionService().addActionToConfiguredGoal(teamDef, teamWf, ais, null, changes);
+            } else {
+               Thread addtoGoal = new Thread(opName) {
 
-               @Override
-               public void run() {
-                  IAtsChangeSet changes = atsApi.createChangeSet(opName, AtsCoreUsers.SYSTEM_USER);
-                  atsApi.getActionService().addActionToConfiguredGoal(teamDef, teamWf, ais, null, changes);
-                  changes.executeIfNeeded();
-               }
+                  @Override
+                  public void run() {
+                     IAtsChangeSet changes = atsApi.createChangeSet(opName, AtsCoreUsers.SYSTEM_USER);
+                     atsApi.getActionService().addActionToConfiguredGoal(teamDef, teamWf, ais, null, changes);
+                     changes.executeIfNeeded();
+                  }
 
-            };
-            addtoGoal.start();
+               };
+               addtoGoal.start();
+            }
          }
 
       });
