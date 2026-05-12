@@ -116,27 +116,31 @@ export class ReportsService {
 			this.showOrder,
 		]).pipe(
 			take(1),
-			switchMap(([input, file, includeDiff, showErrorColoring, showOrder]) =>
-				iif(
-					() =>
-						report !== undefined &&
-						report.url !== '' &&
-						branchId !== '' &&
-						connection !== undefined &&
-						connection.id !== '-1',
-					this.fileService.getFileAsBlob(
-						report.httpMethod,
-						report.url
-							.replace('<branchId>', branchId)
-							.replace('<connectionId>', connection?.id ?? '-1')
-							.replace('<diffAvailable>', includeDiff + '')
-							.replace('<viewId>', viewId)
-							.replace('<showErrors>', showErrorColoring + '')
-							.replace('<showOrder>', showOrder + ''),
-						file === undefined ? input : file
-					),
-					of(new Blob())
-				)
+			switchMap(
+				([input, file, includeDiff, showErrorColoring, showOrder]) =>
+					iif(
+						() =>
+							report !== undefined &&
+							report.url !== '' &&
+							branchId !== '' &&
+							connection !== undefined &&
+							connection.id !== '-1',
+						this.fileService.getFileAsBlob(
+							report.httpMethod,
+							report.url
+								.replace('<branchId>', branchId)
+								.replace(
+									'<connectionId>',
+									connection?.id ?? '-1'
+								)
+								.replace('<diffAvailable>', includeDiff + '')
+								.replace('<viewId>', viewId)
+								.replace('<showErrors>', showErrorColoring + '')
+								.replace('<showOrder>', showOrder + ''),
+							file === undefined ? input : file
+						),
+						of(new Blob())
+					)
 			)
 		);
 	}

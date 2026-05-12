@@ -23,14 +23,18 @@ test('test', async ({ page }) => {
 	await page.getByText('MIM Demo').click();
 	await page.getByLabel('Select a Connection').locator('span').click();
 	await page.getByText('Connection A-B').click();
-
+	await page.waitForTimeout(500);
 	await enableEditMode(page);
-
+	await page.waitForTimeout(500);
 	// Create cross-reference
 	await page.getByTestId('add-cross-ref').filter({ hasText: 'add' }).click();
+	await page.waitForTimeout(500);
 	const nameField = page.getByTestId('field-name');
+	await page.waitForTimeout(500);
 	await expect(nameField).toHaveValue('');
+	await page.waitForTimeout(500);
 	await nameField.fill('C1');
+	await page.waitForTimeout(500);
 	await expect(nameField).toHaveValue('C1');
 	const valueField = page.getByTestId('field-value');
 	await expect(valueField).toHaveValue('');

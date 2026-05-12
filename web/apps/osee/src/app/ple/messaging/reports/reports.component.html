@@ -119,15 +119,11 @@
 										setShowErrorColoring($event)
 									" />
 							}
-							@if (
-								selectedReport?.supportsShowingOrder
-							) {
+							@if (selectedReport?.supportsShowingOrder) {
 								<mat-checkbox
 									class="primary-checkbox tw-block"
 									[(ngModel)]="showOrder">
-									<mat-label
-										>Show Order</mat-label
-									>
+									<mat-label>Show Order</mat-label>
 								</mat-checkbox>
 							}
 							@if (
