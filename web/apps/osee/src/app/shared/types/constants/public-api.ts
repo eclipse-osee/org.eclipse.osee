@@ -13,3 +13,4 @@
 export * from './TupleTypeId';
 export * from './ArtifactTypeId.enum';
 export * from './RelationTypeId.enum';
+export * from './supported-image-types';

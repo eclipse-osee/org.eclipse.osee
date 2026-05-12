@@ -395,7 +395,7 @@ test('create structure', async ({ page }) => {
 		})
 		.getByRole('link')
 		.click();
-	await page.waitForTimeout(500);
+	await page.getByTestId('add-structure').waitFor({ state: 'visible' });
 	await page.getByTestId('add-structure').click();
 	await page.getByRole('button', { name: 'Create new Structure' }).click();
 	await page.getByLabel('Name', { exact: true }).click();
@@ -436,6 +436,10 @@ test('create elements', async ({ page }) => {
 		})
 		.getByRole('link')
 		.click();
+	await page
+		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
+		.getByRole('button')
+		.waitFor({ state: 'visible' });
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
 		.getByRole('button')
@@ -603,6 +607,10 @@ test('add array element', async ({ page }) => {
 		})
 		.getByRole('link')
 		.click();
+	await page
+		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
+		.getByRole('button')
+		.waitFor({ state: 'visible' });
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
 		.getByRole('button')
