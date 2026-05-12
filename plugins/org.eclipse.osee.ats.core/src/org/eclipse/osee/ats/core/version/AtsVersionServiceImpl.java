@@ -209,7 +209,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
          changes.unrelate(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, previousVersion);
       }
       changes.relate(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, version);
-      changes.addExecuteListener(getPostPersistExecutionListener(teamWf, version, previousVersion));
+      changes.addChangeSetListener(getPostPersistExecutionListener(teamWf, version, previousVersion));
       return version;
    }
 
@@ -218,7 +218,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       return new IAtsChangeSetListener() {
 
          @Override
-         public void changesStoring(IAtsChangeSet changes) {
+         public void changesPersisting(IAtsChangeSet changes) {
             try {
                HashMap<String, Object> properties = new HashMap<>();
                properties.put(AtsTopicEvent.WORK_ITEM_IDS_KEY, teamWf.getIdString());

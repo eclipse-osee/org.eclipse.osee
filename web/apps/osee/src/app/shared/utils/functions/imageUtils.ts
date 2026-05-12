@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2024 Boeing
+ * Copyright (c) 2026 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,5 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './confirm-dialog/confirm-dialog.component';
-export * from './upload-image-dialog/upload-image-dialog.component';
+import { SUPPORTED_IMAGE_MIME_TYPES } from '@osee/shared/types/constants';
+
+/** Validates whether a File has a supported image MIME type. */
+export function isSupportedImageFile(file: File): boolean {
+	return SUPPORTED_IMAGE_MIME_TYPES.includes(file.type);
+}

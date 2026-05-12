@@ -132,4 +132,14 @@ public class Priorities extends OseeEnum {
       }
       return vals;
    }
+
+   public boolean is(Priorities... priorities) {
+      for (Priorities pri : priorities) {
+         if (this.equals(pri)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
 }
