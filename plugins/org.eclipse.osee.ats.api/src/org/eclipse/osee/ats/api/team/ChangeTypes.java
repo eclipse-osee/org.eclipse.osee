@@ -131,4 +131,9 @@ public class ChangeTypes extends OseeEnum {
       }
       return vals;
    }
+
+   public boolean is(ChangeTypes changeType) {
+      return this.equals(changeType);
+   }
+
 }

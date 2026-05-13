@@ -131,4 +131,9 @@ public interface IOseeEmail {
 
    void setSubject(String subject);
 
+   /**
+    * Sets whether encryption is enabled for this email. When false, the email is sent as plain (unencrypted) text.
+    */
+   void setEncryptionEnabled(boolean encryptionEnabled);
+
 }

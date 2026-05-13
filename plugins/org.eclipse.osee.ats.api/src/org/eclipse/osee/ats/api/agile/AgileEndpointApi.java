@@ -144,6 +144,11 @@ public interface AgileEndpointApi {
    public JaxAgileFeatureGroup getFeatureGroup(long teamId, long featureId);
 
    @GET
+   @Path("feature/{featureId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxAgileFeatureGroup getFeatureGroup(@PathParam("featureId") long featureId);
+
+   @GET
    @Path("team/{teamId}/backlog")
    @Produces(MediaType.APPLICATION_JSON)
    public JaxAgileBacklog getBacklog(@PathParam("teamId") long teamId);

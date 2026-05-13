@@ -198,6 +198,14 @@ export class ReportsComponent implements OnInit {
 		this.reportsService.IncludeDiff = value;
 	}
 
+	get showOrder() {
+		return this.reportsService.showOrder.value;
+	}
+
+	set showOrder(value: boolean) {
+		this.reportsService.ShowOrder = value;
+	}
+
 	get branchId() {
 		return this.reportsService.branchId;
 	}

@@ -79,15 +79,12 @@ public class XHyperlinkApplicabilityWidget extends XHyperlinkLabelValueSelection
             new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
       dialog.setInput(applicToks);
 
-      boolean changed = false;
       if (dialog.open() == Window.OK) {
          selected = dialog.getSelectedFirst();
          return true;
       }
-      if (changed) {
-         refresh();
-      }
-      return changed;
+
+      return false;
    }
 
    public static List<ApplicabilityToken> getSelectableApplicabilityTokens(IAtsTeamDefinition teamDef) {

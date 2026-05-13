@@ -25,6 +25,7 @@ public class SubscriptionData implements Identifiable<String> {
    private String name;
    private boolean isActive;
    private String accountName;
+   private Long accountId;
 
    @Override
    public String getName() {
@@ -58,6 +59,14 @@ public class SubscriptionData implements Identifiable<String> {
 
    public void setAccountName(String accountName) {
       this.accountName = accountName;
+   }
+
+   public Long getAccountId() {
+      return accountId;
+   }
+
+   public void setAccountId(Long accountId) {
+      this.accountId = accountId;
    }
 
    @Override

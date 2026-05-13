@@ -196,7 +196,9 @@ public class MimReportsApiImpl implements MimReportsApi {
             "          inner join cte_query c on c.a_art_id = e.b_art_id) " + //
             " select distinct t2.art_id, t2.value||' - '|| case when art_cnt = max_cnt then 'Assumed Target Connection' else 'Impacted Artifact: '||oAttr.value||'('||oAttr.art_id||')' end value " + //
             " from osee_txs oTxs, osee_attribute oAttr, (" + //
-            " select art_id, value, count(distinct art_id) over () conn_cnt, min(art_cnt) over () min_cnt, max(art_cnt) over () max_cnt, art_cnt, art_path from " + //
+            " select art_id, value, " + //
+            " DENSE_RANK() OVER (ORDER BY art_id) + DENSE_RANK() OVER (ORDER BY art_id DESC) - 1 AS conn_cnt, " + //
+            " min(art_cnt) over () min_cnt, max(art_cnt) over () max_cnt, art_cnt, art_path from " + //
             " (" + //
             "   select attr.art_id, attr.value, count (art.art_id) over (partition by art.art_id) art_cnt, cq.art_path " + //
             "   from cte_query cq, osee_txs txs, osee_artifact art, osee_txs attrTxs, osee_attribute attr " + //
@@ -211,7 +213,9 @@ public class MimReportsApiImpl implements MimReportsApi {
             " and attr.attr_type_id = ? " + //CoreAttributeTypes.Name
             " ) t1 " + //
             ") t2 " + //
-            " where oTxs.branch_id = ? and oTxs.tx_current = ? and oTxs.gamma_id = oAttr.gamma_id and substr(art_path,1,instr(art_path,',')-1) = oAttr.art_id and oAttr.attr_type_id = ?"; //parent branch, txcurrent, name
+            " where oTxs.branch_id = ? and oTxs.tx_current = ? and oTxs.gamma_id = oAttr.gamma_id and " + orcsApi.getJdbcService().getClient().getDbType().getPostgresCastStart() + //
+            " substr(art_path,1," + orcsApi.getJdbcService().getClient().getDbType().getInStringSql("art_path",
+               "','") + " - 1)" + orcsApi.getJdbcService().getClient().getDbType().getPostgresCastBigIntEnd() + " = oAttr.art_id and oAttr.attr_type_id = ?"; //parent branch, txcurrent, name
 
       List<ArtifactToken> conns = new ArrayList<>();
       Branch branchArt = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne();

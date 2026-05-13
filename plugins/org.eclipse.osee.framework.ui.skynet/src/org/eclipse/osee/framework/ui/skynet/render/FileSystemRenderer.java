@@ -720,9 +720,10 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
           * Display renderer content to the user.
           */
 
-         var program = this.getAssociatedProgram(artifacts.get(0));
-
-         RenderingUtil.displayDocument(safePresentationType, program, contentFileOptional.get());
+         Artifact artifact = artifacts.get(0);
+         String extension = getAssociatedExtension(artifact);
+         Program program = this.getAssociatedProgram(artifact);
+         RenderingUtil.displayDocument(artifact, extension, safePresentationType, program, contentFileOptional.get());
 
       } catch (Exception e) {
 

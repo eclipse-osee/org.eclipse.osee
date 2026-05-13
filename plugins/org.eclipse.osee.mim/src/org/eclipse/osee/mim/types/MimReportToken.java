@@ -31,6 +31,7 @@ public class MimReportToken extends ArtifactAccessorResultWithoutGammas {
    private boolean diffAvailable;
    private boolean requiresValidation;
    private boolean supportsErrorColoring;
+   private boolean supportsShowingOrder;
 
    public MimReportToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -48,6 +49,7 @@ public class MimReportToken extends ArtifactAccessorResultWithoutGammas {
       this.setDiffAvailable(art.getSoleAttributeValue(CoreAttributeTypes.DiffAvailable, false));
       this.setRequiresValidation(art.getSoleAttributeValue(CoreAttributeTypes.RequiresValidation, false));
       this.setSupportsErrorColoring(art.getSoleAttributeValue(CoreAttributeTypes.SupportsErrorColoring, false));
+      this.setSupportsShowingOrder(art.getSoleAttributeValue(CoreAttributeTypes.SupportsShowingOrder, false));
    }
 
    /**
@@ -124,6 +126,14 @@ public class MimReportToken extends ArtifactAccessorResultWithoutGammas {
 
    public void setSupportsErrorColoring(boolean supportsErrorColoring) {
       this.supportsErrorColoring = supportsErrorColoring;
+   }
+
+   public boolean isSupportsShowingOrder() {
+      return supportsShowingOrder;
+   }
+
+   public void setSupportsShowingOrder(boolean supportsHidingAttribute) {
+      this.supportsShowingOrder = supportsHidingAttribute;
    }
 
 }

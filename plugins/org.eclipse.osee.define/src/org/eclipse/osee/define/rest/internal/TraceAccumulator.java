@@ -16,6 +16,7 @@ package org.eclipse.osee.define.rest.internal;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,7 +26,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -68,6 +72,43 @@ public class TraceAccumulator {
          throw new OseeArgumentException("Invalid directory path [%s]", root.getCanonicalPath());
       }
 
+      fileToTraceMarks = Multimaps.invertFrom(traceMarkToFiles, HashMultimap.<String, CaseInsensitiveString> create());
+   }
+
+   public void extractTracesFromTar(TarArchiveInputStream tarIn) throws IOException {
+      byte[] buffer = new byte[8192];
+      TarArchiveEntry entry;
+      try {
+         while ((entry = tarIn.getNextEntry()) != null) {
+            if (entry.isDirectory() || !tarIn.canReadEntryData(entry)) {
+               continue;
+            }
+            String entryName = entry.getName();
+            Matcher m = filePattern.matcher(entryName);
+            if (!m.matches()) {
+               // Drain unmatched entry data so the stream advances correctly
+               while (tarIn.read(buffer) != -1) {
+                  // discard
+               }
+               continue;
+            }
+            relativePath = entryName;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream((int) Math.min(entry.getSize(), Integer.MAX_VALUE));
+            int bytesRead;
+            while ((bytesRead = tarIn.read(buffer)) != -1) {
+               baos.write(buffer, 0, bytesRead);
+            }
+            int traceCount = parseInputStream(new java.io.ByteArrayInputStream(baos.toByteArray()));
+            if (traceCount == 0) {
+               noTraceFiles.add(relativePath);
+            }
+         }
+      } catch (IOException e) {
+         if (!e.getMessage().contains("Truncated TAR archive")) {
+            throw e;
+         }
+         // Tolerate truncation at end of archive (common with GNU tar padding)
+      }
       fileToTraceMarks = Multimaps.invertFrom(traceMarkToFiles, HashMultimap.<String, CaseInsensitiveString> create());
    }
 
