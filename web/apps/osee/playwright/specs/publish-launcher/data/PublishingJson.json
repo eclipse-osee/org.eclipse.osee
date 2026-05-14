@@ -1,0 +1,79 @@
+{
+	"title": "Publishing Launcher",
+	"tabs": [
+		{
+			"key": "srs",
+			"label": "SRS Book",
+			"artifact": "203072",
+			"description": "Generate an SRS report for a selected branch and filters.",
+			"instructions": [
+				"Pick a branch.",
+				"Optionally filter by Document Type and Subsystem.",
+				"Choose any flags and click Publish SRS."
+			],
+			"dropdowns": [
+				{
+					"key": "docType",
+					"label": "Document Type",
+					"contentApi": {
+						"method": "GET",
+						"url": "/orcs/branch/{branch}/relation/getRelatedHierarchy/{artifact}"
+					}
+				},
+				{
+					"key": "subsystem",
+					"label": "Subsystem",
+					"required": true,
+					"options": [
+						{ "id": 101, "label": "Navigation" },
+						{ "id": 102, "label": "Comms" }
+					]
+				},
+				{
+					"key": "view",
+					"label": "Applicability View",
+					"contentApi": {
+						"method": "GET",
+						"url": "/orcs/branch/{branch}/applic/views"
+					}
+				}
+			],
+			"checkboxes": [
+				{
+					"key": "includeDrafts",
+					"label": "Include Drafts",
+					"default": false
+				},
+				{
+					"key": "includeDeprecated",
+					"label": "Include Deprecated",
+					"default": false
+				}
+			],
+			"targetApi": {
+				"method": "GET",
+				"url": "/msWordPreview/{branch}/200005/{docType}/{view}/{email}",
+				"button": "Publish SRS"
+			}
+		},
+		{
+			"key": "color",
+			"label": "Color Book",
+			"description": "Generate a colorized view for selected branch and filters.",
+			"instructions": ["Pick filters and click Publish color."],
+			"dropdowns": [],
+			"checkboxes": [
+				{
+					"key": "showOnlyChanged",
+					"label": "Show Only Changed",
+					"default": true
+				}
+			],
+			"targetApi": {
+				"method": "GET",
+				"url": "/api/books/color",
+				"button": "Publish color"
+			}
+		}
+	]
+}
