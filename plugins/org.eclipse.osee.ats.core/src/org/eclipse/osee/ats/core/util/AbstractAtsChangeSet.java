@@ -75,7 +75,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final Set<ArtifactId> artifacts = new CopyOnWriteArraySet<>();
    protected final Set<IAtsObject> deleteAtsObjects = new CopyOnWriteArraySet<>();
    protected final Set<ArtifactId> deleteArtifacts = new CopyOnWriteArraySet<>();
-   protected final Set<IAtsChangeSetListener> listeners = new CopyOnWriteArraySet<>();
+   protected final Set<IAtsChangeSetListener> changeSetListeners = new CopyOnWriteArraySet<>();
    protected final AtsUser asUser;
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
    protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();
@@ -168,9 +168,9 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public void addExecuteListener(IAtsChangeSetListener listener) {
-      Conditions.checkNotNull(listener, "listener");
-      listeners.add(listener);
+   public void addChangeSetListener(IAtsChangeSetListener changeSetListener) {
+      Conditions.checkNotNull(changeSetListener, "changeSetListener");
+      changeSetListeners.add(changeSetListener);
    }
 
    @Override
@@ -517,13 +517,14 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public TransactionToken execute() {
       try {
+         notifyOfPersisting();
          executePreCheck();
          executeAtsObjects();
 
          internalExecuteTransaction();
 
          if (transactionTok.isValid()) {
-            executeNotifyListeners();
+            notifyOfPersisted();
             executeSendNotifications();
             executeClearCaches();
             executeUpdateAnySequences();
@@ -534,6 +535,18 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
          executeHandleException(ex);
       }
       return transactionTok;
+   }
+
+   protected void notifyOfPersisting() {
+      for (IAtsChangeSetListener listener : changeSetListeners) {
+         listener.changesPersisting(this);
+      }
+   }
+
+   protected void notifyOfPersisted() {
+      for (IAtsChangeSetListener listener : changeSetListeners) {
+         listener.changesPersisted(this, transactionTok);
+      }
    }
 
    protected void executeHandleException(Exception ex) {
@@ -565,12 +578,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
                atsApi.getLogFactory().writeToStore(workItem, atsApi.getAttributeResolver(), this);
             }
          }
-      }
-   }
-
-   protected void executeNotifyListeners() {
-      for (IAtsChangeSetListener listener : listeners) {
-         listener.changesStoring(this);
       }
    }
 

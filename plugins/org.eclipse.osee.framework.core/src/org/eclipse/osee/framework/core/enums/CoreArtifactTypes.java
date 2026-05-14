@@ -653,7 +653,8 @@ public interface CoreArtifactTypes {
       .exactlyOne(CoreAttributeTypes.DiffAvailable)
       .exactlyOne(CoreAttributeTypes.EndpointUrl)
       .exactlyOne(CoreAttributeTypes.RequiresValidation)
-      .exactlyOne(CoreAttributeTypes.SupportsErrorColoring));
+      .exactlyOne(CoreAttributeTypes.SupportsErrorColoring)
+      .exactlyOne(CoreAttributeTypes.SupportsShowingOrder));
 
    ArtifactTypeToken MimReport = osee.add(osee.artifactType(1112907634879895453L, "MIM Report", false, OseeReport));
 

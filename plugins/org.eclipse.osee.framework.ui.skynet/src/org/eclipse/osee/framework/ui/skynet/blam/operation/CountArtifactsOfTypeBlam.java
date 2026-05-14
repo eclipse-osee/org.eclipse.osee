@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -47,7 +48,8 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
          rd.log(String.format("Aritfact Count for Type for Branch [%s]\n", variableMap.getBranch("Branch")));
          rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Type", "Count")));
-         for (ArtifactTypeToken artType : ServiceUtil.getTokenService().getArtifactTypes()) {
+         for (ArtifactTypeToken artType : ServiceUtil.getTokenService().getArtifactTypes().stream().filter(
+            a -> a.isValid()).collect(Collectors.toList())) {
             int count = ArtifactQuery.getArtifactCountFromTypeWithInheritence(artType, variableMap.getBranch("Branch"),
                DeletionFlag.EXCLUDE_DELETED);
             rd.addRaw(AHTML.addRowMultiColumnTable(artType.toString(), String.valueOf(count)));

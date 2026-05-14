@@ -23,7 +23,7 @@ public interface IAtsChangeSetListener {
    /**
     * Hook to allow additional changes to change set before execute
     */
-   default public void changesStoring(IAtsChangeSet changes) {
+   default public void changesPersisting(IAtsChangeSet changes) {
       // for implementation
    }
 

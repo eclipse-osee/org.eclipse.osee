@@ -72,6 +72,7 @@ import {
 export class AttributesEditorComponent {
 	attributes = input.required<attribute[]>();
 	editable = input.required<boolean>();
+	artifactId = input<string>('');
 
 	@Output() updatedAttributes = new BehaviorSubject<attribute[]>([]);
 

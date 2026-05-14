@@ -80,6 +80,7 @@ public class AutoAddActionToGoalTest {
       atsApi.getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
+      goalArt.reloadAttributesAndRelations();
 
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Goal should have one memeber from AI", 1, memArt.size());
@@ -111,6 +112,8 @@ public class AutoAddActionToGoalTest {
       atsApi.getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
+      goalArt.reloadAttributesAndRelations();
+
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Goal should have one memeber from Team Definition", 1, memArt.size());
       Assert.assertTrue("Team Workflow with TeamDef not part of Goal",
@@ -139,6 +142,8 @@ public class AutoAddActionToGoalTest {
       atsApi.getServerEndpoints().getConfigEndpoint().clearCachesWithPend();
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
+      goalArt.reloadAttributesAndRelations();
+
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Goal should only have one memeber", 1, memArt.size());
       Assert.assertTrue("Team Workflow with AI and TeamDef not part of Goal",
@@ -171,7 +176,8 @@ public class AutoAddActionToGoalTest {
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       TeamWorkFlowArtifact teamWf3 = AtsTestUtil.getTeamWf3();
-      goalArt.reload();
+      goalArt.reloadAttributesAndRelations();
+
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Goal should have two memebers", 2, memArt.size());
       Assert.assertTrue("Team Workflow with two memebers of Goal - TeamWf",

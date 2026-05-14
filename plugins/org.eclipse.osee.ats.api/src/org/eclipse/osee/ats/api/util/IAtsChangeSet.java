@@ -53,7 +53,7 @@ public interface IAtsChangeSet {
     */
    TransactionToken execute();
 
-   void addExecuteListener(IAtsChangeSetListener listener);
+   void addChangeSetListener(IAtsChangeSetListener changeSetListener);
 
    void addToDelete(Object obj);
 

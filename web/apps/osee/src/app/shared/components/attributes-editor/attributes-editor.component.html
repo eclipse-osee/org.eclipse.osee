@@ -45,7 +45,8 @@
 						<osee-markdown-editor
 							[(mdContent)]="attribute.value"
 							(mdContentChange)="emitUpdatedAttributes()"
-							[disabled]="!editable()" />
+							[disabled]="!editable()"
+							[artifactId]="artifactId()" />
 					} @else {
 						<mat-form-field
 							class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
