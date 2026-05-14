@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttrDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -50,9 +51,13 @@ public class AtsPeerToPeerReviewPrepareWorkItemHookIde implements IAtsWorkItemHo
             stateDefinition.getName().equals(PeerToPeerReviewState.Prepare.getName()) && //
             ReviewManager.cast(art).getParentAWA() == null && //
             widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
-            XComboDam decisionComboDam = (XComboDam) widget;
-            decisionComboDam.setEnabled(false);
-            decisionComboDam.setRequiredEntry(false);
+            if (widget instanceof XComboDam decisionComboDam) {
+               decisionComboDam.setEnabled(false);
+               decisionComboDam.setRequiredEntry(false);
+            } else if (widget instanceof XHyperlinkWfdForEnumAttrDam decisionComboDam) {
+               decisionComboDam.setEditable(false);
+               decisionComboDam.setRequiredEntry(false);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
