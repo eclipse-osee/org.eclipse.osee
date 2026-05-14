@@ -20,11 +20,12 @@ import {
 	input,
 	Output,
 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { filter, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 
 import {
 	BASEATTRIBUTETYPEIDENUM,
@@ -40,6 +41,7 @@ import {
 	UpdateNativeContentDialogData,
 } from '@osee/shared/dialogs';
 import { attribute, MAX_FILE_SIZE_BYTES } from '@osee/shared/types';
+import { apiURL } from '@osee/environments';
 
 /**
  * Stricter attribute subtypes to guarantee identity and storeType.
@@ -81,12 +83,16 @@ export class NativeContentEditorComponent {
 	// Parent controls editability
 	editable = input<boolean>(true);
 
+	// Required for URL-based download
+	branchId = input<string>('');
+	artifactId = input<string>('');
+
 	// Outputs
 	@Output() readonly updatedAttributes = new EventEmitter<attribute[]>();
-	@Output() readonly downloadRequested = new EventEmitter<void>();
 
 	// DI
 	private readonly dialog = inject(MatDialog);
+	private readonly http = inject(HttpClient);
 
 	// Derived values for display
 	protected readonly fileBaseName = computed<string>(
@@ -98,9 +104,37 @@ export class NativeContentEditorComponent {
 		return ext ? (ext.value ?? '') : '';
 	});
 
-	// Per requirements: do not create downloads or attachments here; notify parent/service
+	protected readonly canDownload = computed<boolean>(
+		() => !!this.branchId() && !!this.artifactId()
+	);
+
 	protected onClickDownload(): void {
-		this.downloadRequested.emit();
+		const branch = this.branchId();
+		const artifact = this.artifactId();
+		if (!branch || !artifact) return;
+
+		const url = `${apiURL}/orcs/branch/${branch}/artifact/${artifact}/attribute/type/${ATTRIBUTETYPEIDENUM.NATIVE_CONTENT}`;
+
+		this.http
+			.get(url, { responseType: 'blob' })
+			.pipe(
+				take(1),
+				map((blob) => {
+					const base = this.fileBaseName();
+					const ext = this.fileExtension();
+					const fileName = ext ? `${base}.${ext}` : base || 'download';
+					return { blob, fileName };
+				}),
+				tap(({ blob, fileName }) => {
+					const href = URL.createObjectURL(blob);
+					const anchor = document.createElement('a');
+					anchor.href = href;
+					anchor.download = fileName;
+					anchor.click();
+					URL.revokeObjectURL(href);
+				})
+			)
+			.subscribe();
 	}
 
 	// Open dialog, read file, clone attributes, emit only those whose values changed.

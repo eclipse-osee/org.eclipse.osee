@@ -13,7 +13,6 @@ describe('UpdateNativeContentDialogComponent', () => {
 
 	const data: UpdateNativeContentDialogData = {
 		file: {
-			id: '321',
 			fileName: 'Name',
 			sizeBytes: 123,
 		},

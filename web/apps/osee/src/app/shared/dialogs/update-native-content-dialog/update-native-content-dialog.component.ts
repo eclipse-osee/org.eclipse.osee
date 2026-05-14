@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -26,15 +25,13 @@ import {
 } from '@angular/material/dialog';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { BytesPipe } from '@osee/shared/utils';
-import { DragAndDropUploadComponent } from '@osee/shared/components';
+import { DragAndDropUploadComponent } from '../../components/drag-and-drop-upload/drag-and-drop-upload.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export type UpdateNativeContentDialogData = {
 	file: {
-		// probably not needed. 
-		// id: string;
 		fileName: string;
 		sizeBytes?: number;
 	};
@@ -45,7 +42,6 @@ export type UpdateNativeContentDialogData = {
 @Component({
 	selector: 'osee-update-native-content-dialog',
 	imports: [
-		CommonModule,
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,

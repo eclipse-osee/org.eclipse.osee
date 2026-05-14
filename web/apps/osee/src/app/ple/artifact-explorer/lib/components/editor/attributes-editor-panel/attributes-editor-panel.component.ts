@@ -61,14 +61,32 @@ export class AttributesEditorPanelComponent {
 				txComment:
 					'Attribute changes for artifact: ' + this.tab.artifact.name,
 			};
-			const attributes: legacyAttributeType[] =
-				this.updatedAttributes.value.map((attr) => {
-					return { typeId: attr.typeId, value: attr.value };
-				});
+
+			const existingAttributes: legacyAttributeType[] = [];
+			const newAttributes: legacyAttributeType[] = [];
+
+			for (const attr of this.updatedAttributes.value) {
+				const legacyAttr: legacyAttributeType = {
+					typeId: attr.typeId,
+					value: attr.value,
+				};
+				if (attr.id === '-1') {
+					newAttributes.push(legacyAttr);
+				} else {
+					existingAttributes.push(legacyAttr);
+				}
+			}
+
 			const modifyArtifact: legacyModifyArtifact = {
 				id: this.tab.artifact.id,
-				setAttributes: attributes,
 			};
+			if (existingAttributes.length > 0) {
+				modifyArtifact.setAttributes = existingAttributes;
+			}
+			if (newAttributes.length > 0) {
+				modifyArtifact.addAttributes = newAttributes;
+			}
+
 			tx.modifyArtifacts = [modifyArtifact];
 			this.transactionService
 				.performMutation(tx)

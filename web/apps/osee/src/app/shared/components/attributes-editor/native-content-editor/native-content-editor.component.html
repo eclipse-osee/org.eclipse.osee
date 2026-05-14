@@ -34,16 +34,21 @@
 
 	<!-- Actions -->
 	<div class="tw-flex tw-items-center tw-gap-2">
-		<button
-			mat-button
-			type="button"
-			class="tw-rounded tw-bg-osee-neutral-35 tw-px-3 tw-py-2 tw-text-osee-neutral-100 hover:tw-bg-osee-neutral-50"
-			matTooltip="Download This File"
-			matTooltipPosition="above"
-			(click)="onClickDownload()">
-			<mat-icon class="tw-mr-1">download</mat-icon>
-			Download
-		</button>
+		<div
+			matTooltip="Download is unavailable: missing artifact context."
+			[matTooltipDisabled]="canDownload()">
+			<button
+				mat-button
+				type="button"
+				class="tw-rounded tw-bg-osee-neutral-35 tw-px-3 tw-py-2 tw-text-osee-neutral-100 hover:tw-bg-osee-neutral-50 disabled:tw-opacity-50"
+				[disabled]="!canDownload()"
+				matTooltip="Download This File"
+				matTooltipPosition="above"
+				(click)="onClickDownload()">
+				<mat-icon class="tw-mr-1">download</mat-icon>
+				Download
+			</button>
+		</div>
 
 		<div
 			matTooltip="Updates are disabled: artifact is not editable."

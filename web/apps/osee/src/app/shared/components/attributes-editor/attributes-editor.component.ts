@@ -73,12 +73,31 @@ export class AttributesEditorComponent {
 	attributes = input.required<attribute[]>();
 	editable = input.required<boolean>();
 	artifactId = input<string>('');
+	branchId = input<string>('');
 
 	@Output() updatedAttributes = new BehaviorSubject<attribute[]>([]);
 
+	// Track native content changes separately so they aren't lost
+	// when standard fields re-emit.
+	private nativeContentChanges: attribute[] = [];
+
 	emitUpdatedAttributes() {
+		// Collect typeIds already handled by native content changes to avoid duplicates.
+		const nativeChangeTypeIds = new Set(
+			this.nativeContentChanges.map((a) => a.typeId)
+		);
+
 		const formattedAttributes: attribute[] = this.attributes()
 			.map((attribute) => {
+				// Skip Input Stream attributes — handled by the native content editor.
+				if (attribute.storeType === 'Input Stream') {
+					return null;
+				}
+				// Skip attributes already covered by native content changes
+				// (e.g., Name and Extension when a file update changed them).
+				if (nativeChangeTypeIds.has(attribute.typeId)) {
+					return null;
+				}
 				const formattedAttribute = { ...attribute, value: '' };
 
 				if (attribute.storeType === 'Date' && attribute.value) {
@@ -90,9 +109,20 @@ export class AttributesEditorComponent {
 
 				return formattedAttribute;
 			})
-			.filter((attribute) => attribute.value !== '');
+			.filter(
+				(attribute): attribute is attribute =>
+					attribute !== null && attribute.value !== ''
+			);
 
-		this.updatedAttributes.next(formattedAttributes);
+		this.updatedAttributes.next([
+			...formattedAttributes,
+			...this.nativeContentChanges,
+		]);
+	}
+
+	handleNativeContentChanges(changes: attribute[]) {
+		this.nativeContentChanges = changes;
+		this.emitUpdatedAttributes();
 	}
 
 	// Input is required if attribute multiplicity AT_LEAST_ONE or EXACTLY_ONE

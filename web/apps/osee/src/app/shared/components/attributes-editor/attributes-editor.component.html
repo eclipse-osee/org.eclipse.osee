@@ -169,8 +169,10 @@
 						<osee-native-content-editor
 							[nativeEditorAttributes]="na"
 							[editable]="editable()"
+							[branchId]="branchId()"
+							[artifactId]="artifactId()"
 							(updatedAttributes)="
-								updatedAttributes.next($event)
+								handleNativeContentChanges($event)
 							">
 						</osee-native-content-editor>
 					}
