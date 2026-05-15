@@ -35,6 +35,8 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    private String email;
    // Email for generic notification without detailed information
    private String abridgedEmail;
+   // External email (e.g. customer/government) when different from internal corporate email
+   private String externalEmail;
    private String phone;
    private List<String> loginIds = new ArrayList<>();
    private String manager;
@@ -85,6 +87,14 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
 
    public void setPhone(String phone) {
       this.phone = phone;
+   }
+
+   public String getExternalEmail() {
+      return externalEmail;
+   }
+
+   public void setExternalEmail(String externalEmail) {
+      this.externalEmail = externalEmail;
    }
 
    @Override
