@@ -20,12 +20,11 @@ import {
 	input,
 	Output,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { filter, switchMap, take, tap } from 'rxjs/operators';
 
 import {
 	BASEATTRIBUTETYPEIDENUM,
@@ -41,7 +40,7 @@ import {
 	UpdateNativeContentDialogData,
 } from '@osee/shared/dialogs';
 import { attribute, MAX_FILE_SIZE_BYTES } from '@osee/shared/types';
-import { apiURL } from '@osee/environments';
+import { NativeContentDownloadService } from './native-content-download.service';
 
 /**
  * Stricter attribute subtypes to guarantee identity and storeType.
@@ -92,7 +91,7 @@ export class NativeContentEditorComponent {
 
 	// DI
 	private readonly dialog = inject(MatDialog);
-	private readonly http = inject(HttpClient);
+	private readonly downloadService = inject(NativeContentDownloadService);
 
 	// Derived values for display
 	protected readonly fileBaseName = computed<string>(
@@ -113,27 +112,13 @@ export class NativeContentEditorComponent {
 		const artifact = this.artifactId();
 		if (!branch || !artifact) return;
 
-		const url = `${apiURL}/orcs/branch/${branch}/artifact/${artifact}/attribute/type/${ATTRIBUTETYPEIDENUM.NATIVE_CONTENT}`;
+		const base = this.fileBaseName();
+		const ext = this.fileExtension();
+		const fileName = ext ? `${base}.${ext}` : base || 'download';
 
-		this.http
-			.get(url, { responseType: 'blob' })
-			.pipe(
-				take(1),
-				map((blob) => {
-					const base = this.fileBaseName();
-					const ext = this.fileExtension();
-					const fileName = ext ? `${base}.${ext}` : base || 'download';
-					return { blob, fileName };
-				}),
-				tap(({ blob, fileName }) => {
-					const href = URL.createObjectURL(blob);
-					const anchor = document.createElement('a');
-					anchor.href = href;
-					anchor.download = fileName;
-					anchor.click();
-					URL.revokeObjectURL(href);
-				})
-			)
+		this.downloadService
+			.downloadNativeContent(branch, artifact, fileName)
+			.pipe(take(1))
 			.subscribe();
 	}
 
