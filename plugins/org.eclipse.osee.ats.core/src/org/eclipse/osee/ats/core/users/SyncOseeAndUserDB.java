@@ -72,17 +72,17 @@ public abstract class SyncOseeAndUserDB {
    private static final String DAYS_SINCE_TXS = "Days Since Txs";
    private static final String DAYS_SINCE_IDE = "Days Since IDE";
    private static final String DAYS_SINCE_USE = "Days Since Use";
-   public static String OSEE_AUTORUN_USER_RELATIONS_CHECKED = "osee.autorun.userRelationsChecked";
-   public static String NO_EMAIL_STATIC_ID = "noEmail";
-   public static String FIRST_NOTIFICATION_STATIC_ID = "FirstInactiveNotification";
-   public static String SECOND_NOTIFICATION_STATIC_ID = "SecondInactiveNotification";
+   public static final String OSEE_AUTORUN_USER_RELATIONS_CHECKED = "osee.autorun.userRelationsChecked";
+   public static final String NO_EMAIL_STATIC_ID = "noEmail";
+   public static final String FIRST_NOTIFICATION_STATIC_ID = "FirstInactiveNotification";
+   public static final String SECOND_NOTIFICATION_STATIC_ID = "SecondInactiveNotification";
    protected XResultData results = null;
    protected final AtsApi atsApi;
    protected final boolean persist;
    protected final boolean debug;
    protected final JdbcClient jdbcClient;
-   protected final String IGNORE_NAME_CHANGE = "IgnoreNameChange";
-   protected final String IGNORE_DUP_NAMES = "IgnoreDupNames";
+   protected static final String IGNORE_NAME_CHANGE = "IgnoreNameChange";
+   protected static final String IGNORE_DUP_NAMES = "IgnoreDupNames";
    protected IAtsChangeSet changes;
    protected List<String> ignoreStaticIds;
    protected Map<ArtifactId, UserActivityData> userArtIdToUserAct = new HashMap<>(200);
@@ -749,7 +749,9 @@ public abstract class SyncOseeAndUserDB {
       }
       String outputDirName = serverData + File.separator + "userSync";
       File outDir = new File(outputDirName);
-      outDir.mkdir();
+      if (!outDir.exists() && !outDir.mkdir()) {
+         results.logf("Warning: Could not create directory %s\n", outputDirName);
+      }
 
       String outputFileName = String.format("%s%s%s_%s.html", //
          outputDirName, //
@@ -805,6 +807,10 @@ public abstract class SyncOseeAndUserDB {
 
       if (persist) {
          ArtifactReadable userArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(user.getId());
+         if (userArt == null) {
+            results.errorf("Could not find artifact for user %s; skipping notification\n", user.toStringWithId());
+            return;
+         }
          if (userArt.getTags().contains(firstOrLastStaticId)) {
             return;
          }

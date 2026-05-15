@@ -55,31 +55,46 @@ test('test', async ({ page }) => {
 		.filter({ hasText: /^Select a Feature$/ })
 		.nth(2)
 		.click();
-	await page.getByRole('option', { name: 'JHU_CONTROLLER' }).click();
+	await page
+		.getByRole('option', { name: 'JHU_CONTROLLER', exact: true })
+		.first()
+		.click();
 	await page
 		.locator('div')
 		.filter({ hasText: /^Select a Value$/ })
 		.nth(2)
 		.click();
-	await page.getByRole('option', { name: 'Included' }).click();
+	await page
+		.getByRole('option', { name: 'Included', exact: true })
+		.first()
+		.click();
 	await page
 		.locator('div')
 		.filter({ hasText: /^Select a Relationship$/ })
 		.nth(2)
 		.click();
-	await page.getByRole('option', { name: 'AND' }).click();
+	await page
+		.getByRole('option', { name: 'AND', exact: true })
+		.first()
+		.click();
 	await page
 		.locator('div')
 		.filter({ hasText: /^Select a Feature$/ })
 		.nth(2)
 		.click();
-	await page.getByRole('option', { name: 'ROBOT_ARM_LIGHT' }).click();
+	await page
+		.getByRole('option', { name: 'ROBOT_ARM_LIGHT', exact: true })
+		.first()
+		.click();
 	await page
 		.locator('div')
 		.filter({ hasText: /^Select a Value$/ })
 		.nth(2)
 		.click();
-	await page.getByRole('option', { name: 'Included' }).click();
+	await page
+		.getByRole('option', { name: 'Included', exact: true })
+		.first()
+		.click();
 	await page.getByRole('button', { name: 'Confirm' }).click();
 	await page.getByRole('button', { name: 'In Work' }).click();
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
