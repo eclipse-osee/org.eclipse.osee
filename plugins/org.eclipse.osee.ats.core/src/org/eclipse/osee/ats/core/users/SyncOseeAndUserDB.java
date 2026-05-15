@@ -549,6 +549,7 @@ public abstract class SyncOseeAndUserDB {
                String wssoLoginId = wssoUser.getLoginIds().size() == 0 ? "" : wssoUser.getLoginIds().get(0);
                String wssoUserName = wssoUser.getName();
                String wssoMail = wssoUser.getEmail();
+               String wssoExternalMail = wssoUser.getExternalEmail();
 
                // No record returned, so nothing to update
                if (Strings.isInvalid(wssoUserName)) {
@@ -564,20 +565,29 @@ public abstract class SyncOseeAndUserDB {
 
                // If loginId == null, not a valid record/email, don't update or error
                if (wssoLoginId != null) {
-                  if (!EmailUtil.isEmailValid(wssoMail)) {
+                  // Prefer an external email when present and valid, otherwise fall back to the normal mail field
+                  String preferredMail = null;
+                  if (EmailUtil.isEmailValid(wssoExternalMail)) {
+                     preferredMail = wssoExternalMail;
+                  } else if (EmailUtil.isEmailValid(wssoMail)) {
+                     preferredMail = wssoMail;
+                  }
+
+                  if (preferredMail == null) {
                      if (!uad.getTags().contains(NO_EMAIL_STATIC_ID)) {
                         if (debug) {
-                           results.warningf("[%s] WSSO User Email [%s] is invalid: %s\n", user.toStringWithId(),
-                              wssoMail, wssoUser.getJson());
+                           results.warningf(
+                              "[%s] WSSO User Email invalid; mail [%s], externalEmail [%s]: %s\n",
+                              user.toStringWithId(), wssoMail, wssoExternalMail, wssoUser.getJson());
                         }
                      }
-                  } else if (!user.getEmail().equals(wssoMail)) {
-                     // Ignore situations where the user's email in already set and different
-                     results.warningf("(On Persist) - [%s] wsso.email [%s] != user.email [%s]\n", user.toStringWithId(),
-                        wssoMail, user.getEmail());
+                  } else if (!user.getEmail().equals(preferredMail)) {
+                     // Update the user's email to the preferred WSSO email (external when present, otherwise mail)
+                     results.warningf("(On Persist) - [%s] wsso.preferredEmail [%s] != user.email [%s]\n",
+                        user.toStringWithId(), preferredMail, user.getEmail());
                      if (persist) {
-                        changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Email, wssoMail);
-                        results.logf("Fixed Email to %s\n", wssoMail);
+                        changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Email, preferredMail);
+                        results.logf("Fixed Email to %s\n", preferredMail);
                      }
                   }
                }
