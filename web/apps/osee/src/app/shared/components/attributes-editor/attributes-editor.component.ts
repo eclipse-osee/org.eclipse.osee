@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { DatePipe, NgClass } from '@angular/common';
-import { Component, Output, computed, input } from '@angular/core';
+import { Component, Output, computed, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import {
@@ -81,6 +81,11 @@ export class AttributesEditorComponent {
 	// when standard fields re-emit.
 	private nativeContentChanges: attribute[] = [];
 
+	// Pending display values for the native content editor
+	protected readonly pendingNativeName = signal<string | null>(null);
+	protected readonly pendingNativeExtension = signal<string | null>(null);
+	protected readonly hasUnsavedNativeChanges = signal<boolean>(false);
+
 	emitUpdatedAttributes() {
 		// Collect typeIds already handled by native content changes to avoid duplicates.
 		const nativeChangeTypeIds = new Set(
@@ -122,7 +127,31 @@ export class AttributesEditorComponent {
 
 	handleNativeContentChanges(changes: attribute[]) {
 		this.nativeContentChanges = changes;
+
+		// Extract pending display values from the changes
+		const nameChange = changes.find(
+			(a) => a.typeId === BASEATTRIBUTETYPEIDENUM.NAME
+		);
+		const extChange = changes.find(
+			(a) => a.typeId === ATTRIBUTETYPEIDENUM.EXTENSION
+		);
+
+		this.pendingNativeName.set(nameChange?.value ?? null);
+		this.pendingNativeExtension.set(extChange?.value ?? null);
+		this.hasUnsavedNativeChanges.set(changes.length > 0);
+
 		this.emitUpdatedAttributes();
+	}
+
+	/**
+	 * Called by the parent after a successful save to reset native content state.
+	 * The parent reloads the artifact data, so pending values can be cleared.
+	 */
+	resetAfterSave() {
+		this.nativeContentChanges = [];
+		this.pendingNativeName.set(null);
+		this.pendingNativeExtension.set(null);
+		this.hasUnsavedNativeChanges.set(false);
 	}
 
 	// Input is required if attribute multiplicity AT_LEAST_ONE or EXACTLY_ONE

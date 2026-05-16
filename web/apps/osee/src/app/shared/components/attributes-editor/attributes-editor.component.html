@@ -171,6 +171,9 @@
 							[editable]="editable()"
 							[branchId]="branchId()"
 							[artifactId]="artifactId()"
+							[hasUnsavedChanges]="hasUnsavedNativeChanges()"
+							[pendingName]="pendingNativeName()"
+							[pendingExtension]="pendingNativeExtension()"
 							(updatedAttributes)="
 								handleNativeContentChanges($event)
 							">

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass } from '@angular/common';
-import { Component, Input, inject, viewChild } from '@angular/core';
+import { Component, computed, inject, input, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
@@ -20,15 +20,16 @@ import {
 	legacyModifyArtifact,
 	legacyTransaction,
 } from '@osee/transactions/types';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 import { artifactTab } from '../../../types/artifact-explorer';
+import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { MatIcon } from '@angular/material/icon';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { attribute } from '@osee/shared/types';
 import { TransactionService } from '@osee/transactions/services';
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CurrentBranchInfoService } from '@osee/shared/services';
+import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -47,19 +48,49 @@ import { CurrentBranchInfoService } from '@osee/shared/services';
 export class AttributesEditorPanelComponent {
 	private transactionService = inject(TransactionService);
 	private currBranchInfoService = inject(CurrentBranchInfoService);
+	private uiService = inject(UiService);
+	private artExpHttpService = inject(ArtifactExplorerHttpService);
 
-	@Input() tab!: artifactTab;
-
-	enum$ = new Observable<string[]>();
+	tab = input.required<artifactTab>();
 
 	branchHasPleCategory = this.currBranchInfoService.branchHasPleCategory;
 
+	// Derived signals for the resource
+	private branchId = computed(() => this.tab().branchId);
+	private _artifactId = computed(() => this.tab().artifact.id);
+	private viewId = computed(() => this.tab().viewId);
+
+	// Reactive artifact resource that auto-refreshes via uiService.updateCount()
+	private artifactResource =
+		this.artExpHttpService.getArtifactWithRelationsResource(
+			this.branchId,
+			this._artifactId,
+			this.viewId
+		);
+
+	protected attributes = computed<attribute[]>(
+		() =>
+			this.artifactResource.value()?.attributes ??
+			this.tab().artifact.attributes
+	);
+
+	protected editable = computed<boolean>(
+		() =>
+			this.artifactResource.value()?.editable ??
+			this.tab().artifact.editable
+	);
+
+	protected artifactId = computed<string>(
+		() => this.artifactResource.value()?.id ?? this.tab().artifact.id
+	);
+
 	saveChanges() {
 		if (this.updatedAttributes.value.length > 0) {
+			const t = this.tab();
 			const tx: legacyTransaction = {
-				branch: this.tab.branchId,
+				branch: t.branchId,
 				txComment:
-					'Attribute changes for artifact: ' + this.tab.artifact.name,
+					'Attribute changes for artifact: ' + t.artifact.name,
 			};
 
 			const existingAttributes: legacyAttributeType[] = [];
@@ -78,7 +109,7 @@ export class AttributesEditorPanelComponent {
 			}
 
 			const modifyArtifact: legacyModifyArtifact = {
-				id: this.tab.artifact.id,
+				id: t.artifact.id,
 			};
 			if (existingAttributes.length > 0) {
 				modifyArtifact.setAttributes = existingAttributes;
@@ -93,17 +124,12 @@ export class AttributesEditorPanelComponent {
 				.pipe(
 					tap(() => {
 						this.updatedAttributes.next([]);
+						this._attributesEditor()?.resetAfterSave();
+						this.uiService.updated = true;
 					})
 				)
 				.subscribe();
 		}
-	}
-
-	// Panel open/close state handling
-
-	panelOpen = new BehaviorSubject<boolean>(true);
-	togglePanel() {
-		this.panelOpen.next(!this.panelOpen.value);
 	}
 
 	// Handle output attributes returned from attribute editor
@@ -123,4 +149,7 @@ export class AttributesEditorPanelComponent {
 		'attributesEditorForm',
 		{ read: NgForm }
 	);
+
+	protected _attributesEditor =
+		viewChild<AttributesEditorComponent>('attributesEditor');
 }

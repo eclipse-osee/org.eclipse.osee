@@ -47,7 +47,7 @@ describe('AttributesEditorPanelComponent', () => {
 
 		fixture = TestBed.createComponent(AttributesEditorPanelComponent);
 		component = fixture.componentInstance;
-		component.tab = tabMock;
+		fixture.componentRef.setInput('tab', tabMock);
 		fixture.detectChanges();
 	});
 

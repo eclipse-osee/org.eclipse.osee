@@ -15,11 +15,17 @@
 <div class="tw-flex tw-min-w-min tw-items-center tw-justify-between tw-gap-2">
 	<!-- File info -->
 	<div class="tw-flex tw-flex-col">
-		<div class="tw-truncate tw-font-semibold">
+		<div class="tw-flex tw-items-center tw-gap-2 tw-truncate tw-font-semibold">
 			@if (fileBaseName(); as fn) {
 				{{ fn }}
 			} @else {
 				<span class="tw-text-osee-neutral-60">Unnamed file</span>
+			}
+			@if (hasUnsavedChanges()) {
+				<span
+					class="tw-text-xs tw-font-normal tw-italic tw-text-warning">
+					(unsaved)
+				</span>
 			}
 		</div>
 		<div class="tw-text-xs tw-text-osee-neutral-60">
@@ -35,7 +41,11 @@
 	<!-- Actions -->
 	<div class="tw-flex tw-items-center tw-gap-2">
 		<div
-			matTooltip="Download is unavailable: missing artifact context."
+			[matTooltip]="
+				hasUnsavedChanges()
+					? 'Save changes before downloading.'
+					: 'Download is unavailable: missing artifact context.'
+			"
 			[matTooltipDisabled]="canDownload()">
 			<button
 				mat-button

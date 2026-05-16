@@ -86,6 +86,13 @@ export class NativeContentEditorComponent {
 	branchId = input<string>('');
 	artifactId = input<string>('');
 
+	// Whether there are unsaved native content changes (controlled by parent)
+	hasUnsavedChanges = input<boolean>(false);
+
+	// Pending display values (controlled by parent)
+	pendingName = input<string | null>(null);
+	pendingExtension = input<string | null>(null);
+
 	// Outputs
 	@Output() readonly updatedAttributes = new EventEmitter<attribute[]>();
 
@@ -93,18 +100,25 @@ export class NativeContentEditorComponent {
 	private readonly dialog = inject(MatDialog);
 	private readonly downloadService = inject(NativeContentDownloadService);
 
-	// Derived values for display
-	protected readonly fileBaseName = computed<string>(
-		() => this.nativeEditorAttributes().name.value ?? ''
-	);
+	// Derived values for display — prefer pending values over input values
+	protected readonly fileBaseName = computed<string>(() => {
+		const pending = this.pendingName();
+		if (pending !== null) return pending;
+		return this.nativeEditorAttributes().name.value ?? '';
+	});
 
 	protected readonly fileExtension = computed<string>(() => {
+		const pending = this.pendingExtension();
+		if (pending !== null) return pending;
 		const ext = this.nativeEditorAttributes().extension;
 		return ext ? (ext.value ?? '') : '';
 	});
 
 	protected readonly canDownload = computed<boolean>(
-		() => !!this.branchId() && !!this.artifactId()
+		() =>
+			!!this.branchId() &&
+			!!this.artifactId() &&
+			!this.hasUnsavedChanges()
 	);
 
 	protected onClickDownload(): void {

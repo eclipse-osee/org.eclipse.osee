@@ -10,11 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpResponse, httpResource, HttpResourceRef } from '@angular/common/http';
+import { Injectable, Signal, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { Observable } from 'rxjs';
 import { HttpParamsType, attribute } from '@osee/shared/types';
+import { UiService } from '@osee/shared/services';
 import { AdvancedSearchCriteria } from '../types/artifact-search';
 import {
 	artifactWithRelations,
@@ -31,6 +32,22 @@ import {
 })
 export class ArtifactExplorerHttpService {
 	private http = inject(HttpClient);
+	private uiService = inject(UiService);
+
+	public getArtifactWithRelationsResource(
+		branchId: Signal<string>,
+		artifactId: Signal<string>,
+		viewId: Signal<string>
+	): HttpResourceRef<artifactWithRelations | undefined> {
+		return httpResource<artifactWithRelations>(() => {
+			const branch = branchId();
+			const artifact = artifactId();
+			const view = viewId();
+			if (!branch || !artifact) return undefined;
+			this.uiService.updateCount();
+			return `${apiURL}/orcs/branch/${branch}/artifact/${artifact}/related/direct?viewId=${view}&includeRelations=false`;
+		});
+	}
 
 	public getartifactWithRelations(
 		branchId: string,

@@ -53,6 +53,7 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 
 ## HTTP + loading patterns
 
+- **All HTTP calls (`httpResource`, `HttpClient`) must live in services, not in components.** Components consume service methods — they never inject `HttpClient` or call `httpResource` directly.
 - Prefer `httpResource` for read-only endpoints wherever possible.
 - For `text/plain` endpoints, use `httpResource.text(() => url)` or explicitly set `responseType: 'text' as const` in the `httpResource` request object. Do not allow JSON parsing errors for text endpoints.
 - Prefer the repo's global refresh pattern:
