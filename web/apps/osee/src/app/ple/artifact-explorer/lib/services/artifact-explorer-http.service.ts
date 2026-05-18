@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient, HttpResponse, httpResource, HttpResourceRef } from '@angular/common/http';
+import {
+	HttpClient,
+	HttpResponse,
+	httpResource,
+	HttpResourceRef,
+} from '@angular/common/http';
 import { Injectable, Signal, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { Observable } from 'rxjs';

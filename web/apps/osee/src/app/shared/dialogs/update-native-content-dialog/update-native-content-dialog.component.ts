@@ -58,9 +58,9 @@ export type UpdateNativeContentDialogData = {
 })
 export class UpdateNativeContentDialogComponent {
 	private dialogRef =
-		inject<MatDialogRef<UpdateNativeContentDialogComponent, File | undefined>>(
-			MatDialogRef
-		);
+		inject<
+			MatDialogRef<UpdateNativeContentDialogComponent, File | undefined>
+		>(MatDialogRef);
 	protected data = inject<UpdateNativeContentDialogData>(MAT_DIALOG_DATA);
 	private bytesPipe = inject(BytesPipe);
 	private snackBar = inject(MatSnackBar);
