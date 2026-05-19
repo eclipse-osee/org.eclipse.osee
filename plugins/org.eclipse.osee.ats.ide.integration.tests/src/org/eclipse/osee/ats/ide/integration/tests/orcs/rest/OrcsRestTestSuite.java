@@ -35,6 +35,7 @@ import org.junit.runners.Suite;
    TransactionTransferImportTest.class,
    ArtifactModificationTest.class,
    RelationEndpointTest.class,
+   ReportEndpointTest.class,
    ApiKeyEndpointTest.class,
    ClientEndpointTest.class,
    UserEndpointTest.class,})

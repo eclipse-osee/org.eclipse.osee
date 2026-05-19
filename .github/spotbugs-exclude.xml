@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs exclusion filter for intentional design patterns.
+  See: https://spotbugs.readthedocs.io/en/stable/filter.html
+-->
+<FindBugsFilter>
+
+  <!--
+    GenericReportBuilder uses the builder pattern where callers must interact
+    with the mutable query and levels. Exposing/storing these references is
+    intentional and required for the fluent API to function.
+  -->
+  <Match>
+    <Class name="org.eclipse.osee.orcs.rest.internal.writers.GenericReportBuilder" />
+    <Or>
+      <Method name="getLevels" />
+      <Method name="query" />
+    </Or>
+    <Bug pattern="EI_EXPOSE_REP" />
+  </Match>
+
+  <Match>
+    <Class name="org.eclipse.osee.orcs.rest.internal.writers.GenericReportBuilder" />
+    <Method name="level" />
+    <Bug pattern="EI_EXPOSE_REP2" />
+  </Match>
+
+</FindBugsFilter>
