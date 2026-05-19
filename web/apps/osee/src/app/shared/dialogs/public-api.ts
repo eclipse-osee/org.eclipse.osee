@@ -11,4 +11,5 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './confirm-dialog/confirm-dialog.component';
+export * from './update-native-content-dialog/update-native-content-dialog.component';
 export * from './upload-image-dialog/upload-image-dialog.component';

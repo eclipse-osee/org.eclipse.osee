@@ -17,7 +17,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 	standalone: true,
 })
 export class SplitApplicabilityPipe implements PipeTransform {
-	//eslint-disable-next-line @typescript-eslint/no-unused-vars
 	transform(value: string): string {
 		if (!value) {
 			return 'Excluded';
