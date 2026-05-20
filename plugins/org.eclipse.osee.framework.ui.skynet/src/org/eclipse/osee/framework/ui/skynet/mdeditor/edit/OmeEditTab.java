@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.ui.skynet.mdeditor.OmeAbstractTab;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.html.OmeHtmlComposite;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -118,7 +117,6 @@ public class OmeEditTab extends OmeAbstractTab {
                      setLoading(false);
                      createBody();
                      XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
-                     FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                      ((IDirtiableEditor) editor).onDirtied();
                   }
                } catch (OseeCoreException ex) {

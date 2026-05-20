@@ -55,7 +55,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.EditorWidget;
@@ -166,7 +165,6 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
                      setLoading(false);
                      createAtsBody();
                      XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
-                     FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                      editor.onDirtied();
                   }
                } catch (OseeCoreException ex) {

@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -144,7 +143,6 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
 
          updateTitleBar(managedForm);
          createToolbar(managedForm);
-         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
          managedForm.reflow(true);
       } catch (Exception ex) {

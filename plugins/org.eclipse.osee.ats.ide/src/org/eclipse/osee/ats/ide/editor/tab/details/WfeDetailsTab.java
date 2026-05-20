@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -70,7 +69,6 @@ public class WfeDetailsTab extends WfeAbstractTab {
 
          updateTitleBar(managedForm);
          createToolbar(managedForm);
-         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
          refresh();
       } catch (Exception ex) {

@@ -93,7 +93,6 @@ import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilt
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -165,7 +164,6 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
          bodyComp.setLayoutData(gd);
 
          updateTitleBar(managedForm);
-         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
          setLoading(true);
          refreshData();

@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeImageLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
@@ -214,7 +213,6 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
          htmlComposite.handleRefreshAction(omeData);
 
          XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
-         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
       } catch (Exception ex) {
          handleException(ex);
       }

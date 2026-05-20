@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEv
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -86,7 +85,6 @@ public class WfeRelationsTab extends WfeAbstractTab implements IRefreshActionHan
 
       updateTitleBar(managedForm);
       createToolbar(managedForm);
-      FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
    }
 
