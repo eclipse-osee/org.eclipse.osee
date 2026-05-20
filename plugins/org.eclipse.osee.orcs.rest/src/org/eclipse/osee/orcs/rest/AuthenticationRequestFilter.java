@@ -64,15 +64,16 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
    @Override
    public void filter(ContainerRequestContext requestContext) {
 
-      boolean exceptionList = requestContext.getUriInfo().getRequestUri().getPath().startsWith("/ide/session") //
-         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/orcs/datastore/initialize") //
+      String path = requestContext.getUriInfo().getRequestUri().getPath();
+      boolean exceptionList = path.startsWith("/ide/session") //
+         || path.startsWith("/orcs/datastore/initialize") //
          || (requestContext.getRequest().getMethod().equals(
-            HttpMethod.GET) && requestContext.getUriInfo().getRequestUri().getPath().startsWith("/orcs/datastore/user")) //
-         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/osee/") //
-         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/unsubscribe/") //
-         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/dispo/") //
-         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/coverage/") //
-         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/health/http/headers");
+            HttpMethod.GET) && path.startsWith("/orcs/datastore/user")) //
+         || path.startsWith("/osee/") //
+         || path.startsWith("/unsubscribe/") //
+         || path.startsWith("/dispo/") //
+         || path.startsWith("/coverage/") //
+         || path.startsWith("/health/http/headers");
       try {
          String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -82,11 +83,13 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                String[] authArray = authHeader.split(" ");
                if (authArray.length == 2) {
                   String[] jwt = authArray[1].split("\\.");
-                  Decoder urlDecoder = Base64.getUrlDecoder();
-                  String payloadJson = new String(urlDecoder.decode(jwt[1]), StandardCharsets.UTF_8);
+                  if (jwt.length >= 2) {
+                     Decoder urlDecoder = Base64.getUrlDecoder();
+                     String payloadJson = new String(urlDecoder.decode(jwt[1]), StandardCharsets.UTF_8);
 
-                  String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey).toLowerCase();
-                  orcsApi.userService().setUserForCurrentThread(loginId);
+                     String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey).toLowerCase();
+                     orcsApi.userService().setUserForCurrentThread(loginId);
+                  }
                }
             } else if (authHeader.startsWith(OseeProperties.BASIC_AUTH_SCHEME)) {
                String credential = authHeader.substring(OseeProperties.BASIC_AUTH_SCHEME.length());
@@ -96,13 +99,11 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
             } else if (!exceptionList) {
                //TODO: ensure web clients to use Basic scheme then remove
                if (Strings.isNumeric(authHeader)) {
-                  orcsApi.userService().setUserForCurrentThread(UserId.valueOf(authHeader.toLowerCase()));
+                  orcsApi.userService().setUserForCurrentThread(UserId.valueOf(authHeader));
                }
             }
          } else {
             // SSO does not pass AUTHORIZATION header. AUTHORIZATION is always null on first entry. SSO maps identity attributes directly to header names.
-            // UserId.valueOf should ONLY be used if passing artifact ID long
-            // If functioning as expected, remove exception list and this comment in next commit.
             String accountId = requestContext.getHeaderString("osee.account.id");
             String userId = requestContext.getHeaderString("osee.user.id");
 
@@ -110,7 +111,11 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                orcsApi.userService().setUserForCurrentThread(userId.toLowerCase());
             }
             if (accountId != null && orcsApi.userService().getUser().isInvalid()) {
-               orcsApi.userService().setUserForCurrentThread(accountId.toLowerCase());
+               if (Strings.isNumeric(accountId)) {
+                  orcsApi.userService().setUserForCurrentThread(UserId.valueOf(accountId));
+               } else {
+                  orcsApi.userService().setUserForCurrentThread(accountId.toLowerCase());
+               }
             }
          }
       } catch (Exception ex) {
