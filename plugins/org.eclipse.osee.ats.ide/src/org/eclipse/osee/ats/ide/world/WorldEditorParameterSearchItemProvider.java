@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.world;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
@@ -226,10 +225,6 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public void reportAdditionalCriteria(XResultData rd) {
       worldParameterSearchItem.reportAdditionalCriteria(rd);
-   }
-
-   public List<Artifact> performPostSearchFilter(List<Artifact> artifacts) {
-      return worldParameterSearchItem.performPostSearchFilter(artifacts);
    }
 
 }

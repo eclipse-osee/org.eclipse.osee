@@ -224,12 +224,14 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
-      return searchItem.performSearchGetResults(false);
+      Collection<Artifact> artifacts = searchItem.performSearchGetResults(false);
+      return performPostSearchFilter(artifacts);
    }
 
    @Override
    public Collection<Artifact> performSearchAsArtifacts(SearchType searchType) {
-      return searchItem.performSearchGetResultsAsArtifacts(false);
+      Collection<Artifact> artifacts = searchItem.performSearchGetResultsAsArtifacts(false);
+      return performPostSearchFilter(artifacts);
    }
 
    @Override
@@ -344,6 +346,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       String widgetXml = String.format("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" %s />",
          searchItem.getBeginComposite(beginComposite));
       searchItem.addWidgetXml(widgetXml);
+   }
+
+   public Collection<Artifact> performPostSearchFilter(Collection<Artifact> artifacts) {
+      return artifacts;
    }
 
 }
