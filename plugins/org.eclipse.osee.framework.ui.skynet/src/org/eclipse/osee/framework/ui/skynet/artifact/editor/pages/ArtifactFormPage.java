@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.CopyIdHyperlinkWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
@@ -162,7 +161,6 @@ public class ArtifactFormPage extends FormPage {
                      setLoading(false);
                      createBody();
                      XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
-                     FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                      editor.onDirtied();
                   }
                } catch (OseeCoreException ex) {
@@ -226,7 +224,6 @@ public class ArtifactFormPage extends FormPage {
       }
 
       addToolBar(toolkit, form, true);
-      FormsUtil.addHeadingGradient(toolkit, form, true);
       XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;

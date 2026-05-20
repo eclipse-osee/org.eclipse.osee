@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -94,7 +93,6 @@ public class WorldReloadTab extends FormPage {
             });
          }
 
-         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
       } catch (Exception ex) {
          handleException(ex);
       }

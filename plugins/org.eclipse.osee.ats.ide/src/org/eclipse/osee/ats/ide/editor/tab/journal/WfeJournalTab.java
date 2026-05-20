@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -92,7 +91,6 @@ public class WfeJournalTab extends WfeAbstractTab {
 
          updateTitleBar(managedForm);
          createToolbar(managedForm);
-         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
          managedForm.reflow(true);
 

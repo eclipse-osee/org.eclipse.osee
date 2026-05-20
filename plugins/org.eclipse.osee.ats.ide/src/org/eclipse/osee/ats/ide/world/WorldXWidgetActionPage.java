@@ -75,7 +75,6 @@ import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
@@ -168,8 +167,6 @@ public class WorldXWidgetActionPage extends FormPage {
          AWorkbench.popup("ERROR", "Database Unavailable");
          return;
       }
-
-      FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
 
       Composite body = scrolledForm.getBody();
       body.setLayout(ALayout.getZeroMarginLayout(1, true));

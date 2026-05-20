@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionH
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrToolbar;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrXViewer;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
@@ -69,7 +68,6 @@ public class WfeAttributesTab extends WfeAbstractTab implements IRefreshActionHa
 
       updateTitleBar(managedForm);
       createToolbar(managedForm);
-      FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
    }
 
