@@ -461,7 +461,7 @@ public class UserServiceImpl implements UserService {
             }
          } else {
             user = queryUserByLoginIdOrUserId(lowerCaseCredential);
-            // If still not found and it's numeric, try as artifact ID
+            // If still not found and it's numeric, try as artifact ID.
             if ((user == null || user.isInvalid()) && Strings.isNumeric(credential)) {
                user = queryUserById(UserId.valueOf(credential));
             }
