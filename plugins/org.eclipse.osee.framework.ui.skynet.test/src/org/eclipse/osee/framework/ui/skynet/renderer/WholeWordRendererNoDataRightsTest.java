@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 import org.junit.Assert;
@@ -39,13 +40,11 @@ public class WholeWordRendererNoDataRightsTest {
    @Test
    public void testNoAddDataRightsMethod() {
       Method[] methods = WholeWordRenderer.class.getDeclaredMethods();
-      List<String> dataRightsMethods = Arrays.stream(methods)
-         .map(Method::getName)
-         .filter(name -> name.toLowerCase().contains("datarights") || name.toLowerCase().contains("data_rights"))
-         .collect(Collectors.toList());
+      List<String> dataRightsMethods =
+         Arrays.stream(methods).map(Method::getName).filter(name -> name.toLowerCase(Locale.ROOT).contains(
+            "datarights") || name.toLowerCase().contains("data_rights")).collect(Collectors.toList());
 
-      Assert.assertTrue(
-         "WholeWordRenderer should not contain any data rights methods, but found: " + dataRightsMethods,
+      Assert.assertTrue("WholeWordRenderer should not contain any data rights methods, but found: " + dataRightsMethods,
          dataRightsMethods.isEmpty());
    }
 
@@ -57,14 +56,11 @@ public class WholeWordRendererNoDataRightsTest {
    @Test
    public void testNoDataRightsFields() {
       Field[] fields = WholeWordRenderer.class.getDeclaredFields();
-      List<String> dataRightsFields = Arrays.stream(fields)
-         .map(Field::getName)
-         .filter(name -> name.toLowerCase().contains("datarights") || name.toLowerCase().contains("data_rights")
-            || name.toLowerCase().contains("classification"))
-         .collect(Collectors.toList());
+      List<String> dataRightsFields = Arrays.stream(fields).map(Field::getName).filter(
+         name -> name.toLowerCase().contains("datarights") || name.toLowerCase(Locale.ROOT).contains(
+            "data_rights") || name.toLowerCase().contains("classification")).collect(Collectors.toList());
 
-      Assert.assertTrue(
-         "WholeWordRenderer should not contain any data rights fields, but found: " + dataRightsFields,
+      Assert.assertTrue("WholeWordRenderer should not contain any data rights fields, but found: " + dataRightsFields,
          dataRightsFields.isEmpty());
    }
 
