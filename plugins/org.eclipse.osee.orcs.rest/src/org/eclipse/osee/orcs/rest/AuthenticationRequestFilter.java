@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.data.CoreActivityTypes.JAXRS_METHO
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import java.util.Locale;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -87,7 +88,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                      Decoder urlDecoder = Base64.getUrlDecoder();
                      String payloadJson = new String(urlDecoder.decode(jwt[1]), StandardCharsets.UTF_8);
 
-                     String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey).toLowerCase();
+                     String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey).toLowerCase(Locale.ROOT);
                      orcsApi.userService().setUserForCurrentThread(loginId);
                   }
                }
@@ -108,13 +109,13 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
             String userId = requestContext.getHeaderString("osee.user.id");
 
             if (userId != null) {
-               orcsApi.userService().setUserForCurrentThread(userId.toLowerCase());
+               orcsApi.userService().setUserForCurrentThread(userId.toLowerCase(Locale.ROOT));
             }
             if (accountId != null && orcsApi.userService().getUser().isInvalid()) {
                if (Strings.isNumeric(accountId)) {
                   orcsApi.userService().setUserForCurrentThread(UserId.valueOf(accountId));
                } else {
-                  orcsApi.userService().setUserForCurrentThread(accountId.toLowerCase());
+                  orcsApi.userService().setUserForCurrentThread(accountId.toLowerCase(Locale.ROOT));
                }
             }
          }

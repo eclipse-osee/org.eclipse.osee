@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -198,7 +199,7 @@ public class UserServiceImpl implements UserService {
 
          for (String loginId : user.getLoginIds()) {
             if (Strings.isValid(loginId)) {
-               loginIdToUser.put(loginId.toLowerCase(), user);
+               loginIdToUser.put(loginId.toLowerCase(Locale.ROOT), user);
             }
          }
       }
@@ -397,7 +398,7 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void setUserForCurrentThread(String loginId) {
-      loginId = loginId.toLowerCase();
+      loginId = loginId.toLowerCase(Locale.ROOT);
 
       if (Strings.isValid(loginId)) {
          // Try login ID cache first.
@@ -436,7 +437,7 @@ public class UserServiceImpl implements UserService {
          return;
       }
 
-      String lowerCaseCredential = credential.toLowerCase();
+      String lowerCaseCredential = credential.toLowerCase(Locale.ROOT);
       UserToken user = loginIdToUser.get(lowerCaseCredential);
 
       // Credential might be a userId
