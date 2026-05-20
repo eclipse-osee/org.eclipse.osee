@@ -27,8 +27,6 @@ import org.junit.Test;
  * <p>
  * Whole word content publishes should not apply data rights because those documents already contain their own data
  * rights within the document. Data rights processing is only for word template content publishes.
- *
- * @author Kiro
  */
 
 public class WholeWordRendererNoDataRightsTest {
