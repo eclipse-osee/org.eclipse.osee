@@ -13,10 +13,10 @@
 package org.eclipse.osee.ats.rest.internal.agile.jira;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
+import org.eclipse.osee.ats.api.agile.jira.JiraOutboundEndpoint;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.agile.jira.AbstractAtsJiraService;
-import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraOutboundEndpointImpl;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -25,15 +25,15 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AtsJiraServiceImpl extends AbstractAtsJiraService {
 
-   private static JiraEndpoint jiraEndpoint;
+   private static JiraOutboundEndpoint jiraEndpoint;
 
    public AtsJiraServiceImpl(AtsApi atsApi) {
       super(atsApi);
    }
 
-   private JiraEndpoint getJiraEndpoint() {
+   private JiraOutboundEndpoint getJiraEndpoint() {
       if (jiraEndpoint == null) {
-         jiraEndpoint = new JiraEndpointImpl(atsApi);
+         jiraEndpoint = new JiraOutboundEndpointImpl(atsApi);
       }
       return jiraEndpoint;
    }
@@ -62,7 +62,7 @@ public class AtsJiraServiceImpl extends AbstractAtsJiraService {
 
    @Override
    public String editJira(String json, String jiraStoryId) {
-      JiraEndpointImpl jiraEp = new JiraEndpointImpl(atsApi);
+      JiraOutboundEndpointImpl jiraEp = new JiraOutboundEndpointImpl(atsApi);
       return jiraEp.editJira(json, jiraStoryId);
    }
 

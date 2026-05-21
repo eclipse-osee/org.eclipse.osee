@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
+import org.eclipse.osee.ats.api.agile.jira.JiraOutboundEndpoint;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Stephen J. Molaro
  */
 
-public class JiraEndpointImpl implements JiraEndpoint {
+public class JiraOutboundEndpointImpl implements JiraOutboundEndpoint {
 
    private final AtsApi atsApi;
    static final String JIRA_SEARCH = "/rest/api/2/search";
@@ -46,7 +46,7 @@ public class JiraEndpointImpl implements JiraEndpoint {
    Pattern ISSUE_KEY = Pattern.compile("\"key\":\\s*\"(.+-[0-9]+)\"");
    Pattern ISSUE_NAME = Pattern.compile("\"summary\":\\s*\"(.*)\"");
 
-   public JiraEndpointImpl(AtsApi atsApi) {
+   public JiraOutboundEndpointImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
    }
 
