@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2012 Boeing
+ * Copyright (c) 2026 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,18 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.rest;
+package org.eclipse.osee.orcs.rest.internal;
 
-import org.eclipse.osee.orcs.rest.internal.ReportTestSuite;
-import org.eclipse.osee.orcs.rest.writer.OrcsRestWriterSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * @author John R. Misinco
+ * @author David W. Miller
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OrcsRestWriterSuite.class, ReportTestSuite.class})
-public class OrcsRest_JUnit_TestSuite {
+@Suite.SuiteClasses({GenericReportBuilderTest.class})
+public class ReportTestSuite {
    // Test Suite
 }
