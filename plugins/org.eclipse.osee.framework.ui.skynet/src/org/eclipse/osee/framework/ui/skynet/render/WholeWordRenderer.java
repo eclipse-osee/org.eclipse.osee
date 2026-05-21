@@ -24,23 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
-import org.eclipse.osee.framework.core.publishing.NoOpPublishingOutputFormatter;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.LinkType;
-import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
@@ -48,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordCoreUtilClient;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
@@ -81,12 +73,6 @@ public class WholeWordRenderer extends FileSystemRenderer {
     */
 
    private static final String DEFAULT_ASSOCIATED_FILE_EXTENSION = "xml";
-
-   private static final String FTR_END_TAG = "</w:ftr>";
-
-   private static final String FTR_START_TAG = "<w:ftr[^>]*>";
-
-   private static final Pattern END_PATTERN = Pattern.compile(FTR_END_TAG);
 
    /**
     * The {@link ImageDescriptor} used to draw the icon for this renderer's command icon.
@@ -123,8 +109,6 @@ public class WholeWordRenderer extends FileSystemRenderer {
     */
 
    private static final String RENDERER_NAME = "MS Whole Word Edit";
-
-   private static final Pattern START_PATTERN = Pattern.compile(FTR_START_TAG);
 
    /**
     * The {@link Program} used to invoke MS Word.
@@ -189,38 +173,6 @@ public class WholeWordRenderer extends FileSystemRenderer {
    public WholeWordRenderer(RendererMap options) {
       super(options);
       this.comparator = new WholeWordCompare(this);
-   }
-
-   private String addDataRights(String content, String classification, Artifact artifact) {
-      String toReturn = content;
-      WordCoreUtil.pageType orientation = WordCoreUtilClient.getPageOrientation(artifact);
-
-      var dataRightAnchorsResult = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(
-         artifact.getBranch(), "WORD_ML", classification, Collections.singletonList(ArtifactId.create(artifact)));
-
-      var dataRightContentBuilder = new DataRightContentBuilder(dataRightAnchorsResult);
-
-      String footer = dataRightContentBuilder.getContent(artifact, orientation, new NoOpPublishingOutputFormatter());
-
-      Matcher startFtr = START_PATTERN.matcher(footer);
-      Matcher endFtr = END_PATTERN.matcher(footer);
-      if (startFtr.find() && endFtr.find()) {
-         ChangeSet ftrCs = new ChangeSet(footer);
-         ftrCs.delete(0, startFtr.end());
-         ftrCs.delete(endFtr.start(), footer.length());
-         footer = ftrCs.applyChangesToSelf().toString();
-      }
-
-      startFtr.reset(content);
-      endFtr.reset(content);
-      ChangeSet cs = new ChangeSet(content);
-      while (startFtr.find()) {
-         if (endFtr.find()) {
-            cs.replace(startFtr.end(), endFtr.start(), footer);
-         }
-      }
-      toReturn = cs.applyChangesToSelf().toString();
-      return toReturn;
    }
 
    /**
@@ -361,13 +313,6 @@ public class WholeWordRenderer extends FileSystemRenderer {
             content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids, presentationType);
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
             WordUiUtil.getStoredResultData();
-
-            String classification =
-               artifact.getSoleAttributeValue(CoreAttributeTypes.DataRightsClassification, "invalid");
-
-            if (DataRightsClassification.isValid(classification)) {
-               content = addDataRights(content, classification, artifact);
-            }
 
             stream = Streams.convertStringToInputStream(content, "UTF-8");
          }
