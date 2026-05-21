@@ -42,7 +42,7 @@ public class WholeWordRendererNoDataRightsTest {
       Method[] methods = WholeWordRenderer.class.getDeclaredMethods();
       List<String> dataRightsMethods =
          Arrays.stream(methods).map(Method::getName).filter(name -> name.toLowerCase(Locale.ROOT).contains(
-            "datarights") || name.toLowerCase().contains("data_rights")).collect(Collectors.toList());
+            "datarights") || name.toLowerCase(Locale.ROOT).contains("data_rights")).collect(Collectors.toList());
 
       Assert.assertTrue("WholeWordRenderer should not contain any data rights methods, but found: " + dataRightsMethods,
          dataRightsMethods.isEmpty());
@@ -57,8 +57,8 @@ public class WholeWordRendererNoDataRightsTest {
    public void testNoDataRightsFields() {
       Field[] fields = WholeWordRenderer.class.getDeclaredFields();
       List<String> dataRightsFields = Arrays.stream(fields).map(Field::getName).filter(
-         name -> name.toLowerCase().contains("datarights") || name.toLowerCase(Locale.ROOT).contains(
-            "data_rights") || name.toLowerCase().contains("classification")).collect(Collectors.toList());
+         name -> name.toLowerCase(Locale.ROOT).contains("datarights") || name.toLowerCase(Locale.ROOT).contains(
+            "data_rights") || name.toLowerCase(Locale.ROOT).contains("classification")).collect(Collectors.toList());
 
       Assert.assertTrue("WholeWordRenderer should not contain any data rights fields, but found: " + dataRightsFields,
          dataRightsFields.isEmpty());
