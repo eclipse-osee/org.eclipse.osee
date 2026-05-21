@@ -25,6 +25,8 @@ public interface GenericReport {
 
    public GenericReport level(String levelName, String typeName);
 
+   public GenericReport relationLevel(String levelName, String relationName, String relationSide);
+
    public GenericReport column(String columName);
 
    public GenericReport column(String columnName, String typeName);
