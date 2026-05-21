@@ -17,10 +17,14 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.data.ApiKey;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -42,10 +46,10 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.internal.proxy.impl.ArtifactReadOnlyImpl;
 import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -55,23 +59,30 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 
 public class UserServiceImpl implements UserService {
+
    private final ConcurrentHashMap<UserId, UserToken> accountIdToUser = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<String, UserToken> loginIdToUser = new ConcurrentHashMap<>();
    private final String loginKey;
    private final OrcsApi orcsApi;
-   private final QueryBuilder query;
    private final ConcurrentHashMap<Thread, UserToken> threadToUser = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<String, UserToken> userIdToUser = new ConcurrentHashMap<>();
+   private volatile boolean allUsersLoaded = false;
+   private final AtomicBoolean backgroundLoadTriggered = new AtomicBoolean(false);
 
    public UserServiceImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-      query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
       loginKey = OseeProperties.getJwtLoginKey();
    }
 
    @Override
    public void clearCaches() {
-      loginIdToUser.clear();
+      synchronized (this) {
+         allUsersLoaded = false;
+         backgroundLoadTriggered.set(false);
+         loginIdToUser.clear();
+         accountIdToUser.clear();
+         userIdToUser.clear();
+      }
    }
 
    @Override
@@ -147,26 +158,116 @@ public class UserServiceImpl implements UserService {
     */
 
    private synchronized void ensureLoaded() {
-      if (loginIdToUser.isEmpty()) {
-         for (ArtifactReadable userArtifact : query.andTypeEquals(CoreArtifactTypes.User).follow(
-            CoreRelationTypes.Users_Artifact).asArtifacts()) {
-            UserToken user = toUser(userArtifact);
+      if (!allUsersLoaded) {
+         for (ArtifactReadable userArtifact : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
+            CoreArtifactTypes.User).follow(CoreRelationTypes.Users_Artifact).asArtifacts()) {
+            cacheUser(toUser(userArtifact));
+         }
+         allUsersLoaded = true;
+      }
+   }
 
-            if (user.isValid() && !user.getIdString().isEmpty()) {
-               accountIdToUser.put(UserId.valueOf(user.getId()), user);
-            }
-            String userId = user.getUserId();
-            if (user.isValid() && !userId.isEmpty()) {
-               userIdToUser.put(userId, user);
-
-               for (String loginId : user.getLoginIds()) {
-                  if (Strings.isValid(loginId)) {
-                     loginIdToUser.put(loginId.toLowerCase(), user);
-                  }
+   /**
+    * Spawns at most one daemon thread to load all users in the background. Resets the guard on failure to allow retry.
+    */
+   private void triggerBackgroundLoad() {
+      if (!allUsersLoaded && backgroundLoadTriggered.compareAndSet(false, true)) {
+         Thread loader = new Thread(() -> {
+            try {
+               ensureLoaded();
+            } finally {
+               if (!allUsersLoaded) {
+                  backgroundLoadTriggered.set(false);
                }
+            }
+         }, "UserService-BackgroundLoader");
+         loader.setDaemon(true);
+         loader.start();
+      }
+   }
+
+   /**
+    * Caches a user token in all lookup maps.
+    */
+   private void cacheUser(UserToken user) {
+      if (user.isValid() && !user.getIdString().isEmpty()) {
+         accountIdToUser.put(UserId.valueOf(user.getId()), user);
+      }
+      String userId = user.getUserId();
+      if (user.isValid() && !userId.isEmpty()) {
+         userIdToUser.put(userId, user);
+
+         for (String loginId : user.getLoginIds()) {
+            if (Strings.isValid(loginId)) {
+               loginIdToUser.put(loginId.toLowerCase(Locale.ROOT), user);
             }
          }
       }
+   }
+
+   /**
+    * Queries for a single user by login ID.
+    */
+   private UserToken queryUserByLoginId(String loginId) {
+      List<ArtifactReadable> userArtifacts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andAttributeIs(
+         CoreAttributeTypes.LoginId, loginId).follow(CoreRelationTypes.Users_Artifact).asArtifacts();
+      if (userArtifacts.size() == 1) {
+         UserToken user = toUser(userArtifacts.get(0));
+         if (user.isValid()) {
+            cacheUser(user);
+         }
+         return user;
+      }
+      return UserToken.SENTINEL;
+   }
+
+   /**
+    * Queries for a single user by checking both LoginId and UserId attributes.
+    */
+   private UserToken queryUserByLoginIdOrUserId(String identifier) {
+      List<ArtifactReadable> userArtifacts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(
+         List.of(CoreAttributeTypes.LoginId, CoreAttributeTypes.UserId), identifier).follow(
+            CoreRelationTypes.Users_Artifact).asArtifacts();
+      if (userArtifacts.size() == 1) {
+         UserToken user = toUser(userArtifacts.get(0));
+         if (user.isValid()) {
+            cacheUser(user);
+         }
+         return user;
+      }
+      return UserToken.SENTINEL;
+   }
+
+   /**
+    * Queries for a single user by artifact ID.
+    */
+   private UserToken queryUserById(ArtifactId id) {
+      List<ArtifactReadable> userArtifacts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+         id).follow(CoreRelationTypes.Users_Artifact).asArtifacts();
+      if (userArtifacts.size() == 1) {
+         UserToken user = toUser(userArtifacts.get(0));
+         if (user.isValid()) {
+            cacheUser(user);
+         }
+         return user;
+      }
+      return UserToken.SENTINEL;
+   }
+
+   /**
+    * Queries for a single user by UserId attribute value.
+    */
+   private UserToken queryUserByUserId(String userId) {
+      List<ArtifactReadable> userArtifacts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andAttributeIs(
+         CoreAttributeTypes.UserId, userId).follow(CoreRelationTypes.Users_Artifact).asArtifacts();
+      if (userArtifacts.size() == 1) {
+         UserToken user = toUser(userArtifacts.get(0));
+         if (user.isValid()) {
+            cacheUser(user);
+         }
+         return user;
+      }
+      return UserToken.SENTINEL;
    }
 
    @Override
@@ -208,24 +309,20 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public UserToken getUser(Long accountId) {
-      ensureLoaded();
-
       UserToken user = accountIdToUser.get(UserId.valueOf(accountId));
       if (user == null) {
-         user = UserToken.SENTINEL;
+         user = queryUserById(UserId.valueOf(accountId));
       }
-      return user;
+      return user != null ? user : UserToken.SENTINEL;
    }
 
    @Override
    public UserToken getUserByUserId(String userId) {
-      ensureLoaded();
-
       UserToken user = userIdToUser.get(userId);
       if (user == null) {
-         user = UserToken.SENTINEL;
+         user = queryUserByUserId(userId);
       }
-      return user;
+      return user != null ? user : UserToken.SENTINEL;
    }
 
    @Override
@@ -301,44 +398,36 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void setUserForCurrentThread(String loginId) {
-      loginId = loginId.toLowerCase();
+      loginId = loginId.toLowerCase(Locale.ROOT);
 
       if (Strings.isValid(loginId)) {
-         ensureLoaded();
+         // Try login ID cache first.
          UserToken user = loginIdToUser.get(loginId);
+         // If not found as login ID, try as userId attribute.
          if (user == null) {
-            List<ArtifactReadable> userArtifacts =
-               query.andAttributeIs(CoreAttributeTypes.LoginId, loginId).asArtifacts();
-            if (userArtifacts.size() == 1) {
-               user = toUser(userArtifacts.get(0));
-               if (user.isValid()) {
-                  loginIdToUser.put(loginId, user);
-               }
-            }
+            user = userIdToUser.get(loginId);
+         }
+         if (user == null) {
+            user = queryUserByLoginIdOrUserId(loginId);
          }
          if (user != null && user.isValid()) {
             threadToUser.put(Thread.currentThread(), user);
          }
+         triggerBackgroundLoad();
       }
    }
 
    @Override
    public void setUserForCurrentThread(UserId accountId) {
       if (accountId.isValid()) {
-         ensureLoaded();
          UserToken user = accountIdToUser.get(accountId);
          if (user == null) {
-            List<ArtifactReadable> userArtifacts = query.andId(accountId).asArtifacts();
-            if (userArtifacts.size() == 1) {
-               user = toUser(userArtifacts.get(0));
-               if (user.isValid()) {
-                  accountIdToUser.put(accountId, user);
-               }
-            }
+            user = queryUserById(accountId);
          }
          if (user != null && user.isValid()) {
             threadToUser.put(Thread.currentThread(), user);
          }
+         triggerBackgroundLoad();
       }
    }
 
@@ -347,10 +436,19 @@ public class UserServiceImpl implements UserService {
       if (!Strings.isValid(credential)) {
          return;
       }
-      ensureLoaded();
 
-      String lowerCaseCredential = credential.toLowerCase();
+      String lowerCaseCredential = credential.toLowerCase(Locale.ROOT);
       UserToken user = loginIdToUser.get(lowerCaseCredential);
+
+      // Credential might be a userId
+      if (user == null) {
+         user = userIdToUser.get(lowerCaseCredential);
+      }
+
+      // Credential might be an artifact ID
+      if (user == null && Strings.isNumeric(credential)) {
+         user = accountIdToUser.get(UserId.valueOf(credential));
+      }
 
       if (user == null) {
          ApiKey apiKey = apiKeyApi.getApiKey(credential);
@@ -360,22 +458,13 @@ public class UserServiceImpl implements UserService {
             user = accountIdToUser.get(userArtId);
 
             if (user == null) {
-               List<ArtifactReadable> userArtifacts = query.andId(userArtId).asArtifacts();
-               if (userArtifacts.size() == 1) {
-                  user = toUser(userArtifacts.get(0));
-                  if (user.isValid()) {
-                     accountIdToUser.put(userArtId, user);
-                  }
-               }
+               user = queryUserById(userArtId);
             }
          } else {
-            List<ArtifactReadable> userArtifacts =
-               query.andAttributeIs(CoreAttributeTypes.LoginId, lowerCaseCredential).asArtifacts();
-            if (userArtifacts.size() == 1) {
-               user = toUser(userArtifacts.get(0));
-               if (user.isValid()) {
-                  loginIdToUser.put(lowerCaseCredential, user);
-               }
+            user = queryUserByLoginIdOrUserId(lowerCaseCredential);
+            // If still not found and it's numeric, try as artifact ID.
+            if ((user == null || user.isInvalid()) && Strings.isNumeric(credential)) {
+               user = queryUserById(UserId.valueOf(credential));
             }
          }
       }
@@ -383,11 +472,21 @@ public class UserServiceImpl implements UserService {
       if (user != null && user.isValid()) {
          threadToUser.put(Thread.currentThread(), user);
       }
+      triggerBackgroundLoad();
    }
 
    @Override
    public void removeUserFromCurrentThread() {
       threadToUser.remove(Thread.currentThread());
+      // Periodically purge entries for threads that are no longer alive
+      if (threadToUser.size() > 100) {
+         Iterator<Thread> it = threadToUser.keySet().iterator();
+         while (it.hasNext()) {
+            if (!it.next().isAlive()) {
+               it.remove();
+            }
+         }
+      }
    }
 
    private UserToken toUser(ArtifactReadable userArtifact) {
@@ -406,6 +505,8 @@ public class UserServiceImpl implements UserService {
             userArtifact.getAttributeValues(CoreAttributeTypes.LoginId), roles,
             userArtifact.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
       } catch (Exception ex) {
+         OseeLog.log(UserServiceImpl.class, Level.WARNING,
+            "Failed to convert user artifact [" + userArtifact.getId() + "]", ex);
          return UserToken.SENTINEL;
       }
    }
@@ -417,11 +518,19 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public UserToken getUser(UserId userTok) {
-      return null;
+      if (userTok == null || userTok.isInvalid()) {
+         return UserToken.SENTINEL;
+      }
+      UserToken user = accountIdToUser.get(userTok);
+      if (user == null) {
+         user = queryUserById(userTok);
+      }
+      return user != null ? user : UserToken.SENTINEL;
    }
 
    @Override
    public Collection<UserToken> getUsers() {
+      ensureLoaded();
       return accountIdToUser.values();
    }
 
@@ -437,12 +546,26 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public String getAbridgedEmail(UserToken userTok) {
-      return ((ArtifactReadable) getUser(userTok)).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+      UserToken user = getUser(userTok);
+      if (user == null || user.isInvalid()) {
+         return "";
+      }
+      if (user instanceof ArtifactReadable) {
+         return ((ArtifactReadable) user).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+      }
+      return "";
    }
 
    @Override
    public String getAbridgedEmail(ArtifactToken userTok) {
-      return ((ArtifactReadable) getUser(userTok)).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+      UserToken user = getUser(userTok);
+      if (user == null || user.isInvalid()) {
+         return "";
+      }
+      if (user instanceof ArtifactReadable) {
+         return ((ArtifactReadable) user).getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, "");
+      }
+      return "";
    }
 
    @Override
