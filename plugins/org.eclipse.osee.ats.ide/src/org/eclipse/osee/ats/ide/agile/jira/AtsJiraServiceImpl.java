@@ -13,7 +13,7 @@
 package org.eclipse.osee.ats.ide.agile.jira;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
+import org.eclipse.osee.ats.api.agile.jira.JiraOutboundEndpoint;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.agile.jira.AbstractAtsJiraService;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -31,7 +31,7 @@ public class AtsJiraServiceImpl extends AbstractAtsJiraService {
 
    @Override
    protected String searchJira(String json) {
-      JiraEndpoint jiraEndpoint = AtsApiService.get().getServerEndpoints().getJiraEndpoint();
+      JiraOutboundEndpoint jiraEndpoint = AtsApiService.get().getServerEndpoints().getJiraEndpoint();
       String searchResults = jiraEndpoint.searchJira(json);
       return searchResults;
    }
