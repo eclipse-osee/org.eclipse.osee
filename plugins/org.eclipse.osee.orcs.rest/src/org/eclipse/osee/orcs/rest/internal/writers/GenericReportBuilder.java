@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.internal.writers;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.GenericReport;
@@ -52,28 +54,38 @@ public class GenericReportBuilder implements GenericReport {
 
    @Override
    public GenericReport level(String levelName, QueryBuilder addedQuery) {
-      int depth = 0;
-      if (currentLevel != null) {
-         depth = currentLevel.getDepth() + 1;
-      }
+      int nextDepth = nextDepth();
       currentLevel = new ReportLevel(levelName);
-      currentLevel.setDepth(depth);
+      currentLevel.setDepth(nextDepth);
       reportLevels.add(currentLevel);
-      query = addedQuery;
+      query = addedQuery; // intentional: builder pattern requires shared mutable reference
       return this;
    }
 
    @Override
    public GenericReport level(String levelName, String typeName) {
-      int depth = 0;
-      if (currentLevel != null) {
-         depth = currentLevel.getDepth() + 1;
-      }
+      int nextDepth = nextDepth();
       currentLevel = new ReportLevel(levelName);
-      currentLevel.setDepth(depth);
+      currentLevel.setDepth(nextDepth);
       reportLevels.add(currentLevel);
       query = query.andIsOfType(orcsApi.tokenService().getArtifactType(typeName));
       return this;
+   }
+
+   @Override
+   public GenericReport relationLevel(String levelName, String relationName, String relationSide) {
+      int nextDepth = nextDepth();
+      currentLevel = new ReportLevel(levelName);
+      currentLevel.setDepth(nextDepth);
+      reportLevels.add(currentLevel);
+      RelationTypeSide relation =
+         new RelationTypeSide(orcsApi.tokenService().getRelationType(relationName), RelationSide.valueOf(relationSide));
+      query = query.follow(relation);
+      return this;
+   }
+
+   private int nextDepth() {
+      return currentLevel == null ? 0 : currentLevel.getDepth() + 1;
    }
 
    @Override
@@ -113,6 +125,10 @@ public class GenericReportBuilder implements GenericReport {
       return this;
    }
 
+   /**
+    * Returns the current query builder. Intentionally exposes the mutable reference as part of the builder pattern —
+    * callers chain query operations (e.g. andIsOfType, follow).
+    */
    @Override
    public QueryBuilder query() {
       return query;
@@ -124,7 +140,7 @@ public class GenericReportBuilder implements GenericReport {
    }
 
    public List<ReportLevel> getLevels() {
-      return reportLevels;
+      return Collections.unmodifiableList(reportLevels);
    }
 
    public String[] getTopRow() {

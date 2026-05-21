@@ -98,14 +98,16 @@ public class AtsSearchDataSearch {
       ResultSet<ArtifactToken> resultSet = query.getResultArtifactsNew();
       Set<ArtifactToken> resultPrArts = new HashSet<>();
 
-      boolean debugBuildImpactMatch = true;
+      boolean debugBuildImpactMatch = false;
 
       /**
        * If BuildImpact, query loaded all related; now filter out those that don't match.</br>
        * NOTE: Build Impact can match by just name or name and state
        */
       if (hasBuildImpactCriteria) {
-         filterByBuildImpactCriteria(bidNametoBidState, resultSet, resultPrArts, debugBuildImpactMatch);
+         String firstBuildImpactName = data.getBuildImpact();
+         filterByBuildImpactCriteria(firstBuildImpactName, bidNametoBidState, resultSet, resultPrArts,
+            debugBuildImpactMatch);
       } else {
          resultPrArts.addAll(Collections.castAll(resultSet.getList()));
       }
@@ -124,25 +126,48 @@ public class AtsSearchDataSearch {
       return new AtsSearchDataResults(arts, rd);
    }
 
-   private void filterByBuildImpactCriteria(Map<String, String> bidNametoBidState, ResultSet<ArtifactToken> resultSet,
-      Set<ArtifactToken> resultPrArts, boolean debugBuildImpactMatch) {
+   private void filterByBuildImpactCriteria(String firstBuildImpactName, Map<String, String> bidNametoBidStateMap,
+      ResultSet<ArtifactToken> resultSet, Set<ArtifactToken> resultPrArts, boolean debugBuildImpactMatch) {
       XResultData buildImpactDebug = new XResultData(false);
       if (debugBuildImpactMatch) {
-         buildImpactDebug.logf("Match criteria %s\n", bidNametoBidState);
+         buildImpactDebug.logf("Match criteria %s\n", bidNametoBidStateMap);
       }
       for (ArtifactToken prArtTok : resultSet.getList()) {
+         boolean hasFirstBuildImpact = false;
+
          if (debugBuildImpactMatch) {
             buildImpactDebug.logf("\nChecking PR %s\n", prArtTok.toStringWithId());
          }
+         // FIRST, must match first BIT or not included in results
          ArtifactReadable prArt = (ArtifactReadable) prArtTok;
-         // If one BID's name matches name in query, add to results
-         for (ArtifactReadable bidArt : prArt.getRelated(AtsRelationTypes.ProblemReportToBid_Bid)) {
+         // If one BID's name matches first BIT in query (regardless of state name), add to results
+         ResultSet<ArtifactReadable> bidArts = prArt.getRelated(AtsRelationTypes.ProblemReportToBid_Bid);
+         for (ArtifactReadable bidArt : bidArts) {
             if (debugBuildImpactMatch) {
                buildImpactDebug.logf("--- Checking BIT %s\n", bidArt.toStringWithId());
             }
+            // If BID has First Build Impact name
+            if (!hasFirstBuildImpact && bidArt.getName().equals(firstBuildImpactName)) {
+               hasFirstBuildImpact = true;
+               break;
+            }
+         }
+         if (!hasFirstBuildImpact) {
+            if (debugBuildImpactMatch) {
+               buildImpactDebug.logf("--- No Matching BIT [%s], Skipping...\n", firstBuildImpactName);
+            }
+            continue;
+         }
+         if (debugBuildImpactMatch) {
+            buildImpactDebug.logf("--- Matching BIT Found[%s], Skipping...\n", firstBuildImpactName);
+         }
+
+         //SECOND, must match first BIT and state or second BIT and state to be included in results
+         boolean hasStateMatchOrNoState = false;
+         for (ArtifactReadable bidArt : bidArts) {
             // If BID name matches one we're looking for, see if match and thus add to PR results
-            if (bidNametoBidState.containsKey(bidArt.getName())) {
-               String buildImpactStateName = bidNametoBidState.get(bidArt.getName());
+            if (bidNametoBidStateMap.containsKey(bidArt.getName())) {
+               String buildImpactStateName = bidNametoBidStateMap.get(bidArt.getName());
                // If state is specified, check against state name
                if (Strings.isValid(buildImpactStateName)) {
                   // only add if state matches
@@ -153,7 +178,7 @@ public class AtsSearchDataSearch {
                         buildImpactDebug.logf("--- Name [%s] and State [%s] Match; Adding PR \n", bidArt.getName(),
                            buildImpactStateName);
                      }
-                     resultPrArts.add(prArt);
+                     hasStateMatchOrNoState = true;
                      break;
                   }
                }
@@ -163,9 +188,13 @@ public class AtsSearchDataSearch {
                      buildImpactDebug.logf("--- Name [%s] (no State specified) Match; Adding PR \n", bidArt.getName());
                   }
                   resultPrArts.add(prArt);
+                  hasStateMatchOrNoState = true;
                   break;
                }
             }
+         }
+         if (hasStateMatchOrNoState) {
+            resultPrArts.add(prArt);
          }
       }
    }

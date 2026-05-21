@@ -489,11 +489,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       }
    }
 
-   // For sub-class implementation
-   public List<Artifact> performPostSearchFilter(List<Artifact> artifacts) {
-      return artifacts;
-   }
-
    public Collection<? extends SearchEngine> getSearchEngines() {
       return java.util.Collections.emptyList();
    }

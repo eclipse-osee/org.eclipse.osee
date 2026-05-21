@@ -103,7 +103,7 @@ public final class TemplateParser {
          }
          if (methodName.equals("query")) {
             report = reflector.invokeStack(report);
-         } else if (methodName.equals("level")) {
+         } else if (methodName.equals("level") || methodName.equals("relationLevel")) {
             invoker.set(methodName, arguments);
             reflector.pushMethod(invoker);
             report = reflector.invokeStack(report);

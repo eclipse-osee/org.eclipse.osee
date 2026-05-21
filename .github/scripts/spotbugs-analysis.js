@@ -783,9 +783,13 @@ function main() {
 
   // --- Run SpotBugs analysis (single run, XML only) ---
   console.log('Running SpotBugs full analysis on org.eclipse.osee.-');
+  const excludeFilter = fs.existsSync('.github/spotbugs-exclude.xml')
+    ? '-exclude .github/spotbugs-exclude.xml '
+    : '';
   try {
     execSync(
       `${spotbugsBin} -textui -low -effort:max ` +
+        `${excludeFilter}` +
         `-xml:withMessages -output spotbugs-report-full.xml ` +
         `-auxclasspathFromInput -onlyAnalyze "org.eclipse.osee.-" ` +
         `-nested:false compiled-classes/`,

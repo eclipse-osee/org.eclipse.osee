@@ -61,7 +61,7 @@ public final class PublishTemplateReport implements StreamingOutput {
             results.errorf("Invalid Template Report artifact provided: %s", reportTemplateArt);
          }
          writer.endWorkbook();
-      } catch (Exception ex) {
+      } catch (IOException ex) {
          throw new WebApplicationException(ex);
       }
    }
@@ -88,14 +88,6 @@ public final class PublishTemplateReport implements StreamingOutput {
          writer.writeRow(row);
       }
       writer.endSheet();
-   }
-
-   private void writeReportFromGenericReportCode() throws IOException {
-      GenericReportCode generic = new GenericReportCode();
-      generic.traceCode(report);
-      int numColumns = report.getColumnCount();
-      writer.startSheet("Subsystem to Code trace", numColumns);
-      finishFillingData();
    }
 
    private void finishFillingData() throws IOException {

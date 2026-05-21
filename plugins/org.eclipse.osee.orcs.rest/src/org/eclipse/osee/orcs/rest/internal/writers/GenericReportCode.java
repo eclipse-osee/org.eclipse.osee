@@ -65,6 +65,19 @@ public class GenericReportCode {
 
    }
 
+   public void namedTraceCode(GenericReport report) {
+
+      report.level("Subsystem Requirement", report.query().andIsOfType(CoreArtifactTypes.SubsystemRequirementMsWord)). //
+         column("Artifact Id"). //
+         column("Subsystem Function Name", CoreAttributeTypes.Name); //
+
+      report.relationLevel("Related Code Unit by name", "Code-Requirement", "SIDE_A"). //
+         column("Artifact Id"). //
+         column("Code Unit", CoreAttributeTypes.Name). //
+         column("File System Path", CoreAttributeTypes.FileSystemPath); //
+
+   }
+
    public void backTraceCode(GenericReport report) {
 
       report.level("Code Unit", report.query().andIsOfType(CoreArtifactTypes.CodeUnit)). //
