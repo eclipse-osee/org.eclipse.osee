@@ -16,8 +16,10 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import com.google.common.collect.Sets;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +27,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -103,6 +106,32 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
    @Override
    public Response deleteIndexQueue() {
       Callable<Integer> op = getIndexer().purgeAllIndexes();
+      Integer result = executeCallable(op);
+      boolean modified = result > 0;
+      return asResponse(modified);
+   }
+
+   @Override
+   public Response reindexBaselineBranches(boolean includeWorking) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      Set<Branch> branches = new LinkedHashSet<>();
+
+      // Always include baseline and system root branches
+      ResultSet<Branch> baselineResults =
+         newBranchQuery().andIsOfType(BranchType.BASELINE, BranchType.SYSTEM_ROOT).getResults();
+      for (Branch branch : baselineResults) {
+         branches.add(branch);
+      }
+
+      if (includeWorking) {
+         ResultSet<Branch> workingResults = newBranchQuery().andIsOfType(BranchType.WORKING).getResults();
+         for (Branch branch : workingResults) {
+            branches.add(branch);
+         }
+      }
+
+      Callable<Integer> op = getIndexer().indexBranches(branches, false);
       Integer result = executeCallable(op);
       boolean modified = result > 0;
       return asResponse(modified);

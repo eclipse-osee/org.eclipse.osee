@@ -117,12 +117,18 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       SearchTagCollector tagCollector = new SearchTagCollector();
 
       Set<Long> processed = new HashSet<>();
+      boolean dbSupportsFullText = getJdbcClient().getDbType().supportsFullTextSearch();
 
       Map<Long, Collection<Long>> toStore = new HashMap<>();
       for (IndexedResource source : sources) {
          long startItemTime = System.currentTimeMillis();
          GammaId gamma = source.getGammaId();
          if (processed.add(gamma.getId())) {
+            // If the DB supports native full-text search, only tag external resources.
+            // Inline attribute values are searched via the DB's full-text index directly.
+            if (dbSupportsFullText && !source.isExternalResource()) {
+               continue;
+            }
             Set<Long> tags = new HashSet<>();
             toStore.put(gamma.getId(), tags);
             tagCollector.setCurrentTag(gamma.getId(), tags);
