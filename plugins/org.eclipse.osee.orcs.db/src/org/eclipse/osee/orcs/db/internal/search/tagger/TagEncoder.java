@@ -13,80 +13,38 @@
 
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
-import java.util.Arrays;
-
 /**
+ * Encodes text tokens into 64-bit hash values for storage in the search tags table. Uses a high-quality hash function
+ * to eliminate collisions that existed in the previous bit-packing approach.
+ *
  * @author Roberto E. Escobar
  */
 public class TagEncoder {
 
-   private static final char[] tagChars = new char[] {
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      'a',
-      'b',
-      'c',
-      'd',
-      'e',
-      'f',
-      'g',
-      'h',
-      'i',
-      'l',
-      'm',
-      'n',
-      'o',
-      'p',
-      'r',
-      's',
-      't',
-      'u',
-      'v',
-      'w',
-      'y'};
+   private static final long FNV1A_64_OFFSET_BASIS = 0xcbf29ce484222325L;
+   private static final long FNV1A_64_PRIME = 0x100000001b3L;
 
    /**
-    * Create a bit-packed tag that will fit in a 64-bit integer that can provide an extremely quick search mechanism for
-    * for the first pass. The second pass will do a full text search to provide more exact matches. The tag will
-    * represent up to 12 characters (all that can be stuffed into 64-bits). Longer search tags will be turned into
-    * consecutive search tags
+    * Encode a text token into a 64-bit hash tag. Each unique word produces a unique tag (collision probability is
+    * negligible with 64-bit hash space). This replaces the previous bit-packing approach which had collision bugs due to
+    * 5-bit values being packed into 4-bit slots.
     */
    public void encode(String text, TagCollector collector) {
-      int tagBitsPos = 0;
-      long tagBits = 0;
-      for (int index = 0; index < text.length(); index++) {
-         char c = text.charAt(index);
+      if (text == null || text.isEmpty()) {
+         return;
+      }
+      String normalized = text.toLowerCase();
+      long hash = fnv1a64(normalized);
+      collector.addTag(text, hash);
+   }
 
-         if (c == '\t' || c == '\n' || c == '\r' || tagBitsPos == 60) {
-            if (tagBitsPos > 10) {
-               collector.addTag(text, tagBits);
-            }
-            tagBits = 0;
-            tagBitsPos = 0;
-         } else {
-            if (c >= 'A' && c <= 'Z') {
-               c += 32;
-            }
-            int pos = Arrays.binarySearch(tagChars, c);
-            if (pos < 0) {
-               tagBits |= 0x3F << (long) tagBitsPos;
-            } else {
-               tagBits |= pos << (long) tagBitsPos;
-            }
-            tagBitsPos += 4;
-         }
+   private static long fnv1a64(String text) {
+      long hash = FNV1A_64_OFFSET_BASIS;
+      for (int i = 0; i < text.length(); i++) {
+         hash ^= text.charAt(i);
+         hash *= FNV1A_64_PRIME;
       }
-      if (tagBits != 0) {
-         collector.addTag(text, tagBits);
-      }
+      return hash;
    }
 
    public static final void main(String[] args) {

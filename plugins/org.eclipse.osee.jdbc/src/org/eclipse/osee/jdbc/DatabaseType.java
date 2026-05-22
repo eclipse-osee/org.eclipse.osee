@@ -416,6 +416,41 @@ public class DatabaseType extends BaseId {
       return result;
    }
 
+   public boolean supportsFullTextSearch() {
+      return equals(oracle) || equals(postgresql);
+   }
+
+   /**
+    * Returns a SQL fragment for full-text search on the given field. The returned string contains a '?' placeholder
+    * for the search term.
+    * <p>
+    * SECURITY: The {@code field} parameter is concatenated directly into SQL. Callers must only pass trusted,
+    * hardcoded column references — never user-supplied input.
+    */
+   public String getFullTextSearchSql(String field) {
+      if (equals(oracle)) {
+         return "CONTAINS(" + field + ", ?) > 0";
+      } else if (equals(postgresql)) {
+         return "to_tsvector('english', coalesce(" + field + ", '')) @@ plainto_tsquery('english', ?)";
+      }
+      return null;
+   }
+
+   /**
+    * Returns a DDL statement to create a full-text search index on the specified table and column.
+    * <p>
+    * SECURITY: All parameters are concatenated directly into DDL. Callers must only pass trusted, hardcoded
+    * identifiers — never user-supplied input.
+    */
+   public String getFullTextIndexDdl(String table, String column, String indexName) {
+      if (equals(oracle)) {
+         return "CREATE INDEX " + indexName + " ON " + table + "(" + column + ") INDEXTYPE IS CTXSYS.CONTEXT PARAMETERS ('SYNC (ON COMMIT)') TABLESPACE OSEE_INDEX";
+      } else if (equals(postgresql)) {
+         return "CREATE INDEX " + indexName + " ON " + table + " USING GIN(to_tsvector('english', coalesce(" + column + ", '')))";
+      }
+      return null;
+   }
+
    public String booleanFalse() {
       String result = "";
       if (matches(postgresql)) {

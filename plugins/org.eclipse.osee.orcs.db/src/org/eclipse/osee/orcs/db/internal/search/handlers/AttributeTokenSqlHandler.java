@@ -91,6 +91,8 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       int valueCount = values.size();
       int valueIdx = 0;
       String jIdAlias = null;
+      boolean dbSupportsFullText = writer.getJdbcClient().getDbType().supportsFullTextSearch();
+
       for (String value : values) {
          List<Long> tags = new ArrayList<>();
          tokenize(value, tags);
@@ -118,7 +120,41 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
                   writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
                }
             }
+         } else if (dbSupportsFullText) {
+            // Hybrid approach: union of native full-text search (inline) and token table (external)
+            String ftsSql = writer.getJdbcClient().getDbType().getFullTextSearchSql("att.value");
+
+            // Native full-text search for inline attribute values
+            writer.write(" SELECT gamma_id FROM osee_attribute att WHERE ");
+            writer.write(ftsSql);
+            writer.addParameter(value);
+            if (!criteria.isIncludeAllTypes()) {
+               writer.writeAnd();
+               if (joinQuery == null) {
+                  writer.writeEqualsParameter("att.attr_type_id", criteria.getAttributeTypes().iterator().next());
+               } else {
+                  writer.writeEqualsAnd("att", "attr_type_id", jIdAlias, "id");
+                  writer.writeEqualsParameter(jIdAlias, "query_id", joinQuery.getQueryId());
+               }
+            }
+
+            // Union with token-based search for external documents.
+            // NOTE: INTERSECT has higher precedence than UNION in SQL, so the result is:
+            //   (FTS inline results) UNION (tag1 INTERSECT tag2 INTERSECT ... tagN)
+            // This is intentional — external docs must match ALL tokens, while inline
+            // matches are handled by the native FTS engine's own phrase/term logic.
+            writer.write("\n UNION \n(");
+            for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
+               Long tag = tags.get(tagIdx);
+               writer.write(" SELECT gamma_id FROM osee_search_tags WHERE ");
+               writer.writeEqualsParameter("coded_tag_id", tag);
+               if (tagIdx + 1 < tagsSize) {
+                  writer.write("\n INTERSECT \n");
+               }
+            }
+            writer.write(")");
          } else {
+            // Fallback: token-based search only (for databases without native full-text support)
             for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
                Long tag = tags.get(tagIdx);
                writer.write(" SELECT gamma_id FROM osee_search_tags WHERE ");
