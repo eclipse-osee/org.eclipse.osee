@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { NgClass } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, DestroyRef } from '@angular/core'; // Author: Eihab Khudhair (ekhudhai) Task 183 - Auto-open artifact from query params
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -22,10 +22,12 @@ import { UiService } from '@osee/shared/services';
 import { ArtifactTabGroupComponent } from './lib/components/artifact-tab-group/artifact-tab-group.component';
 import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
 import { ArtifactExplorerTabService } from './lib/services/artifact-explorer-tab.service';
+import { ArtifactExplorerHttpService } from './lib/services/artifact-explorer-http.service'; // Author: Eihab Khudhair (ekhudhai) Task 183 - Load artifact details to open tab
+import { artifactWithRelations } from '@osee/artifact-with-relations/types'; // Author: Eihab Khudhair (ekhudhai) Task 183 - Strong typing for opened artifact tab
 import { ExplorerPanel, tab } from './lib/types/artifact-explorer';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, distinctUntilChanged, map, take } from 'rxjs'; // Author: Eihab Khudhair (ekhudhai) Task 183 - Auto-open artifact from query params
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop'; // Author: Eihab Khudhair (ekhudhai) Task 183 - Auto-open artifact from query params
 import { ArtifactExplorerPreferencesService } from './lib/services/artifact-explorer-preferences.service';
 
 @Component({
@@ -49,9 +51,11 @@ import { ArtifactExplorerPreferencesService } from './lib/services/artifact-expl
 export class ArtifactExplorerComponent {
 	private uiService = inject(UiService);
 	private tabService = inject(ArtifactExplorerTabService);
+	private artExpHttpService = inject(ArtifactExplorerHttpService); // Author: Eihab Khudhair (ekhudhai) Task 183 - Load artifact for tab open
 	private userPrefsService = inject(ArtifactExplorerPreferencesService);
 	private routeUrl = inject(ActivatedRoute);
 	private router = inject(Router);
+	private destroyRef = inject(DestroyRef); // Author: Eihab Khudhair (ekhudhai) Task 183 - Auto-open artifact from query params
 
 	@Input() set branchType(branchType: 'working' | 'baseline' | '') {
 		if (branchType != undefined) {
@@ -66,6 +70,52 @@ export class ArtifactExplorerComponent {
 		} else {
 			this.uiService.idValue = '';
 		}
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 183 - Auto-open artifact tab when navigating with artifactId query param
+	 */
+	constructor() {
+		this.routeUrl.queryParamMap
+			.pipe(
+				map((params) => ({
+					artifactId: (params.get('artifactId') || '').trim(),
+					viewId: (params.get('viewId') || '').trim(),
+				})),
+				filter((x) => x.artifactId.length > 0),
+				distinctUntilChanged((a, b) => a.artifactId === b.artifactId && a.viewId === b.viewId),
+				takeUntilDestroyed(this.destroyRef)
+			)
+			.subscribe(({ artifactId, viewId }) => {
+				const parsedViewId = viewId !== '' ? viewId : '-1';
+				this.openArtifactTabFromParams(artifactId, parsedViewId);
+			});
+	}
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 183 - Load artifact details and open tab on current branch/view
+	 */
+	private openArtifactTabFromParams(artifactId: string, viewId: string): void {
+		if (!artifactId) return;
+
+		// branchId is already driven by the route inputs (branchId setter updates uiService.idValue)
+		this.uiService.id.pipe(take(1)).subscribe((branchId) => {
+			if (!branchId) return;
+
+			this.artExpHttpService
+				.getartifactWithRelations(branchId, artifactId, viewId, true)
+				.pipe(take(1))
+				.subscribe({
+					next: (artifact: artifactWithRelations) => {
+						this.tabService.addArtifactTabOnBranch(artifact, branchId, viewId);
+					},
+					error: (err: unknown) => {
+						const msg = err instanceof Error ? err.message : String(err);
+						console.error('Task 183: Failed to load artifact for tab open:', msg);
+					},
+				});
+		});
 	}
 
 	openTabs = this.tabService.Tabs;

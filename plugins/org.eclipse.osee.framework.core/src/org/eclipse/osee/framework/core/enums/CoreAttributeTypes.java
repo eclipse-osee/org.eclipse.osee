@@ -344,6 +344,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString Revision = osee.createString(1152921504606847283L, "Revision", MediaType.TEXT_PLAIN, "Version");
    AttributeTypeString RuntimeVersion = osee.createString(2638318397467121190L, "Runtime Version", MediaType.TEXT_PLAIN, "Version");
    AttributeTypeString SFHA = osee.createString(1152921504606847140L, "SFHA", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString SavedSearch = osee.createString(8306219454820013572L, "Saved Search", MediaType.APPLICATION_JSON, "Saved search payload in JSON format");
    AttributeTypeBoolean Safety = osee.createBoolean(1152921504606847357L, "Safety", MediaType.TEXT_PLAIN, "Safety");
    AttributeTypeString SafetyImpact = osee.createString(1684721504606847095L, "Safety Impact", MediaType.TEXT_PLAIN, "");
    SafetySeverityAttributeType SafetySeverity = osee.createEnum(new SafetySeverityAttributeType());

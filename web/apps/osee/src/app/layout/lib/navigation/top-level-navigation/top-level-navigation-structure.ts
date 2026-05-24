@@ -62,6 +62,23 @@ export const navigationStructure: navigationElement[] = [
 				usesBranch: true,
 				children: [],
 			},
+			/** 
+			 * Author: Kris Graham (kgraha16)
+			 * Task 163 - Created navigation button to open Advanced Search Page
+			 */
+			{
+				label: 'Advanced Artifact Search',
+				cypressLabel: 'advanced-search',
+				pageTitle: 'Advanced Search - Artifact Explorer',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/ple/artifact/explorer/search',
+				icon: 'search',
+				description: 'Go to Advanced Artifact Search page',
+				usesBranch: true,
+				children: [],
+			},
 			{
 				label: 'Publishing',
 				cypressLabel: 'publishing',

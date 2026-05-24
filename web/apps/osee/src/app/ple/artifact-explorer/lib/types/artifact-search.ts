@@ -17,6 +17,7 @@ export type AdvancedSearchCriteria = {
 	attributeTypes: NamedId[];
 	exactMatch: boolean;
 	searchById: boolean;
+  searchTitle: string;
 };
 
 export const defaultAdvancedSearchCriteria: AdvancedSearchCriteria = {
@@ -24,4 +25,5 @@ export const defaultAdvancedSearchCriteria: AdvancedSearchCriteria = {
 	attributeTypes: [],
 	exactMatch: false,
 	searchById: false,
+  searchTitle: ''
 };
