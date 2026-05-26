@@ -52,10 +52,10 @@ describe('HelpService', () => {
 					isDropdown: true,
 					isDropdownOpen: false,
 					requiredRoles: [],
-					routerLink: 'page/1',
+					routerLink: '',
+					usesBranch: false,
 					icon: '',
 					description: '',
-					usesBranch: false,
 					children: [
 						{
 							label: 'Help Page 1',

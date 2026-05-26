@@ -27,8 +27,8 @@ export const routes: Routes = [
 		loadChildren: () => import('./actra/actra.routes'),
 	},
 	{
-		path: 'certificate-management',
-		loadChildren: () => import('./certificate-management/profile.routes'),
+		path: 'profile',
+		loadChildren: () => import('./profile/profile.routes'),
 	},
 	{
 		path: 'world',

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { IsActiveMatchOptions, Router } from '@angular/router';
 
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
 import { MatDivider } from '@angular/material/divider';
@@ -68,6 +68,14 @@ export class TopLevelNavigationComponent {
 
 	navElements = navigationStructure; // structure that stores the navigation elements
 
+	/** Match options for leaf items — exact primary path match */
+	private readonly exactMatchOptions: IsActiveMatchOptions = {
+		paths: 'exact',
+		queryParams: 'subset',
+		fragment: 'ignored',
+		matrixParams: 'ignored',
+	};
+
 	getElementsWithPermission(elements: navigationElement[]) {
 		return from(elements).pipe(
 			switchMap((item) =>
@@ -81,6 +89,45 @@ export class TopLevelNavigationComponent {
 			),
 			reduce((acc, curr) => [...acc, curr], [] as navigationElement[])
 		);
+	}
+
+	/**
+	 * Determines if a dropdown should be highlighted by checking whether
+	 * any of its descendant leaf routes are currently active.
+	 * This removes the need to maintain a separate routerLink on dropdowns.
+	 */
+	isDropdownActive(element: navigationElement): boolean {
+		return this.hasActiveChild(element.children);
+	}
+
+	/** Recursively checks if any descendant non-dropdown item is active */
+	private hasActiveChild(children: navigationElement[]): boolean {
+		for (const child of children) {
+			if (child.isDropdown) {
+				if (this.hasActiveChild(child.children)) {
+					return true;
+				}
+			} else {
+				if (
+					child.routerLink !== '' &&
+					this.router.isActive(
+						child.routerLink,
+						this.exactMatchOptions
+					)
+				) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/** For non-dropdown items — highlights only on exact route match */
+	isItemActive(routerLink: string): boolean {
+		if (routerLink === '') {
+			return false;
+		}
+		return this.router.isActive(routerLink, this.exactMatchOptions);
 	}
 
 	closeTopLevelNav() {
