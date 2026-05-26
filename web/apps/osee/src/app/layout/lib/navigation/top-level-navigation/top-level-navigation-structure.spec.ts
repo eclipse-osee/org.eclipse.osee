@@ -118,15 +118,14 @@ describe('Navigation Structure Validation', () => {
 				if (e.element.routerLink === '' || e.element.external) {
 					return false;
 				}
-				// Extract the first path segment (e.g., /ple/messaging -> /ple)
-				const segments = e.element.routerLink
-					.split('/')
-					.filter(Boolean);
-				if (segments.length === 0) {
-					return true;
-				}
-				const topSegment = '/' + segments[0];
-				return !topLevelPaths.has(topSegment);
+				// Check if the routerLink starts with any registered top-level path
+				// This handles multi-segment paths like '/server/health'
+				const link = e.element.routerLink;
+				return ![...topLevelPaths].some(
+					(registeredPath) =>
+						link === registeredPath ||
+						link.startsWith(registeredPath + '/')
+				);
 			});
 			expect(
 				violations.map(
@@ -226,10 +225,7 @@ describe('Navigation Structure Validation', () => {
 				// Recurse into dropdown children
 				for (const el of elements) {
 					if (el.isDropdown && el.children.length > 0) {
-						checkPrefix(
-							el.children,
-							`${parentPath} > ${el.label}`
-						);
+						checkPrefix(el.children, `${parentPath} > ${el.label}`);
 					}
 				}
 			}
