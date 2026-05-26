@@ -28,7 +28,7 @@ export const routes: Routes = [
 	},
 	{
 		path: 'profile',
-		loadChildren: () => import('./certificate-management/profile.routes'),
+		loadChildren: () => import('./profile/profile.routes'),
 	},
 	{
 		path: 'world',
