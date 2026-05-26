@@ -24,10 +24,14 @@ const routes: Routes = [
 		path: '',
 		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
-		pathMatch: 'full',
 	},
 	{
 		path: '',
+		redirectTo: 'certificate-management',
+		pathMatch: 'full',
+	},
+	{
+		path: 'certificate-management',
 		title: certs?.pageTitle || 'OSEE',
 		loadComponent: () =>
 			import(
