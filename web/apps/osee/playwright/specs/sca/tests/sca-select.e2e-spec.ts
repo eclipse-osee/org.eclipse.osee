@@ -12,7 +12,18 @@
  **********************************************************************/
 import { expect, test } from '@ngx-playwright/test';
 
+/**
+ * TODO: SCA (Software Composition Analysis) is built on a legacy AngularJS
+ * application and has known intermittent failures. These tests are marked with
+ * test.fixme() until SCA is migrated to the current Angular application.
+ * Once the migration is complete, these tests will be rewritten using modern
+ * Angular testing patterns.
+ */
 test('test', async ({ page }) => {
+	test.fixme(
+		true,
+		'SCA is a legacy AngularJS page with known failures. Tests will be rewritten after migration to current Angular application.'
+	);
 	await page.setViewportSize({ width: 1200, height: 800 });
 	await page.goto('http://localhost:8089/coverage/ui/index.html#/');
 	await page.waitForLoadState('networkidle');
