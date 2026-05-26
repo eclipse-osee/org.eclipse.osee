@@ -19,8 +19,10 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.EmailRecipientInfo;
@@ -29,8 +31,10 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.EmailCertificateValidator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.internal.util.EmailCertificateLdapLookup;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -40,14 +44,17 @@ import org.eclipse.osee.orcs.utility.EmailCertificateService;
 public class EmailCertificateServiceImpl implements EmailCertificateService {
 
    private final OrcsApi orcsApi;
-   private final ExecutorService ldapWritebackExecutor = Executors.newSingleThreadExecutor(runnable -> {
-      Thread thread = new Thread(runnable, "EmailCertificateLdapWriteback");
-      thread.setDaemon(true);
-      return thread;
-   });
+   private final ThreadPoolExecutor ldapWritebackExecutor;
 
    public EmailCertificateServiceImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+      this.ldapWritebackExecutor = new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS,
+         new LinkedBlockingQueue<>(), runnable -> {
+            Thread thread = new Thread(runnable, "EmailCertificateLdapWriteback");
+            thread.setDaemon(true);
+            return thread;
+         });
+      this.ldapWritebackExecutor.allowCoreThreadTimeOut(true);
    }
 
    @Override
@@ -168,11 +175,30 @@ public class EmailCertificateServiceImpl implements EmailCertificateService {
          return;
       }
 
-      ldapWritebackExecutor.submit(() -> writePublicCertificatesByEmailAddresses(normalizedCertificatesByEmail));
+      ldapWritebackExecutor.submit(() -> {
+         // This writeback is a system-level cache operation (persisting LDAP-fetched certs),
+         // always triggered from a background thread (SendThread) with no user context.
+         // Use OseeSystem as the transaction author.
+         orcsApi.userService().setUserForCurrentThread(SystemUser.OseeSystem);
+         try {
+            writePublicCertificatesByEmailAddresses(normalizedCertificatesByEmail);
+         } finally {
+            orcsApi.userService().removeUserFromCurrentThread();
+         }
+      });
    }
 
    private void writePublicCertificatesByEmailAddresses(Map<String, String> certificatesByEmailAddress) {
       try {
+         // Verify that the current thread has a valid user context for the transaction author.
+         UserToken currentUser = orcsApi.userService().getUser();
+         if (currentUser == null || currentUser.isInvalid()) {
+            OseeLog.log(EmailCertificateServiceImpl.class, Level.SEVERE,
+               "Cannot write back LDAP certificates: current thread has no valid user context. " +
+                  "Transaction would be authored by SENTINEL.");
+            return;
+         }
+
          QueryFactory queryFactory = orcsApi.getQueryFactory();
 
          List<ArtifactReadable> emailUsers =
@@ -187,6 +213,7 @@ public class EmailCertificateServiceImpl implements EmailCertificateService {
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
             "Write back LDAP email public certificates.");
 
+         boolean hasChanges = false;
          for (ArtifactReadable userArt : emailUsers) {
             String email = userArt.getSoleAttributeValue(CoreAttributeTypes.Email, "");
             String certificatePem = certificatesByEmailAddress.get(email.toLowerCase());
@@ -203,14 +230,19 @@ public class EmailCertificateServiceImpl implements EmailCertificateService {
                tx.deleteAttributes(userArt.getArtifactId(), CoreAttributeTypes.EmailPublicCertificate);
                tx.setSoleAttributeFromString(userArt.getArtifactId(), CoreAttributeTypes.EmailPublicCertificate,
                   certificatePem);
+               hasChanges = true;
             } catch (Exception ex) {
-               // Skip invalid certificates
+               OseeLog.log(EmailCertificateServiceImpl.class, Level.WARNING,
+                  "Skipping invalid LDAP certificate for email [" + email + "]", ex);
             }
          }
 
-         tx.commit();
+         if (hasChanges) {
+            tx.commit();
+         }
       } catch (Exception ex) {
-         // do nothing
+         OseeLog.log(EmailCertificateServiceImpl.class, Level.SEVERE,
+            "Failed to write back LDAP email certificates", ex);
       }
    }
 
