@@ -12,6 +12,7 @@
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
 import { HelpPage, navigationElement } from '@osee/shared/types';
+import { UserRoles } from '@osee/shared/types/auth';
 import { from, map, reduce, shareReplay, switchMap } from 'rxjs';
 import { HelpHttpService } from '@osee/shared/services/help';
 
@@ -40,22 +41,34 @@ export class HelpService {
 		);
 	}
 
-	private helpPageToNavElement(helpPage: HelpPage) {
-		const navElement = {
+	private helpPageToNavElement(helpPage: HelpPage): navigationElement {
+		const base = {
 			label: helpPage.name,
 			cypressLabel: 'cy-help-nav-' + helpPage.id,
 			pageTitle: '',
-			isDropdown: helpPage.header,
 			isDropdownOpen: false,
-			requiredRoles: [],
-			routerLink: 'page/' + helpPage.id,
+			requiredRoles: [] as UserRoles[],
 			icon: '',
 			description: '',
+		};
+
+		if (helpPage.header) {
+			return {
+				...base,
+				isDropdown: true as const,
+				routerLink: '' as const,
+				usesBranch: false as const,
+				children: helpPage.children.map((c) =>
+					this.helpPageToNavElement(c)
+				),
+			};
+		}
+		return {
+			...base,
+			isDropdown: false as const,
+			routerLink: 'page/' + helpPage.id,
 			usesBranch: false,
-			children: helpPage.children.map((c) =>
-				this.helpPageToNavElement(c)
-			),
-		} as navigationElement;
-		return navElement;
+			children: [] as [],
+		};
 	}
 }
