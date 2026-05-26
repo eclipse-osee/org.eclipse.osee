@@ -177,6 +177,66 @@ describe('Navigation Structure Validation', () => {
 				)
 			).toEqual([]);
 		});
+
+		it('all leaf children under a dropdown should share a common route prefix with siblings', () => {
+			const violations: string[] = [];
+
+			function checkPrefix(
+				elements: navigationElement[],
+				parentPath: string
+			) {
+				// Collect leaf routerLinks at this level
+				const leafLinks = elements
+					.filter((el) => !el.isDropdown && el.routerLink !== '')
+					.map((el) => el.routerLink);
+
+				if (leafLinks.length > 1) {
+					// Find the longest common prefix among siblings
+					const commonPrefix = leafLinks.reduce((prefix, link) => {
+						let i = 0;
+						while (
+							i < prefix.length &&
+							i < link.length &&
+							prefix[i] === link[i]
+						) {
+							i++;
+						}
+						return prefix.substring(0, i);
+					});
+
+					// The common prefix should be at least the first path segment (e.g., "/ple" or "/ci")
+					const firstSegment =
+						'/' + leafLinks[0].split('/').filter(Boolean)[0];
+					if (!commonPrefix.startsWith(firstSegment)) {
+						violations.push(
+							`${parentPath}: siblings do not share a common route prefix (links: ${leafLinks.join(', ')})`
+						);
+					}
+
+					// Each leaf should start with the common prefix
+					for (const link of leafLinks) {
+						if (!link.startsWith(commonPrefix)) {
+							violations.push(
+								`${parentPath}: "${link}" does not share prefix "${commonPrefix}" with siblings`
+							);
+						}
+					}
+				}
+
+				// Recurse into dropdown children
+				for (const el of elements) {
+					if (el.isDropdown && el.children.length > 0) {
+						checkPrefix(
+							el.children,
+							`${parentPath} > ${el.label}`
+						);
+					}
+				}
+			}
+
+			checkPrefix(navigationStructure, 'root');
+			expect(violations).toEqual([]);
+		});
 	});
 
 	describe('General structure', () => {
