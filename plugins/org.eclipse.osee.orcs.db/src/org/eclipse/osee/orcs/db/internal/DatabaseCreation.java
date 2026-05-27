@@ -13,56 +13,9 @@
 
 package org.eclipse.osee.orcs.db.internal;
 
-import static org.eclipse.osee.orcs.OseeDb.API_KEY_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.ARTIFACT_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.ATTRIBUTE_BINARY_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.ATTRIBUTE_SOURCE_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.ATTRIBUTE_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.BRANCH_BASELINE_TRANSACTION_ID;
-import static org.eclipse.osee.orcs.OseeDb.BRANCH_CATEGORY;
-import static org.eclipse.osee.orcs.OseeDb.BRANCH_PARENT_TRANSACTION_ID;
-import static org.eclipse.osee.orcs.OseeDb.BRANCH_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.LDAP_DETAILS_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_ACTIVITY_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_ACTIVITY_TYPE_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_ARTIFACT_ACL_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_BRANCH_ACL_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_CONFLICT_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_IMPORT_INDEX_MAP_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_IMPORT_MAP_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_IMPORT_SAVE_POINT_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_IMPORT_SOURCE_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_INFO_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_JOIN_ARTIFACT_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_JOIN_CHAR_ID_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_JOIN_CLEANUP_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_JOIN_EXPORT_IMPORT_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_JOIN_ID4_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_JOIN_ID_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_JOIN_TRANSACTION_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_KEY_VALUE_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_MERGE_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_OAUTH_AUTHORIZATION_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_OAUTH_TOKEN_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_PERMISSION_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_SEARCH_TAGS_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_SEQUENCE_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_SERVER_LOOKUP_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_SESSION_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_TAG_GAMMA_QUEUE_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.OSEE_VALIDATE_GAMMA_ID;
-import static org.eclipse.osee.orcs.OseeDb.RELATION_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.RELATION_TABLE2;
-import static org.eclipse.osee.orcs.OseeDb.TUPLE2;
-import static org.eclipse.osee.orcs.OseeDb.TUPLE3;
-import static org.eclipse.osee.orcs.OseeDb.TUPLE4;
-import static org.eclipse.osee.orcs.OseeDb.TXS_ARCHIVED_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.TXS_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.TX_DETAILS_TABLE;
-import static org.eclipse.osee.orcs.OseeDb.TX_DETAILS_TRANSACTION_ID;
-import org.eclipse.osee.jdbc.JdbcClient;
+import static org.eclipse.osee.orcs.OseeDb.*;
 import org.eclipse.osee.jdbc.DatabaseType;
+import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
  * @author Ryan D. Brooks
@@ -113,7 +66,6 @@ public final class DatabaseCreation {
       jdbcClient.createTable(OSEE_JOIN_CLEANUP_TABLE);
       jdbcClient.createTable(OSEE_JOIN_CHAR_ID_TABLE);
       jdbcClient.createTable(OSEE_JOIN_TRANSACTION_TABLE);
-      jdbcClient.createTable(LDAP_DETAILS_TABLE);
       jdbcClient.createTable(TUPLE2);
       jdbcClient.createTable(TUPLE3);
       jdbcClient.createTable(TUPLE4);
@@ -176,7 +128,6 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(OSEE_JOIN_CLEANUP_TABLE);
       jdbcClient.dropTable(OSEE_JOIN_CHAR_ID_TABLE);
       jdbcClient.dropTable(OSEE_JOIN_TRANSACTION_TABLE);
-      jdbcClient.dropTable(LDAP_DETAILS_TABLE);
       jdbcClient.dropTable(TUPLE2);
       jdbcClient.dropTable(TUPLE3);
       jdbcClient.dropTable(TUPLE4);

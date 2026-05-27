@@ -432,17 +432,6 @@ public class OseeDb {
       OSEE_JOIN_TRANSACTION_TABLE.setTableExtras("TABLESPACE osee_join");
    }
 
-   public static final SqlTable LDAP_DETAILS_TABLE = new SqlTable("ldap_details", "ldap_det");
-   public static final SqlColumn LDAP_DETAILS_USER_NAME = LDAP_DETAILS_TABLE.addVarCharColumn("USER_NAME", 1000, false);
-   public static final SqlColumn LDAP_DETAILS_PASSWORD = LDAP_DETAILS_TABLE.addVarCharColumn("PASSWORD", 1000, false);
-   public static final SqlColumn LDAP_DETAILS_SERVER_NAME =
-      LDAP_DETAILS_TABLE.addVarCharColumn("SERVER_NAME", 1000, false);
-   public static final SqlColumn LDAP_DETAILS_PORT = LDAP_DETAILS_TABLE.addColumn("PORT", JDBCType.INTEGER);
-   public static final SqlColumn LDAP_DETAILS_SEARCH_BASE =
-      LDAP_DETAILS_TABLE.addVarCharColumn("SEARCH_BASE", 1000, false);
-   public static final SqlColumn LDAP_DETAILS_GROUP_SEARCH_FILTER =
-      LDAP_DETAILS_TABLE.addVarCharColumn("GROUP_SEARCH_FILTER", 1000, false);
-
    public static final SqlTable BRANCH_CATEGORY = new SqlTable("osee_branch_category", "brc", 2);
    public static final SqlColumn BRANCH_CATEGORY_BRANCH_ID = BRANCH_CATEGORY.addColumn("BRANCH_ID", JDBCType.BIGINT);
    public static final SqlColumn BRANCH_CATEGORY_CATEGORY = BRANCH_CATEGORY.addColumn("CATEGORY", JDBCType.BIGINT);

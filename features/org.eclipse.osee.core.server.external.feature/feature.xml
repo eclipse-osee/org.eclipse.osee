@@ -1843,13 +1843,6 @@
             unpack="false"/>
 
       <plugin
-            id="org.eclipse.osee.framework.authentication.ldap.core"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
             id="org.eclipse.osee.define"
             download-size="0"
             install-size="0"
@@ -1893,13 +1886,6 @@
 
       <plugin
             id="org.eclipse.osee.authentication.admin"
-            download-size="0"
-            install-size="0"
-            version="0.0.0"
-            unpack="false"/>
-
-      <plugin
-            id="org.eclipse.osee.authentication.ldap"
             download-size="0"
             install-size="0"
             version="0.0.0"
