@@ -41,9 +41,6 @@
 		<module>../../plugins/org.eclipse.osee.authorization.admin</module>
 		<module>../../plugins/org.eclipse.osee.authorization.admin.test</module>
 
-		<module>../../plugins/org.eclipse.osee.authentication.ldap</module>
-		<module>../../plugins/org.eclipse.osee.authentication.ldap.test</module>
-
 		<module>../../plugins/org.eclipse.osee.account.admin</module>
 		<module>../../plugins/org.eclipse.osee.account.admin.test</module>
 

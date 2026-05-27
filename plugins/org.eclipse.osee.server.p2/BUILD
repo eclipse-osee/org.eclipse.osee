@@ -23,7 +23,6 @@ filegroup(
             "//org.eclipse.osee.ats.core:osgi_jar",
             "//org.eclipse.osee.ats.rest:osgi_jar",
             "//org.eclipse.osee.authentication.admin:osgi_jar",
-            "//org.eclipse.osee.authentication.ldap:osgi_jar",
             "//org.eclipse.osee.authorization.admin:osgi_jar",
             "//org.eclipse.osee.cache.admin:osgi_jar",
             "//org.eclipse.osee.config.admin:osgi_jar",

@@ -88,9 +88,6 @@
 					../../plugins/org.eclipse.osee.define.rest.test
 				</module>
 				<module>
-					../../plugins/org.eclipse.osee.framework.authentication.ldap.core
-				</module>
-				<module>
 					../../plugins/org.eclipse.osee.framework.core.server
 				</module>
 				<module>
@@ -159,9 +156,6 @@
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.define.rest.test
-				</module>
-				<module>
-					../../plugins/org.eclipse.osee.framework.authentication.ldap.core
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.framework.core.server
