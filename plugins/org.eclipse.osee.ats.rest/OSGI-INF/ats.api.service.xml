@@ -5,7 +5,7 @@
       <provide interface="org.eclipse.osee.ats.rest.AtsApiServer"/>
       <provide interface="org.eclipse.osee.ats.api.AtsApi"/>
    </service>
-   <reference name="IAtsTaskProvider" interface="org.eclipse.osee.ats.api.task.IAtsTaskProvider" cardinality="0..n" policy="dynamic" bind="addTaskProvider" unbind="removeTaskProvider"/>
+   <reference name="IAtsTaskProvider" interface="org.eclipse.osee.ats.api.task.IAtsTaskProvider" cardinality="0..n" policy="dynamic" bind="addAtsTaskProvider" unbind="removeAtsTaskProvider"/>
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
    <reference bind="addAtsDatabaseConversion" cardinality="0..n" interface="org.eclipse.osee.ats.api.util.IAtsDatabaseConversion" name="IAtsDatabaseConversion" policy="dynamic" unbind="removeAtsDatabaseConversion"/>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static"/>
@@ -16,5 +16,4 @@
    <reference bind="setTaskSetDefinitionProviderService" cardinality="1..1" interface="org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService" name="IAtsTaskSetDefinitionProviderService" policy="static"/>
    <reference bind="setOrcsTokenService" cardinality="1..1" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="OrcsTokenService" policy="static"/>
    <reference bind="setJaxRsApi" cardinality="1..1" interface="org.eclipse.osee.framework.core.JaxRsApi" name="jaxRsApi" policy="static"/>
-   <reference bind="addDatabaseTypeProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.workflow.IAtsDatabaseTypeProvider" name="IAtsDatabaseTypeProvider" policy="dynamic"/>
 </scr:component>

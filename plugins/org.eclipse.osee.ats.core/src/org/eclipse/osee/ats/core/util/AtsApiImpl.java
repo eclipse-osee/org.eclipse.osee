@@ -189,12 +189,12 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    }
 
    @Override
-   public void addTaskProvider(IAtsTaskProvider provider) {
+   public void addAtsTaskProvider(IAtsTaskProvider provider) {
       taskProviders.add(provider);
    }
 
    @Override
-   public void removeTaskProvider(IAtsTaskProvider provider) {
+   public void removeAtsTaskProvider(IAtsTaskProvider provider) {
       taskProviders.remove(provider);
    }
 
