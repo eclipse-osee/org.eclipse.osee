@@ -76,6 +76,8 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       externalConversions.remove(conversion.getName());
    }
 
+   // for ReviewOsgiXml public void addAtsTaskProvider(IAtsTaskProvider provider)
+   // for ReviewOsgiXml public void removeAtsTaskProvider(IAtsTaskProvider provider)
    // for ReviewOsgiXml public void setAtsEventService(IAtsEventService eventService)
    // for ReviewOsgiXml public void setJdbcService(JdbcService jdbcService)
    // for ReviewOsgiXml public void setEventAdmin(EventAdmin eventAdmin)
@@ -85,7 +87,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    // for ReviewOsgiXml public void setWorkDefinitionProviderService(WorkDefinitionProviderService workDefinitionProviderService)
    // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService)
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
-   // for ReviewOsgiXml public void addDatabaseTypeProvider(IAtsDatabaseTypeProvider provider)
    // for ReviewOsgiXml public void bindUserService(UserService userService) {
 
    @Override

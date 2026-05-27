@@ -198,9 +198,9 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
     */
    void setUserConfigValue(String key, String value);
 
-   public void addTaskProvider(IAtsTaskProvider provider);
+   public void addAtsTaskProvider(IAtsTaskProvider provider);
 
-   public void removeTaskProvider(IAtsTaskProvider provider);
+   public void removeAtsTaskProvider(IAtsTaskProvider provider);
 
    EventAdmin getEventAdmin();
 
