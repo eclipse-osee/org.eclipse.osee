@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author John Misinco
  */
@@ -54,5 +57,8 @@ public enum QueryOption {
 
    public static final QueryOption[] EXACT_MATCH_OPTIONS =
       {QueryOption.TOKEN_COUNT__MATCH, QueryOption.TOKEN_DELIMITER__EXACT, QueryOption.TOKEN_MATCH_ORDER__MATCH};
+
+   public static final List<QueryOption> EXACT_MATCH_OPTIONS_LIST = Arrays.asList(QueryOption.TOKEN_COUNT__MATCH,
+      QueryOption.TOKEN_DELIMITER__EXACT, QueryOption.TOKEN_MATCH_ORDER__MATCH);
 
 }

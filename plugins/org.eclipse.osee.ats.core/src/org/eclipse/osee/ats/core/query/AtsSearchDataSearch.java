@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.core.query;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -312,11 +313,30 @@ public class AtsSearchDataSearch {
          } else if (attrVal.isExists()) {
             query.andExists(attrVal.getAttrType());
          } else if (!attrVal.getValues().isEmpty()) {
-            if (attrVal.getQueryOptions() != null) {
-               query.andAttr(attrVal.getAttrType(), attrVal.getValues(),
-                  attrVal.getQueryOptions().toArray(new QueryOption[attrVal.getQueryOptions().size()]));
-            } else {
-               query.andAttr(attrVal.getAttrType(), attrVal.getValues());
+            // Search by tag is matching things like TW8 and TW9 with same tag
+            // Temporary workaround; If ATS Id, use exact match if query options are not specified
+            // This if block should be removed when tagging is fixed: TW29549
+            if (attrVal.getAttrType().equals(AtsAttributeTypes.AtsId)) {
+               List<QueryOption> queryOptions = new ArrayList<>();
+               queryOptions.addAll(attrVal.getQueryOptions());
+               if (queryOptions.isEmpty()) {
+                  queryOptions.addAll(QueryOption.EXACT_MATCH_OPTIONS_LIST);
+                  query.andAttr(attrVal.getAttrType(), attrVal.getValues(),
+                     queryOptions.toArray(new QueryOption[attrVal.getQueryOptions().size()]));
+               } else {
+                  query.andAttr(attrVal.getAttrType(), attrVal.getValues(),
+                     attrVal.getQueryOptions().toArray(new QueryOption[attrVal.getQueryOptions().size()]));
+               }
+            }
+            // Otherwise, do normal Search by tag with given Query Options
+            // This should remain as it's the normal way to search by any attr type using Search Tags
+            else {
+               if (attrVal.getQueryOptions() != null) {
+                  query.andAttr(attrVal.getAttrType(), attrVal.getValues(),
+                     attrVal.getQueryOptions().toArray(new QueryOption[attrVal.getQueryOptions().size()]));
+               } else {
+                  query.andAttr(attrVal.getAttrType(), attrVal.getValues());
+               }
             }
          }
       }
