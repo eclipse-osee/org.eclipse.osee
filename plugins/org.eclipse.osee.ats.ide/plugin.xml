@@ -385,6 +385,13 @@
             className="org.eclipse.osee.ats.ide.util.Import.ImportGeneralDocuments">
       </Operation>
    </extension>
+
+   <extension point="org.eclipse.search.searchResultViewPages">
+      <viewPage
+            class="org.eclipse.osee.ats.ide.search.quick.AtsSearchResultPage"
+            id="org.eclipse.osee.ats.ide.AtsSearchResultViewPage"
+            searchResultClass="org.eclipse.osee.ats.ide.search.quick.AtsSearchResult"/>
+   </extension>
    
    
 </plugin>
