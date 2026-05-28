@@ -241,11 +241,8 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
          Artifact resource = (Artifact) element;
          try {
             toReturn = resource.getParent();
-            if (toReturn == null && resource.isNotRootedInDefaultRoot()) {
-               toReturn = orphanParent;
-            }
          } catch (MultipleArtifactsExist ex) {
-            toReturn = multiParent;
+            // return null - show as top-level
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

@@ -13,8 +13,10 @@
 
 package org.eclipse.osee.ats.ide.search.quick;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -25,7 +27,6 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
-import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -37,73 +38,57 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.program.Program;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsQuickSearchComposite extends Composite {
 
-   Text searchArea;
-   XCheckBox completeCancelledCheck;
+   private static final int MAX_HISTORY = 10;
+   private static final String MEMENTO_KEY_SEARCH_HISTORY = "atsQuickSearchHistory";
+   private static final String MEMENTO_KEY_SEARCH_ITEM = "searchItem";
+   private static final String MEMENTO_KEY_INCLUDE_COMPLETED = "includeCompleted";
+   private static final String MEMENTO_KEY_USE_SEARCH_VIEW = "useSearchView";
+
+   private Combo searchCombo;
+   private XCheckBox completeCancelledCheck;
+   private XCheckBox useSearchViewCheck;
+   private final List<String> searchHistory = new LinkedList<>();
 
    public AtsQuickSearchComposite(Composite parent, int style) {
       super(parent, style);
-      setLayout(ALayout.getZeroMarginLayout(4, false));
-      setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+      GridLayout layout = new GridLayout(4, false);
+      layout.marginHeight = 2;
+      layout.marginWidth = 2;
+      layout.horizontalSpacing = 4;
+      setLayout(layout);
+      setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+      // Search button
       Button searchButton = new Button(this, SWT.PUSH);
-      searchButton.setText("Search:");
+      searchButton.setText("Search");
+      searchButton.setToolTipText("Execute ATS Quick Search");
       searchButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             handleSearch();
          }
       });
-      searchButton.addMouseListener(new MouseListener() {
 
-         @Override
-         public void mouseUp(MouseEvent mouseEvent) {
-            // do nothing
-         }
-
-         @Override
-         public void mouseDoubleClick(MouseEvent mouseEvent) {
-            if (mouseEvent.button == 3) {
-               try {
-                  File file = OseeInf.getResourceAsFile("misc/OSEEDay.wav", getClass());
-                  Program.launch(file.getAbsolutePath());
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
-         }
-
-         @Override
-         public void mouseDown(MouseEvent arg0) {
-            // do nothing
-         }
-      });
-
-      GridData gridData = new GridData(SWT.RIGHT, SWT.NONE, false, false);
-      gridData.heightHint = 15;
-      searchArea = new Text(this, SWT.SINGLE | SWT.BORDER);
-      GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
-      searchArea.setFont(parent.getFont());
-      searchArea.setLayoutData(gd);
-      searchArea.addKeyListener(new KeyAdapter() {
+      // Search combo with history
+      searchCombo = new Combo(this, SWT.DROP_DOWN);
+      searchCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+      searchCombo.setToolTipText("Quick Search all ATS fields");
+      searchCombo.addKeyListener(new KeyAdapter() {
          @Override
          public void keyPressed(KeyEvent event) {
             if (event.character == '\r') {
@@ -112,82 +97,45 @@ public class AtsQuickSearchComposite extends Composite {
          }
       });
 
-      searchArea.setToolTipText(
-         "ATS Quick Search - Type in a search string and press enter.\nOr right-click Paste and Go.");
-      addContextMenu(searchArea);
+      // Checkboxes composite
+      Composite checkComp = new Composite(this, SWT.NONE);
+      checkComp.setLayout(ALayout.getZeroMarginLayout(2, false));
 
       completeCancelledCheck = new XCheckBox("IC");
-      completeCancelledCheck.createWidgets(this, 2);
+      completeCancelledCheck.createWidgets(checkComp, 2);
       completeCancelledCheck.setToolTip("Include completed/cancelled ATS Artifacts");
 
-   }
+      Composite checkComp2 = new Composite(this, SWT.NONE);
+      checkComp2.setLayout(ALayout.getZeroMarginLayout(2, false));
 
-   /**
-    * Since adding new menu replaces the default menu, we must re-create the default copy/paste options
-    */
-   private void addContextMenu(final Text control) {
-      Menu menu = new Menu(control);
-      MenuItem item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Cut");
-      item.addListener(SWT.Selection, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            control.cut();
-         }
-      });
-      item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Copy");
-      item.addListener(SWT.Selection, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            control.copy();
-         }
-      });
-      item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Paste");
-      item.addListener(SWT.Selection, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            control.paste();
-         }
-      });
-      // Add Paste-and-Go menu option
-      item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Paste-and-Go");
-      item.addListener(SWT.Selection, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            control.setText("");
-            control.paste();
-            handleSearch();
-         }
-      });
-
-      item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Select All");
-      item.addListener(SWT.Selection, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            control.selectAll();
-         }
-      });
-
-      control.setMenu(menu);
+      useSearchViewCheck = new XCheckBox("SV");
+      useSearchViewCheck.createWidgets(checkComp2, 2);
+      useSearchViewCheck.setToolTip("Use Eclipse Search View (tree mode shows attribute match locations); World View otherwise");
    }
 
    private void handleSearch() {
-      if (!Strings.isValid(searchArea.getText())) {
+      String searchText = searchCombo.getText().trim();
+      if (!Strings.isValid(searchText)) {
          AWorkbench.popup("Please enter search string");
          return;
       }
-      String srchText = searchArea.getText().trim();
+
+      addToHistory(searchText);
+
       AtsQuickSearchData data =
-         new AtsQuickSearchData("ATS Quick Search", srchText, completeCancelledCheck.isChecked());
-      Job srchJob = new Job("ATS - Search by ID(s)") {
+         new AtsQuickSearchData("ATS Quick Search", searchText, completeCancelledCheck.isChecked());
+
+      // Check if user wants to use Eclipse Search View
+      if (useSearchViewCheck.isChecked()) {
+         data.setUseEclipseSearchView(true);
+         AtsQuickSearchOperation.runInEclipseSearchView(data);
+         return;
+      }
+
+      Job srchJob = new Job("ATS - Quick Search") {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-
             AtsQuickSearchOperation operation = new AtsQuickSearchOperation(data);
             Collection<Artifact> artifacts = operation.performSearch();
             Displays.ensureInDisplayThread(new Runnable() {
@@ -210,6 +158,67 @@ public class AtsQuickSearchComposite extends Composite {
          }
       };
       Jobs.startJob(srchJob);
+   }
 
+   private void addToHistory(String searchText) {
+      searchHistory.remove(searchText);
+      searchHistory.add(0, searchText);
+      while (searchHistory.size() > MAX_HISTORY) {
+         searchHistory.remove(searchHistory.size() - 1);
+      }
+      updateComboItems();
+   }
+
+   private void updateComboItems() {
+      String current = searchCombo.getText();
+      searchCombo.setItems(searchHistory.toArray(new String[0]));
+      searchCombo.setText(current);
+   }
+
+   public void saveState(IMemento memento) {
+      if (memento == null) {
+         return;
+      }
+      IMemento child = memento.createChild(MEMENTO_KEY_SEARCH_HISTORY);
+      for (String item : searchHistory) {
+         child.createChild(MEMENTO_KEY_SEARCH_ITEM).putTextData(item);
+      }
+      child.putBoolean(MEMENTO_KEY_INCLUDE_COMPLETED, completeCancelledCheck.isChecked());
+      child.putBoolean(MEMENTO_KEY_USE_SEARCH_VIEW, useSearchViewCheck.isChecked());
+   }
+
+   public void restoreState(IMemento memento) {
+      if (memento == null) {
+         return;
+      }
+      IMemento child = memento.getChild(MEMENTO_KEY_SEARCH_HISTORY);
+      if (child != null) {
+         searchHistory.clear();
+         for (IMemento item : child.getChildren(MEMENTO_KEY_SEARCH_ITEM)) {
+            String text = item.getTextData();
+            if (Strings.isValid(text)) {
+               searchHistory.add(text);
+            }
+         }
+         updateComboItems();
+
+         // Populate text with last search
+         if (!searchHistory.isEmpty()) {
+            searchCombo.setText(searchHistory.get(0));
+         }
+
+         Boolean includeCompleted = child.getBoolean(MEMENTO_KEY_INCLUDE_COMPLETED);
+         if (includeCompleted != null) {
+            completeCancelledCheck.set(includeCompleted);
+         }
+         Boolean useSearchView = child.getBoolean(MEMENTO_KEY_USE_SEARCH_VIEW);
+         if (useSearchView != null) {
+            useSearchViewCheck.set(useSearchView);
+         }
+      }
+   }
+
+   public List<String> getSearchHistory() {
+      return new ArrayList<>(searchHistory);
    }
 }
