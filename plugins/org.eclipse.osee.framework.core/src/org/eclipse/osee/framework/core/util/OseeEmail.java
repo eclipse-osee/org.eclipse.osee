@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -439,7 +440,7 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
       Map<String, EmailRecipientInfo> infoByEmail = new HashMap<>();
       for (EmailRecipientInfo info : getRecipientInfo(allEmails)) {
          if (info != null && Strings.isValid(info.getEmail())) {
-            infoByEmail.put(info.getEmail().toLowerCase(), info);
+            infoByEmail.put(info.getEmail().toLowerCase(Locale.ROOT), info);
          }
       }
 
@@ -447,7 +448,7 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
       List<String> invalidOrMissingEmails = new ArrayList<>();
 
       for (String email : allEmails) {
-         EmailRecipientInfo info = infoByEmail.get(email.toLowerCase());
+         EmailRecipientInfo info = infoByEmail.get(email.toLowerCase(Locale.ROOT));
          if (info == null || !Strings.isValid(info.getPublicCertificate())) {
             invalidOrMissingEmails.add(email);
             continue;
@@ -456,7 +457,7 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
          try {
             X509Certificate cert = EmailCertificateValidator.parseAndCheckBasicValidity(info.getPublicCertificate());
             EmailCertificateValidator.checkSuitableForEmail(cert);
-            validCertsByEmail.put(email.toLowerCase(), cert);
+            validCertsByEmail.put(email.toLowerCase(Locale.ROOT), cert);
          } catch (Exception ex) {
             invalidOrMissingEmails.add(email);
          }
@@ -491,7 +492,7 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
 
       SMIMEEnvelopedGenerator envGen = new SMIMEEnvelopedGenerator();
       for (String email : flattenEmails(recipientsByType)) {
-         X509Certificate cert = certsByEmail.get(email.toLowerCase());
+         X509Certificate cert = certsByEmail.get(email.toLowerCase(Locale.ROOT));
          if (cert != null) {
             envGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(cert).setProvider("BC"));
          }
@@ -672,7 +673,7 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
       for (Map.Entry<Message.RecipientType, List<InternetAddress>> entry : recipientsByType.entrySet()) {
          List<InternetAddress> addresses = new ArrayList<>();
          for (InternetAddress address : entry.getValue()) {
-            if (allowedEmailsLower.contains(address.getAddress().toLowerCase())) {
+            if (allowedEmailsLower.contains(address.getAddress().toLowerCase(Locale.ROOT))) {
                addresses.add(address);
             }
          }
@@ -687,7 +688,7 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
    private Collection<String> toLowerCaseCollection(Collection<String> values) {
       List<String> lowered = new ArrayList<>();
       for (String value : values) {
-         lowered.add(value.toLowerCase());
+         lowered.add(value.toLowerCase(Locale.ROOT));
       }
       return lowered;
    }

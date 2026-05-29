@@ -14,7 +14,7 @@ import { test, expect, type APIRequestContext } from '@ngx-playwright/test';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
-import * as forge from 'node-forge';
+import forge from 'node-forge';
 import { API_BASE, AUTH_HEADER } from '../../../shared/test-config';
 
 const CERTIFICATE_MANAGEMENT_PATH = '/profile/certificate-management';
