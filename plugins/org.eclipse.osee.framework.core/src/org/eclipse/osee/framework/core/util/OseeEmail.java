@@ -510,8 +510,16 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
     */
    private void sendSanitizedMessage(Map<Message.RecipientType, List<InternetAddress>> recipientsByType)
       throws Exception {
-      StringBuilder sanitized = new StringBuilder();
-      sanitized.append(MISSING_CERTIFICATE_BODY);
+      sendStandardMessage(recipientsByType, MISSING_CERTIFICATE_SUBJECT, buildMissingCertificateNotice(), BodyType.Text, false);
+   }
+
+   /**
+    * Builds the sanitized fallback message body sent to recipients that are missing a valid public certificate. This
+    * method is public so that the REST layer can expose the exact notice text for verification purposes.
+    */
+   public String buildMissingCertificateNotice() {
+      StringBuilder notice = new StringBuilder();
+      notice.append(MISSING_CERTIFICATE_BODY);
 
       String uploadLink = getCertificateUploadLink();
       String uploadOverrideLink = getCertificateUploadOverrideLink();
@@ -525,17 +533,17 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
          chosenUploadInfo = MISSING_DYNAMIC_AND_OVERRIDE_WEB_URL;
       }
 
-      sanitized.append(MISSING_CERTIFICATE_UPLOAD_INFO).append(chosenUploadInfo).append("\n\n");
+      notice.append(MISSING_CERTIFICATE_UPLOAD_INFO).append(chosenUploadInfo).append("\n\n");
 
       String orgSpecificInfo = getOrganizationSpecificCertificateInstructions();
       if (Strings.isValid(orgSpecificInfo)) {
-         sanitized.append(orgSpecificInfo);
+         notice.append(orgSpecificInfo);
          if (!orgSpecificInfo.endsWith("\n")) {
-            sanitized.append("\n");
+            notice.append("\n");
          }
       }
 
-      sendStandardMessage(recipientsByType, MISSING_CERTIFICATE_SUBJECT, sanitized.toString(), BodyType.Text, false);
+      return notice.toString();
    }
 
    /**

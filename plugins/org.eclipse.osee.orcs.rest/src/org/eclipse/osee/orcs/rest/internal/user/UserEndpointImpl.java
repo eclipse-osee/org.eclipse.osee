@@ -95,6 +95,11 @@ public class UserEndpointImpl implements UserEndpoint {
    }
 
    @Override
+   public String getMissingCertificateNotice() {
+      return orcsApi.getEmailService().create().buildMissingCertificateNotice();
+   }
+
+   @Override
    public XResultData sendEmail(SendEmailRequest request) {
       XResultData rd = new XResultData();
       try {

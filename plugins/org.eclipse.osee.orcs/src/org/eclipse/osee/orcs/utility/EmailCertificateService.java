@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.EmailRecipientInfo;
 
 public interface EmailCertificateService {
 
-   String CERTIFICATE_MANAGEMENT_SUB_PATH = "/osee/certificate-management";
+   String CERTIFICATE_MANAGEMENT_SUB_PATH = "/osee/profile/certificate-management";
 
    /**
     * Validates and stores the current user's public email certificate in PEM format.
