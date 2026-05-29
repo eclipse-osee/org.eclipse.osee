@@ -343,11 +343,20 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    /**
-    * @return return true if an with the given id exists on this artifact and is not deleted
+    * @return return true if an with the given attr id exists on this artifact and is not deleted
     */
-   public final boolean hasAttribute(Id id) {
+   public final boolean hasAttribute(Id attrId) {
       for (Attribute<?> attribute : attributes.getValues()) {
-         if (id.equals(attribute) && !attribute.getModificationType().isHardDeleted()) {
+         if (attrId.equals(attribute) && !attribute.getModificationType().isHardDeleted()) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public boolean hasAttributeType(AttributeTypeId attributeTypeId) {
+      for (Attribute<?> attribute : attributes.getValues()) {
+         if (attributeTypeId.equals(attribute.getAttributeType()) && !attribute.getModificationType().isHardDeleted()) {
             return true;
          }
       }
@@ -2012,4 +2021,5 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public ArtifactId getArtifactId() {
       return ArtifactId.valueOf(getArtId());
    }
+
 }
