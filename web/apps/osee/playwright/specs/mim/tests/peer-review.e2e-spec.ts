@@ -43,8 +43,7 @@ test('create working branches', async ({ page }) => {
 	await Promise.all([
 		page.waitForResponse(
 			(res) =>
-				res.url() === `${APP_BASE}/orcs/txs` &&
-				res.status() === 200
+				res.url() === `${APP_BASE}/orcs/txs` && res.status() === 200
 		),
 		MessageDescriptionTextbox.press('Tab'),
 	]);
@@ -68,8 +67,7 @@ test('create working branches', async ({ page }) => {
 	await Promise.all([
 		page.waitForResponse(
 			(res) =>
-				res.url() === `${APP_BASE}/orcs/txs` &&
-				res.status() === 200
+				res.url() === `${APP_BASE}/orcs/txs` && res.status() === 200
 		),
 		SubmsgDescriptionTextbox.press('Tab'),
 	]);

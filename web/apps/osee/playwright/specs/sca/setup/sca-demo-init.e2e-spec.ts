@@ -25,11 +25,8 @@ test('setup', async ({ request }) => {
 		true,
 		'SCA is a legacy AngularJS page with known failures. Tests will be rewritten after migration to current Angular application.'
 	);
-	let response = await request.post(
-		`${API_BASE}/dispo/program/init/demo`,
-		{
-			headers: AUTH_HEADER,
-		}
-	);
+	let response = await request.post(`${API_BASE}/dispo/program/init/demo`, {
+		headers: AUTH_HEADER,
+	});
 	await expect(response.status()).toBe(200);
 });

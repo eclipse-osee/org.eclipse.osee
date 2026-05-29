@@ -19,11 +19,8 @@ test('setup', async ({ request }) => {
 	});
 	await expect(response.status()).toBe(200);
 
-	response = await request.get(
-		`${API_BASE}/ats/config/clearcache`,
-		{
-			headers: AUTH_HEADER,
-		}
-	);
+	response = await request.get(`${API_BASE}/ats/config/clearcache`, {
+		headers: AUTH_HEADER,
+	});
 	await expect(response.status()).toBe(200);
 });

@@ -14,28 +14,22 @@ import { test, expect } from '@ngx-playwright/test';
 import { API_BASE, AUTH_HEADER } from '../../shared/test-config';
 
 test('setup', async ({ request }) => {
-	let response = await request.post(
-		`${API_BASE}/orcs/datastore/initialize`,
-		{
-			data: {
-				id: '11',
-				name: 'OSEE',
-				userId: '11',
-				active: true,
-				email: 'osee@gmail.com',
-				loginIds: ['11'],
-			},
-			headers: AUTH_HEADER,
-		}
-	);
+	let response = await request.post(`${API_BASE}/orcs/datastore/initialize`, {
+		data: {
+			id: '11',
+			name: 'OSEE',
+			userId: '11',
+			active: true,
+			email: 'osee@gmail.com',
+			loginIds: ['11'],
+		},
+		headers: AUTH_HEADER,
+	});
 	await expect(response.status()).toBe(200);
 
-	response = await request.post(
-		`${API_BASE}/orcs/datastore/synonyms`,
-		{
-			headers: AUTH_HEADER,
-		}
-	);
+	response = await request.post(`${API_BASE}/orcs/datastore/synonyms`, {
+		headers: AUTH_HEADER,
+	});
 	await expect(response.status()).toBe(204);
 
 	response = await request.put(`${API_BASE}/ats/config/init/ats`, {
@@ -48,11 +42,8 @@ test('setup', async ({ request }) => {
 	});
 	await expect(response.status()).toBe(200);
 
-	response = await request.get(
-		`${API_BASE}/ats/config/clearcache`,
-		{
-			headers: AUTH_HEADER,
-		}
-	);
+	response = await request.get(`${API_BASE}/ats/config/clearcache`, {
+		headers: AUTH_HEADER,
+	});
 	await expect(response.status()).toBe(200);
 });
