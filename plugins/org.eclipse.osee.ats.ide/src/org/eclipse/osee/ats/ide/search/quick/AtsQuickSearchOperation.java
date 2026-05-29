@@ -27,18 +27,39 @@ import org.eclipse.osee.ats.ide.world.WorldEditorOperation;
 import org.eclipse.osee.ats.ide.world.WorldEditorOperationProvider;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.search.ui.ISearchQuery;
+import org.eclipse.search.ui.NewSearchUI;
 
 /**
+ * ATS Quick Search Operation that can display results in either the WorldEditor or the Eclipse Search View.
+ * <p>
+ * Usage for WorldEditor results (default):
+ * 
+ * <pre>
+ * AtsQuickSearchData data = new AtsQuickSearchData("ATS Quick Search", searchStr, includeCompleteCancelled);
+ * AtsQuickSearchOperation operation = new AtsQuickSearchOperation(data);
+ * Operations.executeAsJob(operation, true);
+ * </pre>
+ * <p>
+ * Usage for Eclipse Search View results:
+ * 
+ * <pre>
+ * AtsQuickSearchData data = new AtsQuickSearchData("ATS Quick Search", searchStr, includeCompleteCancelled);
+ * data.setUseEclipseSearchView(true);
+ * data.setCaseSensitive(caseSensitive);
+ * data.setIncludeDeleted(includeDeleted);
+ * AtsQuickSearchOperation.runInEclipseSearchView(data);
+ * </pre>
+ *
  * @author Donald G. Dunne
  */
-class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOperation, IWorldEditorConsumer {
+public class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOperation, IWorldEditorConsumer {
    Set<Artifact> allArtifacts = new HashSet<>();
    private final AtsQuickSearchData data;
    private WorldEditor worldEditor;
@@ -54,6 +75,13 @@ class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOp
          AWorkbench.popup("Must Enter Search String");
          return;
       }
+
+      // Check if we should use Eclipse Search View
+      if (data.isUseEclipseSearchView()) {
+         runInEclipseSearchView(data);
+         return;
+      }
+
       if (worldEditor == null) {
          WorldEditor.open(new WorldEditorOperationProvider(new AtsQuickSearchOperation(data)));
          return;
@@ -66,13 +94,33 @@ class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOp
       }
    }
 
+   /**
+    * Run the ATS Quick Search and display results in the Eclipse Search View. This method activates the Search Results
+    * view and runs the query in the background.
+    *
+    * @param data the search data containing search criteria
+    */
+   public static void runInEclipseSearchView(AtsQuickSearchData data) {
+      if (!Strings.isValid(data.getSearchStr())) {
+         AWorkbench.popup("Must Enter Search String");
+         return;
+      }
+
+      NewSearchUI.activateSearchResultView();
+      ISearchQuery query = new AtsQuickSearchQuery(data);
+      NewSearchUI.runQueryInBackground(query);
+   }
+
    @Override
    public Collection<Artifact> performSearch() {
       allArtifacts.clear();
-      allArtifacts.addAll(
-         Collections.castAll(AtsApiService.get().getQueryService().getArtifactsByIdsOrAtsIds(data.getSearchStr())));
+      allArtifacts.addAll(AtsApiService.get().getQueryServiceIde().getArtifactsByIdsOrAtsIds(data.getSearchStr()));
+
+      DeletionFlag deletionFlag =
+         data.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
+
       for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsApiService.get().getAtsBranch(),
-         data.getSearchStr(), false, DeletionFlag.EXCLUDE_DELETED, false)) {
+         data.getSearchStr(), data.isCaseSensitive(), deletionFlag, false)) {
          try {
             // only ATS Artifacts
             if (art instanceof AbstractWorkflowArtifact) {
