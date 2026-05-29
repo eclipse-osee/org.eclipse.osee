@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
+import { API_BASE, AUTH_HEADER } from '../../../shared/test-config';
 
 /**
  * TODO: SCA (Software Composition Analysis) is built on a legacy AngularJS
@@ -25,9 +26,9 @@ test('setup', async ({ request }) => {
 		'SCA is a legacy AngularJS page with known failures. Tests will be rewritten after migration to current Angular application.'
 	);
 	let response = await request.post(
-		'http://localhost:8089/dispo/program/init/demo',
+		`${API_BASE}/dispo/program/init/demo`,
 		{
-			headers: { Authorization: 'Basic 3333' },
+			headers: AUTH_HEADER,
 		}
 	);
 	await expect(response.status()).toBe(200);

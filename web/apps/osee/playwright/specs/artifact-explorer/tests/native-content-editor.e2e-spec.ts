@@ -12,6 +12,7 @@
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
 import path from 'path';
+import { APP_BASE } from '../../../shared/test-config';
 
 /**
  * Tests for the Native Content Editor in the Artifact Explorer.
@@ -24,7 +25,7 @@ test.describe('Native Content Editor', () => {
 
 	test.beforeEach(async ({ page }) => {
 		// Navigate to Artifact Explorer and select the branch
-		await page.goto('http://localhost:4200/ple/artifact-explorer');
+		await page.goto(`${APP_BASE}/ple/artifact-explorer`);
 		await page.getByText('Select a Branch').click();
 		await page.getByText(branchName).click();
 	});

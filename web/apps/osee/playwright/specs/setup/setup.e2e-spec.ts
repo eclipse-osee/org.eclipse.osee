@@ -11,10 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
+import { API_BASE, AUTH_HEADER } from '../../shared/test-config';
 
 test('setup', async ({ request }) => {
 	let response = await request.post(
-		'http://localhost:8089/orcs/datastore/initialize',
+		`${API_BASE}/orcs/datastore/initialize`,
 		{
 			data: {
 				id: '11',
@@ -24,33 +25,33 @@ test('setup', async ({ request }) => {
 				email: 'osee@gmail.com',
 				loginIds: ['11'],
 			},
-			headers: { Authorization: 'Basic 3333' },
+			headers: AUTH_HEADER,
 		}
 	);
 	await expect(response.status()).toBe(200);
 
 	response = await request.post(
-		'http://localhost:8089/orcs/datastore/synonyms',
+		`${API_BASE}/orcs/datastore/synonyms`,
 		{
-			headers: { Authorization: 'Basic 3333' },
+			headers: AUTH_HEADER,
 		}
 	);
 	await expect(response.status()).toBe(204);
 
-	response = await request.put('http://localhost:8089/ats/config/init/ats', {
-		headers: { Authorization: 'Basic 3333' },
+	response = await request.put(`${API_BASE}/ats/config/init/ats`, {
+		headers: AUTH_HEADER,
 	});
 	await expect(response.status()).toBe(200);
 
-	response = await request.put('http://localhost:8089/ats/config/init/demo', {
-		headers: { Authorization: 'Basic 3333' },
+	response = await request.put(`${API_BASE}/ats/config/init/demo`, {
+		headers: AUTH_HEADER,
 	});
 	await expect(response.status()).toBe(200);
 
 	response = await request.get(
-		'http://localhost:8089/ats/config/clearcache',
+		`${API_BASE}/ats/config/clearcache`,
 		{
-			headers: { Authorization: 'Basic 3333' },
+			headers: AUTH_HEADER,
 		}
 	);
 	await expect(response.status()).toBe(200);

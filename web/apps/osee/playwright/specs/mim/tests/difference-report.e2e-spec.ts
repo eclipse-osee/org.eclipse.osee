@@ -12,10 +12,11 @@
  **********************************************************************/
 import { expect, test } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
+import { APP_BASE } from '../../../shared/test-config';
 
 test('test', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 900 });
-	await page.goto('http://localhost:4200/ple/messaging/connections');
+	await page.goto(`${APP_BASE}/ple/messaging/connections`);
 	await createWorkingBranchFromPL(page, 'Difference Report');
 	await enableEditMode(page);
 

@@ -15,10 +15,9 @@ import * as path from 'node:path';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as forge from 'node-forge';
+import { API_BASE, AUTH_HEADER } from '../../../shared/test-config';
 
 const CERTIFICATE_MANAGEMENT_PATH = '/profile/certificate-management';
-const API_BASE = 'http://localhost:8089';
-const AUTH_HEADER = { Authorization: 'Basic 3333' };
 
 /**
  * Generates a self-signed PEM certificate using node-forge.

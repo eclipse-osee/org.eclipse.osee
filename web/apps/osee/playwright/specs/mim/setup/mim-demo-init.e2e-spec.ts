@@ -11,17 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
+import { API_BASE, AUTH_HEADER } from '../../../shared/test-config';
 
 test('setup', async ({ request }) => {
-	let response = await request.post('http://localhost:8089/mim/init/demo', {
-		headers: { Authorization: 'Basic 3333' },
+	let response = await request.post(`${API_BASE}/mim/init/demo`, {
+		headers: AUTH_HEADER,
 	});
 	await expect(response.status()).toBe(200);
 
 	response = await request.get(
-		'http://localhost:8089/ats/config/clearcache',
+		`${API_BASE}/ats/config/clearcache`,
 		{
-			headers: { Authorization: 'Basic 3333' },
+			headers: AUTH_HEADER,
 		}
 	);
 	await expect(response.status()).toBe(200);
