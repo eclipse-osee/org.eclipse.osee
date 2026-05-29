@@ -145,6 +145,8 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       new ArtifactDecorator(Activator.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF, true);
 
    public ArtifactSearchPage() {
+      super();
+      setLayout(FLAG_LAYOUT_TREE);
       setElementLimit(Integer.valueOf(DEFAULT_ELEMENT_LIMIT));
    }
 
