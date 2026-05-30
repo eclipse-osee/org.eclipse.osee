@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, defer, forkJoin, map } from 'rxjs';
+import { Observable, defer, forkJoin, map, switchMap } from 'rxjs';
 import {
 	ATTRIBUTETYPEID,
 	ATTRIBUTETYPEIDENUM,
@@ -25,7 +25,10 @@ import {
 	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
 import { createArtifact } from '@osee/transactions/functions';
-import { CurrentTransactionService } from '@osee/transactions/services';
+import {
+	CurrentTransactionService,
+	TransactionService,
+} from '@osee/transactions/services';
 import { transactionResult } from '@osee/transactions/types';
 import {
 	readFileAsBase64,
@@ -48,6 +51,7 @@ export type ImageObjectUrl = {
 export class MarkdownImageService {
 	private readonly http = inject(HttpClient);
 	private readonly currentTx = inject(CurrentTransactionService);
+	private readonly txService = inject(TransactionService);
 
 	uploadImageArtifact(
 		parentArtifactId: string,
@@ -105,7 +109,11 @@ export class MarkdownImageService {
 
 					return tx;
 				}),
-				this.currentTx.performMutation(),
+				// Important: Use txService directly instead of currentTx.performMutation().
+				// currentTx.performMutation() sets uiService.updated = true, which triggers
+				// a global refresh that reloads the parent artifact's content from the server
+				// before the image-link tag can be inserted into mdContent locally.
+				switchMap((tx) => this.txService.performMutation(tx)),
 				map((txResult: Required<transactionResult>) => {
 					const createdId = txResult.results.ids?.at(0);
 					if (!createdId) {
