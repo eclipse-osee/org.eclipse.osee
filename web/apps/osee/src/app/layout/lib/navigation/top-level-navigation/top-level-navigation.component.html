@@ -38,13 +38,12 @@
 						(click)="
 							element.isDropdownOpen = !element.isDropdownOpen
 						"
+						[attr.data-active]="isActive(element)"
 						[ngClass]="{
 							'tw-rounded-l-2xl tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
-								isDropdownActive(element) &&
-								!element.isDropdownOpen,
+								isActive(element) && !element.isDropdownOpen,
 							'dark:hover:tw-bg-background-disabled-button':
-								isDropdownActive(element) &&
-								!element.isDropdownOpen,
+								isActive(element) && !element.isDropdownOpen,
 						}"
 						class="tw-py-6">
 						<div class="tw-flex tw-items-center tw-justify-between">
@@ -77,11 +76,12 @@
 				@if (!element.isDropdown) {
 					<mat-list-item
 						(click)="closeTopLevelNav()"
+						[attr.data-active]="isActive(element)"
 						[ngClass]="{
 							'tw-rounded-l-3xl tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
-								isItemActive(element.routerLink),
+								isActive(element),
 							'dark:hover:tw-bg-background-disabled-button':
-								!isItemActive(element.routerLink),
+								!isActive(element),
 						}"
 						class="tw-py-6">
 						@if (element.external) {
