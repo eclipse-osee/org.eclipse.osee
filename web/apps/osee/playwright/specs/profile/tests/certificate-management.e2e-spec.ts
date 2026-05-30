@@ -18,13 +18,14 @@ import forge from 'node-forge';
 import { API_BASE, AUTH_HEADER } from '../../../shared/test-config';
 
 const CERTIFICATE_MANAGEMENT_PATH = '/profile/certificate-management';
+const CERT_SUBJECT_CN = 'OSEE Test User';
 
 /**
- * Generates a self-signed PEM certificate using node-forge.
- * Returns the PEM string and a temp file path for file-upload tests.
+ * Generates a self-signed PEM certificate with a 1-year validity window.
+ * Uses a 1024-bit key for speed — this is a test-only certificate.
  */
 function generateSelfSignedCert(): { pem: string; filePath: string } {
-	const keys = forge.pki.rsa.generateKeyPair(2048);
+	const keys = forge.pki.rsa.generateKeyPair(1024);
 	const cert = forge.pki.createCertificate();
 
 	cert.publicKey = keys.publicKey;
@@ -35,9 +36,10 @@ function generateSelfSignedCert(): { pem: string; filePath: string } {
 		cert.validity.notBefore.getFullYear() + 1
 	);
 
-	const attrs = [{ name: 'commonName', value: 'OSEE Test User' }];
+	const attrs = [{ name: 'commonName', value: CERT_SUBJECT_CN }];
 	cert.setSubject(attrs);
 	cert.setIssuer(attrs);
+	cert.setExtensions([{ name: 'extKeyUsage', emailProtection: true }]);
 	cert.sign(keys.privateKey, forge.md.sha256.create());
 
 	const pem = forge.pki.certificateToPem(cert);
@@ -55,9 +57,11 @@ function generateSelfSignedCert(): { pem: string; filePath: string } {
 async function deleteExistingCertificate(
 	request: APIRequestContext
 ): Promise<void> {
-	await request.delete(`${API_BASE}/orcs/user/public-certificate`, {
-		headers: AUTH_HEADER,
-	});
+	const response = await request.delete(
+		`${API_BASE}/orcs/user/public-certificate`,
+		{ headers: AUTH_HEADER }
+	);
+	expect(response.status()).toBeLessThan(500);
 }
 
 /**
@@ -67,14 +71,30 @@ async function uploadCertificateViaApi(
 	request: APIRequestContext,
 	pemContent: string
 ): Promise<void> {
-	await request.put(`${API_BASE}/orcs/user/public-certificate`, {
-		headers: {
-			...AUTH_HEADER,
-			'Content-Type': 'text/plain',
-		},
-		data: pemContent,
-	});
+	const response = await request.put(
+		`${API_BASE}/orcs/user/public-certificate`,
+		{
+			headers: { ...AUTH_HEADER, 'Content-Type': 'text/plain' },
+			data: pemContent,
+		}
+	);
+	expect(response.ok()).toBeTruthy();
 }
+
+let certData: { pem: string; filePath: string };
+
+test.beforeAll(() => {
+	certData = generateSelfSignedCert();
+});
+
+test.afterAll(() => {
+	if (certData?.filePath) {
+		fs.rmSync(path.dirname(certData.filePath), {
+			recursive: true,
+			force: true,
+		});
+	}
+});
 
 test.describe('Certificate Management - Email Path Contract', () => {
 	test('the missing-certificate email notice contains the certificate management page path', async ({
@@ -91,7 +111,6 @@ test.describe('Certificate Management - Email Path Contract', () => {
 		const noticeText = await response.text();
 
 		// The notice must contain the certificate management sub-path.
-		// In production the app is served under /osee, so the full path is /osee/profile/certificate-management.
 		expect(noticeText).toContain('/profile/certificate-management');
 	});
 
@@ -109,21 +128,6 @@ test.describe('Certificate Management - Email Path Contract', () => {
 });
 
 test.describe('Certificate Management - Upload Workflow', () => {
-	let certData: { pem: string; filePath: string };
-
-	test.beforeAll(() => {
-		certData = generateSelfSignedCert();
-	});
-
-	test.afterAll(() => {
-		if (certData?.filePath) {
-			fs.rmSync(path.dirname(certData.filePath), {
-				recursive: true,
-				force: true,
-			});
-		}
-	});
-
 	test.beforeEach(async ({ request }) => {
 		await deleteExistingCertificate(request);
 	});
@@ -163,30 +167,14 @@ test.describe('Certificate Management - Upload Workflow', () => {
 		await updateButton.click();
 
 		// After upload, the certificate details should appear (Subject CN from our generated cert)
-		await expect(page.getByText('OSEE Test User')).toBeVisible({
+		await expect(page.getByText(CERT_SUBJECT_CN)).toBeVisible({
 			timeout: 10000,
 		});
 	});
 });
 
 test.describe('Certificate Management - Existing Certificate Actions', () => {
-	let certData: { pem: string; filePath: string };
-
-	test.beforeAll(() => {
-		certData = generateSelfSignedCert();
-	});
-
-	test.afterAll(() => {
-		if (certData?.filePath) {
-			fs.rmSync(path.dirname(certData.filePath), {
-				recursive: true,
-				force: true,
-			});
-		}
-	});
-
 	test.beforeEach(async ({ request }) => {
-		// Ensure a certificate is on file before each test
 		await uploadCertificateViaApi(request, certData.pem);
 	});
 
@@ -196,7 +184,7 @@ test.describe('Certificate Management - Existing Certificate Actions', () => {
 		await page.goto(CERTIFICATE_MANAGEMENT_PATH);
 
 		// Should show the Subject CN from the uploaded cert
-		await expect(page.getByText('OSEE Test User')).toBeVisible({
+		await expect(page.getByText(CERT_SUBJECT_CN)).toBeVisible({
 			timeout: 10000,
 		});
 
@@ -212,14 +200,12 @@ test.describe('Certificate Management - Existing Certificate Actions', () => {
 	test('can delete an existing certificate', async ({ page, request }) => {
 		await page.goto(CERTIFICATE_MANAGEMENT_PATH);
 
-		// Wait for certificate to load
-		await expect(page.getByText('OSEE Test User')).toBeVisible({
+		await expect(page.getByText(CERT_SUBJECT_CN)).toBeVisible({
 			timeout: 10000,
 		});
 
 		// Accept the confirmation dialog
 		page.on('dialog', (dialog) => dialog.accept());
-
 		await page.getByRole('button', { name: 'Delete' }).click();
 
 		// After deletion, the "no certificate" state should appear
@@ -238,7 +224,7 @@ test.describe('Certificate Management - Existing Certificate Actions', () => {
 	test('can download an existing certificate', async ({ page }) => {
 		await page.goto(CERTIFICATE_MANAGEMENT_PATH);
 
-		await expect(page.getByText('OSEE Test User')).toBeVisible({
+		await expect(page.getByText(CERT_SUBJECT_CN)).toBeVisible({
 			timeout: 10000,
 		});
 
@@ -251,9 +237,8 @@ test.describe('Certificate Management - Existing Certificate Actions', () => {
 		expect(download.suggestedFilename()).toMatch(/\.pem$/);
 
 		const downloadPath = await download.path();
-		if (downloadPath) {
-			const content = fs.readFileSync(downloadPath, 'utf-8');
-			expect(content).toContain('-----BEGIN CERTIFICATE-----');
-		}
+		expect(downloadPath).toBeTruthy();
+		const content = fs.readFileSync(downloadPath!, 'utf-8');
+		expect(content).toContain('-----BEGIN CERTIFICATE-----');
 	});
 });
