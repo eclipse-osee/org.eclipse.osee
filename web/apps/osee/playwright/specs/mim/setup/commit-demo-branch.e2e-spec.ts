@@ -12,9 +12,10 @@
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL } from '../utils/helpers';
+import { APP_BASE } from '../../../shared/test-config';
 
 test('test', async ({ page }) => {
-	await page.goto('http://localhost:4200/ple');
+	await page.goto(`${APP_BASE}/ple`);
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -27,6 +28,6 @@ test('test', async ({ page }) => {
 
 	await expect(page.getByText('SAW Product Line')).toBeVisible();
 
-	await page.goto('http://localhost:4200/ple/messaging/connections');
+	await page.goto(`${APP_BASE}/ple/messaging/connections`);
 	await createWorkingBranchFromPL(page, 'MIM Demo');
 });

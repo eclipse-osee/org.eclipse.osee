@@ -83,6 +83,12 @@ const config: PlaywrightTestConfig = {
 			dependencies: ['Setup'],
 		},
 		{
+			name: 'Profile Tests',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/profile/tests',
+			dependencies: ['Setup'],
+		},
+		{
 			name: 'Navigation Tests',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/navigation/tests',

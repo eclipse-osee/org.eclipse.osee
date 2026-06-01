@@ -74,4 +74,13 @@ export class UserPublicCertificateManagementService {
 
 		this.uiService.updated = true;
 	}
+
+	getMissingCertificateNotice(): Promise<string> {
+		return firstValueFrom(
+			this.http.get(
+				apiURL + `/orcs/user/public-certificate/missing-notice`,
+				{ responseType: 'text' }
+			)
+		);
+	}
 }

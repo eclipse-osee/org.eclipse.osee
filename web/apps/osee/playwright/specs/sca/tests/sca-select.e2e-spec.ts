@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { expect, test } from '@ngx-playwright/test';
+import { API_BASE } from '../../../shared/test-config';
 
 /**
  * TODO: SCA (Software Composition Analysis) is built on a legacy AngularJS
@@ -25,7 +26,7 @@ test('test', async ({ page }) => {
 		'SCA is a legacy AngularJS page with known failures. Tests will be rewritten after migration to current Angular application.'
 	);
 	await page.setViewportSize({ width: 1200, height: 800 });
-	await page.goto('http://localhost:8089/coverage/ui/index.html#/');
+	await page.goto(`${API_BASE}/coverage/ui/index.html#/`);
 	await page.waitForLoadState('networkidle');
 
 	const atsDropdown = page.locator('select[ng-model="programSelection"]');

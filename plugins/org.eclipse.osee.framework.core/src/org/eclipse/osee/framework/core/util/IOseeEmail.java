@@ -136,4 +136,9 @@ public interface IOseeEmail {
     */
    void setEncryptionEnabled(boolean encryptionEnabled);
 
+   /**
+    * Builds the sanitized fallback message body that would be sent to recipients missing a valid public certificate.
+    */
+   String buildMissingCertificateNotice();
+
 }

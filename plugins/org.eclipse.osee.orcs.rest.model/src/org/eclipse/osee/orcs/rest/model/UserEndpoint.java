@@ -71,6 +71,15 @@ public interface UserEndpoint {
    List<EmailRecipientInfo> getPublicCertificatesByEmailAddresses(Collection<String> emailAddresses);
 
    /**
+    * Returns the sanitized fallback notice body that would be sent to recipients missing a valid public certificate.
+    * Uses the same code path as the actual email assembly.
+    */
+   @GET
+   @Path("public-certificate/missing-notice")
+   @Produces(MediaType.TEXT_PLAIN)
+   String getMissingCertificateNotice();
+
+   /**
     * Sends an email through the server using the configured OseeEmail server implementation.
     */
    @Path("email")

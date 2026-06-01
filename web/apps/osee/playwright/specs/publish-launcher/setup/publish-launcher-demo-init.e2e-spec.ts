@@ -14,6 +14,7 @@ import { test, expect } from '@ngx-playwright/test';
 import { readFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { API_BASE, AUTH_HEADER } from '../../../shared/test-config';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -28,23 +29,23 @@ test('publish-launcher setup', async ({ request }) => {
 	);
 
 	// Create the publishing artifact
-	let response = await request.post('http://localhost:8089/orcs/txs', {
+	let response = await request.post(`${API_BASE}/orcs/txs`, {
 		data: publishingArt,
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: 'Basic 3333',
+			...AUTH_HEADER,
 		},
 	});
 	await expect(response.status()).toBe(200);
 
 	// Set the publishing configuration on the artifact attribute
 	response = await request.put(
-		'http://localhost:8089/orcs/branch/570/artifact/10716029/attribute/type/1152921504606847380',
+		`${API_BASE}/orcs/branch/570/artifact/10716029/attribute/type/1152921504606847380`,
 		{
 			data: publishingJson,
 			headers: {
 				'Content-Type': 'text/plain',
-				Authorization: 'Basic 3333',
+				...AUTH_HEADER,
 			},
 		}
 	);

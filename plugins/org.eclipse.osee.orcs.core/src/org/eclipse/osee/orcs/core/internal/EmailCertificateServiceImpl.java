@@ -87,6 +87,11 @@ public class EmailCertificateServiceImpl implements EmailCertificateService {
    public void deletePublicCertificateForCurrentUser() {
       UserToken user = orcsApi.userService().getUser();
 
+      String existing = getPublicCertificateForCurrentUser();
+      if (Strings.isInvalid(existing)) {
+         return; // Nothing to delete
+      }
+
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
          "Delete email public certificate associated with user.");
       tx.deleteSoleAttribute(user.getArtifactId(), CoreAttributeTypes.EmailPublicCertificate);

@@ -11,13 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Page, expect } from '@ngx-playwright/test';
-
-/** Base URL for the application under test. */
-export const BASE_URL = 'http://localhost:4200';
+import { APP_BASE } from '../../../shared/test-config';
 
 /** Navigate to the Publish Launcher page via the PLE menu. */
 export const navigateToPublishLauncher = async (page: Page) => {
-	await page.goto(`${BASE_URL}/ple`);
+	await page.goto(`${APP_BASE}/ple`);
 	await page.getByRole('link', { name: 'Publishing' }).click();
 };
 

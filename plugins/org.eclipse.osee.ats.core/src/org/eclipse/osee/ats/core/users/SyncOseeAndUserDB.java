@@ -587,7 +587,9 @@ public abstract class SyncOseeAndUserDB {
                         user.toStringWithId(), preferredMail, user.getEmail());
                      if (persist) {
                         changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Email, preferredMail);
-                        results.logf("Fixed Email to %s\n", preferredMail);
+                        // Certificate is bound to the old email address — remove it.
+                        changes.deleteAttributes(getUser(user), CoreAttributeTypes.EmailPublicCertificate);
+                        results.logf("Fixed Email to %s (certificate cleared)\n", preferredMail);
                      }
                   }
                }

@@ -12,10 +12,11 @@
  **********************************************************************/
 import { expect, test } from '@ngx-playwright/test';
 import { enableEditMode } from '../utils/helpers';
+import { APP_BASE } from '../../../shared/test-config';
 
 test('test', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 800 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto(`${APP_BASE}/ple`);
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Cross-References' }).click();
 	await page.getByLabel('Working').check();

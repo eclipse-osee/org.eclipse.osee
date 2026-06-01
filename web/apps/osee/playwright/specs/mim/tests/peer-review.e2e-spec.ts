@@ -13,12 +13,13 @@
 import { test, expect } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { APP_BASE } from '../../../shared/test-config';
 
 test.describe.configure({ mode: 'serial' });
 
 test('create working branches', async ({ page }) => {
 	page.setDefaultTimeout(60000);
-	await page.goto('http://localhost:4200/ple');
+	await page.goto(`${APP_BASE}/ple`);
 
 	// Commit MIM Demo branch to create baseline
 	await page.getByRole('link', { name: 'MIM' }).click();
@@ -42,8 +43,7 @@ test('create working branches', async ({ page }) => {
 	await Promise.all([
 		page.waitForResponse(
 			(res) =>
-				res.url() === 'http://localhost:4200/orcs/txs' &&
-				res.status() === 200
+				res.url() === `${APP_BASE}/orcs/txs` && res.status() === 200
 		),
 		MessageDescriptionTextbox.press('Tab'),
 	]);
@@ -67,8 +67,7 @@ test('create working branches', async ({ page }) => {
 	await Promise.all([
 		page.waitForResponse(
 			(res) =>
-				res.url() === 'http://localhost:4200/orcs/txs' &&
-				res.status() === 200
+				res.url() === `${APP_BASE}/orcs/txs` && res.status() === 200
 		),
 		SubmsgDescriptionTextbox.press('Tab'),
 	]);
@@ -112,7 +111,7 @@ test('create working branches', async ({ page }) => {
 
 test('peer review branch', async ({ page }) => {
 	await page.setViewportSize({ width: 1300, height: 800 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto(`${APP_BASE}/ple`);
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Product Line').check();
@@ -136,7 +135,7 @@ test('peer review branch', async ({ page }) => {
 	await page.getByText('Improvement').click();
 
 	let requestPromise = page.waitForResponse((response) =>
-		response.url().startsWith('http://localhost:4200/ats/ple/branches/pr')
+		response.url().startsWith(`${APP_BASE}/ats/ple/branches/pr`)
 	);
 	await page.getByRole('button', { name: 'Create Action' }).click();
 	let response = await requestPromise;
@@ -159,7 +158,7 @@ test('peer review branch', async ({ page }) => {
 	});
 
 	requestPromise = page.waitForResponse((response) =>
-		response.url().startsWith('http://localhost:4200/ats/ple/branches/pr')
+		response.url().startsWith(`${APP_BASE}/ats/ple/branches/pr`)
 	);
 	await page.getByRole('button', { name: 'Apply Selected' }).click();
 	response = await requestPromise;
@@ -192,7 +191,7 @@ test('peer review branch', async ({ page }) => {
 
 test('commit branches', async ({ page }) => {
 	await page.setViewportSize({ width: 1300, height: 800 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto(`${APP_BASE}/ple`);
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Product Line').check();
