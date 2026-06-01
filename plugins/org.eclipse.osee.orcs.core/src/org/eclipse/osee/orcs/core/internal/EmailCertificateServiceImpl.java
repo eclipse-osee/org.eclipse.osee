@@ -88,7 +88,7 @@ public class EmailCertificateServiceImpl implements EmailCertificateService {
       UserToken user = orcsApi.userService().getUser();
 
       String existing = getPublicCertificateForCurrentUser();
-      if (!Strings.isValid(existing)) {
+      if (Strings.isInvalid(existing)) {
          return; // Nothing to delete
       }
 
