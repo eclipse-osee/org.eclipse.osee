@@ -433,6 +433,10 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
          if (!Widgets.isAccessible(wfeSection.getMainComp())) {
             continue;
          }
+         if (wfeSection.isPinned()) {
+            wfeSection.expand();
+            continue;
+         }
          boolean isCurrentState = wfeSection.isCurrentState();
          if (isCurrentState) {
             wfeSection.expand();
