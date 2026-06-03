@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
@@ -55,6 +56,7 @@ public class AtsDbTestQueryOp {
 
       rd.log(getClass().getSimpleName() + " - Start");
 
+      testIsLoadedIsFalseWhenAsArtifactsWithSetNoLoadRelations();
       testAttrValueExactMatch();
       testAtsGetArtifactNew();
       testOrcsAsArtifactsDefaultLoading();
@@ -66,6 +68,28 @@ public class AtsDbTestQueryOp {
 
       rd.log(getClass().getSimpleName() + " - End");
       return rd;
+   }
+
+   /*
+    * When .setNoLoadRelations() is added to query builder line, the isLoaded flag should be set to false
+    */
+   private void testIsLoadedIsFalseWhenAsArtifactsWithSetNoLoadRelations() {
+      // Load the version to make sure it has relations.
+      ArtifactReadable SawPlVersionWithRelationsLoaded =
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(AtsArtifactTypes.Version).andId(
+            DemoArtifactToken.SAW_Product_Line).asArtifact();
+
+      // This artifact needs to have at least 1 relation for this test to properly test the isLoaded flag being set to false
+      rd.assertTrue(
+         SawPlVersionWithRelationsLoaded.getRelatedCount(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition) > 0);
+
+      // Load the version with setNoLoadRelations()
+      ArtifactReadable SawPlVersionWithoutRelationsLoaded =
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(AtsArtifactTypes.Version).andId(
+            DemoArtifactToken.SAW_Product_Line).setNoLoadRelations().asArtifact();
+
+      // isLoaded should be false
+      rd.assertFalse(SawPlVersionWithoutRelationsLoaded.isLoaded());
    }
 
    private void testAtsGetArtifactNewGetSiblings() {
