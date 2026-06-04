@@ -274,7 +274,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
                // tab changes conflict with XWidget changes
                // Save widget data to artifact
                workFlowTab.saveXWidgetToArtifact();
-               workItem.save(changes);
+               changes.add(workItem);
                changes.executeIfNeeded();
                if (saveListener != null) {
                   saveListener.saved(workItem, changes);
