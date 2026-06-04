@@ -18,6 +18,7 @@ import {
 	DestroyRef,
 	ElementRef,
 	inject,
+	Injector,
 	input,
 	model,
 	signal,
@@ -123,8 +124,6 @@ export class MarkdownEditorComponent {
 	 */
 	height = input('clamp(260px, 40dvh, 720px)');
 
-	protected readonly editorHeightStyle = computed(() => this.height());
-
 	private readonly editorContainer =
 		viewChild<ElementRef<HTMLDivElement>>('editorContainer');
 	private readonly fullscreenWrapper =
@@ -132,11 +131,12 @@ export class MarkdownEditorComponent {
 	private readonly editorTextarea =
 		viewChild<ElementRef<HTMLTextAreaElement>>('editorTextarea');
 	private readonly focusMonitor = inject(FocusMonitor);
+	private readonly injector = inject(Injector);
 	private readonly destroyRef = inject(DestroyRef);
 
 	protected readonly keyboardFocused = signal(false);
 
-	private readonly _init = (() => {
+	private readonly _init: void = (() => {
 		this.initFullscreenListener();
 		afterNextRender(() => {
 			const textarea = this.editorTextarea();
@@ -459,14 +459,17 @@ export class MarkdownEditorComponent {
 	}
 
 	private restoreTextareaSelection(): void {
-		const textarea = this.editorTextarea()?.nativeElement;
-		if (textarea) {
-			setTimeout(() => {
-				textarea.selectionStart = this.savedSelectionStart;
-				textarea.selectionEnd = this.savedSelectionEnd;
-				textarea.focus();
-			});
-		}
+		afterNextRender(
+			() => {
+				const textarea = this.editorTextarea()?.nativeElement;
+				if (textarea) {
+					textarea.selectionStart = this.savedSelectionStart;
+					textarea.selectionEnd = this.savedSelectionEnd;
+					textarea.focus();
+				}
+			},
+			{ injector: this.injector }
+		);
 	}
 
 	togglePreviewCollapsed(): void {

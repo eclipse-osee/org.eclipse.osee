@@ -126,13 +126,14 @@
 
 	<div
 		#editorContainer
+		data-testid="editor-container"
 		class="tw-relative tw-flex tw-min-h-0 tw-overflow-hidden tw-border-osee-neutral-25 dark:tw-border-osee-neutral-100"
 		[class.tw-flex-1]="isFullscreen()"
 		[class.tw-border]="!dragActive()"
 		[class.tw-border-2]="dragActive()"
 		[class.tw-border-dashed]="dragActive()"
 		[class.tw-border-osee-blue-6]="dragActive()"
-		[style.height]="isFullscreen() ? null : editorHeightStyle()"
+		[style.height]="isFullscreen() ? null : height()"
 		(dragover)="onEditorDragOver($event)"
 		(dragenter)="onEditorDragEnter($event)"
 		(dragleave)="onEditorDragLeave($event)"
@@ -151,6 +152,7 @@
 		}
 
 		<div
+			data-testid="editor-pane"
 			class="tw-flex tw-min-h-0 tw-min-w-0 tw-flex-col tw-overflow-hidden"
 			[class.tw-flex-1]="isPreviewCollapsed()"
 			[class.tw--mr-px]="!isPreviewCollapsed()"
@@ -181,6 +183,9 @@
 				role="separator"
 				aria-orientation="vertical"
 				aria-label="Resize editor and preview panels"
+				[attr.aria-valuenow]="editorWidthPercent()"
+				aria-valuemin="20"
+				aria-valuemax="80"
 				tabindex="0"
 				class="tw-group tw-flex tw-w-2 tw-cursor-col-resize tw-items-center tw-justify-center tw-bg-transparent tw-transition-colors tw-delay-150 tw-duration-300 hover:tw-bg-osee-neutral-25/50 active:tw-bg-osee-blue-6/20 dark:hover:tw-bg-osee-neutral-100/20 dark:active:tw-bg-osee-blue-6/30"
 				(mousedown)="onDividerMouseDown($event)"

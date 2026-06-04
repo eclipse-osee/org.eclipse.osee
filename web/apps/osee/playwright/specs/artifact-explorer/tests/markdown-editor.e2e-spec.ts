@@ -128,7 +128,7 @@ test.describe('Markdown Editor Layout Features', () => {
 		test('should resize editor panel via mouse drag', async ({ page }) => {
 			const divider = getDivider(page);
 			const editorContainer = getEditor(page).locator(
-				'[class*="tw-relative"][class*="tw-flex"]'
+				'[data-testid="editor-container"]'
 			);
 
 			// Get initial container bounds
@@ -152,7 +152,7 @@ test.describe('Markdown Editor Layout Features', () => {
 
 			// The editor width style should have changed
 			const editorPane = getEditor(page).locator(
-				'[class*="tw-min-w-0"][class*="tw-flex-col"]'
+				'[data-testid="editor-pane"]'
 			);
 			const widthStyle = await editorPane.getAttribute('style');
 			expect(widthStyle).toContain('width');
@@ -166,7 +166,7 @@ test.describe('Markdown Editor Layout Features', () => {
 
 			// Get initial editor width
 			const editorPane = getEditor(page).locator(
-				'[class*="tw-min-w-0"][class*="tw-flex-col"]'
+				'[data-testid="editor-pane"]'
 			);
 			const initialStyle = await editorPane.getAttribute('style');
 
