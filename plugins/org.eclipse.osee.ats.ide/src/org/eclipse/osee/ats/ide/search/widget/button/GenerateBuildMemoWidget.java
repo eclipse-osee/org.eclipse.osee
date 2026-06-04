@@ -83,7 +83,7 @@ public class GenerateBuildMemoWidget {
                   AWorkbench.popup(ProblemReportBuildMemoOps.NOTHING_LOADED);
                   return;
                }
-               ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
+               ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName, BuildMemoType.Full);
                ops.generateAndOpen();
             }
 
@@ -91,8 +91,9 @@ public class GenerateBuildMemoWidget {
       }
    }
 
-   protected ProblemReportBuildMemoOps getProblemReportBuildMemoOps(WorldEditor worldEditor, String buildMemo) {
-      return new ProblemReportBuildMemoOps(worldEditor, buildMemo);
+   protected ProblemReportBuildMemoOps getProblemReportBuildMemoOps(WorldEditor worldEditor, String buildMemo,
+      BuildMemoType buildMemoType) {
+      return new ProblemReportBuildMemoOps(worldEditor, buildMemo, BuildMemoType.Full);
    }
 
 }

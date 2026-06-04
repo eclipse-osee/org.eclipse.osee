@@ -34,14 +34,16 @@ public class ExportBuildMemoWidget {
    public static final String EXPORT_BUILD_MEMO = "Export Build Memo";
    private final WorldEditorParameterSearchItem searchItem;
    private final String memoName;
+   private final BuildMemoType buildMemoType;
 
-   public ExportBuildMemoWidget(WorldEditorParameterSearchItem searchItem) {
-      this(searchItem, EXPORT_BUILD_MEMO);
+   public ExportBuildMemoWidget(WorldEditorParameterSearchItem searchItem, BuildMemoType buildMemoType) {
+      this(searchItem, EXPORT_BUILD_MEMO, buildMemoType);
    }
 
-   public ExportBuildMemoWidget(WorldEditorParameterSearchItem searchItem, String memoName) {
+   public ExportBuildMemoWidget(WorldEditorParameterSearchItem searchItem, String memoName, BuildMemoType buildMemoType) {
       this.searchItem = searchItem;
       this.memoName = memoName;
+      this.buildMemoType = buildMemoType;
    }
 
    public void addWidget() {
@@ -80,7 +82,7 @@ public class ExportBuildMemoWidget {
                   AWorkbench.popup(ProblemReportBuildMemoOps.NOTHING_LOADED);
                   return;
                }
-               ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
+               ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName, buildMemoType);
                ops.generateOpenAndExport();
             }
          });
@@ -88,8 +90,9 @@ public class ExportBuildMemoWidget {
       }
    }
 
-   protected ProblemReportBuildMemoOps getProblemReportBuildMemoOps(WorldEditor worldEditor, String buildMemo) {
-      return new ProblemReportBuildMemoOps(worldEditor, buildMemo);
+   protected ProblemReportBuildMemoOps getProblemReportBuildMemoOps(WorldEditor worldEditor, String buildMemo,
+      BuildMemoType buildMemoType) {
+      return new ProblemReportBuildMemoOps(worldEditor, buildMemo, buildMemoType);
    }
 
 }
