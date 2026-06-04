@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -169,20 +168,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          rd.errorf("Exception in isWfeDirty [%s]", Lib.exceptionToString(ex));
       }
       return rd;
-   }
-
-   public void save(IAtsChangeSet changes) {
-      try {
-         Set<Artifact> artifacts = new HashSet<>();
-         getSmaArtifactsOneLevel(this, artifacts);
-         for (Artifact artifact : artifacts) {
-            if (artifact instanceof AbstractWorkflowArtifact) {
-               changes.add(artifact);
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getAtsId(), ex);
-      }
    }
 
    public void revert() {

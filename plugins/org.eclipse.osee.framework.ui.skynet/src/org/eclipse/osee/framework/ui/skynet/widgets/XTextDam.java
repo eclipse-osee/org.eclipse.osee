@@ -41,6 +41,7 @@ public class XTextDam extends XText implements AttributeWidget, EditorWidget {
    private final boolean isWeakReference;
    private WeakReference<Artifact> artifactRef;
    private EditorData editorData;
+   private boolean modifiedByUser;
 
    public XTextDam(String displayLabel) {
       this(displayLabel, false);
@@ -93,7 +94,14 @@ public class XTextDam extends XText implements AttributeWidget, EditorWidget {
       } else {
          super.set(getArtifact().getSoleAttributeValue(getAttributeType(), ""));
       }
+      modifiedByUser = false;
       validate();
+   }
+
+   @Override
+   public void notifyXModifiedListeners() {
+      super.notifyXModifiedListeners();
+      modifiedByUser = true;
    }
 
    @Override
@@ -107,11 +115,12 @@ public class XTextDam extends XText implements AttributeWidget, EditorWidget {
       } else if (!value.equals(getArtifact().getSoleAttributeValue(getAttributeType(), ""))) {
          getArtifact().setSoleAttributeValue(getAttributeType(), value);
       }
+      modifiedByUser = false;
    }
 
    @Override
    public Result isDirty() {
-      if (isEditable()) {
+      if (isEditable() && modifiedByUser) {
          String enteredValue = get();
          String storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), "");
          if (!enteredValue.equals(storedValue)) {
