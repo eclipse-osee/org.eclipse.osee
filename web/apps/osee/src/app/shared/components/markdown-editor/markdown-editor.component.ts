@@ -11,36 +11,44 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	afterNextRender,
 	ChangeDetectionStrategy,
 	Component,
 	computed,
+	DestroyRef,
+	ElementRef,
 	inject,
 	input,
 	model,
 	signal,
+	viewChild,
 } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import {
+	takeUntilDestroyed,
+	toObservable,
+	toSignal,
+} from '@angular/core/rxjs-interop';
+import { FocusMonitor } from '@angular/cdk/a11y';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatDivider } from '@angular/material/divider';
-import { MatFormField } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { UiService } from '@osee/shared/services';
 import {
 	debounceTime,
 	filter,
+	fromEvent,
 	map,
 	scan,
 	startWith,
 	switchMap,
 	take,
+	takeUntil,
 } from 'rxjs';
 import { mdExamples } from './markdown-editor-examples';
 import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {
 	UploadImageDialogComponent,
 	UploadImageDialogData,
@@ -55,9 +63,6 @@ import { MarkdownImageService } from './markdown-image.service';
 	imports: [
 		MatIcon,
 		FormsModule,
-		MatFormField,
-		MatDivider,
-		MatInputModule,
 		MatTooltip,
 		MatMenu,
 		MatMenuTrigger,
@@ -65,6 +70,9 @@ import { MarkdownImageService } from './markdown-image.service';
 	],
 	templateUrl: './markdown-editor.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	host: {
+		class: 'tw-block',
+	},
 })
 export class MarkdownEditorComponent {
 	disabled = input(false);
@@ -104,6 +112,53 @@ export class MarkdownEditorComponent {
 	private dragCounter = 0;
 	private imageObjectUrls: string[] = [];
 
+	protected readonly isFullscreen = signal(false);
+	protected readonly isPreviewCollapsed = signal(false);
+	protected readonly editorWidthPercent = signal(50);
+
+	/**
+	 * CSS height value for the editor in non-fullscreen mode.
+	 * Accepts any valid CSS value (px, clamp, etc).
+	 * Uses clamp() with dvh units to responsively adapt to viewport size.
+	 */
+	height = input('clamp(260px, 40dvh, 720px)');
+
+	protected readonly editorHeightStyle = computed(() => this.height());
+
+	private readonly editorContainer =
+		viewChild<ElementRef<HTMLDivElement>>('editorContainer');
+	private readonly fullscreenWrapper =
+		viewChild<ElementRef<HTMLDivElement>>('fullscreenWrapper');
+	private readonly editorTextarea =
+		viewChild<ElementRef<HTMLTextAreaElement>>('editorTextarea');
+	private readonly focusMonitor = inject(FocusMonitor);
+	private readonly destroyRef = inject(DestroyRef);
+
+	protected readonly keyboardFocused = signal(false);
+
+	private readonly _init = (() => {
+		this.initFullscreenListener();
+		afterNextRender(() => {
+			const textarea = this.editorTextarea();
+			if (textarea) {
+				this.focusMonitor
+					.monitor(textarea, false)
+					.subscribe((origin) => {
+						this.keyboardFocused.set(origin === 'keyboard');
+					});
+				this.destroyRef.onDestroy(() => {
+					this.focusMonitor.stopMonitoring(textarea);
+				});
+			}
+		});
+		this.destroyRef.onDestroy(() => {
+			if (this.isDragging) {
+				this.clearDragStyles();
+			}
+			this.revokeImageObjectUrls();
+		});
+	})();
+
 	protected readonly isEditorDisabled = computed(
 		() => this.disabled() || this.showImages()
 	);
@@ -127,8 +182,6 @@ export class MarkdownEditorComponent {
 		}
 		return 'Upload Image';
 	});
-
-	// Markdown Preview
 
 	mdPreview = toSignal(
 		toObservable(this.mdContent).pipe(
@@ -210,47 +263,72 @@ export class MarkdownEditorComponent {
 		this.mdContent.set(this.mdContent() + '\n\n' + markdownExample);
 	}
 
-	// Image Upload
-
 	openUploadImageDialog(): void {
 		if (!this.canUploadImage() || this.isUploading()) {
 			return;
 		}
 
-		const dialogData: UploadImageDialogData = {
-			artifactId: this.artifactId(),
-		};
+		const wasFullscreen = this.isFullscreen();
+		const openDialog = () => {
+			const dialogData: UploadImageDialogData = {
+				artifactId: this.artifactId(),
+			};
 
-		this.dialog
-			.open(UploadImageDialogComponent, {
+			const dialogRef = this.dialog.open(UploadImageDialogComponent, {
 				data: dialogData,
 				minWidth: '40%',
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				filter(
-					(result): result is UploadImageDialogResult =>
-						result !== undefined && result?.file !== undefined
-				),
-				switchMap((result) => {
-					this.isUploading.set(true);
-					return this.imageService.uploadImageArtifact(
-						this.artifactId(),
-						result.file
-					);
-				})
-			)
-			.subscribe({
-				next: (uploadResult) => {
-					this.insertImageLink(uploadResult.artifactId);
-					this.isUploading.set(false);
-				},
-				error: (err) => {
-					this.uiService.ErrorText = `Image upload failed: ${err?.message ?? 'Unknown error'}`;
-					this.isUploading.set(false);
-				},
 			});
+
+			dialogRef
+				.afterClosed()
+				.pipe(
+					take(1),
+					filter((result): result is UploadImageDialogResult => {
+						if (
+							result === undefined ||
+							result?.file === undefined
+						) {
+							if (wasFullscreen) {
+								this.enterFullscreen();
+							}
+							return false;
+						}
+						return true;
+					}),
+					switchMap((result) => {
+						this.isUploading.set(true);
+						return this.imageService.uploadImageArtifact(
+							this.artifactId(),
+							result.file
+						);
+					})
+				)
+				.subscribe({
+					next: (uploadResult) => {
+						this.insertImageLink(uploadResult.artifactId);
+						this.isUploading.set(false);
+						if (wasFullscreen) {
+							this.enterFullscreen();
+						}
+					},
+					error: (err) => {
+						this.uiService.ErrorText = `Image upload failed: ${err?.message ?? 'Unknown error'}`;
+						this.isUploading.set(false);
+						if (wasFullscreen) {
+							this.enterFullscreen();
+						}
+					},
+				});
+		};
+
+		if (wasFullscreen) {
+			document
+				.exitFullscreen()
+				.then(() => openDialog())
+				.catch(() => openDialog());
+		} else {
+			openDialog();
+		}
 	}
 
 	onEditorDragOver(event: DragEvent): void {
@@ -331,7 +409,117 @@ export class MarkdownEditorComponent {
 		this.imageObjectUrls = [];
 	}
 
-	// Undo/Redo
+	toggleFullscreen(): void {
+		const wrapper = this.fullscreenWrapper()?.nativeElement;
+		if (!wrapper) {
+			return;
+		}
+
+		this.saveTextareaSelection();
+
+		if (document.fullscreenElement) {
+			document.exitFullscreen().catch(() => {
+				this.uiService.ErrorText =
+					'Unable to exit fullscreen. Try pressing Escape.';
+			});
+		} else {
+			this.enterFullscreen();
+		}
+	}
+
+	private enterFullscreen(): void {
+		const wrapper = this.fullscreenWrapper()?.nativeElement;
+		if (!wrapper) {
+			return;
+		}
+		wrapper.requestFullscreen().catch(() => {
+			this.uiService.ErrorText =
+				'Fullscreen is not available in this context.';
+		});
+	}
+
+	private initFullscreenListener(): void {
+		fromEvent(document, 'fullscreenchange')
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => {
+				this.isFullscreen.set(!!document.fullscreenElement);
+				this.restoreTextareaSelection();
+			});
+	}
+
+	private savedSelectionStart = 0;
+	private savedSelectionEnd = 0;
+
+	private saveTextareaSelection(): void {
+		const textarea = this.editorTextarea()?.nativeElement;
+		if (textarea) {
+			this.savedSelectionStart = textarea.selectionStart;
+			this.savedSelectionEnd = textarea.selectionEnd;
+		}
+	}
+
+	private restoreTextareaSelection(): void {
+		const textarea = this.editorTextarea()?.nativeElement;
+		if (textarea) {
+			setTimeout(() => {
+				textarea.selectionStart = this.savedSelectionStart;
+				textarea.selectionEnd = this.savedSelectionEnd;
+				textarea.focus();
+			});
+		}
+	}
+
+	togglePreviewCollapsed(): void {
+		this.saveTextareaSelection();
+		this.isPreviewCollapsed.update((v) => !v);
+		this.restoreTextareaSelection();
+	}
+
+	private isDragging = false;
+
+	onDividerMouseDown(event: MouseEvent): void {
+		event.preventDefault();
+		this.isDragging = true;
+		document.body.style.cursor = 'col-resize';
+		document.body.style.userSelect = 'none';
+
+		const mouseup$ = fromEvent(document, 'mouseup').pipe(take(1));
+
+		fromEvent<MouseEvent>(document, 'mousemove')
+			.pipe(takeUntil(mouseup$), takeUntilDestroyed(this.destroyRef))
+			.subscribe((e) => {
+				const container = this.editorContainer()?.nativeElement;
+				if (!container) {
+					return;
+				}
+				const rect = container.getBoundingClientRect();
+				const percent = ((e.clientX - rect.left) / rect.width) * 100;
+				this.editorWidthPercent.set(
+					Math.max(20, Math.min(80, percent))
+				);
+			});
+
+		mouseup$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+			this.clearDragStyles();
+		});
+	}
+
+	private clearDragStyles(): void {
+		this.isDragging = false;
+		document.body.style.cursor = '';
+		document.body.style.userSelect = '';
+	}
+
+	onDividerKeyDown(event: KeyboardEvent): void {
+		const step = 2;
+		if (event.key === 'ArrowLeft') {
+			event.preventDefault();
+			this.editorWidthPercent.update((v) => Math.max(20, v - step));
+		} else if (event.key === 'ArrowRight') {
+			event.preventDefault();
+			this.editorWidthPercent.update((v) => Math.min(80, v + step));
+		}
+	}
 
 	undo() {
 		const latestHistoryValue = this.history()?.pop();

@@ -12,11 +12,10 @@
  **********************************************************************/
 import { expect, test } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
-import { APP_BASE } from '../../../shared/test-config';
 
 test('test', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 900 });
-	await page.goto(`${APP_BASE}/ple/messaging/connections`);
+	await page.goto('/ple/messaging/connections');
 	await page.waitForTimeout(500);
 	await createWorkingBranchFromPL(page, 'Validation Impact');
 	await page.waitForTimeout(500);

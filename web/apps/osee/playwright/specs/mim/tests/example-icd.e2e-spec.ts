@@ -11,11 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
-import { APP_BASE } from '../../../shared/test-config';
 
 test('test', async ({ page }) => {
 	test.setTimeout(600000);
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Product Line').check();
