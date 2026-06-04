@@ -85,7 +85,7 @@ public class ValidateProblemReportsWidget {
                   AWorkbench.popup(ProblemReportBuildMemoOps.NOTHING_LOADED);
                   return;
                }
-               ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName);
+               ProblemReportBuildMemoOps ops = getProblemReportBuildMemoOps(worldEditor, memoName, BuildMemoType.Full);
                XResultData rd = new XResultData(VALIDATE_PRS);
                ops.validateLoaded(rd);
                XResultDataUI.report(rd, VALIDATE_PRS);
@@ -95,8 +95,9 @@ public class ValidateProblemReportsWidget {
       }
    }
 
-   protected ProblemReportBuildMemoOps getProblemReportBuildMemoOps(WorldEditor worldEditor, String buildMemo) {
-      return new ProblemReportBuildMemoOps(worldEditor, buildMemo);
+   protected ProblemReportBuildMemoOps getProblemReportBuildMemoOps(WorldEditor worldEditor, String buildMemo,
+      BuildMemoType buildMemoType) {
+      return new ProblemReportBuildMemoOps(worldEditor, buildMemo, buildMemoType);
    }
 
 }
