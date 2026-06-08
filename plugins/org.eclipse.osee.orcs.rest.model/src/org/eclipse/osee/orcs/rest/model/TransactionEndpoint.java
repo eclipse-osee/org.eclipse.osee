@@ -179,4 +179,48 @@ public interface TransactionEndpoint {
    @Path("xfer/isLocked")
    @Produces(MediaType.APPLICATION_JSON)
    XResultData isLocked(@QueryParam("exportId") TransactionId exportId);
+
+   // ---- Cold Storage ----
+
+   /**
+    * Archives eligible branches (committed/rebaselined/deleted) to cold storage. Exports osee_txs_archived,
+    * osee_tx_details, and osee_branch rows to a compressed binary file, then purges them from the database.
+    *
+    * @param limit maximum number of branches to archive per invocation (default 100)
+    * @param retentionDays minimum age in days since last transaction before a branch is eligible (default 365)
+    */
+   @POST
+   @Path("cold/archive")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData archiveToColdStorage(@QueryParam("limit") @DefaultValue("100") int limit,
+      @QueryParam("retentionDays") @DefaultValue("365") int retentionDays);
+
+   /**
+    * Restores a single branch from cold storage back into osee_branch, osee_tx_details, and osee_txs_archived.
+    *
+    * @param branchId the branch to restore
+    */
+   @POST
+   @Path("cold/restore/{branchId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData restoreFromColdStorage(@PathParam("branchId") BranchId branchId);
+
+   /**
+    * Lists all branches currently in cold storage.
+    */
+   @GET
+   @Path("cold")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData listColdStorage();
+
+   /**
+    * Permanently discards a branch from cold storage (removes catalog entry and file if no other branches reference
+    * it).
+    *
+    * @param branchId the branch to permanently discard
+    */
+   @DELETE
+   @Path("cold/{branchId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData purgeColdStorage(@PathParam("branchId") BranchId branchId);
 }
