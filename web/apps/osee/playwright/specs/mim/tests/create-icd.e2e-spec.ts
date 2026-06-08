@@ -12,13 +12,12 @@
  **********************************************************************/
 import { test, expect, Page } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL } from '../utils/helpers';
-import { APP_BASE } from '../../../shared/test-config';
 
 const branchName = 'New MIM ICD';
 
 test('create action', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Product Line').check();
@@ -43,7 +42,7 @@ test('create action', async ({ page }) => {
 
 test('create nodes', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -101,7 +100,7 @@ test('create nodes', async ({ page }) => {
 
 test('create enum list artifacts', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'List Configuration' }).click();
 	await page.getByLabel('Working').check();
@@ -204,7 +203,7 @@ test('create enum list artifacts', async ({ page }) => {
 
 test('create transport type', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Transport Types' }).click();
 	await page.getByLabel('Working').check();
@@ -273,7 +272,7 @@ test('create transport type', async ({ page }) => {
 
 test('create connection', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -299,7 +298,7 @@ test('create connection', async ({ page }) => {
 
 test('create message and submessage', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -378,7 +377,7 @@ test('create message and submessage', async ({ page }) => {
 
 test('create structure', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -419,7 +418,7 @@ test('create structure', async ({ page }) => {
 
 test('create elements', async ({ page }) => {
 	test.setTimeout(600000);
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -593,7 +592,7 @@ test('create elements', async ({ page }) => {
 
 test('add array element', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 900 });
-	await page.goto(`${APP_BASE}/ple/messaging/connections/working`);
+	await page.goto('/ple/messaging/connections/working');
 	await page.getByText('Select a Branch').click();
 	await page.getByText(branchName).click();
 	await page.getByText('Connection A-B', { exact: true }).click();

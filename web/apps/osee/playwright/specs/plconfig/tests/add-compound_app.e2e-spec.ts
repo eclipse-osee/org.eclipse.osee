@@ -11,15 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
-import { APP_BASE } from '../../../shared/test-config';
 
 test('test', async ({ page }) => {
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page
 		.getByRole('link', { name: 'Product Line Configuration' })
 		.click();
 	await page.getByRole('radio', { name: 'Product Line' }).check();
-	await page.goto(`${APP_BASE}/ple/plconfig/baseline`);
+	await page.goto('/ple/plconfig/baseline');
 	await page.getByText('Select a Branch').click();
 	await page.getByText('SAW PL Hardening Branch').click();
 	await page.getByRole('button', { name: 'Create Action' }).click();

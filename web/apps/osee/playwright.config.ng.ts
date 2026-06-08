@@ -13,6 +13,7 @@
 import { devices, type PlaywrightTestConfig } from '@ngx-playwright/test';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { APP_BASE } from './playwright/shared/test-config';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -20,7 +21,7 @@ const config: PlaywrightTestConfig = {
 	use: {
 		channel: 'chromium',
 		headless: true,
-		baseURL: 'http://localhost:4200/ple',
+		baseURL: APP_BASE,
 		screenshot: 'only-on-failure',
 	},
 
@@ -105,6 +106,12 @@ const config: PlaywrightTestConfig = {
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/publish-launcher/tests',
 			dependencies: ['Publish-Launcher Demo Init'],
+		},
+		{
+			name: 'Artifact Explorer Tests',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/artifact-explorer/tests',
+			dependencies: ['Setup'],
 		},
 	],
 };

@@ -12,15 +12,14 @@
  **********************************************************************/
 import { expect, test } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL } from '../utils/helpers';
-import { APP_BASE } from '../../../shared/test-config';
 
 test.describe.configure({ mode: 'serial' });
 
 test('set up relations', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 1000 });
-	await page.goto(`${APP_BASE}/ple/messaging/connections`);
+	await page.goto('/ple/messaging/connections');
 	await createWorkingBranchFromPL(page, 'Traceability');
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('button').click();
 	await page
 		.locator('osee-top-level-navigation')
@@ -111,7 +110,7 @@ test('set up relations', async ({ page }) => {
 
 test('trace report', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 900 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Reports' }).click();
 	await page.getByLabel('Working').check();

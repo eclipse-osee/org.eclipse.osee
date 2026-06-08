@@ -98,3 +98,50 @@ Include the Boeing EPL header comment block at the top of every **new** file. Th
  *     Boeing - initial API and implementation
  **********************************************************************/
 ```
+
+## Playwright E2E tests
+
+Tests live in `web/apps/osee/playwright/specs/` organized by feature area (e.g., `mim/tests/`, `artifact-explorer/tests/`). The framework is `@ngx-playwright/test`.
+
+### Project structure
+
+- **Config**: `playwright.config.ng.ts` defines `baseURL` (from `playwright/shared/test-config.ts`), test directories, and project dependencies.
+- **Shared config**: `playwright/shared/test-config.ts` exports `APP_BASE`, `API_BASE`, and `AUTH_HEADER`. Use these for API calls and `waitForResponse` URL matching — never hardcode `localhost` URLs.
+- **Navigation**: Use **relative paths** in `page.goto()` (e.g., `'/ple/artifact-explorer'`, `'/ci/admin'`). The config's `baseURL` handles resolution. Do not use `APP_BASE` for navigation.
+- **Test files**: Named `*.e2e-spec.ts`. Include the Boeing EPL header.
+
+### Writing effective tests
+
+- **Use accessible locators** in priority order: `getByRole`, `getByLabel`, `getByText`, `getByTestId`. Avoid CSS selectors and XPath — they break on refactors.
+- **Add `data-testid` attributes** to components when no accessible locator is available. Prefer this over fragile structural selectors.
+- **Wait for state, not time.** Use `expect(...).toBeVisible()`, `waitForResponse`, or `waitForSelector` instead of `waitForTimeout`. Fixed timeouts are flaky and slow.
+- **Keep tests independent.** Each test should set up its own state. Use `test.beforeEach` for shared navigation, not shared mutable state between tests.
+- **Use `test.describe` blocks** to group related tests and share setup via `beforeEach`.
+- **Assert on outcomes, not implementation.** Check that the user sees the right content — don't assert internal class names or DOM structure that could change.
+- **One logical assertion per test.** A test should verify one behavior. Multiple related `expect` calls for a single user action are fine; testing unrelated behaviors in one test is not.
+
+### Patterns to follow
+
+```typescript
+import { test, expect } from '@ngx-playwright/test';
+
+test.describe('Feature Name', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/ple/feature-route');
+    // shared setup: select branch, wait for load, etc.
+  });
+
+  test('should do the expected thing', async ({ page }) => {
+    await page.getByRole('button', { name: 'Action' }).click();
+    await expect(page.getByText('Expected Result')).toBeVisible();
+  });
+});
+```
+
+### What to avoid
+
+- **Hardcoded URLs** — use relative paths for `page.goto()` and `APP_BASE` only for `waitForResponse` or API request matching.
+- **Chained `waitForTimeout`** — replace with proper waitFor conditions.
+- **Overly specific selectors** — `page.locator('div > span:nth-child(3)')` will break on any layout change.
+- **Tests that depend on execution order** — use `test.describe.configure({ mode: 'serial' })` only when tests genuinely share state (e.g., multi-step workflows like branch creation then commit).
+- **Screenshot-only tests** — screenshots are for documentation, not assertions. Always pair with `expect` calls.

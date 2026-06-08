@@ -11,10 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
-import { APP_BASE } from '../../../shared/test-config';
 
 test('test baseline branch', async ({ page }) => {
-	await page.goto(`${APP_BASE}/ci/admin`);
+	await page.goto('/ci/admin');
 	await page.getByLabel('Product Line').check();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('SAW Product Line').click();
@@ -34,7 +33,7 @@ test('test baseline branch', async ({ page }) => {
 });
 
 test('test working branch', async ({ page }) => {
-	await page.goto(`${APP_BASE}/ci/admin`);
+	await page.goto('/ci/admin');
 	await page.getByLabel('Product Line').check();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('SAW Product Line').click();
@@ -105,7 +104,7 @@ test('test working branch', async ({ page }) => {
 });
 
 test('test import page', async ({ page }) => {
-	await page.goto(`${APP_BASE}/ci/import`);
+	await page.goto('/ci/import');
 	await page.getByLabel('Working').check();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('CI Admin Test').click();

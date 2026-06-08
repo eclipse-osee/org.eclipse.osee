@@ -19,7 +19,7 @@ test.describe.configure({ mode: 'serial' });
 
 test('create working branches', async ({ page }) => {
 	page.setDefaultTimeout(60000);
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 
 	// Commit MIM Demo branch to create baseline
 	await page.getByRole('link', { name: 'MIM' }).click();
@@ -111,7 +111,7 @@ test('create working branches', async ({ page }) => {
 
 test('peer review branch', async ({ page }) => {
 	await page.setViewportSize({ width: 1300, height: 800 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Product Line').check();
@@ -191,7 +191,7 @@ test('peer review branch', async ({ page }) => {
 
 test('commit branches', async ({ page }) => {
 	await page.setViewportSize({ width: 1300, height: 800 });
-	await page.goto(`${APP_BASE}/ple`);
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Product Line').check();

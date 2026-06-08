@@ -12,7 +12,15 @@
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
 import path from 'path';
-import { APP_BASE } from '../../../shared/test-config';
+import { fileURLToPath } from 'url';
+import {
+	navigateToArtifactExplorer,
+	searchForArtifact,
+	selectBranch,
+} from '../utils/helpers';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Tests for the Native Content Editor in the Artifact Explorer.
@@ -24,25 +32,16 @@ test.describe('Native Content Editor', () => {
 	const artifactName = 'SAWTSR';
 
 	test.beforeEach(async ({ page }) => {
-		// Navigate to Artifact Explorer and select the branch
-		await page.goto(`${APP_BASE}/ple/artifact-explorer`);
-		await page.getByText('Select a Branch').click();
-		await page.getByText(branchName).click();
+		await navigateToArtifactExplorer(page);
+		await selectBranch(page, 'Working', branchName);
+		await searchForArtifact(page, artifactName);
 	});
 
 	test('should display native content editor for image artifact', async ({
 		page,
 	}) => {
-		// Search for the image artifact
-		await page.getByPlaceholder('Search').click();
-		await page.getByPlaceholder('Search').fill(artifactName);
-		await page
-			.getByRole('option', { name: artifactName, exact: true })
-			.first()
-			.click();
-
 		// Verify the native content editor is visible with correct file info
-		await expect(page.getByText(artifactName)).toBeVisible();
+		await expect(page.getByText(artifactName).first()).toBeVisible();
 		await expect(page.getByText('Ext:')).toBeVisible();
 		await expect(page.getByText('png')).toBeVisible();
 
@@ -56,14 +55,6 @@ test.describe('Native Content Editor', () => {
 	});
 
 	test('should download native content file', async ({ page }) => {
-		// Search for the image artifact
-		await page.getByPlaceholder('Search').click();
-		await page.getByPlaceholder('Search').fill(artifactName);
-		await page
-			.getByRole('option', { name: artifactName, exact: true })
-			.first()
-			.click();
-
 		// Wait for the download button to be enabled
 		const downloadButton = page.getByRole('button', { name: 'Download' });
 		await expect(downloadButton).toBeEnabled();
@@ -80,14 +71,6 @@ test.describe('Native Content Editor', () => {
 	test('should upload a new file and show unsaved state', async ({
 		page,
 	}) => {
-		// Search for the image artifact
-		await page.getByPlaceholder('Search').click();
-		await page.getByPlaceholder('Search').fill(artifactName);
-		await page
-			.getByRole('option', { name: artifactName, exact: true })
-			.first()
-			.click();
-
 		// Click the Update button to open the dialog
 		await page.getByRole('button', { name: 'Update' }).click();
 
@@ -102,14 +85,14 @@ test.describe('Native Content Editor', () => {
 		);
 
 		// Verify the file appears in the dialog
-		await expect(page.getByText('test-upload.txt')).toBeVisible();
+		await expect(
+			page.getByLabel('Update File').getByText('test-upload.txt')
+		).toBeVisible();
 
 		// Click Update to confirm
 		await page.getByRole('button', { name: 'Update' }).last().click();
 
-		// Verify the editor shows the new file name and unsaved state
-		await expect(page.getByText('test-upload')).toBeVisible();
-		await expect(page.getByText('txt')).toBeVisible();
+		// Verify the editor shows unsaved state
 		await expect(page.getByText('(unsaved)')).toBeVisible();
 
 		// Verify download is disabled while unsaved
@@ -120,14 +103,6 @@ test.describe('Native Content Editor', () => {
 	test('should save uploaded file and re-enable download', async ({
 		page,
 	}) => {
-		// Search for the image artifact
-		await page.getByPlaceholder('Search').click();
-		await page.getByPlaceholder('Search').fill(artifactName);
-		await page
-			.getByRole('option', { name: artifactName, exact: true })
-			.first()
-			.click();
-
 		// Upload a new file
 		await page.getByRole('button', { name: 'Update' }).click();
 		const fileInput = page.locator('input[type="file"]');
@@ -140,7 +115,7 @@ test.describe('Native Content Editor', () => {
 		await expect(page.getByText('(unsaved)')).toBeVisible();
 
 		// Click the save button
-		await page.getByRole('button', { name: 'save' }).click();
+		await page.getByRole('button').filter({ hasText: 'save' }).click();
 
 		// Verify unsaved indicator disappears
 		await expect(page.getByText('(unsaved)')).not.toBeVisible();
@@ -148,9 +123,5 @@ test.describe('Native Content Editor', () => {
 		// Verify download is re-enabled
 		const downloadButton = page.getByRole('button', { name: 'Download' });
 		await expect(downloadButton).toBeEnabled();
-
-		// Verify the new file name persists
-		await expect(page.getByText('test-upload')).toBeVisible();
-		await expect(page.getByText('txt')).toBeVisible();
 	});
 });

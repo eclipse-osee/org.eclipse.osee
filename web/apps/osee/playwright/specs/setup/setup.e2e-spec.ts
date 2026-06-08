@@ -46,4 +46,9 @@ test('setup', async ({ request }) => {
 		headers: AUTH_HEADER,
 	});
 	await expect(response.status()).toBe(200);
+
+	response = await request.put(`${API_BASE}/ats/config/init/markdown-demo`, {
+		headers: AUTH_HEADER,
+	});
+	await expect(response.status()).toBe(200);
 });
