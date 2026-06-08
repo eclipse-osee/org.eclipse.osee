@@ -25,4 +25,27 @@
     <Bug pattern="EI_EXPOSE_REP2" />
   </Match>
 
+  <!--
+    AtsConfigEndpointImpl, AtsDbConfigDemoOp, and AtsDbConfigMarkdownDemoOp store
+    injected service references (AtsApi, OrcsApi) in constructors. These are
+    DI singletons — defensive copying is not applicable.
+  -->
+  <Match>
+    <Class name="org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl" />
+    <Bug pattern="EI_EXPOSE_REP2" />
+  </Match>
+
+  <Match>
+    <Class name="org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp" />
+    <Or>
+      <Bug pattern="EI_EXPOSE_REP" />
+      <Bug pattern="EI_EXPOSE_REP2" />
+    </Or>
+  </Match>
+
+  <Match>
+    <Class name="org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigMarkdownDemoOp" />
+    <Bug pattern="EI_EXPOSE_REP2" />
+  </Match>
+
 </FindBugsFilter>

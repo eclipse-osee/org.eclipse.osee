@@ -91,8 +91,8 @@ public class AtsDbConfigMarkdownDemoOp {
          "Robot API Safety Requirements", "Robot API Performance Requirements")) {
          ArtifactToken artifact =
             changes.createArtifact(parent, CoreArtifactTypes.SystemRequirementMarkdown, childName);
-         String markdown = String.format("## %s \n\nThe system shall provide %s capabilities " //
-            + "to ensure safe and reliable operation of all connected robot subsystems.", childName, childName);
+         String markdown = "## " + childName + " \n\nThe system shall provide " + childName
+            + " capabilities to ensure safe and reliable operation of all connected robot subsystems.";
          changes.setSoleAttributeValue(artifact, CoreAttributeTypes.MarkdownContent, markdown);
       }
       changes.execute();
@@ -115,8 +115,8 @@ public class AtsDbConfigMarkdownDemoOp {
          "Robot Sensor Integration Subsystem", "Robot Communication Subsystem")) {
          ArtifactToken artifact =
             changes.createArtifact(parent, CoreArtifactTypes.SubsystemRequirementMarkdown, childName);
-         String markdown = String.format("## %s \n\nThe %s shall interface with the robot API " //
-            + "to provide real-time data exchange and control signaling.", childName, childName);
+         String markdown = "## " + childName + " \n\nThe " + childName
+            + " shall interface with the robot API to provide real-time data exchange and control signaling.";
          changes.setSoleAttributeValue(artifact, CoreAttributeTypes.MarkdownContent, markdown);
       }
       changes.execute();
@@ -143,10 +143,10 @@ public class AtsDbConfigMarkdownDemoOp {
          "Virtual fixtures")) {
          ArtifactToken artifact =
             changes.createArtifact(robotArt, CoreArtifactTypes.SoftwareRequirementMarkdown, childName);
-         String markdown = String.format("## %s \n\nThe API shall generate %s to notify the user " //
-            + "application about asynchronous actions detected by the lower level software.  " //
-            + "The %s of the individual and collaborative robot objects shall be documented " //
-            + "in an external database/document.", childName, childName, childName);
+         String markdown = "## " + childName + " \n\nThe API shall generate " + childName
+            + " to notify the user application about asynchronous actions detected by the lower level software.  "
+            + "The " + childName
+            + " of the individual and collaborative robot objects shall be documented in an external database/document.";
          changes.setSoleAttributeValue(artifact, CoreAttributeTypes.MarkdownContent, markdown);
       }
       changes.execute();
