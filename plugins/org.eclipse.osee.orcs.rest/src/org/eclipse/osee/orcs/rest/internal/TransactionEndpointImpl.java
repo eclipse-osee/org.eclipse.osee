@@ -669,4 +669,33 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       file.delete();
    }
 
+   // ---- Cold Storage ----
+
+   @Override
+   public XResultData archiveToColdStorage(int limit, int retentionDays) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return coldStorage.archiveBranches(limit, retentionDays);
+   }
+
+   @Override
+   public XResultData restoreFromColdStorage(BranchId branchId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return coldStorage.restoreBranch(branchId);
+   }
+
+   @Override
+   public XResultData listColdStorage() {
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return coldStorage.listColdStoredBranches();
+   }
+
+   @Override
+   public XResultData purgeColdStorage(BranchId branchId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return coldStorage.purgeColdBranch(branchId);
+   }
+
 }
