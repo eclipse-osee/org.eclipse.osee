@@ -45,7 +45,10 @@
 
   <Match>
     <Class name="org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigMarkdownDemoOp" />
-    <Bug pattern="EI_EXPOSE_REP2" />
+    <Or>
+      <Bug pattern="EI_EXPOSE_REP2" />
+      <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE" />
+    </Or>
   </Match>
 
 </FindBugsFilter>

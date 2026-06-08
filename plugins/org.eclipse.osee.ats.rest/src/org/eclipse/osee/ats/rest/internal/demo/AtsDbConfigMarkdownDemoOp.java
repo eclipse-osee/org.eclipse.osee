@@ -58,6 +58,8 @@ public class AtsDbConfigMarkdownDemoOp {
       (byte) 0xAE, 0x42, 0x60, (byte) 0x82 // CRC
    };
 
+   private static final String CLASS_NAME = AtsDbConfigMarkdownDemoOp.class.getSimpleName();
+
    public AtsDbConfigMarkdownDemoOp(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
@@ -77,7 +79,7 @@ public class AtsDbConfigMarkdownDemoOp {
 
    private void createSystemRequirements(XResultData rd) {
       IAtsChangeSet changes =
-         atsApi.createChangeSet("Markdown Demo Init - Create System Requirement Markdown Artifacts", SAW_PL);
+         atsApi.createChangeSet(CLASS_NAME + " - Create System Requirement Markdown Artifacts", SAW_PL);
       ArtifactToken parent =
          atsApi.getQueryService().getArtifact(CoreArtifactTokens.SystemRequirementsFolderMarkdown, SAW_PL);
 
@@ -91,8 +93,8 @@ public class AtsDbConfigMarkdownDemoOp {
          "Robot API Safety Requirements", "Robot API Performance Requirements")) {
          ArtifactToken artifact =
             changes.createArtifact(parent, CoreArtifactTypes.SystemRequirementMarkdown, childName);
-         String markdown = "## " + childName + " \n\nThe system shall provide " + childName
-            + " capabilities to ensure safe and reliable operation of all connected robot subsystems.";
+         String markdown = String.format("## %s \n\nThe system shall provide %s capabilities " //
+            + "to ensure safe and reliable operation of all connected robot subsystems.", childName, childName);
          changes.setSoleAttributeValue(artifact, CoreAttributeTypes.MarkdownContent, markdown);
       }
       changes.execute();
@@ -101,7 +103,7 @@ public class AtsDbConfigMarkdownDemoOp {
 
    private void createSubsystemRequirements(XResultData rd) {
       IAtsChangeSet changes =
-         atsApi.createChangeSet("Markdown Demo Init - Create Subsystem Requirement Markdown Artifacts", SAW_PL);
+         atsApi.createChangeSet(CLASS_NAME + " - Create Subsystem Requirement Markdown Artifacts", SAW_PL);
       ArtifactToken parent =
          atsApi.getQueryService().getArtifact(CoreArtifactTokens.SubSystemRequirementsFolderMarkdown, SAW_PL);
 
@@ -115,8 +117,8 @@ public class AtsDbConfigMarkdownDemoOp {
          "Robot Sensor Integration Subsystem", "Robot Communication Subsystem")) {
          ArtifactToken artifact =
             changes.createArtifact(parent, CoreArtifactTypes.SubsystemRequirementMarkdown, childName);
-         String markdown = "## " + childName + " \n\nThe " + childName
-            + " shall interface with the robot API to provide real-time data exchange and control signaling.";
+         String markdown = String.format("## %s \n\nThe %s shall interface with the robot API " //
+            + "to provide real-time data exchange and control signaling.", childName, childName);
          changes.setSoleAttributeValue(artifact, CoreAttributeTypes.MarkdownContent, markdown);
       }
       changes.execute();
@@ -125,7 +127,7 @@ public class AtsDbConfigMarkdownDemoOp {
 
    private void createSoftwareRequirements(XResultData rd) {
       IAtsChangeSet changes =
-         atsApi.createChangeSet("Markdown Demo Init - Create Software Requirement Markdown Artifacts", SAW_PL);
+         atsApi.createChangeSet(CLASS_NAME + " - Create Software Requirement Markdown Artifacts", SAW_PL);
       ArtifactToken parent =
          atsApi.getQueryService().getArtifact(CoreArtifactTokens.SoftwareRequirementsFolderMarkdown, SAW_PL);
 
@@ -143,10 +145,10 @@ public class AtsDbConfigMarkdownDemoOp {
          "Virtual fixtures")) {
          ArtifactToken artifact =
             changes.createArtifact(robotArt, CoreArtifactTypes.SoftwareRequirementMarkdown, childName);
-         String markdown = "## " + childName + " \n\nThe API shall generate " + childName
-            + " to notify the user application about asynchronous actions detected by the lower level software.  "
-            + "The " + childName
-            + " of the individual and collaborative robot objects shall be documented in an external database/document.";
+         String markdown = String.format("## %s \n\nThe API shall generate %s to notify the user " //
+            + "application about asynchronous actions detected by the lower level software.  " //
+            + "The %s of the individual and collaborative robot objects shall be documented " //
+            + "in an external database/document.", childName, childName, childName);
          changes.setSoleAttributeValue(artifact, CoreAttributeTypes.MarkdownContent, markdown);
       }
       changes.execute();
@@ -154,7 +156,7 @@ public class AtsDbConfigMarkdownDemoOp {
    }
 
    private void createImageArtifact(XResultData rd) {
-      IAtsChangeSet changes = atsApi.createChangeSet("Markdown Demo Init - Create Image Artifact", SAW_PL);
+      IAtsChangeSet changes = atsApi.createChangeSet(CLASS_NAME + " - Create Image Artifact", SAW_PL);
       ArtifactToken parent =
          atsApi.getQueryService().getArtifact(CoreArtifactTokens.SystemRequirementsFolderMarkdown, SAW_PL);
 
