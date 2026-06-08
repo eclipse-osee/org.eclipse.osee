@@ -246,6 +246,11 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       return this.testScriptApi.getDashboardApi().exportDashboardSetData(branch, ciSet, viewId);
    }
 
+   @Override
+   public Response downloadLatestTmos(BranchId branch, ArtifactId ciSet) {
+      return this.testScriptApi.getDashboardApi().downloadLatestTmos(branch, ciSet);
+   }
+
    private Map<ArtifactId, ScriptResultToken> buildLatestByDefForSet(BranchId branch, ArtifactId ciSet) {
       Collection<ScriptResultToken> setResults =
          this.testScriptApi.getScriptResultApi().getAllForSetWithScripts(branch, ArtifactId.SENTINEL, ciSet);

@@ -55,7 +55,7 @@ export class TimelineChartComponent {
 		const days = this.timeline().days ?? [];
 		if (!days.length) return days;
 
-		// If data uploaded within 4 days, use latest
+		// If data uploaded within 2 days, use latest
 		const consolidated: typeof days = [];
 		for (const d of days) {
 			const dMs = this.toMs(d.executionDate);
