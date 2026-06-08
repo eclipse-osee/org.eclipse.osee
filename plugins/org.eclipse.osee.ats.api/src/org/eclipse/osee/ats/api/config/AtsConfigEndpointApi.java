@@ -118,6 +118,11 @@ public interface AtsConfigEndpointApi {
    public XResultData demoDbInit();
 
    @PUT
+   @Path("init/markdown-demo")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData markdownDemoInit();
+
+   @PUT
    @Path("init/demopop")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData demoDbPopulate();

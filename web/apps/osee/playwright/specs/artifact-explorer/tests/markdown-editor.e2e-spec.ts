@@ -27,7 +27,6 @@ import { test, expect, type Page, type Locator } from '@ngx-playwright/test';
  */
 
 const branchName = 'SAW Markdown Requirements Updates';
-const artifactName = 'Software Artifact Template Specification Record';
 
 /** Locates the markdown editor component on the page. */
 function getEditor(page: Page): Locator {
@@ -41,9 +40,11 @@ function getTextarea(page: Page): Locator {
 	});
 }
 
-/** Locates a toolbar button by its tooltip text. */
-function getToolbarButton(page: Page, tooltip: string): Locator {
-	return getEditor(page).getByRole('button', { name: tooltip });
+/** Locates a toolbar button by its icon name or tooltip text. */
+function getToolbarButton(page: Page, name: string): Locator {
+	return getEditor(page)
+		.getByRole('button')
+		.filter({ hasText: name.toLowerCase() });
 }
 
 /** Locates the preview panel (the rendered HTML area). */
@@ -60,14 +61,22 @@ function getDivider(page: Page): Locator {
 
 test.describe('Markdown Editor', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/ple/artifact-explorer');
+		await page.goto('/ple/artifact/explorer');
+		await page.getByLabel('Working').check({ timeout: 10000 });
 		await page.getByText('Select a Branch').click();
 		await page.getByText(branchName).click();
 
-		// Search for an artifact with Markdown Content
-		await page.getByPlaceholder('Search').click();
-		await page.getByPlaceholder('Search').fill(artifactName);
-		await page.getByRole('option', { name: artifactName }).first().click();
+		// Search for the artifact
+		await page.getByRole('button', { name: 'Artifact Search' }).click();
+		await page.getByText('Search for Artifact').click();
+		await page
+			.getByRole('textbox', { name: 'Search for Artifact' })
+			.fill('Events');
+		await page
+			.getByRole('textbox', { name: 'Search for Artifact' })
+			.press('Enter');
+		await page.locator('button').filter({ hasText: 'search' }).click();
+		await page.getByRole('button', { name: 'Events' }).click();
 
 		// Wait for the markdown editor to appear
 		await expect(getEditor(page)).toBeVisible({ timeout: 10000 });
@@ -133,7 +142,7 @@ test.describe('Markdown Editor', () => {
 
 	test.describe('Preview Panel Collapse', () => {
 		test('should toggle preview panel visibility', async ({ page }) => {
-			const collapseButton = getToolbarButton(page, 'Hide Preview Panel');
+			const collapseButton = getToolbarButton(page, 'view_sidebar');
 			await expect(collapseButton).toBeVisible();
 
 			// Collapse the preview
@@ -142,8 +151,8 @@ test.describe('Markdown Editor', () => {
 			// Preview panel should not be visible
 			await expect(getPreviewPanel(page)).not.toBeVisible();
 
-			// Button tooltip should change
-			const expandButton = getToolbarButton(page, 'Show Preview Panel');
+			// Button icon should change to vertical_split
+			const expandButton = getToolbarButton(page, 'vertical_split');
 			await expect(expandButton).toBeVisible();
 
 			// Expand the preview
@@ -154,7 +163,9 @@ test.describe('Markdown Editor', () => {
 
 	test.describe('Fullscreen Toggle', () => {
 		test('should enter and exit fullscreen', async ({ page }) => {
-			const fullscreenButton = getToolbarButton(page, 'Fullscreen');
+			const fullscreenButton = getEditor(page)
+				.getByRole('button')
+				.filter({ hasText: /^\s*fullscreen\s*$/ });
 			await expect(fullscreenButton).toBeVisible();
 
 			// Enter fullscreen
@@ -167,7 +178,7 @@ test.describe('Markdown Editor', () => {
 			expect(isFullscreen).toBe(true);
 
 			// Exit button should now be visible
-			const exitButton = getToolbarButton(page, 'Exit Fullscreen');
+			const exitButton = getToolbarButton(page, 'fullscreen_exit');
 			await expect(exitButton).toBeVisible();
 
 			// Exit fullscreen
@@ -281,7 +292,7 @@ test.describe('Markdown Editor', () => {
 		test('should display examples button with menu items', async ({
 			page,
 		}) => {
-			const examplesButton = getToolbarButton(page, 'Examples');
+			const examplesButton = getToolbarButton(page, 'lightbulb');
 			await expect(examplesButton).toBeVisible();
 
 			// Open examples menu
@@ -299,7 +310,7 @@ test.describe('Markdown Editor', () => {
 			const initialValue = await textarea.inputValue();
 
 			// Open examples menu and click first item
-			await getToolbarButton(page, 'Examples').click();
+			await getToolbarButton(page, 'lightbulb').click();
 			await page.getByRole('menuitem').first().click();
 
 			// Textarea should have more content now
@@ -308,18 +319,16 @@ test.describe('Markdown Editor', () => {
 		});
 
 		test('should display image preview toggle', async ({ page }) => {
-			const previewButton = getToolbarButton(page, 'Preview With Images');
+			const previewButton = getToolbarButton(page, 'visibility');
 			await expect(previewButton).toBeVisible();
 		});
 
 		test('should show upload image button as disabled with tooltip', async ({
 			page,
 		}) => {
-			// The upload button is wrapped in a span with a tooltip
-			const uploadSpan = getEditor(page).locator(
-				'[mattooltip="Upload Image"]'
-			);
-			await expect(uploadSpan).toBeVisible();
+			// The upload button should be visible (wrapped in span for tooltip)
+			const uploadButton = getToolbarButton(page, 'image');
+			await expect(uploadButton).toBeVisible();
 		});
 	});
 
@@ -331,14 +340,14 @@ test.describe('Markdown Editor', () => {
 			await textarea.click();
 			await textarea.fill('Before preview');
 
-			// Toggle image preview
-			await getToolbarButton(page, 'Preview With Images').click();
+			// Toggle image preview (visibility icon)
+			await getToolbarButton(page, 'visibility').click();
 
 			// Textarea should be disabled
 			await expect(textarea).toBeDisabled();
 
-			// Return to editing
-			await getToolbarButton(page, 'Return to editing.').click();
+			// Return to editing (edit icon)
+			await getToolbarButton(page, 'edit').click();
 
 			// Textarea should be enabled again
 			await expect(textarea).toBeEnabled();
