@@ -11,6 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect, type Page, type Locator } from '@ngx-playwright/test';
+import {
+	navigateToArtifactExplorer,
+	searchForArtifact,
+	selectBranch,
+} from '../utils/helpers';
 
 /**
  * Tests for the Markdown Editor:
@@ -27,6 +32,7 @@ import { test, expect, type Page, type Locator } from '@ngx-playwright/test';
  */
 
 const branchName = 'SAW Markdown Requirements Updates';
+const artifactName = 'Events';
 
 /** Locates the markdown editor component on the page. */
 function getEditor(page: Page): Locator {
@@ -40,11 +46,11 @@ function getTextarea(page: Page): Locator {
 	});
 }
 
-/** Locates a toolbar button by its icon name or tooltip text. */
-function getToolbarButton(page: Page, name: string): Locator {
+/** Locates a toolbar button by its icon name. */
+function getToolbarButton(page: Page, iconName: string): Locator {
 	return getEditor(page)
 		.getByRole('button')
-		.filter({ hasText: name.toLowerCase() });
+		.filter({ hasText: iconName.toLowerCase() });
 }
 
 /** Locates the preview panel (the rendered HTML area). */
@@ -61,24 +67,9 @@ function getDivider(page: Page): Locator {
 
 test.describe('Markdown Editor', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/ple/artifact/explorer');
-		await page.getByLabel('Working').check({ timeout: 10000 });
-		await page.getByText('Select a Branch').click();
-		await page.getByText(branchName).click();
-
-		// Search for the artifact
-		await page.getByRole('button', { name: 'Artifact Search' }).click();
-		await page.getByText('Search for Artifact').click();
-		await page
-			.getByRole('textbox', { name: 'Search for Artifact' })
-			.fill('Events');
-		await page
-			.getByRole('textbox', { name: 'Search for Artifact' })
-			.press('Enter');
-		await page.locator('button').filter({ hasText: 'search' }).click();
-		await page.getByRole('button', { name: 'Events' }).click();
-
-		// Wait for the markdown editor to appear
+		await navigateToArtifactExplorer(page);
+		await selectBranch(page, 'Working', branchName);
+		await searchForArtifact(page, artifactName);
 		await expect(getEditor(page)).toBeVisible({ timeout: 10000 });
 	});
 
@@ -117,7 +108,7 @@ test.describe('Markdown Editor', () => {
 			await page.waitForTimeout(100);
 
 			// Click undo
-			await getToolbarButton(page, 'Undo').click();
+			await getToolbarButton(page, 'undo').click();
 
 			await expect(textarea).toHaveValue('First');
 		});
@@ -132,10 +123,10 @@ test.describe('Markdown Editor', () => {
 			await page.waitForTimeout(100);
 
 			// Undo then redo
-			await getToolbarButton(page, 'Undo').click();
+			await getToolbarButton(page, 'undo').click();
 			await expect(textarea).toHaveValue('First');
 
-			await getToolbarButton(page, 'Redo').click();
+			await getToolbarButton(page, 'redo').click();
 			await expect(textarea).toHaveValue('Second');
 		});
 	});
@@ -285,8 +276,8 @@ test.describe('Markdown Editor', () => {
 
 	test.describe('Toolbar Buttons', () => {
 		test('should display undo and redo buttons', async ({ page }) => {
-			await expect(getToolbarButton(page, 'Undo')).toBeVisible();
-			await expect(getToolbarButton(page, 'Redo')).toBeVisible();
+			await expect(getToolbarButton(page, 'undo')).toBeVisible();
+			await expect(getToolbarButton(page, 'redo')).toBeVisible();
 		});
 
 		test('should display examples button with menu items', async ({
@@ -326,7 +317,6 @@ test.describe('Markdown Editor', () => {
 		test('should show upload image button as disabled with tooltip', async ({
 			page,
 		}) => {
-			// The upload button should be visible (wrapped in span for tooltip)
 			const uploadButton = getToolbarButton(page, 'image');
 			await expect(uploadButton).toBeVisible();
 		});
