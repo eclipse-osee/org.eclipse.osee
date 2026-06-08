@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.EditorWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
@@ -355,7 +356,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       if (Widgets.isAccessible(headerComp)) {
          headerComp.getDirtyIArtifactWidgets(artWidgets);
       }
-      // Collect all dirty widgets first (so same attribute shown on different sections don't colide
+      // Collect all dirty widgets first (so same attribute shown on different sections don't collide)
       for (WfeWorkflowSection section : stateSections) {
          section.getDirtyIArtifactWidgets(artWidgets);
       }
@@ -431,6 +432,10 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    public void refreshExpandStates() {
       for (WfeWorkflowSection wfeSection : stateSections) {
          if (!Widgets.isAccessible(wfeSection.getMainComp())) {
+            continue;
+         }
+         if (wfeSection.isPinned()) {
+            wfeSection.expand();
             continue;
          }
          boolean isCurrentState = wfeSection.isCurrentState();

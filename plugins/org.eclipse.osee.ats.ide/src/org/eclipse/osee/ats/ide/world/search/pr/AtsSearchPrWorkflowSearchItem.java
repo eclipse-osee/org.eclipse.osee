@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.ide.search.widget.BuildImpactStateSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ConfigurationSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.PrListSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.button.BuildMemoType;
 import org.eclipse.osee.ats.ide.search.widget.button.ExportBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.button.GenerateBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.button.ValidateProblemReportsWidget;
@@ -72,7 +73,8 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    private BuildImpactState2SearchWidget buildImpactState2;
    protected GenerateBuildMemoWidget generateBuildMemoWidget;
    private ValidateProblemReportsWidget validatePrsWidget;
-   protected ExportBuildMemoWidget exportBuildMemoWidget;
+   protected ExportBuildMemoWidget exportBuildMemoWidgetFull;
+   protected ExportBuildMemoWidget exportBuildMemoWidgetRelease;
    private PrListSearchWidget prList;
 
    public AtsSearchPrWorkflowSearchItem() {
@@ -102,11 +104,18 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       return generateBuildMemoWidget;
    }
 
-   public ExportBuildMemoWidget getExportBuildMemo() {
-      if (exportBuildMemoWidget == null) {
-         exportBuildMemoWidget = new ExportBuildMemoWidget(this, getBuildMemoName());
+   public ExportBuildMemoWidget getExportBuildMemoFull() {
+      if (exportBuildMemoWidgetFull == null) {
+         exportBuildMemoWidgetFull = new ExportBuildMemoWidget(this, getBuildMemoName(), BuildMemoType.Full);
       }
-      return exportBuildMemoWidget;
+      return exportBuildMemoWidgetFull;
+   }
+
+   public ExportBuildMemoWidget getExportBuildMemoRelease() {
+      if (exportBuildMemoWidgetRelease == null) {
+         exportBuildMemoWidgetRelease = new ExportBuildMemoWidget(this, getBuildMemoName(), BuildMemoType.Release);
+      }
+      return exportBuildMemoWidgetRelease;
    }
 
    public ValidateProblemReportsWidget getValidatePrs() {
@@ -173,11 +182,13 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
       getBuildImpact2().addWidget();
       getBuildImpactState2().addWidget(-1);
       //
-      addSpaceWidget(this, "  ", 6);
-      getValidatePrs().addWidget();
-      getPrList().addWidget();
+      addSpaceWidget(this, "  ", 4);
+      getValidatePrs().addWidget(-1);
+      //
+      getPrList().addWidget(6);
       getGenerateBuildMemo().addWidget();
-      getExportBuildMemo().addWidget(-1);
+      getExportBuildMemoFull().addWidget();
+      getExportBuildMemoRelease().addWidget(-1);
    }
 
    @Override
@@ -221,8 +232,10 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
 
       generateBuildMemoWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer, modListener,
          isEditable);
-      exportBuildMemoWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer, modListener,
+      exportBuildMemoWidgetFull.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer, modListener,
          isEditable);
+      exportBuildMemoWidgetRelease.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer,
+         modListener, isEditable);
       validatePrsWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer, modListener,
          isEditable);
 
