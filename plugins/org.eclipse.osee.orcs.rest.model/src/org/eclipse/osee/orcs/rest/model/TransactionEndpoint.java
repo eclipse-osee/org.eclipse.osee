@@ -223,4 +223,25 @@ public interface TransactionEndpoint {
    @Path("cold/{branchId}")
    @Produces(MediaType.APPLICATION_JSON)
    XResultData purgeColdStorage(@PathParam("branchId") BranchId branchId);
+
+   // ---- Purged Transaction Cold Storage ----
+
+   /**
+    * Restores a previously purged transaction from cold storage.
+    *
+    * @param fileName the archive file name containing the transaction
+    * @param txId the transaction ID to restore
+    */
+   @POST
+   @Path("cold/restore/tx/{txId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData restorePurgedTransaction(@QueryParam("fileName") String fileName, @PathParam("txId") TransactionId txId);
+
+   /**
+    * Lists available purged transaction archive files in cold storage.
+    */
+   @GET
+   @Path("cold/tx")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData listPurgedTransactionArchives();
 }
