@@ -108,7 +108,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
             }
          } else {
             OseeLog.log(Activator.class, OseeLevel.WARNING,
-               "Could not parse relation column id.\n\nNot showing column for: " + id);
+               "Could not parse relation column id.\n\nNot showing column for id: " + id + ".\n\nId should be formatted: <relation id prefix>--<relTypeId>--<relTypeSide>--<AsToken or AsName>");
          }
       }
 
