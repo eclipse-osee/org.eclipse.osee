@@ -41,6 +41,7 @@ public class TaskTrackingData {
    String assignees; // Comma-separated list of assignee Artifact IDs
    ArtifactToken teamWf = ArtifactToken.SENTINEL;
    boolean tasksReopen = false;
+   boolean assigneesFromImplementers = false;
 
    public TaskTrackingData() {
       // jax-rs
@@ -164,6 +165,14 @@ public class TaskTrackingData {
 
    public void setTasksReopen(boolean tasksReopen) {
       this.tasksReopen = tasksReopen;
+   }
+
+   public boolean isAssigneesFromImplementers() {
+      return assigneesFromImplementers;
+   }
+
+   public void setAssigneesFromImplementers(boolean assigneesFromImplementers) {
+      this.assigneesFromImplementers = assigneesFromImplementers;
    }
 
 }

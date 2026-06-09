@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -45,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -79,8 +79,8 @@ public class XHistoryWidget extends GenericXWidget {
    private HistoryXViewer xHistoryViewer;
    public final static String normalColor = "#EEEEEE";
    private static final String NO_HISTORY = "No History changes were found";
-   private final static Image dbImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE_EDIT);
-   private final static Image loadingClockImage = ImageManager.getImage(FrameworkImage.CLOCK);
+   private final static Image dbImage = ImageManager.getImage(CoreImage.DB_ICON_BLUE_EDIT);
+   private final static Image loadingClockImage = ImageManager.getImage(CoreImage.CLOCK);
    protected Label infoImageLabel;
    protected Label extraInfoLabel;
    private Artifact artifact;
@@ -225,7 +225,7 @@ public class XHistoryWidget extends GenericXWidget {
       });
 
       refreshItem = new ToolItem(toolBar, SWT.PUSH);
-      refreshItem.setImage(ImageManager.getImage(FrameworkImage.OPEN));
+      refreshItem.setImage(ImageManager.getImage(CoreImage.OPEN));
       refreshItem.setToolTipText("Load by Artifact ID");
       refreshItem.addSelectionListener(new SelectionAdapter() {
          @Override

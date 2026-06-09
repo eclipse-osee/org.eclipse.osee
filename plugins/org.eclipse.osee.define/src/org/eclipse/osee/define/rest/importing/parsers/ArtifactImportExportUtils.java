@@ -329,7 +329,7 @@ public class ArtifactImportExportUtils {
             .append("| Key | Value |\n")
             .append("| --- | ----- |\n")
             .append("| Number of ArtifactRecords | ")
-            .append(artifactRecords != null ? artifactRecords.size() : 0)
+            .append(artifactRecords.size())
             .append(" |\n")
             .append("| Exported | ")
             .append(LocalDateTime.now())

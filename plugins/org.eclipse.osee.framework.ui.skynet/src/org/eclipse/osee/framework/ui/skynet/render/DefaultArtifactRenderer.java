@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -43,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
@@ -141,7 +141,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
                          CommandGroup.SHOW,
                          PresentationType.GENERALIZED_EDIT,
                          DefaultArtifactRenderer.COMMAND_TITLE_ARTIFACT_EDIT,
-                         ImageManager.getImageDescriptor( FrameworkImage.ARTIFACT_EDITOR )
+                         ImageManager.getImageDescriptor( CoreImage.ARTIFACT_EDITOR )
                       ),
 
                new MenuCmdDef
@@ -149,7 +149,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
                          CommandGroup.SHOW,
                          PresentationType.GENERALIZED_EDIT,
                          DefaultArtifactRenderer.COMMAND_TITLE_MASS_EDITOR,
-                         ImageManager.getImageDescriptor( FrameworkImage.ARTIFACT_MASS_EDITOR ),
+                         ImageManager.getImageDescriptor( CoreImage.ARTIFACT_MASS_EDITOR ),
                          Map.of
                             (
                                RendererOption.OPEN_OPTION.getKey(),  DefaultArtifactRenderer.OPEN_IN_TABLE_EDITOR
@@ -161,7 +161,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
                          CommandGroup.SHOW,
                          PresentationType.GENERALIZED_EDIT,
                          DefaultArtifactRenderer.COMMAND_TITLE_ARTIFACT_EXPLORER,
-                         ImageManager.getImageDescriptor( FrameworkImage.ARTIFACT_EXPLORER ),
+                         ImageManager.getImageDescriptor( CoreImage.ARTIFACT_EXPLORER ),
                          Map.of
                             (
                                RendererOption.OPEN_OPTION.getKey(), DefaultArtifactRenderer.OPEN_IN_EXPLORER
@@ -173,7 +173,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
                          CommandGroup.SHOW,
                          PresentationType.GENERALIZED_EDIT,
                          DefaultArtifactRenderer.COMMAND_TITLE_RESOURCE_HISTORY,
-                         ImageManager.getImageDescriptor( FrameworkImage.DB_ICON_BLUE ),
+                         ImageManager.getImageDescriptor( CoreImage.DB_ICON_BLUE ),
                          Map.of
                             (
                                RendererOption.OPEN_OPTION.getKey(), DefaultArtifactRenderer.OPEN_IN_HISTORY
@@ -185,7 +185,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
                          CommandGroup.SHOW,
                          PresentationType.GENERALIZED_EDIT,
                          DefaultArtifactRenderer.COMMAND_TITLE_SKY_WALKER,
-                         ImageManager.getImageDescriptor( FrameworkImage.SKYWALKER ),
+                         ImageManager.getImageDescriptor( CoreImage.SKYWALKER ),
                          Map.of
                             (
                                RendererOption.OPEN_OPTION.getKey(), DefaultArtifactRenderer.OPEN_IN_GRAPH

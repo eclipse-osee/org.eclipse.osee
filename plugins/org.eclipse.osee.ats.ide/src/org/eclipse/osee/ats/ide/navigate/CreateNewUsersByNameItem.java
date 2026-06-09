@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -55,7 +55,7 @@ import org.eclipse.swt.graphics.Image;
 public class CreateNewUsersByNameItem extends XNavigateItemAction {
 
    public CreateNewUsersByNameItem() {
-      super("Create New Users by Name (Testing Only)", FrameworkImage.USER, XNavigateItem.USER_MANAGEMENT_ADMIN);
+      super("Create New Users by Name (Testing Only)", CoreImage.USER, XNavigateItem.USER_MANAGEMENT_ADMIN);
    }
 
    @Override
@@ -123,7 +123,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
 
    @Override
    public Image getImage() {
-      return ImageManager.getImage(FrameworkImage.USER_ADD);
+      return ImageManager.getImage(CoreImage.USER_ADD);
    }
 
 }

@@ -209,29 +209,45 @@ public class TaskTrackingOperation {
                }
             }
 
-            // Assign user specified in taskItem
-            List<String> assigneeUserIds = new LinkedList<>();
-            if (Strings.isValid(taskItem.getAssigneesArtIds())) {
-               for (String assigneeArtId : taskItem.getAssigneesArtIds().split(",")) {
-                  AtsUser user = atsApi.getUserService().getUserById(ArtifactId.valueOf(assigneeArtId));
-                  if (user != null && !assigneeUserIds.contains(user.getUserId())) {
-                     assigneeUserIds.add(user.getUserId());
-                  }
-               }
-            }
-            // If no assignees, set to current assignees or completed by from related supporting TW
-            if (assigneeUserIds.isEmpty() && supportingTeamWf != null) {
-               for (AtsUser assignee : supportingTeamWf.getAssignees()) {
-                  assigneeUserIds.add(assignee.getUserId());
-               }
-               AtsUser completedUser = supportingTeamWf.getCompletedBy();
-               if (completedUser != null && !completedUser.getUserId().equals(AtsCoreUsers.SYSTEM_USER.getUserId())) {
-                  assigneeUserIds.add(completedUser.getUserId());
-               }
-            }
-            createJaxTask.setAssigneeUserIds(assigneeUserIds);
+            List<ArtifactId> assigneeArtIds =
+               getTaskAssignees(trackData.isAssigneesFromImplementers(), taskItem, supportingTeamWf, atsApi);
+            createJaxTask.setAssigneeAccountIds(assigneeArtIds);
          }
       }
+   }
+
+   public static List<ArtifactId> getTaskAssignees(boolean isAssigneesFromImplementers, TaskTrackItem taskItem,
+      IAtsTeamWorkflow supportingTeamWf, AtsApi atsApi) {
+      // Assign user specified in taskItem
+      List<ArtifactId> assigneeArtIds = new LinkedList<>();
+      if (Strings.isValid(taskItem.getAssigneesArtIds())) {
+         for (String assigneeArtId : taskItem.getAssigneesArtIds().split(",")) {
+            assigneeArtIds.add(ArtifactId.valueOf(assigneeArtId));
+         }
+      }
+      // If no assignees, set to current assignees from related supporting TW
+      if (assigneeArtIds.isEmpty() && supportingTeamWf != null) {
+         // set from TW Implementers
+         if (isAssigneesFromImplementers) {
+            for (AtsUser implementers : supportingTeamWf.getImplementers()) {
+               assigneeArtIds.add(implementers.getArtifactId());
+            }
+         }
+         // else, set from assignees
+         else {
+            for (AtsUser assignee : supportingTeamWf.getAssignees()) {
+               assigneeArtIds.add(assignee.getArtifactId());
+            }
+         }
+         if (assigneeArtIds.isEmpty()) {
+            // else, set from completed by, which will only exist if completed
+            AtsUser completedUser = supportingTeamWf.getCompletedBy();
+            if (completedUser != null && !completedUser.getUserId().equals(AtsCoreUsers.SYSTEM_USER.getUserId())) {
+               assigneeArtIds.add(completedUser.getArtifactId());
+            }
+         }
+      }
+      return assigneeArtIds;
    }
 
    // Find task by name

@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -67,8 +66,6 @@ public class ArtEdDetailsTab extends FormPage {
 
       browser = new Browser(bodyComp, SWT.NONE);
       browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-      FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
       createOperationsSection(bodyComp);
       refresh();

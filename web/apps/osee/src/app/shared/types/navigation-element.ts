@@ -11,22 +11,38 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { UserRoles } from '@osee/shared/types/auth';
-export type navigationElement = {
+
+type baseNavigationElement = {
 	label: string;
 	cypressLabel: string;
 	pageTitle: string;
-	isDropdown: boolean;
 	isDropdownOpen: boolean;
 	requiredRoles: UserRoles[];
-	routerLink: string;
 	icon: string;
 	description: string;
-	usesBranch: boolean;
+};
+
+export type dropdownNavigationElement = baseNavigationElement & {
+	isDropdown: true;
+	routerLink: '';
+	usesBranch: false;
 	children: navigationElement[];
+	external?: never;
+};
+
+export type leafNavigationElement = baseNavigationElement & {
+	isDropdown: false;
+	routerLink: string;
+	usesBranch: boolean;
+	children: [];
 	external?: boolean;
 };
 
-export const defaultNavigationElement: navigationElement = {
+export type navigationElement =
+	| dropdownNavigationElement
+	| leafNavigationElement;
+
+export const defaultNavigationElement: leafNavigationElement = {
 	label: '',
 	cypressLabel: '',
 	pageTitle: '',

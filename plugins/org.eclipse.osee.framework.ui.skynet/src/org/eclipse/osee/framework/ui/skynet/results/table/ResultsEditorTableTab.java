@@ -25,9 +25,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -267,7 +267,7 @@ public class ResultsEditorTableTab extends AbstractResultsEditorTab implements I
       new ToolItem(toolBar, SWT.SEPARATOR);
 
       ToolItem expand = new ToolItem(toolBar, SWT.PUSH);
-      expand.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
+      expand.setImage(ImageManager.getImage(CoreImage.EXPAND_ALL));
       expand.setToolTipText("Expand All");
       expand.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -278,7 +278,7 @@ public class ResultsEditorTableTab extends AbstractResultsEditorTab implements I
       });
 
       ToolItem collapse = new ToolItem(toolBar, SWT.PUSH);
-      collapse.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
+      collapse.setImage(ImageManager.getImage(CoreImage.COLLAPSE_ALL));
       collapse.setToolTipText("Collapse All");
       collapse.addSelectionListener(new SelectionAdapter() {
          @Override

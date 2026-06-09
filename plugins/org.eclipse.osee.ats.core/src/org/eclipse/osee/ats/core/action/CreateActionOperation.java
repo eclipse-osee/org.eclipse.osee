@@ -480,7 +480,7 @@ public class CreateActionOperation {
 
       // Auto-add actions to configured goals
       ElapsedTime goalsTime = new ElapsedTime(cName + " - createActTws - createTeamWorkflowTime - goalsTime", debug);
-      addActionToConfiguredGoalBackgroundOperation(teamDef, teamWf, ais);
+      addActionToConfiguredGoalBackgroundOperation(teamDef, teamWf);
       logElapsedTime(goalsTime);
 
       changes.add(teamWf);
@@ -818,32 +818,8 @@ public class CreateActionOperation {
    private void setPoints() {
       if (Strings.isValid(data.getPoints())) {
          for (IAtsTeamWorkflow teamWf : teamWfs) {
-            IAgileTeam agileTeam = null;
-            if (Strings.isNumeric(data.getAgileTeam())) {
-               agileTeam = atsApi.getQueryService().getConfigItem(ArtifactId.valueOf(data.getAgileTeam()));
-            }
-            if (agileTeam == null) {
-               IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
-               agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
-            }
-            if (agileTeam == null) {
-               rd.warning("Agile Team not found, could not set points.");
-            } else {
-               String pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
-                  AtsAttributeTypes.PointsAttributeType, null);
-               if (Strings.isInValid(pointsAttrType)) {
-                  pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf.getTeamDefinition(),
-                     AtsAttributeTypes.PointsAttributeType, null);
-               }
-               if (!Strings.isValid(pointsAttrType)) {
-                  throw new OseeArgumentException(
-                     "Points Attribute Type must be specified on either Agile Team or Team Defintion to set Points",
-                     agileTeam.toStringWithId());
-               }
-               AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(pointsAttrType);
-
-               changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
-            }
+            AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(teamWf);
+            changes.setSoleAttributeValue(teamWf, pointsAttrType, data.getPoints());
          }
       }
    }
@@ -851,25 +827,27 @@ public class CreateActionOperation {
    /**
     * Run in the background so workflow creation is not delayed by this operation
     */
-   private void addActionToConfiguredGoalBackgroundOperation(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf,
-      List<IAtsActionableItem> ais) {
-      changes.addExecuteListener(new IAtsChangeSetListener() {
+   private void addActionToConfiguredGoalBackgroundOperation(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf) {
+      changes.addChangeSetListener(new IAtsChangeSetListener() {
 
          @Override
-         public void changesStoring(IAtsChangeSet changes) {
-
+         public void changesPersisting(IAtsChangeSet changes) {
             String opName = "AddActionToConfiguredGoalOperation";
-            Thread addtoGoal = new Thread(opName) {
+            if (atsApi.isInTest()) {
+               atsApi.getActionService().addActionToConfiguredGoal(teamDef, teamWf, ais, null, changes);
+            } else {
+               Thread addtoGoal = new Thread(opName) {
 
-               @Override
-               public void run() {
-                  IAtsChangeSet changes = atsApi.createChangeSet(opName, AtsCoreUsers.SYSTEM_USER);
-                  atsApi.getActionService().addActionToConfiguredGoal(teamDef, teamWf, ais, null, changes);
-                  changes.executeIfNeeded();
-               }
+                  @Override
+                  public void run() {
+                     IAtsChangeSet changes = atsApi.createChangeSet(opName, AtsCoreUsers.SYSTEM_USER);
+                     atsApi.getActionService().addActionToConfiguredGoal(teamDef, teamWf, ais, null, changes);
+                     changes.executeIfNeeded();
+                  }
 
-            };
-            addtoGoal.start();
+               };
+               addtoGoal.start();
+            }
          }
 
       });

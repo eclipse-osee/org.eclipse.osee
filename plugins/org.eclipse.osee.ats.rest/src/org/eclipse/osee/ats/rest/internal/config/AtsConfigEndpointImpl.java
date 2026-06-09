@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
 import org.eclipse.osee.ats.rest.internal.config.operation.ConvertAtsAisAndTeamDefsOperation;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
+import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigMarkdownDemoOp;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigPopulateDemoDbAndTestOp;
 import org.eclipse.osee.ats.rest.internal.demo.servertest.AtsDbServerTestsOp;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation;
@@ -218,6 +219,18 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       try {
          AtsDbConfigDemoOp config = new AtsDbConfigDemoOp(rd, atsApi);
          config.run();
+      } catch (Exception ex) {
+         rd.error(Lib.exceptionToString(ex));
+      }
+      return rd;
+   }
+
+   @Override
+   public XResultData markdownDemoInit() {
+      XResultData rd = new XResultData();
+      try {
+         AtsDbConfigMarkdownDemoOp op = new AtsDbConfigMarkdownDemoOp(atsApi, orcsApi);
+         op.run(rd);
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));
       }

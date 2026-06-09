@@ -13,7 +13,7 @@
 import { test, expect } from '@ngx-playwright/test';
 
 test('test baseline branch', async ({ page }) => {
-	await page.goto('http://localhost:4200/ci/admin');
+	await page.goto('/ci/admin');
 	await page.getByLabel('Product Line').check();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('SAW Product Line').click();
@@ -33,7 +33,7 @@ test('test baseline branch', async ({ page }) => {
 });
 
 test('test working branch', async ({ page }) => {
-	await page.goto('http://localhost:4200/ci/admin');
+	await page.goto('/ci/admin');
 	await page.getByLabel('Product Line').check();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('SAW Product Line').click();
@@ -104,7 +104,7 @@ test('test working branch', async ({ page }) => {
 });
 
 test('test import page', async ({ page }) => {
-	await page.goto('http://localhost:4200/ci/import');
+	await page.goto('/ci/import');
 	await page.getByLabel('Working').check();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('CI Admin Test').click();

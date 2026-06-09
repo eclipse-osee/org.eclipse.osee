@@ -42,6 +42,7 @@ export class ReportsService {
 	private _requestBody = new BehaviorSubject<string>('');
 	private _requestBodyFile = new BehaviorSubject<File | undefined>(undefined);
 	private _includeDiff = new BehaviorSubject<boolean>(false);
+	private _showOrder = new BehaviorSubject<boolean>(false);
 	private _showErrorColoring = new BehaviorSubject<boolean>(false);
 
 	private _allCurrentPage$ = new BehaviorSubject<number>(0);
@@ -112,28 +113,34 @@ export class ReportsService {
 			this.requestBodyFile,
 			this.includeDiff,
 			this.showErrorColoring,
+			this.showOrder,
 		]).pipe(
 			take(1),
-			switchMap(([input, file, includeDiff, showErrorColoring]) =>
-				iif(
-					() =>
-						report !== undefined &&
-						report.url !== '' &&
-						branchId !== '' &&
-						connection !== undefined &&
-						connection.id !== '-1',
-					this.fileService.getFileAsBlob(
-						report.httpMethod,
-						report.url
-							.replace('<branchId>', branchId)
-							.replace('<connectionId>', connection?.id ?? '-1')
-							.replace('<diffAvailable>', includeDiff + '')
-							.replace('<viewId>', viewId)
-							.replace('<showErrors>', showErrorColoring + ''),
-						file === undefined ? input : file
-					),
-					of(new Blob())
-				)
+			switchMap(
+				([input, file, includeDiff, showErrorColoring, showOrder]) =>
+					iif(
+						() =>
+							report !== undefined &&
+							report.url !== '' &&
+							branchId !== '' &&
+							connection !== undefined &&
+							connection.id !== '-1',
+						this.fileService.getFileAsBlob(
+							report.httpMethod,
+							report.url
+								.replace('<branchId>', branchId)
+								.replace(
+									'<connectionId>',
+									connection?.id ?? '-1'
+								)
+								.replace('<diffAvailable>', includeDiff + '')
+								.replace('<viewId>', viewId)
+								.replace('<showErrors>', showErrorColoring + '')
+								.replace('<showOrder>', showOrder + ''),
+							file === undefined ? input : file
+						),
+						of(new Blob())
+					)
 			)
 		);
 	}
@@ -468,6 +475,14 @@ export class ReportsService {
 
 	set IncludeDiff(value: boolean) {
 		this._includeDiff.next(value);
+	}
+
+	get showOrder() {
+		return this._showOrder;
+	}
+
+	set ShowOrder(value: boolean) {
+		this._showOrder.next(value);
 	}
 
 	get showErrorColoring() {

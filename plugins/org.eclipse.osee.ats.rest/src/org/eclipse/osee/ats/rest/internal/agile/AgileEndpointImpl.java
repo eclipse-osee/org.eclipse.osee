@@ -519,7 +519,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public List<JaxAgileFeatureGroup> getFeatureGroups(long teamId) {
       List<JaxAgileFeatureGroup> groups = new LinkedList<>();
-      ArtifactToken agileTeamArt = atsApi.getQueryService().getArtifact(teamId);
+      ArtifactToken agileTeamArt = atsApi.getQueryService().getArtifactNewFollowAll(teamId);
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(agileTeamArt)) {
          if (child.getName().equals(IAgileService.FEATURE_GROUP_FOLDER_NAME)) {
             for (ArtifactToken subChild : atsApi.getRelationResolver().getChildren(child)) {
@@ -570,6 +570,18 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       URI location = builder.path("teams").path(String.valueOf(newGroup.getTeamId())).path("features").path(
          String.valueOf(newGroup.getId())).build();
       return Response.created(location).entity(newGroup).build();
+   }
+
+   @Override
+   public JaxAgileFeatureGroup getFeatureGroup(long featureId) {
+      IAgileFeatureGroup feature =
+         atsApi.getAgileService().getAgileFeatureGroups(Arrays.asList(featureId)).iterator().next();
+      JaxAgileFeatureGroup created = new JaxAgileFeatureGroup();
+      created.setName(feature.getName());
+      created.setId(feature.getId());
+      created.setTeamId(feature.getTeamId());
+      created.setActive(feature.isActive());
+      return created;
    }
 
    @Override
@@ -1139,8 +1151,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       ArtifactToken itemArt = atsApi.getQueryService().getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
       IAgileItem item = atsApi.getWorkItemService().getAgileItem(itemArt);
-      IAgileTeam team = atsApi.getAgileService().getAgileTeam(item);
-      AttributeTypeToken agileTeamPointsAttributeType = atsApi.getAgileService().getAgileTeamPointsAttributeType(team);
+      AttributeTypeToken agileTeamPointsAttributeType = atsApi.getAgileService().getPointsAttrType(item);
       IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
       changes.setSoleAttributeValue(item, agileTeamPointsAttributeType, points);
       changes.execute();

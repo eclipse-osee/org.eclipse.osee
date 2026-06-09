@@ -426,7 +426,7 @@ public class EmailWizardPage extends WizardPage {
    @Override
    public boolean isPageComplete() {
       try {
-         return getToAddresses().length > 0 || getCcAddresses().length > 0;
+         return getToAddresses().length > 0 || getCcAddresses().length > 0 || getBccAddresses().length > 0;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

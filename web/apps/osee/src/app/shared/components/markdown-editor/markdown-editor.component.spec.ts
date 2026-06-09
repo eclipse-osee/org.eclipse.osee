@@ -17,6 +17,8 @@ import { provideMarkdown } from 'ngx-markdown';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
 import { ArtifactExplorerHttpServiceMock } from '../../../ple/artifact-explorer/lib/testing/artifact-explorer-http.service.mock';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('MarkdownEditorComponent', () => {
 	let component: MarkdownEditorComponent;
@@ -30,6 +32,10 @@ describe('MarkdownEditorComponent', () => {
 				{
 					provide: ArtifactExplorerHttpService,
 					useValue: ArtifactExplorerHttpServiceMock,
+				},
+				{
+					provide: CurrentTransactionService,
+					useValue: currentTransactionServiceMock,
 				},
 			],
 		}).compileComponents();

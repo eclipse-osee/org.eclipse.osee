@@ -41,6 +41,7 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
+      bld.andPointsAttributeType(AtsAttributeTypes.PointsEnum);
       bld.andHeader() //
          .andLayout( //
             getChangeTypeComposite(), //

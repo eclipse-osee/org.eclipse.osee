@@ -48,6 +48,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
        */
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken, AtsArtifactTypes.DemoCodeTeamWorkflow);
 
+      bld.andPointsAttributeType(AtsAttributeTypes.PointsEnum);
       bld.andHeader() //
          .andLayout(getChangeTypeComposite(), //
             new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam" //

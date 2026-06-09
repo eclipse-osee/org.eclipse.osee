@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -46,13 +47,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.CopyIdHyperlinkWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
@@ -162,7 +161,6 @@ public class ArtifactFormPage extends FormPage {
                      setLoading(false);
                      createBody();
                      XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
-                     FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                      editor.onDirtied();
                   }
                } catch (OseeCoreException ex) {
@@ -226,7 +224,6 @@ public class ArtifactFormPage extends FormPage {
       }
 
       addToolBar(toolkit, form, true);
-      FormsUtil.addHeadingGradient(toolkit, form, true);
       XWidgetUtility.addMessageDecoration(managedForm, managedForm.getForm());
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
@@ -311,7 +308,7 @@ public class ArtifactFormPage extends FormPage {
          try {
             Artifact artifact = getEditor().getEditorInput().getArtifact();
             if (artifact.isDeleted()) {
-               image = ImageManager.getImage(FrameworkImage.TRASH);
+               image = ImageManager.getImage(CoreImage.TRASH);
             } else {
                image = Dialog.getImage(Dialog.DLG_IMG_MESSAGE_INFO);
             }

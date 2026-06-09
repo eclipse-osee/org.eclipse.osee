@@ -15,7 +15,7 @@ import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
 
 test('test', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 1000 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Platform Types' }).click();
 	await createWorkingBranchFromPL(page, 'Platform Types');

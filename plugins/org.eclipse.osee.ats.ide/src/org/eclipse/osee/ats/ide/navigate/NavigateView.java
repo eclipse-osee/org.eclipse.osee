@@ -87,7 +87,9 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    private static NavigateView navView;
 
    private String savedFilterStr;
+   private IMemento savedMemento;
    private AtsNavigateComposite xNavComp;
+   private AtsQuickSearchComposite quickSearchComposite;
    private Composite parent;
    private LoadingComposite loadingComposite;
    private NavigateItemCollector itemCollector;
@@ -153,7 +155,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                         HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
                         createToolBar();
 
-                        new AtsQuickSearchComposite(xNavComp, SWT.NONE);
+                        quickSearchComposite = new AtsQuickSearchComposite(xNavComp, SWT.NONE);
+                        quickSearchComposite.restoreState(savedMemento);
 
                         userLabel = new Label(xNavComp, SWT.None);
                         userLabel.addListener(SWT.MouseDoubleClick, new Listener() {
@@ -307,6 +310,9 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
             String filterStr = xNavComp.getFilteredTree().getFilterControl().getText();
             memento.putString(FILTER_STR, filterStr);
          }
+         if (quickSearchComposite != null && !quickSearchComposite.isDisposed()) {
+            quickSearchComposite.saveState(memento);
+         }
       }
    }
 
@@ -320,6 +326,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                memento = memento.getChild(INPUT);
                if (memento != null) {
                   savedFilterStr = memento.getString(FILTER_STR);
+                  savedMemento = memento;
                }
             }
          } catch (Exception ex) {

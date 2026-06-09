@@ -15,11 +15,11 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -70,7 +70,7 @@ public class AttributeActionContribution implements IActionContributor {
    private final class OpenAddAttributeTypeDialogAction extends Action {
       public OpenAddAttributeTypeDialogAction() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ADD_GREEN));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ADD_GREEN));
          setToolTipText("Opens a dialog to select which attribute type instances to create on the artifact");
       }
 
@@ -87,7 +87,7 @@ public class AttributeActionContribution implements IActionContributor {
    private final class OpenDeleteAttributeTypeDialogAction extends Action {
       public OpenDeleteAttributeTypeDialogAction() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DELETE));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.DELETE));
          setToolTipText("Opens a dialog to select which attribute type instances to remove from the artifact");
       }
 

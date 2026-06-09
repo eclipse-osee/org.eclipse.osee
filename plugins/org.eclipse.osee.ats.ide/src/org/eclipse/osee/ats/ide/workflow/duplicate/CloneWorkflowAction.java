@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.core.workflow.util.IDuplicateWorkflowListener;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -79,7 +79,7 @@ public class CloneWorkflowAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE);
+      return ImageManager.getImageDescriptor(CoreImage.DUPLICATE);
    }
 
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs exclusion filter for intentional design patterns.
+  See: https://spotbugs.readthedocs.io/en/stable/filter.html
+-->
+<FindBugsFilter>
+
+  <!--
+    GenericReportBuilder uses the builder pattern where callers must interact
+    with the mutable query and levels. Exposing/storing these references is
+    intentional and required for the fluent API to function.
+  -->
+  <Match>
+    <Class name="org.eclipse.osee.orcs.rest.internal.writers.GenericReportBuilder" />
+    <Or>
+      <Method name="getLevels" />
+      <Method name="query" />
+    </Or>
+    <Bug pattern="EI_EXPOSE_REP" />
+  </Match>
+
+  <Match>
+    <Class name="org.eclipse.osee.orcs.rest.internal.writers.GenericReportBuilder" />
+    <Method name="level" />
+    <Bug pattern="EI_EXPOSE_REP2" />
+  </Match>
+
+  <!--
+    AtsConfigEndpointImpl, AtsDbConfigDemoOp, and AtsDbConfigMarkdownDemoOp store
+    injected service references (AtsApi, OrcsApi) in constructors. These are
+    DI singletons — defensive copying is not applicable.
+  -->
+  <Match>
+    <Class name="org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl" />
+    <Bug pattern="EI_EXPOSE_REP2" />
+  </Match>
+
+  <Match>
+    <Class name="org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp" />
+    <Or>
+      <Bug pattern="EI_EXPOSE_REP" />
+      <Bug pattern="EI_EXPOSE_REP2" />
+    </Or>
+  </Match>
+
+  <Match>
+    <Class name="org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigMarkdownDemoOp" />
+    <Or>
+      <Bug pattern="EI_EXPOSE_REP2" />
+      <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE" />
+    </Or>
+  </Match>
+
+</FindBugsFilter>

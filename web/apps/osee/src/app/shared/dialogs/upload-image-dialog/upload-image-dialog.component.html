@@ -1,0 +1,91 @@
+<!--
+/*********************************************************************
+ * Copyright (c) 2026 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+-->
+<h1 mat-dialog-title>
+	<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+		<mat-icon>image</mat-icon>
+		Upload Image
+	</div>
+</h1>
+
+<div
+	mat-dialog-content
+	class="tw-p-4">
+	@if (!selectedFile()) {
+		<osee-drag-and-drop-upload
+			[title]="'Drag & drop an image here'"
+			[subtitle]="'or'"
+			[buttonLabel]="'Choose image'"
+			[accept]="acceptedTypes"
+			[multiple]="false"
+			(filesSelected)="
+				onFilesSelected($event)
+			"></osee-drag-and-drop-upload>
+		<div class="tw-mt-2 tw-text-center tw-text-xs tw-text-osee-neutral-60">
+			Supported formats: {{ supportedFormatsLabel }}
+		</div>
+	} @else {
+		<div
+			class="tw-flex tw-flex-col tw-items-center tw-gap-4 tw-rounded tw-border tw-border-osee-neutral-25 tw-p-4 dark:tw-border-osee-neutral-100">
+			@if (previewUrl(); as url) {
+				<img
+					[src]="url"
+					[alt]="selectedFile()?.name ?? 'Image preview'"
+					class="tw-max-h-64 tw-max-w-full tw-rounded tw-object-contain" />
+			}
+			<div class="tw-flex tw-items-center tw-gap-3">
+				<span
+					class="tw-max-w-xs tw-truncate tw-text-sm tw-font-medium"
+					[matTooltip]="selectedFile()?.name ?? ''"
+					matTooltipShowDelay="300">
+					{{ selectedFile()?.name }}
+				</span>
+				<button
+					mat-icon-button
+					matTooltip="Remove selected image"
+					(click)="removeFile()"
+					class="tw-text-osee-red-24 hover:tw-text-osee-red-21">
+					<mat-icon>close</mat-icon>
+				</button>
+			</div>
+		</div>
+	}
+</div>
+
+<div
+	mat-dialog-actions
+	align="end"
+	class="tw-gap-2">
+	<span class="tw-inline-flex">
+		<button
+			mat-stroked-button
+			type="button"
+			class="tw-text-osee-red-8"
+			(click)="cancelDialog()">
+			Cancel
+		</button>
+	</span>
+	<span
+		class="tw-inline-flex"
+		[matTooltip]="!selectedFile() ? 'Select an image file first' : ''"
+		[matTooltipDisabled]="!!selectedFile()">
+		<button
+			mat-stroked-button
+			type="button"
+			[disabled]="!selectedFile()"
+			(click)="submitUpload()">
+			Upload
+		</button>
+	</span>
+</div>

@@ -17,13 +17,13 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrXViewer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -40,7 +40,7 @@ public class AddAttributeAction extends Action {
    public AddAttributeAction(ArtEdAttrXViewer attrXViewer) {
       super("Add Attribute");
       this.attrXViewer = attrXViewer;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ADD_GREEN));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ADD_GREEN));
       setToolTipText("Add Attribute");
    }
 

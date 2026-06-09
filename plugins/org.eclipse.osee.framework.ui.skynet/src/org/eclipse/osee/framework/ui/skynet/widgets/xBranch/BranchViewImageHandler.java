@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
@@ -57,7 +57,7 @@ public class BranchViewImageHandler {
             boolean isSystemBranch = BranchManager.getType(branch).isSystemRootBranch();
 
             if (isSystemBranch) {
-               return ImageManager.getImage(FrameworkImage.BRANCH_SYSTEM_ROOT);
+               return ImageManager.getImage(CoreImage.BRANCH_SYSTEM_ROOT);
             } else {
                if (BranchManager.getState(branch).isCreationInProgress()) {
                   returnImage = inCreationBranchImage;
@@ -66,9 +66,9 @@ public class BranchViewImageHandler {
                } else if (favorite) {
                   returnImage = favoriteBranchImage;
                } else if (isChangeManaged) {
-                  return ImageManager.getImage(FrameworkImage.BRANCH_CHANGE_MANAGED);
+                  return ImageManager.getImage(CoreImage.BRANCH_CHANGE_MANAGED);
                } else {
-                  returnImage = ImageManager.getImage(FrameworkImage.BRANCH);
+                  returnImage = ImageManager.getImage(CoreImage.BRANCH);
                }
             }
          } catch (OseeCoreException ex) {
@@ -76,22 +76,22 @@ public class BranchViewImageHandler {
          }
 
       } else if (element instanceof TransactionRecord && columnIndex == 0) {
-         returnImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
+         returnImage = ImageManager.getImage(CoreImage.DB_ICON_BLUE);
       }
       return returnImage;
    }
 
    private static synchronized void checkImages() {
       if (favoriteBranchImage == null) {
-         favoriteBranchImage = new OverlayImage(ImageManager.getImage(FrameworkImage.BRANCH),
-            ImageManager.getImageDescriptor(FrameworkImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION,
+         favoriteBranchImage = new OverlayImage(ImageManager.getImage(CoreImage.BRANCH),
+            ImageManager.getImageDescriptor(CoreImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION,
             Y_LOCATION).createImage();
          favoriteChangeManagedBranchImage =
-            new OverlayImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE_MANAGED),
-               ImageManager.getImageDescriptor(FrameworkImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION,
+            new OverlayImage(ImageManager.getImage(CoreImage.BRANCH_CHANGE_MANAGED),
+               ImageManager.getImageDescriptor(CoreImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION,
                Y_LOCATION).createImage();
-         inCreationBranchImage = new OverlayImage(ImageManager.getImage(FrameworkImage.BRANCH),
-            ImageManager.getImageDescriptor(FrameworkImage.BRANCH_IN_CREATION_OVERLAY), -1, 8).createImage();
+         inCreationBranchImage = new OverlayImage(ImageManager.getImage(CoreImage.BRANCH),
+            ImageManager.getImageDescriptor(CoreImage.BRANCH_IN_CREATION_OVERLAY), -1, 8).createImage();
       }
    }
 }

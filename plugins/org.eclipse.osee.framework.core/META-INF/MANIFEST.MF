@@ -105,6 +105,7 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.publishing.artifactacceptor,
  org.eclipse.osee.framework.core.publishing.markdown,
  org.eclipse.osee.framework.core.publishing.table,
+ org.eclipse.osee.framework.core.publishing.wordml,
  org.eclipse.osee.framework.core.renderer,
  org.eclipse.osee.framework.core.sql,
  org.eclipse.osee.framework.core.threading,
@@ -117,4 +118,7 @@ Service-Component: OSGI-INF/*.xml
 Require-Bundle: javax.activation,
  jakarta.ws.rs-api,
  com.fasterxml.jackson.core.jackson-databind,
- org.eclipse.osgi
+ org.eclipse.osgi,
+ bcpkix,
+ bcprov,
+ bcmail

@@ -72,17 +72,17 @@ public abstract class SyncOseeAndUserDB {
    private static final String DAYS_SINCE_TXS = "Days Since Txs";
    private static final String DAYS_SINCE_IDE = "Days Since IDE";
    private static final String DAYS_SINCE_USE = "Days Since Use";
-   public static String OSEE_AUTORUN_USER_RELATIONS_CHECKED = "osee.autorun.userRelationsChecked";
-   public static String NO_EMAIL_STATIC_ID = "noEmail";
-   public static String FIRST_NOTIFICATION_STATIC_ID = "FirstInactiveNotification";
-   public static String SECOND_NOTIFICATION_STATIC_ID = "SecondInactiveNotification";
+   public static final String OSEE_AUTORUN_USER_RELATIONS_CHECKED = "osee.autorun.userRelationsChecked";
+   public static final String NO_EMAIL_STATIC_ID = "noEmail";
+   public static final String FIRST_NOTIFICATION_STATIC_ID = "FirstInactiveNotification";
+   public static final String SECOND_NOTIFICATION_STATIC_ID = "SecondInactiveNotification";
    protected XResultData results = null;
    protected final AtsApi atsApi;
    protected final boolean persist;
    protected final boolean debug;
    protected final JdbcClient jdbcClient;
-   protected final String IGNORE_NAME_CHANGE = "IgnoreNameChange";
-   protected final String IGNORE_DUP_NAMES = "IgnoreDupNames";
+   protected static final String IGNORE_NAME_CHANGE = "IgnoreNameChange";
+   protected static final String IGNORE_DUP_NAMES = "IgnoreDupNames";
    protected IAtsChangeSet changes;
    protected List<String> ignoreStaticIds;
    protected Map<ArtifactId, UserActivityData> userArtIdToUserAct = new HashMap<>(200);
@@ -549,6 +549,7 @@ public abstract class SyncOseeAndUserDB {
                String wssoLoginId = wssoUser.getLoginIds().size() == 0 ? "" : wssoUser.getLoginIds().get(0);
                String wssoUserName = wssoUser.getName();
                String wssoMail = wssoUser.getEmail();
+               String wssoExternalMail = wssoUser.getExternalEmail();
 
                // No record returned, so nothing to update
                if (Strings.isInvalid(wssoUserName)) {
@@ -564,20 +565,31 @@ public abstract class SyncOseeAndUserDB {
 
                // If loginId == null, not a valid record/email, don't update or error
                if (wssoLoginId != null) {
-                  if (!EmailUtil.isEmailValid(wssoMail)) {
+                  // Prefer an external email when present and valid, otherwise fall back to the normal mail field
+                  String preferredMail = null;
+                  if (EmailUtil.isEmailValid(wssoExternalMail)) {
+                     preferredMail = wssoExternalMail;
+                  } else if (EmailUtil.isEmailValid(wssoMail)) {
+                     preferredMail = wssoMail;
+                  }
+
+                  if (preferredMail == null) {
                      if (!uad.getTags().contains(NO_EMAIL_STATIC_ID)) {
                         if (debug) {
-                           results.warningf("[%s] WSSO User Email [%s] is invalid: %s\n", user.toStringWithId(),
-                              wssoMail, wssoUser.getJson());
+                           results.warningf(
+                              "[%s] WSSO User Email invalid; mail [%s], externalEmail [%s]: %s\n",
+                              user.toStringWithId(), wssoMail, wssoExternalMail, wssoUser.getJson());
                         }
                      }
-                  } else if (!user.getEmail().equals(wssoMail)) {
-                     // Ignore situations where the user's email in already set and different
-                     results.warningf("(On Persist) - [%s] wsso.email [%s] != user.email [%s]\n", user.toStringWithId(),
-                        wssoMail, user.getEmail());
+                  } else if (!user.getEmail().equals(preferredMail)) {
+                     // Update the user's email to the preferred WSSO email (external when present, otherwise mail)
+                     results.warningf("(On Persist) - [%s] wsso.preferredEmail [%s] != user.email [%s]\n",
+                        user.toStringWithId(), preferredMail, user.getEmail());
                      if (persist) {
-                        changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Email, wssoMail);
-                        results.logf("Fixed Email to %s\n", wssoMail);
+                        changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Email, preferredMail);
+                        // Certificate is bound to the old email address — remove it.
+                        changes.deleteAttributes(getUser(user), CoreAttributeTypes.EmailPublicCertificate);
+                        results.logf("Fixed Email to %s (certificate cleared)\n", preferredMail);
                      }
                   }
                }
@@ -739,7 +751,9 @@ public abstract class SyncOseeAndUserDB {
       }
       String outputDirName = serverData + File.separator + "userSync";
       File outDir = new File(outputDirName);
-      outDir.mkdir();
+      if (!outDir.exists() && !outDir.mkdir()) {
+         results.logf("Warning: Could not create directory %s\n", outputDirName);
+      }
 
       String outputFileName = String.format("%s%s%s_%s.html", //
          outputDirName, //
@@ -795,6 +809,10 @@ public abstract class SyncOseeAndUserDB {
 
       if (persist) {
          ArtifactReadable userArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(user.getId());
+         if (userArt == null) {
+            results.errorf("Could not find artifact for user %s; skipping notification\n", user.toStringWithId());
+            return;
+         }
          if (userArt.getTags().contains(firstOrLastStaticId)) {
             return;
          }

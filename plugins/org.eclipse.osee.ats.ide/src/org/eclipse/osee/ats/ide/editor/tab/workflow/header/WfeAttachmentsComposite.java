@@ -36,10 +36,13 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IRelationLink;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -52,6 +55,7 @@ import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -114,28 +118,39 @@ public class WfeAttachmentsComposite extends Composite {
                continue;
             }
             Artifact support = supportEntry.getValue();
-            String labelStr = support.toStringWithId();
+            String labelStr = null;
             if (support instanceof IAtsWorkItem) {
                IAtsWorkItem thatWorkItem = (IAtsWorkItem) support;
-               labelStr = String.format("[%s] - %s - [%s]", thatWorkItem.getArtifactTypeName(),
+               labelStr = String.format("%s: - %s - [%s]", thatWorkItem.getArtifactTypeName(),
                   thatWorkItem.toStringWithAtsId(), thatWorkItem.getCurrentStateName());
+            } else if (support.isOfType(CoreArtifactTypes.GeneralDocument)) {
+               labelStr = String.format("File Extension: [%s] - Name [%s]",
+                  support.getSoleAttributeValue(CoreAttributeTypes.Extension, "unk"),
+                  Strings.truncate(support.getName(), 60, true));
+            } else {
+               labelStr = support.getName();
+               Strings.truncate(support.getName(), 60, true);
             }
+
             Composite lComp = new Composite(this, SWT.NONE);
-            relIdToComp.put(relation.getId(), lComp);
-            lComp.setLayout(ALayout.getZeroMarginLayout(5, false));
+            GridLayout layout = ALayout.getZeroMarginLayout(5, false);
+            layout.marginLeft = 15;
+            lComp.setLayout(layout);
             GridData gd = new GridData(GridData.FILL_HORIZONTAL);
             lComp.setLayoutData(gd);
             editor.getToolkit().adapt(lComp);
-            lComp.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
-
-            editor.getToolkit().createLabel(lComp, "    - " + labelStr);
 
             Artifact thisArt = (Artifact) workItem.getStoreObject();
             Artifact thatArt = (Artifact) atsApi.getQueryService().getArtifact(support);
 
-            createReadHyperlink(thisArt, thatArt, lComp, editor, "Open");
+            createReadHyperlink(thisArt, thatArt, lComp, editor, "Read");
             createEditHyperlink(thatArt, lComp, editor);
             createDeleteHyperlink(thisArt, thatArt, relation, lComp, editor);
+            createArtEditHyperlink(thisArt, thatArt, lComp, editor, "ArtEdit");
+
+            relIdToComp.put(relation.getId(), lComp);
+
+            editor.getToolkit().createLabel(lComp, " " + labelStr);
 
             linkHandled.add(supportEntry.getKey().getId());
             label.setText("Attachments: ");
@@ -197,6 +212,7 @@ public class WfeAttachmentsComposite extends Composite {
    public static Hyperlink createDeleteHyperlink(Artifact thisArt, final Artifact thatArt, final RelationLink relation,
       Composite lComp, WorkflowEditor editor) {
       Hyperlink link = editor.getToolkit().createHyperlink(lComp, "Delete", SWT.NONE);
+      link.setToolTipText("Delete the relation or attachment as appropriate.\n\nDialog will show options.");
       link.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
          public void linkActivated(HyperlinkEvent e) {
@@ -223,10 +239,10 @@ public class WfeAttachmentsComposite extends Composite {
             }
             int result = MessageDialog.open(MessageDialog.CONFIRM, Displays.getActiveShell(),
                "Delete/Un-Relate Related", "WARNING: You can DELETE or UN-RELATE...\n\n" + //
-            delArt.toStringWithId() + "\n\n" + //
-            "If you DELETE, this artifact will be REMOVED from the database.\n\n" + //
-            "If you UN-RELATE, this artifact will be un-related, but will remain in the database.", SWT.NONE,
-               "Un-Relate this Artifact", "DELETE this Artifact", "Cancel");
+                  delArt.toStringWithId() + "\n\n" + //
+                  "If you DELETE, this artifact will be REMOVED from the database.\n\n" + //
+                  "If you UN-RELATE, this artifact will be un-related, but will remain in the database.",
+               SWT.NONE, "Un-Relate this Artifact", "DELETE this Artifact", "Cancel");
             if (result == 0) {
                IAtsChangeSet changes = AtsApiService.get().createChangeSet("Un-Relate Artifact");
                changes.deleteRelation(relation);
@@ -244,6 +260,8 @@ public class WfeAttachmentsComposite extends Composite {
 
    public static Hyperlink createEditHyperlink(final Artifact thatArt, Composite lComp, WorkflowEditor editor) {
       Hyperlink link = editor.getToolkit().createHyperlink(lComp, "Edit", SWT.NONE);
+      link.setToolTipText("Open in the internal or System Editor for Edit.\n\nFiles will open in current " //
+         + "Operating System and must have Application associated to this extension.");
       link.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
          public void linkActivated(HyperlinkEvent e) {
@@ -261,9 +279,10 @@ public class WfeAttachmentsComposite extends Composite {
       return link;
    }
 
-   public static Hyperlink createReadHyperlink(Artifact thisArt, final Artifact thatArt, Composite lComp,
+   public static Hyperlink createArtEditHyperlink(Artifact thisArt, final Artifact thatArt, Composite lComp,
       WorkflowEditor editor, String label) {
       Hyperlink link = editor.getToolkit().createHyperlink(lComp, label, SWT.NONE);
+      link.setToolTipText("Open in the apprpriate internal Artifact Editor");
       link.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
          public void linkActivated(HyperlinkEvent e) {
@@ -272,6 +291,29 @@ public class WfeAttachmentsComposite extends Composite {
             } else {
                try {
                   RendererManager.open(thatArt, PresentationType.DEFAULT_OPEN);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+      });
+      return link;
+   }
+
+   public static Hyperlink createReadHyperlink(Artifact thisArt, final Artifact thatArt, Composite lComp,
+      WorkflowEditor editor, String label) {
+      Hyperlink link = editor.getToolkit().createHyperlink(lComp, label, SWT.NONE);
+      link.setToolTipText("Open in the internal or System Editor as Read-Only.\n\nFiles will open in current " //
+         + "Operating System and must have Application associated to this extension.");
+
+      link.addHyperlinkListener(new HyperlinkAdapter() {
+         @Override
+         public void linkActivated(HyperlinkEvent e) {
+            if (AtsObjects.isAtsWorkItemOrAction(thatArt)) {
+               AtsEditors.openATSAction(thatArt, AtsOpenOption.OpenOneOrPopupSelect);
+            } else {
+               try {
+                  RendererManager.open(thatArt, PresentationType.PREVIEW);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

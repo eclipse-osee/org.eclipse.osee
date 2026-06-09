@@ -112,8 +112,8 @@ public class CloneDialog extends XWidgetsDialog {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, xModListener, isEditable);
       if (xWidget.getLabel().equals("Title")) {
          XText widget = (XText) xWidget;
@@ -193,7 +193,7 @@ public class CloneDialog extends XWidgetsDialog {
          });
       } else if (xWidget.getLabel().equals("Agile Points")) {
          XFloat widget = (XFloat) xWidget;
-         String pointsStr = atsApi.getAgileService().getAgileTeamPointsStr(teamWf);
+         String pointsStr = atsApi.getAgileService().getPointsStr(teamWf);
          widget.set(pointsStr);
          widget.refresh();
          data.setPoints(pointsStr);

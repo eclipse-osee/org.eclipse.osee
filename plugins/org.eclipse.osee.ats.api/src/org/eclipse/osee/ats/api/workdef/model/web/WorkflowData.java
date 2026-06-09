@@ -68,7 +68,7 @@ public class WorkflowData extends NamedIdBase {
    private AttributePojo<?> legacyPcrId =
       AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.LegacyPcrId, GammaId.SENTINEL, "", "");
    private AttributePojo<?> points =
-      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.Points, GammaId.SENTINEL, "", "");
+      AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.PointsEnum, GammaId.SENTINEL, "", "");
    private AttributePojo<?> changeType =
       AttributePojo.valueOf(Id.SENTINEL, AtsAttributeTypes.ChangeType, GammaId.SENTINEL, "", "");
 

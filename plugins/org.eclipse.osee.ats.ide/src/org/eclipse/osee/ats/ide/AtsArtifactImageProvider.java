@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
-import org.eclipse.osee.framework.ui.skynet.util.CoreImage;
+import org.eclipse.osee.framework.ui.skynet.util.CoreKeyedImage;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 
@@ -47,7 +47,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       if (!initRan.getAndSet(true)) {
 
          for (ArtifactImage artImage : AtsArtifactImages.getImages()) {
-            CoreImage keyedImage = new CoreImage(Activator.PLUGIN_ID, artImage.getImageName());
+            CoreKeyedImage keyedImage = new CoreKeyedImage(Activator.PLUGIN_ID, artImage.getImageName());
             keyedImageMap.put(artImage, keyedImage);
             ArtifactImageManager.registerBaseImage(artImage.getArtifactType(), keyedImage, this);
          }

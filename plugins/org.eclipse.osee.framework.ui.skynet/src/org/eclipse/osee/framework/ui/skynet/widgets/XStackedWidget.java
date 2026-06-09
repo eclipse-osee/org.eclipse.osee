@@ -23,6 +23,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -320,7 +320,7 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class Open extends Action {
       public Open() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.EDIT));
          setToolTipText("Open in Full Viewer");
       }
 
@@ -343,7 +343,7 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class Back extends Action {
       public Back() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.NAV_BACKWARD));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.NAV_BACKWARD));
          setToolTipText("Back to previous page");
       }
 
@@ -357,7 +357,7 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class Forward extends Action {
       public Forward() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.NAV_FORWARD));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.NAV_FORWARD));
          setToolTipText("Forward to next page");
       }
 
@@ -371,7 +371,7 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class AddPage extends Action {
       public AddPage() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ADD_GREEN));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ADD_GREEN));
          setToolTipText("Adds a page");
       }
 
@@ -388,7 +388,7 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class RemovePage extends Action {
       public RemovePage() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.X_RED));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.X_RED));
          setToolTipText("Removes a page");
       }
 

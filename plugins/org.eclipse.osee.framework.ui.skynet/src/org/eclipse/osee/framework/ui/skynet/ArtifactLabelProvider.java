@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -52,7 +53,7 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
          return ArtifactImageManager.getImage((Artifact) ((Match) element).getElement());
       } else if (element instanceof ArtifactExplorerLinkNode) {
-         return ImageManager.getImage(FrameworkImage.RELATION);
+         return ImageManager.getImage(CoreImage.RELATION);
       } else if (element instanceof ArtifactTypeToken) {
          return ArtifactImageManager.getImage((ArtifactTypeToken) element);
       } else if (element instanceof ArtifactToken && ((ArtifactToken) element).getArtifactType().isValid()) {

@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.walker.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.ide.walker.ActionWalkerView;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -27,7 +27,7 @@ public class ActionWalkerShowAllAction extends Action {
    private boolean showAll = false;
 
    public ActionWalkerShowAllAction(ActionWalkerView view) {
-      super("Toggle Show All", ImageManager.getImageDescriptor(FrameworkImage.EXPAND_ALL));
+      super("Toggle Show All", ImageManager.getImageDescriptor(CoreImage.EXPAND_ALL));
       this.view = view;
    }
 

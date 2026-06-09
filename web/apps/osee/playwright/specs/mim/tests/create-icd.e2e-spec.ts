@@ -17,7 +17,7 @@ const branchName = 'New MIM ICD';
 
 test('create action', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Product Line').check();
@@ -42,7 +42,7 @@ test('create action', async ({ page }) => {
 
 test('create nodes', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -100,7 +100,7 @@ test('create nodes', async ({ page }) => {
 
 test('create enum list artifacts', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'List Configuration' }).click();
 	await page.getByLabel('Working').check();
@@ -203,7 +203,7 @@ test('create enum list artifacts', async ({ page }) => {
 
 test('create transport type', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Transport Types' }).click();
 	await page.getByLabel('Working').check();
@@ -272,7 +272,7 @@ test('create transport type', async ({ page }) => {
 
 test('create connection', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -298,7 +298,7 @@ test('create connection', async ({ page }) => {
 
 test('create message and submessage', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -377,7 +377,7 @@ test('create message and submessage', async ({ page }) => {
 
 test('create structure', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -395,7 +395,7 @@ test('create structure', async ({ page }) => {
 		})
 		.getByRole('link')
 		.click();
-	await page.waitForTimeout(500);
+	await page.getByTestId('add-structure').waitFor({ state: 'visible' });
 	await page.getByTestId('add-structure').click();
 	await page.getByRole('button', { name: 'Create new Structure' }).click();
 	await page.getByLabel('Name', { exact: true }).click();
@@ -418,7 +418,7 @@ test('create structure', async ({ page }) => {
 
 test('create elements', async ({ page }) => {
 	test.setTimeout(600000);
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -436,6 +436,10 @@ test('create elements', async ({ page }) => {
 		})
 		.getByRole('link')
 		.click();
+	await page
+		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
+		.getByRole('button')
+		.waitFor({ state: 'visible' });
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
 		.getByRole('button')
@@ -588,7 +592,7 @@ test('create elements', async ({ page }) => {
 
 test('add array element', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 900 });
-	await page.goto('http://localhost:4200/ple/messaging/connections/working');
+	await page.goto('/ple/messaging/connections/working');
 	await page.getByText('Select a Branch').click();
 	await page.getByText(branchName).click();
 	await page.getByText('Connection A-B', { exact: true }).click();
@@ -603,6 +607,10 @@ test('add array element', async ({ page }) => {
 		})
 		.getByRole('link')
 		.click();
+	await page
+		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
+		.getByRole('button')
+		.waitFor({ state: 'visible' });
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
 		.getByRole('button')

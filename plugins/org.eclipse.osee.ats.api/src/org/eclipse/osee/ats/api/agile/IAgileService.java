@@ -37,11 +37,6 @@ public interface IAgileService {
    public static String FEATURE_GROUP_FOLDER_NAME = "Feature Groups";
    public static long EMPTY_VALUE = -1;
 
-   /**
-    * @return Points Attr type defined if agile team, else default points attribute type
-    */
-   AttributeTypeToken getPointsAttrType(IAtsWorkItem workItem);
-
    IAgileTeam getAgileTeam(ArtifactId artifact);
 
    IAgileTeam updateAgileTeam(JaxAgileTeam team);
@@ -100,8 +95,6 @@ public interface IAgileService {
 
    IAgileTeam createAgileTeam(JaxNewAgileTeam newTeam);
 
-   AttributeTypeToken getAgileTeamPointsAttributeType(IAgileTeam team);
-
    Collection<IAgileItem> getItems(IAgileSprint sprint);
 
    IAgileTeam getAgileTeam(IAgileItem item);
@@ -124,10 +117,9 @@ public interface IAgileService {
 
    IAgileTeam getAgileTeamByName(String agileTeamName);
 
-   /**
-    * Display Points as either "ats.Points" or "ats.Points Numeric" as configured on Agile Team artifact
-    */
-   String getAgileTeamPointsStr(IAtsWorkItem workItem);
+   AttributeTypeToken getPointsAttrType(IAtsWorkItem workItem);
+
+   String getPointsStr(IAtsWorkItem workItem);
 
    /**
     * @return agile team from team definition relation, then sprint relation, then backlog relation. Else null.
@@ -193,10 +185,6 @@ public interface IAgileService {
    IAgileSprint getSprint(IAtsTeamWorkflow teamWf);
 
    void setSprint(IAtsTeamWorkflow teamWf, IAgileSprint sprint, IAtsChangeSet changes);
-
-   String getPointsStr(IAtsWorkItem workItem);
-
-   AttributeTypeToken getPointsAttrType(IAtsTeamDefinition teamDef);
 
    XResultData sortAgileBacklogOrSprint(ArtifactToken backlog);
 

@@ -39,23 +39,31 @@ public abstract class OseeEnum extends NamedIdBase {
    public OseeEnum(Long typeId, String name) {
       super(-1L, name);
       Long id = Long.valueOf(values().size());
-      validateId(typeId, id);
+      validateId(typeId, id, name);
       setId(Long.valueOf(values().size()));
       idToEnums.put(typeId, this);
    }
 
    public OseeEnum(Long typeId, Long ordinal, String name) {
+      this(typeId, ordinal, name, true);
+   }
+
+   public OseeEnum(Long typeId, Long ordinal, String name, boolean ensureUnique) {
       super(ordinal, name);
-      validateId(typeId, ordinal);
+      if (ensureUnique) {
+         validateId(typeId, ordinal, name);
+      }
       idToEnums.put(typeId, this);
    }
 
-   private void validateId(Long typeId, Long id) {
+   private void validateId(Long typeId, Long id, String name) {
       List<OseeEnum> values = idToEnums.getValues(typeId);
       if (values != null) {
          for (OseeEnum oEnum : values) {
             if (oEnum.getId().equals(id)) {
-               throw new OseeArgumentException("Duplicate Ids %s for Same Enum Type %s", id, typeId);
+               String str = String.format("Duplicate Ids %s for Same Enum Type %s - [%s]", id, typeId, name);
+               System.err.println(str);
+               throw new OseeArgumentException(str);
             }
          }
       }

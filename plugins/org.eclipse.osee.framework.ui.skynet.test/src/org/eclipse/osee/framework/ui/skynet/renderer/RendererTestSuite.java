@@ -22,7 +22,8 @@ import org.junit.runners.Suite;
    ImageDetectionTestSuite.class,
    PresentationTypeTest.class,
    RelationOrderRendererTest.class,
-   RenderingUtilTest.class})
+   RenderingUtilTest.class,
+   WholeWordRendererNoDataRightsTest.class})
 /**
  * @author Roberto E. Escobar
  */

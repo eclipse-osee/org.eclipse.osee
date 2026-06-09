@@ -284,11 +284,6 @@
       
    </extension>
    <extension
-         id="DetailedTestStatusOld" name="DetailedTestStatusOld"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation className="org.eclipse.osee.ats.ide.operation.DetailedTestStatusOld"/>
-   </extension>
-   <extension
          id="DetailedTestStatus" name="DetailedTestStatus"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation className="org.eclipse.osee.ats.ide.operation.DetailedTestStatusBlam"/>
@@ -389,6 +384,13 @@
       <Operation
             className="org.eclipse.osee.ats.ide.util.Import.ImportGeneralDocuments">
       </Operation>
+   </extension>
+
+   <extension point="org.eclipse.search.searchResultViewPages">
+      <viewPage
+            class="org.eclipse.osee.ats.ide.search.quick.AtsSearchResultPage"
+            id="org.eclipse.osee.ats.ide.AtsSearchResultViewPage"
+            searchResultClass="org.eclipse.osee.ats.ide.search.quick.AtsSearchResult"/>
    </extension>
    
    

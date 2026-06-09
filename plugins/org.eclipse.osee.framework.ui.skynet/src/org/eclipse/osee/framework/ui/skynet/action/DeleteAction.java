@@ -27,13 +27,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -61,7 +61,7 @@ public class DeleteAction extends Action {
 
    public static MenuItem createDeleteMenuItem(Menu parentMenu, final TreeViewer treeViewer) {
       MenuItem deleteMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      deleteMenuItem.setImage(ImageManager.getImage(FrameworkImage.X_RED));
+      deleteMenuItem.setImage(ImageManager.getImage(CoreImage.X_RED));
       deleteMenuItem.setText("&Delete Artifact(s)");
       deleteMenuItem.addSelectionListener(new SelectionAdapter() {
 

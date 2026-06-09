@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.zest.layouts.LayoutStyles;
@@ -39,7 +39,7 @@ public class ArtTypeWalkerLayoutAction extends Action {
    private String currentLayout = defaultLayout;
 
    public ArtTypeWalkerLayoutAction(ArtifactTypeWalker view) {
-      super("Change Layout", ImageManager.getImageDescriptor(FrameworkImage.ARROW_DOWN_YELLOW));
+      super("Change Layout", ImageManager.getImageDescriptor(CoreImage.ARROW_DOWN_YELLOW));
       this.view = view;
    }
 

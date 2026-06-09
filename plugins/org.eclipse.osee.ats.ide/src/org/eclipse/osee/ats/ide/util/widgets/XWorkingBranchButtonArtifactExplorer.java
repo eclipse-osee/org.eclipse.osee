@@ -15,11 +15,11 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.List;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -35,7 +35,7 @@ public class XWorkingBranchButtonArtifactExplorer extends XWorkingBranchButtonAb
    @Override
    protected void initButton(Button button) {
       button.setToolTipText("Show Artifact Explorer");
-      button.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
+      button.setImage(ImageManager.getImage(CoreImage.ARTIFACT_EXPLORER));
       button.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {

@@ -13,7 +13,12 @@
 
 package org.eclipse.osee.account.rest.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -48,6 +53,26 @@ public class SubscriptionsResource {
    public SubscriptionsResource(SubscriptionAdmin manager) {
       super();
       this.manager = manager;
+   }
+
+   @Path("/for-accounts")
+   @POST
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public List<SubscriptionData> getBulkSubscriptions(List<Long> accountIds) {
+      Collection<ArtifactId> artIds = new ArrayList<>(accountIds.size());
+      for (Long id : accountIds) {
+         artIds.add(ArtifactId.valueOf(id));
+      }
+      Map<ArtifactId, ResultSet<Subscription>> subscriptionsByAccount =
+         manager.getSubscriptionsByAccountIds(artIds);
+      List<SubscriptionData> result = new ArrayList<>();
+      for (Map.Entry<ArtifactId, ResultSet<Subscription>> entry : subscriptionsByAccount.entrySet()) {
+         for (Subscription sub : entry.getValue()) {
+            result.add(AccountDataUtil.asAccountSubscriptionData(sub));
+         }
+      }
+      return result;
    }
 
    @Path("/for-account/{account-id}")

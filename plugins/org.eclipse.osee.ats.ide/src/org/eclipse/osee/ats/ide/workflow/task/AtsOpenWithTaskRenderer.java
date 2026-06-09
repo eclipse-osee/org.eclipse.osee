@@ -33,9 +33,9 @@ import org.eclipse.osee.ats.ide.workflow.task.related.ShowRelatedTestCasesAction
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -104,7 +104,7 @@ public class AtsOpenWithTaskRenderer extends DefaultArtifactRenderer {
          OPEN_OPTION.getKey(), Option_RELATED_REQ));
 
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Related Requirement in Artifact Explorer",
-         FrameworkImage.ARTIFACT_EXPLORER, OPEN_OPTION.getKey(), Option_RELATED_REQ_ART_EXP));
+         CoreImage.ARTIFACT_EXPLORER, OPEN_OPTION.getKey(), Option_RELATED_REQ_ART_EXP));
 
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Show Requirement Diffs - F5", taskImage,
          OPEN_OPTION.getKey(), Option_REQ_DIFF));

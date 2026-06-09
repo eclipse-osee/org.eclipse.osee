@@ -186,3 +186,26 @@ export function readFileAsBase64(
 		)
 	);
 }
+
+/**
+ * Convert a Blob to a base64 string (without the data URL prefix).
+ */
+export function blobToBase64(blob: Blob): Observable<string> {
+	return from(
+		new Promise<string>((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				const result = reader.result;
+				if (typeof result !== 'string') {
+					reject(new Error('Unexpected reader result'));
+					return;
+				}
+				const base64 = result.split(',')[1] ?? '';
+				resolve(base64);
+			};
+			reader.onerror = () =>
+				reject(new Error('Failed to read blob as base64'));
+			reader.readAsDataURL(blob);
+		})
+	);
+}

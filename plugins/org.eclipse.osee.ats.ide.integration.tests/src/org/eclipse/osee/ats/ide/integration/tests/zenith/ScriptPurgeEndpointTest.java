@@ -143,7 +143,7 @@ public class ScriptPurgeEndpointTest {
       res.close();
       assertEquals(0, results.size());
 
-      res = branchEndpoint.purgeBranch(testBranch, false);
+      res = branchEndpoint.purgeBranch(testBranch, false, false);
       res.close();
    }
 

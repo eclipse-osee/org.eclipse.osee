@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.ui.skynet.dialogs;
 
 import java.util.Collection;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -44,7 +44,7 @@ public class ArtifactPasteSpecialDialog extends TitleAreaDialog {
       this.config = config;
       setShellStyle(SWT.RESIZE | getShellStyle());
       setTitle("Artifact Paste Special");
-      setTitleImage(ImageManager.getImage(FrameworkImage.PASTE_SPECIAL_WIZ));
+      setTitleImage(ImageManager.getImage(CoreImage.PASTE_SPECIAL_WIZ));
       setDefaultImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_PASTE));
    }
 

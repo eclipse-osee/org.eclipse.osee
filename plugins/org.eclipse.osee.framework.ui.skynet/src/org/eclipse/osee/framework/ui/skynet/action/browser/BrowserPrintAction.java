@@ -14,9 +14,9 @@
 package org.eclipse.osee.framework.ui.skynet.action.browser;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -29,7 +29,7 @@ public class BrowserPrintAction extends Action {
 
    public BrowserPrintAction(IBrowserActionHandler iBrowserActionHandler) {
       this.iBrowserActionHandler = iBrowserActionHandler;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.PRINT));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.PRINT));
       setToolTipText("Print");
    }
 

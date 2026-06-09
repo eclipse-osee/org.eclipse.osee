@@ -15,11 +15,11 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
@@ -180,9 +180,9 @@ public class EditWordAttributeWizardPage extends WizardPage {
       editComp.setLayout(new GridLayout(2, false));
       editComp.setLayoutData(new GridData());
 
-      editButton = createButton(editComp, ImageManager.getImage(FrameworkImage.MERGE_MERGED), "Edit Merged Value",
+      editButton = createButton(editComp, ImageManager.getImage(CoreImage.MERGE_MERGED), "Edit Merged Value",
          "Make additional changes using the Document/Merge Editor");
-      clearButton = createButton(editComp, ImageManager.getImage(FrameworkImage.MERGE_START), "Clear Merged Value",
+      clearButton = createButton(editComp, ImageManager.getImage(CoreImage.MERGE_START), "Clear Merged Value",
          "Reinitializes the merge for this Document");
    }
 
@@ -191,7 +191,7 @@ public class EditWordAttributeWizardPage extends WizardPage {
       mergeComp.setLayout(new GridLayout(1, false));
       mergeComp.setLayoutData(new GridData());
 
-      mergeButton = createButton(mergeComp, ImageManager.getImage(FrameworkImage.MERGE_MERGED),
+      mergeButton = createButton(mergeComp, ImageManager.getImage(CoreImage.MERGE_MERGED),
          "Generate Three Way Merge", "Use the new inline merging");
    }
 
@@ -200,9 +200,9 @@ public class EditWordAttributeWizardPage extends WizardPage {
       sourceDestComp.setLayout(new GridLayout(2, false));
       sourceDestComp.setLayoutData(new GridData());
 
-      sourceButton = createButton(sourceDestComp, ImageManager.getImage(FrameworkImage.MERGE_SOURCE),
+      sourceButton = createButton(sourceDestComp, ImageManager.getImage(CoreImage.MERGE_SOURCE),
          "Use Source Value", "Initialize the Document with Source Values");
-      destButton = createButton(sourceDestComp, ImageManager.getImage(FrameworkImage.MERGE_DEST),
+      destButton = createButton(sourceDestComp, ImageManager.getImage(CoreImage.MERGE_DEST),
          "Use Destination Value", "Initialize the Document with Destination Values");
       return sourceDestComp;
    }

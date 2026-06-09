@@ -28,12 +28,12 @@ import org.eclipse.osee.define.ide.traceability.TestUnitTagger;
 import org.eclipse.osee.define.ide.utility.IResourceHandler;
 import org.eclipse.osee.define.ide.utility.IResourceLocator;
 import org.eclipse.osee.define.ide.utility.UriResourceContentFinder;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -57,12 +57,12 @@ public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
 
    @Override
    public Image getImage() {
-      return ImageManager.getImage(FrameworkImage.TRACE);
+      return ImageManager.getImage(CoreImage.TRACE);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.TRACE);
+      return ImageManager.getImageDescriptor(CoreImage.TRACE);
    }
 
    @Override

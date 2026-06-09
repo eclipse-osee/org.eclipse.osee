@@ -22,12 +22,12 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeTargetedVersionHea
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -43,7 +43,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
    @Override
    protected void initButton(final Button button) {
       button.setToolTipText("Create Working Branch");
-      button.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
+      button.setImage(ImageManager.getImage(CoreImage.BRANCH));
       button.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {

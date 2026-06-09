@@ -29,10 +29,10 @@ export const ciNavigationStructure: navigationElement[] = [
 		isDropdown: true,
 		isDropdownOpen: false,
 		requiredRoles: [],
-		routerLink: '/ci/allScripts',
+		routerLink: '',
+		usesBranch: false,
 		icon: 'landscape',
 		description: '',
-		usesBranch: true,
 		children: [
 			// Level-2
 			{

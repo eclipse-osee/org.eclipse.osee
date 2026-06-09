@@ -45,7 +45,8 @@
 						<osee-markdown-editor
 							[(mdContent)]="attribute.value"
 							(mdContentChange)="emitUpdatedAttributes()"
-							[disabled]="!editable()" />
+							[disabled]="!editable()"
+							[artifactId]="artifactId()" />
 					} @else {
 						<mat-form-field
 							class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
@@ -162,6 +163,22 @@
 									| ifIdReturnFalse)
 							"></textarea>
 					</mat-form-field>
+				}
+				@case ('Input Stream') {
+					@if (nativeEditorAttrs(); as na) {
+						<osee-native-content-editor
+							[nativeEditorAttributes]="na"
+							[editable]="editable()"
+							[branchId]="branchId()"
+							[artifactId]="artifactId()"
+							[hasUnsavedChanges]="hasUnsavedNativeChanges()"
+							[pendingName]="pendingNativeName()"
+							[pendingExtension]="pendingNativeExtension()"
+							(updatedAttributes)="
+								handleNativeContentChanges($event)
+							">
+						</osee-native-content-editor>
+					}
 				}
 			}
 		</div>

@@ -20,6 +20,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.DisplayHint;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -80,6 +81,10 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    private static void setInitialText(Collection<? extends Artifact> artifacts, EntryDialog entryDialog,
       NumberFormat format, AttributeTypeId attributeType) {
       if (artifacts.size() == 1) {
+         Artifact artifact = artifacts.iterator().next();
+         if (artifact.getAttributeValues(attributeType).size() > 1) {
+            throw new OseeArgumentException("Can't edit Multiple Values");
+         }
          Object smaObj = artifacts.iterator().next().getSoleAttributeValue(attributeType, "");
          String initialText = smaObj.equals("") ? "" : formatObject(smaObj, format);
          entryDialog.setEntry(initialText);

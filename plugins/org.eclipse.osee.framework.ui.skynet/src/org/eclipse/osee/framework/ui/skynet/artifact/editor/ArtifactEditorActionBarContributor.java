@@ -24,13 +24,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.access.AccessControlUtil;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -91,7 +91,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
    private final class RevealBranchAction extends Action {
       public RevealBranchAction() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.BRANCH));
          setToolTipText("Reveal the branch this artifact is on in the Branch Manager");
       }
 
@@ -110,7 +110,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
 
       public DeleteArtifactAction() {
          super("&Delete Artifact\tDelete", IAction.AS_PUSH_BUTTON);
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DELETE));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.DELETE));
       }
 
       @Override
@@ -142,7 +142,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
    private final class AccessControlAction extends Action {
       public AccessControlAction() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.AUTHENTICATED));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.AUTHENTICATED));
          setToolTipText("&Access Control");
          setText("&Access Control");
       }
@@ -161,7 +161,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
    private final class OpenOutlineAction extends Action {
       public OpenOutlineAction() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.OUTLINE));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.OUTLINE));
          setToolTipText("Open Outline");
       }
 

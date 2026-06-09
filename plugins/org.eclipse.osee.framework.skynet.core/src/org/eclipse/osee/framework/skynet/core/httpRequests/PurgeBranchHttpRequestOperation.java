@@ -59,7 +59,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
       OseeClient client = ServiceUtil.getOseeClient();
       BranchEndpoint proxy = client.getBranchEndpoint();
 
-      try (Response response = proxy.purgeBranch(branch, recursive)) {
+      try (Response response = proxy.purgeBranch(branch, recursive, true)) {
          if (Status.OK.getStatusCode() == response.getStatus()) {
             branch.setBranchState(BranchState.PURGED);
             branch.setArchived(true);

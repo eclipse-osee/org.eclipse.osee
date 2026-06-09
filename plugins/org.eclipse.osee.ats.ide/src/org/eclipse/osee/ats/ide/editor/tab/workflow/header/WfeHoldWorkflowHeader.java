@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.actions.AbstractWfeSubWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -28,6 +28,6 @@ public class WfeHoldWorkflowHeader extends AbstractWfeSubWorkflow {
 
    WfeHoldWorkflowHeader(Composite parent, int style, final IAtsWorkItem workItem, final WorkflowEditor editor) {
       super(parent, style, workItem, editor, "Hold", "UnHold", AtsAttributeTypes.HoldReason, SWT.COLOR_DARK_YELLOW,
-         FrameworkImage.HOLD, "Hold = Decision made to wait on this work");
+         CoreImage.HOLD, "Hold = Decision made to wait on this work");
    }
 }

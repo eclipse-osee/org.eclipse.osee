@@ -19,10 +19,10 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchQueryData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -109,7 +109,7 @@ public class BranchLoadComposite extends Composite {
       asIdButton = new Button(this, SWT.TOGGLE);
       asIdButton.setToolTipText("Search by long id in search str. Other criteria is ignored.\n" //
          + "Note: Will not show Archived or Deleted unless OSEE Admin.");
-      asIdButton.setImage(ImageManager.getImage(FrameworkImage.ID));
+      asIdButton.setImage(ImageManager.getImage(CoreImage.ID));
       asIdButton.addMouseListener(new MouseAdapter() {
 
          @Override
@@ -137,7 +137,7 @@ public class BranchLoadComposite extends Composite {
       });
 
       Button showSearchDataButton = new Button(this, SWT.PUSH);
-      showSearchDataButton.setImage(ImageManager.getImage(FrameworkImage.GEAR));
+      showSearchDataButton.setImage(ImageManager.getImage(CoreImage.GEAR));
       showSearchDataButton.setToolTipText("Show Branch Query Data");
       showSearchDataButton.addMouseListener(new MouseAdapter() {
 

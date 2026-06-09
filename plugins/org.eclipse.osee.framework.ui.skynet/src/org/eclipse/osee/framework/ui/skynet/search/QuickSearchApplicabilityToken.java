@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityTokenFilterTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -72,7 +72,7 @@ public class QuickSearchApplicabilityToken {
       label = new Label(applicabilityComp, SWT.NONE);
       label.setText("Applicability:");
       button = new Button(applicabilityComp, SWT.PUSH);
-      button.setImage(ImageManager.getImage(FrameworkImage.GEAR));
+      button.setImage(ImageManager.getImage(CoreImage.GEAR));
       setButtonChangeable();
 
       text = new Text(applicabilityComp, SWT.READ_ONLY | SWT.BORDER);

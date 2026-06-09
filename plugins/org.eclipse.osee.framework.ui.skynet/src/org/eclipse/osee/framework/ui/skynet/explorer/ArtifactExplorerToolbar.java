@@ -24,6 +24,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -140,13 +140,13 @@ public class ArtifactExplorerToolbar {
             }
          }
       };
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.REFRESH));
       toolbarManager.add(refreshAction);
    }
 
    private void createOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
-         new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
+         new Action("Quick Search", ImageManager.getImageDescriptor(CoreImage.ARTIFACT_SEARCH)) {
             @Override
             public void run() {
                Job job = new UIJob("Open Quick Search") {
@@ -205,7 +205,7 @@ public class ArtifactExplorerToolbar {
          }
       };
 
-      upAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARROW_UP_YELLOW));
+      upAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ARROW_UP_YELLOW));
       upAction.setToolTipText("View Parent");
       updateEnablement();
       toolbarManager.add(upAction);
@@ -232,7 +232,7 @@ public class ArtifactExplorerToolbar {
          }
       };
 
-      newArtifactExplorer.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EXPLORER));
+      newArtifactExplorer.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ARTIFACT_EXPLORER));
       toolbarManager.add(newArtifactExplorer);
    }
 
@@ -248,7 +248,7 @@ public class ArtifactExplorerToolbar {
          }
       };
 
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.BRANCH_CHANGE));
       toolbarManager.add(refreshAction);
    }
 
@@ -262,7 +262,7 @@ public class ArtifactExplorerToolbar {
          }
       };
 
-      collapseAllAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL));
+      collapseAllAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.COLLAPSE_ALL));
       toolbarManager.add(collapseAllAction);
    }
 

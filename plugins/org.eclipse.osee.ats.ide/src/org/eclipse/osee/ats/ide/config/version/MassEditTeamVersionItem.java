@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -46,7 +46,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
 
    private IAtsTeamDefinition selectedTeamDef;
 
-   public MassEditTeamVersionItem(String name, KeyedImage oseeImage) {
+   public MassEditTeamVersionItem(String name, OseeImage oseeImage) {
       super(name, oseeImage, AtsNavigateViewItems.ATS_VERSIONS);
    }
 

@@ -93,6 +93,8 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       Jobs.startJob(loadAtsConfig);
    }
 
+   // for ReviewOsgiXml public void addAtsTaskProvider(IAtsTaskProvider provider)
+   // for ReviewOsgiXml public void removeAtsTaskProvider(IAtsTaskProvider provider)
    // for ReviewOsgiXml public void setJdbcService(JdbcService jdbcService)
    // for ReviewOsgiXml public void setEventAdmin(EventAdmin eventAdmin)
    // for ReviewOsgiXml public void setLogger(Log logger)
@@ -104,7 +106,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService)
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
-   // for ReviewOsgiXml public void addDatabaseTypeProvider(IAtsDatabaseTypeProvider provider)
    // for ReviewOsgiXml public void bindUserService(UserService userService)
 
    @Override

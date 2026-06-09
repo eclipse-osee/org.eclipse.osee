@@ -16,7 +16,7 @@ import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
 test.describe.configure({ mode: 'parallel' });
 
 test('screenshot', async ({ page }) => {
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
@@ -75,7 +75,7 @@ test('screenshot', async ({ page }) => {
 });
 
 test('remove elements', async ({ page }) => {
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await createWorkingBranchFromPL(page, 'Test Multi-Select Remove');
@@ -139,7 +139,7 @@ test('remove elements', async ({ page }) => {
 });
 
 test('delete elements', async ({ page }) => {
-	await page.goto('http://localhost:4200/ple');
+	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await createWorkingBranchFromPL(page, 'Test Multi-Select Delete');

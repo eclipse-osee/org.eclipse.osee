@@ -21,18 +21,12 @@ public class FunctionalAreaUtil {
 
    public static String FUNCT_AREA_LABEL = "Functional Area";
 
-   public static String getEmailSubjectAbridged(IAtsTeamWorkflow teamWf, ArtifactToken selected) {
-      return String.format("OSEE Functional Area set for %s (abridged)", teamWf.getAtsId());
+   public static String getEmailSubject(IAtsTeamWorkflow teamWf, ArtifactToken selFunctArea) {
+      return String.format("OSEE Functional Area set for %s", teamWf.getAtsId());
    }
 
    public static String getEmailBodyAbridged(IAtsTeamWorkflow teamWf, ArtifactToken selFunctArea) {
-      return String.format("OSEE Functional Area set for %s", //
-         teamWf.getAtsId());
-   }
-
-   public static String getEmailSubject(IAtsTeamWorkflow teamWf, ArtifactToken selFunctArea) {
-      return String.format("OSEE Functional Area set for %s to [%s] - [%s]", teamWf.getAtsId(), selFunctArea,
-         teamWf.getName());
+      return String.format("OSEE Functional Area set for %s", teamWf.getAtsId());
    }
 
    public static String getEmailBody(IAtsTeamWorkflow teamWf, ArtifactToken selFunctArea) {

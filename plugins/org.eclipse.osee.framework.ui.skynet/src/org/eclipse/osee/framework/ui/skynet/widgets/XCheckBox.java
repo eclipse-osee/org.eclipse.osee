@@ -13,8 +13,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -52,6 +56,15 @@ public class XCheckBox extends XButtonCommon implements LabelAfterWidget {
       if (getControl() != null && !getControl().isDisposed()) {
          getControl().setEnabled(editable);
       }
+   }
+
+   @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (isRequiredEntry() && !isChecked()) {
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
+      }
+      return status;
    }
 
    /**
@@ -126,8 +139,12 @@ public class XCheckBox extends XButtonCommon implements LabelAfterWidget {
 
    @Override
    public void dispose() {
-      labelWidget.dispose();
-      checkButton.dispose();
+      if (Widgets.isAccessible(labelWidget)) {
+         labelWidget.dispose();
+      }
+      if (Widgets.isAccessible(checkButton)) {
+         checkButton.dispose();
+      }
       if (parent != null && !parent.isDisposed()) {
          parent.layout();
       }

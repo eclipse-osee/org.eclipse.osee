@@ -93,6 +93,8 @@ public abstract class AbstractXHyperlinkTriStateNotifyDam extends XHyperlinkTriS
                + "This email sent to [%s] User Group.", //
                workItem.toStringWithAtsId(), //
                value, notifyUserGroup.getName()));
+            notify.setSanitizedSubjectDescription(
+               String.format("OSEE modified [%s] for %s", attrType.getUnqualifiedName(), workItem.getAtsId()));
             notify.setId(workItem.getAtsId());
             notify.setUrl(atsApi.getWorkItemService().getHtmlUrl(workItem, atsApi));
             notify.setEmailAddresses(toUserEmailList);

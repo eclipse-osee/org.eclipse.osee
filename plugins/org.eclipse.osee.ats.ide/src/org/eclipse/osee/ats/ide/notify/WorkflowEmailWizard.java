@@ -35,8 +35,8 @@ public class WorkflowEmailWizard extends EmailWizard {
    public WorkflowEmailWizard(AbstractWorkflowArtifact sma, List<Object> toAddress) {
       super(//
          AtsNotificationManagerUI.getPreviewHtml(sma, PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE), //
-         Strings.truncate(String.format("Email Workflow %s - [%s]", sma.getAtsId(), sma.toString()), 80, true), //
-         " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), //
+         Strings.truncate(String.format("Email Workflow %s", sma.getAtsId()), 80, true), //
+         "Regarding " + sma.getArtifactTypeName() + " " + sma.getAtsId(), //
          getEmailableGroups(sma), //
          toAddress);
    }

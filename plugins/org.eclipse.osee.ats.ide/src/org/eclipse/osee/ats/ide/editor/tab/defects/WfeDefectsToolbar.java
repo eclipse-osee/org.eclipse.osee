@@ -23,7 +23,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectUtil;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectXViewer;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -75,7 +75,7 @@ public class WfeDefectsToolbar {
 
       @Override
       public ImageDescriptor getImageDescriptor() {
-         return ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS);
+         return ImageManager.getImageDescriptor(CoreImage.GREEN_PLUS);
       }
 
       @Override
@@ -99,7 +99,7 @@ public class WfeDefectsToolbar {
 
       @Override
       public ImageDescriptor getImageDescriptor() {
-         return ImageManager.getImageDescriptor(FrameworkImage.X_RED);
+         return ImageManager.getImageDescriptor(CoreImage.X_RED);
       }
 
       @Override
@@ -123,7 +123,7 @@ public class WfeDefectsToolbar {
             getDefectUtil().handleImportDefectsViaList();
          }
       };
-      importDefectsAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.IMPORT));
+      importDefectsAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.IMPORT));
    }
 
    public class DropDownAction extends Action implements IMenuCreator {
@@ -132,7 +132,7 @@ public class WfeDefectsToolbar {
       public DropDownAction() {
          setText("Other");
          setMenuCreator(this);
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GEAR));
       }
 
       @Override

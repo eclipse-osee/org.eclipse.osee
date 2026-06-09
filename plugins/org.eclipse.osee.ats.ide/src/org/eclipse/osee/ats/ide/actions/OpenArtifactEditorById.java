@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -45,7 +45,7 @@ public class OpenArtifactEditorById extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
+      return ImageManager.getImageDescriptor(CoreImage.ARTIFACT_EDITOR);
    }
 
 }

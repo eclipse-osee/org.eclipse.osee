@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactState;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.search.widget.button.BuildMemoType;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorInput;
@@ -90,10 +91,12 @@ public class ProblemReportBuildMemoOps {
    protected final List<ProblemReportCollector> collections = new ArrayList<>();
    protected XResultData rd;
    protected List<XViewerColumn> cols;
+   protected final BuildMemoType buildMemoType;
 
-   public ProblemReportBuildMemoOps(WorldEditor worldEditor, String title) {
+   public ProblemReportBuildMemoOps(WorldEditor worldEditor, String title, BuildMemoType buildMemoType) {
       this.worldEditor = worldEditor;
       this.title = title;
+      this.buildMemoType = buildMemoType;
       this.atsApi = AtsApiService.get();
    }
 
@@ -293,7 +296,9 @@ public class ProblemReportBuildMemoOps {
          public List<IResultsEditorTab> getResultsEditorTabs() {
             if (tabs == null) {
                tabs = new LinkedList<>();
-               tabs.add(createDetailsHtmlTab());
+               if (buildMemoType.isFull()) {
+                  tabs.add(createDetailsHtmlTab());
+               }
                for (ProblemReportCollector coll : collections) {
                   tabs.add(createWorkflowTab(coll));
                }

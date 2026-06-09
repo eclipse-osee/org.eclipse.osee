@@ -13,51 +13,50 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.action;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactUrlClient;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 
 /**
- * Copy link to open native and whole word document to the clipboard.
+ * Copy link to open native and whole word document or artifact to the clipboard.
  *
  * @author Donald G. Dunne
  */
 public final class CopyArtifactURLAction extends Action {
 
    private final Artifact artifact;
-   private URI baseUri;
 
    public CopyArtifactURLAction(Artifact artifact) {
       super();
       this.artifact = artifact;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COPYTOCLIPBOARD));
-      setToolTipText(
-         "Copy Artifact URL link to clipboard. NOTE: This is a link pointing to the latest version of the artifact.");
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.COPYTOCLIPBOARD));
+      setToolTipText("Copy Artifact URL link or word/native content link to clipboard.");
    }
 
    @Override
    public void run() {
       Clipboard clipboard = null;
       try {
-         String urlString = generateLink();
-         URL url = new URL(urlString);
          clipboard = new Clipboard(null);
-         clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});
+         String urlString = generateLink();
+         if (Strings.isValid(urlString)) {
+            clipboard.setContents(new Object[] {urlString}, new Transfer[] {TextTransfer.getInstance()});
+         }
       } catch (Exception ex) {
          OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error obtaining url for - guid: [%s] branch:[%s]",
             artifact.getGuid(), artifact.getBranch().getIdString());
@@ -80,24 +79,30 @@ public final class CopyArtifactURLAction extends Action {
    }
 
    public String generateLink() {
-      String baseURL = System.getProperty(OseeClient.getOseeWebApplicationServer(),
-         new ArtifactUrlClient().getSelectedPermanentLinkUrl());
-      baseUri = null;
-      try {
-         baseUri = new URI(baseURL);
-      } catch (URISyntaxException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+      String webBaseUrl = OseeInfo.getValue(OseeClient.OSEE_APPLICATION_SERVER_WEB);
+      String urlString = "";
+      boolean openArtifact = true;
+      boolean hasNativeOrWholWordAttr = artifact.hasAttributeType(getAttributeTypeId());
+      if (hasNativeOrWholWordAttr) {
+         MessageDialog dialog =
+            new MessageDialog(Displays.getActiveShell(), "Select link type", null, "Select link type",
+               MessageDialog.QUESTION, 3, new String[] {"Content Download Link", "Artifact Link", "Cancel"});
+
+         int buttonNum = dialog.open();
+         if (buttonNum == 2) {
+            return "";
+         }
+         if (buttonNum == 0) {
+            openArtifact = false;
+         }
       }
-      String relativeURL = String.format("/orcs/branch/%s/artifact/%s/attribute/type/%s",
-         artifact.getBranch().getIdString(), artifact.getIdString(), getAttributeTypeId().getIdString());
-      URI relativeURI = null;
-      try {
-         relativeURI = new URI(relativeURL);
-      } catch (URISyntaxException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+      if (openArtifact) {
+         urlString = OpenArtifactInBrowserAction.getArtifactUrl(artifact);
+      } else {
+         urlString = String.format("%sorcs/branch/%s/artifact/%s/attribute/type/%s", webBaseUrl,
+            artifact.getBranch().getIdString(), artifact.getIdString(), getAttributeTypeId().getIdString());
       }
-      URI resolvedUri = baseUri.resolve(relativeURI);
-      return resolvedUri.toString();
+      return urlString;
    }
 
 }

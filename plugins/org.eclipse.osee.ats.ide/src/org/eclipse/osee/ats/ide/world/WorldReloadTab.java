@@ -22,12 +22,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -77,7 +76,7 @@ public class WorldReloadTab extends FormPage {
          } else {
             reloadButton = new Button(bodyComp, SWT.PUSH);
             reloadButton.setText("Reload");
-            reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
+            reloadButton.setImage(ImageManager.getImage(CoreImage.REFRESH));
             final FormPage page = this;
             reloadButton.addSelectionListener(new SelectionAdapter() {
 
@@ -94,7 +93,6 @@ public class WorldReloadTab extends FormPage {
             });
          }
 
-         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
       } catch (Exception ex) {
          handleException(ex);
       }

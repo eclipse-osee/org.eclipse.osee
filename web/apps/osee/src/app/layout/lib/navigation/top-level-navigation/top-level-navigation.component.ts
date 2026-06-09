@@ -10,8 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
 import { MatDivider } from '@angular/material/divider';
@@ -27,9 +28,8 @@ import { UserDataAccountService } from '@osee/auth';
 import { navigationStructure } from '@osee/layout/routing';
 import { SideNavService } from '@osee/shared/services/layout';
 import { navigationElement } from '@osee/shared/types';
-import { from, iif, of, reduce, switchMap } from 'rxjs';
+import { filter, from, iif, of, reduce, switchMap } from 'rxjs';
 import { UiService } from '@osee/shared/services';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-top-level-navigation',
@@ -48,14 +48,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	],
 })
 export class TopLevelNavigationComponent {
-	router = inject(Router);
-	private userService = inject(UserDataAccountService);
-	sideNavService = inject(SideNavService);
-	ui = inject(UiService);
+	private readonly router = inject(Router);
+	private readonly userService = inject(UserDataAccountService);
+	readonly sideNavService = inject(SideNavService);
+	private readonly ui = inject(UiService);
 
-	private _branchType = toSignal(this.ui.type, { initialValue: '' });
-	private _branchId = toSignal(this.ui.id, { initialValue: '' });
-	branchPath = computed(() => {
+	private readonly _branchType = toSignal(this.ui.type, {
+		initialValue: '',
+	});
+	private readonly _branchId = toSignal(this.ui.id, { initialValue: '' });
+	readonly branchPath = computed(() => {
 		let path = '';
 		if (this._branchType() !== '') {
 			path = '/' + this._branchType();
@@ -66,7 +68,22 @@ export class TopLevelNavigationComponent {
 		return path;
 	});
 
-	navElements = navigationStructure; // structure that stores the navigation elements
+	readonly navElements = navigationStructure;
+
+	/**
+	 * Precomputed set of all active navigation elements (both leaves and dropdowns).
+	 * Recomputed once per navigation. Template checks are pure Set.has() — O(1).
+	 */
+	private readonly _activeItems = signal<Set<navigationElement>>(
+		this.buildActiveSet()
+	);
+
+	private readonly _navSubscription = this.router.events
+		.pipe(
+			filter((event) => event instanceof NavigationEnd),
+			takeUntilDestroyed()
+		)
+		.subscribe(() => this._activeItems.set(this.buildActiveSet()));
 
 	getElementsWithPermission(elements: navigationElement[]) {
 		return from(elements).pipe(
@@ -83,8 +100,81 @@ export class TopLevelNavigationComponent {
 		);
 	}
 
+	/** O(1) check — is this element (leaf or dropdown) currently active? */
+	isActive(element: navigationElement): boolean {
+		return this._activeItems().has(element);
+	}
+
 	closeTopLevelNav() {
 		this.sideNavService.closeLeftSideNav = '';
+	}
+
+	/**
+	 * Builds the full set of active elements (leaves + ancestor dropdowns).
+	 */
+	private buildActiveSet(): Set<navigationElement> {
+		const activeSet = new Set<navigationElement>();
+		const url = this.getCleanUrl();
+		this.findActiveInGroup(this.navElements, activeSet, url);
+		return activeSet;
+	}
+
+	/** Extracts the decoded primary route path using Angular's URL parser */
+	private getCleanUrl(): string {
+		const urlTree = this.router.parseUrl(this.router.url);
+		const segments = urlTree.root.children['primary']?.segments ?? [];
+		return '/' + segments.map((s) => s.path).join('/');
+	}
+
+	/**
+	 * For a group of siblings, finds the active leaf (longest prefix match)
+	 * and marks ancestor dropdowns as active.
+	 * Returns true if this group (or a nested group) contains an active item.
+	 */
+	private findActiveInGroup(
+		siblings: navigationElement[],
+		activeSet: Set<navigationElement>,
+		url: string
+	): boolean {
+		// First, recurse into all dropdown children
+		let dropdownHasActive = false;
+		for (const item of siblings) {
+			if (item.isDropdown) {
+				if (this.findActiveInGroup(item.children, activeSet, url)) {
+					activeSet.add(item);
+					dropdownHasActive = true;
+				}
+			}
+		}
+
+		// If a nested dropdown claimed the URL, don't highlight leaf items here
+		if (dropdownHasActive) {
+			return true;
+		}
+
+		// Find the longest prefix match among leaf siblings
+		let longestMatch: navigationElement | null = null;
+		let longestLength = 0;
+
+		for (const item of siblings) {
+			if (
+				!item.isDropdown &&
+				item.routerLink !== '' &&
+				item.routerLink.length > longestLength &&
+				(url === item.routerLink ||
+					url.startsWith(item.routerLink + '/'))
+			) {
+				longestMatch = item;
+				longestLength = item.routerLink.length;
+			}
+		}
+
+		if (longestMatch !== null) {
+			activeSet.add(longestMatch);
+			return true;
+		}
+
+		return false;
 	}
 }
 

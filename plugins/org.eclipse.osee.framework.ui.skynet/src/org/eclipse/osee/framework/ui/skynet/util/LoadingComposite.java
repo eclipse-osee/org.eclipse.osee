@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.LabelComposite;
 import org.eclipse.swt.widgets.Composite;
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 public class LoadingComposite extends LabelComposite {
 
    public LoadingComposite(Composite parent) {
-      super(parent, ImageManager.getImage(FrameworkImage.CLOCK), "Loading...");
+      super(parent, ImageManager.getImage(CoreImage.CLOCK), "Loading...");
    }
 
 }

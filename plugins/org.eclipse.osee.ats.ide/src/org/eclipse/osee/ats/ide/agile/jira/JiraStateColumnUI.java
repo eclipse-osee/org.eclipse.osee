@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.Points;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.jira.JiraSearch;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -63,8 +64,8 @@ public class JiraStateColumnUI extends AbstractJiraSyncColumnUI {
    @Override
    public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       if (workItem.isTeamWorkflow()) {
-         if (AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.Points,
-            "").equals(AtsAttributeTypes.Points.Epic.getName())) {
+         if (AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PointsEnum,
+            "").equals(Points.Points_Epic.getName())) {
             return "Epic";
          }
          IAgileSprint sprint = AtsApiService.get().getAgileService().getSprint((IAtsTeamWorkflow) workItem);

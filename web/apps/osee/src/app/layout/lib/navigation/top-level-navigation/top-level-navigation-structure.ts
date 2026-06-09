@@ -30,10 +30,10 @@ export const navigationStructure: navigationElement[] = [
 		isDropdown: true,
 		isDropdownOpen: false,
 		requiredRoles: [],
-		routerLink: '/ple',
+		routerLink: '',
+		usesBranch: false,
 		icon: 'public',
 		description: '',
-		usesBranch: false,
 		children: [
 			// Level-2
 			{
@@ -63,16 +63,29 @@ export const navigationStructure: navigationElement[] = [
 				children: [],
 			},
 			{
+				label: 'Publishing',
+				cypressLabel: 'publishing',
+				pageTitle: 'OSEE - Publish Launcher',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/ple/publishing',
+				icon: 'publishing-nav-button',
+				description: '',
+				usesBranch: true,
+				children: [],
+			},
+			{
 				label: 'MIM',
 				cypressLabel: 'messaging',
 				pageTitle: 'MIM',
 				isDropdown: true,
 				isDropdownOpen: false,
 				requiredRoles: [],
-				routerLink: '/ple/messaging',
+				routerLink: '',
+				usesBranch: false,
 				icon: 'polyline',
 				description: '',
-				usesBranch: false,
 				children: [
 					// Level-3
 					{
@@ -240,10 +253,10 @@ export const navigationStructure: navigationElement[] = [
 				isDropdown: true,
 				isDropdownOpen: false,
 				requiredRoles: [],
-				routerLink: '/ple/help',
+				routerLink: '',
+				usesBranch: false,
 				icon: 'help_outline',
 				description: '',
-				usesBranch: false,
 				children: [
 					{
 						label: 'BAT Tool Help',
@@ -270,10 +283,10 @@ export const navigationStructure: navigationElement[] = [
 		isDropdown: true,
 		isDropdownOpen: false,
 		requiredRoles: [UserRoles.OSEE_ADMIN],
-		routerLink: '/server/health',
+		routerLink: '',
+		usesBranch: false,
 		icon: 'monitor_heart',
 		description: '',
-		usesBranch: false,
 		children: [
 			{
 				label: 'Server Health Dashboard',
@@ -315,7 +328,6 @@ export const navigationStructure: navigationElement[] = [
 				usesBranch: false,
 				children: [],
 			},
-
 			{
 				label: 'Usage',
 				cypressLabel: '',
@@ -366,9 +378,9 @@ export const navigationStructure: navigationElement[] = [
 		isDropdownOpen: false,
 		requiredRoles: [],
 		routerLink: '',
+		usesBranch: false,
 		icon: 'account_box',
 		description: '',
-		usesBranch: false,
 		children: [
 			{
 				label: 'Certificate Management',
@@ -377,7 +389,7 @@ export const navigationStructure: navigationElement[] = [
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
-				routerLink: '/certificate-management',
+				routerLink: '/profile/certificate-management',
 				icon: 'security',
 				description: '',
 				usesBranch: false,
@@ -389,13 +401,13 @@ export const navigationStructure: navigationElement[] = [
 		label: 'AcTra',
 		cypressLabel: '',
 		pageTitle: 'AcTra',
-		isDropdown: false,
+		isDropdown: true,
 		isDropdownOpen: false,
 		requiredRoles: [],
-		routerLink: '/actra',
+		routerLink: '',
+		usesBranch: false,
 		icon: 'pending_actions',
 		description: '',
-		usesBranch: false,
 		children: [
 			{
 				label: 'World',
@@ -404,7 +416,7 @@ export const navigationStructure: navigationElement[] = [
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
-				routerLink: '/world',
+				routerLink: '/actra/world',
 				icon: '',
 				description: '',
 				usesBranch: false,

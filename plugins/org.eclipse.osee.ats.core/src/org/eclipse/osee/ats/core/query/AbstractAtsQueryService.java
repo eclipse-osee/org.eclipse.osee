@@ -187,7 +187,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
                } else {
                   art = getArtifactByAtsId(str);
                }
-               if (art != null) {
+               if (art != null && art.isValid()) {
                   artifacts.add(art);
                }
             }

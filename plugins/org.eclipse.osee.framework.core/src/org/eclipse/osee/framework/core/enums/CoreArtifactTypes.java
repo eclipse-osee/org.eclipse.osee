@@ -300,7 +300,11 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Dictionary)
       .any(GeneralStringData)
       .zeroOrOne(ProductLinePreferences)
-      .zeroOrOne(WebPreferences));
+      .zeroOrOne(WebPreferences)
+      .zeroOrOne(EmailEncryptionEnabled)
+      .zeroOrOne(EmailCertificateLdapUrl)
+      .zeroOrOne(EmailCertificateUploadOverrideLink)
+      .zeroOrOne(EmailCertificateInstructions));
 
    ArtifactTypeToken GroupArtifact = osee.add(osee.artifactType(6L, "Group Artifact", false, new MaterialIcon("group_work"), Artifact));
 
@@ -649,7 +653,8 @@ public interface CoreArtifactTypes {
       .exactlyOne(CoreAttributeTypes.DiffAvailable)
       .exactlyOne(CoreAttributeTypes.EndpointUrl)
       .exactlyOne(CoreAttributeTypes.RequiresValidation)
-      .exactlyOne(CoreAttributeTypes.SupportsErrorColoring));
+      .exactlyOne(CoreAttributeTypes.SupportsErrorColoring)
+      .exactlyOne(CoreAttributeTypes.SupportsShowingOrder));
 
    ArtifactTypeToken MimReport = osee.add(osee.artifactType(1112907634879895453L, "MIM Report", false, OseeReport));
 

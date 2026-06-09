@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PlatformUI;
 
@@ -45,7 +45,7 @@ public class DeleteTasksAction extends AbstractAtsAction {
    public DeleteTasksAction(IAtsTaskArtifactProvider taskProvider) {
       super("Delete Tasks", IAction.AS_PUSH_BUTTON);
       this.taskProvider = taskProvider;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.X_RED));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.X_RED));
       setToolTipText(getText());
    }
 

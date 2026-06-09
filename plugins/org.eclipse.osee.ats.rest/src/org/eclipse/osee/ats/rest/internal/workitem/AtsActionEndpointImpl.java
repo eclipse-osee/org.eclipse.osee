@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.Points;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
@@ -810,7 +811,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    @Override
    public Collection<String> getPointValues() {
-      return AtsAttributeTypes.Points.getEnumValues().stream().map(p -> p.getName()).collect(Collectors.toList());
+      return Points.getValuesStr();
    }
 
    @Override

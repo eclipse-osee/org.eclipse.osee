@@ -1,0 +1,81 @@
+<!--
+/*********************************************************************
+ * Copyright (c) 2026 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+-->
+<div class="tw-flex tw-min-w-min tw-items-center tw-justify-between tw-gap-2">
+	<!-- File info -->
+	<div class="tw-flex tw-flex-col">
+		<div
+			class="tw-flex tw-items-center tw-gap-2 tw-truncate tw-font-semibold">
+			@if (fileBaseName(); as fn) {
+				{{ fn }}
+			} @else {
+				<span class="tw-text-osee-neutral-60">Unnamed file</span>
+			}
+			@if (hasUnsavedChanges()) {
+				<span
+					class="tw-text-xs tw-font-normal tw-italic tw-text-warning">
+					(unsaved)
+				</span>
+			}
+		</div>
+		<div class="tw-text-xs tw-text-osee-neutral-60">
+			Ext:
+			@if (fileExtension(); as ext) {
+				<span class="tw-font-medium">{{ ext }}</span>
+			} @else {
+				<span class="tw-italic">none</span>
+			}
+		</div>
+	</div>
+
+	<!-- Actions -->
+	<div class="tw-flex tw-items-center tw-gap-2">
+		<div
+			[matTooltip]="
+				hasUnsavedChanges()
+					? 'Save changes before downloading.'
+					: 'Download is unavailable: missing artifact context.'
+			"
+			[matTooltipDisabled]="canDownload()">
+			<button
+				mat-button
+				type="button"
+				class="tw-rounded tw-bg-osee-neutral-35 tw-px-3 tw-py-2 tw-text-osee-neutral-100 hover:tw-bg-osee-neutral-50 disabled:tw-opacity-50"
+				[disabled]="!canDownload()"
+				matTooltip="Download This File"
+				matTooltipPosition="above"
+				(click)="onClickDownload()">
+				<mat-icon class="tw-mr-1">download</mat-icon>
+				Download
+			</button>
+		</div>
+
+		<div
+			matTooltip="Updates are disabled: artifact is not editable."
+			[matTooltipDisabled]="editable()">
+			<button
+				mat-button
+				type="button"
+				class="tw-rounded tw-bg-primary tw-px-3 tw-py-2 tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-opacity-50"
+				color="primary"
+				[disabled]="!editable()"
+				matTooltip="Update This File"
+				matTooltipPosition="above"
+				(click)="onClickOpenUpdate()">
+				<mat-icon class="tw-mr-1">upload</mat-icon>
+				Update
+			</button>
+		</div>
+	</div>
+</div>

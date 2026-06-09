@@ -16,10 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.action;
 import java.util.Arrays;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XWidgetsExampleDialog;
@@ -34,7 +34,7 @@ public class XWidgetsDialogExampleAction extends Action {
 
    public XWidgetsDialogExampleAction() {
       super(TITLE);
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
+      setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GEAR));
       setToolTipText(TITLE);
    }
 

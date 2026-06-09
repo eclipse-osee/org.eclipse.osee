@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
-import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
@@ -76,6 +75,7 @@ import org.eclipse.osee.ats.ide.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -91,10 +91,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
-import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -166,7 +164,6 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
          bodyComp.setLayoutData(gd);
 
          updateTitleBar(managedForm);
-         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
          setLoading(true);
          refreshData();
@@ -460,7 +457,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
          }
       };
       filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
-      filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS));
+      filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GREEN_PLUS));
 
       filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", IAction.AS_CHECK_BOX) {
 
@@ -476,7 +473,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
          }
       };
       filterMyAssigneeAction.setToolTipText("Filter My Assignee - Ctrl-G");
-      filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
+      filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.USER));
    }
 
    public void updateExtendedStatusString() {
@@ -493,7 +490,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
       public DropDownAction() {
          setText("Other");
          setMenuCreator(this);
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.GEAR));
          addKeyListener();
       }
 
@@ -508,7 +505,6 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
          addActionToMenu(fMenu, filterCompletedAction);
          addActionToMenu(fMenu, filterMyAssigneeAction);
          new MenuItem(fMenu, SWT.SEPARATOR);
-         addActionToMenu(fMenu, new AtsExportAction(taskComposite.getTaskXViewer()));
          try {
             if (taskComposite.getIXTaskViewer().isTasksEditable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(taskComposite.getTeamArt(), null));

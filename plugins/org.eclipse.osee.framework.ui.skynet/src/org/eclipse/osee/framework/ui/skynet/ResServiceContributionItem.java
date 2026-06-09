@@ -19,6 +19,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.listener.IRemoteEventManagerEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
@@ -40,9 +41,9 @@ import org.eclipse.ui.part.ViewPart;
 public class ResServiceContributionItem extends OseeStatusContributionItem implements IRemoteEventManagerEventListener {
 
    public static final String ID = "res.service";
-   private static final Image ENABLED_IMAGE = ImageManager.getImageDescriptor(FrameworkImage.RES).createImage();
+   private static final Image ENABLED_IMAGE = ImageManager.getImageDescriptor(CoreImage.RES).createImage();
    private static final Image DISABLED_IMAGE =
-      new OverlayImage(ENABLED_IMAGE, ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
+      new OverlayImage(ENABLED_IMAGE, ImageManager.getImageDescriptor(CoreImage.SLASH_RED_OVERLAY)).createImage();
    private static final String ENABLED_TOOLTIP = "Event Service is connected.";
    private static final String DISABLED_TOOLTIP = "Event Service is disconnected.";
 

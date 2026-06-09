@@ -24,11 +24,11 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -279,7 +279,7 @@ public abstract class XFlatWidget<T> extends XLabel {
    private final class AddPage extends Action {
       public AddPage() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ADD_GREEN));
+         setImageDescriptor(ImageManager.getImageDescriptor(CoreImage.ADD_GREEN));
          setToolTipText("Adds a page");
       }
 
@@ -339,7 +339,7 @@ public abstract class XFlatWidget<T> extends XLabel {
                createPage(pageId, composite, value);
 
                Button button = new Button(composite, SWT.FLAT);
-               button.setImage(ImageManager.getImage(FrameworkImage.DELETE));
+               button.setImage(ImageManager.getImage(CoreImage.DELETE));
                button.addSelectionListener(new SelectionAdapter() {
                   @Override
                   public void widgetSelected(SelectionEvent e) {

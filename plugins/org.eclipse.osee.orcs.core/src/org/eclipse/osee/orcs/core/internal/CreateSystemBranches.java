@@ -108,6 +108,8 @@ public class CreateSystemBranches {
       }
       tx.setSoleAttributeValue(prefArt, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);
       tx.setSoleAttributeValue(prefArt, CoreAttributeTypes.ProductLinePreferences, JSON_PL_PREFERENCES);
+      tx.setSoleAttributeValue(prefArt, CoreAttributeTypes.EmailCertificateInstructions,
+         EMAIL_CERTIFICATE_INSTRUCTIONS);
 
       tx.createArtifact(oseeConfig, CoreArtifactTokens.XViewerCustomization);
 
@@ -127,6 +129,7 @@ public class CreateSystemBranches {
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.ProducesMediaType, "application/octet-stream");
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.RequiresValidation, true);
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.SupportsErrorColoring, true);
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.SupportsShowingOrder, true);
 
       ArtifactId mimIcdImport = tx.createArtifact(mimFolder, MimArtifactTokens.MimIcdImport);
       tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.EndpointUrl, "/mim/import/icd/<branchId>");
@@ -209,4 +212,9 @@ public class CreateSystemBranches {
       "      { \"FileExtension\" : \"xml\", \"CommentPrefixRegex\" : \"<!--\", \"CommentSuffixRegex\" : \"-->\", \"CommentPrefix\" : \"<!-- \", \"CommentSuffix\" : \" -->\"},\n" + //
       "      { \"FileExtension\" : \"lst\", \"CommentPrefixRegex\" : \"#\", \"CommentPrefix\" : \"# \" }\n" + //
       "      ]}";
+
+   private static final String EMAIL_CERTIFICATE_INSTRUCTIONS = """
+      For help generating a certificate, see:
+      https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-self-signed-certificate
+      """;
 }

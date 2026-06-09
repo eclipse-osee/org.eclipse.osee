@@ -59,7 +59,7 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
          new WidgetDefinition("   ", "XLabel"), //
          new PriorityWidgetDefinition(true), //
          new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition(pointsAttrType, "XHyperlinkLabelValueSelectionDam", SAVE), //
+         new WidgetDefinition("Points", pointsAttrType, "XHyperlinkLabelValueSelectionDam", SAVE), //
          new WidgetDefinition("   ", "XLabel"), //
          new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", WidgetOption.COMPOSITE_END) //
       );

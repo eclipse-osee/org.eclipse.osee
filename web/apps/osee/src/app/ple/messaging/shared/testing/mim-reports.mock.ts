@@ -28,5 +28,6 @@ export const mimReportsMock: MimReport[] = [
 		diffAvailable: true,
 		requiresValidation: false,
 		supportsErrorColoring: true,
+		supportsShowingOrder: true,
 	},
 ];

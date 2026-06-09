@@ -17,8 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
@@ -52,12 +56,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -78,6 +84,7 @@ public class WfeWorkflowSection extends SectionPart {
    private final WorkflowEditor editor;
    private WfeStateNotesHeader stateNotesHeader;
    private final AtsApi atsApi;
+   private boolean pinned;
 
    public WfeWorkflowSection(Composite parent, int style, StateXWidgetPage page, AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
       super(parent, editor.getToolkit(), style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
@@ -102,6 +109,8 @@ public class WfeWorkflowSection extends SectionPart {
          refreshStateTitle();
          section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+         createPinAction(section);
+
          boolean isCurrentSectionExpanded = isCurrentSectionExpanded(statePage);
          createSection(section);
          section.layout();
@@ -111,9 +120,28 @@ public class WfeWorkflowSection extends SectionPart {
       }
    }
 
+   private void createPinAction(Section section) {
+      ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+      Action pinAction = new Action("Pin Open", IAction.AS_CHECK_BOX) {
+         @Override
+         public void run() {
+            pinned = isChecked();
+         }
+      };
+      pinAction.setToolTipText("Pin this state open during refresh");
+      pinAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.PIN_EDITOR));
+      toolBarManager.add(pinAction);
+      ToolBar toolbar = toolBarManager.createControl(section);
+      section.setTextClient(toolbar);
+   }
+
    public void expand() {
       section.setExpanded(true);
       createSection(section);
+   }
+
+   public boolean isPinned() {
+      return pinned;
    }
 
    private void refreshStateTitle() {
@@ -224,7 +252,7 @@ public class WfeWorkflowSection extends SectionPart {
    }
 
    private void createSectionBody(StateXWidgetPage statePage, Composite workComp) {
-      SwtXWidgetRenderer swtXWidgetRenderer  =
+      SwtXWidgetRenderer swtXWidgetRenderer =
          statePage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable);
       for (XWidget xWidget : swtXWidgetRenderer.getXWidgets()) {
          addAndCheckChildren(xWidget);
