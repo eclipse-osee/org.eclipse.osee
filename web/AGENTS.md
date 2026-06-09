@@ -109,6 +109,7 @@ Tests live in `web/apps/osee/playwright/specs/` organized by feature area (e.g.,
 - **Shared config**: `playwright/shared/test-config.ts` exports `APP_BASE`, `API_BASE`, and `AUTH_HEADER`. Use these for API calls and `waitForResponse` URL matching — never hardcode `localhost` URLs.
 - **Navigation**: Use **relative paths** in `page.goto()` (e.g., `'/ple/artifact-explorer'`, `'/ci/admin'`). The config's `baseURL` handles resolution. Do not use `APP_BASE` for navigation.
 - **Test files**: Named `*.e2e-spec.ts`. Include the Boeing EPL header.
+- **Register new test directories**: When creating tests in a new feature folder under `playwright/specs/`, add a corresponding project entry in `playwright.config.ng.ts` with the appropriate `testDir` and `dependencies`.
 
 ### Writing effective tests
 

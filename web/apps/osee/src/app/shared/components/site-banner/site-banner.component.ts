@@ -31,7 +31,8 @@ import { SiteBannerService } from './site-banner.service';
 			<div
 				class="tw-relative tw-w-full tw-bg-primary-800 tw-px-6 tw-py-4 tw-text-sm tw-text-primary-800-contrast tw-shadow-md dark:tw-bg-primary-900 dark:tw-text-primary-900-contrast"
 				role="alert">
-				<div class="tw-mx-auto tw-max-w-4xl tw-text-center tw-leading-relaxed"
+				<div
+					class="tw-mx-auto tw-max-w-4xl tw-text-center tw-leading-relaxed"
 					[innerHTML]="bannerContent()"></div>
 				<button
 					mat-icon-button

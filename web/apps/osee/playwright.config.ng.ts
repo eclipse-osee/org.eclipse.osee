@@ -96,6 +96,12 @@ const config: PlaywrightTestConfig = {
 			dependencies: ['Setup'],
 		},
 		{
+			name: 'Layout Tests',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/layout/tests',
+			dependencies: ['Setup'],
+		},
+		{
 			name: 'Publish-Launcher Demo Init',
 			testMatch:
 				'playwright/specs/publish-launcher/setup/publish-launcher-demo-init.e2e-spec.ts',
