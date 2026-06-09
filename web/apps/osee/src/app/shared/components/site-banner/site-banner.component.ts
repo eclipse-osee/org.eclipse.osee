@@ -50,16 +50,24 @@ export class SiteBannerComponent {
 	private readonly config = toSignal(this.bannerService.bannerConfig$, {
 		initialValue: { content: '' },
 	});
-	private readonly dismissed = signal(this.bannerService.isDismissed());
+	private readonly dismissed = signal(false);
 
 	protected readonly bannerContent = computed(() => this.config().content);
 
-	protected readonly showBanner = computed(
-		() => this.config().content.length > 0 && !this.dismissed()
-	);
+	protected readonly showBanner = computed(() => {
+		const content = this.config().content;
+		if (content.length === 0) {
+			return false;
+		}
+		if (!this.dismissed()) {
+			return !this.bannerService.isDismissedForContent(content);
+		}
+		return false;
+	});
 
+	/** Dismisses the banner for today and this specific content. */
 	protected dismiss() {
-		this.bannerService.dismiss();
+		this.bannerService.dismiss(this.config().content);
 		this.dismissed.set(true);
 	}
 }

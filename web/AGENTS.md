@@ -99,6 +99,15 @@ Include the Boeing EPL header comment block at the top of every **new** file. Th
  **********************************************************************/
 ```
 
+## Formatting and linting
+
+Run all commands from `web/apps/osee/`.
+
+- **Prettier** (format changed files): `npx prettier --write <file1> <file2> ...`
+- **ESLint** (lint changed files): `npx eslint <file1> <file2> ...`
+
+Always run prettier and eslint on changed files before committing. Use relative paths from `web/apps/osee/`. Do not run these automatically during development — only run when explicitly requested or at the end of a development session.
+
 ## Playwright E2E tests
 
 Tests live in `web/apps/osee/playwright/specs/` organized by feature area (e.g., `mim/tests/`, `artifact-explorer/tests/`). The framework is `@ngx-playwright/test`.

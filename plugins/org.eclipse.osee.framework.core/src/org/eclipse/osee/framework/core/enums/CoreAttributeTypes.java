@@ -87,7 +87,6 @@ public interface CoreAttributeTypes {
    // @formatter:off
 
    AttributeTypeString AbridgedEmail = osee.createString(1867950456941316571L, "Abridged Email", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString SiteBannerContent = osee.createString(7294618503712946282L, "Site Banner Content", MediaType.TEXT_PLAIN, "HTML content for the site-wide banner displayed at the top of the web application. Clear this value to disable the banner.", DisplayHint.MultiLine);
    AttributeTypeString EmailCertificateInstructions = osee.createString(9211057726662841963L, "Email Certificate Instructions", MediaType.TEXT_PLAIN, "Supplementary organization specific instructions for email certificates. Sent to users when a valid certificate is not available.", DisplayHint.MultiLine);
    AttributeTypeString EmailCertificateUploadOverrideLink = osee.createString(3104381527452070592L, "Email Certificate Upload Override Link", MediaType.TEXT_PLAIN, "Email certificate upload link to override the default dynamic link.");
    AttributeTypeString EmailCertificateLdapUrl = osee.createString(5692888595530430477L, "Email Certificate LDAP URL", MediaType.TEXT_PLAIN, "Email Certificate LDAP URL from which to retrieve public certificates.");
@@ -317,6 +316,7 @@ public interface CoreAttributeTypes {
    ProducesMediaTypeAttributeType ProducesMediaType = osee.createEnum(new ProducesMediaTypeAttributeType());
    AttributeTypeString ProductLinePreferences = osee.createStringNoTag(582562585958993670L, "Product Line Preferences", MediaType.TEXT_PLAIN, "");
    AttributeTypeString SetId = osee.createString(1152921504606847350L, "Set Id", MediaType.TEXT_PLAIN, "CI Set Artifact Id");
+   AttributeTypeString SiteBannerContent = osee.createString(7294618503712946282L, "Site Banner Content", MediaType.TEXT_PLAIN, "HTML content for the site-wide banner displayed at the top of the web application. Clear this value to disable the banner.", DisplayHint.MultiLine);
    AttributeTypeString PropertyKey = osee.createString(5139071591277404578L, "Property Key", MediaType.TEXT_PLAIN, "Property Store Key");
    AttributeTypeString PublishingTemplateDataRightsConfigurationNameReference = osee.createString(6329223727577326200L, "Data Rights Configuration", MediaType.TEXT_PLAIN, "Specifies the data rights configuration to use for a publish.", DisplayHint.SingleLine);
    AttributeTypeBoolean PublishInline = osee.createBoolean(1152921504606847122L, "PublishInline", MediaType.TEXT_PLAIN, "");

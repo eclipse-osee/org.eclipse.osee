@@ -17,7 +17,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 import { SiteBannerConfig } from './site-banner.types';
 
-const DISMISSED_KEY = 'osee-site-banner-dismissed-date';
+const DISMISSED_KEY = 'osee-site-banner-dismissed';
 
 @Injectable({
 	providedIn: 'root',
@@ -32,16 +32,29 @@ export class SiteBannerService {
 			shareReplay({ bufferSize: 1, refCount: true })
 		);
 
-	isDismissed(): boolean {
-		const dismissedDate = localStorage.getItem(DISMISSED_KEY);
-		if (!dismissedDate) {
+	/** Returns true if the banner was dismissed today for this exact content. */
+	isDismissedForContent(content: string): boolean {
+		const stored = localStorage.getItem(DISMISSED_KEY);
+		if (!stored) {
 			return false;
 		}
-		const today = new Date().toDateString();
-		return dismissedDate === today;
+		try {
+			const parsed = JSON.parse(stored) as {
+				date: string;
+				content: string;
+			};
+			const today = new Date().toDateString();
+			return parsed.date === today && parsed.content === content;
+		} catch {
+			return false;
+		}
 	}
 
-	dismiss(): void {
-		localStorage.setItem(DISMISSED_KEY, new Date().toDateString());
+	dismiss(content: string): void {
+		const entry = {
+			date: new Date().toDateString(),
+			content,
+		};
+		localStorage.setItem(DISMISSED_KEY, JSON.stringify(entry));
 	}
 }

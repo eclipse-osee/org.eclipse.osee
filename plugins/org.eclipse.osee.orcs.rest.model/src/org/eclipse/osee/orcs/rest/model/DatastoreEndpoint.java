@@ -98,3 +98,4 @@ public interface DatastoreEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    SiteBannerConfig getSiteBannerConfig();
 }
+

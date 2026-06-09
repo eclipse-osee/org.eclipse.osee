@@ -219,3 +219,4 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       return new SiteBannerConfig(content);
    }
 }
+

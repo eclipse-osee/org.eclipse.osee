@@ -20,7 +20,7 @@ test('set up relations', async ({ page }) => {
 	await page.goto('/ple/messaging/connections');
 	await createWorkingBranchFromPL(page, 'Traceability');
 	await page.goto('/ple');
-	await page.getByRole('button').click();
+	await page.locator('osee-toolbar').getByRole('button').first().click();
 	await page
 		.locator('osee-top-level-navigation')
 		.getByText('Product Line Engineering')

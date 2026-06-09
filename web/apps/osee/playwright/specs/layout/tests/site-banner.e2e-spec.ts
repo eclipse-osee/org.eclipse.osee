@@ -13,10 +13,10 @@
 import { test, expect } from '@ngx-playwright/test';
 
 test.describe('Site Banner', () => {
-	test.beforeEach(async ({ page, context }) => {
-		// Clear localStorage to ensure banner is not dismissed
-		await context.clearCookies();
+	test.beforeEach(async ({ page }) => {
 		await page.goto('/ple');
+		await page.evaluate(() => localStorage.clear());
+		await page.reload();
 		await page.waitForResponse(
 			(resp) =>
 				resp.url().includes('/orcs/datastore/banner') &&
@@ -63,11 +63,9 @@ test.describe('Site Banner', () => {
 		const banner = page.locator('osee-site-banner [role="alert"]');
 		await expect(banner).toBeVisible();
 
-		// Dismiss the banner
 		await page.getByRole('button', { name: 'Dismiss banner' }).click();
 		await expect(banner).not.toBeVisible();
 
-		// Navigate to a different route
 		await page.goto('/ple');
 		await expect(banner).not.toBeVisible();
 	});
@@ -75,7 +73,6 @@ test.describe('Site Banner', () => {
 	test('should not display the banner when API returns empty content', async ({
 		page,
 	}) => {
-		// Mock the banner endpoint to return empty content
 		await page.route('**/orcs/datastore/banner', (route) => {
 			route.fulfill({
 				status: 200,
