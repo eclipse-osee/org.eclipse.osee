@@ -316,6 +316,7 @@ public interface CoreAttributeTypes {
    ProducesMediaTypeAttributeType ProducesMediaType = osee.createEnum(new ProducesMediaTypeAttributeType());
    AttributeTypeString ProductLinePreferences = osee.createStringNoTag(582562585958993670L, "Product Line Preferences", MediaType.TEXT_PLAIN, "");
    AttributeTypeString SetId = osee.createString(1152921504606847350L, "Set Id", MediaType.TEXT_PLAIN, "CI Set Artifact Id");
+   AttributeTypeString SiteBannerContent = osee.createString(7294618503712946282L, "Site Banner Content", MediaType.TEXT_PLAIN, "HTML content for the site-wide banner displayed at the top of the web application. Clear this value to disable the banner.", DisplayHint.MultiLine);
    AttributeTypeString PropertyKey = osee.createString(5139071591277404578L, "Property Key", MediaType.TEXT_PLAIN, "Property Store Key");
    AttributeTypeString PublishingTemplateDataRightsConfigurationNameReference = osee.createString(6329223727577326200L, "Data Rights Configuration", MediaType.TEXT_PLAIN, "Specifies the data rights configuration to use for a publish.", DisplayHint.SingleLine);
    AttributeTypeBoolean PublishInline = osee.createBoolean(1152921504606847122L, "PublishInline", MediaType.TEXT_PLAIN, "");

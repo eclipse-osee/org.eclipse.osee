@@ -27,3 +27,4 @@ export * from './expansion-panel/expansion-panel.component';
 export * from './create-branch-button/create-branch-button.component';
 export * from './create-branch-dialog/create-branch-dialog.component';
 export * from './drag-and-drop-upload/drag-and-drop-upload.component';
+export * from './site-banner/site-banner.component';

@@ -304,7 +304,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(EmailEncryptionEnabled)
       .zeroOrOne(EmailCertificateLdapUrl)
       .zeroOrOne(EmailCertificateUploadOverrideLink)
-      .zeroOrOne(EmailCertificateInstructions));
+      .zeroOrOne(EmailCertificateInstructions)
+      .zeroOrOne(SiteBannerContent));
 
    ArtifactTypeToken GroupArtifact = osee.add(osee.artifactType(6L, "Group Artifact", false, new MaterialIcon("group_work"), Artifact));
 

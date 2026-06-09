@@ -24,10 +24,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -38,6 +42,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreInfo;
+import org.eclipse.osee.orcs.rest.model.SiteBannerConfig;
 
 /**
  * @author Roberto E. Escobar
@@ -199,4 +204,19 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    public void clearUserCache() {
       userService.clearCaches();
    }
+
+   @Override
+   public SiteBannerConfig getSiteBannerConfig() {
+      ArtifactReadable globalArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+         CoreArtifactTokens.GlobalPreferences).asArtifactOrSentinel();
+
+      if (globalArt.isInvalid()) {
+         return new SiteBannerConfig("");
+      }
+
+      String content = globalArt.getSoleAttributeValue(CoreAttributeTypes.SiteBannerContent, "");
+
+      return new SiteBannerConfig(content);
+   }
 }
+
