@@ -146,6 +146,17 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public Response purgeTxs(String txIds) {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      // Export transaction data to cold storage before purging
+      List<TransactionId> txList = new ArrayList<>();
+      for (String id : txIds.split(",")) {
+         txList.add(TransactionId.valueOf(id.trim()));
+      }
+      if (!txList.isEmpty()) {
+         TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+         txColdStorage.exportTransactions(txList);
+      }
+
       return asResponse(orcsApi.getTransactionFactory().purgeTxs(txIds));
    }
 
@@ -696,6 +707,21 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
       return coldStorage.purgeColdBranch(branchId);
+   }
+
+   // ---- Purged Transaction Cold Storage ----
+
+   @Override
+   public XResultData restorePurgedTransaction(String fileName, TransactionId txId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return txColdStorage.restoreTransaction(fileName, txId);
+   }
+
+   @Override
+   public XResultData listPurgedTransactionArchives() {
+      TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return txColdStorage.listPurgedTransactionArchives();
    }
 
 }

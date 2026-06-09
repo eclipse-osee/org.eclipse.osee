@@ -122,6 +122,113 @@ public class TxsColdStorage {
    }
 
    /**
+    * Archives a single branch to cold storage (export only, no DB deletion). Used before an explicit purgeBranch call
+    * so the data is preserved in cold storage before the purge removes it from the database.
+    *
+    * @param branchId the branch to archive
+    * @return XResultData with details of what was archived
+    */
+   public XResultData archiveSingleBranch(BranchId branchId) {
+      XResultData results = new XResultData();
+
+      String coldPath = getColdStoragePath();
+      if (coldPath == null) {
+         results.error("Unable to determine server data path for cold storage");
+         return results;
+      }
+
+      // Get branch info
+      String[] branchName = {""};
+      int[] branchState = {0};
+      jdbcClient.runQuery(stmt -> {
+         branchName[0] = stmt.getString("BRANCH_NAME");
+         branchState[0] = stmt.getInt("BRANCH_STATE");
+      }, SELECT_BRANCH_ROW, branchId);
+
+      if (branchName[0].isEmpty()) {
+         results.errorf("Branch %s not found", branchId);
+         return results;
+      }
+
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+      String fileName = "txs_cold_branch_" + branchId.getIdString() + "_" + dateFormat.format(new Date()) + ".gz";
+      String filePath = coldPath + File.separator + fileName;
+
+      List<BranchInfo> branches = new ArrayList<>();
+      branches.add(new BranchInfo(branchId.getId(), branchName[0], branchState[0]));
+
+      try {
+         int totalTxsRows = 0;
+         int totalTxDetailsRows = 0;
+
+         try (FileOutputStream fos = new FileOutputStream(filePath);
+              GZIPOutputStream gzos = new GZIPOutputStream(fos);
+              DataOutputStream dos = new DataOutputStream(gzos)) {
+
+            dos.writeUTF(MAGIC);
+            dos.writeInt(SCHEMA_VERSION);
+            dos.writeLong(System.currentTimeMillis());
+            dos.writeInt(1);
+
+            long branchIdLong = branchId.getId();
+
+            dos.writeUTF("BRANCH_START");
+            dos.writeLong(branchIdLong);
+
+            dos.writeUTF("BRANCH_DATA");
+            List<Object[]> branchRows = new ArrayList<>();
+            jdbcClient.runQuery(stmt -> {
+               branchRows.add(readBranchRowFromDb(stmt));
+            }, SELECT_BRANCH_ROW, branchId);
+            dos.writeInt(branchRows.size());
+            for (Object[] row : branchRows) {
+               writeBranchRow(dos, row);
+            }
+
+            dos.writeUTF("TX_DETAILS_DATA");
+            List<TxDetailsRow> txDetailsRows = new ArrayList<>();
+            jdbcClient.runQuery(stmt -> {
+               txDetailsRows.add(new TxDetailsRow(stmt));
+            }, SELECT_TX_DETAILS_FOR_BRANCH, branchId);
+            dos.writeInt(txDetailsRows.size());
+            for (TxDetailsRow row : txDetailsRows) {
+               row.writeTo(dos);
+            }
+
+            dos.writeUTF("TXS_ARCHIVED_DATA");
+            List<TxsArchivedRow> txsRows = new ArrayList<>();
+            jdbcClient.runQuery(stmt -> {
+               txsRows.add(new TxsArchivedRow(stmt));
+            }, SELECT_TXS_ARCHIVED_FOR_BRANCH, branchId);
+            dos.writeInt(txsRows.size());
+            for (TxsArchivedRow row : txsRows) {
+               row.writeTo(dos);
+            }
+
+            dos.writeUTF("BRANCH_END");
+
+            totalTxsRows = txsRows.size();
+            totalTxDetailsRows = txDetailsRows.size();
+         }
+
+         long fileSize = new File(filePath).length();
+
+         // Insert catalog row (branch will be deleted by purgeBranch after this returns)
+         jdbcClient.runPreparedUpdate(INSERT_CATALOG, branchId.getId(), branchName[0], fileName, totalTxsRows,
+            totalTxDetailsRows, branchState[0]);
+
+         results.logf("Archived branch %d (%s) to cold storage: %s (%d bytes, %d txs rows, %d tx_details rows)",
+            branchId.getId(), branchName[0], fileName, fileSize, totalTxsRows, totalTxDetailsRows);
+
+      } catch (IOException ex) {
+         results.errorf("Failed to write cold storage file: %s", ex.getMessage());
+         throw OseeCoreException.wrap(ex);
+      }
+
+      return results;
+   }
+
+   /**
     * Archives eligible branches to cold storage. Finds branches in committed, rebaselined, or deleted state whose last
     * transaction is older than retentionDays, exports their data to a compressed binary file, and purges them from the
     * database.
