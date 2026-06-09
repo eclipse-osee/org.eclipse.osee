@@ -13,6 +13,9 @@
 /* stylelint-disable comment-empty-line-before */
 /* stylelint-disable color-hex-length */
 html {
+	/* Layout */
+	--osee-toolbar-height: 4rem;
+
 	/* M3 Blues */
 	--osee-blue-0: #000000;
 	--osee-blue-1: #00006e;

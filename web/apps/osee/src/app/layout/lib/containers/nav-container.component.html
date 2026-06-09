@@ -14,7 +14,7 @@
 	hasBackdrop="false"
 	(keydown.escape)="closeLeftLevelNav()">
 	<mat-sidenav-content
-		class="tw-h-[calc(100vh-4rem)]"
+		class="tw-h-[calc(100vh-var(--osee-toolbar-height))]"
 		(click)="closeLeftLevelNav()">
 		<osee-site-banner></osee-site-banner>
 		<router-outlet></router-outlet>

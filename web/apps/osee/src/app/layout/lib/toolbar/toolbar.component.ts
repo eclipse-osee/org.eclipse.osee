@@ -34,7 +34,8 @@ import { DisplayUserComponent } from './user-display/display-user.component';
 		MatProgressSpinner,
 	],
 	styles: [],
-	template: `<mat-toolbar class="tw-relative tw-h-16 tw-w-screen">
+	template: `<mat-toolbar
+		class="tw-relative tw-h-[var(--osee-toolbar-height)] tw-w-screen">
 		<div
 			class="tw-flex tw-w-[85vw] tw-min-w-[70vw] tw-max-w-[85vw] tw-items-center tw-justify-between">
 			<!-- Top Level Nav - Button -->
