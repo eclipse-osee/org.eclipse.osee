@@ -89,4 +89,12 @@ public interface DatastoreEndpoint {
    @DELETE
    @Path("user/cache")
    void clearUserCache();
+
+   /**
+    * Returns the site-wide banner configuration from Global Preferences.
+    */
+   @GET
+   @Path("banner")
+   @Produces(MediaType.APPLICATION_JSON)
+   SiteBannerConfig getSiteBannerConfig();
 }

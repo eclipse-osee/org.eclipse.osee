@@ -19,6 +19,7 @@ import {
 } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { SideNavService } from '@osee/shared/services/layout';
+import { SiteBannerComponent } from '@osee/shared/components';
 import { map } from 'rxjs';
 
 @Component({
@@ -31,6 +32,7 @@ import { map } from 'rxjs';
 		MatSidenav,
 		RouterOutlet,
 		AsyncPipe,
+		SiteBannerComponent,
 	],
 })
 export class NavContainerComponent {

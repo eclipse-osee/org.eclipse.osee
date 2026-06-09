@@ -110,6 +110,7 @@ public class CreateSystemBranches {
       tx.setSoleAttributeValue(prefArt, CoreAttributeTypes.ProductLinePreferences, JSON_PL_PREFERENCES);
       tx.setSoleAttributeValue(prefArt, CoreAttributeTypes.EmailCertificateInstructions,
          EMAIL_CERTIFICATE_INSTRUCTIONS);
+      tx.setSoleAttributeValue(prefArt, CoreAttributeTypes.SiteBannerContent, SITE_BANNER_CONTENT);
 
       tx.createArtifact(oseeConfig, CoreArtifactTokens.XViewerCustomization);
 
@@ -216,5 +217,15 @@ public class CreateSystemBranches {
    private static final String EMAIL_CERTIFICATE_INSTRUCTIONS = """
       For help generating a certificate, see:
       https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-self-signed-certificate
+      """;
+
+   private static final String SITE_BANNER_CONTENT = """
+      <strong>DATA CONTROLS</strong><br/>\
+      Production instances of this application may contain information with export controls. \
+      This banner can be updated to indicate the applicable controls.<br/><br/>\
+      <strong>PROPRIETARY MARKING</strong><br/>\
+      Place copyright here.<br/><br/>\
+      <em>To edit this banner or disable it, update the Site Banner Content attribute \
+      on the Global Preferences artifact (artifact id 18026) on the Common branch.</em>\
       """;
 }

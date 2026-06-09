@@ -23,7 +23,11 @@ import { osee_logo } from './osee_logo';
 @Component({
 	selector: 'osee-root',
 	templateUrl: './app.component.html',
-	imports: [RouterOutlet, NavContainerComponent, SnackbarWrapperComponent],
+	imports: [
+		RouterOutlet,
+		NavContainerComponent,
+		SnackbarWrapperComponent,
+	],
 })
 export class AppComponent {
 	private sideNavService = inject(SideNavService);
