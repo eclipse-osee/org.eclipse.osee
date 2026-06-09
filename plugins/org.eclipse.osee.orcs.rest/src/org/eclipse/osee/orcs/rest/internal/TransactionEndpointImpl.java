@@ -724,4 +724,30 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       return txColdStorage.listPurgedTransactionArchives();
    }
 
+   // ---- Preview ----
+
+   @Override
+   public Response previewPurgedTransaction(TransactionId txId, String fileName) {
+      TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      javax.ws.rs.core.StreamingOutput stream = output -> {
+         try (java.util.zip.ZipOutputStream zipOut = new java.util.zip.ZipOutputStream(output)) {
+            txColdStorage.previewTransaction(fileName, txId, zipOut);
+         }
+      };
+      return Response.ok(stream, "application/zip").header("Content-Disposition",
+         "attachment; filename=\"preview_tx_" + txId.getIdString() + ".zip\"").build();
+   }
+
+   @Override
+   public Response previewColdStorageBranch(BranchId branchId) {
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      javax.ws.rs.core.StreamingOutput stream = output -> {
+         try (java.util.zip.ZipOutputStream zipOut = new java.util.zip.ZipOutputStream(output)) {
+            coldStorage.previewBranch(branchId, zipOut);
+         }
+      };
+      return Response.ok(stream, "application/zip").header("Content-Disposition",
+         "attachment; filename=\"preview_branch_" + branchId.getIdString() + ".zip\"").build();
+   }
+
 }
