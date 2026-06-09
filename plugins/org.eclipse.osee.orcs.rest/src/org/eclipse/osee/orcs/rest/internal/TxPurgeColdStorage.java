@@ -374,6 +374,164 @@ public class TxPurgeColdStorage {
       return results;
    }
 
+   /**
+    * Generates a zip file containing SQL INSERT statements that would be executed to restore a purged transaction.
+    *
+    * @param fileName optional archive file name (auto-discovered if null)
+    * @param txId the transaction to preview
+    * @param zipOut the output stream to write the zip to
+    */
+   public void previewTransaction(String fileName, TransactionId txId, java.util.zip.ZipOutputStream zipOut)
+      throws IOException {
+
+      String coldPath = getColdStoragePath();
+      if (coldPath == null) {
+         throw new IOException("Unable to determine cold storage path");
+      }
+
+      if (fileName == null || fileName.isEmpty()) {
+         fileName = findArchiveForTransaction(coldPath, txId);
+         if (fileName == null) {
+            throw new IOException("No archive file found containing transaction " + txId);
+         }
+      }
+
+      String filePath = coldPath + File.separator + fileName;
+
+      try (FileInputStream fis = new FileInputStream(filePath);
+           GZIPInputStream gzis = new GZIPInputStream(fis);
+           DataInputStream dis = new DataInputStream(gzis)) {
+
+         String magic = dis.readUTF();
+         if (!MAGIC.equals(magic)) {
+            throw new IOException("Invalid file format: " + magic);
+         }
+         dis.readInt(); // version
+         dis.readLong(); // timestamp
+         int txCount = dis.readInt();
+
+         long targetTxId = txId.getId();
+
+         for (int t = 0; t < txCount; t++) {
+            dis.readUTF(); // TX_START
+            long fileTxId = dis.readLong();
+            long fileBranchId = dis.readLong();
+
+            if (fileTxId == targetTxId) {
+               writePreviewSqlForTransaction(dis, zipOut);
+               return;
+            } else {
+               skipTransactionData(dis);
+            }
+         }
+         throw new IOException("Transaction " + txId + " not found in archive");
+      }
+   }
+
+   private void writePreviewSqlForTransaction(DataInputStream dis, java.util.zip.ZipOutputStream zipOut)
+      throws IOException {
+      java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.OutputStreamWriter(zipOut));
+
+      // TX_DETAILS
+      dis.readUTF(); // "TX_DETAILS"
+      int txDetailsCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_tx_details.sql"));
+      for (int i = 0; i < txDetailsCount; i++) {
+         Object[] row = readTxDetailsRow(dis);
+         writer.printf("INSERT INTO osee_tx_details (BRANCH_ID, TRANSACTION_ID, AUTHOR, TIME, OSEE_COMMENT, TX_TYPE, COMMIT_ART_ID, BUILD_ID) VALUES (%d, %d, %d, '%s', '%s', %d, %d, %d);%n",
+            row[0], row[1], row[2], row[3], escapeSql((String) row[4]), (short) row[5], row[6], row[7]);
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      // TXS_DATA
+      dis.readUTF(); // "TXS_DATA"
+      int txsCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_txs.sql"));
+      for (int i = 0; i < txsCount; i++) {
+         Object[] row = readTxsRow(dis);
+         writer.printf("INSERT INTO osee_txs (BRANCH_ID, GAMMA_ID, TRANSACTION_ID, TX_CURRENT, MOD_TYPE, APP_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
+            row[0], row[1], row[2], (short) row[3], (short) row[4], row[5]);
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      // ARTIFACTS
+      dis.readUTF(); // "ARTIFACTS"
+      int artCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_artifact.sql"));
+      for (int i = 0; i < artCount; i++) {
+         long artId = dis.readLong();
+         long gammaId = dis.readLong();
+         long artTypeId = dis.readLong();
+         String guid = dis.readUTF();
+         writer.printf("INSERT INTO osee_artifact (ART_ID, GAMMA_ID, ART_TYPE_ID, GUID) VALUES (%d, %d, %d, '%s');%n",
+            artId, gammaId, artTypeId, escapeSql(guid));
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      // ATTRIBUTES
+      dis.readUTF(); // "ATTRIBUTES"
+      int attrCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_attribute.sql"));
+      for (int i = 0; i < attrCount; i++) {
+         long attrId = dis.readLong();
+         long gammaId = dis.readLong();
+         long artId = dis.readLong();
+         long attrTypeId = dis.readLong();
+         String value = dis.readUTF();
+         String uri = dis.readUTF();
+         writer.printf("INSERT INTO osee_attribute (ATTR_ID, GAMMA_ID, ART_ID, ATTR_TYPE_ID, VALUE, URI) VALUES (%d, %d, %d, %d, '%s', '%s');%n",
+            attrId, gammaId, artId, attrTypeId, escapeSql(value), escapeSql(uri));
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      // RELATIONS
+      dis.readUTF(); // "RELATIONS"
+      int relCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_relation_link.sql"));
+      for (int i = 0; i < relCount; i++) {
+         long relTypeId = dis.readLong();
+         long aArtId = dis.readLong();
+         long bArtId = dis.readLong();
+         long gammaId = dis.readLong();
+         long relLinkId = dis.readLong();
+         String rationale = dis.readUTF();
+         writer.printf("INSERT INTO osee_relation_link (REL_LINK_TYPE_ID, A_ART_ID, B_ART_ID, GAMMA_ID, REL_LINK_ID, RATIONALE) VALUES (%d, %d, %d, %d, %d, '%s');%n",
+            relTypeId, aArtId, bArtId, gammaId, relLinkId, escapeSql(rationale));
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      // RELATIONS2
+      dis.readUTF(); // "RELATIONS2"
+      int rel2Count = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_relation.sql"));
+      for (int i = 0; i < rel2Count; i++) {
+         long relType = dis.readLong();
+         long aArtId = dis.readLong();
+         long bArtId = dis.readLong();
+         long relArtId = dis.readLong();
+         int relOrder = dis.readInt();
+         long gammaId = dis.readLong();
+         writer.printf("INSERT INTO osee_relation (REL_TYPE, A_ART_ID, B_ART_ID, REL_ART_ID, REL_ORDER, GAMMA_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
+            relType, aArtId, bArtId, relArtId, relOrder, gammaId);
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      dis.readUTF(); // "TX_END"
+   }
+
+   private String escapeSql(String value) {
+      if (value == null) {
+         return "";
+      }
+      return value.replace("'", "''");
+   }
+
    // ---- Private helpers ----
 
    private String getColdStoragePath() {

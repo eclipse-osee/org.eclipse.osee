@@ -244,4 +244,28 @@ public interface TransactionEndpoint {
    @Path("cold/tx")
    @Produces(MediaType.APPLICATION_JSON)
    XResultData listPurgedTransactionArchives();
+
+   /**
+    * Preview the SQL INSERT statements that would be executed to restore a purged transaction. Returns a downloadable
+    * zip file containing one .sql file per table.
+    *
+    * @param txId the transaction ID to preview
+    * @param fileName optional archive file name (auto-discovered if not provided)
+    */
+   @POST
+   @Path("cold/preview/tx/{txId}")
+   @Produces("application/zip")
+   @Consumes(MediaType.TEXT_PLAIN)
+   Response previewPurgedTransaction(@PathParam("txId") TransactionId txId, @QueryParam("fileName") String fileName);
+
+   /**
+    * Preview the SQL INSERT statements that would be executed to restore a branch from cold storage. Returns a
+    * downloadable zip file containing one .sql file per table.
+    *
+    * @param branchId the branch to preview
+    */
+   @GET
+   @Path("cold/preview/{branchId}")
+   @Produces("application/zip")
+   Response previewColdStorageBranch(@PathParam("branchId") BranchId branchId);
 }

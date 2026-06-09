@@ -514,6 +514,106 @@ public class TxsColdStorage {
       return results;
    }
 
+   /**
+    * Generates a zip file containing SQL INSERT statements that would be executed to restore a branch from cold
+    * storage.
+    */
+   public void previewBranch(BranchId branchId, java.util.zip.ZipOutputStream zipOut) throws IOException {
+      String coldPath = getColdStoragePath();
+      if (coldPath == null) {
+         throw new IOException("Unable to determine cold storage path");
+      }
+
+      String[] exportFile = {null};
+      jdbcClient.runQuery(stmt -> {
+         exportFile[0] = stmt.getString("EXPORT_FILE");
+      }, SELECT_CATALOG_FOR_BRANCH, branchId);
+
+      if (exportFile[0] == null) {
+         throw new IOException("Branch " + branchId + " not found in cold storage catalog");
+      }
+
+      String filePath = coldPath + File.separator + exportFile[0];
+
+      try (FileInputStream fis = new FileInputStream(filePath);
+           GZIPInputStream gzis = new GZIPInputStream(fis);
+           DataInputStream dis = new DataInputStream(gzis)) {
+
+         String magic = dis.readUTF();
+         if (!MAGIC.equals(magic)) {
+            throw new IOException("Invalid file format: " + magic);
+         }
+         dis.readInt(); // version
+         dis.readLong(); // timestamp
+         int branchCount = dis.readInt();
+
+         long targetBranchId = branchId.getId();
+
+         for (int b = 0; b < branchCount; b++) {
+            dis.readUTF(); // BRANCH_START
+            long fileBranchId = dis.readLong();
+
+            if (fileBranchId == targetBranchId) {
+               writePreviewSqlForBranch(dis, zipOut);
+               return;
+            } else {
+               skipBranchData(dis);
+            }
+         }
+         throw new IOException("Branch " + branchId + " not found in archive file");
+      }
+   }
+
+   private void writePreviewSqlForBranch(DataInputStream dis, java.util.zip.ZipOutputStream zipOut) throws IOException {
+      java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.OutputStreamWriter(zipOut));
+
+      // BRANCH_DATA
+      dis.readUTF(); // "BRANCH_DATA"
+      int branchRowCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_branch.sql"));
+      for (int i = 0; i < branchRowCount; i++) {
+         Object[] row = readBranchRowFromFile(dis);
+         writer.printf("INSERT INTO osee_branch (BRANCH_ID, BRANCH_TYPE, BRANCH_STATE, BRANCH_NAME, PARENT_BRANCH_ID, PARENT_TRANSACTION_ID, BASELINE_TRANSACTION_ID, ASSOCIATED_ART_ID, ARCHIVED, INHERIT_ACCESS_CONTROL) VALUES (%d, %d, %d, '%s', %d, %d, %d, %d, %d, %d);%n",
+            row[0], (short) row[1], (short) row[2], escapeSql((String) row[3]), row[4], row[5], row[6], row[7],
+            (short) row[8], (short) row[9]);
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      // TX_DETAILS_DATA
+      dis.readUTF(); // "TX_DETAILS_DATA"
+      int txDetailsCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_tx_details.sql"));
+      for (int i = 0; i < txDetailsCount; i++) {
+         Object[] row = readTxDetailsRow(dis);
+         writer.printf("INSERT INTO osee_tx_details (BRANCH_ID, TRANSACTION_ID, AUTHOR, TIME, OSEE_COMMENT, TX_TYPE, COMMIT_ART_ID, BUILD_ID) VALUES (%d, %d, %d, '%s', '%s', %d, %d, %d);%n",
+            row[0], row[1], row[2], row[3], escapeSql((String) row[4]), (short) row[5], row[6], row[7]);
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      // TXS_ARCHIVED_DATA
+      dis.readUTF(); // "TXS_ARCHIVED_DATA"
+      int txsCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_txs_archived.sql"));
+      for (int i = 0; i < txsCount; i++) {
+         Object[] row = readTxsArchivedRow(dis);
+         writer.printf("INSERT INTO osee_txs_archived (BRANCH_ID, GAMMA_ID, TRANSACTION_ID, TX_CURRENT, MOD_TYPE, APP_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
+            row[0], row[1], row[2], (short) row[3], (short) row[4], row[5]);
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      dis.readUTF(); // "BRANCH_END"
+   }
+
+   private String escapeSql(String value) {
+      if (value == null) {
+         return "";
+      }
+      return value.replace("'", "''");
+   }
+
    // ---- Private helpers ----
 
    private String getColdStoragePath() {
