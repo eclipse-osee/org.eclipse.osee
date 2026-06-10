@@ -19,14 +19,13 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -273,32 +272,23 @@ public class HealthUtils {
    }
 
    /*
-    * Returns SSLContext configured with a TrustManager that trusts all certificates.
-    * Only use when the HTTPS URLs are owned by OSEE (internal health-check endpoints).
+    * Returns an SSLContext using the JVM's default trust store for certificate validation.
+    * Uses TLS 1.3 for secure internal OSEE health-check communication.
     */
    private static SSLContext getSSLContext() throws NoSuchAlgorithmException, KeyManagementException {
-      TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-         @Override
-         public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-            return new X509Certificate[0];
-         }
+      try {
+         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+         tmf.init((KeyStore) null); // Uses the JVM default trust store (cacerts)
 
-         @Override
-         public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            // Intentionally trusts all clients for internal OSEE health-check communication
-            LOGGER.fine("Trusting client certificate for internal health check");
-         }
-
-         @Override
-         public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            // Intentionally trusts all servers for internal OSEE health-check communication
-            LOGGER.fine("Trusting server certificate for internal health check");
-         }
-      }};
-
-      SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-      sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-      return sslContext;
+         SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+         sslContext.init(null, tmf.getTrustManagers(), new java.security.SecureRandom());
+         return sslContext;
+      } catch (java.security.KeyStoreException ex) {
+         LOGGER.log(Level.WARNING, "Failed to initialize default trust store, falling back to TLS default", ex);
+         SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+         sslContext.init(null, null, new java.security.SecureRandom());
+         return sslContext;
+      }
    }
 
    public static void setErrorMsg(String message) {

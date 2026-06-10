@@ -163,14 +163,20 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
 
       @Override
       public Object execute(String cmd) {
-         String methodName = commandKey(cmd);
          Map<String, CommandProvider> commands = getCommands(context);
-         CommandProvider commandProvider = commands.get(methodName);
-         Class<?> providerClass = commandProvider.getClass();
+         String methodName = commandKey(cmd);
 
+         // Validate command exists in the registered set before reflective invocation
+         if (!commands.containsKey(methodName)) {
+            print(String.format("Unknown command: %s%n", cmd));
+            return null;
+         }
+
+         CommandProvider commandProvider = commands.get(methodName);
          Object toReturn = null;
          try {
-            Method method = providerClass.getMethod(methodName, CommandInterpreter.class);
+            // Only invoke methods that are explicitly registered as OSGi console commands
+            Method method = commandProvider.getClass().getMethod(methodName, CommandInterpreter.class);
             toReturn = method.invoke(commandProvider, this);
          } catch (Exception ex) {
             print(ex);
