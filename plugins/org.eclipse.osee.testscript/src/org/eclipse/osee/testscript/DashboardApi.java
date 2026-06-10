@@ -56,4 +56,6 @@ public interface DashboardApi {
 
    Response exportDashboardSetData(BranchId branch, ArtifactId ciSet, ArtifactId viewId);
 
+   Response downloadLatestTmos(BranchId branch, ArtifactId ciSet);
+
 }

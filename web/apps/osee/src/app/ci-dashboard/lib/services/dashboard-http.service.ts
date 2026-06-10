@@ -126,4 +126,14 @@ export class DashboardHttpService {
 			}
 		);
 	}
+
+	downloadLatestTmos(branchId: string, ciSetId: string) {
+		return this.http.get(
+			`${apiURL}/script/dashboard/${branchId}/${ciSetId}/download/tmos`,
+			{
+				responseType: 'blob',
+				observe: 'response',
+			}
+		);
+	}
 }

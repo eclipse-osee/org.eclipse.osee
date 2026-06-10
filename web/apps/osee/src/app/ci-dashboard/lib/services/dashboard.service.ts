@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
-import { combineLatest, filter, repeat, switchMap, take, tap } from 'rxjs';
+import { combineLatest, filter, map, repeat, switchMap, take, tap } from 'rxjs';
 import { DashboardHttpService } from './dashboard-http.service';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
@@ -283,6 +283,48 @@ export class DashboardService {
 			switchMap(([branchId, ciSetId]) =>
 				this.dashboardHttpService.exportSetData(branchId, ciSetId)
 			)
+		);
+	}
+
+	downloadLatestTmos() {
+		return combineLatest([
+			this.uiService.branchId,
+			this.uiService.ciSetId,
+		]).pipe(
+			take(1),
+			filter(
+				([branchId, ciSetId]) =>
+					branchId !== '' &&
+					branchId !== '-1' &&
+					branchId !== '0' &&
+					ciSetId !== '-1' &&
+					ciSetId !== '0'
+			),
+			switchMap(([branchId, ciSetId]) =>
+				this.dashboardHttpService.downloadLatestTmos(branchId, ciSetId)
+			),
+			map((response) => {
+				const blob = response.body;
+				if (blob && blob.size !== 0) {
+					const url = URL.createObjectURL(blob);
+					const disposition = response.headers.get(
+						'Content-Disposition'
+					);
+					let filename = 'latest_tmos.zip';
+					if (disposition) {
+						const match = disposition.match(/filename="?([^"]+)"?/);
+						if (match) {
+							filename = match[1];
+						}
+					}
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', filename);
+					document.body.appendChild(link);
+					link.click();
+					link.remove();
+				}
+			})
 		);
 	}
 

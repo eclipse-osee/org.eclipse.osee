@@ -111,4 +111,9 @@ public interface DashboardEndpoint {
    @Produces("text/csv")
    public Response exportDashboardSetData(@PathParam("branch") BranchId branch, @PathParam("ciSet") ArtifactId ciSet,
       @QueryParam("viewId") ArtifactId viewId);
+
+   @GET
+   @Path("{branch}/{ciSet}/download/tmos")
+   @Produces("application/zip")
+   public Response downloadLatestTmos(@PathParam("branch") BranchId branch, @PathParam("ciSet") ArtifactId ciSet);
 }

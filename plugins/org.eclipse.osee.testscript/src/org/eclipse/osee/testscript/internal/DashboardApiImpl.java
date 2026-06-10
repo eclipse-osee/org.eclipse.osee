@@ -15,6 +15,8 @@ package org.eclipse.osee.testscript.internal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -38,6 +40,9 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -50,6 +55,7 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -70,6 +76,7 @@ import org.eclipse.osee.testscript.ScriptTeamToken;
 import org.eclipse.osee.testscript.TimelineDayToken;
 import org.eclipse.osee.testscript.TimelineScriptToken;
 import org.eclipse.osee.testscript.TimelineStatsToken;
+import org.eclipse.osee.testscript.TmoFileApi;
 
 /**
  * @author Stephen J. Molaro
@@ -79,11 +86,13 @@ public class DashboardApiImpl implements DashboardApi {
    private final ScriptResultApi resultApi;
    private final ScriptSetApi setApi;
    private final OrcsApi orcsApi;
+   private final TmoFileApi tmoFileApi;
 
-   public DashboardApiImpl(ScriptResultApi resultApi, ScriptSetApi setApi, OrcsApi orcsApi) {
+   public DashboardApiImpl(ScriptResultApi resultApi, ScriptSetApi setApi, OrcsApi orcsApi, TmoFileApi tmoFileApi) {
       this.resultApi = resultApi;
       this.setApi = setApi;
       this.orcsApi = orcsApi;
+      this.tmoFileApi = tmoFileApi;
    }
 
    @Override
@@ -477,6 +486,89 @@ public class DashboardApiImpl implements DashboardApi {
 
       String filename = "ci_export_set_" + ciSet.getIdString() + ".csv";
       return Response.ok(stream).type("text/csv").header("Content-Disposition",
+         "attachment; filename=\"" + filename + "\"").build();
+   }
+
+   @Override
+   public Response downloadLatestTmos(BranchId branch, ArtifactId ciSet) {
+      ScriptSetToken setToken = this.setApi.get(branch, ciSet);
+      if (setToken == null || setToken.isInvalid()) {
+         return Response.status(406, "CI Set not found").build();
+      }
+
+      Collection<ScriptResultToken> setResults =
+         this.resultApi.getAllForSetWithScripts(branch, ArtifactId.SENTINEL, ciSet);
+
+      Map<ArtifactId, ScriptResultToken> latestByDef = new HashMap<>();
+      for (ScriptResultToken res : setResults) {
+         ArtifactReadable resReadable = res.getArtifactReadable();
+         ArtifactReadable defReadable = resReadable.getRelated(
+            CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef).getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
+
+         ArtifactId defId = defReadable.getArtifactId();
+         if (defId.isInvalid()) {
+            continue;
+         }
+
+         latestByDef.merge(defId, res, (cur, next) -> {
+            Date curDate = cur.getExecutionDate();
+            Date nextDate = next.getExecutionDate();
+            if (curDate == null) return next;
+            if (nextDate == null) return cur;
+            return nextDate.after(curDate) ? next : cur;
+         });
+      }
+
+      if (latestByDef.isEmpty()) {
+         return Response.status(406, "No results found for set").build();
+      }
+
+      List<File> tmoFiles = new LinkedList<>();
+      for (ScriptResultToken result : latestByDef.values()) {
+         File tmoFile = new File(tmoFileApi.getTmoPath(result));
+         if (tmoFile.exists()) {
+            tmoFiles.add(tmoFile);
+         }
+      }
+
+      if (tmoFiles.isEmpty()) {
+         return Response.status(406, "No TMO files found on disk for set").build();
+      }
+
+      String setName = setToken.getName() != null ? setToken.getName().getValue() : "unknown";
+      String branchName = branch.getIdString();
+
+      Branch branchObj =
+         orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+      if (branchObj.isValid()) {
+         branchName = branchObj.getName();
+      }
+
+      String date = LocalDate.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE);
+      String filename =
+         (branchName + "_" + setName + "_" + date + "_latest_tmos.zip").replaceAll("[^a-zA-Z0-9._\\-]", "_");
+
+      final List<File> filesToZip = tmoFiles;
+      StreamingOutput stream = output -> {
+         try (ZipOutputStream zipOut = new ZipOutputStream(output)) {
+            for (File tmo : filesToZip) {
+               try (FileInputStream fis = new FileInputStream(tmo);
+                  ZipInputStream zis = new ZipInputStream(fis)) {
+                  ZipEntry tmoEntry = zis.getNextEntry();
+                  if (tmoEntry != null) {
+                     zipOut.putNextEntry(new ZipEntry(tmoEntry.getName()));
+                     zis.transferTo(zipOut);
+                     zipOut.closeEntry();
+                  }
+               }
+            }
+         } catch (Exception e) {
+            throw new WebApplicationException("Failed to generate TMO zip for set", e);
+         }
+      };
+
+      return Response.ok(stream).type("application/zip").header("Content-Disposition",
          "attachment; filename=\"" + filename + "\"").build();
    }
 

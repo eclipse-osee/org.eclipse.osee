@@ -28,7 +28,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { merge } from 'rxjs';
+import { merge, take } from 'rxjs';
 import { map, switchMap, skip } from 'rxjs/operators';
 
 @Component({
@@ -70,6 +70,18 @@ import { map, switchMap, skip } from 'rxjs/operators';
 					">
 					<mat-icon>download</mat-icon>
 					<span>Download CSV for Set</span>
+				</button>
+				<button
+					mat-menu-item
+					(click)="triggerTmoDownload()"
+					[disabled]="!isSetValid()"
+					[matTooltip]="
+						isSetValid()
+							? 'Download a ZIP of the most recent TMO files for the selected CI Set'
+							: 'Select a valid CI Set to enable TMO download'
+					">
+					<mat-icon>folder_zip</mat-icon>
+					<span>Download most recent TMOs</span>
 				</button>
 			</mat-menu>
 			<a
@@ -147,6 +159,10 @@ export class OverflowMenuComponent {
 
 	triggerSetExport() {
 		this.exportSetDataTrigger.update((v) => v + 1);
+	}
+
+	triggerTmoDownload() {
+		this.dashboardService.downloadLatestTmos().pipe(take(1)).subscribe();
 	}
 
 	isBranchValid = computed(() => {
