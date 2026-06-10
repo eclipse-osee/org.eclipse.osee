@@ -1,3 +1,9 @@
+---
+summary: "Angular 18+, Material, Tailwind, signals, httpResource patterns for OSEE web"
+tags: [web, angular, material, tailwind, playwright]
+fileMatch: "web/**"
+---
+
 # OSEE Web Coding Standards
 
 These instructions apply when working with code under the `web/` directory.

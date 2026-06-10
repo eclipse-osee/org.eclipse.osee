@@ -3,4 +3,4 @@ inclusion: fileMatch
 fileMatchPattern: "web/**"
 ---
 
-#[[file:web/AGENTS.md]]
+#[[file:docs/ai/web/coding-standards.md]]

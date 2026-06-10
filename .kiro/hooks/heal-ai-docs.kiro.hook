@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Heal AI Docs",
+  "description": "Scans docs/ai/ for missing frontmatter, missing steering pointers, and orphaned pointers — fixes everything.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Reconcile docs/ai/ with .kiro/steering/conditional/docs/:\n\n1. Scan all .md files in docs/ai/ (excluding CONTRIBUTING.md).\n2. Any doc without YAML frontmatter (summary, tags, fileMatch) → read it, infer appropriate values, add the frontmatter.\n3. Any doc with frontmatter but no matching pointer in .kiro/steering/conditional/docs/ → create the pointer. Pointer filename = doc filename.\n4. Any pointer in .kiro/steering/conditional/docs/ referencing a docs/ai/ file that no longer exists → delete the pointer.\n5. If a doc is in the wrong subfolder (not matching its subsystem), move it to the correct path and update its pointer.\n\nReport what was fixed."
+  }
+}
