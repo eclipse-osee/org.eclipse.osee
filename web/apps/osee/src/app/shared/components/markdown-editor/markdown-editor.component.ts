@@ -34,6 +34,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { UiService } from '@osee/shared/services';
@@ -98,6 +99,7 @@ export class MarkdownEditorComponent {
 	protected readonly mdExamples = mdExamples;
 
 	private readonly dialog = inject(MatDialog);
+	private readonly snackBar = inject(MatSnackBar);
 	private readonly uiService = inject(UiService);
 	private readonly imageService = inject(MarkdownImageService);
 	private readonly artExpHttpService = inject(ArtifactExplorerHttpService);
@@ -556,8 +558,11 @@ export class MarkdownEditorComponent {
 		);
 
 		if (!parsedTable) {
-			this.uiService.ErrorText =
-				'No table found at the cursor position.';
+			this.snackBar.open(
+				'No table found at the cursor position.',
+				'Dismiss',
+				{ duration: 3000 }
+			);
 			return;
 		}
 
