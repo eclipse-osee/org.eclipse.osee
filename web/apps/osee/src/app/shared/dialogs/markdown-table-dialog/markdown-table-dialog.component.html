@@ -55,14 +55,14 @@
 	</div>
 
 	<!-- Scrollable table area -->
-	<div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-p-4">
-		<table class="tw-w-full tw-border-collapse" style="border-spacing: 0">
-			<thead>
+	<div class="tw-min-h-0 tw-flex-1 tw-overflow-auto">
+		<table class="tw-w-full" style="border-spacing: 0; border-collapse: separate">
+			<thead class="tw-sticky tw-top-0 tw-z-20">
 				<!-- Alignment controls row -->
 				<tr>
-					<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-osee-neutral-5 tw-p-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-5"></th>
+					<th class="tw-sticky tw-left-0 tw-z-30 tw-border-b tw-border-r tw-border-osee-neutral-25 tw-bg-white tw-p-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6"></th>
 					@for (alignment of alignments(); track $index) {
-						<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-osee-neutral-5 tw-p-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-5">
+						<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-white tw-p-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
 							<div class="tw-flex tw-items-center tw-justify-center tw-gap-1">
 								<button
 									mat-icon-button
@@ -103,11 +103,11 @@
 				</tr>
 				<!-- Header row -->
 				<tr>
-					<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-osee-neutral-5 tw-p-1 tw-text-center tw-text-xs tw-font-medium tw-text-osee-neutral-60 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-5">
+					<th class="tw-sticky tw-left-0 tw-z-30 tw-border-b tw-border-r tw-border-osee-neutral-25 tw-bg-white tw-p-1 tw-text-center tw-text-xs tw-font-medium tw-text-osee-neutral-60 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
 						H
 					</th>
 					@for (header of headers(); track $index) {
-						<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-osee-neutral-5 tw-px-1 tw-py-0 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-5">
+						<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-white tw-px-1 tw-py-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
 							<mat-form-field
 								class="tw-w-full"
 								subscriptSizing="dynamic"
@@ -132,7 +132,7 @@
 			<tbody>
 				@for (row of cells(); track $index; let rowIdx = $index) {
 					<tr>
-						<td class="tw-border-b tw-border-osee-neutral-25 tw-bg-white tw-px-1 tw-py-0 tw-text-center dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
+						<td class="tw-sticky tw-left-0 tw-z-10 tw-border-b tw-border-r tw-border-osee-neutral-25 tw-bg-white tw-px-1 tw-py-0 tw-text-center dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
 							<div class="tw-flex tw-items-center tw-justify-center tw-gap-1">
 								<div class="tw-flex tw-flex-col">
 									<button
