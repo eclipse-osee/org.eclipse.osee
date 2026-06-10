@@ -97,7 +97,7 @@ export class MarkdownTableDialogComponent {
 		if (isNaN(value) || value < 1) {
 			return;
 		}
-		const newCols = Math.min(20, value);
+		const newCols = Math.min(50, value);
 		this.resizeTable(newCols, this.rowCount());
 	}
 
@@ -109,7 +109,7 @@ export class MarkdownTableDialogComponent {
 		if (isNaN(value) || value < 1) {
 			return;
 		}
-		const newRows = Math.min(50, value);
+		const newRows = Math.min(100, value);
 		this.resizeTable(this.colCount(), newRows);
 	}
 
