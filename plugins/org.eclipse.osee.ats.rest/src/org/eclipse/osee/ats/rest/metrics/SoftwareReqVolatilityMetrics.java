@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.WebApplicationException;
@@ -27,13 +28,13 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -63,7 +64,6 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
    private final Date endDate;
    private final boolean allTime;
    private final boolean countImpacts;
-   Collection<IAtsTask> tasksMissingChangeType = new ArrayList<>();
    private BranchId baselineBranchFromVersion = BranchId.SENTINEL;
 
    private ExcelXmlWriter writer;
@@ -127,14 +127,36 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
    }
 
    private Collection<IAtsTeamWorkflow> getDatedWorkflows() {
-      ArtifactToken versionId = atsApi.getQueryService().getArtifactFromTypeAndAttribute(AtsArtifactTypes.Version,
-         CoreAttributeTypes.Name, targetVersion, atsApi.getAtsBranch());
-      IAtsVersion version = atsApi.getVersionService().getVersionById(versionId);
-      baselineBranchFromVersion = version.getBaselineBranch();
-      Collection<IAtsTeamWorkflow> workflowArts = atsApi.getVersionService().getTargetedForTeamWorkflows(version);
+      ArtifactReadable version =
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andTypeEquals(AtsArtifactTypes.Version).andId(
+            ArtifactId.valueOf(targetVersion)).followFork(
+               AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow).followFork(
+                  AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition).asArtifact();
+
+      List<ArtifactReadable> teamDefList =
+         version.getRelated(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition).getList();
+      programVersion = teamDefList.isEmpty() ? "" : teamDefList.get(0).getName();
+
+      // Resolve the baseline branch from the version artifact
+      String baselineBranchStr = version.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "");
+      if (!baselineBranchStr.isEmpty()) {
+         baselineBranchFromVersion = BranchId.valueOf(baselineBranchStr);
+      }
+
+      // Load all related workflow artifacts with their attributes in a single fetch
+      List<ArtifactReadable> workflowArts =
+         version.getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow).getList();
+
+      List<IAtsTeamWorkflow> teamWorkflows = new LinkedList<>();
+      for (ArtifactReadable workflowArt : workflowArts) {
+         IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(workflowArt);
+         if (teamWf != null) {
+            teamWorkflows.add(teamWf);
+         }
+      }
 
       Collection<IAtsTeamWorkflow> reqWorkflows = new ArrayList<IAtsTeamWorkflow>();
-      for (IAtsTeamWorkflow workflow : workflowArts) {
+      for (IAtsTeamWorkflow workflow : teamWorkflows) {
          try {
             boolean isReqWf = false;
             isReqWf = workflow.isWorkType(WorkType.Requirements);
@@ -167,8 +189,6 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
             continue;
          }
       }
-      programVersion = atsApi.getRelationResolver().getRelatedOrSentinel(version,
-         AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition).getName();
 
       return reqWorkflows;
    }
@@ -178,34 +198,29 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       if (branch == null || branch.isInvalid()) {
          return List.of();
       }
-      String changeReportData = "";
       List<ChangeItem> changeItems = new ArrayList<>();
 
       try {
-         boolean attributeExists =
-            atsApi.getAttributeResolver().hasAttribute(reqWorkflow, CoreAttributeTypes.BranchDiffData);
-         if (attributeExists) {
-            changeReportData =
-               atsApi.getAttributeResolver().getSoleAttributeValue(reqWorkflow, CoreAttributeTypes.BranchDiffData, "");
-         }
+         // Read cached diff data directly from the artifact's store object
+         ArtifactReadable wfArt = (ArtifactReadable) reqWorkflow.getStoreObject();
+         String changeReportData = wfArt.getSoleAttributeValue(CoreAttributeTypes.BranchDiffData, "");
+
          if (changeReportData.isEmpty()) {
             changeItems = orcsApi.getBranchOps().compareBranch(branch);
-            if (!changeItems.isEmpty() && !attributeExists) {
+            if (!changeItems.isEmpty()) {
                changeReportData = JsonUtil.toJson(changeItems);
                TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(),
                   "Generate Diff for Requirement Metrics");
-               tx.createAttribute(atsApi.getArtifactResolver().get(reqWorkflow), CoreAttributeTypes.BranchDiffData,
-                  changeReportData);
+               tx.createAttribute(wfArt, CoreAttributeTypes.BranchDiffData, changeReportData);
                tx.commit();
             }
+         } else {
+            changeItems = JsonUtil.readValues(changeReportData, ChangeItem.class);
          }
       } catch (Exception ex) {
          return List.of();
       }
 
-      if (changeItems.isEmpty() && !changeReportData.isEmpty()) {
-         changeItems = JsonUtil.readValues(changeReportData, ChangeItem.class);
-      }
       return changeItems;
    }
 
@@ -281,6 +296,50 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
             }
          }
 
+         // Batch-resolve artifact types: collect all unique artifact IDs from change items
+         List<ArtifactId> artIdsToResolve = new ArrayList<>();
+         for (ChangeItem changeItem : attrChangeItems) {
+            artIdsToResolve.add(changeItem.getArtId());
+         }
+
+         // Resolve branches once per workflow using orcsApi
+         BranchToken workingBranch = atsApi.getBranchService().getBranch(reqWorkflow);
+         BranchId parentBranchId = BranchId.SENTINEL;
+         if (workingBranch.isValid()) {
+            try {
+               parentBranchId = orcsApi.getQueryFactory().branchQuery().andId(
+                  workingBranch).getResults().getExactlyOne().getParentBranch();
+            } catch (Exception ex) {
+               // branch query failed, leave as sentinel
+            }
+         }
+
+         // Batch-load artifact tokens from parent branch in a single query
+         Map<ArtifactId, ArtifactToken> resolvedArtifacts = new HashMap<>();
+         if (!artIdsToResolve.isEmpty() && parentBranchId.isValid()) {
+            for (ArtifactToken art : orcsApi.getQueryFactory().fromBranch(parentBranchId).includeDeletedAttributes(
+               true).includeDeletedArtifacts(true).andIds(artIdsToResolve).asArtifactTokens()) {
+               resolvedArtifacts.put(ArtifactId.valueOf(art.getId()), art);
+            }
+         }
+
+         // Fallback: batch-load any unresolved artifacts from working branch
+         List<ArtifactId> unresolvedIds = new ArrayList<>();
+         for (ArtifactId artId : artIdsToResolve) {
+            if (!resolvedArtifacts.containsKey(artId)) {
+               unresolvedIds.add(artId);
+            }
+         }
+         if (!unresolvedIds.isEmpty() && workingBranch != null && workingBranch.isValid()) {
+            for (ArtifactToken art : orcsApi.getQueryFactory().fromBranch(workingBranch).includeDeletedAttributes(
+               true).includeDeletedArtifacts(true).andIds(unresolvedIds).asArtifactTokens()) {
+               resolvedArtifacts.put(ArtifactId.valueOf(art.getId()), art);
+            }
+         }
+
+         // Batch-check safety and security if counting impacts — collect SW req art IDs first
+         List<ArtifactId> swReqArtIds = new ArrayList<>();
+
          int swAdded = 0;
          int swModified = 0;
          int swDeleted = 0;
@@ -297,23 +356,20 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          int numSecurity = 0;
 
          for (ChangeItem changeItem : attrChangeItems) {
-            BranchToken workingBranch = atsApi.getBranchService().getBranch(reqWorkflow);
-            BranchToken parentBranch = atsApi.getBranchService().getParentBranch(workingBranch);
-            ArtifactToken artToken = orcsApi.getQueryFactory().fromBranch(parentBranch).includeDeletedAttributes(
-               true).includeDeletedArtifacts(true).andId(changeItem.getArtId()).asArtifactTokenOrSentinel();
-            ArtifactTypeToken artType = artToken.getArtifactType();
+            ArtifactToken artToken = resolvedArtifacts.get(changeItem.getArtId());
+            ArtifactTypeToken artType = artToken != null ? artToken.getArtifactType() : ArtifactTypeToken.SENTINEL;
+
             if (artType.isInvalid()) {
-               artType = orcsApi.tokenService().getArtifactTypeOrSentinel(
-                  artChangeItems.get(changeItem.getArtId()).getItemTypeId().getId());
+               // Fallback to artifact change item type info from the change report
+               ChangeItem artChangeItem = artChangeItems.get(changeItem.getArtId());
+               if (artChangeItem != null) {
+                  artType = orcsApi.tokenService().getArtifactTypeOrSentinel(artChangeItem.getItemTypeId().getId());
+               }
                if (artType.isInvalid()) {
-                  artType = orcsApi.getQueryFactory().fromBranch(workingBranch).includeDeletedAttributes(
-                     true).includeDeletedArtifacts(true).andId(
-                        changeItem.getArtId()).asArtifactTokenOrSentinel().getArtifactType();
-                  if (artType.isInvalid()) {
-                     continue;
-                  }
+                  continue;
                }
             }
+
             if (artType.inheritsFrom(CoreArtifactTypes.AbstractSoftwareRequirement)) {
                ModificationType modType = changeItem.getNetChange().getModType();
                if (modType.equals(ModificationType.NEW)) {
@@ -324,15 +380,9 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
                   ModificationType.ARTIFACT_DELETED)) {
                   swDeleted++;
                }
-               if (countImpacts) {
-                  if (isSafetyRelated(artToken)) {
-                     ++numSafety;
-                  }
-                  if (isSecurityRelated(artToken)) {
-                     ++numSecurity;
-                  }
+               if (countImpacts && artToken != null) {
+                  swReqArtIds.add(artToken);
                }
-
             } else if (artType.inheritsFrom(CoreArtifactTypes.AbstractSubsystemRequirement)) {
                ModificationType modType = changeItem.getNetChange().getModType();
                if (modType.equals(ModificationType.NEW)) {
@@ -366,6 +416,15 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
             } else {
                continue;
             }
+         }
+
+         // Batch-check safety and security impacts
+         if (countImpacts && !swReqArtIds.isEmpty() && baselineBranchFromVersion.isValid()) {
+            numSafety = orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andIds(
+               swReqArtIds).and(CoreAttributeTypes.IDAL, List.of("A", "B", "C"),
+                  QueryOption.CONTAINS_MATCH_ANY).getCount();
+            numSecurity = orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andIds(
+               swReqArtIds).andExists(CoreAttributeTypes.PotentialSecurityImpact).getCount();
          }
 
          buffer[7] = swAdded;
@@ -446,16 +505,6 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          }
       }
       writer.endSheet();
-   }
-
-   private boolean isSecurityRelated(ArtifactToken artToken) {
-      return orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andId(artToken).andExists(
-         CoreAttributeTypes.PotentialSecurityImpact).exists();
-   }
-
-   private boolean isSafetyRelated(ArtifactToken artToken) {
-      return orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andId(artToken).and(
-         CoreAttributeTypes.IDAL, List.of("A", "B", "C"), QueryOption.CONTAINS_MATCH_ANY).exists();
    }
 
    private int countAbstractRequirements() {

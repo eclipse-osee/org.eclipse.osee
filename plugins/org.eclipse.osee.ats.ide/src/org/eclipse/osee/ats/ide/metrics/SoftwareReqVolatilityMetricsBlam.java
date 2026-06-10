@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -81,8 +82,8 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       if (xWidget.getLabel().equalsIgnoreCase(VERSION)) {
          versions = new ArrayList<>();
          versionWidget = (XHyperlabelVersionSelection) xWidget;
@@ -110,57 +111,66 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
-      Displays.ensureInDisplayThread(new Runnable() {
+      // Read widget values on the display thread since widgets are SWT-bound
+      final Version[] selectedVersionHolder = new Version[1];
+      Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            Response res = null;
-            BufferedWriter bwr = null;
-            try {
-               String fileLocation = String.format("C:%sUsers%s%s%sDownloads", File.separator, File.separator,
-                  System.getProperty("user.name"), File.separator);
-
-               Version selectedVersion = versionWidget.getSelectedVersion();
-
-               startDate = (Date) variableMap.getValue(START_DATE);
-               endDate = (Date) variableMap.getValue(END_DATE);
-               allTime = variableMap.getBoolean(ALL_TIME);
-               includeImpacts = variableMap.getBoolean(INCLUDE_IMPACTS);
-               res = AtsApiService.get().getServerEndpoints().getMetricsEp().softwareReqVolatility(
-                  selectedVersion.getName(), startDate, endDate, allTime, includeImpacts);
-
-               if (res == null) {
-                  return;
-               }
-
-               String filePath = String.format("%s%s%s", fileLocation, File.separator, res.getHeaderString("FileName"));
-               bwr = new BufferedWriter(new FileWriter(new File(filePath)));
-
-               GZIPInputStream gzInputStream = (GZIPInputStream) res.getEntity();
-               StringBuffer sb = new StringBuffer();
-               BufferedReader in = new BufferedReader(new InputStreamReader(gzInputStream));
-               String inputLine = "";
-               while ((inputLine = in.readLine()) != null) {
-                  sb.append(inputLine);
-               }
-               bwr.write(sb.toString());
-               bwr.flush();
-               bwr.close();
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            } finally {
-               if (res != null) {
-                  res.close();
-               }
-               if (bwr != null) {
-                  try {
-                     bwr.close();
-                  } catch (IOException e) {
-                     //do nothing
-                  }
-               }
-            }
-         };
+            selectedVersionHolder[0] = versionWidget.getSelectedVersion();
+         }
       });
+
+      Version selectedVersion = selectedVersionHolder[0];
+      if (selectedVersion == null) {
+         return;
+      }
+
+      startDate = (Date) variableMap.getValue(START_DATE);
+      endDate = (Date) variableMap.getValue(END_DATE);
+      allTime = variableMap.getBoolean(ALL_TIME);
+      includeImpacts = variableMap.getBoolean(INCLUDE_IMPACTS);
+
+      // Perform the REST call and file I/O off the UI thread (runOperation is already on a background job)
+      Response res = null;
+      BufferedWriter bwr = null;
+      try {
+         String fileLocation = String.format("C:%sUsers%s%s%sDownloads", File.separator, File.separator,
+            System.getProperty("user.name"), File.separator);
+
+         res = AtsApiService.get().getServerEndpoints().getMetricsEp().softwareReqVolatility(
+            selectedVersion.getIdString(), startDate, endDate, allTime, includeImpacts);
+
+         if (res == null) {
+            return;
+         }
+
+         String filePath = String.format("%s%s%s", fileLocation, File.separator, res.getHeaderString("FileName"));
+         bwr = new BufferedWriter(new FileWriter(new File(filePath)));
+
+         GZIPInputStream gzInputStream = (GZIPInputStream) res.getEntity();
+         StringBuffer sb = new StringBuffer();
+         BufferedReader in = new BufferedReader(new InputStreamReader(gzInputStream));
+         String inputLine = "";
+         while ((inputLine = in.readLine()) != null) {
+            sb.append(inputLine);
+         }
+         bwr.write(sb.toString());
+         bwr.flush();
+         bwr.close();
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      } finally {
+         if (res != null) {
+            res.close();
+         }
+         if (bwr != null) {
+            try {
+               bwr.close();
+            } catch (IOException e) {
+               OseeLog.log(Activator.class, Level.WARNING, "Error closing writer", e);
+            }
+         }
+      }
    }
 
    @Override
