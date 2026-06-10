@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.accessor.types.ArtifactQueryRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -100,12 +101,21 @@ public interface ScriptDefApi {
       Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
 
-   Collection<ScriptDefToken> getAllByRelationThroughPartialFilter(BranchId branch,
-      LinkedList<RelationTypeSide> relations, ArtifactId relatedId, String filter,
-      Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount, long pageSize,
-      AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
-
    int getAllByRelationThroughAndCount(BranchId branch, LinkedList<RelationTypeSide> relations, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId);
+
+   Collection<ScriptDefToken> getAllByRelationThroughArtifactQuery(BranchId branch,
+      LinkedList<RelationTypeSide> relations, ArtifactId relatedId, ArtifactQueryRequest query,
+      Collection<FollowRelation> followRelations, long pageNum, long pageSize, AttributeTypeId orderByAttribute,
+      ArtifactId viewId);
+
+   int getAllByRelationThroughArtifactQueryAndCount(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, ArtifactQueryRequest query, Collection<FollowRelation> followRelations, ArtifactId viewId);
+
+   Collection<ScriptDefToken> getScriptDefsByMultiFilter(BranchId branch, ArtifactId scriptSetId,
+      ColumnFilterRequest filterRequest, long pageNum, long pageSize, ArtifactId viewId);
+
+   int getScriptDefsByMultiFilterCount(BranchId branch, ArtifactId scriptSetId,
+      ColumnFilterRequest filterRequest, ArtifactId viewId);
 
 }
