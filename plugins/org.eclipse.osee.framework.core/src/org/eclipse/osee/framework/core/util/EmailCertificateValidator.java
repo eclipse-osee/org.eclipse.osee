@@ -18,8 +18,12 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class EmailCertificateValidator {
+
+   private static final Logger LOGGER = Logger.getLogger(EmailCertificateValidator.class.getName());
 
    // OID for ExtendedKeyUsage: email protection
    private static final String EKU_EMAIL_PROTECTION = "1.3.6.1.5.5.7.3.4";
@@ -42,8 +46,10 @@ public final class EmailCertificateValidator {
          cert.checkValidity(new Date()); // throws CertificateException if expired/not yet valid
          return cert;
       } catch (IllegalArgumentException e) {
+         LOGGER.log(Level.WARNING, "Certificate Base64 decoding failed", e);
          throw new EmailCertificateValidationException("Certificate is not valid Base64 PEM", e);
       } catch (CertificateException e) {
+         LOGGER.log(Level.WARNING, "Certificate validation failed: " + e.getMessage(), e);
          throw new EmailCertificateValidationException("Invalid X.509 certificate: " + e.getMessage(), e);
       }
    }
@@ -62,6 +68,7 @@ public final class EmailCertificateValidator {
                "Certificate is not intended for email protection (missing EKU emailProtection)");
          }
       } catch (CertificateException e) {
+         LOGGER.log(Level.WARNING, "Certificate extended key usage check failed", e);
          throw new EmailCertificateValidationException("Certificate extended key usage is invalid for email", e);
       }
 

@@ -190,8 +190,10 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
                }
             }
          }
+      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+         getLogger().error(ex, "Error loading LDAP service extension: %s", ex.getMessage());
       } catch (Exception ex) {
-         getLogger().error(ex, "Error reading LDAPServiceExtensionPoints");
+         getLogger().error(ex, "Unexpected error reading LDAPServiceExtensionPoints: %s", ex.getMessage());
       }
       return null;
    }

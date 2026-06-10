@@ -52,21 +52,59 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
          String url = null;
          if (session != null) {
             // Session found - redirect to client.
-            getLogger().info("Session found - redirect to client;\n\t url=[%s]", url);
             url = String.format("%s%s", getRemoteHostUrl(session), getLoopbackPostfix(request));
+            getLogger().info("Session found - redirect to client;\n\t url=[%s]", url);
          } else {
             // No session found - redirect to web browser request handler.
-            getLogger().info("No session found - redirect to web browser request handler;\n\t url=[%s]", url);
             url = String.format("http://%s:%s/%s?%s", getNormalizedAddress(request.getLocalAddr()),
                request.getLocalPort(), OseeServerContext.ARTIFACT_CONTEXT, request.getQueryString());
+            getLogger().info("No session found - redirect to web browser request handler;\n\t url=[%s]", url);
          }
          response.setContentType("text/plain");
+         if (!isValidRedirectUrl(url, request)) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid redirect target");
+            return;
+         }
          response.sendRedirect(url);
       } catch (Exception ex) {
          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
             String.format("Error processing request [%s]", request.getQueryString()));
       } finally {
          response.flushBuffer();
+      }
+   }
+
+   /**
+    * Validates that the redirect URL is safe (local or to a known client address).
+    * Rejects absolute URLs pointing to external domains to prevent open redirect attacks.
+    */
+   private boolean isValidRedirectUrl(String url, HttpServletRequest request) {
+      if (url == null || url.isEmpty()) {
+         return false;
+      }
+      try {
+         URL parsedUrl = new URL(url);
+         String host = parsedUrl.getHost();
+         // Allow redirects to localhost, the local server address, or known internal addresses
+         if ("localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host)) {
+            return true;
+         }
+         // Allow redirect to the same host as the request
+         String localAddr = request.getLocalAddr();
+         String localName = request.getLocalName();
+         if (host.equalsIgnoreCase(localAddr) || host.equalsIgnoreCase(localName)) {
+            return true;
+         }
+         // Allow redirect to known session client addresses (managed by session manager)
+         InetAddress targetAddress = InetAddress.getByName(host);
+         InetAddress localHost = InetAddress.getLocalHost();
+         if (targetAddress.equals(localHost) || targetAddress.isLoopbackAddress() || targetAddress.isSiteLocalAddress()) {
+            return true;
+         }
+         return false;
+      } catch (Exception ex) {
+         getLogger().warn(ex, "Failed to validate redirect URL: %s", url);
+         return false;
       }
    }
 

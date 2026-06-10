@@ -279,11 +279,11 @@ public class LDAPConnector {
             }
             statement.close();
          } catch (OseeDataStoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            OseeLog.logf(Activator.class, Level.SEVERE, "Failed to fetch LDAP details from data store: %s",
+               e.getMessage());
          } catch (OseeCoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            OseeLog.logf(Activator.class, Level.SEVERE, "OSEE core exception while fetching LDAP context: %s",
+               e.getMessage());
          } finally {
             Lib.close(statement);
          }
@@ -293,6 +293,7 @@ public class LDAPConnector {
       try {
          return new InitialLdapContext(env2, null);
       } catch (NamingException ex) {
+         OseeLog.logf(Activator.class, Level.SEVERE, "Failed to create LDAP context: %s", ex.getMessage());
          return null;
       }
    }
@@ -319,11 +320,11 @@ public class LDAPConnector {
             return SearchBase;
          }
       } catch (OseeDataStoreException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         OseeLog.logf(Activator.class, Level.SEVERE, "Failed to fetch LDAP search base from data store: %s",
+            e.getMessage());
       } catch (OseeCoreException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         OseeLog.logf(Activator.class, Level.SEVERE, "OSEE core exception while fetching LDAP search base: %s",
+            e.getMessage());
       } finally {
          Lib.close(statement);
       }

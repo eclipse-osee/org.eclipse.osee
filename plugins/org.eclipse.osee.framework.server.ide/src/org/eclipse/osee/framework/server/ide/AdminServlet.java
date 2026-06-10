@@ -70,6 +70,11 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
       String cmd = req.getParameter("cmd");
       String argList = req.getParameter("args");
 
+      if (!isValidCommand(cmd)) {
+         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid command");
+         return;
+      }
+
       List<String> args;
       if (Strings.isValid(argList)) {
          args = Arrays.asList(argList.split(","));
@@ -97,6 +102,18 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
          }
       }
 
+   }
+
+   /**
+    * Validates that the command name is a legitimate OSGi console command identifier.
+    * Commands must be alphanumeric (with underscores/hyphens) to prevent injection attacks.
+    */
+   private static boolean isValidCommand(String cmd) {
+      if (cmd == null || cmd.isEmpty()) {
+         return false;
+      }
+      // OSGi console commands are simple identifiers (letters, digits, underscores, hyphens)
+      return cmd.matches("[a-zA-Z][a-zA-Z0-9_\\-]*");
    }
 
    private static String commandKey(String rawCommand) {

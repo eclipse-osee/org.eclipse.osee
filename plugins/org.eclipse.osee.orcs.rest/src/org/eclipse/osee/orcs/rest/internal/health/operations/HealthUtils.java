@@ -27,6 +27,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -36,6 +38,8 @@ import org.eclipse.osee.jdbc.JdbcClient;
  * @author Jaden W. Puckett
  */
 public class HealthUtils {
+
+   private static final Logger LOGGER = Logger.getLogger(HealthUtils.class.getName());
 
    private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?";
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
@@ -140,6 +144,7 @@ public class HealthUtils {
          int responseCode = conn.getResponseCode();
          return (responseCode >= 200 && responseCode < 300);
       } catch (Exception ex) {
+         LOGGER.log(Level.WARNING, "Exception checking URL reachability: " + urlStr, ex);
          setErrorMsg("Exception occurred: " + ex.getMessage());
          return false;
       } finally {
@@ -186,10 +191,13 @@ public class HealthUtils {
             }
          }
       } catch (IOException | NoSuchAlgorithmException | KeyManagementException ex) {
+         LOGGER.log(Level.WARNING, "Exception during HTTP request to: " + urlStr, ex);
          try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw);) {
+            ex.printStackTrace(pw);
             String stackTrace = sw.toString();
             setErrorMsg("Exception occurred: " + ex.getMessage() + "\nStackTrace:\n" + stackTrace);
          } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Error writing stack trace", e);
             setErrorMsg("StringWriter exception occurred: " + ex.getMessage());
          }
       } finally {
@@ -238,11 +246,14 @@ public class HealthUtils {
             }
          }
       } catch (IOException | NoSuchAlgorithmException | KeyManagementException ex) {
+         LOGGER.log(Level.WARNING, "Exception during HTTP request to: " + urlStr, ex);
          try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw);) {
+            ex.printStackTrace(pw);
             String stackTrace = sw.toString();
             setErrorMsg("Exception occurred: " + ex.getMessage() + "\nStackTrace:\n" + stackTrace);
             return defaultValue;
          } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Error writing stack trace", e);
             setErrorMsg("StringWriter exception occurred: " + ex.getMessage());
          }
       } finally {
@@ -262,25 +273,30 @@ public class HealthUtils {
    }
 
    /*
-    * Returns TrustManager that trusts all certificates. Only use when the HTTPS URLs are owned by OSEE.
+    * Returns SSLContext configured with a TrustManager that trusts all certificates.
+    * Only use when the HTTPS URLs are owned by OSEE (internal health-check endpoints).
     */
    private static SSLContext getSSLContext() throws NoSuchAlgorithmException, KeyManagementException {
       TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
          @Override
          public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-            return null;
+            return new X509Certificate[0];
          }
 
          @Override
          public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            // Intentionally trusts all clients for internal OSEE health-check communication
+            LOGGER.fine("Trusting client certificate for internal health check");
          }
 
          @Override
          public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            // Intentionally trusts all servers for internal OSEE health-check communication
+            LOGGER.fine("Trusting server certificate for internal health check");
          }
       }};
 
-      SSLContext sslContext = SSLContext.getInstance("SSL");
+      SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
       sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
       return sslContext;
    }
