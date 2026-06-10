@@ -622,36 +622,70 @@ export class MarkdownEditorComponent {
 			});
 		};
 
-		// Find the separator line near the cursor
+		// Find the separator line for a table containing the cursor.
+		// Strategy: if the cursor is on a line starting with |, walk upward
+		// to find the separator line (which is always line 2 of a table).
+		// Also check if the cursor is on the separator or header line itself.
 		let separatorLineIndex = -1;
 
-		// Check if current line is a separator, or look above/below
-		for (
-			let i = Math.max(0, cursorLineIndex - 20);
-			i < Math.min(lines.length, cursorLineIndex + 20);
-			i++
-		) {
-			if (isSeparatorLine(lines[i])) {
-				// Check the cursor or selection overlaps or is within this table
-				separatorLineIndex = i;
-				// The header is line separatorLineIndex - 1
-				// Data rows start at separatorLineIndex + 1
-				const tableStartLine = separatorLineIndex - 1;
-				let tableEndLine = separatorLineIndex + 1;
-				// Extend down for consecutive table rows
-				while (
-					tableEndLine < lines.length &&
-					lines[tableEndLine].trim().startsWith('|')
-				) {
-					tableEndLine++;
-				}
-				tableEndLine--; // Back to last valid row
+		// First check if cursor line itself is a separator or starts with |
+		if (isSeparatorLine(lines[cursorLineIndex])) {
+			separatorLineIndex = cursorLineIndex;
+		} else {
+			// Walk upward from cursor to find a separator line
+			for (let i = cursorLineIndex; i >= 0; i--) {
+				if (isSeparatorLine(lines[i])) {
+					// Verify the table extends down to include the cursor line
+					let tableEndLine = i + 1;
+					while (
+						tableEndLine < lines.length &&
+						lines[tableEndLine].trim().startsWith('|')
+					) {
+						tableEndLine++;
+					}
+					tableEndLine--; // Back to last valid row
 
-				// Check if cursor/selection is within this table range
-				const inRange =
-					(cursorLineIndex >= tableStartLine &&
-						cursorLineIndex <= tableEndLine) ||
-					(selStart !== selEnd &&
+					if (cursorLineIndex <= tableEndLine) {
+						separatorLineIndex = i;
+					}
+					break;
+				}
+				// If we hit a line that doesn't start with |, stop searching
+				if (!lines[i].trim().startsWith('|')) {
+					break;
+				}
+			}
+		}
+
+		// If not found walking up, check if cursor is on the header line
+		// (the line before a separator)
+		if (separatorLineIndex === -1) {
+			const nextLine = cursorLineIndex + 1;
+			if (nextLine < lines.length && isSeparatorLine(lines[nextLine])) {
+				separatorLineIndex = nextLine;
+			}
+		}
+
+		// Handle selection that may overlap a table
+		if (
+			separatorLineIndex === -1 &&
+			selStart !== selEnd
+		) {
+			// Search all lines in the document for a separator whose table
+			// overlaps the selection
+			for (let i = 0; i < lines.length; i++) {
+				if (isSeparatorLine(lines[i])) {
+					const tableStartLine = i - 1;
+					let tableEndLine = i + 1;
+					while (
+						tableEndLine < lines.length &&
+						lines[tableEndLine].trim().startsWith('|')
+					) {
+						tableEndLine++;
+					}
+					tableEndLine--;
+
+					if (
 						this.selectionOverlapsTable(
 							content,
 							lines,
@@ -659,12 +693,12 @@ export class MarkdownEditorComponent {
 							selEnd,
 							tableStartLine,
 							tableEndLine
-						));
-
-				if (inRange) {
-					break;
+						)
+					) {
+						separatorLineIndex = i;
+						break;
+					}
 				}
-				separatorLineIndex = -1;
 			}
 		}
 
