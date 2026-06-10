@@ -51,6 +51,12 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - If Tailwind classes override Angular Material button colors (e.g., `tw-bg-*`, `tw-text-*`), add Tailwind disabled variants so disabled buttons still appear disabled (e.g., `disabled:tw-bg-*`, `disabled:tw-text-*`, `disabled:tw-cursor-not-allowed`).
 - To show tooltips on disabled buttons, wrap the button with a `span`/`div` that hosts the tooltip (don't attach the tooltip directly to a disabled button).
 
+## Tooltip text conventions
+
+- **Action labels** (short phrases naming what a button does): Use Title Case, no period. Examples: "Upload Image", "Add Column", "Exit Fullscreen", "Insert or Edit Table", "Preview With Images".
+- **Explanatory sentences** (describing state, reasons, or instructions): Use sentence case with a trailing period. Examples: "Editing is disabled.", "Save the artifact first to enable image uploads.", "Click the edit icon to return to editing."
+- Never use ALL CAPS for tooltips.
+
 ## HTTP + loading patterns
 
 - **All HTTP calls (`httpResource`, `HttpClient`) must live in services, not in components.** Components consume service methods — they never inject `HttpClient` or call `httpResource` directly.

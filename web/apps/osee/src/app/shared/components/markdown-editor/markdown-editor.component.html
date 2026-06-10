@@ -75,6 +75,18 @@
 			</button>
 		</span>
 
+		<span [matTooltip]="tableButtonTooltip()">
+			<button
+				mat-icon-button
+				[disabled]="disabled() || showImages()"
+				[class.tw-opacity-40]="disabled() || showImages()"
+				(click)="openTableDialog()">
+				<div>
+					<mat-icon> table_chart </mat-icon>
+				</div>
+			</button>
+		</span>
+
 		<button
 			mat-icon-button
 			[matTooltip]="

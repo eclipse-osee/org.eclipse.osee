@@ -1,0 +1,211 @@
+<!--
+/*********************************************************************
+ * Copyright (c) 2026 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+-->
+<h1 mat-dialog-title>
+	<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+		<mat-icon>table_chart</mat-icon>
+		{{ isEdit ? 'Edit Table' : 'Insert Table' }}
+	</div>
+</h1>
+
+<div
+	mat-dialog-content
+	class="tw-flex !tw-max-h-[80vh] tw-flex-col tw-gap-0 !tw-overflow-hidden !tw-p-0">
+	<!-- Fixed toolbar -->
+	<div class="tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-2 tw-border-b tw-border-osee-neutral-25 tw-bg-osee-neutral-5 tw-px-4 tw-py-2 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-5">
+		<mat-form-field
+			class="tw-w-20"
+			subscriptSizing="dynamic">
+			<mat-label>Cols</mat-label>
+			<input
+				matInput
+				type="number"
+				min="1"
+				max="20"
+				[ngModel]="colCount()"
+				(change)="onColCountChange($event)"
+				name="col-count"
+				aria-label="Column count" />
+		</mat-form-field>
+		<mat-form-field
+			class="tw-w-20"
+			subscriptSizing="dynamic">
+			<mat-label>Rows</mat-label>
+			<input
+				matInput
+				type="number"
+				min="1"
+				max="50"
+				[ngModel]="rowCount()"
+				(change)="onRowCountChange($event)"
+				name="row-count"
+				aria-label="Row count" />
+		</mat-form-field>
+	</div>
+
+	<!-- Scrollable table area -->
+	<div class="tw-min-h-0 tw-flex-1 tw-overflow-auto tw-p-4">
+		<table class="tw-w-full tw-border-collapse" style="border-spacing: 0">
+			<thead>
+				<!-- Alignment controls row -->
+				<tr>
+					<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-osee-neutral-5 tw-p-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-5"></th>
+					@for (alignment of alignments(); track $index) {
+						<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-osee-neutral-5 tw-p-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-5">
+							<div class="tw-flex tw-items-center tw-justify-center tw-gap-1">
+								<button
+									mat-icon-button
+									type="button"
+									matTooltip="Insert Column Before"
+									class="tw-text-osee-blue-6"
+									(click)="insertColumnAt($index)">
+									<mat-icon>keyboard_arrow_left</mat-icon>
+								</button>
+								<button
+									mat-icon-button
+									type="button"
+									[matTooltip]="'Alignment: ' + getAlignmentLabel(alignment)"
+									(click)="cycleAlignment($index)">
+									<mat-icon>{{ getAlignmentIcon(alignment) }}</mat-icon>
+								</button>
+								<button
+									mat-icon-button
+									type="button"
+									matTooltip="Insert Column After"
+									class="tw-text-osee-blue-6"
+									(click)="insertColumnAt($index + 1)">
+									<mat-icon>keyboard_arrow_right</mat-icon>
+								</button>
+								@if (canRemoveColumn()) {
+									<button
+										mat-icon-button
+										type="button"
+										matTooltip="Remove Column"
+										class="tw-text-osee-red-24 hover:tw-text-osee-red-21"
+										(click)="removeColumn($index)">
+										<mat-icon>close</mat-icon>
+									</button>
+								}
+							</div>
+						</th>
+					}
+				</tr>
+				<!-- Header row -->
+				<tr>
+					<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-osee-neutral-5 tw-p-1 tw-text-center tw-text-xs tw-font-medium tw-text-osee-neutral-60 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-5">
+						H
+					</th>
+					@for (header of headers(); track $index) {
+						<th class="tw-border-b tw-border-osee-neutral-25 tw-bg-osee-neutral-5 tw-px-1 tw-py-0 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-5">
+							<mat-form-field
+								class="tw-w-full"
+								subscriptSizing="dynamic"
+								[class.tw-font-bold]="true"
+								floatLabel="always"
+								hideRequiredMarker>
+								<mat-label>Header {{ $index + 1 }}</mat-label>
+								<input
+									matInput
+									type="text"
+									[ngModel]="header"
+									(ngModelChange)="updateHeader($index, $event)"
+									name="header-{{ $index }}"
+									spellcheck="true"
+									class="placeholder:tw-italic placeholder:tw-text-osee-neutral-60/60"
+									placeholder="Enter header..." />
+							</mat-form-field>
+						</th>
+					}
+				</tr>
+			</thead>
+			<tbody>
+				@for (row of cells(); track $index; let rowIdx = $index) {
+					<tr>
+						<td class="tw-border-b tw-border-osee-neutral-25 tw-bg-white tw-px-1 tw-py-0 tw-text-center dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
+							<div class="tw-flex tw-items-center tw-justify-center tw-gap-1">
+								<div class="tw-flex tw-flex-col">
+									<button
+										mat-icon-button
+										type="button"
+										matTooltip="Insert Row Before"
+										class="tw-text-osee-blue-6"
+										(click)="insertRowAt(rowIdx)">
+										<mat-icon>keyboard_arrow_up</mat-icon>
+									</button>
+									<button
+										mat-icon-button
+										type="button"
+										matTooltip="Insert Row After"
+										class="tw-text-osee-blue-6"
+										(click)="insertRowAt(rowIdx + 1)">
+										<mat-icon>keyboard_arrow_down</mat-icon>
+									</button>
+								</div>
+								@if (canRemoveRow()) {
+									<button
+										mat-icon-button
+										type="button"
+										matTooltip="Remove Row"
+										class="tw-text-osee-red-24 hover:tw-text-osee-red-21"
+										(click)="removeRow(rowIdx)">
+										<mat-icon>close</mat-icon>
+									</button>
+								}
+							</div>
+						</td>
+						@for (cell of row; track $index; let colIdx = $index) {
+							<td class="tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-0 dark:tw-border-osee-neutral-100">
+								<mat-form-field
+									class="tw-w-full"
+									subscriptSizing="dynamic">
+									<input
+										matInput
+										type="text"
+										[ngModel]="cell"
+										(ngModelChange)="updateCell(rowIdx, colIdx, $event)"
+										name="cell-{{ rowIdx }}-{{ colIdx }}"
+										spellcheck="true"
+										[attr.aria-label]="'Row ' + (rowIdx + 1) + ', Column ' + (colIdx + 1)" />
+								</mat-form-field>
+							</td>
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div
+	mat-dialog-actions
+	align="end"
+	class="tw-gap-2">
+	<span class="tw-inline-flex">
+		<button
+			mat-stroked-button
+			type="button"
+			class="tw-text-osee-red-8"
+			(click)="cancelDialog()">
+			Cancel
+		</button>
+	</span>
+	<span class="tw-inline-flex">
+		<button
+			mat-stroked-button
+			type="button"
+			(click)="submitTable()">
+			{{ isEdit ? 'Update Table' : 'Insert Table' }}
+		</button>
+	</span>
+</div>

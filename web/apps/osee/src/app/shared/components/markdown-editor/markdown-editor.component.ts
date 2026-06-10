@@ -54,6 +54,10 @@ import {
 	UploadImageDialogComponent,
 	UploadImageDialogData,
 	UploadImageDialogResult,
+	MarkdownTableDialogComponent,
+	MarkdownTableDialogData,
+	MarkdownTableDialogResult,
+	ColumnAlignment,
 } from '@osee/shared/dialogs';
 import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
@@ -149,6 +153,17 @@ export class MarkdownEditorComponent {
 				this.destroyRef.onDestroy(() => {
 					this.focusMonitor.stopMonitoring(textarea);
 				});
+
+				// Track the last known selection so toolbar buttons can
+				// read it after the textarea loses focus on click.
+				fromEvent(textarea.nativeElement, 'blur')
+					.pipe(takeUntilDestroyed(this.destroyRef))
+					.subscribe(() => {
+						this.savedSelectionStart =
+							textarea.nativeElement.selectionStart;
+						this.savedSelectionEnd =
+							textarea.nativeElement.selectionEnd;
+					});
 			}
 		});
 		this.destroyRef.onDestroy(() => {
@@ -181,6 +196,16 @@ export class MarkdownEditorComponent {
 			return 'Image upload in progress.';
 		}
 		return 'Upload Image';
+	});
+
+	protected readonly tableButtonTooltip = computed(() => {
+		if (this.disabled()) {
+			return 'Editing is disabled.';
+		}
+		if (this.showImages()) {
+			return 'Exit image preview to edit tables.';
+		}
+		return 'Insert or Edit Table';
 	});
 
 	mdPreview = toSignal(
@@ -400,6 +425,324 @@ export class MarkdownEditorComponent {
 		const currentContent = this.mdContent();
 		const separator = currentContent.length > 0 ? '\n\n' : '';
 		this.mdContent.set(currentContent + separator + imageTag);
+	}
+
+	openTableDialog(): void {
+		const content = this.mdContent();
+		const parsedTable = this.parseTableAtSelection(
+			content,
+			this.savedSelectionStart,
+			this.savedSelectionEnd
+		);
+
+		const wasFullscreen = this.isFullscreen();
+		const openDialog = () => {
+			const dialogData: MarkdownTableDialogData = parsedTable
+				? {
+						rows: parsedTable.cells.length,
+						cols: parsedTable.headers.length,
+						headers: parsedTable.headers,
+						cells: parsedTable.cells,
+						alignments: parsedTable.alignments,
+						isEdit: true,
+					}
+				: {
+						rows: 3,
+						cols: 3,
+						headers: ['', '', ''],
+						cells: [
+							['', '', ''],
+							['', '', ''],
+							['', '', ''],
+						],
+						alignments: ['left', 'left', 'left'],
+						isEdit: false,
+					};
+
+			const dialogRef = this.dialog.open(MarkdownTableDialogComponent, {
+				data: dialogData,
+				minWidth: '50%',
+				maxWidth: '90vw',
+			});
+
+			dialogRef
+				.afterClosed()
+				.pipe(
+					take(1),
+					filter(
+						(result): result is MarkdownTableDialogResult => {
+							if (result === undefined) {
+								if (wasFullscreen) {
+									this.enterFullscreen();
+								}
+								return false;
+							}
+							return true;
+						}
+					)
+				)
+				.subscribe((result) => {
+					if (parsedTable) {
+						// Replace existing table
+						const before = content.substring(
+							0,
+							parsedTable.startIndex
+						);
+						const after = content.substring(parsedTable.endIndex);
+						this.mdContent.set(
+							before + result.markdown + after
+						);
+					} else {
+						// Insert new table at cursor or end
+						const cursorPos = this.savedSelectionStart ?? content.length;
+						const before = content.substring(0, cursorPos);
+						const after = content.substring(cursorPos);
+						const prefixNewlines =
+							before.length > 0 && !before.endsWith('\n\n')
+								? before.endsWith('\n')
+									? '\n'
+									: '\n\n'
+								: '';
+						const suffixNewlines =
+							after.length > 0 && !after.startsWith('\n\n')
+								? after.startsWith('\n')
+									? '\n'
+									: '\n\n'
+								: '';
+						this.mdContent.set(
+							before +
+								prefixNewlines +
+								result.markdown +
+								suffixNewlines +
+								after
+						);
+					}
+					if (wasFullscreen) {
+						this.enterFullscreen();
+					}
+				});
+		};
+
+		if (wasFullscreen) {
+			document
+				.exitFullscreen()
+				.then(() => openDialog())
+				.catch(() => openDialog());
+		} else {
+			openDialog();
+		}
+	}
+
+	private parseTableAtSelection(
+		content: string,
+		selStart: number,
+		selEnd: number
+	): {
+		headers: string[];
+		cells: string[][];
+		alignments: ColumnAlignment[];
+		startIndex: number;
+		endIndex: number;
+	} | null {
+		if (!content) {
+			return null;
+		}
+
+		const cursorPos = selStart;
+
+		// Find the line the cursor/selection is on
+		const lines = content.split('\n');
+		let charIndex = 0;
+		let cursorLineIndex = 0;
+
+		for (let i = 0; i < lines.length; i++) {
+			const lineEnd = charIndex + lines[i].length;
+			if (cursorPos <= lineEnd) {
+				cursorLineIndex = i;
+				break;
+			}
+			charIndex += lines[i].length + 1; // +1 for the newline
+		}
+
+		// Look for a table around the cursor/selection
+		// A markdown table is: header row, separator row (|:--|:-:|--:|), then data rows.
+		// A separator line starts and ends with |, and each cell between pipes
+		// contains only dashes, colons, and whitespace (with at least one dash).
+		const isSeparatorLine = (line: string): boolean => {
+			const trimmed = line.trim();
+			if (!trimmed.startsWith('|') || !trimmed.endsWith('|')) {
+				return false;
+			}
+			const inner = trimmed.slice(1, -1);
+			const cells = inner.split('|');
+			if (cells.length === 0) {
+				return false;
+			}
+			return cells.every((cell) => {
+				const c = cell.trim();
+				return c.length > 0 && /^:?-+:?$/.test(c);
+			});
+		};
+
+		// Find the separator line near the cursor
+		let separatorLineIndex = -1;
+
+		// Check if current line is a separator, or look above/below
+		for (
+			let i = Math.max(0, cursorLineIndex - 20);
+			i < Math.min(lines.length, cursorLineIndex + 20);
+			i++
+		) {
+			if (isSeparatorLine(lines[i])) {
+				// Check the cursor or selection overlaps or is within this table
+				separatorLineIndex = i;
+				// The header is line separatorLineIndex - 1
+				// Data rows start at separatorLineIndex + 1
+				const tableStartLine = separatorLineIndex - 1;
+				let tableEndLine = separatorLineIndex + 1;
+				// Extend down for consecutive table rows
+				while (
+					tableEndLine < lines.length &&
+					lines[tableEndLine].trim().startsWith('|')
+				) {
+					tableEndLine++;
+				}
+				tableEndLine--; // Back to last valid row
+
+				// Check if cursor/selection is within this table range
+				const inRange =
+					(cursorLineIndex >= tableStartLine &&
+						cursorLineIndex <= tableEndLine) ||
+					(selStart !== selEnd &&
+						this.selectionOverlapsTable(
+							content,
+							lines,
+							selStart,
+							selEnd,
+							tableStartLine,
+							tableEndLine
+						));
+
+				if (inRange) {
+					break;
+				}
+				separatorLineIndex = -1;
+			}
+		}
+
+		if (separatorLineIndex === -1) {
+			return null;
+		}
+
+		const headerLineIndex = separatorLineIndex - 1;
+		if (headerLineIndex < 0) {
+			return null;
+		}
+
+		// Parse header
+		const headers = this.parseTableRow(lines[headerLineIndex]);
+		if (headers.length === 0) {
+			return null;
+		}
+
+		// Parse alignments from separator
+		const alignments = this.parseAlignments(
+			lines[separatorLineIndex],
+			headers.length
+		);
+
+		// Parse data rows
+		let dataEndLine = separatorLineIndex + 1;
+		while (
+			dataEndLine < lines.length &&
+			lines[dataEndLine].trim().startsWith('|')
+		) {
+			dataEndLine++;
+		}
+
+		const cells: string[][] = [];
+		for (let i = separatorLineIndex + 1; i < dataEndLine; i++) {
+			const row = this.parseTableRow(lines[i]);
+			// Pad or trim to match header count
+			while (row.length < headers.length) {
+				row.push('');
+			}
+			cells.push(row.slice(0, headers.length));
+		}
+
+		// Ensure at least one data row
+		if (cells.length === 0) {
+			cells.push(Array(headers.length).fill(''));
+		}
+
+		// Calculate start and end character indices
+		let startIndex = 0;
+		for (let i = 0; i < headerLineIndex; i++) {
+			startIndex += lines[i].length + 1;
+		}
+		let endIndex = startIndex;
+		for (let i = headerLineIndex; i < dataEndLine; i++) {
+			endIndex += lines[i].length + 1;
+		}
+		// Remove trailing newline from endIndex if we went past
+		if (endIndex > content.length) {
+			endIndex = content.length;
+		} else {
+			endIndex--; // Remove trailing newline
+		}
+
+		return { headers, cells, alignments, startIndex, endIndex };
+	}
+
+	private selectionOverlapsTable(
+		content: string,
+		lines: string[],
+		selStart: number,
+		selEnd: number,
+		tableStartLine: number,
+		tableEndLine: number
+	): boolean {
+		let tableStartChar = 0;
+		for (let i = 0; i < tableStartLine; i++) {
+			tableStartChar += lines[i].length + 1;
+		}
+		let tableEndChar = tableStartChar;
+		for (let i = tableStartLine; i <= tableEndLine; i++) {
+			tableEndChar += lines[i].length + 1;
+		}
+		return selStart < tableEndChar && selEnd > tableStartChar;
+	}
+
+	private parseTableRow(line: string): string[] {
+		let trimmed = line.trim();
+		if (trimmed.startsWith('|')) {
+			trimmed = trimmed.substring(1);
+		}
+		if (trimmed.endsWith('|')) {
+			trimmed = trimmed.substring(0, trimmed.length - 1);
+		}
+		return trimmed.split('|').map((cell) => cell.trim());
+	}
+
+	private parseAlignments(
+		separatorLine: string,
+		colCount: number
+	): ColumnAlignment[] {
+		const cells = this.parseTableRow(separatorLine);
+		const alignments: ColumnAlignment[] = [];
+
+		for (let i = 0; i < colCount; i++) {
+			const cell = (cells[i] || '').trim();
+			if (cell.startsWith(':') && cell.endsWith(':')) {
+				alignments.push('center');
+			} else if (cell.endsWith(':')) {
+				alignments.push('right');
+			} else {
+				alignments.push('left');
+			}
+		}
+
+		return alignments;
 	}
 
 	private revokeImageObjectUrls(): void {
