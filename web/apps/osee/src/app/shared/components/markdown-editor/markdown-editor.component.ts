@@ -208,6 +208,16 @@ export class MarkdownEditorComponent {
 		return 'Insert or Edit Table';
 	});
 
+	protected readonly selectTableTooltip = computed(() => {
+		if (this.disabled()) {
+			return 'Editing is disabled.';
+		}
+		if (this.showImages()) {
+			return 'Exit image preview to select tables.';
+		}
+		return 'Select Table at Cursor';
+	});
+
 	mdPreview = toSignal(
 		toObservable(this.mdContent).pipe(
 			debounceTime(500),
@@ -531,6 +541,29 @@ export class MarkdownEditorComponent {
 		} else {
 			openDialog();
 		}
+	}
+
+	selectTableAtCursor(): void {
+		const textarea = this.editorTextarea()?.nativeElement;
+		if (!textarea) {
+			return;
+		}
+		const content = this.mdContent();
+		const parsedTable = this.parseTableAtSelection(
+			content,
+			this.savedSelectionStart,
+			this.savedSelectionEnd
+		);
+
+		if (!parsedTable) {
+			this.uiService.ErrorText =
+				'No table found at the cursor position.';
+			return;
+		}
+
+		textarea.focus();
+		textarea.selectionStart = parsedTable.startIndex;
+		textarea.selectionEnd = parsedTable.endIndex;
 	}
 
 	private parseTableAtSelection(

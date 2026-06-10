@@ -87,6 +87,18 @@
 			</button>
 		</span>
 
+		<span [matTooltip]="selectTableTooltip()">
+			<button
+				mat-icon-button
+				[disabled]="disabled() || showImages()"
+				[class.tw-opacity-40]="disabled() || showImages()"
+				(click)="selectTableAtCursor()">
+				<div>
+					<mat-icon> select_all </mat-icon>
+				</div>
+			</button>
+		</span>
+
 		<button
 			mat-icon-button
 			[matTooltip]="
