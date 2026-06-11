@@ -99,7 +99,7 @@ export class MarkdownTableDialogComponent {
 		} else {
 			// Large table: load first batch small for quick render, rest in larger batches
 			const firstBatch = 10;
-			const subsequentBatch = 25;
+			const subsequentBatch = 45;
 			this.cells.set(allCells.slice(0, firstBatch));
 			let loaded = firstBatch;
 
