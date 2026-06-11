@@ -52,13 +52,6 @@
 				name="row-count"
 				aria-label="Row count" />
 		</mat-form-field>
-		<button
-			mat-icon-button
-			type="button"
-			[matTooltip]="wordWrap() ? 'Disable Word Wrap' : 'Enable Word Wrap'"
-			(click)="toggleWordWrap()">
-			<mat-icon>{{ wordWrap() ? 'wrap_text' : 'notes' }}</mat-icon>
-		</button>
 	</div>
 
 	<!-- Scrollable table area -->
@@ -175,34 +168,17 @@
 						</td>
 						@for (cell of row; track $index; let colIdx = $index) {
 							<td
-								class="tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-0 dark:tw-border-osee-neutral-100"
-								[class.tw-min-w-40]="wordWrap()">
-								<mat-form-field
-									class="tw-w-full"
-									subscriptSizing="dynamic">
-									@if (wordWrap()) {
-										<textarea
-											matInput
-											cdkTextareaAutosize
-											[cdkAutosizeMinRows]="1"
-											[cdkAutosizeMaxRows]="6"
-											[ngModel]="cell"
-											(ngModelChange)="updateCell(rowIdx, colIdx, $event)"
-											name="cell-{{ rowIdx }}-{{ colIdx }}"
-											spellcheck="true"
-											class="tw-resize-none"
-											[attr.aria-label]="'Row ' + (rowIdx + 1) + ', Column ' + (colIdx + 1)"></textarea>
-									} @else {
-										<input
-											matInput
-											type="text"
-											[ngModel]="cell"
-											(ngModelChange)="updateCell(rowIdx, colIdx, $event)"
-											name="cell-{{ rowIdx }}-{{ colIdx }}"
-											spellcheck="true"
-											[attr.aria-label]="'Row ' + (rowIdx + 1) + ', Column ' + (colIdx + 1)" />
-									}
-								</mat-form-field>
+								class="tw-min-w-40 tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-0 tw-align-top dark:tw-border-osee-neutral-100">
+								<textarea
+									rows="3"
+									[ngModel]="cell"
+									(ngModelChange)="updateCell(rowIdx, colIdx, $event)"
+									(mouseup)="syncRowHeight($event)"
+									name="cell-{{ rowIdx }}-{{ colIdx }}"
+									spellcheck="true"
+									class="tw-w-full tw-resize-y tw-rounded tw-border tw-border-osee-neutral-25 tw-bg-transparent tw-px-2 tw-py-1 tw-text-sm tw-outline-none focus:tw-border-osee-blue-6 dark:tw-border-osee-neutral-100"
+									style="max-height: 150px"
+									[attr.aria-label]="'Row ' + (rowIdx + 1) + ', Column ' + (colIdx + 1)"></textarea>
 							</td>
 						}
 					</tr>

@@ -18,7 +18,6 @@ import {
 	signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -51,7 +50,6 @@ export type MarkdownTableDialogResult = {
 	selector: 'osee-markdown-table-dialog',
 	imports: [
 		FormsModule,
-		CdkTextareaAutosize,
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,
@@ -90,11 +88,6 @@ export class MarkdownTableDialogComponent {
 
 	protected readonly canRemoveColumn = computed(() => this.colCount() > 1);
 	protected readonly canRemoveRow = computed(() => this.rowCount() > 1);
-	protected readonly wordWrap = signal(false);
-
-	protected toggleWordWrap(): void {
-		this.wordWrap.update((v) => !v);
-	}
 
 	protected onColCountChange(event: Event): void {
 		const value = parseInt(
@@ -266,6 +259,21 @@ export class MarkdownTableDialogComponent {
 
 	protected cancelDialog(): void {
 		this.dialogRef.close(undefined);
+	}
+
+	protected syncRowHeight(event: Event): void {
+		const textarea = event.target as HTMLTextAreaElement;
+		const row = textarea.closest('tr');
+		if (!row) {
+			return;
+		}
+		const height = textarea.offsetHeight;
+		const textareas = row.querySelectorAll<HTMLTextAreaElement>('textarea');
+		textareas.forEach((ta) => {
+			if (ta !== textarea) {
+				ta.style.height = `${height}px`;
+			}
+		});
 	}
 
 	private generateMarkdown(): string {
