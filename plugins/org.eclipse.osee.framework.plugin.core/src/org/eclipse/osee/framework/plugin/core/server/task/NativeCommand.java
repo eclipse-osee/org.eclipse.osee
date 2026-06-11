@@ -63,11 +63,16 @@ public class NativeCommand extends Command {
       String[] callAndArgs = new String[parameters.length];
       System.arraycopy(parameters, 0, callAndArgs, 0, parameters.length);
 
-      // Validate the executable against the allowlist to prevent OS command injection
-      String executable = extractExecutableName(callAndArgs[0]);
-      if (!ALLOWED_COMMANDS.contains(executable)) {
-         throw new IOException("Command not permitted: " + executable);
+      // Validate the executable against the allowlist to prevent OS command injection.
+      // Use the trusted value from the allowlist set (not the tainted input) for execution.
+      String requestedExecutable = extractExecutableName(callAndArgs[0]);
+      String trustedExecutable = getAllowedCommand(requestedExecutable);
+      if (trustedExecutable == null) {
+         throw new IOException("Command not permitted: " + requestedExecutable);
       }
+
+      // Replace the tainted executable with the trusted static value
+      callAndArgs[0] = trustedExecutable;
 
       // Validate arguments do not contain shell metacharacters
       for (int i = 1; i < callAndArgs.length; i++) {
@@ -100,6 +105,22 @@ public class NativeCommand extends Command {
       // Strip any path prefix to get just the executable name
       int lastSlash = Math.max(command.lastIndexOf('/'), command.lastIndexOf('\\'));
       return lastSlash >= 0 ? command.substring(lastSlash + 1) : command;
+   }
+
+   /**
+    * Returns the trusted static command string from the allowlist if the requested command matches.
+    * This breaks the taint chain by returning a value from a static trusted set rather than
+    * the user-supplied string.
+    *
+    * @return the trusted command string, or null if not in the allowlist
+    */
+   private static String getAllowedCommand(String requested) {
+      for (String allowed : ALLOWED_COMMANDS) {
+         if (allowed.equals(requested)) {
+            return allowed;
+         }
+      }
+      return null;
    }
 
    /**

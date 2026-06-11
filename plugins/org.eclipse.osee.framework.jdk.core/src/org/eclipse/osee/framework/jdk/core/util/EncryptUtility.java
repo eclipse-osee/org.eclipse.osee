@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public final class EncryptUtility {
    private final static byte[] linebreak = {}; // Remove Base64 encoder default line break
    private final static String TRANSFORMATION = "AES/CBC/PKCS5Padding";
-   private final static String LEGACY_TRANSFORMATION = "AES/ECB/PKCS5Padding";
    private final static String ALGORITHM = "AES";
    private final static int IV_LENGTH = 16;
 
@@ -43,21 +42,15 @@ public final class EncryptUtility {
       SecretKeySpec keySpec = new SecretKeySpec(secret.getBytes(), algorithm);
       Cipher cipher = Cipher.getInstance(transformation);
 
-      byte[] encrypted;
-      if (transformation.contains("/CBC/")) {
-         byte[] iv = new byte[IV_LENGTH];
-         new SecureRandom().nextBytes(iv);
-         IvParameterSpec ivSpec = new IvParameterSpec(iv);
-         cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-         byte[] cipherText = cipher.doFinal(plainText.getBytes());
-         // Prepend IV to ciphertext for use during decryption
-         encrypted = new byte[iv.length + cipherText.length];
-         System.arraycopy(iv, 0, encrypted, 0, iv.length);
-         System.arraycopy(cipherText, 0, encrypted, iv.length, cipherText.length);
-      } else {
-         cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-         encrypted = cipher.doFinal(plainText.getBytes());
-      }
+      byte[] iv = new byte[IV_LENGTH];
+      new SecureRandom().nextBytes(iv);
+      IvParameterSpec ivSpec = new IvParameterSpec(iv);
+      cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+      byte[] cipherText = cipher.doFinal(plainText.getBytes());
+      // Prepend IV to ciphertext for use during decryption
+      byte[] encrypted = new byte[iv.length + cipherText.length];
+      System.arraycopy(iv, 0, encrypted, 0, iv.length);
+      System.arraycopy(cipherText, 0, encrypted, iv.length, cipherText.length);
 
       Base64 encoder = new Base64(32, linebreak, true);
       return new String(encoder.encode(encrypted), "UTF-8");
@@ -72,18 +65,12 @@ public final class EncryptUtility {
       SecretKeySpec keySpec = new SecretKeySpec(secret.getBytes(), algorithm);
       Cipher cipher = Cipher.getInstance(transformation);
 
-      byte[] decrypted;
-      if (transformation.contains("/CBC/")) {
-         // Extract IV from the beginning of the decoded data
-         byte[] iv = new byte[IV_LENGTH];
-         System.arraycopy(decoded, 0, iv, 0, iv.length);
-         IvParameterSpec ivSpec = new IvParameterSpec(iv);
-         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-         decrypted = cipher.doFinal(decoded, iv.length, decoded.length - iv.length);
-      } else {
-         cipher.init(Cipher.DECRYPT_MODE, keySpec);
-         decrypted = cipher.doFinal(decoded);
-      }
+      // Extract IV from the beginning of the decoded data
+      byte[] iv = new byte[IV_LENGTH];
+      System.arraycopy(decoded, 0, iv, 0, iv.length);
+      IvParameterSpec ivSpec = new IvParameterSpec(iv);
+      cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+      byte[] decrypted = cipher.doFinal(decoded, iv.length, decoded.length - iv.length);
 
       return new String(decrypted, "UTF-8");
    }
@@ -109,12 +96,7 @@ public final class EncryptUtility {
       try {
          toReturn = decryptWithExceptions(codedText, secret, TRANSFORMATION, ALGORITHM);
       } catch (Exception ex) {
-         // Fall back to legacy ECB decryption for data encrypted before the CBC upgrade
-         try {
-            toReturn = decryptWithExceptions(codedText, secret, LEGACY_TRANSFORMATION, ALGORITHM);
-         } catch (Exception legacyEx) {
-            throw OseeCoreException.wrap(ex);
-         }
+         throw OseeCoreException.wrap(ex);
       }
       return toReturn;
    }

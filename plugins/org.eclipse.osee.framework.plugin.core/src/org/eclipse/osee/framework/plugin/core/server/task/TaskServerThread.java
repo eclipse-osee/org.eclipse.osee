@@ -20,52 +20,28 @@ import static org.eclipse.osee.framework.plugin.core.server.task.Parameter.INT;
 import static org.eclipse.osee.framework.plugin.core.server.task.Parameter.LONG;
 import static org.eclipse.osee.framework.plugin.core.server.task.Parameter.SHORT;
 import static org.eclipse.osee.framework.plugin.core.server.task.Parameter.STRING;
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InvalidClassException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
- * Protocol 2-byte 1-byte 1-byte n-bytes <command_id> <n_params> [<type_id> <parma_value>]* For each type, the protocol
- * explicitly defines the format of the paramater value.
+ * Protocol 2-byte 1-byte 1-byte n-bytes &lt;command_id&gt; &lt;n_params&gt; [&lt;type_id&gt; &lt;param_value&gt;]*
+ * For each type, the protocol explicitly defines the format of the parameter value.
+ * <p>
+ * Uses DataInputStream (pure data format) rather than ObjectInputStream to avoid
+ * deserialization vulnerabilities. The wire protocol only transmits primitives and strings.
  *
  * @author Ryan D. Brooks
  */
 public class TaskServerThread implements Runnable {
    private final int magicNumber;
    private Socket socket = null;
-   private ObjectInputStream inFromClient;
+   private DataInputStream inFromClient;
    private PrintWriter out;
    private final HashMap<Integer, Command> commands;
    private final boolean running;
-
-   /**
-    * Set of allowed classes for deserialization. Only primitive wrappers and String are permitted
-    * since the protocol uses typed parameters with explicit format.
-    */
-   private static final Set<String> ALLOWED_CLASSES = Set.of(
-      "java.lang.Boolean",
-      "java.lang.Byte",
-      "java.lang.Short",
-      "java.lang.Character",
-      "java.lang.Integer",
-      "java.lang.Long",
-      "java.lang.Float",
-      "java.lang.Double",
-      "java.lang.String",
-      "[B", // byte[]
-      "[S", // short[]
-      "[C", // char[]
-      "[I", // int[]
-      "[J", // long[]
-      "[F", // float[]
-      "[D", // double[]
-      "[Ljava.lang.String;" // String[]
-   );
 
    public TaskServerThread(int magicNumber, Socket socket) {
       this.socket = socket;
@@ -78,7 +54,7 @@ public class TaskServerThread implements Runnable {
    public void run() {
       try {
          out = new PrintWriter(socket.getOutputStream(), true);
-         inFromClient = new FilteredObjectInputStream(socket.getInputStream());
+         inFromClient = new DataInputStream(socket.getInputStream());
 
          int code = inFromClient.readInt();
          if (code != magicNumber) {
@@ -108,25 +84,6 @@ public class TaskServerThread implements Runnable {
          socket.close();
       } catch (IOException ex) {
          ex.printStackTrace();
-      }
-   }
-
-   /**
-    * An ObjectInputStream that restricts deserialization to only allowed classes.
-    * This prevents arbitrary code execution through crafted serialized objects.
-    */
-   private static class FilteredObjectInputStream extends ObjectInputStream {
-      public FilteredObjectInputStream(java.io.InputStream in) throws IOException {
-         super(in);
-      }
-
-      @Override
-      protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-         String className = desc.getName();
-         if (!ALLOWED_CLASSES.contains(className)) {
-            throw new InvalidClassException("Deserialization of class not allowed: " + className);
-         }
-         return super.resolveClass(desc);
       }
    }
 
