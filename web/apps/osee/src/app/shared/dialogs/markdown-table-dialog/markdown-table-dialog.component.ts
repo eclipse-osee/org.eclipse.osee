@@ -380,14 +380,21 @@ export class MarkdownTableDialogComponent {
 		const onMouseMove = (e: MouseEvent) => {
 			const delta = e.clientY - startY;
 			const newHeight = Math.max(40, startHeight + delta);
-			this.rowHeights.update((h) => ({ ...h, [rowIdx]: newHeight }));
+			// Direct DOM update during drag — avoids change detection per frame
+			if (row) {
+				row.style.height = `${newHeight}px`;
+			}
 		};
 
-		const onMouseUp = () => {
+		const onMouseUp = (e: MouseEvent) => {
 			document.body.style.cursor = '';
 			document.body.style.userSelect = '';
 			document.removeEventListener('mousemove', onMouseMove);
 			document.removeEventListener('mouseup', onMouseUp);
+			// Commit final height to signal once
+			const delta = e.clientY - startY;
+			const finalHeight = Math.max(40, startHeight + delta);
+			this.rowHeights.update((h) => ({ ...h, [rowIdx]: finalHeight }));
 		};
 
 		document.addEventListener('mousemove', onMouseMove);
