@@ -305,10 +305,16 @@ export class MarkdownTableDialogComponent {
 
 	protected submitTable(): void {
 		const markdown = this.generateMarkdown();
+		// Clear data first to speed up DOM teardown
+		this.cells.set([]);
+		this.headers.set([]);
 		this.dialogRef.close({ markdown });
 	}
 
 	protected cancelDialog(): void {
+		// Clear data first to speed up DOM teardown
+		this.cells.set([]);
+		this.headers.set([]);
 		this.dialogRef.close(undefined);
 	}
 
