@@ -434,8 +434,10 @@ export class MarkdownTableDialogComponent {
 		const cells = this.cells();
 
 		// Replace newlines with <br> since markdown table rows must be single lines
-		const escapeCell = (value: string): string =>
-			(value || ' ').replace(/\n/g, '<br>');
+		const escapeCell = (value: string): string => {
+			const trimmed = value.trim();
+			return (trimmed || ' ').replace(/\n/g, '<br>');
+		};
 
 		const headerRow =
 			'| ' + headers.map((h) => escapeCell(h)).join(' | ') + ' |';
