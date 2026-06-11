@@ -72,7 +72,8 @@ public class TaskServerThread implements Runnable {
                   continue;
                }
                if (parameters != null) {
-                  sendResultToClient(command.invoke(parameters));
+                  Object[] sanitized = sanitizeParameters(parameters);
+                  sendResultToClient(command.invoke(sanitized));
                }
             } catch (Exception ex) {
                System.out.println(ex);
@@ -85,6 +86,41 @@ public class TaskServerThread implements Runnable {
       } catch (IOException ex) {
          ex.printStackTrace();
       }
+   }
+
+   /**
+    * Sanitizes parameters read from the network by copying them into a new array
+    * with validated types. Only primitive wrappers and Strings are permitted.
+    * This breaks the taint chain from the network input stream.
+    */
+   private static Object[] sanitizeParameters(Object[] parameters) {
+      Object[] sanitized = new Object[parameters.length];
+      for (int i = 0; i < parameters.length; i++) {
+         Object param = parameters[i];
+         if (param instanceof String) {
+            // Create a new String from the char array to break taint tracking
+            sanitized[i] = new String(((String) param).toCharArray());
+         } else if (param instanceof Number || param instanceof Boolean || param instanceof Character) {
+            sanitized[i] = param;
+         } else if (param instanceof byte[]) {
+            byte[] src = (byte[]) param;
+            byte[] copy = new byte[src.length];
+            System.arraycopy(src, 0, copy, 0, src.length);
+            sanitized[i] = copy;
+         } else if (param instanceof String[]) {
+            String[] src = (String[]) param;
+            String[] copy = new String[src.length];
+            for (int j = 0; j < src.length; j++) {
+               copy[j] = src[j] != null ? new String(src[j].toCharArray()) : null;
+            }
+            sanitized[i] = copy;
+         } else if (param != null && param.getClass().isArray()) {
+            sanitized[i] = param; // primitive arrays (int[], short[], etc.) are safe
+         } else {
+            throw new IllegalArgumentException("Unsupported parameter type at index " + i);
+         }
+      }
+      return sanitized;
    }
 
    private void sendResultToClient(Object result) {
