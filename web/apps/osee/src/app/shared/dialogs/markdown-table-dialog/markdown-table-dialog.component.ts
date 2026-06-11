@@ -81,12 +81,46 @@ export class MarkdownTableDialogComponent {
 
 	protected readonly isEdit = this.data.isEdit;
 	protected readonly headers = signal<string[]>([...this.data.headers]);
-	protected readonly cells = signal<string[][]>(
-		this.data.cells.map((row) => [...row])
-	);
+	protected readonly cells = signal<string[][]>([]);
 	protected readonly alignments = signal<ColumnAlignment[]>([
 		...this.data.alignments,
 	]);
+	protected readonly isLoading = signal(true);
+
+	constructor() {
+		// Load cells — render immediately for small tables, batch for large ones
+		const allCells = this.data.cells.map((row) => [...row]);
+		const totalCells = allCells.length * (this.data.cols || 1);
+
+		if (totalCells <= 500) {
+			// Small table: load immediately
+			this.cells.set(allCells);
+			this.isLoading.set(false);
+		} else {
+			// Large table: load first batch small for quick render, rest in larger batches
+			const firstBatch = 10;
+			const subsequentBatch = 25;
+			this.cells.set(allCells.slice(0, firstBatch));
+			let loaded = firstBatch;
+
+			const loadBatch = () => {
+				const end = Math.min(
+					loaded + subsequentBatch,
+					allCells.length
+				);
+				this.cells.set(allCells.slice(0, end));
+				loaded = end;
+
+				if (loaded < allCells.length) {
+					setTimeout(loadBatch, 0);
+				} else {
+					this.isLoading.set(false);
+				}
+			};
+
+			setTimeout(loadBatch, 0);
+		}
+	}
 
 	protected readonly colCount = computed(() => this.headers().length);
 	protected readonly rowCount = computed(() => this.cells().length);

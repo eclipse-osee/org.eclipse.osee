@@ -52,6 +52,12 @@
 				name="row-count"
 				aria-label="Row count" />
 		</mat-form-field>
+		@if (isLoading()) {
+			<div class="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-osee-neutral-60">
+				<mat-icon class="tw-animate-spin">hourglass_empty</mat-icon>
+				Loading...
+			</div>
+		}
 	</div>
 
 	<!-- Scrollable table area -->
