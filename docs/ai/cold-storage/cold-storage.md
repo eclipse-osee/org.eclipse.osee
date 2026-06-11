@@ -1,3 +1,9 @@
+---
+summary: "Cold storage tiered data lifecycle for OSEE transaction and branch data"
+tags: [cold-storage, archival, transactions, branches, purge, restore]
+fileMatch: "**/ColdStorage*,**/TxsColdStorage*,**/TxPurgeColdStorage*"
+---
+
 # Cold Storage Strategy
 
 ## Overview
