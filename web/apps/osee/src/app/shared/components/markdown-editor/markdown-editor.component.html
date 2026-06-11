@@ -36,7 +36,12 @@
 				<mat-icon> redo </mat-icon>
 			</div>
 		</button>
-		<span [matTooltip]="showImages() ? 'Exit image preview to use examples.' : 'Examples'">
+		<span
+			[matTooltip]="
+				showImages()
+					? 'Exit image preview to use examples.'
+					: 'Examples'
+			">
 			<button
 				mat-icon-button
 				[matMenuTriggerFor]="mdExamplesMenu"

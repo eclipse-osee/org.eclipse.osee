@@ -494,17 +494,15 @@ export class MarkdownEditorComponent {
 				.afterClosed()
 				.pipe(
 					take(1),
-					filter(
-						(result): result is MarkdownTableDialogResult => {
-							if (result === undefined) {
-								if (wasFullscreen) {
-									this.enterFullscreen();
-								}
-								return false;
+					filter((result): result is MarkdownTableDialogResult => {
+						if (result === undefined) {
+							if (wasFullscreen) {
+								this.enterFullscreen();
 							}
-							return true;
+							return false;
 						}
-					)
+						return true;
+					})
 				)
 				.subscribe((result) => {
 					if (parsedTable) {
@@ -514,12 +512,11 @@ export class MarkdownEditorComponent {
 							parsedTable.startIndex
 						);
 						const after = content.substring(parsedTable.endIndex);
-						this.mdContent.set(
-							before + result.markdown + after
-						);
+						this.mdContent.set(before + result.markdown + after);
 					} else {
 						// Insert new table at cursor or end
-						const cursorPos = this.savedSelectionStart ?? content.length;
+						const cursorPos =
+							this.savedSelectionStart ?? content.length;
 						const before = content.substring(0, cursorPos);
 						const after = content.substring(cursorPos);
 						const prefixNewlines =
@@ -688,10 +685,7 @@ export class MarkdownEditorComponent {
 		}
 
 		// Handle selection that may overlap a table
-		if (
-			separatorLineIndex === -1 &&
-			selStart !== selEnd
-		) {
+		if (separatorLineIndex === -1 && selStart !== selEnd) {
 			// Search all lines in the document for a separator whose table
 			// overlaps the selection
 			for (let i = 0; i < lines.length; i++) {
@@ -788,7 +782,7 @@ export class MarkdownEditorComponent {
 	}
 
 	private selectionOverlapsTable(
-		content: string,
+		_content: string,
 		lines: string[],
 		selStart: number,
 		selEnd: number,

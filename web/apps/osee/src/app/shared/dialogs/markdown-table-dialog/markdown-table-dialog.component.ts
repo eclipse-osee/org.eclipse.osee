@@ -104,10 +104,7 @@ export class MarkdownTableDialogComponent {
 			let loaded = firstBatch;
 
 			const loadBatch = () => {
-				const end = Math.min(
-					loaded + subsequentBatch,
-					allCells.length
-				);
+				const end = Math.min(loaded + subsequentBatch, allCells.length);
 				this.cells.set(allCells.slice(0, end));
 				loaded = end;
 
@@ -207,7 +204,11 @@ export class MarkdownTableDialogComponent {
 		});
 	}
 
-	protected updateCell(rowIndex: number, colIndex: number, value: string): void {
+	protected updateCell(
+		rowIndex: number,
+		colIndex: number,
+		value: string
+	): void {
 		this.cells.update((rows) => {
 			const copy = rows.map((r) => [...r]);
 			copy[rowIndex][colIndex] = value;
@@ -456,8 +457,7 @@ export class MarkdownTableDialogComponent {
 			' |';
 
 		const dataRows = cells.map(
-			(row) =>
-				'| ' + row.map((c) => escapeCell(c)).join(' | ') + ' |'
+			(row) => '| ' + row.map((c) => escapeCell(c)).join(' | ') + ' |'
 		);
 
 		return [headerRow, separatorRow, ...dataRows].join('\n');
