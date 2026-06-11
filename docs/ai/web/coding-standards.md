@@ -124,12 +124,39 @@ Always run prettier and eslint on changed files before committing. Use relative 
 
 Tests live in `web/apps/osee/playwright/specs/` organized by feature area (e.g., `mim/tests/`, `artifact-explorer/tests/`). The framework is `@ngx-playwright/test`.
 
+### Running tests
+
+All commands run from `web/apps/osee/`. The OSEE backend (port 8089) and Angular dev server (port 4200) must be running.
+
+```bash
+# Run all tests (includes setup)
+npx playwright test
+
+# Run a specific project
+npx playwright test --project "Setup" --project "Artifact Explorer Tests"
+
+# Run tests matching a grep pattern
+npx playwright test --project "Setup" --project "Artifact Explorer Tests" --grep "Table Dialog"
+
+# Run a single test file
+npx playwright test --project "Setup" --project "Artifact Explorer Tests" playwright/specs/artifact-explorer/tests/markdown-editor.e2e-spec.ts
+
+# Run in headed mode for debugging
+npx playwright test --headed --grep "should insert a table"
+
+# View last test report
+npx playwright show-report
+```
+
+**Important:** Always include the `"Setup"` project when running tests — most projects depend on it for database initialization.
+
 ### Project structure
 
 - **Config**: `playwright.config.ng.ts` defines `baseURL` (from `playwright/shared/test-config.ts`), test directories, and project dependencies.
 - **Shared config**: `playwright/shared/test-config.ts` exports `APP_BASE`, `API_BASE`, and `AUTH_HEADER`. Use these for API calls and `waitForResponse` URL matching — never hardcode `localhost` URLs.
 - **Navigation**: Use **relative paths** in `page.goto()` (e.g., `'/ple/artifact-explorer'`, `'/ci/admin'`). The config's `baseURL` handles resolution. Do not use `APP_BASE` for navigation.
 - **Test files**: Named `*.e2e-spec.ts`. Include the Boeing EPL header.
+- **Helper utilities**: Place shared navigation and setup functions in a `utils/helpers.ts` file within the feature's spec folder. Import and reuse them across tests.
 - **Register new test directories**: When creating tests in a new feature folder under `playwright/specs/`, add a corresponding project entry in `playwright.config.ng.ts` with the appropriate `testDir` and `dependencies`.
 
 ### Writing effective tests
@@ -141,6 +168,15 @@ Tests live in `web/apps/osee/playwright/specs/` organized by feature area (e.g.,
 - **Use `test.describe` blocks** to group related tests and share setup via `beforeEach`.
 - **Assert on outcomes, not implementation.** Check that the user sees the right content — don't assert internal class names or DOM structure that could change.
 - **One logical assertion per test.** A test should verify one behavior. Multiple related `expect` calls for a single user action are fine; testing unrelated behaviors in one test is not.
+
+### Writing robust tests
+
+- **Verify data, not just visibility.** When a dialog or form loads data, assert the actual field values — not just that the element appeared.
+- **Verify outputs end-to-end.** If a user action produces output (text, DOM changes, downloads), assert the output contains the expected structure and content.
+- **Test programmatic state via `page.evaluate()`** when no visible indicator exists — e.g., reading selection ranges, scroll positions, or computed values from the DOM.
+- **Use `locator.filter({ hasText })` for icon-only buttons** — buttons with only an icon and no label often lack accessible names. Filter by the icon's text content.
+- **Scope locators to reduce ambiguity** — prefer `page.locator('section button')` over `page.getByRole('button')` when multiple buttons share similar names across different page regions.
+- **Test disabled states and their explanations** — verify the button is disabled and that the user receives feedback explaining why (tooltip, message, etc.).
 
 ### Patterns to follow
 
@@ -157,6 +193,32 @@ test.describe('Feature Name', () => {
     await page.getByRole('button', { name: 'Action' }).click();
     await expect(page.getByText('Expected Result')).toBeVisible();
   });
+
+  test('should verify data was parsed correctly', async ({ page }) => {
+    // Set up known state
+    const textarea = page.getByRole('textbox', { name: 'Editor' });
+    await textarea.fill('known input');
+
+    // Trigger action
+    await page.getByRole('button', { name: 'Edit' }).click();
+
+    // Verify the dialog fields contain parsed data
+    await expect(page.getByRole('textbox', { name: 'Field 1' })).toHaveValue('expected');
+  });
+
+  test('should verify selection covers correct range', async ({ page }) => {
+    const textarea = page.getByRole('textbox', { name: 'Editor' });
+    await textarea.fill('before\\ntarget content\\nafter');
+
+    await page.getByRole('button', { name: 'Select' }).click();
+
+    const selection = await page.evaluate(() => {
+      const ta = document.querySelector('textarea') as HTMLTextAreaElement;
+      return ta.value.substring(ta.selectionStart, ta.selectionEnd);
+    });
+    expect(selection).toContain('target content');
+    expect(selection).not.toContain('before');
+  });
 });
 ```
 
@@ -167,3 +229,5 @@ test.describe('Feature Name', () => {
 - **Overly specific selectors** — `page.locator('div > span:nth-child(3)')` will break on any layout change.
 - **Tests that depend on execution order** — use `test.describe.configure({ mode: 'serial' })` only when tests genuinely share state (e.g., multi-step workflows like branch creation then commit).
 - **Screenshot-only tests** — screenshots are for documentation, not assertions. Always pair with `expect` calls.
+- **Testing only that something is visible** — always verify the content/value, not just presence. A dialog opening is not enough; verify the data inside it.
+- **Using `getByRole('button', { name: 'tooltip text' })` for icon buttons** — `matTooltip` doesn't set accessible name. Use `.filter({ hasText: 'icon_name' })` instead.
