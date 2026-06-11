@@ -52,11 +52,20 @@
 				name="row-count"
 				aria-label="Row count" />
 		</mat-form-field>
+		<button
+			mat-icon-button
+			type="button"
+			[matTooltip]="wordWrap() ? 'Disable Word Wrap' : 'Enable Word Wrap'"
+			(click)="toggleWordWrap()">
+			<mat-icon>{{ wordWrap() ? 'wrap_text' : 'notes' }}</mat-icon>
+		</button>
 	</div>
 
 	<!-- Scrollable table area -->
 	<div class="tw-min-h-0 tw-flex-1 tw-overflow-auto">
-		<table class="tw-w-full" style="border-spacing: 0; border-collapse: separate">
+		<table
+			class="tw-w-full"
+			style="border-spacing: 0; border-collapse: separate">
 			<thead class="tw-sticky tw-top-0 tw-z-20">
 				<!-- Alignment controls row -->
 				<tr>
@@ -165,18 +174,34 @@
 							</div>
 						</td>
 						@for (cell of row; track $index; let colIdx = $index) {
-							<td class="tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-0 dark:tw-border-osee-neutral-100">
+							<td
+								class="tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-0 dark:tw-border-osee-neutral-100"
+								[class.tw-min-w-40]="wordWrap()">
 								<mat-form-field
 									class="tw-w-full"
 									subscriptSizing="dynamic">
-									<input
-										matInput
-										type="text"
-										[ngModel]="cell"
-										(ngModelChange)="updateCell(rowIdx, colIdx, $event)"
-										name="cell-{{ rowIdx }}-{{ colIdx }}"
-										spellcheck="true"
-										[attr.aria-label]="'Row ' + (rowIdx + 1) + ', Column ' + (colIdx + 1)" />
+									@if (wordWrap()) {
+										<textarea
+											matInput
+											cdkTextareaAutosize
+											[cdkAutosizeMinRows]="1"
+											[cdkAutosizeMaxRows]="6"
+											[ngModel]="cell"
+											(ngModelChange)="updateCell(rowIdx, colIdx, $event)"
+											name="cell-{{ rowIdx }}-{{ colIdx }}"
+											spellcheck="true"
+											class="tw-resize-none"
+											[attr.aria-label]="'Row ' + (rowIdx + 1) + ', Column ' + (colIdx + 1)"></textarea>
+									} @else {
+										<input
+											matInput
+											type="text"
+											[ngModel]="cell"
+											(ngModelChange)="updateCell(rowIdx, colIdx, $event)"
+											name="cell-{{ rowIdx }}-{{ colIdx }}"
+											spellcheck="true"
+											[attr.aria-label]="'Row ' + (rowIdx + 1) + ', Column ' + (colIdx + 1)" />
+									}
 								</mat-form-field>
 							</td>
 						}

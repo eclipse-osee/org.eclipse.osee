@@ -18,6 +18,7 @@ import {
 	signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -50,6 +51,7 @@ export type MarkdownTableDialogResult = {
 	selector: 'osee-markdown-table-dialog',
 	imports: [
 		FormsModule,
+		CdkTextareaAutosize,
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,
@@ -88,6 +90,11 @@ export class MarkdownTableDialogComponent {
 
 	protected readonly canRemoveColumn = computed(() => this.colCount() > 1);
 	protected readonly canRemoveRow = computed(() => this.rowCount() > 1);
+	protected readonly wordWrap = signal(false);
+
+	protected toggleWordWrap(): void {
+		this.wordWrap.update((v) => !v);
+	}
 
 	protected onColCountChange(event: Event): void {
 		const value = parseInt(

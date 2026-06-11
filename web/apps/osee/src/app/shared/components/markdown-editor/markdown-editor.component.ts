@@ -662,6 +662,14 @@ export class MarkdownEditorComponent {
 		if (separatorLineIndex === -1) {
 			const nextLine = cursorLineIndex + 1;
 			if (nextLine < lines.length && isSeparatorLine(lines[nextLine])) {
+				// Verify the table extends to include data rows below
+				let tableEndLine = nextLine + 1;
+				while (
+					tableEndLine < lines.length &&
+					lines[tableEndLine].trim().startsWith('|')
+				) {
+					tableEndLine++;
+				}
 				separatorLineIndex = nextLine;
 			}
 		}
@@ -752,16 +760,16 @@ export class MarkdownEditorComponent {
 		for (let i = 0; i < headerLineIndex; i++) {
 			startIndex += lines[i].length + 1;
 		}
-		let endIndex = startIndex;
-		for (let i = headerLineIndex; i < dataEndLine; i++) {
+
+		// endIndex points to the last character of the last table line
+		const lastTableLine = dataEndLine - 1;
+		let endIndex = 0;
+		for (let i = 0; i <= lastTableLine; i++) {
 			endIndex += lines[i].length + 1;
 		}
-		// Remove trailing newline from endIndex if we went past
-		if (endIndex > content.length) {
-			endIndex = content.length;
-		} else {
-			endIndex--; // Remove trailing newline
-		}
+		// endIndex is now one past the newline of the last table line
+		// Subtract 1 to point to the newline, or use content.length if at end
+		endIndex = Math.min(endIndex, content.length);
 
 		return { headers, cells, alignments, startIndex, endIndex };
 	}
