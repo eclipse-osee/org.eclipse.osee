@@ -27,6 +27,7 @@ import {
 } from '@angular/material/dialog';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -73,6 +74,10 @@ export class MarkdownTableDialogComponent {
 			>
 		>(MatDialogRef);
 	private readonly data = inject<MarkdownTableDialogData>(MAT_DIALOG_DATA);
+	private readonly snackBar = inject(MatSnackBar);
+
+	private readonly maxCols = 50;
+	private readonly maxRows = 100;
 
 	protected readonly isEdit = this.data.isEdit;
 	protected readonly headers = signal<string[]>([...this.data.headers]);
@@ -90,27 +95,41 @@ export class MarkdownTableDialogComponent {
 	protected readonly canRemoveRow = computed(() => this.rowCount() > 1);
 
 	protected onColCountChange(event: Event): void {
-		const value = parseInt(
-			(event.target as HTMLInputElement).value,
-			10
-		);
+		const input = event.target as HTMLInputElement;
+		const value = parseInt(input.value, 10);
 		if (isNaN(value) || value < 1) {
+			input.value = String(this.colCount());
 			return;
 		}
-		const newCols = Math.min(50, value);
+		if (value > this.maxCols) {
+			this.snackBar.open(
+				`Maximum ${this.maxCols} columns allowed.`,
+				'Dismiss',
+				{ duration: 3000 }
+			);
+		}
+		const newCols = Math.min(this.maxCols, value);
 		this.resizeTable(newCols, this.rowCount());
+		input.value = String(newCols);
 	}
 
 	protected onRowCountChange(event: Event): void {
-		const value = parseInt(
-			(event.target as HTMLInputElement).value,
-			10
-		);
+		const input = event.target as HTMLInputElement;
+		const value = parseInt(input.value, 10);
 		if (isNaN(value) || value < 1) {
+			input.value = String(this.rowCount());
 			return;
 		}
-		const newRows = Math.min(100, value);
+		if (value > this.maxRows) {
+			this.snackBar.open(
+				`Maximum ${this.maxRows} rows allowed.`,
+				'Dismiss',
+				{ duration: 3000 }
+			);
+		}
+		const newRows = Math.min(this.maxRows, value);
 		this.resizeTable(this.colCount(), newRows);
+		input.value = String(newRows);
 	}
 
 	private resizeTable(newCols: number, newRows: number): void {
@@ -195,12 +214,28 @@ export class MarkdownTableDialogComponent {
 	}
 
 	protected addColumn(): void {
+		if (this.colCount() >= this.maxCols) {
+			this.snackBar.open(
+				`Maximum ${this.maxCols} columns reached.`,
+				'Dismiss',
+				{ duration: 3000 }
+			);
+			return;
+		}
 		this.headers.update((h) => [...h, '']);
 		this.cells.update((rows) => rows.map((r) => [...r, '']));
 		this.alignments.update((a) => [...a, 'left']);
 	}
 
 	protected insertColumnAt(colIndex: number): void {
+		if (this.colCount() >= this.maxCols) {
+			this.snackBar.open(
+				`Maximum ${this.maxCols} columns reached.`,
+				'Dismiss',
+				{ duration: 3000 }
+			);
+			return;
+		}
 		this.headers.update((h) => {
 			const copy = [...h];
 			copy.splice(colIndex, 0, '');
@@ -232,11 +267,27 @@ export class MarkdownTableDialogComponent {
 	}
 
 	protected addRow(): void {
+		if (this.rowCount() >= this.maxRows) {
+			this.snackBar.open(
+				`Maximum ${this.maxRows} rows reached.`,
+				'Dismiss',
+				{ duration: 3000 }
+			);
+			return;
+		}
 		const emptyCells = Array(this.colCount()).fill('');
 		this.cells.update((rows) => [...rows, emptyCells]);
 	}
 
 	protected insertRowAt(rowIndex: number): void {
+		if (this.rowCount() >= this.maxRows) {
+			this.snackBar.open(
+				`Maximum ${this.maxRows} rows reached.`,
+				'Dismiss',
+				{ duration: 3000 }
+			);
+			return;
+		}
 		const emptyCells = Array(this.colCount()).fill('');
 		this.cells.update((rows) => {
 			const copy = [...rows];

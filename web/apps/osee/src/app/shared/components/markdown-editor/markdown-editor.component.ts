@@ -449,6 +449,19 @@ export class MarkdownEditorComponent {
 
 		const wasFullscreen = this.isFullscreen();
 		const openDialog = () => {
+			if (
+				parsedTable &&
+				(parsedTable.headers.length > 50 ||
+					parsedTable.cells.length > 100)
+			) {
+				this.snackBar.open(
+					'Table exceeds maximum editable size (50 columns × 100 rows).',
+					'Dismiss',
+					{ duration: 4000 }
+				);
+				return;
+			}
+
 			const dialogData: MarkdownTableDialogData = parsedTable
 				? {
 						rows: parsedTable.cells.length,
