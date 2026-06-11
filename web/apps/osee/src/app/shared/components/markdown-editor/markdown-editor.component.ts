@@ -435,8 +435,25 @@ export class MarkdownEditorComponent {
 	private insertImageLink(artifactId: string): void {
 		const imageTag = `<image-link>${artifactId}</image-link>`;
 		const currentContent = this.mdContent();
-		const separator = currentContent.length > 0 ? '\n\n' : '';
-		this.mdContent.set(currentContent + separator + imageTag);
+		const cursorPos = this.savedSelectionStart;
+
+		const before = currentContent.substring(0, cursorPos);
+		const after = currentContent.substring(cursorPos);
+		const prefixNewlines =
+			before.length > 0 && !before.endsWith('\n\n')
+				? before.endsWith('\n')
+					? '\n'
+					: '\n\n'
+				: '';
+		const suffixNewlines =
+			after.length > 0 && !after.startsWith('\n\n')
+				? after.startsWith('\n')
+					? '\n'
+					: '\n\n'
+				: '';
+		this.mdContent.set(
+			before + prefixNewlines + imageTag + suffixNewlines + after
+		);
 	}
 
 	openTableDialog(): void {
