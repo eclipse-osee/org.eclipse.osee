@@ -54,6 +54,13 @@ public class TxData implements HasSession, HasBranchId {
       COMMIT_FAILED;
    }
    private static final long SPACING = (long) Math.pow(2.0, 18.0);
+   private static final int REORDER_THRESHOLD_MAX = (int) (Integer.MAX_VALUE - SPACING * 2);
+   private static final int REORDER_THRESHOLD_MIN = (int) (Integer.MIN_VALUE + SPACING * 2);
+   /**
+    * When reordering, pack existing relations into the lower 25% of the integer range, reserving 75% as runway for
+    * end-insertions.
+    */
+   private static final double REORDER_TAIL_RESERVE_RATIO = 0.75;
    private final OrcsSession session;
    private final GraphData graph;
    private final List<TupleData> tuples = new ArrayList<>();
@@ -232,6 +239,22 @@ public class TxData implements HasSession, HasBranchId {
 
    public int calculateInsertionOrderIndex(int afterIndex, int beforeIndex) {
       return (int) ((long) (afterIndex) + beforeIndex) / 2;
+   }
+
+   public static int getReorderThresholdMax() {
+      return REORDER_THRESHOLD_MAX;
+   }
+
+   public static int getReorderThresholdMin() {
+      return REORDER_THRESHOLD_MIN;
+   }
+
+   public static long getSpacing() {
+      return SPACING;
+   }
+
+   public static double getReorderTailReserveRatio() {
+      return REORDER_TAIL_RESERVE_RATIO;
    }
 
    public void addGammaId(GammaId gammaId) {
