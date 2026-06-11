@@ -801,7 +801,9 @@ export class MarkdownEditorComponent {
 		if (trimmed.endsWith('|')) {
 			trimmed = trimmed.substring(0, trimmed.length - 1);
 		}
-		return trimmed.split('|').map((cell) => cell.trim());
+		return trimmed
+			.split('|')
+			.map((cell) => cell.trim().replace(/<br>/gi, '\n'));
 	}
 
 	private parseAlignments(

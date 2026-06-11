@@ -261,19 +261,72 @@ export class MarkdownTableDialogComponent {
 		this.dialogRef.close(undefined);
 	}
 
-	protected syncRowHeight(event: Event): void {
-		const textarea = event.target as HTMLTextAreaElement;
-		const row = textarea.closest('tr');
-		if (!row) {
-			return;
-		}
-		const height = textarea.offsetHeight;
-		const textareas = row.querySelectorAll<HTMLTextAreaElement>('textarea');
-		textareas.forEach((ta) => {
-			if (ta !== textarea) {
-				ta.style.height = `${height}px`;
-			}
-		});
+	/** Row height stored per row index. */
+	protected readonly rowHeights = signal<Record<number, number>>({});
+	/** Column width stored per column index. */
+	protected readonly colWidths = signal<Record<number, number>>({});
+
+	protected getRowHeight(rowIdx: number): string {
+		const h = this.rowHeights()[rowIdx];
+		return h ? `${h}px` : 'auto';
+	}
+
+	protected getColWidth(colIdx: number): string {
+		const w = this.colWidths()[colIdx];
+		return w ? `${w}px` : '';
+	}
+
+	protected onRowDividerMouseDown(event: MouseEvent, rowIdx: number): void {
+		event.preventDefault();
+		const startY = event.clientY;
+		const row = (event.target as HTMLElement).closest('tr')
+			?.previousElementSibling as HTMLTableRowElement | null;
+		const startHeight = row?.offsetHeight ?? 72;
+
+		document.body.style.cursor = 'row-resize';
+		document.body.style.userSelect = 'none';
+
+		const onMouseMove = (e: MouseEvent) => {
+			const delta = e.clientY - startY;
+			const newHeight = Math.max(40, startHeight + delta);
+			this.rowHeights.update((h) => ({ ...h, [rowIdx]: newHeight }));
+		};
+
+		const onMouseUp = () => {
+			document.body.style.cursor = '';
+			document.body.style.userSelect = '';
+			document.removeEventListener('mousemove', onMouseMove);
+			document.removeEventListener('mouseup', onMouseUp);
+		};
+
+		document.addEventListener('mousemove', onMouseMove);
+		document.addEventListener('mouseup', onMouseUp);
+	}
+
+	protected onColDividerMouseDown(event: MouseEvent, colIdx: number): void {
+		event.preventDefault();
+		event.stopPropagation();
+		const startX = event.clientX;
+		const currentWidth = this.colWidths()[colIdx] || 160;
+
+		document.body.style.cursor = 'col-resize';
+		document.body.style.userSelect = 'none';
+
+		const onMouseMove = (e: MouseEvent) => {
+			const delta = e.clientX - startX;
+			const newWidth = Math.max(80, currentWidth + delta);
+			this.colWidths.update((w) => ({ ...w, [colIdx]: newWidth }));
+		};
+
+		const onMouseUp = () => {
+			document.body.style.cursor = '';
+			document.body.style.userSelect = '';
+			document.removeEventListener('mousemove', onMouseMove);
+			document.removeEventListener('mouseup', onMouseUp);
+		};
+
+		document.addEventListener('mousemove', onMouseMove);
+		document.addEventListener('mouseup', onMouseUp);
 	}
 
 	private generateMarkdown(): string {
@@ -281,7 +334,12 @@ export class MarkdownTableDialogComponent {
 		const alignments = this.alignments();
 		const cells = this.cells();
 
-		const headerRow = '| ' + headers.map((h) => h || ' ').join(' | ') + ' |';
+		// Replace newlines with <br> since markdown table rows must be single lines
+		const escapeCell = (value: string): string =>
+			(value || ' ').replace(/\n/g, '<br>');
+
+		const headerRow =
+			'| ' + headers.map((h) => escapeCell(h)).join(' | ') + ' |';
 
 		const separatorRow =
 			'| ' +
@@ -300,7 +358,8 @@ export class MarkdownTableDialogComponent {
 			' |';
 
 		const dataRows = cells.map(
-			(row) => '| ' + row.map((c) => c || ' ').join(' | ') + ' |'
+			(row) =>
+				'| ' + row.map((c) => escapeCell(c)).join(' | ') + ' |'
 		);
 
 		return [headerRow, separatorRow, ...dataRows].join('\n');
