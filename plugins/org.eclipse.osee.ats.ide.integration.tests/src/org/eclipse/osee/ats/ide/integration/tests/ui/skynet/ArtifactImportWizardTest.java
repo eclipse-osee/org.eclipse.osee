@@ -170,15 +170,9 @@ public final class ArtifactImportWizardTest {
       String importFileName = String.format("artifact.import.wizard.test_%s", nameOfExcelImportFile);
       File inputExcelFile = resource.newFile(importFileName);
 
-      InputStream inputStream = null;
-      OutputStream outputStream = null;
-      try {
-         inputStream = new BufferedInputStream(url.openStream());
-         outputStream = new FileOutputStream(inputExcelFile);
+      try (InputStream inputStream = new BufferedInputStream(url.openStream());
+         OutputStream outputStream = new FileOutputStream(inputExcelFile)) {
          Lib.inputStreamToOutputStream(inputStream, outputStream);
-      } finally {
-         Lib.close(inputStream);
-         Lib.close(outputStream);
       }
 
       Assert.assertTrue(inputExcelFile.exists());
