@@ -853,10 +853,10 @@ export class MarkdownEditorComponent {
 		if (trimmed.endsWith('|')) {
 			trimmed = trimmed.substring(0, trimmed.length - 1);
 		}
-		const rawCells = trimmed.split('|').map((c) => c.trim());
+		// Split on | but keep the raw content to distinguish
+		// "| |" (empty cell with space) from "||" (span marker — no content at all)
+		const rawCells = trimmed.split('|');
 
-		// Determine the total number of columns from the separator
-		// (we use rawCells.length as the column count)
 		const colCount = rawCells.length;
 		const headers: string[] = Array(colCount).fill('');
 		const headerSpans: number[] = Array(colCount).fill(1);
@@ -864,10 +864,11 @@ export class MarkdownEditorComponent {
 		let colIdx = 0;
 		let i = 0;
 		while (i < rawCells.length && colIdx < colCount) {
-			const cellContent = rawCells[i].replace(/<br>/gi, '\n');
+			const cellContent = rawCells[i].trim().replace(/<br>/gi, '\n');
 			headers[colIdx] = cellContent;
 
-			// Count consecutive empty cells following this one (colspan)
+			// Count consecutive truly-empty cells (no characters at all between pipes)
+			// This is the Flexmark colspan syntax: "||" has an empty string between pipes
 			let span = 1;
 			while (
 				i + span < rawCells.length &&

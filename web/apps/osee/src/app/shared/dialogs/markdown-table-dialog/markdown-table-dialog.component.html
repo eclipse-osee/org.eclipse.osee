@@ -150,35 +150,41 @@
 											class="placeholder:tw-italic placeholder:tw-text-osee-neutral-60/60"
 											placeholder="Enter header..." />
 									</mat-form-field>
-									@if (colCount() > 1) {
-										<div class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-xs tw-text-osee-neutral-60">
+									@if (canMergeLeft($index)) {
+										<button
+											mat-icon-button
+											type="button"
+											matTooltip="Merge Into Left Header"
+											class="tw-self-center tw-text-osee-blue-6"
+											(click)="mergeLeft($index)">
+											<mat-icon>merge_type</mat-icon>
+										</button>
+									} @else {
+										<span matTooltip="Cannot merge the first column.">
 											<button
 												mat-icon-button
 												type="button"
-												matTooltip="Decrease Span"
-												[disabled]="getSpan($index) <= 1"
-												class="tw-text-osee-blue-6"
-												(click)="decreaseSpan($index)">
-												<mat-icon>remove</mat-icon>
+												disabled
+												class="tw-self-center tw-opacity-40">
+												<mat-icon>merge_type</mat-icon>
 											</button>
-											<span>Span: {{ getSpan($index) }}</span>
-											<button
-												mat-icon-button
-												type="button"
-												matTooltip="Increase Span"
-												[disabled]="$index + getSpan($index) >= colCount()"
-												class="tw-text-osee-blue-6"
-												(click)="increaseSpan($index)">
-												<mat-icon>add</mat-icon>
-											</button>
-										</div>
+										</span>
 									}
 								</div>
 							} @else {
-								<!-- Spanned-over column: show which header covers it -->
-								<div class="tw-flex tw-h-full tw-items-center tw-justify-center tw-rounded tw-bg-osee-neutral-25/30 tw-p-2 tw-text-center tw-text-xs tw-italic tw-text-osee-neutral-60 dark:tw-bg-osee-neutral-100/10">
-									<mat-icon class="tw-mr-1 tw-text-sm">merge_type</mat-icon>
-									{{ getSpanOwnerLabel($index) }}
+								<!-- Spanned-over column: show unmerge option -->
+								<div class="tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-center tw-gap-1 tw-rounded tw-bg-osee-neutral-25/30 tw-p-2 tw-text-center dark:tw-bg-osee-neutral-100/10">
+									<span class="tw-text-xs tw-italic tw-text-osee-neutral-60">
+										{{ getSpanOwnerLabel($index) }}
+									</span>
+									<button
+										mat-icon-button
+										type="button"
+										matTooltip="Unmerge"
+										class="tw-text-osee-blue-6"
+										(click)="unmerge($index)">
+										<mat-icon>call_split</mat-icon>
+									</button>
 								</div>
 							}
 						</th>

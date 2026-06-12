@@ -143,41 +143,98 @@ export class MarkdownTableDialogComponent {
 	});
 
 	protected increaseSpan(colIndex: number): void {
-		const spans = this.headerSpans();
-		const currentSpan = spans[colIndex] || 1;
-		// Can only increase if the next column exists and isn't already part of another span
-		const nextCol = colIndex + currentSpan;
-		if (nextCol >= this.colCount()) {
+		// Not used anymore — replaced by mergeLeft
+	}
+
+	protected decreaseSpan(colIndex: number): void {
+		// Not used anymore — replaced by unmerge
+	}
+
+	/** Merge this column into the header to its left. */
+	protected mergeLeft(colIndex: number): void {
+		if (colIndex <= 0) {
 			return;
 		}
+		const spans = this.headerSpans();
+		const thisSpan = spans[colIndex] === undefined ? 1 : spans[colIndex];
+		if (thisSpan === 0) {
+			return; // Already spanned
+		}
+
+		// Find the owner to the left (the nearest visible header)
+		let ownerIdx = colIndex - 1;
+		while (ownerIdx > 0 && (spans[ownerIdx] === 0)) {
+			ownerIdx--;
+		}
+
+		const ownerSpan = spans[ownerIdx] === undefined ? 1 : spans[ownerIdx];
+
+		// Transfer this column's entire span into the owner
 		this.headerSpans.update((s) => {
 			const copy = [...s];
-			copy[colIndex] = currentSpan + 1;
-			// Mark the absorbed column's span as 0 (hidden)
-			copy[nextCol] = 0;
+			copy[ownerIdx] = ownerSpan + thisSpan;
+			copy[colIndex] = 0;
+			// Any columns that were already spanned by this column stay as 0
 			return copy;
 		});
-		// Clear the absorbed column's header text
+		// Clear this column's header text
 		this.headers.update((h) => {
 			const copy = [...h];
-			copy[nextCol] = '';
+			copy[colIndex] = '';
 			return copy;
 		});
 	}
 
-	protected decreaseSpan(colIndex: number): void {
+	/** Unmerge this column — splits the span. This column becomes owner of the right portion. */
+	protected unmerge(colIndex: number): void {
 		const spans = this.headerSpans();
-		const currentSpan = spans[colIndex] || 1;
-		if (currentSpan <= 1) {
+		// Find the owner
+		let ownerIdx = -1;
+		for (let i = colIndex - 1; i >= 0; i--) {
+			const s = spans[i] === undefined ? 1 : spans[i];
+			if (s > 0 && i + s > colIndex) {
+				ownerIdx = i;
+				break;
+			}
+		}
+		if (ownerIdx === -1) {
 			return;
 		}
-		const releasedCol = colIndex + currentSpan - 1;
+
+		const ownerSpan = spans[ownerIdx] === undefined ? 1 : spans[ownerIdx];
+		const rightPortionSize = ownerIdx + ownerSpan - colIndex;
+
 		this.headerSpans.update((s) => {
 			const copy = [...s];
-			copy[colIndex] = currentSpan - 1;
-			copy[releasedCol] = 1;
+			// Owner keeps only up to this column
+			copy[ownerIdx] = colIndex - ownerIdx;
+			// This column becomes the new owner of the right portion
+			copy[colIndex] = rightPortionSize;
 			return copy;
 		});
+	}
+
+	/** Any spanned column can be unmerged. */
+	protected canUnmerge(colIndex: number): boolean {
+		const spans = this.headerSpans();
+		return (spans[colIndex] === undefined ? 1 : spans[colIndex]) === 0;
+	}
+
+	/** Check if a column can be merged left. */
+	protected canMergeLeft(colIndex: number): boolean {
+		if (colIndex <= 0) {
+			return false;
+		}
+		const spans = this.headerSpans();
+		const span = spans[colIndex] === undefined ? 1 : spans[colIndex];
+		// Can only merge if this column is currently independent (span >= 1)
+		return span >= 1;
+	}
+
+	/** Check if a column is currently spanned (part of another header's span). */
+	protected isSpanned(colIndex: number): boolean {
+		const spans = this.headerSpans();
+		return (spans[colIndex] === undefined ? 1 : spans[colIndex]) === 0;
 	}
 
 	protected getSpan(colIndex: number): number {
