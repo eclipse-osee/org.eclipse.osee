@@ -14,12 +14,15 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,16 +32,25 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public final class EncryptUtility {
    private final static byte[] linebreak = {}; // Remove Base64 encoder default line break
-   private final static String TRANSFORMATION = "AES/ECB/PKCS5Padding";
+   private final static String TRANSFORMATION = "AES/CBC/PKCS5Padding";
    private final static String ALGORITHM = "AES";
+   private final static int IV_LENGTH = 16;
 
    public static String encryptWithExceptions(String plainText, String secret, String transformation, String algorithm)
       throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-      NoSuchPaddingException, UnsupportedEncodingException {
+      NoSuchPaddingException, UnsupportedEncodingException, InvalidAlgorithmParameterException {
+      SecretKeySpec keySpec = new SecretKeySpec(secret.getBytes(), algorithm);
       Cipher cipher = Cipher.getInstance(transformation);
-      cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(secret.getBytes(), algorithm));
 
-      byte[] encrypted = cipher.doFinal(plainText.getBytes());
+      byte[] iv = new byte[IV_LENGTH];
+      new SecureRandom().nextBytes(iv);
+      IvParameterSpec ivSpec = new IvParameterSpec(iv);
+      cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+      byte[] cipherText = cipher.doFinal(plainText.getBytes());
+      // Prepend IV to ciphertext for use during decryption
+      byte[] encrypted = new byte[iv.length + cipherText.length];
+      System.arraycopy(iv, 0, encrypted, 0, iv.length);
+      System.arraycopy(cipherText, 0, encrypted, iv.length, cipherText.length);
 
       Base64 encoder = new Base64(32, linebreak, true);
       return new String(encoder.encode(encrypted), "UTF-8");
@@ -46,14 +58,19 @@ public final class EncryptUtility {
 
    public static String decryptWithExceptions(String codedText, String secret, String transformation, String algorithm)
       throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
-      NoSuchPaddingException, UnsupportedEncodingException {
+      NoSuchPaddingException, UnsupportedEncodingException, InvalidAlgorithmParameterException {
       Base64 encoder = new Base64(32, linebreak, true);
-      byte[] encypted = encoder.decode(codedText.getBytes());
+      byte[] decoded = encoder.decode(codedText.getBytes());
 
+      SecretKeySpec keySpec = new SecretKeySpec(secret.getBytes(), algorithm);
       Cipher cipher = Cipher.getInstance(transformation);
-      cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(secret.getBytes(), algorithm));
 
-      byte[] decrypted = cipher.doFinal(encypted);
+      // Extract IV from the beginning of the decoded data
+      byte[] iv = new byte[IV_LENGTH];
+      System.arraycopy(decoded, 0, iv, 0, iv.length);
+      IvParameterSpec ivSpec = new IvParameterSpec(iv);
+      cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+      byte[] decrypted = cipher.doFinal(decoded, iv.length, decoded.length - iv.length);
 
       return new String(decrypted, "UTF-8");
    }
