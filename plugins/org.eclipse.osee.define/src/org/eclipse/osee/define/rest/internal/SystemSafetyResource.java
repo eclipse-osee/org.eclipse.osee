@@ -142,16 +142,9 @@ public final class SystemSafetyResource {
          tempTar = Files.createTempFile("safety-tar-", ".tar");
          Files.copy(tarInputStream, tempTar, StandardCopyOption.REPLACE_EXISTING);
 
-         TarArchiveInputStream tarIn = new TarArchiveInputStream(
-            new BufferedInputStream(Files.newInputStream(tempTar), 1024 * 1024));
-         try {
+         try (TarArchiveInputStream tarIn = new TarArchiveInputStream(
+            new BufferedInputStream(Files.newInputStream(tempTar), 1024 * 1024))) {
             traces.extractTracesFromTar(tarIn);
-         } finally {
-            try {
-               tarIn.close();
-            } catch (IOException ignored) {
-               // TarArchiveInputStream.close() may throw "Truncated TAR archive"
-            }
          }
       } catch (IOException e) {
          return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(
