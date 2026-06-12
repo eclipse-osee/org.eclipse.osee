@@ -18,6 +18,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -37,5 +38,13 @@ public interface ReportEndpoint {
    Response getReportFromTemplate(@PathParam("branch") BranchId branch,
       @DefaultValue("-1") @PathParam("view") ArtifactId view,
       @DefaultValue("-1") @PathParam("template") ArtifactId templateArt);
+
+   @GET
+   @Path("{branch}/view/{view}/template/{template}/async/{email}")
+   @Produces({MediaType.APPLICATION_JSON})
+   Response getReportFromTemplateAsync(@PathParam("branch") BranchId branch,
+      @DefaultValue("-1") @PathParam("view") ArtifactId view,
+      @DefaultValue("-1") @PathParam("template") ArtifactId templateArt,
+      @PathParam("email") String emailRecipient);
 
 }
