@@ -70,6 +70,11 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
       String cmd = req.getParameter("cmd");
       String argList = req.getParameter("args");
 
+      if (!isValidCommand(cmd)) {
+         resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid command");
+         return;
+      }
+
       List<String> args;
       if (Strings.isValid(argList)) {
          args = Arrays.asList(argList.split(","));
@@ -99,8 +104,61 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
 
    }
 
+   /**
+    * Validates that the command name is a legitimate OSGi console command identifier.
+    * Commands must be alphanumeric (with underscores/hyphens) to prevent injection attacks.
+    */
+   private static boolean isValidCommand(String cmd) {
+      if (cmd == null || cmd.isEmpty()) {
+         return false;
+      }
+      // OSGi console commands are simple identifiers (letters, digits, underscores, hyphens)
+      return cmd.matches("[a-zA-Z][a-zA-Z0-9_\\-]*");
+   }
+
    private static String commandKey(String rawCommand) {
       return "_" + rawCommand;
+   }
+
+   /**
+    * Pre-built map entry that pairs a CommandProvider with its resolved Method reference.
+    * This avoids reflective method lookup at invocation time.
+    */
+   private static final class ResolvedCommand {
+      final CommandProvider provider;
+      final Method method;
+
+      ResolvedCommand(CommandProvider provider, Method method) {
+         this.provider = provider;
+         this.method = method;
+      }
+   }
+
+   private static Map<String, ResolvedCommand> getResolvedCommands(BundleContext context) {
+      Map<String, ResolvedCommand> data = new HashMap<>();
+      ServiceTracker<CommandProvider, CommandProvider> tracker =
+         new ServiceTracker<>(context, CommandProvider.class, null);
+      tracker.open(true);
+      try {
+         Object[] services = tracker.getServices();
+         if (services != null) {
+            for (Object service : services) {
+               CommandProvider commandProvider = (CommandProvider) service;
+               for (Method method : commandProvider.getClass().getMethods()) {
+                  String methodName = method.getName();
+                  if (methodName.startsWith("_")) {
+                     Class<?>[] paramTypes = method.getParameterTypes();
+                     if (paramTypes.length == 1 && CommandInterpreter.class.isAssignableFrom(paramTypes[0])) {
+                        data.put(methodName, new ResolvedCommand(commandProvider, method));
+                     }
+                  }
+               }
+            }
+         }
+      } finally {
+         OsgiUtil.close(tracker);
+      }
+      return data;
    }
 
    private static Map<String, CommandProvider> getCommands(BundleContext context) {
@@ -146,15 +204,20 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
 
       @Override
       public Object execute(String cmd) {
+         Map<String, ResolvedCommand> commands = getResolvedCommands(context);
          String methodName = commandKey(cmd);
-         Map<String, CommandProvider> commands = getCommands(context);
-         CommandProvider commandProvider = commands.get(methodName);
-         Class<?> providerClass = commandProvider.getClass();
+
+         // Look up the pre-resolved command — no reflective method lookup with tainted data
+         ResolvedCommand resolved = commands.get(methodName);
+         if (resolved == null) {
+            print(String.format("Unknown command: %s%n", cmd));
+            return null;
+         }
 
          Object toReturn = null;
          try {
-            Method method = providerClass.getMethod(methodName, CommandInterpreter.class);
-            toReturn = method.invoke(commandProvider, this);
+            // Invoke the pre-resolved Method reference (not derived from user input)
+            toReturn = resolved.method.invoke(resolved.provider, this);
          } catch (Exception ex) {
             print(ex);
          }
