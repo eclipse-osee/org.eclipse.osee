@@ -47,14 +47,10 @@ public class ImageChecker {
 
       Lib.deleteDir(basePath);
 
-      InputStream inputStream = null;
-      try {
-         inputStream = new BufferedInputStream(new FileInputStream(
-            "C:\\Documents and Settings\\b1565043\\Desktop\\_MPD_VAM_CONTROL__1177719__20110414_093657-41.xml"));
+      try (InputStream inputStream = new BufferedInputStream(new FileInputStream(
+         "C:\\Documents and Settings\\b1565043\\Desktop\\_MPD_VAM_CONTROL__1177719__20110414_093657-41.xml"))) {
          ImageChecker checker = new ImageChecker(basePath);
          checker.extractImages(inputStream);
-      } finally {
-         Lib.close(inputStream);
       }
    }
 
@@ -81,18 +77,12 @@ public class ImageChecker {
          String name = fileName.replace("wordml://", "");
          name = Lib.removeExtension(name);
 
-         OutputStream outputStream = null;
-         InputStream inputStream = null;
-         try {
-            basePath.mkdirs();
-            byte[] data = DatatypeConverter.parseBase64Binary(binData);
-            inputStream = new ByteArrayInputStream(data);
-            outputStream = new FileOutputStream(new File(basePath, name + ".gzip"));
+         basePath.mkdirs();
+         byte[] data = DatatypeConverter.parseBase64Binary(binData);
+         try (InputStream inputStream = new ByteArrayInputStream(data);
+            OutputStream outputStream = new FileOutputStream(new File(basePath, name + ".gzip"))) {
             Lib.inputStreamToOutputStream(inputStream, outputStream);
             convert(inputStream, outputStream);
-         } finally {
-            Lib.close(outputStream);
-            Lib.close(inputStream);
          }
       } else {
          System.out.println(extension);
