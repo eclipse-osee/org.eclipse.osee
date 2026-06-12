@@ -142,8 +142,9 @@ public final class SystemSafetyResource {
          tempTar = Files.createTempFile("safety-tar-", ".tar");
          Files.copy(tarInputStream, tempTar, StandardCopyOption.REPLACE_EXISTING);
 
-         try (TarArchiveInputStream tarIn = new TarArchiveInputStream(
-            new BufferedInputStream(Files.newInputStream(tempTar), 1024 * 1024))) {
+         try (InputStream fis = Files.newInputStream(tempTar);
+            BufferedInputStream bis = new BufferedInputStream(fis, 1024 * 1024);
+            TarArchiveInputStream tarIn = new TarArchiveInputStream(bis)) {
             traces.extractTracesFromTar(tarIn);
          }
       } catch (IOException e) {
