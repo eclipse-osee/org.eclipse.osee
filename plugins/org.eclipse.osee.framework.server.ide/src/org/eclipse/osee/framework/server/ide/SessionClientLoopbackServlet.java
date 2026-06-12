@@ -49,24 +49,89 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
          ISession session = getSessionFromRequest(request);
-         String url = null;
+         String safeUrl;
          if (session != null) {
             // Session found - redirect to client.
-            getLogger().info("Session found - redirect to client;\n\t url=[%s]", url);
-            url = String.format("%s%s", getRemoteHostUrl(session), getLoopbackPostfix(request));
+            String baseUrl = getRemoteHostUrl(session);
+            String postfix = getLoopbackPostfix(request);
+            safeUrl = buildValidatedRedirectUrl(baseUrl, postfix, request);
+            getLogger().info("Session found - redirect to client;\n\t url=[%s]", safeUrl);
          } else {
             // No session found - redirect to web browser request handler.
-            getLogger().info("No session found - redirect to web browser request handler;\n\t url=[%s]", url);
-            url = String.format("http://%s:%s/%s?%s", getNormalizedAddress(request.getLocalAddr()),
-               request.getLocalPort(), OseeServerContext.ARTIFACT_CONTEXT, request.getQueryString());
+            String host = getNormalizedAddress(request.getLocalAddr());
+            int port = request.getLocalPort();
+            String queryString = request.getQueryString();
+            safeUrl = buildLocalRedirectUrl(host, port, OseeServerContext.ARTIFACT_CONTEXT, queryString);
+            getLogger().info("No session found - redirect to web browser request handler;\n\t url=[%s]", safeUrl);
          }
          response.setContentType("text/plain");
-         response.sendRedirect(url);
+         if (safeUrl == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid redirect target");
+            return;
+         }
+         response.sendRedirect(response.encodeRedirectURL(safeUrl));
       } catch (Exception ex) {
          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
             String.format("Error processing request [%s]", request.getQueryString()));
       } finally {
          response.flushBuffer();
+      }
+   }
+
+   /**
+    * Builds and validates a redirect URL from a session-based base URL and postfix.
+    * Returns null if the resulting URL is not safe for redirection.
+    */
+   private String buildValidatedRedirectUrl(String baseUrl, String postfix, HttpServletRequest request) {
+      try {
+         URL parsed = new URL(baseUrl + postfix);
+         String host = parsed.getHost();
+         if (!isAllowedHost(host, request)) {
+            getLogger().warn("Rejected redirect to non-local host: %s", host);
+            return null;
+         }
+         // Reconstruct from parsed components to break taint chain
+         int port = parsed.getPort();
+         String portStr = (port == -1 || port == 80) ? "" : ":" + port;
+         String path = parsed.getPath() != null ? parsed.getPath() : "";
+         String query = parsed.getQuery() != null ? "?" + parsed.getQuery() : "";
+         return String.format("http://%s%s%s%s", host, portStr, path, query);
+      } catch (Exception ex) {
+         getLogger().warn(ex, "Failed to build validated redirect URL from base [%s]", baseUrl);
+         return null;
+      }
+   }
+
+   /**
+    * Builds a local redirect URL from known server components. Only allows the local server address.
+    */
+   private String buildLocalRedirectUrl(String host, int port, String context, String queryString) {
+      // host comes from request.getLocalAddr() which is server-controlled
+      String safeQuery = queryString != null ? "?" + queryString : "";
+      return String.format("http://%s:%d/%s%s", host, port, context, safeQuery);
+   }
+
+   /**
+    * Checks if the host is a permitted redirect target (localhost, loopback, or site-local).
+    */
+   private boolean isAllowedHost(String host, HttpServletRequest request) {
+      if (host == null || host.isEmpty()) {
+         return false;
+      }
+      if ("localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host)) {
+         return true;
+      }
+      String localAddr = request.getLocalAddr();
+      String localName = request.getLocalName();
+      if (host.equalsIgnoreCase(localAddr) || host.equalsIgnoreCase(localName)) {
+         return true;
+      }
+      try {
+         InetAddress targetAddress = InetAddress.getByName(host);
+         return targetAddress.isLoopbackAddress() || targetAddress.isSiteLocalAddress()
+            || targetAddress.equals(InetAddress.getLocalHost());
+      } catch (UnknownHostException ex) {
+         return false;
       }
    }
 
