@@ -52,12 +52,8 @@ public class RestResourceConcatenator {
 
    public void addResource(ByteSource supplier) throws IOException {
       Conditions.checkNotNull(supplier, "InputStreamSupplier");
-      InputStream is = null;
-      try {
-         is = supplier.openStream();
+      try (InputStream is = supplier.openStream()) {
          processResource(Lib.inputStreamToString(is));
-      } finally {
-         Lib.close(is);
       }
    }
 
