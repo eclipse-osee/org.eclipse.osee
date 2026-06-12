@@ -211,9 +211,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    private Map<BranchId, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable,
       List<Object[]> bindDataList, StringBuilder artsMsg) {
       Map<BranchId, IdJoinQuery> items = new HashMap<>();
-      JdbcStatement statement = getJdbcClient().getStatement(connection);
 
-      try {
+      try (JdbcStatement statement = getJdbcClient().getStatement(connection)) {
          for (Object[] bindData : bindDataList) {
             String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
             statement.runPreparedQueryWithMaxFetchSize(query, bindData);
@@ -230,8 +229,6 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
             }
             joinId.store();
          }
-      } finally {
-         statement.close();
       }
 
       return items;
@@ -240,9 +237,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    private Map<BranchId, Id4JoinQuery> findAffectedItemsRel2(JdbcConnection connection, String id1, String id2,
       String id3, String id4, String itemTable, List<Object[]> bindDataList, StringBuilder artsMsg) {
       Map<BranchId, Id4JoinQuery> items = new HashMap<>();
-      JdbcStatement statement = getJdbcClient().getStatement(connection);
 
-      try {
+      try (JdbcStatement statement = getJdbcClient().getStatement(connection)) {
          for (Object[] bindData : bindDataList) {
             String query = String.format(SELECT_AFFECTED_ITEMS_REL2, id1, id2, id3, id4, itemTable);
             statement.runPreparedQueryWithMaxFetchSize(query, bindData);
@@ -265,8 +261,6 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
             }
             joinId.store();
          }
-      } finally {
-         statement.close();
       }
 
       return items;
