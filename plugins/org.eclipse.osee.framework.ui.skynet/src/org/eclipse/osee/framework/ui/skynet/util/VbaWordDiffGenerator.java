@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -103,9 +102,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
    @Override
    public void generate(IProgressMonitor monitor, CompareData compareData) {
-      Writer writer = null;
-      try {
-         writer = new BufferedWriter(new FileWriter(compareData.getGeneratorScriptPath()));
+      try (Writer writer = new BufferedWriter(new FileWriter(compareData.getGeneratorScriptPath()))) {
 
          writer.append(header_begin);
 
@@ -137,8 +134,6 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
-      } finally {
-         Lib.close(writer);
       }
 
       if (executeVbScript) {
