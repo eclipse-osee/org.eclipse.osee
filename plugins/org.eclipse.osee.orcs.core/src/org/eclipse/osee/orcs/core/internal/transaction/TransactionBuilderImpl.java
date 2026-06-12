@@ -638,6 +638,12 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             txData.addRelationSideA(relType, artA, relOrders);
          }
          if (insertType.equals("start")) {
+            if (minOrder < TxData.getReorderThresholdMin()) {
+               reOrderRelTypeArtACentered(relType, artA);
+               TreeMap<Integer, Pair<ArtifactId, GammaId>> reorderedData = getRelationSideAData(relType, artA);
+               txData.addRelationSideA(relType, artA, reorderedData);
+               minOrder = reorderedData.firstKey();
+            }
             relOrder = txData.calculateHeadInsertionOrderIndex(minOrder);
             int i;
             for (i = 0; i < 100 & txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
@@ -672,6 +678,12 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             }
             txData.getNewRelations().get(relType, artA).addRelOrder(artB, relOrder);
          } else {
+            if (maxOrder > TxData.getReorderThresholdMax()) {
+               reOrderRelTypeArtACentered(relType, artA);
+               TreeMap<Integer, Pair<ArtifactId, GammaId>> reorderedData = getRelationSideAData(relType, artA);
+               txData.addRelationSideA(relType, artA, reorderedData);
+               maxOrder = reorderedData.lastKey();
+            }
             relOrder = txData.calculateEndInsertionOrderIndex(maxOrder);
             int i;
             for (i = 0; i < 100 & txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
@@ -723,6 +735,21 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       return resultsCount;
    }
 
+   /**
+    * Reorders all relations for a given relType/artA by centering them across the full integer range. This is used when
+    * existing order values have drifted too close to Integer.MAX_VALUE or Integer.MIN_VALUE, leaving no room for new
+    * insertions.
+    */
+   private int reOrderRelTypeArtACentered(RelationTypeToken relType, ArtifactId artA) {
+
+      List<Object[]> reOrderData = reOrderRelationsCentered(relType, artA, getRelationSideAData(relType, artA));
+
+      int resultsCount = orcsApi.getJdbcService().getClient().runBatchUpdate(
+         OseeSql.UPDATE_REL_ORDER_FOR_TYPE_AND_ART_A.getSql(), reOrderData);
+
+      return resultsCount;
+   }
+
    private TreeMap<Integer, Pair<ArtifactId, GammaId>> getRelationSideAData(RelationTypeToken relType,
       ArtifactId artA) {
 
@@ -753,6 +780,27 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          while (relOrders.containsKey(rel_order)) {
             rel_order = rel_order + 1;
          }
+      }
+      return updateStatements;
+
+   }
+
+   /**
+    * Redistributes relation orders into the lower portion of the integer range, reserving the upper portion as runway
+    * for end-insertions. Used when existing orders approach Integer.MAX_VALUE or Integer.MIN_VALUE.
+    */
+   private List<Object[]> reOrderRelationsCentered(RelationTypeToken relType, ArtifactId artA,
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
+
+      long totalRange = (long) Integer.MAX_VALUE - (long) Integer.MIN_VALUE;
+      long usableRange = (long) (totalRange * (1.0 - TxData.getReorderTailReserveRatio()));
+      long pad = usableRange / (relOrders.size() + 1);
+      long rel_order = (long) Integer.MIN_VALUE + pad;
+      List<Object[]> updateStatements = new ArrayList<>();
+      for (Entry<Integer, Pair<ArtifactId, GammaId>> entry : relOrders.entrySet()) {
+         updateStatements.add(
+            new Object[] {(int) rel_order, relType.getId(), artA.getId(), entry.getValue().getSecond().getId()});
+         rel_order = rel_order + pad;
       }
       return updateStatements;
 
