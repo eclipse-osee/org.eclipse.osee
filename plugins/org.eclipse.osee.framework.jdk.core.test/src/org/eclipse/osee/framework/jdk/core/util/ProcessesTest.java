@@ -43,12 +43,13 @@ public class ProcessesTest {
       Process process = builder.start();
 
       StringWriter stringWriter = new StringWriter();
-      BufferedReader stdOutputIn = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      Future<Long> outFuture = Processes.executor.submit(new OutputRedirector(stringWriter, stdOutputIn));
-      Thread.sleep(500);
-      process.destroy();
-      Assert.assertEquals(argument, stringWriter.toString());
-      Assert.assertEquals(Long.valueOf(argument.length()), outFuture.get());
+      try (BufferedReader stdOutputIn = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+         Future<Long> outFuture = Processes.executor.submit(new OutputRedirector(stringWriter, stdOutputIn));
+         Thread.sleep(500);
+         process.destroy();
+         Assert.assertEquals(argument, stringWriter.toString());
+         Assert.assertEquals(Long.valueOf(argument.length()), outFuture.get());
+      }
    }
 
    @Test
