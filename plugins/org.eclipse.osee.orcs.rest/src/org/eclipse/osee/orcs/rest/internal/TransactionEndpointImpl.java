@@ -146,6 +146,17 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public Response purgeTxs(String txIds) {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      // Export transaction data to cold storage before purging
+      List<TransactionId> txList = new ArrayList<>();
+      for (String id : txIds.split(",")) {
+         txList.add(TransactionId.valueOf(id.trim()));
+      }
+      if (!txList.isEmpty()) {
+         TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+         txColdStorage.exportTransactions(txList);
+      }
+
       return asResponse(orcsApi.getTransactionFactory().purgeTxs(txIds));
    }
 
@@ -667,6 +678,76 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          }
       }
       file.delete();
+   }
+
+   // ---- Cold Storage ----
+
+   @Override
+   public XResultData archiveToColdStorage(int limit, int retentionDays) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return coldStorage.archiveBranches(limit, retentionDays);
+   }
+
+   @Override
+   public XResultData restoreFromColdStorage(BranchId branchId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return coldStorage.restoreBranch(branchId);
+   }
+
+   @Override
+   public XResultData listColdStorage() {
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return coldStorage.listColdStoredBranches();
+   }
+
+   @Override
+   public XResultData purgeColdStorage(BranchId branchId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return coldStorage.purgeColdBranch(branchId);
+   }
+
+   // ---- Purged Transaction Cold Storage ----
+
+   @Override
+   public XResultData restorePurgedTransaction(String fileName, TransactionId txId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return txColdStorage.restoreTransaction(fileName, txId);
+   }
+
+   @Override
+   public XResultData listPurgedTransactionArchives() {
+      TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      return txColdStorage.listPurgedTransactionArchives();
+   }
+
+   // ---- Preview ----
+
+   @Override
+   public Response previewPurgedTransaction(TransactionId txId, String fileName) {
+      TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      javax.ws.rs.core.StreamingOutput stream = output -> {
+         try (java.util.zip.ZipOutputStream zipOut = new java.util.zip.ZipOutputStream(output)) {
+            txColdStorage.previewTransaction(fileName, txId, zipOut);
+         }
+      };
+      return Response.ok(stream, "application/zip").header("Content-Disposition",
+         "attachment; filename=\"preview_tx_" + txId.getIdString() + ".zip\"").build();
+   }
+
+   @Override
+   public Response previewColdStorageBranch(BranchId branchId) {
+      TxsColdStorage coldStorage = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+      javax.ws.rs.core.StreamingOutput stream = output -> {
+         try (java.util.zip.ZipOutputStream zipOut = new java.util.zip.ZipOutputStream(output)) {
+            coldStorage.previewBranch(branchId, zipOut);
+         }
+      };
+      return Response.ok(stream, "application/zip").header("Content-Disposition",
+         "attachment; filename=\"preview_branch_" + branchId.getIdString() + ".zip\"").build();
    }
 
 }
