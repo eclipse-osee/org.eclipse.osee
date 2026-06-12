@@ -783,9 +783,7 @@ public class LisFileParser implements DispoImporterApi {
       OperationReport report) {
       if (!isDuplicateFile(resultsFile, report)) {
          //Start reading line by line
-         BufferedReader br = null;
-         try {
-            br = new BufferedReader(new FileReader(resultsFile));
+         try (BufferedReader br = new BufferedReader(new FileReader(resultsFile))) {
             String resultsLine;
             while ((resultsLine = br.readLine()) != null) {
                // Loop through results file and log coverageItem as Test_Unit for each entry
@@ -803,9 +801,7 @@ public class LisFileParser implements DispoImporterApi {
             }
          } catch (Exception ex) {
             report.addEntry("EXCEPTION", ex.getMessage(), ERROR);
-            BufferedReader br2 = null;
-            try {
-               br2 = new BufferedReader(new FileReader(resultsFile));
+            try (BufferedReader br2 = new BufferedReader(new FileReader(resultsFile))) {
                String resultsLine;
 
                while ((resultsLine = br2.readLine()) != null) {
@@ -824,12 +820,7 @@ public class LisFileParser implements DispoImporterApi {
                }
             } catch (Exception ex2) {
                report.addEntry("EXCEPTION", ex2.getMessage(), ERROR);
-            } finally {
-               Lib.close(br2);
-               Lib.close(br);
             }
-         } finally {
-            Lib.close(br);
          }
       }
    }
