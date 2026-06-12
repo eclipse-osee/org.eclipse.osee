@@ -87,8 +87,10 @@ public class WordUpdateEndpointImplTest {
    @Test
    public void testMissingArtifact() throws Exception {
       // get word xml
-      InputStream inputStream = getClass().getResourceAsStream("data/testMissingArtifact.xml");
-      String wordData = Lib.inputStreamToString(inputStream);
+      String wordData;
+      try (InputStream inputStream = getClass().getResourceAsStream("data/testMissingArtifact.xml")) {
+         wordData = Lib.inputStreamToString(inputStream);
+      }
       wordData = wordData.replaceAll("A0UNsNvCigV4SyvaCCAA", artReqt.getGuid());
 
       List<Long> transferArts = Lists.newLinkedList();
@@ -131,8 +133,9 @@ public class WordUpdateEndpointImplTest {
    }
 
    private String getResource() throws Exception {
-      InputStream inputStream = getClass().getResourceAsStream("data/testSoftwareRequirement.xml");
-      return Lib.inputStreamToString(inputStream);
+      try (InputStream inputStream = getClass().getResourceAsStream("data/testSoftwareRequirement.xml")) {
+         return Lib.inputStreamToString(inputStream);
+      }
    }
 
 }
