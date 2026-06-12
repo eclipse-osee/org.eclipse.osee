@@ -97,7 +97,9 @@ public class AttributeDataMatcher {
             try {
                List<MatchLocation> matched = Lists.newLinkedList();
                for (String toMatch : valuesToMatch) {
-                  matched.addAll(tagger.find(source.getResourceInput(), toMatch, true, options));
+                  try (InputStream resourceInput = source.getResourceInput()) {
+                     matched.addAll(tagger.find(resourceInput, toMatch, true, options));
+                  }
                }
                return matched;
             } catch (Exception ex) {
