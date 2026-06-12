@@ -484,6 +484,7 @@ export class MarkdownEditorComponent {
 						rows: parsedTable.cells.length,
 						cols: parsedTable.headers.length,
 						headers: parsedTable.headers,
+						headerSpans: parsedTable.headerSpans,
 						cells: parsedTable.cells,
 						alignments: parsedTable.alignments,
 						isEdit: true,
@@ -492,6 +493,7 @@ export class MarkdownEditorComponent {
 						rows: 3,
 						cols: 3,
 						headers: ['', '', ''],
+						headerSpans: [1, 1, 1],
 						cells: [
 							['', '', ''],
 							['', '', ''],
@@ -604,6 +606,7 @@ export class MarkdownEditorComponent {
 		selEnd: number
 	): {
 		headers: string[];
+		headerSpans: number[];
 		cells: string[][];
 		alignments: ColumnAlignment[];
 		startIndex: number;
@@ -743,13 +746,16 @@ export class MarkdownEditorComponent {
 			return null;
 		}
 
-		// Parse header
-		const headers = this.parseTableRow(lines[headerLineIndex]);
+		// Parse header with column span detection
+		const { headers, headerSpans } = this.parseHeaderRowWithSpans(
+			lines[headerLineIndex]
+		);
 		if (headers.length === 0) {
 			return null;
 		}
 
-		// Parse alignments from separator
+		// Parse alignments from separator — use separator column count
+		// (which represents the actual number of columns)
 		const alignments = this.parseAlignments(
 			lines[separatorLineIndex],
 			headers.length
@@ -795,7 +801,7 @@ export class MarkdownEditorComponent {
 		// Subtract 1 to point to the newline, or use content.length if at end
 		endIndex = Math.min(endIndex, content.length);
 
-		return { headers, cells, alignments, startIndex, endIndex };
+		return { headers, headerSpans, cells, alignments, startIndex, endIndex };
 	}
 
 	private selectionOverlapsTable(
@@ -828,6 +834,62 @@ export class MarkdownEditorComponent {
 		return trimmed
 			.split('|')
 			.map((cell) => cell.trim().replace(/<br>/gi, '\n'));
+	}
+
+	/**
+	 * Parses a header row detecting Flexmark colspan syntax.
+	 * Consecutive empty cells after a non-empty cell indicate a column span.
+	 * E.g., "| Header 1 ||| Header 2 |" = Header 1 spans 3, Header 2 spans 1.
+	 * Returns headers array (one per actual column) and spans array.
+	 */
+	private parseHeaderRowWithSpans(line: string): {
+		headers: string[];
+		headerSpans: number[];
+	} {
+		let trimmed = line.trim();
+		if (trimmed.startsWith('|')) {
+			trimmed = trimmed.substring(1);
+		}
+		if (trimmed.endsWith('|')) {
+			trimmed = trimmed.substring(0, trimmed.length - 1);
+		}
+		const rawCells = trimmed.split('|').map((c) => c.trim());
+
+		// Determine the total number of columns from the separator
+		// (we use rawCells.length as the column count)
+		const colCount = rawCells.length;
+		const headers: string[] = Array(colCount).fill('');
+		const headerSpans: number[] = Array(colCount).fill(1);
+
+		let colIdx = 0;
+		let i = 0;
+		while (i < rawCells.length && colIdx < colCount) {
+			const cellContent = rawCells[i].replace(/<br>/gi, '\n');
+			headers[colIdx] = cellContent;
+
+			// Count consecutive empty cells following this one (colspan)
+			let span = 1;
+			while (
+				i + span < rawCells.length &&
+				rawCells[i + span] === ''
+			) {
+				span++;
+			}
+
+			headerSpans[colIdx] = span;
+			// Mark spanned columns as 0
+			for (let s = 1; s < span; s++) {
+				if (colIdx + s < colCount) {
+					headerSpans[colIdx + s] = 0;
+					headers[colIdx + s] = '';
+				}
+			}
+
+			colIdx += span;
+			i += span;
+		}
+
+		return { headers, headerSpans };
 	}
 
 	private parseAlignments(

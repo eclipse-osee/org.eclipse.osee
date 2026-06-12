@@ -129,25 +129,58 @@
 					@for (header of headers(); track $index) {
 						<th
 							class="tw-border-b tw-border-osee-neutral-25 tw-bg-white tw-p-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
-							<mat-form-field
-								class="tw-w-full"
-								subscriptSizing="dynamic"
-								[class.tw-font-bold]="true"
-								floatLabel="always"
-								hideRequiredMarker>
-								<mat-label>Header {{ $index + 1 }}</mat-label>
-								<input
-									matInput
-									type="text"
-									[ngModel]="header"
-									(ngModelChange)="
-										updateHeader($index, $event)
-									"
-									name="header-{{ $index }}"
-									spellcheck="true"
-									class="placeholder:tw-italic placeholder:tw-text-osee-neutral-60/60"
-									placeholder="Enter header..." />
-							</mat-form-field>
+							@if (getSpan($index) > 0) {
+								<div class="tw-flex tw-flex-col tw-gap-1">
+									<mat-form-field
+										class="tw-w-full"
+										subscriptSizing="dynamic"
+										[class.tw-font-bold]="true"
+										floatLabel="always"
+										hideRequiredMarker>
+										<mat-label>Header {{ $index + 1 }}</mat-label>
+										<input
+											matInput
+											type="text"
+											[ngModel]="header"
+											(ngModelChange)="
+												updateHeader($index, $event)
+											"
+											name="header-{{ $index }}"
+											spellcheck="true"
+											class="placeholder:tw-italic placeholder:tw-text-osee-neutral-60/60"
+											placeholder="Enter header..." />
+									</mat-form-field>
+									@if (colCount() > 1) {
+										<div class="tw-flex tw-items-center tw-justify-center tw-gap-1 tw-text-xs tw-text-osee-neutral-60">
+											<button
+												mat-icon-button
+												type="button"
+												matTooltip="Decrease Span"
+												[disabled]="getSpan($index) <= 1"
+												class="tw-text-osee-blue-6"
+												(click)="decreaseSpan($index)">
+												<mat-icon>remove</mat-icon>
+											</button>
+											<span>Span: {{ getSpan($index) }}</span>
+											<button
+												mat-icon-button
+												type="button"
+												matTooltip="Increase Span"
+												[disabled]="$index + getSpan($index) >= colCount()"
+												class="tw-text-osee-blue-6"
+												(click)="increaseSpan($index)">
+												<mat-icon>add</mat-icon>
+											</button>
+										</div>
+									}
+								</div>
+							} @else {
+								<!-- Spanned-over column: show which header covers it -->
+								<div class="tw-flex tw-h-full tw-items-center tw-justify-center tw-rounded tw-bg-osee-neutral-25/30 tw-p-2 tw-text-center tw-text-xs tw-italic tw-text-osee-neutral-60 dark:tw-bg-osee-neutral-100/10">
+									<mat-icon class="tw-mr-1 tw-text-sm">merge_type</mat-icon>
+									{{ getSpanOwnerLabel($index) }}
+								</div>
+							}
 						</th>
 					}
 				</tr>

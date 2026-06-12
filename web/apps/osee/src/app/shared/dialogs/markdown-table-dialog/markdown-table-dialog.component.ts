@@ -38,6 +38,7 @@ export type MarkdownTableDialogData = {
 	readonly rows: number;
 	readonly cols: number;
 	readonly headers: string[];
+	readonly headerSpans: number[];
 	readonly cells: string[][];
 	readonly alignments: ColumnAlignment[];
 	readonly isEdit: boolean;
@@ -81,6 +82,7 @@ export class MarkdownTableDialogComponent {
 
 	protected readonly isEdit = this.data.isEdit;
 	protected readonly headers = signal<string[]>([...this.data.headers]);
+	protected readonly headerSpans = signal<number[]>([...this.data.headerSpans]);
 	protected readonly cells = signal<string[][]>([]);
 	protected readonly alignments = signal<ColumnAlignment[]>([
 		...this.data.alignments,
@@ -125,6 +127,77 @@ export class MarkdownTableDialogComponent {
 	protected readonly canRemoveColumn = computed(() => this.colCount() > 1);
 	protected readonly canRemoveRow = computed(() => this.rowCount() > 1);
 
+	/**
+	 * Returns which header column indices are "visible" (i.e., the start of a span).
+	 * A header at index i is visible if no previous header's span covers it.
+	 */
+	protected readonly visibleHeaderIndices = computed(() => {
+		const spans = this.headerSpans();
+		const visible: number[] = [];
+		let i = 0;
+		while (i < spans.length) {
+			visible.push(i);
+			i += spans[i] || 1;
+		}
+		return visible;
+	});
+
+	protected increaseSpan(colIndex: number): void {
+		const spans = this.headerSpans();
+		const currentSpan = spans[colIndex] || 1;
+		// Can only increase if the next column exists and isn't already part of another span
+		const nextCol = colIndex + currentSpan;
+		if (nextCol >= this.colCount()) {
+			return;
+		}
+		this.headerSpans.update((s) => {
+			const copy = [...s];
+			copy[colIndex] = currentSpan + 1;
+			// Mark the absorbed column's span as 0 (hidden)
+			copy[nextCol] = 0;
+			return copy;
+		});
+		// Clear the absorbed column's header text
+		this.headers.update((h) => {
+			const copy = [...h];
+			copy[nextCol] = '';
+			return copy;
+		});
+	}
+
+	protected decreaseSpan(colIndex: number): void {
+		const spans = this.headerSpans();
+		const currentSpan = spans[colIndex] || 1;
+		if (currentSpan <= 1) {
+			return;
+		}
+		const releasedCol = colIndex + currentSpan - 1;
+		this.headerSpans.update((s) => {
+			const copy = [...s];
+			copy[colIndex] = currentSpan - 1;
+			copy[releasedCol] = 1;
+			return copy;
+		});
+	}
+
+	protected getSpan(colIndex: number): number {
+		const span = this.headerSpans()[colIndex];
+		return span === undefined ? 1 : span;
+	}
+
+	protected getSpanOwnerLabel(colIndex: number): string {
+		// Walk left to find the header that owns this column
+		const spans = this.headerSpans();
+		for (let i = colIndex - 1; i >= 0; i--) {
+			const span = spans[i] || 1;
+			if (span > 0 && i + span > colIndex) {
+				const name = this.headers()[i] || `Header ${i + 1}`;
+				return `← ${name}`;
+			}
+		}
+		return '';
+	}
+
 	protected onColCountChange(event: Event): void {
 		const input = event.target as HTMLInputElement;
 		const value = parseInt(input.value, 10);
@@ -167,12 +240,25 @@ export class MarkdownTableDialogComponent {
 		const currentHeaders = this.headers();
 		const currentCells = this.cells();
 		const currentAlignments = this.alignments();
+		const currentSpans = this.headerSpans();
 
 		// Resize headers
 		const resizedHeaders = Array.from({ length: newCols }, (_, i) =>
 			i < currentHeaders.length ? currentHeaders[i] : ''
 		);
 		this.headers.set(resizedHeaders);
+
+		// Resize header spans
+		const resizedSpans = Array.from({ length: newCols }, (_, i) =>
+			i < currentSpans.length ? currentSpans[i] : 1
+		);
+		// Clamp spans that would extend beyond new column count
+		for (let i = 0; i < resizedSpans.length; i++) {
+			if (i + resizedSpans[i] > newCols) {
+				resizedSpans[i] = newCols - i;
+			}
+		}
+		this.headerSpans.set(resizedSpans);
 
 		// Resize alignments
 		const resizedAlignments: ColumnAlignment[] = Array.from(
@@ -258,6 +344,7 @@ export class MarkdownTableDialogComponent {
 			return;
 		}
 		this.headers.update((h) => [...h, '']);
+		this.headerSpans.update((s) => [...s, 1]);
 		this.cells.update((rows) => rows.map((r) => [...r, '']));
 		this.alignments.update((a) => [...a, 'left']);
 	}
@@ -274,6 +361,11 @@ export class MarkdownTableDialogComponent {
 		this.headers.update((h) => {
 			const copy = [...h];
 			copy.splice(colIndex, 0, '');
+			return copy;
+		});
+		this.headerSpans.update((s) => {
+			const copy = [...s];
+			copy.splice(colIndex, 0, 1);
 			return copy;
 		});
 		this.cells.update((rows) =>
@@ -294,7 +386,27 @@ export class MarkdownTableDialogComponent {
 		if (!this.canRemoveColumn()) {
 			return;
 		}
+		// If removing a column that is part of a span, reduce the span
+		const spans = this.headerSpans();
+		// Find which header owns this column
+		let ownerIdx = colIndex;
+		for (let i = 0; i < colIndex; i++) {
+			if (i + (spans[i] || 1) > colIndex) {
+				ownerIdx = i;
+				break;
+			}
+		}
+		if (ownerIdx !== colIndex && (spans[ownerIdx] || 1) > 1) {
+			// This column is part of a span — reduce the owner's span
+			this.headerSpans.update((s) => {
+				const copy = [...s];
+				copy[ownerIdx] = (copy[ownerIdx] || 1) - 1;
+				return copy;
+			});
+		}
+
 		this.headers.update((h) => h.filter((_, i) => i !== colIndex));
+		this.headerSpans.update((s) => s.filter((_, i) => i !== colIndex));
 		this.cells.update((rows) =>
 			rows.map((r) => r.filter((_, i) => i !== colIndex))
 		);
@@ -430,6 +542,7 @@ export class MarkdownTableDialogComponent {
 
 	private generateMarkdown(): string {
 		const headers = this.headers();
+		const spans = this.headerSpans();
 		const alignments = this.alignments();
 		const cells = this.cells();
 
@@ -439,8 +552,20 @@ export class MarkdownTableDialogComponent {
 			return (trimmed || ' ').replace(/\n/g, '<br>');
 		};
 
-		const headerRow =
-			'| ' + headers.map((h) => escapeCell(h)).join(' | ') + ' |';
+		// Build header row with colspan syntax (empty cells = ||)
+		let headerRow = '|';
+		for (let i = 0; i < headers.length; i++) {
+			const span = spans[i] === undefined ? 1 : spans[i];
+			if (span === 0) {
+				// This column is absorbed by a previous span — skip
+				continue;
+			}
+			headerRow += ' ' + escapeCell(headers[i]) + ' |';
+			// Add empty pipes for spanned columns
+			for (let s = 1; s < span; s++) {
+				headerRow += '|';
+			}
+		}
 
 		const separatorRow =
 			'| ' +
