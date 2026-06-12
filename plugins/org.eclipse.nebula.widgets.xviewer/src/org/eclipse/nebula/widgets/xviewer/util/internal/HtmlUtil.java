@@ -69,12 +69,12 @@ public class HtmlUtil {
       try {
          URL url = new URL(urlStr);
          URLConnection connection = url.openConnection(new Proxy(Proxy.Type.HTTP, addr));
-         BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-         String line = null;
-         while ((line = rd.readLine()) != null) {
-            buffer.append(line);
+         try (BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            String line = null;
+            while ((line = rd.readLine()) != null) {
+               buffer.append(line);
+            }
          }
-         rd.close();
          return buffer.toString();
       } catch (Exception ex) {
          XViewerLog.log(Activator.class, Level.SEVERE, "Can't getUrlPageHtml");
