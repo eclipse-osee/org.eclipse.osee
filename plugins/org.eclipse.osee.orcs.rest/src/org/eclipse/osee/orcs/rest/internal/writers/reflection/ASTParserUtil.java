@@ -33,9 +33,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class ASTParserUtil {
    private final List<String> classPaths = new ArrayList<>();
+   private final List<String> sourcePaths = new ArrayList<>();
 
    public CompilationUnit parse(String javaCode) {
-      ASTParser parser = ASTParser.newParser(AST.JLS10);
+      ASTParser parser = ASTParser.newParser(AST.JLS20);
       parser.setSource(javaCode.toCharArray());
       parser.setKind(ASTParser.K_COMPILATION_UNIT);
       parser.setResolveBindings(true);
@@ -46,7 +47,16 @@ public class ASTParserUtil {
       String unitName = getUnitNameFromCode(javaCode);
       parser.setUnitName(unitName);
 
-      parser.setEnvironment(classPaths.toArray(new String[0]), null, null, true);
+      String[] classpathArray = classPaths.isEmpty() ? null : classPaths.toArray(new String[0]);
+      String[] sourcepathArray = sourcePaths.isEmpty() ? null : sourcePaths.toArray(new String[0]);
+      String[] encodings = sourcepathArray != null ? new String[sourcepathArray.length] : null;
+      if (encodings != null) {
+         for (int i = 0; i < encodings.length; i++) {
+            encodings[i] = "UTF-8";
+         }
+      }
+
+      parser.setEnvironment(classpathArray, sourcepathArray, encodings, true);
       CompilationUnit cUnit = (CompilationUnit) parser.createAST(null);
       return cUnit;
    }
@@ -77,8 +87,16 @@ public class ASTParserUtil {
       classPaths.add(path);
    }
 
+   public void addSourcePath(String path) {
+      sourcePaths.add(path);
+   }
+
    public List<String> getPaths() {
       return classPaths;
+   }
+
+   public List<String> getSourcePaths() {
+      return sourcePaths;
    }
 
    private String getUnitNameFromCode(String code) {
