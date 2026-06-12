@@ -19,14 +19,15 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -36,6 +37,8 @@ import org.eclipse.osee.jdbc.JdbcClient;
  * @author Jaden W. Puckett
  */
 public class HealthUtils {
+
+   private static final Logger LOGGER = Logger.getLogger(HealthUtils.class.getName());
 
    private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?";
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
@@ -140,6 +143,7 @@ public class HealthUtils {
          int responseCode = conn.getResponseCode();
          return (responseCode >= 200 && responseCode < 300);
       } catch (Exception ex) {
+         LOGGER.log(Level.WARNING, "Exception checking URL reachability: " + urlStr, ex);
          setErrorMsg("Exception occurred: " + ex.getMessage());
          return false;
       } finally {
@@ -186,10 +190,13 @@ public class HealthUtils {
             }
          }
       } catch (IOException | NoSuchAlgorithmException | KeyManagementException ex) {
+         LOGGER.log(Level.WARNING, "Exception during HTTP request to: " + urlStr, ex);
          try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw);) {
+            ex.printStackTrace(pw);
             String stackTrace = sw.toString();
             setErrorMsg("Exception occurred: " + ex.getMessage() + "\nStackTrace:\n" + stackTrace);
          } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Error writing stack trace", e);
             setErrorMsg("StringWriter exception occurred: " + ex.getMessage());
          }
       } finally {
@@ -238,11 +245,14 @@ public class HealthUtils {
             }
          }
       } catch (IOException | NoSuchAlgorithmException | KeyManagementException ex) {
+         LOGGER.log(Level.WARNING, "Exception during HTTP request to: " + urlStr, ex);
          try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw);) {
+            ex.printStackTrace(pw);
             String stackTrace = sw.toString();
             setErrorMsg("Exception occurred: " + ex.getMessage() + "\nStackTrace:\n" + stackTrace);
             return defaultValue;
          } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Error writing stack trace", e);
             setErrorMsg("StringWriter exception occurred: " + ex.getMessage());
          }
       } finally {
@@ -262,27 +272,23 @@ public class HealthUtils {
    }
 
    /*
-    * Returns TrustManager that trusts all certificates. Only use when the HTTPS URLs are owned by OSEE.
+    * Returns an SSLContext using the JVM's default trust store for certificate validation.
+    * Uses TLS 1.3 for secure internal OSEE health-check communication.
     */
    private static SSLContext getSSLContext() throws NoSuchAlgorithmException, KeyManagementException {
-      TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-         @Override
-         public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-            return null;
-         }
+      try {
+         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+         tmf.init((KeyStore) null); // Uses the JVM default trust store (cacerts)
 
-         @Override
-         public void checkClientTrusted(X509Certificate[] certs, String authType) {
-         }
-
-         @Override
-         public void checkServerTrusted(X509Certificate[] certs, String authType) {
-         }
-      }};
-
-      SSLContext sslContext = SSLContext.getInstance("SSL");
-      sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-      return sslContext;
+         SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+         sslContext.init(null, tmf.getTrustManagers(), new java.security.SecureRandom());
+         return sslContext;
+      } catch (java.security.KeyStoreException ex) {
+         LOGGER.log(Level.WARNING, "Failed to initialize default trust store, falling back to TLS default", ex);
+         SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+         sslContext.init(null, null, new java.security.SecureRandom());
+         return sslContext;
+      }
    }
 
    public static void setErrorMsg(String message) {
