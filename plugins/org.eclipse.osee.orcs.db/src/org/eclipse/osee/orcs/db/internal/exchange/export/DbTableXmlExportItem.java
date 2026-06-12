@@ -79,17 +79,11 @@ public class DbTableXmlExportItem extends AbstractXmlExportItem {
          target.getParentFile().mkdirs();
       }
 
-      InputStream sourceStream = null;
-      OutputStream outputStream = null;
-      try {
-         if (resource != null) {
-            sourceStream = resource.getContent();
-            outputStream = new FileOutputStream(target);
+      if (resource != null) {
+         try (InputStream sourceStream = resource.getContent();
+            OutputStream outputStream = new FileOutputStream(target)) {
             Lib.inputStreamToOutputStream(sourceStream, outputStream);
          }
-      } finally {
-         Lib.close(sourceStream);
-         Lib.close(outputStream);
       }
       return locator.getRawPath().replace('/', '\\');
    }
