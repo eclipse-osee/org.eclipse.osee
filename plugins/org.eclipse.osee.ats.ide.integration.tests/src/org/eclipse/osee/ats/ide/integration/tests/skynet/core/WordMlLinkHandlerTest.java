@@ -150,8 +150,10 @@ public class WordMlLinkHandlerTest {
          BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
          Artifact addArtifact =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch);
-         InputStream inputStream = getClass().getResourceAsStream("testMissingArtifact.xml");
-         String wordData = Lib.inputStreamToString(inputStream);
+         String wordData;
+         try (InputStream inputStream = getClass().getResourceAsStream("testMissingArtifact.xml")) {
+            wordData = Lib.inputStreamToString(inputStream);
+         }
          wordData = wordData.replaceAll("A0UNsNvCigV4SyvaCCAA", addArtifact.getGuid());
          addArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, wordData);
          addArtifact.persist(method.getTestName());
