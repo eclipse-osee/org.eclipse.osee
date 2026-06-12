@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -170,14 +169,10 @@ public class WordCoreUtilClient {
       String guid = null;
       byte[] myBytes = new byte[4096];
 
-      InputStream stream = null;
-      try {
-         stream = new BufferedInputStream(new FileInputStream(file));
+      try (InputStream stream = new BufferedInputStream(new FileInputStream(file))) {
          if (stream.read(myBytes) == -1) {
             throw new IOException("Buffer underrun");
          }
-      } finally {
-         Lib.close(stream);
       }
 
       String leadingPartOfFile = new String(myBytes, "UTF-8");
