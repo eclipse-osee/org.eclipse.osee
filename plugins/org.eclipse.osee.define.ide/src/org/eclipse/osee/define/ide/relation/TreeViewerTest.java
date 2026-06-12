@@ -138,6 +138,7 @@ public class TreeViewerTest {
 
    public static void main(String[] args) {
       final Display display = new Display();
+      try {
       final Shell shell = new Shell(display);
       shell.setLayout(new FormLayout());
 
@@ -300,6 +301,8 @@ public class TreeViewerTest {
             display.sleep();
          }
       }
-      display.dispose();
+      } finally {
+         display.dispose();
+      }
    }
 }
