@@ -14,6 +14,7 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	computed,
+	HostListener,
 	inject,
 	signal,
 } from '@angular/core';
@@ -79,6 +80,11 @@ export class MarkdownTableDialogComponent {
 
 	private readonly maxCols = 50;
 	private readonly maxRows = 100;
+
+	@HostListener('keydown.escape')
+	protected onEscape(): void {
+		this.cancelDialog();
+	}
 
 	protected readonly isEdit = this.data.isEdit;
 	protected readonly headers = signal<string[]>([...this.data.headers]);
