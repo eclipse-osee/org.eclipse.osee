@@ -49,6 +49,13 @@ export type MarkdownTableDialogResult = {
 	readonly markdown: string;
 };
 
+type TableSnapshot = {
+	readonly headers: string[];
+	readonly headerSpans: number[];
+	readonly cells: string[][];
+	readonly alignments: ColumnAlignment[];
+};
+
 @Component({
 	selector: 'osee-markdown-table-dialog',
 	imports: [
@@ -81,9 +88,17 @@ export class MarkdownTableDialogComponent {
 	private readonly maxCols = 50;
 	private readonly maxRows = 100;
 
-	@HostListener('keydown.escape')
-	protected onEscape(): void {
-		this.cancelDialog();
+	@HostListener('document:keydown', ['$event'])
+	protected onKeyDown(event: KeyboardEvent): void {
+		if (event.ctrlKey && event.key === 'z') {
+			event.preventDefault();
+			this.undo();
+		} else if (event.ctrlKey && event.key === 'y') {
+			event.preventDefault();
+			this.redo();
+		} else if (event.key === 'Escape') {
+			this.cancelDialog();
+		}
 	}
 
 	protected readonly isEdit = this.data.isEdit;
@@ -93,6 +108,64 @@ export class MarkdownTableDialogComponent {
 	protected readonly alignments = signal<ColumnAlignment[]>([
 		...this.data.alignments,
 	]);
+
+	// Undo/redo state management
+	private undoStack: TableSnapshot[] = [];
+	private redoStack: TableSnapshot[] = [];
+	private readonly maxUndoHistory = 50;
+
+	protected readonly canUndo = signal(false);
+	protected readonly canRedo = signal(false);
+
+	/** Captures a snapshot of the current table state. */
+	private captureSnapshot(): TableSnapshot {
+		return {
+			headers: [...this.headers()],
+			headerSpans: [...this.headerSpans()],
+			cells: this.cells().map((r) => [...r]),
+			alignments: [...this.alignments()],
+		};
+	}
+
+	/** Call before any state-modifying operation to save undo state. */
+	protected saveUndoState(): void {
+		this.undoStack.push(this.captureSnapshot());
+		if (this.undoStack.length > this.maxUndoHistory) {
+			this.undoStack.shift();
+		}
+		this.redoStack = [];
+		this.canUndo.set(true);
+		this.canRedo.set(false);
+	}
+
+	protected undo(): void {
+		if (this.undoStack.length === 0) {
+			return;
+		}
+		this.redoStack.push(this.captureSnapshot());
+		const snapshot = this.undoStack.pop()!;
+		this.applySnapshot(snapshot);
+		this.canUndo.set(this.undoStack.length > 0);
+		this.canRedo.set(true);
+	}
+
+	protected redo(): void {
+		if (this.redoStack.length === 0) {
+			return;
+		}
+		this.undoStack.push(this.captureSnapshot());
+		const snapshot = this.redoStack.pop()!;
+		this.applySnapshot(snapshot);
+		this.canUndo.set(true);
+		this.canRedo.set(this.redoStack.length > 0);
+	}
+
+	private applySnapshot(snapshot: TableSnapshot): void {
+		this.headers.set(snapshot.headers);
+		this.headerSpans.set(snapshot.headerSpans);
+		this.cells.set(snapshot.cells);
+		this.alignments.set(snapshot.alignments);
+	}
 	protected readonly isLoading = signal(true);
 
 	constructor() {
@@ -173,6 +246,7 @@ export class MarkdownTableDialogComponent {
 		if (thisSpan === 0) {
 			return; // Already spanned
 		}
+		this.saveUndoState();
 
 		// Find the owner to the left (the nearest visible header)
 		let ownerIdx = colIndex - 1;
@@ -213,6 +287,7 @@ export class MarkdownTableDialogComponent {
 		if (ownerIdx === -1) {
 			return;
 		}
+		this.saveUndoState();
 
 		const ownerSpan = spans[ownerIdx] === undefined ? 1 : spans[ownerIdx];
 		const rightPortionSize = ownerIdx + ownerSpan - colIndex;
@@ -283,6 +358,7 @@ export class MarkdownTableDialogComponent {
 			);
 		}
 		const newCols = Math.min(this.maxCols, value);
+		this.saveUndoState();
 		this.resizeTable(newCols, this.rowCount());
 		input.value = String(newCols);
 	}
@@ -302,6 +378,7 @@ export class MarkdownTableDialogComponent {
 			);
 		}
 		const newRows = Math.min(this.maxRows, value);
+		this.saveUndoState();
 		this.resizeTable(this.colCount(), newRows);
 		input.value = String(newRows);
 	}
@@ -373,6 +450,7 @@ export class MarkdownTableDialogComponent {
 	}
 
 	protected cycleAlignment(colIndex: number): void {
+		this.saveUndoState();
 		this.alignments.update((a) => {
 			const copy = [...a];
 			const order: ColumnAlignment[] = ['left', 'center', 'right'];
@@ -413,6 +491,7 @@ export class MarkdownTableDialogComponent {
 			);
 			return;
 		}
+		this.saveUndoState();
 		this.headers.update((h) => [...h, '']);
 		this.headerSpans.update((s) => [...s, 1]);
 		this.cells.update((rows) => rows.map((r) => [...r, '']));
@@ -428,6 +507,7 @@ export class MarkdownTableDialogComponent {
 			);
 			return;
 		}
+		this.saveUndoState();
 
 		// Check if inserting within an existing span
 		const spans = this.headerSpans();
@@ -475,6 +555,7 @@ export class MarkdownTableDialogComponent {
 		if (!this.canRemoveColumn()) {
 			return;
 		}
+		this.saveUndoState();
 		const spans = this.headerSpans();
 		const span = spans[colIndex] === undefined ? 1 : spans[colIndex];
 
@@ -546,6 +627,7 @@ export class MarkdownTableDialogComponent {
 			);
 			return;
 		}
+		this.saveUndoState();
 		const emptyCells = Array(this.colCount()).fill('');
 		this.cells.update((rows) => [...rows, emptyCells]);
 	}
@@ -559,6 +641,7 @@ export class MarkdownTableDialogComponent {
 			);
 			return;
 		}
+		this.saveUndoState();
 		const emptyCells = Array(this.colCount()).fill('');
 		this.cells.update((rows) => {
 			const copy = [...rows];
@@ -571,6 +654,7 @@ export class MarkdownTableDialogComponent {
 		if (!this.canRemoveRow()) {
 			return;
 		}
+		this.saveUndoState();
 		this.cells.update((rows) => rows.filter((_, i) => i !== rowIndex));
 	}
 

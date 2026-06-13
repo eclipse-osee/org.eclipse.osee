@@ -25,6 +25,24 @@
 	<!-- Fixed toolbar -->
 	<div
 		class="tw-bg-osee-neutral-5 dark:tw-bg-osee-neutral-5 tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-2 tw-border-b tw-border-osee-neutral-25 tw-px-4 tw-py-2 dark:tw-border-osee-neutral-100">
+		<button
+			mat-icon-button
+			type="button"
+			matTooltip="Undo"
+			[disabled]="!canUndo()"
+			[class.tw-opacity-40]="!canUndo()"
+			(click)="undo()">
+			<mat-icon>undo</mat-icon>
+		</button>
+		<button
+			mat-icon-button
+			type="button"
+			matTooltip="Redo"
+			[disabled]="!canRedo()"
+			[class.tw-opacity-40]="!canRedo()"
+			(click)="redo()">
+			<mat-icon>redo</mat-icon>
+		</button>
 		<mat-form-field
 			class="tw-w-20"
 			subscriptSizing="dynamic">
@@ -171,6 +189,7 @@
 										type="text"
 										[ngModel]="headers()[idx]"
 										(ngModelChange)="updateHeader(idx, $event)"
+										(focus)="saveUndoState()"
 										name="header-{{ idx }}"
 										spellcheck="true"
 										class="placeholder:tw-italic placeholder:tw-text-osee-neutral-60/60"
@@ -239,6 +258,7 @@
 										(ngModelChange)="
 											updateCell(rowIdx, colIdx, $event)
 										"
+										(focus)="saveUndoState()"
 										name="cell-{{ rowIdx }}-{{ colIdx }}"
 										spellcheck="true"
 										class="tw-flex-1 tw-resize-none tw-rounded tw-border-none tw-bg-transparent tw-px-2 tw-py-1 tw-text-sm tw-outline-none focus:tw-ring-1 focus:tw-ring-osee-blue-6"
