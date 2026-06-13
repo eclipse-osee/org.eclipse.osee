@@ -103,7 +103,9 @@ export class MarkdownTableDialogComponent {
 
 	protected readonly isEdit = this.data.isEdit;
 	protected readonly headers = signal<string[]>([...this.data.headers]);
-	protected readonly headerSpans = signal<number[]>([...this.data.headerSpans]);
+	protected readonly headerSpans = signal<number[]>([
+		...this.data.headerSpans,
+	]);
 	protected readonly cells = signal<string[][]>([]);
 	protected readonly alignments = signal<ColumnAlignment[]>([
 		...this.data.alignments,
@@ -223,18 +225,8 @@ export class MarkdownTableDialogComponent {
 	});
 
 	protected readonly hasSpans = computed(() => {
-		return this.headerSpans().some(
-			(s) => s !== undefined && s !== 1
-		);
+		return this.headerSpans().some((s) => s !== undefined && s !== 1);
 	});
-
-	protected increaseSpan(colIndex: number): void {
-		// Not used anymore — replaced by mergeLeft
-	}
-
-	protected decreaseSpan(colIndex: number): void {
-		// Not used anymore — replaced by unmerge
-	}
 
 	/** Merge this column into the header to its left. */
 	protected mergeLeft(colIndex: number): void {
@@ -250,7 +242,7 @@ export class MarkdownTableDialogComponent {
 
 		// Find the owner to the left (the nearest visible header)
 		let ownerIdx = colIndex - 1;
-		while (ownerIdx > 0 && (spans[ownerIdx] === 0)) {
+		while (ownerIdx > 0 && spans[ownerIdx] === 0) {
 			ownerIdx--;
 		}
 
@@ -530,7 +522,8 @@ export class MarkdownTableDialogComponent {
 			if (ownerIdx >= 0) {
 				// Inserting within a span: add as spanned (0) and increase owner
 				copy.splice(colIndex, 0, 0);
-				copy[ownerIdx] = (copy[ownerIdx] === undefined ? 1 : copy[ownerIdx]) + 1;
+				copy[ownerIdx] =
+					(copy[ownerIdx] === undefined ? 1 : copy[ownerIdx]) + 1;
 			} else {
 				// Inserting outside any span: independent column
 				copy.splice(colIndex, 0, 1);
@@ -588,7 +581,8 @@ export class MarkdownTableDialogComponent {
 			this.headerSpans.update((s) => {
 				const copy = [...s];
 				if (ownerIdx >= 0) {
-					copy[ownerIdx] = (copy[ownerIdx] === undefined ? 1 : copy[ownerIdx]) - 1;
+					copy[ownerIdx] =
+						(copy[ownerIdx] === undefined ? 1 : copy[ownerIdx]) - 1;
 				}
 				copy.splice(colIndex, 1);
 				return copy;

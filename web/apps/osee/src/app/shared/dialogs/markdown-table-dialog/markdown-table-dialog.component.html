@@ -111,7 +111,9 @@
 										[matTooltip]="
 											'Alignment: ' +
 											getAlignmentLabel(alignment) +
-											(getSpan($index) > 1 ? ' (also controls header)' : '')
+											(getSpan($index) > 1
+												? ' (also controls header)'
+												: '')
 										"
 										(click)="cycleAlignment($index)">
 										<mat-icon>{{
@@ -119,7 +121,8 @@
 										}}</mat-icon>
 									</button>
 									@if (getSpan($index) > 1) {
-										<span class="tw-absolute -tw-right-1 -tw-top-1 tw-flex tw-size-4 tw-items-center tw-justify-center tw-rounded-full tw-bg-osee-blue-6 tw-text-[10px] tw-font-bold tw-text-white">
+										<span
+											class="tw-absolute -tw-right-1 -tw-top-1 tw-flex tw-size-4 tw-items-center tw-justify-center tw-rounded-full tw-bg-osee-blue-6 tw-text-[10px] tw-font-bold tw-text-white">
 											H
 										</span>
 									}
@@ -167,7 +170,8 @@
 										<mat-icon>merge_type</mat-icon>
 									</button>
 								} @else {
-									<span matTooltip="Cannot merge the first column.">
+									<span
+										matTooltip="Cannot merge the first column.">
 										<button
 											mat-icon-button
 											type="button"
@@ -183,12 +187,21 @@
 									[class.tw-font-bold]="true"
 									floatLabel="always"
 									hideRequiredMarker>
-									<mat-label>Header {{ idx + 1 }}{{ getSpan(idx) > 1 ? ' (' + getSpan(idx) + ' cols)' : '' }}</mat-label>
+									<mat-label
+										>Header {{ idx + 1
+										}}{{
+											getSpan(idx) > 1
+												? ' (' + getSpan(idx) + ' cols)'
+												: ''
+										}}</mat-label
+									>
 									<input
 										matInput
 										type="text"
 										[ngModel]="headers()[idx]"
-										(ngModelChange)="updateHeader(idx, $event)"
+										(ngModelChange)="
+											updateHeader(idx, $event)
+										"
 										(focus)="saveUndoState()"
 										name="header-{{ idx }}"
 										spellcheck="true"
@@ -201,7 +214,9 @@
 										type="button"
 										matTooltip="Unmerge Last Column"
 										class="tw-shrink-0 tw-text-osee-blue-6"
-										(click)="unmerge(idx + getSpan(idx) - 1)">
+										(click)="
+											unmerge(idx + getSpan(idx) - 1)
+										">
 										<mat-icon>call_split</mat-icon>
 									</button>
 								}

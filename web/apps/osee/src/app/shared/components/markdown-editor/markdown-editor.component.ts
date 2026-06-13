@@ -802,7 +802,14 @@ export class MarkdownEditorComponent {
 		// Subtract 1 to point to the newline, or use content.length if at end
 		endIndex = Math.min(endIndex, content.length);
 
-		return { headers, headerSpans, cells, alignments, startIndex, endIndex };
+		return {
+			headers,
+			headerSpans,
+			cells,
+			alignments,
+			startIndex,
+			endIndex,
+		};
 	}
 
 	private selectionOverlapsTable(
@@ -871,10 +878,7 @@ export class MarkdownEditorComponent {
 			// Count consecutive truly-empty cells (no characters at all between pipes)
 			// This is the Flexmark colspan syntax: "||" has an empty string between pipes
 			let span = 1;
-			while (
-				i + span < rawCells.length &&
-				rawCells[i + span] === ''
-			) {
+			while (i + span < rawCells.length && rawCells[i + span] === '') {
 				span++;
 			}
 
