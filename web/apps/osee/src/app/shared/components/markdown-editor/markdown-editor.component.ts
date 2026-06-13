@@ -507,6 +507,7 @@ export class MarkdownEditorComponent {
 				data: dialogData,
 				minWidth: '50%',
 				maxWidth: '90vw',
+				disableClose: true,
 			});
 
 			dialogRef

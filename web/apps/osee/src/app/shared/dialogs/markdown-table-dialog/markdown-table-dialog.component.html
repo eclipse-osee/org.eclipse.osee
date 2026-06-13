@@ -86,18 +86,26 @@
 									(click)="insertColumnAt($index)">
 									<mat-icon>keyboard_arrow_left</mat-icon>
 								</button>
-								<button
-									mat-icon-button
-									type="button"
-									[matTooltip]="
-										'Alignment: ' +
-										getAlignmentLabel(alignment)
-									"
-									(click)="cycleAlignment($index)">
-									<mat-icon>{{
-										getAlignmentIcon(alignment)
-									}}</mat-icon>
-								</button>
+								<div class="tw-relative">
+									<button
+										mat-icon-button
+										type="button"
+										[matTooltip]="
+											'Alignment: ' +
+											getAlignmentLabel(alignment) +
+											(getSpan($index) > 1 ? ' (also controls header)' : '')
+										"
+										(click)="cycleAlignment($index)">
+										<mat-icon>{{
+											getAlignmentIcon(alignment)
+										}}</mat-icon>
+									</button>
+									@if (getSpan($index) > 1) {
+										<span class="tw-absolute -tw-right-1 -tw-top-1 tw-flex tw-size-4 tw-items-center tw-justify-center tw-rounded-full tw-bg-osee-blue-6 tw-text-[10px] tw-font-bold tw-text-white">
+											H
+										</span>
+									}
+								</div>
 								<button
 									mat-icon-button
 									type="button"
@@ -120,73 +128,65 @@
 						</th>
 					}
 				</tr>
-				<!-- Header row -->
+				<!-- Header row (uses colspan for spans) -->
 				<tr>
 					<th
 						class="tw-sticky tw-left-0 tw-z-30 tw-border-b tw-border-r tw-border-osee-neutral-25 tw-bg-white tw-p-1 tw-text-center tw-text-xs tw-font-medium tw-text-osee-neutral-60 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
 						H
 					</th>
-					@for (header of headers(); track $index) {
+					@for (idx of visibleHeaderIndices(); track idx) {
 						<th
+							[attr.colspan]="getSpan(idx)"
 							class="tw-border-b tw-border-osee-neutral-25 tw-bg-white tw-p-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
-							@if (getSpan($index) > 0) {
-								<div class="tw-flex tw-flex-col tw-gap-1">
-									<mat-form-field
-										class="tw-w-full"
-										subscriptSizing="dynamic"
-										[class.tw-font-bold]="true"
-										floatLabel="always"
-										hideRequiredMarker>
-										<mat-label>Header {{ $index + 1 }}</mat-label>
-										<input
-											matInput
-											type="text"
-											[ngModel]="header"
-											(ngModelChange)="
-												updateHeader($index, $event)
-											"
-											name="header-{{ $index }}"
-											spellcheck="true"
-											class="placeholder:tw-italic placeholder:tw-text-osee-neutral-60/60"
-											placeholder="Enter header..." />
-									</mat-form-field>
-									@if (canMergeLeft($index)) {
-										<button
-											mat-icon-button
-											type="button"
-											matTooltip="Merge Into Left Header"
-											class="tw-self-center tw-text-osee-blue-6"
-											(click)="mergeLeft($index)">
-											<mat-icon>merge_type</mat-icon>
-										</button>
-									} @else {
-										<span matTooltip="Cannot merge the first column.">
-											<button
-												mat-icon-button
-												type="button"
-												disabled
-												class="tw-self-center tw-opacity-40">
-												<mat-icon>merge_type</mat-icon>
-											</button>
-										</span>
-									}
-								</div>
-							} @else {
-								<!-- Spanned-over column: show unmerge option -->
-								<div class="tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-center tw-gap-1 tw-rounded tw-bg-osee-neutral-25/30 tw-p-2 tw-text-center dark:tw-bg-osee-neutral-100/10">
-									<span class="tw-text-xs tw-italic tw-text-osee-neutral-60">
-										{{ getSpanOwnerLabel($index) }}
-									</span>
+							<div class="tw-flex tw-items-center tw-gap-1">
+								@if (canMergeLeft(idx)) {
 									<button
 										mat-icon-button
 										type="button"
-										matTooltip="Unmerge"
-										class="tw-text-osee-blue-6"
-										(click)="unmerge($index)">
+										matTooltip="Merge Into Left Header"
+										class="tw-shrink-0 tw-text-osee-blue-6"
+										(click)="mergeLeft(idx)">
+										<mat-icon>merge_type</mat-icon>
+									</button>
+								} @else {
+									<span matTooltip="Cannot merge the first column.">
+										<button
+											mat-icon-button
+											type="button"
+											disabled
+											class="tw-shrink-0 tw-opacity-40">
+											<mat-icon>merge_type</mat-icon>
+										</button>
+									</span>
+								}
+								<mat-form-field
+									class="tw-flex-1"
+									subscriptSizing="dynamic"
+									[class.tw-font-bold]="true"
+									floatLabel="always"
+									hideRequiredMarker>
+									<mat-label>Header {{ idx + 1 }}{{ getSpan(idx) > 1 ? ' (' + getSpan(idx) + ' cols)' : '' }}</mat-label>
+									<input
+										matInput
+										type="text"
+										[ngModel]="headers()[idx]"
+										(ngModelChange)="updateHeader(idx, $event)"
+										name="header-{{ idx }}"
+										spellcheck="true"
+										class="placeholder:tw-italic placeholder:tw-text-osee-neutral-60/60"
+										placeholder="Enter header..." />
+								</mat-form-field>
+								@if (getSpan(idx) > 1) {
+									<button
+										mat-icon-button
+										type="button"
+										matTooltip="Unmerge Last Column"
+										class="tw-shrink-0 tw-text-osee-blue-6"
+										(click)="unmerge(idx + getSpan(idx) - 1)">
 										<mat-icon>call_split</mat-icon>
 									</button>
-								</div>
-							}
+								}
+							</div>
 						</th>
 					}
 				</tr>

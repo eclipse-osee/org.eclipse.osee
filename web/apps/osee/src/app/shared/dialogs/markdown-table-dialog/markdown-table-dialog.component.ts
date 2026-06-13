@@ -137,9 +137,16 @@ export class MarkdownTableDialogComponent {
 		let i = 0;
 		while (i < spans.length) {
 			visible.push(i);
-			i += spans[i] || 1;
+			const span = spans[i] === undefined ? 1 : spans[i];
+			i += span || 1;
 		}
 		return visible;
+	});
+
+	protected readonly hasSpans = computed(() => {
+		return this.headerSpans().some(
+			(s) => s !== undefined && s !== 1
+		);
 	});
 
 	protected increaseSpan(colIndex: number): void {
@@ -415,6 +422,18 @@ export class MarkdownTableDialogComponent {
 			);
 			return;
 		}
+
+		// Check if inserting within an existing span
+		const spans = this.headerSpans();
+		let ownerIdx = -1;
+		for (let i = 0; i < colIndex; i++) {
+			const s = spans[i] === undefined ? 1 : spans[i];
+			if (s > 0 && i + s > colIndex) {
+				ownerIdx = i;
+				break;
+			}
+		}
+
 		this.headers.update((h) => {
 			const copy = [...h];
 			copy.splice(colIndex, 0, '');
@@ -422,7 +441,14 @@ export class MarkdownTableDialogComponent {
 		});
 		this.headerSpans.update((s) => {
 			const copy = [...s];
-			copy.splice(colIndex, 0, 1);
+			if (ownerIdx >= 0) {
+				// Inserting within a span: add as spanned (0) and increase owner
+				copy.splice(colIndex, 0, 0);
+				copy[ownerIdx] = (copy[ownerIdx] === undefined ? 1 : copy[ownerIdx]) + 1;
+			} else {
+				// Inserting outside any span: independent column
+				copy.splice(colIndex, 0, 1);
+			}
 			return copy;
 		});
 		this.cells.update((rows) =>
@@ -443,27 +469,62 @@ export class MarkdownTableDialogComponent {
 		if (!this.canRemoveColumn()) {
 			return;
 		}
-		// If removing a column that is part of a span, reduce the span
 		const spans = this.headerSpans();
-		// Find which header owns this column
-		let ownerIdx = colIndex;
-		for (let i = 0; i < colIndex; i++) {
-			if (i + (spans[i] || 1) > colIndex) {
-				ownerIdx = i;
-				break;
-			}
-		}
-		if (ownerIdx !== colIndex && (spans[ownerIdx] || 1) > 1) {
-			// This column is part of a span — reduce the owner's span
+		const span = spans[colIndex] === undefined ? 1 : spans[colIndex];
+
+		if (span > 1) {
+			// Removing the owner of a span: transfer ownership to the next column
+			const nextCol = colIndex + 1;
 			this.headerSpans.update((s) => {
 				const copy = [...s];
-				copy[ownerIdx] = (copy[ownerIdx] || 1) - 1;
+				copy[nextCol] = span - 1;
+				copy.splice(colIndex, 1);
+				return copy;
+			});
+			// Transfer the header text to the new owner
+			this.headers.update((h) => {
+				const copy = [...h];
+				copy[nextCol] = copy[colIndex];
+				copy.splice(colIndex, 1);
+				return copy;
+			});
+		} else if (span === 0) {
+			// Removing a spanned-over column: reduce the owner's span
+			let ownerIdx = -1;
+			for (let i = colIndex - 1; i >= 0; i--) {
+				const s = spans[i] === undefined ? 1 : spans[i];
+				if (s > 0 && i + s > colIndex) {
+					ownerIdx = i;
+					break;
+				}
+			}
+			this.headerSpans.update((s) => {
+				const copy = [...s];
+				if (ownerIdx >= 0) {
+					copy[ownerIdx] = (copy[ownerIdx] === undefined ? 1 : copy[ownerIdx]) - 1;
+				}
+				copy.splice(colIndex, 1);
+				return copy;
+			});
+			this.headers.update((h) => {
+				const copy = [...h];
+				copy.splice(colIndex, 1);
+				return copy;
+			});
+		} else {
+			// Independent column (span = 1): just remove
+			this.headerSpans.update((s) => {
+				const copy = [...s];
+				copy.splice(colIndex, 1);
+				return copy;
+			});
+			this.headers.update((h) => {
+				const copy = [...h];
+				copy.splice(colIndex, 1);
 				return copy;
 			});
 		}
 
-		this.headers.update((h) => h.filter((_, i) => i !== colIndex));
-		this.headerSpans.update((s) => s.filter((_, i) => i !== colIndex));
 		this.cells.update((rows) =>
 			rows.map((r) => r.filter((_, i) => i !== colIndex))
 		);
