@@ -24,7 +24,7 @@
 	class="tw-flex !tw-max-h-[calc(87vh-120px)] tw-flex-col tw-gap-0 !tw-overflow-hidden !tw-p-0">
 	<!-- Fixed toolbar -->
 	<div
-		class="tw-bg-osee-neutral-5 dark:tw-bg-osee-neutral-5 tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-2 tw-border-b tw-border-osee-neutral-25 tw-px-4 tw-py-2 dark:tw-border-osee-neutral-100">
+		class="tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-2 tw-border-b tw-border-osee-neutral-25 tw-px-4 tw-py-2 dark:tw-border-osee-neutral-100">
 		<button
 			mat-icon-button
 			type="button"
@@ -305,21 +305,17 @@
 	mat-dialog-actions
 	align="end"
 	class="tw-gap-2">
-	<span class="tw-inline-flex">
-		<button
-			mat-stroked-button
-			type="button"
-			class="tw-text-osee-red-8"
-			(click)="cancelDialog()">
-			Cancel
-		</button>
-	</span>
-	<span class="tw-inline-flex">
-		<button
-			mat-stroked-button
-			type="button"
-			(click)="submitTable()">
-			{{ isEdit ? 'Update Table' : 'Insert Table' }}
-		</button>
-	</span>
+	<button
+		mat-stroked-button
+		type="button"
+		class="tw-text-osee-red-8"
+		(click)="cancelDialog()">
+		Cancel
+	</button>
+	<button
+		mat-stroked-button
+		type="button"
+		(click)="submitTable()">
+		{{ isEdit ? 'Update Table' : 'Insert Table' }}
+	</button>
 </div>

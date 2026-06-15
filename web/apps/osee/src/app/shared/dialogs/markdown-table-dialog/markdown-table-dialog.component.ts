@@ -14,6 +14,7 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	computed,
+	DestroyRef,
 	HostListener,
 	inject,
 	signal,
@@ -84,6 +85,7 @@ export class MarkdownTableDialogComponent {
 		>(MatDialogRef);
 	private readonly data = inject<MarkdownTableDialogData>(MAT_DIALOG_DATA);
 	private readonly snackBar = inject(MatSnackBar);
+	private readonly destroyRef = inject(DestroyRef);
 
 	private readonly maxCols = 50;
 	private readonly maxRows = 100;
@@ -693,11 +695,15 @@ export class MarkdownTableDialogComponent {
 			}
 		};
 
-		const onMouseUp = (e: MouseEvent) => {
+		const cleanup = () => {
 			document.body.style.cursor = '';
 			document.body.style.userSelect = '';
 			document.removeEventListener('mousemove', onMouseMove);
 			document.removeEventListener('mouseup', onMouseUp);
+		};
+
+		const onMouseUp = (e: MouseEvent) => {
+			cleanup();
 			// Commit final height to signal once
 			const delta = e.clientY - startY;
 			const finalHeight = Math.max(40, startHeight + delta);
@@ -706,6 +712,7 @@ export class MarkdownTableDialogComponent {
 
 		document.addEventListener('mousemove', onMouseMove);
 		document.addEventListener('mouseup', onMouseUp);
+		this.destroyRef.onDestroy(cleanup);
 	}
 
 	private generateMarkdown(): string {
@@ -714,10 +721,12 @@ export class MarkdownTableDialogComponent {
 		const alignments = this.alignments();
 		const cells = this.cells();
 
-		// Replace newlines with <br> since markdown table rows must be single lines
+		// Escape pipes and replace newlines with <br> since markdown table rows must be single lines
 		const escapeCell = (value: string): string => {
 			const trimmed = value.trim();
-			return (trimmed || ' ').replace(/\n/g, '<br>');
+			return (trimmed || ' ')
+				.replace(/\|/g, '\\|')
+				.replace(/\n/g, '<br>');
 		};
 
 		// Build header row with colspan syntax (empty cells = ||)

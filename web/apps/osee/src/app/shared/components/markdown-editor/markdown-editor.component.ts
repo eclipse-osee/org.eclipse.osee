@@ -435,25 +435,14 @@ export class MarkdownEditorComponent {
 	private insertImageLink(artifactId: string): void {
 		const imageTag = `<image-link>${artifactId}</image-link>`;
 		const currentContent = this.mdContent();
-		const cursorPos = this.savedSelectionStart;
+		const cursorPos =
+			this.savedSelectionStart >= 0
+				? this.savedSelectionStart
+				: currentContent.length;
 
 		const before = currentContent.substring(0, cursorPos);
 		const after = currentContent.substring(cursorPos);
-		const prefixNewlines =
-			before.length > 0 && !before.endsWith('\n\n')
-				? before.endsWith('\n')
-					? '\n'
-					: '\n\n'
-				: '';
-		const suffixNewlines =
-			after.length > 0 && !after.startsWith('\n\n')
-				? after.startsWith('\n')
-					? '\n'
-					: '\n\n'
-				: '';
-		this.mdContent.set(
-			before + prefixNewlines + imageTag + suffixNewlines + after
-		);
+		this.mdContent.set(before + imageTag + after);
 	}
 
 	openTableDialog(): void {
@@ -536,7 +525,9 @@ export class MarkdownEditorComponent {
 					} else {
 						// Insert new table at cursor or end
 						const cursorPos =
-							this.savedSelectionStart ?? content.length;
+							this.savedSelectionStart >= 0
+								? this.savedSelectionStart
+								: content.length;
 						const before = content.substring(0, cursorPos);
 						const after = content.substring(cursorPos);
 						const prefixNewlines =
@@ -837,9 +828,12 @@ export class MarkdownEditorComponent {
 		if (trimmed.endsWith('|')) {
 			trimmed = trimmed.substring(0, trimmed.length - 1);
 		}
+		// Split on unescaped pipes only (not \|)
 		return trimmed
-			.split('|')
-			.map((cell) => cell.trim().replace(/<br>/gi, '\n'));
+			.split(/(?<!\\)\|/)
+			.map((cell) =>
+				cell.trim().replace(/\\\|/g, '|').replace(/<br>/gi, '\n')
+			);
 	}
 
 	/**
@@ -962,8 +956,8 @@ export class MarkdownEditorComponent {
 			});
 	}
 
-	private savedSelectionStart = 0;
-	private savedSelectionEnd = 0;
+	private savedSelectionStart = -1;
+	private savedSelectionEnd = -1;
 
 	private saveTextareaSelection(): void {
 		const textarea = this.editorTextarea()?.nativeElement;
@@ -977,7 +971,7 @@ export class MarkdownEditorComponent {
 		afterNextRender(
 			() => {
 				const textarea = this.editorTextarea()?.nativeElement;
-				if (textarea) {
+				if (textarea && this.savedSelectionStart >= 0) {
 					textarea.selectionStart = this.savedSelectionStart;
 					textarea.selectionEnd = this.savedSelectionEnd;
 					textarea.focus();
