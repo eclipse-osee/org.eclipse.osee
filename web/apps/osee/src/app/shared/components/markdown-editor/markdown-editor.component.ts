@@ -853,9 +853,9 @@ export class MarkdownEditorComponent {
 		if (trimmed.endsWith('|')) {
 			trimmed = trimmed.substring(0, trimmed.length - 1);
 		}
-		// Split on | but keep the raw content to distinguish
+		// Split on unescaped | but keep the raw content to distinguish
 		// "| |" (empty cell with space) from "||" (span marker — no content at all)
-		const rawCells = trimmed.split('|');
+		const rawCells = trimmed.split(/(?<!\\)\|/);
 
 		const colCount = rawCells.length;
 		const headers: string[] = Array(colCount).fill('');
@@ -864,7 +864,10 @@ export class MarkdownEditorComponent {
 		let colIdx = 0;
 		let i = 0;
 		while (i < rawCells.length && colIdx < colCount) {
-			const cellContent = rawCells[i].trim().replace(/<br>/gi, '\n');
+			const cellContent = rawCells[i]
+				.trim()
+				.replace(/\\\|/g, '|')
+				.replace(/<br>/gi, '\n');
 			headers[colIdx] = cellContent;
 
 			// Count consecutive truly-empty cells (no characters at all between pipes)

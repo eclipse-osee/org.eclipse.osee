@@ -954,6 +954,46 @@ test.describe('Markdown Editor', () => {
 			expect(value).toContain('Line1<br>Line2');
 		});
 
+		test('should escape pipe characters in cell content', async ({
+			page,
+		}) => {
+			const textarea = getTextarea(page);
+
+			const cell = page.locator('textarea[aria-label="Row 1, Column 1"]');
+			await cell.click();
+			await cell.fill('a | b');
+
+			await page.getByRole('button', { name: 'Insert Table' }).click();
+
+			const value = await textarea.inputValue();
+			// Pipe should be escaped as \|
+			expect(value).toContain('a \\| b');
+		});
+
+		test('should unescape pipe characters when loading table for edit', async ({
+			page,
+		}) => {
+			// Cancel current dialog
+			await page.keyboard.press('Escape');
+
+			const textarea = getTextarea(page);
+			await textarea.click();
+			await textarea.fill('| H1 | H2 |\n| :-- | :-- |\n| a \\| b | c |');
+
+			await textarea.press('Home');
+			await getToolbarButton(page, 'table_chart').click();
+
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).toBeVisible({ timeout: 5000 });
+
+			// Cell should show the unescaped pipe
+			const cell = page.locator('textarea[aria-label="Row 1, Column 1"]');
+			await expect(cell).toHaveValue('a | b');
+
+			await page.keyboard.press('Escape');
+		});
+
 		test('should redo via Ctrl+Y', async ({ page }) => {
 			const colInput = page.getByRole('spinbutton', {
 				name: 'Column count',
