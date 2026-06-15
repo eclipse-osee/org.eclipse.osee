@@ -344,7 +344,6 @@ public class TxPurgeColdStorage {
 
       } catch (IOException ex) {
          results.errorf("Failed to read cold storage file: %s", ex.getMessage());
-         throw OseeCoreException.wrap(ex);
       }
 
       return results;

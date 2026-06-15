@@ -222,7 +222,6 @@ public class TxsColdStorage {
 
       } catch (IOException ex) {
          results.errorf("Failed to write cold storage file: %s", ex.getMessage());
-         throw OseeCoreException.wrap(ex);
       }
 
       return results;
@@ -354,10 +353,8 @@ public class TxsColdStorage {
 
       } catch (IOException ex) {
          results.errorf("Failed to write cold storage file: %s", ex.getMessage());
-         throw OseeCoreException.wrap(ex);
       } catch (Exception ex) {
          results.errorf("Failed to purge branch: %s", ex.getMessage());
-         throw OseeCoreException.wrap(ex);
       }
 
       return results;
@@ -447,7 +444,6 @@ public class TxsColdStorage {
 
       } catch (IOException ex) {
          results.errorf("Failed to read cold storage file: %s", ex.getMessage());
-         throw OseeCoreException.wrap(ex);
       }
 
       return results;
