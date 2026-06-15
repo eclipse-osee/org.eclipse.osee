@@ -260,7 +260,7 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean IsTrainingPage = osee.createBoolean(1943912856510115199L, "Is Training Page", MediaType.TEXT_PLAIN, "Determines if this help page is used to track training completion");
    AttributeTypeBoolean IsValidated = osee.createBoolean(729356860089871L, "Is Validated", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean IsDefault = osee.createBoolean(92364400893453L, "Is Default", MediaType.TEXT_PLAIN, "Generic Attribute used to Specify an artifact as Default");
-   AttributeTypeString JavaCode = osee.createString(1253931606616948117L, "Java Code", MediaType.TEXT_PLAIN, "code that can be compiled into java");
+   AttributeTypeString JavaCode = osee.createString(1253931606616948117L, "Java Code", MediaType.TEXT_PLAIN, "code that can be compiled into java", DisplayHint.MultiLine);
    AttributeTypeString LastAuthor = osee.createString(1152921504606847285L, "Last Author", MediaType.TEXT_PLAIN, "Last Author");
    AttributeTypeDate LastModifiedDate = osee.createDate(1152921504606847286L, "Last Modified Date", AttributeTypeToken.TEXT_CALENDAR, "Last Modified");
    LegacyDalAttributeType LegacyDal = osee.createEnum(new LegacyDalAttributeType());
@@ -294,7 +294,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString OseeServerJarVersion = osee.createString(1152921504606847292L, "OSEE Server Jar Version", MediaType.TEXT_PLAIN, "OSEE Server Jar Version");
    AttributeTypeString OseeServerTitle = osee.createString(1152921504606847291L, "OSEE Server Title", MediaType.TEXT_PLAIN, "OSEE Server Title");
    AttributeTypeString OseeVersion = osee.createString(1152921504606847290L, "OSEE Version", MediaType.TEXT_PLAIN, "OSEE Version");
-   AttributeTypeString OseeAppDefinition = osee.createStringNoTag(1152921504606847380L, "Osee App Definition", MediaType.APPLICATION_JSON, "Json that defines the parameters, action(s), and metadata of an OSEE Single Page App");
+   AttributeTypeString OseeAppDefinition = osee.createStringNoTag(1152921504606847380L, "Osee App Definition", MediaType.APPLICATION_JSON, "Json that defines the parameters, action(s), and metadata of an OSEE Single Page App", DisplayHint.MultiLine);
    AttributeTypeString TestEnvBatchId = osee.createString(2054979068972801627L, "Test Env Batch Id", MediaType.TEXT_PLAIN, "Batch Id provided by the test environment");
    AttributeTypeString JavaVersion = osee.createStringNoTag(1152921504606849836L, "Java Version", MediaType.APPLICATION_JSON, "Java Version");
    PageOrientationAttributeType PageOrientation = osee.createEnum(new PageOrientationAttributeType());

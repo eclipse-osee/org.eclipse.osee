@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.orcs.rest;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import javax.ws.rs.core.MediaType;
@@ -138,6 +139,13 @@ public class ReportEndpointTest {
       String viewId = ArtifactId.SENTINEL.getIdString();
       String templateId = templateArt.getIdString();
 
+      assertNotNull("branchId should not be null", branchId);
+      assertNotNull("viewId should not be null", viewId);
+      assertNotNull("templateId should not be null", templateId);
+      assertTrue("branchId should not be empty", !branchId.isEmpty());
+      assertTrue("viewId should not be empty", !viewId.isEmpty());
+      assertTrue("templateId should not be empty", !templateId.isEmpty());
+
       String url = String.format("orcs/report/%s/view/%s/template/%s", branchId, viewId, templateId);
 
       Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_XML).get();
@@ -186,5 +194,46 @@ public class ReportEndpointTest {
 
       // The endpoint should still return a response (with error info in the debug sheet)
       assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+   }
+
+   @Test
+   public void testReportEndpointAsyncKicksOff() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String viewId = ArtifactId.SENTINEL.getIdString();
+      String templateId = templateArt.getIdString();
+      String email = "test@example.com";
+
+      assertNotNull("branchId should not be null", branchId);
+      assertNotNull("viewId should not be null", viewId);
+      assertNotNull("templateId should not be null", templateId);
+      assertTrue("branchId should not be empty", !branchId.isEmpty());
+      assertTrue("viewId should not be empty", !viewId.isEmpty());
+      assertTrue("templateId should not be empty", !templateId.isEmpty());
+
+      String url =
+         String.format("orcs/report/%s/view/%s/template/%s/async/%s", branchId, viewId, templateId, email);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).get();
+
+      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+
+      String responseBody = "";
+      try {
+         Object entity = response.getEntity();
+         if (entity instanceof InputStream) {
+            responseBody = Lib.inputStreamToString((InputStream) entity);
+         } else {
+            responseBody = entity.toString();
+         }
+      } catch (Exception ex) {
+         throw new RuntimeException("Failed to read response entity", ex);
+      }
+
+      assertTrue("Response should indicate report generation started",
+         responseBody.contains("Report generation started"));
+      assertTrue("Response should contain the file name", responseBody.contains("Generic_Trace_Report_"));
+      assertTrue("Response should contain the branch", responseBody.contains(branchId));
+      assertTrue("Response should contain the template", responseBody.contains(templateId));
+      assertTrue("Response should contain the email recipient", responseBody.contains(email));
    }
 }

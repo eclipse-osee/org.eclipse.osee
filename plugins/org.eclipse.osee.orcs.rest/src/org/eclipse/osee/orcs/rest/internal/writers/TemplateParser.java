@@ -164,8 +164,11 @@ public final class TemplateParser {
                   String[] relativePath = path.split("/");
                   parser.addClassPath(new File(Class.forName(
                      relativePath[1]).getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+               } else if (isSourceDirectory(path)) {
+                  parser.addSourcePath(path);
+               } else {
+                  parser.addClassPath(path);
                }
-               parser.addClassPath(path);
                results.log(path);
             }
          } else {
@@ -175,5 +178,18 @@ public final class TemplateParser {
       } catch (Exception ex) {
          results.errorf("failed to add path for TemplateParser: %s", ex.toString());
       }
+   }
+
+   /**
+    * Determines if the given path is a source directory (contains .java files) rather than a classpath entry (jar or
+    * compiled class directory). A path is considered a source directory if it is a directory that does not end with .jar
+    * and contains a "src" segment or has .java files.
+    */
+   private boolean isSourceDirectory(String path) {
+      if (path.endsWith(".jar")) {
+         return false;
+      }
+      File dir = new File(path);
+      return dir.isDirectory() && !new File(dir, "META-INF").exists();
    }
 }
