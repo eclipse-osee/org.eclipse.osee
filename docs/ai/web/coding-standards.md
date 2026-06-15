@@ -24,7 +24,7 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - Use **signals** for local component state if stateful.
 - Use RxJS (`BehaviorSubject`/`ReplaySubject`/etc.) only when needed, matching the patterns in our code.
 - Use `viewChild()` or `viewChild.required()` if template references to forms or elements are required.
-- **Do not use constructors in components.**
+- **Avoid constructors in components.** Prefer field initializers with `inject()` and lifecycle callbacks (`afterNextRender`, effects) for initialization logic. For data loading, use signal-based patterns (`httpResource`, `toSignal()`, `computed()`) which handle async state declaratively without constructor logic. Use a constructor only when logic must run synchronously at creation time before the first render and no signal-based alternative exists (e.g., synchronous batch rendering of pre-loaded local data).
 
 ## Angular Material + dialogs
 

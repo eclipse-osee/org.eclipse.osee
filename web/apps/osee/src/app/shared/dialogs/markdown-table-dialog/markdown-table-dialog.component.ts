@@ -669,17 +669,9 @@ export class MarkdownTableDialogComponent {
 
 	/** Row height stored per row index. */
 	protected readonly rowHeights = signal<Record<number, number>>({});
-	/** Column width stored per column index. */
-	protected readonly colWidths = signal<Record<number, number>>({});
-
 	protected getRowHeight(rowIdx: number): string {
 		const h = this.rowHeights()[rowIdx];
 		return h ? `${h}px` : 'auto';
-	}
-
-	protected getColWidth(colIdx: number): string {
-		const w = this.colWidths()[colIdx];
-		return w ? `${w}px` : '';
 	}
 
 	protected onRowDividerMouseDown(event: MouseEvent, rowIdx: number): void {
@@ -710,32 +702,6 @@ export class MarkdownTableDialogComponent {
 			const delta = e.clientY - startY;
 			const finalHeight = Math.max(40, startHeight + delta);
 			this.rowHeights.update((h) => ({ ...h, [rowIdx]: finalHeight }));
-		};
-
-		document.addEventListener('mousemove', onMouseMove);
-		document.addEventListener('mouseup', onMouseUp);
-	}
-
-	protected onColDividerMouseDown(event: MouseEvent, colIdx: number): void {
-		event.preventDefault();
-		event.stopPropagation();
-		const startX = event.clientX;
-		const currentWidth = this.colWidths()[colIdx] || 160;
-
-		document.body.style.cursor = 'col-resize';
-		document.body.style.userSelect = 'none';
-
-		const onMouseMove = (e: MouseEvent) => {
-			const delta = e.clientX - startX;
-			const newWidth = Math.max(80, currentWidth + delta);
-			this.colWidths.update((w) => ({ ...w, [colIdx]: newWidth }));
-		};
-
-		const onMouseUp = () => {
-			document.body.style.cursor = '';
-			document.body.style.userSelect = '';
-			document.removeEventListener('mousemove', onMouseMove);
-			document.removeEventListener('mouseup', onMouseUp);
 		};
 
 		document.addEventListener('mousemove', onMouseMove);

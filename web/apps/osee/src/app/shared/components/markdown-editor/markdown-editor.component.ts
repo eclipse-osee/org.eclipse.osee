@@ -723,7 +723,6 @@ export class MarkdownEditorComponent {
 
 					if (
 						this.selectionOverlapsTable(
-							content,
 							lines,
 							selStart,
 							selEnd,
@@ -813,7 +812,6 @@ export class MarkdownEditorComponent {
 	}
 
 	private selectionOverlapsTable(
-		_content: string,
 		lines: string[],
 		selStart: number,
 		selEnd: number,
