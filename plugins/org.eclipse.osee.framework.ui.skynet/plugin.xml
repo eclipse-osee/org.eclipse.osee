@@ -1584,12 +1584,6 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser">
       </Operation>
    </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam">
-      </Operation>
-   </extension>
      <extension
          point="org.eclipse.ui.editors">
       <editor
