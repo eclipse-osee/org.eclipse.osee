@@ -25,18 +25,64 @@ const routes: Routes = [
 	},
 	{
 		path: '',
-		title: explorer?.pageTitle,
-		loadComponent: () => import('./artifact-explorer.component'),
-	},
-	{
-		path: ':branchType',
-		title: explorer?.pageTitle,
-		loadComponent: () => import('./artifact-explorer.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		title: explorer?.pageTitle,
-		loadComponent: () => import('./artifact-explorer.component'),
+		children: [
+			/**
+			 * Author: Kris Graham (kgraha16)
+			 * Task 160 - Created route for Advanced Search Page
+			 *
+			 * Author: Eihab Khudhair (ekhudhai)
+			 * Task 162 - Move the Advanced Search Form implementations into the Advanced Search Page
+			 * Ensure Advanced Search route is registered in the same route scope as Artifact Explorer
+			 */
+			{
+				path: 'search',
+				title: 'Advanced Search',
+				loadComponent: () =>
+					import('./advanced-search-page/advanced-search-page.component').then(
+						(m) => m.AdvancedSearchPageComponent
+					),
+			},
+			/**
+			 * Author: Eihab Khudhair (ekhudhai)
+			 * Task 162 - Support Advanced Search navigation when usesBranch=true appends branch segments to the URL.
+			 * This allows routes like: /ple/artifact/explorer/search/<branchType>/<branchId>
+			 */
+			{
+				path: 'search/:branchType',
+				title: 'Advanced Search',
+				loadComponent: () =>
+					import('./advanced-search-page/advanced-search-page.component').then(
+						(m) => m.AdvancedSearchPageComponent
+					),
+			},
+			/**
+			 * Author: Eihab Khudhair (ekhudhai)
+			 * Task 162 - Support Advanced Search navigation when usesBranch=true appends branch type + id.
+			 */
+			{
+				path: 'search/:branchType/:branchId',
+				title: 'Advanced Search',
+				loadComponent: () =>
+					import('./advanced-search-page/advanced-search-page.component').then(
+						(m) => m.AdvancedSearchPageComponent
+					),
+			},
+			{
+				path: '',
+				title: explorer?.pageTitle,
+				loadComponent: () => import('./artifact-explorer.component'),
+			},
+			{
+				path: ':branchType',
+				title: explorer?.pageTitle,
+				loadComponent: () => import('./artifact-explorer.component'),
+			},
+			{
+				path: ':branchType/:branchId',
+				title: explorer?.pageTitle,
+				loadComponent: () => import('./artifact-explorer.component'),
+			},
+		],
 	},
 ];
 

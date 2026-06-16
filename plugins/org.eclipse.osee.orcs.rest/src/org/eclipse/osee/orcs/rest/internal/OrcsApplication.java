@@ -95,6 +95,7 @@ public class OrcsApplication extends Application {
       singletons.add(new UserPreferencesEndpointImpl(orcsApi));
       singletons.add(new UserEndpointImpl(orcsApi));
       singletons.add(new KeyValueEndpointImpl(orcsApi));
+      singletons.add(new SavedSearchEndpoint(orcsApi));
    }
 
    public void stop() {

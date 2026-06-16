@@ -15,6 +15,26 @@ import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, NamedId, attribute } from '@osee/shared/types';
 
+type SavedSearchFilters = {
+	artifactTypes: NamedId[];
+	attributeTypes: NamedId[];
+	exactMatch: boolean;
+	searchById: boolean;
+	global?: boolean;
+};
+
+type SavedSearch = {
+	id?: number;
+	title: string;
+	query: string;
+	timestamp?: number;
+	artifactTypes?: NamedId[];
+	attributeTypes?: NamedId[];
+	exactMatch?: boolean;
+	searchById?: boolean;
+	global?: boolean;
+};
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -54,5 +74,34 @@ export class ArtifactService {
 		return this.http.get<string[]>(
 			apiURL + '/orcs/types/attribute/' + attributeId + '/enums'
 		);
+	}
+
+	/**
+    * Author: Daria Berezianska (dvydybor)
+    * Task 146 - Implement the Save Search button behavior to save a search and prevent a save if required data is missing
+    */
+	public saveSearch(
+		title: string,
+		query: string,
+		searchCriteria: SavedSearchFilters
+	) {
+		const body = {
+			title,
+			query,
+			artifactTypes: searchCriteria.artifactTypes,
+			attributeTypes: searchCriteria.attributeTypes,
+			exactMatch: searchCriteria.exactMatch,
+			searchById: searchCriteria.searchById,
+			global: searchCriteria.global ?? false,
+		};
+		return this.http.post(apiURL + '/orcs/savedSearch', body);
+	}
+
+	public getPrivateSavedSearches() {
+		return this.http.get<SavedSearch[]>(apiURL + '/orcs/savedSearch/private');
+	}
+
+	public getGlobalSavedSearches() {
+		return this.http.get<SavedSearch[]>(apiURL + '/orcs/savedSearch/global');
 	}
 }

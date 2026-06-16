@@ -18,7 +18,7 @@ import {
 } from '@angular/common/http';
 import { Injectable, Signal, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { HttpParamsType, attribute } from '@osee/shared/types';
 import { UiService } from '@osee/shared/services';
 import { AdvancedSearchCriteria } from '../types/artifact-search';
@@ -32,6 +32,19 @@ import {
 	publishingRequestFormData,
 } from '../types/artifact-explorer';
 
+/**
+ * Author: Eihab Khudhair (ekhudhai)
+ * Task 208 - Implement backend mass update endpoint integration
+ *
+ * Request model for Mass Edit replace behavior.
+ */
+export type MassEditAttributeRequest = {
+	branchId: string;
+	artifactIds: string[];
+	attributeTypeId: string;
+	value: string;
+	operation: 'replace';
+};
 @Injectable({
 	providedIn: 'root',
 })
@@ -197,6 +210,55 @@ export class ArtifactExplorerHttpService {
 		);
 	}
 
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 *
+	 * Sets a single attribute value for one artifact using the existing backend endpoint.
+	 */
+	public setSoleAttributeValue(
+		branchId: string,
+		artifactId: string,
+		attributeTypeId: string,
+		value: string
+	) {
+		return this.http.put(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/artifact/' +
+				artifactId +
+				'/attribute/type/' +
+				attributeTypeId,
+			value,
+			{
+				headers: {
+					'Content-Type': 'text/plain',
+				},
+			}
+		);
+	}
+
+	/**
+	 * Author: Eihab Khudhair (ekhudhai)
+	 * Task 208 - Implement backend mass update endpoint integration
+	 *
+	 * First working version:
+	 * apply replace behavior across selected artifacts by calling the existing
+	 * attribute endpoint once per selected artifact.
+	 */
+	public massEditAttribute(request: MassEditAttributeRequest) {
+		return forkJoin(
+			request.artifactIds.map((artifactId) =>
+				this.setSoleAttributeValue(
+					request.branchId,
+					artifactId,
+					request.attributeTypeId,
+					request.value
+				)
+			)
+		);
+	}
 	// Publishing
 
 	public getPublishingTemplateKeyGroups(filterBySafeName: string) {
