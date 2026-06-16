@@ -34,6 +34,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { UiService } from '@osee/shared/services';
@@ -54,6 +55,10 @@ import {
 	UploadImageDialogComponent,
 	UploadImageDialogData,
 	UploadImageDialogResult,
+	MarkdownTableDialogComponent,
+	MarkdownTableDialogData,
+	MarkdownTableDialogResult,
+	ColumnAlignment,
 } from '@osee/shared/dialogs';
 import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
@@ -94,6 +99,7 @@ export class MarkdownEditorComponent {
 	protected readonly mdExamples = mdExamples;
 
 	private readonly dialog = inject(MatDialog);
+	private readonly snackBar = inject(MatSnackBar);
 	private readonly uiService = inject(UiService);
 	private readonly imageService = inject(MarkdownImageService);
 	private readonly artExpHttpService = inject(ArtifactExplorerHttpService);
@@ -149,6 +155,17 @@ export class MarkdownEditorComponent {
 				this.destroyRef.onDestroy(() => {
 					this.focusMonitor.stopMonitoring(textarea);
 				});
+
+				// Track the last known selection so toolbar buttons can
+				// read it after the textarea loses focus on click.
+				fromEvent(textarea.nativeElement, 'blur')
+					.pipe(takeUntilDestroyed(this.destroyRef))
+					.subscribe(() => {
+						this.savedSelectionStart =
+							textarea.nativeElement.selectionStart;
+						this.savedSelectionEnd =
+							textarea.nativeElement.selectionEnd;
+					});
 			}
 		});
 		this.destroyRef.onDestroy(() => {
@@ -181,6 +198,26 @@ export class MarkdownEditorComponent {
 			return 'Image upload in progress.';
 		}
 		return 'Upload Image';
+	});
+
+	protected readonly tableButtonTooltip = computed(() => {
+		if (this.disabled()) {
+			return 'Editing is disabled.';
+		}
+		if (this.showImages()) {
+			return 'Exit image preview to edit tables.';
+		}
+		return 'Insert or Edit Table';
+	});
+
+	protected readonly selectTableTooltip = computed(() => {
+		if (this.disabled()) {
+			return 'Editing is disabled.';
+		}
+		if (this.showImages()) {
+			return 'Exit image preview to select tables.';
+		}
+		return 'Select Table at Cursor';
 	});
 
 	mdPreview = toSignal(
@@ -398,8 +435,483 @@ export class MarkdownEditorComponent {
 	private insertImageLink(artifactId: string): void {
 		const imageTag = `<image-link>${artifactId}</image-link>`;
 		const currentContent = this.mdContent();
-		const separator = currentContent.length > 0 ? '\n\n' : '';
-		this.mdContent.set(currentContent + separator + imageTag);
+		const cursorPos =
+			this.savedSelectionStart >= 0
+				? this.savedSelectionStart
+				: currentContent.length;
+
+		const before = currentContent.substring(0, cursorPos);
+		const after = currentContent.substring(cursorPos);
+		this.mdContent.set(before + imageTag + after);
+	}
+
+	openTableDialog(): void {
+		const content = this.mdContent();
+		const parsedTable = this.parseTableAtSelection(
+			content,
+			this.savedSelectionStart,
+			this.savedSelectionEnd
+		);
+
+		const wasFullscreen = this.isFullscreen();
+		const openDialog = () => {
+			if (
+				parsedTable &&
+				(parsedTable.headers.length > 50 ||
+					parsedTable.cells.length > 100)
+			) {
+				this.snackBar.open(
+					'Table exceeds maximum editable size (50 columns × 100 rows).',
+					'Dismiss',
+					{ duration: 4000 }
+				);
+				return;
+			}
+
+			const dialogData: MarkdownTableDialogData = parsedTable
+				? {
+						rows: parsedTable.cells.length,
+						cols: parsedTable.headers.length,
+						headers: parsedTable.headers,
+						headerSpans: parsedTable.headerSpans,
+						cells: parsedTable.cells,
+						alignments: parsedTable.alignments,
+						isEdit: true,
+					}
+				: {
+						rows: 3,
+						cols: 3,
+						headers: ['', '', ''],
+						headerSpans: [1, 1, 1],
+						cells: [
+							['', '', ''],
+							['', '', ''],
+							['', '', ''],
+						],
+						alignments: ['left', 'left', 'left'],
+						isEdit: false,
+					};
+
+			const dialogRef = this.dialog.open(MarkdownTableDialogComponent, {
+				data: dialogData,
+				minWidth: '50%',
+				maxWidth: '90vw',
+				disableClose: true,
+			});
+
+			dialogRef
+				.afterClosed()
+				.pipe(
+					take(1),
+					filter((result): result is MarkdownTableDialogResult => {
+						if (result === undefined) {
+							if (wasFullscreen) {
+								this.enterFullscreen();
+							}
+							return false;
+						}
+						return true;
+					})
+				)
+				.subscribe((result) => {
+					if (parsedTable) {
+						// Replace existing table
+						const before = content.substring(
+							0,
+							parsedTable.startIndex
+						);
+						const after = content.substring(parsedTable.endIndex);
+						this.mdContent.set(before + result.markdown + after);
+					} else {
+						// Insert new table at cursor or end
+						const cursorPos =
+							this.savedSelectionStart >= 0
+								? this.savedSelectionStart
+								: content.length;
+						const before = content.substring(0, cursorPos);
+						const after = content.substring(cursorPos);
+						const prefixNewlines =
+							before.length > 0 && !before.endsWith('\n\n')
+								? before.endsWith('\n')
+									? '\n'
+									: '\n\n'
+								: '';
+						const suffixNewlines =
+							after.length > 0 && !after.startsWith('\n\n')
+								? after.startsWith('\n')
+									? '\n'
+									: '\n\n'
+								: '';
+						this.mdContent.set(
+							before +
+								prefixNewlines +
+								result.markdown +
+								suffixNewlines +
+								after
+						);
+					}
+					if (wasFullscreen) {
+						this.enterFullscreen();
+					}
+				});
+		};
+
+		if (wasFullscreen) {
+			document
+				.exitFullscreen()
+				.then(() => openDialog())
+				.catch(() => openDialog());
+		} else {
+			openDialog();
+		}
+	}
+
+	selectTableAtCursor(): void {
+		const textarea = this.editorTextarea()?.nativeElement;
+		if (!textarea) {
+			return;
+		}
+		const content = this.mdContent();
+		const parsedTable = this.parseTableAtSelection(
+			content,
+			this.savedSelectionStart,
+			this.savedSelectionEnd
+		);
+
+		if (!parsedTable) {
+			this.snackBar.open(
+				'No table found at the cursor position.',
+				'Dismiss',
+				{ duration: 3000 }
+			);
+			return;
+		}
+
+		textarea.focus();
+		textarea.selectionStart = parsedTable.startIndex;
+		textarea.selectionEnd = parsedTable.endIndex;
+	}
+
+	private parseTableAtSelection(
+		content: string,
+		selStart: number,
+		selEnd: number
+	): {
+		headers: string[];
+		headerSpans: number[];
+		cells: string[][];
+		alignments: ColumnAlignment[];
+		startIndex: number;
+		endIndex: number;
+	} | null {
+		if (!content) {
+			return null;
+		}
+
+		const cursorPos = selStart;
+
+		// Find the line the cursor/selection is on
+		const lines = content.split('\n');
+		let charIndex = 0;
+		let cursorLineIndex = 0;
+
+		for (let i = 0; i < lines.length; i++) {
+			const lineEnd = charIndex + lines[i].length;
+			if (cursorPos <= lineEnd) {
+				cursorLineIndex = i;
+				break;
+			}
+			charIndex += lines[i].length + 1; // +1 for the newline
+		}
+
+		// Look for a table around the cursor/selection
+		// A markdown table is: header row, separator row (|:--|:-:|--:|), then data rows.
+		// A separator line starts and ends with |, and each cell between pipes
+		// contains only dashes, colons, and whitespace (with at least one dash).
+		const isSeparatorLine = (line: string): boolean => {
+			const trimmed = line.trim();
+			if (!trimmed.startsWith('|') || !trimmed.endsWith('|')) {
+				return false;
+			}
+			const inner = trimmed.slice(1, -1);
+			const cells = inner.split('|');
+			if (cells.length === 0) {
+				return false;
+			}
+			return cells.every((cell) => {
+				const c = cell.trim();
+				return c.length > 0 && /^:?-+:?$/.test(c);
+			});
+		};
+
+		// Find the separator line for a table containing the cursor.
+		// Strategy: if the cursor is on a line starting with |, walk upward
+		// to find the separator line (which is always line 2 of a table).
+		// Also check if the cursor is on the separator or header line itself.
+		let separatorLineIndex = -1;
+
+		// First check if cursor line itself is a separator or starts with |
+		if (isSeparatorLine(lines[cursorLineIndex])) {
+			separatorLineIndex = cursorLineIndex;
+		} else {
+			// Walk upward from cursor to find a separator line
+			for (let i = cursorLineIndex; i >= 0; i--) {
+				if (isSeparatorLine(lines[i])) {
+					// Verify the table extends down to include the cursor line
+					let tableEndLine = i + 1;
+					while (
+						tableEndLine < lines.length &&
+						lines[tableEndLine].trim().startsWith('|')
+					) {
+						tableEndLine++;
+					}
+					tableEndLine--; // Back to last valid row
+
+					if (cursorLineIndex <= tableEndLine) {
+						separatorLineIndex = i;
+					}
+					break;
+				}
+				// If we hit a line that doesn't start with |, stop searching
+				if (!lines[i].trim().startsWith('|')) {
+					break;
+				}
+			}
+		}
+
+		// If not found walking up, check if cursor is on the header line
+		// (the line before a separator)
+		if (separatorLineIndex === -1) {
+			const nextLine = cursorLineIndex + 1;
+			if (nextLine < lines.length && isSeparatorLine(lines[nextLine])) {
+				// Verify the table extends to include data rows below
+				let tableEndLine = nextLine + 1;
+				while (
+					tableEndLine < lines.length &&
+					lines[tableEndLine].trim().startsWith('|')
+				) {
+					tableEndLine++;
+				}
+				separatorLineIndex = nextLine;
+			}
+		}
+
+		// Handle selection that may overlap a table
+		if (separatorLineIndex === -1 && selStart !== selEnd) {
+			// Search all lines in the document for a separator whose table
+			// overlaps the selection
+			for (let i = 0; i < lines.length; i++) {
+				if (isSeparatorLine(lines[i])) {
+					const tableStartLine = i - 1;
+					let tableEndLine = i + 1;
+					while (
+						tableEndLine < lines.length &&
+						lines[tableEndLine].trim().startsWith('|')
+					) {
+						tableEndLine++;
+					}
+					tableEndLine--;
+
+					if (
+						this.selectionOverlapsTable(
+							lines,
+							selStart,
+							selEnd,
+							tableStartLine,
+							tableEndLine
+						)
+					) {
+						separatorLineIndex = i;
+						break;
+					}
+				}
+			}
+		}
+
+		if (separatorLineIndex === -1) {
+			return null;
+		}
+
+		const headerLineIndex = separatorLineIndex - 1;
+		if (headerLineIndex < 0) {
+			return null;
+		}
+
+		// Parse header with column span detection
+		const { headers, headerSpans } = this.parseHeaderRowWithSpans(
+			lines[headerLineIndex]
+		);
+		if (headers.length === 0) {
+			return null;
+		}
+
+		// Parse alignments from separator — use separator column count
+		// (which represents the actual number of columns)
+		const alignments = this.parseAlignments(
+			lines[separatorLineIndex],
+			headers.length
+		);
+
+		// Parse data rows
+		let dataEndLine = separatorLineIndex + 1;
+		while (
+			dataEndLine < lines.length &&
+			lines[dataEndLine].trim().startsWith('|')
+		) {
+			dataEndLine++;
+		}
+
+		const cells: string[][] = [];
+		for (let i = separatorLineIndex + 1; i < dataEndLine; i++) {
+			const row = this.parseTableRow(lines[i]);
+			// Pad or trim to match header count
+			while (row.length < headers.length) {
+				row.push('');
+			}
+			cells.push(row.slice(0, headers.length));
+		}
+
+		// Ensure at least one data row
+		if (cells.length === 0) {
+			cells.push(Array(headers.length).fill(''));
+		}
+
+		// Calculate start and end character indices
+		let startIndex = 0;
+		for (let i = 0; i < headerLineIndex; i++) {
+			startIndex += lines[i].length + 1;
+		}
+
+		// endIndex points to the last character of the last table line
+		const lastTableLine = dataEndLine - 1;
+		let endIndex = 0;
+		for (let i = 0; i <= lastTableLine; i++) {
+			endIndex += lines[i].length + 1;
+		}
+		// endIndex is now one past the newline of the last table line
+		// Subtract 1 to point to the newline, or use content.length if at end
+		endIndex = Math.min(endIndex, content.length);
+
+		return {
+			headers,
+			headerSpans,
+			cells,
+			alignments,
+			startIndex,
+			endIndex,
+		};
+	}
+
+	private selectionOverlapsTable(
+		lines: string[],
+		selStart: number,
+		selEnd: number,
+		tableStartLine: number,
+		tableEndLine: number
+	): boolean {
+		let tableStartChar = 0;
+		for (let i = 0; i < tableStartLine; i++) {
+			tableStartChar += lines[i].length + 1;
+		}
+		let tableEndChar = tableStartChar;
+		for (let i = tableStartLine; i <= tableEndLine; i++) {
+			tableEndChar += lines[i].length + 1;
+		}
+		return selStart < tableEndChar && selEnd > tableStartChar;
+	}
+
+	private parseTableRow(line: string): string[] {
+		let trimmed = line.trim();
+		if (trimmed.startsWith('|')) {
+			trimmed = trimmed.substring(1);
+		}
+		if (trimmed.endsWith('|')) {
+			trimmed = trimmed.substring(0, trimmed.length - 1);
+		}
+		// Split on unescaped pipes only (not \|)
+		return trimmed
+			.split(/(?<!\\)\|/)
+			.map((cell) =>
+				cell.trim().replace(/\\\|/g, '|').replace(/<br>/gi, '\n')
+			);
+	}
+
+	/**
+	 * Parses a header row detecting Flexmark colspan syntax.
+	 * Consecutive empty cells after a non-empty cell indicate a column span.
+	 * E.g., "| Header 1 ||| Header 2 |" = Header 1 spans 3, Header 2 spans 1.
+	 * Returns headers array (one per actual column) and spans array.
+	 */
+	private parseHeaderRowWithSpans(line: string): {
+		headers: string[];
+		headerSpans: number[];
+	} {
+		let trimmed = line.trim();
+		if (trimmed.startsWith('|')) {
+			trimmed = trimmed.substring(1);
+		}
+		if (trimmed.endsWith('|')) {
+			trimmed = trimmed.substring(0, trimmed.length - 1);
+		}
+		// Split on unescaped | but keep the raw content to distinguish
+		// "| |" (empty cell with space) from "||" (span marker — no content at all)
+		const rawCells = trimmed.split(/(?<!\\)\|/);
+
+		const colCount = rawCells.length;
+		const headers: string[] = Array(colCount).fill('');
+		const headerSpans: number[] = Array(colCount).fill(1);
+
+		let colIdx = 0;
+		let i = 0;
+		while (i < rawCells.length && colIdx < colCount) {
+			const cellContent = rawCells[i]
+				.trim()
+				.replace(/\\\|/g, '|')
+				.replace(/<br>/gi, '\n');
+			headers[colIdx] = cellContent;
+
+			// Count consecutive truly-empty cells (no characters at all between pipes)
+			// This is the Flexmark colspan syntax: "||" has an empty string between pipes
+			let span = 1;
+			while (i + span < rawCells.length && rawCells[i + span] === '') {
+				span++;
+			}
+
+			headerSpans[colIdx] = span;
+			// Mark spanned columns as 0
+			for (let s = 1; s < span; s++) {
+				if (colIdx + s < colCount) {
+					headerSpans[colIdx + s] = 0;
+					headers[colIdx + s] = '';
+				}
+			}
+
+			colIdx += span;
+			i += span;
+		}
+
+		return { headers, headerSpans };
+	}
+
+	private parseAlignments(
+		separatorLine: string,
+		colCount: number
+	): ColumnAlignment[] {
+		const cells = this.parseTableRow(separatorLine);
+		const alignments: ColumnAlignment[] = [];
+
+		for (let i = 0; i < colCount; i++) {
+			const cell = (cells[i] || '').trim();
+			if (cell.startsWith(':') && cell.endsWith(':')) {
+				alignments.push('center');
+			} else if (cell.endsWith(':')) {
+				alignments.push('right');
+			} else {
+				alignments.push('left');
+			}
+		}
+
+		return alignments;
 	}
 
 	private revokeImageObjectUrls(): void {
@@ -447,8 +959,8 @@ export class MarkdownEditorComponent {
 			});
 	}
 
-	private savedSelectionStart = 0;
-	private savedSelectionEnd = 0;
+	private savedSelectionStart = -1;
+	private savedSelectionEnd = -1;
 
 	private saveTextareaSelection(): void {
 		const textarea = this.editorTextarea()?.nativeElement;
@@ -462,7 +974,7 @@ export class MarkdownEditorComponent {
 		afterNextRender(
 			() => {
 				const textarea = this.editorTextarea()?.nativeElement;
-				if (textarea) {
+				if (textarea && this.savedSelectionStart >= 0) {
 					textarea.selectionStart = this.savedSelectionStart;
 					textarea.selectionEnd = this.savedSelectionEnd;
 					textarea.focus();

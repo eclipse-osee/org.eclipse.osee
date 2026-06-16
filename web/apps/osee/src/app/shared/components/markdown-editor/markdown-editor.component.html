@@ -36,14 +36,22 @@
 				<mat-icon> redo </mat-icon>
 			</div>
 		</button>
-		<button
-			mat-icon-button
-			matTooltip="Examples"
-			[matMenuTriggerFor]="mdExamplesMenu">
-			<div>
-				<mat-icon> lightbulb </mat-icon>
-			</div>
-		</button>
+		<span
+			[matTooltip]="
+				showImages()
+					? 'Exit image preview to use examples.'
+					: 'Examples'
+			">
+			<button
+				mat-icon-button
+				[matMenuTriggerFor]="mdExamplesMenu"
+				[disabled]="showImages()"
+				[class.tw-opacity-40]="showImages()">
+				<div>
+					<mat-icon> lightbulb </mat-icon>
+				</div>
+			</button>
+		</span>
 		<mat-menu #mdExamplesMenu="matMenu">
 			@for (mdExample of mdExamples; track $index) {
 				<button
@@ -75,6 +83,30 @@
 			</button>
 		</span>
 
+		<span [matTooltip]="tableButtonTooltip()">
+			<button
+				mat-icon-button
+				[disabled]="disabled() || showImages()"
+				[class.tw-opacity-40]="disabled() || showImages()"
+				(click)="openTableDialog()">
+				<div>
+					<mat-icon> table_chart </mat-icon>
+				</div>
+			</button>
+		</span>
+
+		<span [matTooltip]="selectTableTooltip()">
+			<button
+				mat-icon-button
+				[disabled]="disabled() || showImages()"
+				[class.tw-opacity-40]="disabled() || showImages()"
+				(click)="selectTableAtCursor()">
+				<div>
+					<mat-icon> select_all </mat-icon>
+				</div>
+			</button>
+		</span>
+
 		<button
 			mat-icon-button
 			[matTooltip]="
@@ -86,7 +118,7 @@
 				@if (isLoadingImages()) {
 					<mat-icon> hourglass_empty </mat-icon>
 				} @else if (showImages()) {
-					<mat-icon> edit </mat-icon>
+					<mat-icon class="tw-text-primary"> edit </mat-icon>
 				} @else {
 					<mat-icon> visibility </mat-icon>
 				}
@@ -156,6 +188,7 @@
 			class="tw-flex tw-min-h-0 tw-min-w-0 tw-flex-col tw-overflow-hidden"
 			[class.tw-flex-1]="isPreviewCollapsed()"
 			[class.tw--mr-px]="!isPreviewCollapsed()"
+			[class.tw-opacity-40]="showImages()"
 			[style.width.%]="isPreviewCollapsed() ? null : editorWidthPercent()"
 			[style.flex-shrink]="isPreviewCollapsed() ? null : 0">
 			<textarea
