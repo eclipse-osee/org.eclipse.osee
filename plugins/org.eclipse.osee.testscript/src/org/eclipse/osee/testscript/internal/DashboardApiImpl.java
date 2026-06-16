@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -112,12 +113,7 @@ public class DashboardApiImpl implements DashboardApi {
          }
       }
 
-      Collections.sort(timelines, new Comparator<TimelineStatsToken>() {
-         @Override
-         public int compare(TimelineStatsToken o1, TimelineStatsToken o2) {
-            return o1.getTeam().compareTo(o2.getTeam());
-         }
-      });
+      Collections.sort(timelines, Comparator.comparing(TimelineStatsToken::getTeam));
 
       timelines.add(0, fullTimeline);
       return timelines;
@@ -147,12 +143,7 @@ public class DashboardApiImpl implements DashboardApi {
          }
       }
 
-      Collections.sort(timelines, new Comparator<TimelineStatsToken>() {
-         @Override
-         public int compare(TimelineStatsToken o1, TimelineStatsToken o2) {
-            return o1.getTeam().compareTo(o2.getTeam());
-         }
-      });
+      Collections.sort(timelines, Comparator.comparing(TimelineStatsToken::getTeam));
 
       return timelines;
    }
@@ -215,10 +206,11 @@ public class DashboardApiImpl implements DashboardApi {
       Collection<ScriptResultToken> results) {
       Date newTime = new Date();
       Map<ArtifactId, String> teamNames = new HashMap<>();
+      SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyyMMdd");
 
       SortedMap<String, TimelineDayToken> timelineDays = new TreeMap<>();
       for (TimelineDayToken day : timeline.getDays()) {
-         String key = TimelineStatsToken.dateFormat.format(day.getExecutionDate());
+         String key = localDateFormat.format(day.getExecutionDate());
          timelineDays.put(key, day);
       }
 
@@ -226,25 +218,35 @@ public class DashboardApiImpl implements DashboardApi {
          if (result.getName() == null) {
             continue;
          }
-         String dayKey = TimelineStatsToken.dateFormat.format(result.getExecutionDate());
+
+         Date resultExecutionDate = result.getExecutionDate();
+         if (!isValidExecutionDate(resultExecutionDate)) {
+            continue;
+         }
+
+         String dayKey = localDateFormat.format(resultExecutionDate);
          TimelineDayToken timelineDay;
          try {
             timelineDay =
-               timelineDays.getOrDefault(dayKey, new TimelineDayToken(TimelineStatsToken.dateFormat.parse(dayKey)));
+               timelineDays.getOrDefault(dayKey,
+                  new TimelineDayToken(localDateFormat.parse(dayKey)));
          } catch (ParseException ex) {
             throw new OseeCoreException("Unable to parse date from format", ex);
          }
 
          TimelineScriptToken dayScript = timelineDay.getScripts().get(result.getName());
          if (dayScript == null) {
-            dayScript = new TimelineScriptToken(result.getExecutionDate(), result.getPassedCount(),
-               result.getFailedCount(), result.getScriptAborted());
+            dayScript = new TimelineScriptToken(
+               resultExecutionDate,
+               result.getPassedCount(),
+               result.getFailedCount(),
+               result.getScriptAborted());
          }
 
          ArtifactReadable script = result.getArtifactReadable().getRelated(
             CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef).getExactlyOne();
-         ArtifactId teamId = script.getRelated(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam).getAtMostOneOrDefault(
-            ArtifactReadable.SENTINEL).getArtifactId();
+         ArtifactId teamId = script.getRelated(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)
+            .getAtMostOneOrDefault(ArtifactReadable.SENTINEL).getArtifactId();
          if (teamId.isInvalid()) {
             dayScript.setTeamName("");
          } else if (teamNames.containsKey(teamId)) {
@@ -258,7 +260,7 @@ public class DashboardApiImpl implements DashboardApi {
          }
 
          // If a more recent script has already been included for the day, skip this one.
-         if (dayScript.getExecutedAt().after(result.getExecutionDate())) {
+         if (dayScript.getExecutedAt().after(resultExecutionDate)) {
             continue;
          }
 
@@ -301,6 +303,19 @@ public class DashboardApiImpl implements DashboardApi {
       timeline.setUpdatedAt(newTime);
 
       return timeline;
+   }
+
+   private boolean isValidExecutionDate(Date date) {
+      if (date == null) {
+         return false;
+      }
+      Instant inst = date.toInstant();
+      // Reject epoch-zero or negative timestamps
+      if (!inst.isAfter(Instant.EPOCH)) {
+         return false;
+      }
+      // Execution dates must not be in the future
+      return !inst.isAfter(Instant.now());
    }
 
    private TimelineStatsToken calculateTeamTimelineStats(TimelineStatsToken fullTimeline,
@@ -403,13 +418,13 @@ public class DashboardApiImpl implements DashboardApi {
       return accessor.getAllByFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name));
    }
 
-   private class ArtifactAccessorResultAccessor extends ArtifactAccessorImpl<ArtifactAccessorResultWithoutGammas> {
+   private static class ArtifactAccessorResultAccessor extends ArtifactAccessorImpl<ArtifactAccessorResultWithoutGammas> {
       public ArtifactAccessorResultAccessor(ArtifactTypeToken type, OrcsApi orcsApi) {
          super(type, orcsApi);
       }
    }
 
-   private class ScriptTeamAccessor extends ArtifactAccessorImpl<ScriptTeamToken> {
+   private static class ScriptTeamAccessor extends ArtifactAccessorImpl<ScriptTeamToken> {
       public ScriptTeamAccessor(ArtifactTypeToken type, OrcsApi orcsApi) {
          super(type, orcsApi);
       }
@@ -417,7 +432,6 @@ public class DashboardApiImpl implements DashboardApi {
 
    @Override
    public Response exportDashboardBranchData(BranchId branch, ArtifactId viewId) {
-      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
 
       StreamingOutput stream = output -> {
          Charset charset = StandardCharsets.UTF_8;
@@ -451,7 +465,6 @@ public class DashboardApiImpl implements DashboardApi {
 
    @Override
    public Response exportDashboardSetData(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
-      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
 
       StreamingOutput stream = output -> {
          Charset charset = StandardCharsets.UTF_8;
