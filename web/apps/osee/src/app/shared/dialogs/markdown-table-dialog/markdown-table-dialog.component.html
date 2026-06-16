@@ -186,14 +186,7 @@
 									[class.tw-font-bold]="true"
 									floatLabel="always"
 									hideRequiredMarker>
-									<mat-label
-										>Header {{ idx + 1
-										}}{{
-											getSpan(idx) > 1
-												? ' (' + getSpan(idx) + ' cols)'
-												: ''
-										}}</mat-label
-									>
+									<mat-label>{{ getHeaderLabel(idx) }}</mat-label>
 									<input
 										matInput
 										type="text"

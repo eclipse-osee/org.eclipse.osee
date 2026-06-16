@@ -337,6 +337,12 @@ export class MarkdownTableDialogComponent {
 		return '';
 	}
 
+	protected getHeaderLabel(colIndex: number): string {
+		const span = this.getSpan(colIndex);
+		const label = `Header ${colIndex + 1}`;
+		return span > 1 ? `${label} (${span} cols)` : label;
+	}
+
 	protected onColCountChange(event: Event): void {
 		const input = event.target as HTMLInputElement;
 		const value = parseInt(input.value, 10);
