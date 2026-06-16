@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Review Changed Code",
+  "description": "Reviews all web and Java files changed since origin/main. Reads each changed file, checks for code quality issues, potential bugs, missing error handling, and adherence to project coding standards.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run `git diff --name-only origin/main -- \"*.ts\" \"*.html\" \"*.scss\" \"*.css\" \"*.java\"` from the workspace root to find all changed files. Read each changed file and perform a thorough code review checking for: 1) Bugs or logic errors, 2) Missing error handling, 3) Performance concerns, 4) Adherence to the project's coding standards (for web: Angular signals, OnPush, proper typing, tooltip conventions, barrel imports, Tailwind class order; for Java: proper exception handling, thread safety, naming conventions), 5) Accessibility issues (web), 6) Dead code or unused imports, 7) Edge cases not handled. Present findings grouped by file with severity (error/warning/suggestion) and specific line references where possible."
+  }
+}
