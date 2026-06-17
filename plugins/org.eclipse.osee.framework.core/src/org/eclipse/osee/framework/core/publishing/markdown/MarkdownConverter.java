@@ -25,10 +25,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
@@ -209,18 +213,73 @@ public class MarkdownConverter {
          String imageName = entry.getKey();
          String base64 = entry.getValue();
 
+         String dataUri;
+         byte[] imageBytes;
          if (base64.startsWith("data:")) {
-            // Already a full data URI
-            html = html.replace("src=\"" + imageName + "\"", "src=\"" + base64 + "\"");
+            dataUri = base64;
+            int commaIdx = base64.indexOf(',');
+            imageBytes = (commaIdx >= 0) ? Base64.getDecoder().decode(base64.substring(commaIdx + 1)) : new byte[0];
          } else {
-            // Guess the media type from the file extension
             String mediaType = guessMediaType(imageName);
-            String dataUri = "data:" + mediaType + ";base64," + base64;
-            html = html.replace("src=\"" + imageName + "\"", "src=\"" + dataUri + "\"");
+            dataUri = "data:" + mediaType + ";base64," + base64;
+            imageBytes = Base64.getDecoder().decode(base64);
          }
+
+         // Read image dimensions to scale the image to fit within a table cell.
+         // OpenHTMLToPDF requires explicit width/height attributes to render data URI images
+         // in table cells, but percentage-based max-width does not work in that context.
+         // We scale to a max of 150px wide (reasonable for a table cell) while preserving aspect ratio.
+         int[] dimensions = getImageDimensions(imageBytes);
+
+         String srcReplacement;
+         if (dimensions != null && dimensions[0] > 0 && dimensions[1] > 0) {
+            int maxWidth = 150;
+            int renderWidth = dimensions[0];
+            int renderHeight = dimensions[1];
+            if (renderWidth > maxWidth) {
+               renderHeight = (int) Math.round((double) renderHeight * maxWidth / renderWidth);
+               renderWidth = maxWidth;
+            }
+            srcReplacement = "src=\"" + dataUri + "\" width=\"" + renderWidth + "\" height=\"" + renderHeight + "\"";
+         } else {
+            srcReplacement = "src=\"" + dataUri + "\"";
+         }
+
+         html = html.replace("src=\"" + imageName + "\"", srcReplacement);
       }
 
       return html;
+   }
+
+   /**
+    * Reads image dimensions (width, height) from raw image bytes using javax.imageio.
+    * Only parses file headers — does not fully decode the image into memory.
+    * Returns null if dimensions cannot be determined.
+    */
+   private int[] getImageDimensions(byte[] imageBytes) {
+      if (imageBytes == null || imageBytes.length == 0) {
+         return null;
+      }
+      try (ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes))) {
+         if (iis == null) {
+            return null;
+         }
+         Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+         if (readers.hasNext()) {
+            ImageReader reader = readers.next();
+            try {
+               reader.setInput(iis);
+               int width = reader.getWidth(0);
+               int height = reader.getHeight(0);
+               return new int[]{width, height};
+            } finally {
+               reader.dispose();
+            }
+         }
+      } catch (IOException e) {
+         // If we can't read dimensions, return null and the image will be embedded without sizing
+      }
+      return null;
    }
 
    private String guessMediaType(String filename) {

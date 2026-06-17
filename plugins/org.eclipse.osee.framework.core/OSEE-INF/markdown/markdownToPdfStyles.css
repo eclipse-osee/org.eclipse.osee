@@ -35,6 +35,16 @@ img {
 	page-break-inside: avoid;
 }
 
+td img {
+	display: inline-block;
+	max-width: 100%;
+	width: auto;
+	height: auto;
+	margin: 0;
+	page-break-inside: auto;
+	vertical-align: middle;
+}
+
 .figure-caption,
 .table-caption {
     text-align: center;
