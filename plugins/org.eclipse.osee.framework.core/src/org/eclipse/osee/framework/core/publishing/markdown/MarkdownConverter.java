@@ -208,9 +208,21 @@ public class MarkdownConverter {
       }
    }
 
+   /**
+    * Maximum image width (in pixels) when rendered inside a table cell.
+    */
    private static final int MAX_IMAGE_WIDTH_IN_TABLE = 150;
-   private static final int MAX_IMAGE_WIDTH_STANDALONE = 468; // ~6.5in at 72dpi (letter page minus 1in margins)
 
+   /**
+    * Maximum image width (in pixels) when rendered as a standalone image (~6.5in at 72dpi).
+    */
+   private static final int MAX_IMAGE_WIDTH_STANDALONE = 468;
+
+   /**
+    * Embeds images as base64 data URIs with explicit width/height attributes.
+    * Explicit pixel dimensions are required because OpenHTMLToPDF cannot resolve
+    * percentage-based CSS sizing for images inside table cells.
+    */
    public String embedImages(String html, HashMap<String, String> imageContentMap) {
       for (Map.Entry<String, String> entry : imageContentMap.entrySet()) {
          String imageName = entry.getKey();
