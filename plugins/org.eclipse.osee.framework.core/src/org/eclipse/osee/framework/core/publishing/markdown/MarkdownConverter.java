@@ -208,6 +208,9 @@ public class MarkdownConverter {
       }
    }
 
+   private static final int MAX_IMAGE_WIDTH_IN_TABLE = 150;
+   private static final int MAX_IMAGE_WIDTH_STANDALONE = 468; // ~6.5in at 72dpi (letter page minus 1in margins)
+
    public String embedImages(String html, HashMap<String, String> imageContentMap) {
       for (Map.Entry<String, String> entry : imageContentMap.entrySet()) {
          String imageName = entry.getKey();
@@ -225,30 +228,69 @@ public class MarkdownConverter {
             imageBytes = Base64.getDecoder().decode(base64);
          }
 
-         // Read image dimensions to scale the image to fit within a table cell.
-         // OpenHTMLToPDF requires explicit width/height attributes to render data URI images
-         // in table cells, but percentage-based max-width does not work in that context.
-         // We scale to a max of 150px wide (reasonable for a table cell) while preserving aspect ratio.
          int[] dimensions = getImageDimensions(imageBytes);
 
-         String srcReplacement;
          if (dimensions != null && dimensions[0] > 0 && dimensions[1] > 0) {
-            int maxWidth = 150;
-            int renderWidth = dimensions[0];
-            int renderHeight = dimensions[1];
-            if (renderWidth > maxWidth) {
-               renderHeight = (int) Math.round((double) renderHeight * maxWidth / renderWidth);
-               renderWidth = maxWidth;
-            }
-            srcReplacement = "src=\"" + dataUri + "\" width=\"" + renderWidth + "\" height=\"" + renderHeight + "\"";
-         } else {
-            srcReplacement = "src=\"" + dataUri + "\"";
-         }
+            // Determine which occurrences are inside table cells vs standalone
+            String srcToken = "src=\"" + imageName + "\"";
+            StringBuilder sb = new StringBuilder();
+            int pos = 0;
 
-         html = html.replace("src=\"" + imageName + "\"", srcReplacement);
+            while (pos < html.length()) {
+               int srcIdx = html.indexOf(srcToken, pos);
+               if (srcIdx < 0) {
+                  sb.append(html, pos, html.length());
+                  break;
+               }
+
+               // Append everything before this match
+               sb.append(html, pos, srcIdx);
+
+               // Look backwards from srcIdx to determine if we're inside a <td> or <th>
+               boolean insideTableCell = isInsideTableCell(html, srcIdx);
+
+               int maxWidth = insideTableCell ? MAX_IMAGE_WIDTH_IN_TABLE : MAX_IMAGE_WIDTH_STANDALONE;
+               int renderWidth = Math.min(dimensions[0], maxWidth);
+               int renderHeight = (int) Math.round((double) dimensions[1] * renderWidth / dimensions[0]);
+
+               sb.append("src=\"").append(dataUri).append("\" width=\"").append(renderWidth).append("\" height=\"").append(renderHeight).append("\"");
+
+               pos = srcIdx + srcToken.length();
+            }
+
+            html = sb.toString();
+         } else {
+            html = html.replace("src=\"" + imageName + "\"", "src=\"" + dataUri + "\"");
+         }
       }
 
       return html;
+   }
+
+   /**
+    * Checks if the given position in the HTML is inside a table cell (&lt;td&gt; or &lt;th&gt;)
+    * by scanning backwards for the nearest unclosed td/th tag.
+    */
+   private boolean isInsideTableCell(String html, int position) {
+      // Search backwards for the nearest opening tag that indicates context
+      int searchStart = Math.max(0, position - 200); // limit backward scan
+      String preceding = html.substring(searchStart, position).toLowerCase();
+
+      // Find the last opening <td or <th before this position
+      int lastTd = preceding.lastIndexOf("<td");
+      int lastTh = preceding.lastIndexOf("<th");
+      int lastTableCellOpen = Math.max(lastTd, lastTh);
+
+      if (lastTableCellOpen < 0) {
+         return false;
+      }
+
+      // Make sure there's no </td> or </th> between the opening tag and our position
+      int lastTdClose = preceding.lastIndexOf("</td");
+      int lastThClose = preceding.lastIndexOf("</th");
+      int lastTableCellClose = Math.max(lastTdClose, lastThClose);
+
+      return lastTableCellOpen > lastTableCellClose;
    }
 
    /**
