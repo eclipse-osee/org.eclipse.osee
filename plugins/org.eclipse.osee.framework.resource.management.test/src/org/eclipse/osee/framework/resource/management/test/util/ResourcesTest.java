@@ -57,15 +57,11 @@ public class ResourcesTest {
       Assert.assertEquals(isCompressed, resource.isCompressed());
       Assert.assertEquals(path, resource.getLocation().toASCIIString());
       Assert.assertEquals(name, resource.getName());
-      InputStream inputStream = null;
-      try {
-         inputStream = resource.getContent();
+      try (InputStream inputStream = resource.getContent()) {
          byte[] actuals = Lib.inputStreamToBytes(inputStream);
          Assert.assertArrayEquals(data, actuals);
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
-      } finally {
-         Lib.close(inputStream);
       }
    }
 }

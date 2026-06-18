@@ -137,14 +137,8 @@ public class AttributeProviderTest {
       IResource remoteResource = provider.acquire(savedLocator, options);
 
       byte[] resourceBytes = null;
-      InputStream inputStream = null;
-      try {
-         if (remoteResource != null) {
-            inputStream = remoteResource.getContent();
-         }
+      try (InputStream inputStream = remoteResource != null ? remoteResource.getContent() : null) {
          resourceBytes = Lib.inputStreamToBytes(inputStream);
-      } finally {
-         Lib.close(inputStream);
       }
 
       Assert.assertTrue(Arrays.equals(zippedData, resourceBytes));
