@@ -118,21 +118,17 @@ public class AttributeProvider implements IResourceProvider {
    public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) {
       IResourceLocator toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, resource, options);
-      OutputStream outputStream = null;
-      InputStream inputStream = null;
       try {
          File storageFile = optionsProcessor.getStorageFile();
          IResource resourceToStore = optionsProcessor.getResourceToStore();
 
-         outputStream = new FileOutputStream(storageFile);
-         inputStream = resourceToStore.getContent();
-         Lib.inputStreamToOutputStream(inputStream, outputStream);
+         try (OutputStream outputStream = new FileOutputStream(storageFile);
+            InputStream inputStream = resourceToStore.getContent()) {
+            Lib.inputStreamToOutputStream(inputStream, outputStream);
+         }
          toReturn = optionsProcessor.getActualResouceLocator();
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
-      } finally {
-         Lib.close(outputStream);
-         Lib.close(inputStream);
       }
       if (toReturn == null) {
          throw new OseeStateException("We failed to save resource %s.", locator.getLocation());

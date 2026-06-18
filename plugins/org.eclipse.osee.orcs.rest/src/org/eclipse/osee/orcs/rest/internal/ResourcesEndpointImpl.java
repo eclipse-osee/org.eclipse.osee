@@ -112,11 +112,8 @@ public class ResourcesEndpointImpl implements ResourcesEndpoint {
 
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
-               InputStream inputStream = resource.getContent();
-               try {
+               try (InputStream inputStream = resource.getContent()) {
                   Lib.inputStreamToOutputStream(inputStream, output);
-               } finally {
-                  Lib.close(inputStream);
                }
             }
          });

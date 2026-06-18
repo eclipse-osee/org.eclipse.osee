@@ -53,8 +53,8 @@ public class ImportTmoReader {
       new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH); // Thu Aug 31 22:43:54 MST 2023
 
    public ScriptDefToken getScriptDefinition(File file, ArtifactId ciSet) {
-      try {
-         return this.getScriptDefinition(new FileInputStream(file), ciSet);
+      try (FileInputStream fis = new FileInputStream(file)) {
+         return this.getScriptDefinition(fis, ciSet);
       } catch (IOException ex) {
          System.out.println(ex);
       }

@@ -38,7 +38,6 @@ import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Angel Avila
@@ -95,11 +94,8 @@ public class DispoSourceFileResource {
 
          @Override
          public void write(OutputStream outputStream) throws WebApplicationException {
-            FileInputStream inputStream = null;
-            Writer writer = null;
-            try {
-               inputStream = new FileInputStream(result);
-               writer = new OutputStreamWriter(outputStream, "UTF-8");
+            try (FileInputStream inputStream = new FileInputStream(result);
+               Writer writer = new OutputStreamWriter(outputStream, "UTF-8")) {
                int c;
                while ((c = inputStream.read()) != -1) {
                   writer.write(c);
@@ -107,9 +103,6 @@ public class DispoSourceFileResource {
                outputStream.flush();
             } catch (IOException ex) {
                throw new OseeCoreException(ex);
-            } finally {
-               Lib.close(inputStream);
-               Lib.close(writer);
             }
 
          }

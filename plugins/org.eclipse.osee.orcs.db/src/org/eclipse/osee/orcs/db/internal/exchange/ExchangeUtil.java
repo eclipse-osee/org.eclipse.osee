@@ -67,8 +67,8 @@ public class ExchangeUtil {
          wasZipExtractionRequired = true;
          importSource = ExchangeUtil.createTempFolder(exchangePath);
          logger.info("Extracting Exchange File: [%s] to [%s]", source.getName(), importSource);
-         try {
-            Zip.decompressStream(new FileInputStream(source), importSource);
+         try (FileInputStream fis = new FileInputStream(source)) {
+            Zip.decompressStream(fis, importSource);
          } catch (Exception ex) {
             OseeCoreException.wrapAndThrow(ex);
          }

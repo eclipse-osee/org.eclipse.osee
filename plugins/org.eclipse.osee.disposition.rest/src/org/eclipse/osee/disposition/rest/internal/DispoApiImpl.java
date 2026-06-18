@@ -947,10 +947,11 @@ public class DispoApiImpl implements DispoApi {
 
             connection.disconnect();
 
-            ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
             File unzipLocation = new File(downloadLocation);
 
-            Zip.decompressStream(zis, buffer, unzipLocation);
+            try (ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip))) {
+               Zip.decompressStream(zis, buffer, unzipLocation);
+            }
          }
       } catch (Exception ex) {
          throw new OseeCoreException("Artifactory Operation Failed", ex);

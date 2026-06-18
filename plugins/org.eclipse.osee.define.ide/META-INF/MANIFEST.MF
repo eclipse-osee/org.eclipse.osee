@@ -10,7 +10,6 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.define.ide.artifact,
  org.eclipse.osee.define.ide.blam.operation,
  org.eclipse.osee.define.ide.errorhandler,
- org.eclipse.osee.define.ide.relation,
  org.eclipse.osee.define.ide.traceability,
  org.eclipse.osee.define.ide.traceability.action,
  org.eclipse.osee.define.ide.traceability.blam,
