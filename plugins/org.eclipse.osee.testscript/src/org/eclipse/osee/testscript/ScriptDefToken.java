@@ -121,7 +121,7 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
          this.setLatestProcessorId(resultToken.getProcessorId());
          this.setLatestExecutionDate(resultToken.getExecutionDate());
          this.setLatestExecutionEnvironment(resultToken.getExecutionEnvironment());
-         this.setMachineName(resultToken.getMachineName());
+         this.setLatestMachineName(resultToken.getMachineName());
          this.setLatestPassedCount(resultToken.getPassedCount());
          this.setLatestFailedCount(resultToken.getFailedCount());
          this.setLatestInteractiveCount(resultToken.getInteractiveCount());
@@ -167,7 +167,7 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
       this.setLatestProcessorId("");
       this.setLatestExecutionDate(new Date());
       this.setLatestExecutionEnvironment("");
-      this.setMachineName("");
+      this.setLatestMachineName("");
       this.setLatestPassedCount(0);
       this.setLatestFailedCount(0);
       this.setLatestInteractiveCount(0);

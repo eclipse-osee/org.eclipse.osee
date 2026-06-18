@@ -15,7 +15,9 @@ package org.eclipse.osee.testscript;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -56,6 +58,21 @@ public interface ScriptDefEndpoint {
    int getCount(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
+
+   @POST
+   @Path("set/{setId}/artifact-multifilter")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<ScriptDefToken> getScriptDefArtifactMultiFilter(@PathParam("setId") ArtifactId scriptSetId,
+      @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      ColumnFilterRequest query);
+
+   @POST
+   @Path("set/{setId}/artifact-multifilter/count")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   int getScriptDefArtifactMultiFilterCount(@PathParam("setId") ArtifactId scriptSetId,
+      @QueryParam("viewId") ArtifactId viewId, ColumnFilterRequest query);
 
    @GET()
    @Path("{id}")

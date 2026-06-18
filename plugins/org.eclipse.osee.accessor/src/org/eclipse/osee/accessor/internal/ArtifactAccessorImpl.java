@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.accessor.types.ArtifactMatch;
+import org.eclipse.osee.accessor.types.ArtifactQueryElement;
+import org.eclipse.osee.accessor.types.ArtifactQueryRequest;
 import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.accessor.types.AttributeQueryElement;
 import org.eclipse.osee.accessor.types.RelatedArtifact;
@@ -167,6 +169,42 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
          sb.append(Character.isLetterOrDigit(c) ? c : ' ');
       }
       return sb.toString().contains(filterLower);
+   }
+
+   private QueryBuilder applyArtifactQueryRequestFilters(QueryBuilder executeQuery, BranchId branch,
+      ArtifactQueryRequest query) {
+
+      if (query == null || query.getQueries() == null) {
+         return executeQuery;
+      }
+
+      List<ArtifactQueryElement> validQueries =
+         query.getQueries().stream().filter(q -> q != null && q.getAttributeQuery() != null).filter(q -> {
+            AttributeQueryElement attributeQuery = q.getAttributeQuery();
+            return attributeQuery.getAttributeId() != null && attributeQuery.getAttributeId().isValid() && Strings.isValid(
+               attributeQuery.getValue());
+         }).collect(Collectors.toList());
+
+      for (ArtifactQueryElement queryElement : validQueries) {
+         AttributeQueryElement filterCriteria = queryElement.getAttributeQuery();
+
+         if (queryElement.isDirectAttributeQuery()) {
+            QueryOption[] queryOptions = orcsApi.tokenService().getAttributeType(
+               filterCriteria.getAttributeId()).isBoolean() ? QueryOption.EXACT_MATCH_OPTIONS : QueryOption.CONTAINS_MATCH_OPTIONS;
+            executeQuery = executeQuery.and(orcsApi.tokenService().getAttributeType(filterCriteria.getAttributeId()),
+               filterCriteria.getValue(), queryOptions);
+            continue;
+         } else {
+            LinkedList<RelationTypeSide> relationPath = queryElement.getRelationPath();
+            if (relationPath == null || relationPath.isEmpty()) {
+               continue;
+            }
+
+            RelationTypeSide relation = relationPath.getFirst();
+            executeQuery = executeQuery.andRelatedTo(relation, ArtifactId.valueOf(filterCriteria.getValue()));
+         }
+      }
+      return executeQuery;
    }
 
    @Override
@@ -729,49 +767,55 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    }
 
    @Override
-   public Collection<T> getAllByRelationThroughPartialFilter(BranchId branch, LinkedList<RelationTypeSide> relations,
-      ArtifactId relatedId, String filter, Collection<AttributeTypeId> attributes,
-      Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
-      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
+   public Collection<T> getAllByRelationThroughArtifactQuery(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, ArtifactQueryRequest query, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
+
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
-      QueryBuilder query =
+      QueryBuilder executeQuery =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
             artifactType).andRelatedToThroughRels(relations, relatedId);
-      final boolean doPrefixFilter = isPrefixFilterEnabled(filter);
-      if (doPrefixFilter && followAttributes.size() > 0) {
-         query = query.followSearch(
-            followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
-            filter);
+
+      executeQuery = applyArtifactQueryRequestFilters(executeQuery, branch, query);
+      if (executeQuery == null) {
+         return Collections.emptyList();
       }
+
       if (orderByAttribute != null && orderByAttribute.isValid()) {
-         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
+         executeQuery = executeQuery.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
       }
-      if (!doPrefixFilter && pageCount != 0L && pageSize != 0L) {
-         query = query.isOnPage(pageCount, pageSize);
-      }
-      for (FollowRelation rel : followRelations) {
-         query = buildFollowRelationQuery(query, rel);
-      }
-      Collection<T> results = fetchCollection(query, branch);
-      if (!doPrefixFilter) {
-         return results;
-      }
-      final String filterLower = filter.toLowerCase().trim();
-      List<T> filtered = results.stream().filter(a -> nameMatchesFilter(a, filterLower)).collect(Collectors.toList());
       if (pageCount != 0L && pageSize != 0L) {
-         long startPageLong = Math.multiplyExact(pageCount - 1L, pageSize);
-         if (startPageLong >= filtered.size()) {
-            return Collections.emptyList();
-         }
-         int start = Math.toIntExact(startPageLong);
-         long endPageLong = Math.addExact(startPageLong, pageSize);
-         long endPageLongInRange = Math.min(endPageLong, filtered.size());
-         int end = Math.toIntExact(endPageLongInRange);
-         return filtered.subList(start, end);
+         executeQuery = executeQuery.isOnPage(pageCount, pageSize);
       }
-      return filtered;
+
+      for (FollowRelation rel : followRelations) {
+         executeQuery = buildFollowRelationQuery(executeQuery, rel);
+      }
+
+      return fetchCollection(executeQuery, branch);
+   }
+
+   @Override
+   public int getAllByRelationThroughArtifactQueryAndCount(BranchId branch, LinkedList<RelationTypeSide> relations,
+      ArtifactId relatedId, ArtifactQueryRequest query, Collection<FollowRelation> followRelations, ArtifactId viewId) {
+
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder executeQuery =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
+            artifactType).andRelatedToThroughRels(relations, relatedId);
+
+      for (FollowRelation rel : followRelations) {
+         executeQuery = buildFollowRelationQuery(executeQuery, rel);
+      }
+
+      executeQuery = applyArtifactQueryRequestFilters(executeQuery, branch, query);
+      if (executeQuery == null) {
+         return 0;
+      }
+
+      return executeQuery.getCount();
    }
 
    @Override
