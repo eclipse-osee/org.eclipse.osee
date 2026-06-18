@@ -118,6 +118,7 @@ public class EventListenerRegistry {
    private final static class EventListeners {
       private final Map<Class<? extends FrameworkEvent>, Set<IEventListener>> eventClassToListeners =
          new ConcurrentHashMap<>();
+      private final Object lock = new Object();
       private int size = 0;
 
       public void addListener(IEventListener listener) {
@@ -130,12 +131,8 @@ public class EventListenerRegistry {
       }
 
       private void add(Class<? extends FrameworkEvent> clazz, IEventListener listener) {
-         Set<IEventListener> items = eventClassToListeners.get(clazz);
-         if (items == null) {
-            items = new HashSet<>();
-            eventClassToListeners.put(clazz, items);
-         }
-         synchronized (items) {
+         synchronized (lock) {
+            Set<IEventListener> items = eventClassToListeners.computeIfAbsent(clazz, k -> new HashSet<>());
             if (items.add(listener)) {
                size++;
             }
@@ -164,15 +161,15 @@ public class EventListenerRegistry {
       }
 
       private void remove(Class<? extends FrameworkEvent> clazz, IEventListener listener) {
-         Set<IEventListener> items = eventClassToListeners.get(clazz);
-         if (items != null) {
-            synchronized (items) {
+         synchronized (lock) {
+            Set<IEventListener> items = eventClassToListeners.get(clazz);
+            if (items != null) {
                if (items.remove(listener)) {
                   size--;
                }
-            }
-            if (items.isEmpty()) {
-               eventClassToListeners.remove(clazz);
+               if (items.isEmpty()) {
+                  eventClassToListeners.remove(clazz);
+               }
             }
          }
       }
