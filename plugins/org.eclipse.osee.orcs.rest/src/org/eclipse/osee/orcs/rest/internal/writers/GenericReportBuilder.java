@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.rest.internal.writers;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.GenericReport;
@@ -36,11 +38,15 @@ import org.eclipse.osee.orcs.search.ReportLevel;
 public class GenericReportBuilder implements GenericReport {
    private final List<ReportLevel> reportLevels = new LinkedList<>();
    private final OrcsApi orcsApi;
+   private final BranchId branch;
+   private final ArtifactId view;
    private QueryBuilder query;
    private ReportLevel currentLevel = null;
 
    public GenericReportBuilder(BranchId branch, ArtifactId view, OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+      this.branch = branch;
+      this.view = view;
       query = orcsApi.getQueryFactory().fromBranch(branch, view);
    }
 
@@ -80,7 +86,30 @@ public class GenericReportBuilder implements GenericReport {
       reportLevels.add(currentLevel);
       RelationTypeSide relation =
          new RelationTypeSide(orcsApi.tokenService().getRelationType(relationName), RelationSide.valueOf(relationSide));
+      currentLevel.setRelation(relation);
       query = query.follow(relation);
+      return this;
+   }
+
+   @Override
+   public GenericReport followFork(String relationName, String relationSide) {
+      if (!currentLevel.isRelationLevel()) {
+         throw new OseeArgumentException(
+            "followFork can only be used on a level created by relationLevel, not a query-based level");
+      }
+      if (!currentLevel.getColumns().isEmpty()) {
+         throw new OseeArgumentException(
+            "followFork must be called before adding columns. Add all followFork calls immediately after relationLevel.");
+      }
+      if (currentLevel.hasForkRelationName(relationName)) {
+         throw new OseeArgumentException(
+            "followFork relation '%s' is already used in this level. Each followFork must specify a different relation.",
+            relationName);
+      }
+      RelationTypeSide relation =
+         new RelationTypeSide(orcsApi.tokenService().getRelationType(relationName), RelationSide.valueOf(relationSide));
+      currentLevel.addForkRelation(relation, relationName);
+      query = query.followFork(relation);
       return this;
    }
 
@@ -226,8 +255,11 @@ public class GenericReportBuilder implements GenericReport {
       }
    }
 
+   /**
+    * Copies filled columns into a new row array and appends it to the result set. Columns beyond {@code pos} remain
+    * null, representing empty cells for deeper levels that had no related artifacts.
+    */
    private void finishRow(List<Object[]> rows, String row[], int pos) {
-      //copy the row and add it into the row data
       String[] setrow = new String[getColumnCount()];
       for (int i = 0; i < pos; ++i) {
          setrow[i] = row[i];
@@ -239,24 +271,33 @@ public class GenericReportBuilder implements GenericReport {
       List<ArtifactReadable> arts = new LinkedList<>();
       int depth = level.getDepth();
       if (depth == 0) {
-         arts.addAll(query.asArtifacts());
+         throw new OseeCoreException("This a level guard exception, this method should not be called for level 0",
+            depth);
       } else {
-         if (level.getRelation() == null) {
-            List<RelationTypeSide> relations = query.getRelationTypesForLevel(depth); // query depth doesn't count the artifact query level
-            if (relations.isEmpty()) {
-               throw new OseeCoreException("Relation not found for level %d", depth);
-            }
-            if (relations.size() > 1) {
-               throw new OseeCoreException("Multiple relations in one level not implemented for Generic Report");
-            }
-            RelationTypeSide relation = relations.get(0);
-            if (relation.isValid()) {
-               level.setRelation(relation);
-            } else {
-               throw new OseeCoreException("Invalid relation found for level %d", depth);
+         if (level.isRelationLevel() && level.getRelation() == null) {
+            throw new OseeCoreException("Relation not found for level %d - unexpected behavior, check parsed code.",
+               depth);
+         }
+         for (RelationTypeSide relation : level.getAllRelations()) {
+            arts.addAll(art.getRelated(relation, DeletionFlag.EXCLUDE_DELETED));
+         }
+         // This method is cheating a little bit. Instead of using the query to get the artifacts from a relation,
+         // it uses the ArtifactReadable loading of related artifacts instead. However, not all relations are loaded.
+         // The following fixes that, and loads all of the artifacts in the list of related artifacts, replacing them
+         // with the loaded version.
+         ListIterator<ArtifactReadable> iter = arts.listIterator();
+         while (iter.hasNext()) {
+            ArtifactReadable check = iter.next();
+            if (check.isNotLoaded()) {
+               ArtifactReadable loaded =
+                  orcsApi.getQueryFactory().fromBranch(branch, view).andId(check).asArtifactOrSentinel();
+               if (loaded.isValid()) {
+                  iter.set(loaded);
+               } else {
+                  iter.remove();
+               }
             }
          }
-         arts.addAll(art.getRelated(level.getRelation(), DeletionFlag.EXCLUDE_DELETED));
       }
       return arts;
    }

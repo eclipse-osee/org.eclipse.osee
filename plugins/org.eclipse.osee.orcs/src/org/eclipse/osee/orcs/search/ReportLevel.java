@@ -13,8 +13,11 @@
 
 package org.eclipse.osee.orcs.search;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
@@ -25,9 +28,11 @@ public class ReportLevel {
    private final String levelName;
    private int depth = 0;
    private final List<ReportColumn> columns = new LinkedList<ReportColumn>();
-   private Boolean filtered = false;
 
-   private RelationTypeSide relation = null;
+   private boolean isRelationLevel = false;
+   private RelationTypeSide mainRelation = null;
+   private final List<RelationTypeSide> forkRelations = new LinkedList<>();
+   private final Set<String> forkRelationNames = new HashSet<>();
 
    public ReportLevel(String levelName) {
       this.levelName = levelName;
@@ -59,14 +64,6 @@ public class ReportLevel {
       }
    }
 
-   public Boolean isFiltered() {
-      return filtered;
-   }
-
-   public void setFiltered() {
-      filtered = true;
-   }
-
    public String getLevelName() {
       return levelName;
    }
@@ -84,11 +81,39 @@ public class ReportLevel {
    }
 
    public RelationTypeSide getRelation() {
-      return relation;
+      return mainRelation;
    }
 
    public void setRelation(RelationTypeSide relation) {
-      this.relation = relation;
+      this.mainRelation = relation;
+      this.isRelationLevel = true;
+      this.forkRelationNames.add(relation.getRelationType().getName());
+   }
+
+   public boolean isRelationLevel() {
+      return isRelationLevel;
+   }
+
+   public void addForkRelation(RelationTypeSide relation, String relationName) {
+      forkRelations.add(relation);
+      forkRelationNames.add(relationName);
+   }
+
+   public boolean hasForkRelationName(String relationName) {
+      return forkRelationNames.contains(relationName);
+   }
+
+   public List<RelationTypeSide> getForkRelations() {
+      return Collections.unmodifiableList(forkRelations);
+   }
+
+   public List<RelationTypeSide> getAllRelations() {
+      List<RelationTypeSide> all = new LinkedList<>();
+      if (mainRelation != null) {
+         all.add(mainRelation);
+      }
+      all.addAll(forkRelations);
+      return all;
    }
 
    private List<ReportColumn> getColumnsOfType(AttributeTypeToken type) {
