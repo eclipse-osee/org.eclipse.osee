@@ -76,6 +76,24 @@ Defines a level that traverses a named relation from the previous level's artifa
 report.relationLevel("Related Code Units", "Code-Requirement", "SIDE_A")
 ```
 
+### `followFork(String relationName, String relationSide)`
+
+Adds a fork to the query at the current relation level, eagerly loading artifacts from an additional relation type. This is useful when you need the query to also traverse a second (or third) relation from the same starting point as the `relationLevel`.
+
+**Constraints:**
+
+- Can only be used on a level that was created by `relationLevel`. Calling it on a query-based `level` throws an error.
+- Must be called before any columns are added to the level. Place all `followFork` calls immediately after `relationLevel`, before `column`, `type`, or `filter`.
+- Each `followFork` in a level must specify a different relation than the `relationLevel` and any previous `followFork` calls. Duplicate relations are rejected.
+
+```java
+report.relationLevel("Elements", "Code-Requirement", "SIDE_A")
+   .followFork("Supporting Info", "SIDE_B")
+   .followFork("Requirement Trace", "SIDE_B")
+   .column("Artifact Id")
+   .column("Name", CoreAttributeTypes.Name);
+```
+
 ### Level Depth
 
 Levels are automatically assigned increasing depth values. The first level is depth 0, the second is depth 1, and so on. During report generation, the system recursively traverses from parent levels to child levels using the configured relations or query follow operations.

@@ -27,7 +27,9 @@ public interface GenericReport {
 
    public GenericReport relationLevel(String levelName, String relationName, String relationSide);
 
-   public GenericReport column(String columName);
+   public GenericReport followFork(String relationName, String relationSide);
+
+   public GenericReport column(String columnName);
 
    public GenericReport column(String columnName, String typeName);
 
