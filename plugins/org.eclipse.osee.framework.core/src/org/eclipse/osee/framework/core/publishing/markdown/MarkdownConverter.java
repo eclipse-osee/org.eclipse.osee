@@ -26,7 +26,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -224,10 +223,18 @@ public class MarkdownConverter {
     * percentage-based CSS sizing for images inside table cells.
     */
    public String embedImages(String html, HashMap<String, String> imageContentMap) {
-      for (Map.Entry<String, String> entry : imageContentMap.entrySet()) {
-         String imageName = entry.getKey();
-         String base64 = entry.getValue();
+      org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(html);
+      doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
+      doc.outputSettings().escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml);
 
+      for (org.jsoup.nodes.Element img : doc.select("img[src]")) {
+         String src = img.attr("src");
+         String base64 = imageContentMap.get(src);
+         if (base64 == null) {
+            continue;
+         }
+
+         // Build data URI
          String dataUri;
          byte[] imageBytes;
          if (base64.startsWith("data:")) {
@@ -235,74 +242,26 @@ public class MarkdownConverter {
             int commaIdx = base64.indexOf(',');
             imageBytes = (commaIdx >= 0) ? Base64.getDecoder().decode(base64.substring(commaIdx + 1)) : new byte[0];
          } else {
-            String mediaType = guessMediaType(imageName);
+            String mediaType = guessMediaType(src);
             dataUri = "data:" + mediaType + ";base64," + base64;
             imageBytes = Base64.getDecoder().decode(base64);
          }
 
+         img.attr("src", dataUri);
+
+         // Set explicit dimensions scaled to context
          int[] dimensions = getImageDimensions(imageBytes);
-
          if (dimensions != null && dimensions[0] > 0 && dimensions[1] > 0) {
-            // Determine which occurrences are inside table cells vs standalone
-            String srcToken = "src=\"" + imageName + "\"";
-            StringBuilder sb = new StringBuilder();
-            int pos = 0;
-
-            while (pos < html.length()) {
-               int srcIdx = html.indexOf(srcToken, pos);
-               if (srcIdx < 0) {
-                  sb.append(html, pos, html.length());
-                  break;
-               }
-
-               // Append everything before this match
-               sb.append(html, pos, srcIdx);
-
-               // Look backwards from srcIdx to determine if we're inside a <td> or <th>
-               boolean insideTableCell = isInsideTableCell(html, srcIdx);
-
-               int maxWidth = insideTableCell ? MAX_IMAGE_WIDTH_IN_TABLE : MAX_IMAGE_WIDTH_STANDALONE;
-               int renderWidth = Math.min(dimensions[0], maxWidth);
-               int renderHeight = (int) Math.round((double) dimensions[1] * renderWidth / dimensions[0]);
-
-               sb.append("src=\"").append(dataUri).append("\" width=\"").append(renderWidth).append("\" height=\"").append(renderHeight).append("\"");
-
-               pos = srcIdx + srcToken.length();
-            }
-
-            html = sb.toString();
-         } else {
-            html = html.replace("src=\"" + imageName + "\"", "src=\"" + dataUri + "\"");
+            boolean insideTableCell = img.closest("td") != null || img.closest("th") != null;
+            int maxWidth = insideTableCell ? MAX_IMAGE_WIDTH_IN_TABLE : MAX_IMAGE_WIDTH_STANDALONE;
+            int renderWidth = Math.min(dimensions[0], maxWidth);
+            int renderHeight = (int) Math.round((double) dimensions[1] * renderWidth / dimensions[0]);
+            img.attr("width", String.valueOf(renderWidth));
+            img.attr("height", String.valueOf(renderHeight));
          }
       }
 
-      return html;
-   }
-
-   /**
-    * Checks if the given position in the HTML is inside a table cell (&lt;td&gt; or &lt;th&gt;)
-    * by scanning backwards for the nearest unclosed td/th tag.
-    */
-   private boolean isInsideTableCell(String html, int position) {
-      // Search backwards for the nearest opening tag that indicates context
-      int searchStart = Math.max(0, position - 200); // limit backward scan
-      String preceding = html.substring(searchStart, position).toLowerCase();
-
-      // Find the last opening <td or <th before this position
-      int lastTd = preceding.lastIndexOf("<td");
-      int lastTh = preceding.lastIndexOf("<th");
-      int lastTableCellOpen = Math.max(lastTd, lastTh);
-
-      if (lastTableCellOpen < 0) {
-         return false;
-      }
-
-      // Make sure there's no </td> or </th> between the opening tag and our position
-      int lastTdClose = preceding.lastIndexOf("</td");
-      int lastThClose = preceding.lastIndexOf("</th");
-      int lastTableCellClose = Math.max(lastTdClose, lastThClose);
-
-      return lastTableCellOpen > lastTableCellClose;
+      return doc.html();
    }
 
    /**
