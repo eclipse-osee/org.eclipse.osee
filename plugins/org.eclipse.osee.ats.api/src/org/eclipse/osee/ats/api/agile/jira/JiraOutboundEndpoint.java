@@ -23,10 +23,11 @@ import javax.ws.rs.core.MediaType;
 
 /**
  * @author Stephen J. Molaro
+ * @author Jaden W. Puckett
  */
 
-@Path("jira")
-public interface JiraEndpoint {
+@Path("jira/outbound")
+public interface JiraOutboundEndpoint {
 
    /**
     * Takes a Json query and uses it to query Jira for all results.
@@ -87,7 +88,7 @@ public interface JiraEndpoint {
    @Path("issueLink")
    @Consumes(MediaType.APPLICATION_JSON)
    public String createJiraIssueLink(@Encoded String jsonPayload);
-   
+
    /**
     * Adds a comment to an issue in Jira.
     */
@@ -95,7 +96,7 @@ public interface JiraEndpoint {
    @Path("issue/{issueId}/comment")
    @Consumes(MediaType.APPLICATION_JSON)
    public String addJiraComment(@Encoded String jsonPayload, @PathParam("issueId") String issueId);
-   
+
    /**
     * Deletes a comment from an issue in Jira.
     */

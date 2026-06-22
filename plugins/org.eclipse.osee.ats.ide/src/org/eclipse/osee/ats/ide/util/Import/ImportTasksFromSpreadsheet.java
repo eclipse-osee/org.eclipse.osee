@@ -14,9 +14,11 @@
 package org.eclipse.osee.ats.ide.util.Import;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -62,7 +64,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public final static String TASK_IMPORT_SPREADSHEET = "Task Import Spreadsheet";
    public final static String TEAM_WORKFLOW = "Taskable Workflow (drop here)";
    public final static String EMAIL_POCS = "Email POCs";
-   public final static String FIX_TITLES = "Fix Titles (remove non-printable chars and truncate)";
+   public final static String FIX_TITLES = "Fix Titles (Removes Non-Printable Chars and Truncate)";
    private TeamWorkFlowArtifact taskableStateMachineArtifact;
    public final static String INVALID_BLAM_CAUSE = "Invalid BLAM Spreadsheet";
    private NewTaskSet newTaskSet;
@@ -77,8 +79,8 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && taskableStateMachineArtifact != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;
@@ -207,16 +209,36 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
          if (newTaskSet == null) {
             newTaskSet = NewTaskSet.create(getName(), AtsApiService.get().getUserService().getCurrentUserId());
          }
-         newTaskSet.getResults().log(getName());
          newTaskSet.setTaskDatas(newTaskDatas);
          newTaskSet.getTaskData().setTeamWfId(teamWf.getId());
          newTaskSet.getTaskData().setFixTitles(fixTitles);
 
          XResultData rd = newTaskSet.getResults();
+         rd.log("========================================");
+         rd.log("Import Tasks From Spreadsheet");
+         rd.log("========================================");
+         rd.logf("File: %s\n", file.getName());
+         rd.logf("Date: %s\n", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+         rd.logf("Workflow: [%s] - %s\n", teamWf.getAtsId(), teamWf.getName());
+         rd.log("----------------------------------------");
+         rd.log("");
+
          Job job = Jobs.startJob(new TaskImportJob(file,
             new ExcelAtsTaskArtifactExtractor((TeamWorkFlowArtifact) teamWf.getStoreObject(), newTaskSet.getTaskData()),
             rd));
          job.join();
+
+         if (rd.isErrors()) {
+            rd.log("");
+            rd.log("========================================");
+            rd.logf("Import aborted with %d error(s)\n", rd.getNumErrors());
+            rd.log("========================================");
+         } else {
+            rd.log("");
+            rd.log("========================================");
+            rd.logf("Import completed successfully - %d task(s) created\n", newTaskData.getTasks().size());
+            rd.log("========================================");
+         }
 
          if (rd.isSuccess()) {
             return AtsApiService.get().getTaskService().createTasks(newTaskSet);
