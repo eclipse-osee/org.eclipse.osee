@@ -46,16 +46,22 @@ export class TimelineChartComponent {
 	testPointsMode = input<boolean>(false);
 
 	maxVisiblePoints = input<number>(15);
-	aggregateDataDays = input<number>(4);
+	aggregateDataDays = input<number>(3);
 
 	stateLabels = ['Pass', 'Fail', 'Abort', "Dispo'd"];
 	title = computed(() => this.timeline().team);
 
 	limitedDays = computed(() => {
-		const days = this.timeline().days ?? [];
-		if (!days.length) return days;
+		const rawDays = this.timeline().days ?? [];
+		if (rawDays.length < 1) return rawDays;
 
-		// If data uploaded within 4 days, use latest
+		// Filter out days with invalid or out-of-range execution dates
+		const days = rawDays.filter((day) =>
+			this.isValidExecutionDate(day.executionDate)
+		);
+		if (days.length < 1) return days;
+
+		// If data uploaded within aggregateDataDays, use latest
 		const consolidated: typeof days = [];
 		for (const d of days) {
 			const dMs = this.toMs(d.executionDate);
@@ -82,9 +88,11 @@ export class TimelineChartComponent {
 
 	labels = computed(() => {
 		const days = this.limitedDays();
-		return days.map((day) =>
-			format(new Date(day.executionDate), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
-		);
+		return days.map((day) => {
+			const time = this.toMs(day.executionDate);
+			const date = new Date(time);
+			return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+		});
 	});
 
 	lineChartOptions = signal<ChartConfiguration['options']>({
@@ -206,6 +214,20 @@ export class TimelineChartComponent {
 			return v;
 		}
 		return new Date(v).getTime();
+	}
+
+	private isValidExecutionDate(value: Date | number | string): boolean {
+		const time = this.toMs(value);
+		if (!Number.isFinite(time) || time <= 0) {
+			return false;
+		}
+		const date = new Date(time);
+		if (Number.isNaN(date.getTime())) {
+			return false;
+		}
+		// Execution date must not be after the timeline was last updated
+		const uploadedAt = new Date(this.timeline().updatedAt).getTime();
+		return time <= uploadedAt;
 	}
 
 	private daysToMs(days: number): number {
