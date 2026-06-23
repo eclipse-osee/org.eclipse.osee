@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItemToken;
@@ -52,13 +53,17 @@ public class ActionableItemResource extends AbstractConfigResource {
    @Path("all")
    @Produces({MediaType.APPLICATION_JSON})
    public List<ActionableItemToken> get(@QueryParam("workType") String workType,
-      @QueryParam("orderByName") boolean orderByName) {
+      @QueryParam("orderByName") String orderByName) {
+      if (Strings.isValid(orderByName) && !orderByName.equalsIgnoreCase("true") && !orderByName.equalsIgnoreCase("false")) {
+         throw new BadRequestException("Invalid orderByName value");
+      }
+      boolean orderByNameFlag = Boolean.parseBoolean(orderByName);
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(AtsArtifactTypes.ActionableItem);
       if (Strings.isValid(workType)) {
          query = query.andAttributeIs(AtsAttributeTypes.WorkType, workType);
       }
-      if (orderByName) {
+      if (orderByNameFlag) {
          query = query.setOrderByAttribute(CoreAttributeTypes.Name);
       }
       return query.asArtifacts().stream().map(a -> new ActionableItemToken(a)).collect(Collectors.toList());
