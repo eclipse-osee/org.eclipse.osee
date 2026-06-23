@@ -28,7 +28,8 @@ import org.junit.runners.Suite.SuiteClasses;
    PublishingMarkdownAsHtmlTest.class,
    PublishingMarkdownAsPdfTest.class,
    MarkdownSanitizerTest.class,
-   WordTemplateContentToMarkdownContentConversionTest.class})
+   WordTemplateContentToMarkdownContentConversionTest.class,
+   EmbedImagesTest.class})
 public class PublishingMarkdownTestSuite {
    @BeforeClass
    public static void setUp() throws Exception {
