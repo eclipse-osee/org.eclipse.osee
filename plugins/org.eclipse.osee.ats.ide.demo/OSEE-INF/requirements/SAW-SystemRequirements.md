@@ -75,6 +75,13 @@ This corresponds to a working “skeleton” application, which the researcher c
 This is an application-level “widget” that allows the user to view and manipulate medical images, using the daVinci master manipulators as input devices.
 Figure 2 shows an illustrative data flow diagram, focusing on the robot API and the pipeline for the video processing and visualization. This figure also shows the tool tracking and volume viewer subsystems. Although not specifically shown, calibration and registration functions are required. Note that other data flow configurations are possible, depending on the application requirements.
 
+## 3.9 Subsystem Component Overview
+
+| Component | Architecture Reference | Interface Type |
+| :-- | :-: | --: |
+| Robot API | <image-link>6829343659904028894</image-link> | Read-Write |
+| Video Pipeline | <image-link>8446203177483923452</image-link> | Streaming |
+
 # 4. Performance Requirements
 
 The system shall have at least one periodic loop (“heartbeat”) that interacts with the hardware devices and/or proprietary device interface software. Many of the following performance requirements depend on the frequency of this periodic loop.

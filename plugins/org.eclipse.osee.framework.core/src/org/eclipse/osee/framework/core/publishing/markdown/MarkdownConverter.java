@@ -24,22 +24,39 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Entities;
 
 /**
  * @author Jaden W. Puckett
  */
 
 public class MarkdownConverter {
+
+   /**
+    * Maximum image width (in pixels) when rendered inside a table cell.
+    */
+   private static final int MAX_IMAGE_WIDTH_IN_TABLE = 150;
+
+   /**
+    * Maximum image width (in pixels) when rendered as a standalone image (~6.5in at 72dpi).
+    */
+   private static final int MAX_IMAGE_WIDTH_STANDALONE = 468;
 
    private MutableDataSet options;
 
@@ -71,7 +88,7 @@ public class MarkdownConverter {
          zipOutputStream.closeEntry();
 
          // Add images to the zip
-         HashMap<String, String> imageContentMap = mdZip.getImageContentMap();
+         Map<String, String> imageContentMap = mdZip.getImageContentMap();
          for (String imageName : imageContentMap.keySet()) {
             ZipEntry imageEntry = new ZipEntry(imageName);
             zipOutputStream.putNextEntry(imageEntry);
@@ -149,7 +166,7 @@ public class MarkdownConverter {
       return htmlWithCss.getBytes(StandardCharsets.UTF_8);
    }
 
-   public byte[] convertToPdfBytes(Node markdownDocument, HashMap<String, String> imageContentMap, String collectedCss)
+   public byte[] convertToPdfBytes(Node markdownDocument, Map<String, String> imageContentMap, String collectedCss)
       throws IOException {
       HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
 
@@ -204,23 +221,94 @@ public class MarkdownConverter {
       }
    }
 
-   public String embedImages(String html, HashMap<String, String> imageContentMap) {
-      for (Map.Entry<String, String> entry : imageContentMap.entrySet()) {
-         String imageName = entry.getKey();
-         String base64 = entry.getValue();
+   /**
+    * Embeds images as base64 data URIs with explicit width/height attributes.
+    * The CSS table-layout:fixed enables images to render in table cells, but without
+    * explicit dimensions they render at full intrinsic size and overflow. This method
+    * caps image dimensions to prevent overflow.
+    */
+   public String embedImages(String html, Map<String, String> imageContentMap) {
+      org.jsoup.nodes.Document doc = Jsoup.parse(html);
+      doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
+      doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
 
-         if (base64.startsWith("data:")) {
-            // Already a full data URI
-            html = html.replace("src=\"" + imageName + "\"", "src=\"" + base64 + "\"");
-         } else {
-            // Guess the media type from the file extension
-            String mediaType = guessMediaType(imageName);
-            String dataUri = "data:" + mediaType + ";base64," + base64;
-            html = html.replace("src=\"" + imageName + "\"", "src=\"" + dataUri + "\"");
+      for (org.jsoup.nodes.Element img : doc.select("img[src]")) {
+         String src = img.attr("src");
+         String base64 = imageContentMap.get(src);
+         if (base64 == null) {
+            continue;
+         }
+
+         // Build data URI
+         String dataUri;
+         byte[] imageBytes;
+         try {
+            if (base64.startsWith("data:")) {
+               dataUri = base64;
+               int commaIdx = base64.indexOf(',');
+               imageBytes = (commaIdx >= 0) ? Base64.getDecoder().decode(base64.substring(commaIdx + 1)) : new byte[0];
+            } else {
+               String mediaType = guessMediaType(src);
+               dataUri = "data:" + mediaType + ";base64," + base64;
+               imageBytes = Base64.getDecoder().decode(base64);
+            }
+         } catch (IllegalArgumentException e) {
+            // Malformed base64 — skip this image
+            OseeLog.log(MarkdownConverter.class, Level.WARNING,
+               "Skipping image with malformed base64 data: " + src, e);
+            continue;
+         }
+
+         img.attr("src", dataUri);
+
+         // Set explicit dimensions scaled to context
+         int[] dimensions = getImageDimensions(imageBytes);
+         if (dimensions != null && dimensions[0] > 0 && dimensions[1] > 0) {
+            boolean insideTableCell = img.closest("td") != null || img.closest("th") != null;
+            int maxWidth = insideTableCell ? MAX_IMAGE_WIDTH_IN_TABLE : MAX_IMAGE_WIDTH_STANDALONE;
+            int renderWidth = Math.min(dimensions[0], maxWidth);
+            int renderHeight = (int) Math.round((double) dimensions[1] * renderWidth / dimensions[0]);
+            img.attr("width", String.valueOf(renderWidth));
+            img.attr("height", String.valueOf(renderHeight));
          }
       }
 
-      return html;
+      return doc.html();
+   }
+
+   /**
+    * Reads image dimensions (width, height) from raw image bytes using javax.imageio.
+    * Only parses file headers — does not fully decode the image into memory.
+    * Returns null if dimensions cannot be determined.
+    */
+   private int[] getImageDimensions(byte[] imageBytes) {
+      if (imageBytes == null || imageBytes.length == 0) {
+         return null;
+      }
+      try (ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes))) {
+         if (iis == null) {
+            OseeLog.log(MarkdownConverter.class, Level.FINE,
+               "ImageIO returned null stream; embedding image without explicit size");
+            return null;
+         }
+         Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+         if (readers.hasNext()) {
+            ImageReader reader = readers.next();
+            try {
+               reader.setInput(iis);
+               int width = reader.getWidth(0);
+               int height = reader.getHeight(0);
+               return new int[]{width, height};
+            } finally {
+               reader.dispose();
+            }
+         }
+      } catch (IOException e) {
+         // If we can't read dimensions, image will be embedded without explicit sizing
+         OseeLog.log(MarkdownConverter.class, Level.FINE,
+            "Unable to read image dimensions, embedding without explicit size", e);
+      }
+      return null;
    }
 
    private String guessMediaType(String filename) {

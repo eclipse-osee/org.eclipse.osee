@@ -17,6 +17,7 @@ body > div {
 
 table {
 	width: 100%;
+	table-layout: fixed;
 }
 
 table, th, td {
@@ -25,6 +26,8 @@ table, th, td {
 	padding: 5px;
 	max-width: 6.5in;
 	page-break-inside: avoid;
+	overflow: hidden;
+	word-wrap: break-word;
 }
 
 img {
