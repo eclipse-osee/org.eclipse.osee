@@ -226,6 +226,6 @@ public class CreateSystemBranches {
       <strong>PROPRIETARY MARKING</strong><br/>\
       Place copyright here.<br/><br/>\
       <em>To edit this banner or disable it, update the Site Banner Content attribute \
-      on the Global Preferences artifact (artifact id 18026) on the Common branch.</em>\
-      """;
+      on the Global Preferences artifact (artifact id %s) on the Common branch.</em>\
+      """.formatted(CoreArtifactTokens.GlobalPreferences.getIdString());
 }

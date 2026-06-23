@@ -183,6 +183,7 @@ public class PublishingMarkdownAsPdfTest {
 
    private static PDDocument pdfDoc;
    private static int numPages;
+   private static Map<String, org.eclipse.osee.framework.core.publishing.PublishingTemplate> templateMap;
 
    @BeforeClass
    public static void testSetup() throws IOException {
@@ -191,7 +192,7 @@ public class PublishingMarkdownAsPdfTest {
        * Setup publishing templates
        */
 
-      Map<String, org.eclipse.osee.framework.core.publishing.PublishingTemplate> templateMap =
+      templateMap =
          new TestPublishingTemplateBuilder(PublishingMarkdownAsPdfTest.class).buildPublishingTemplates(
             PublishingMarkdownAsPdfTest.publishingTemplatesSupplier);
 
@@ -334,9 +335,40 @@ public class PublishingMarkdownAsPdfTest {
    public void testImagesRenderedInPdf() throws IOException {
       // Verify that at least one image XObject is present in the PDF, confirming that
       // image-link references were resolved and rendered by the PDF converter.
+      assertPdfContainsImage(pdfDoc, "PDF should contain at least one rendered image XObject");
+   }
+
+   @Test
+   public void testImageInTableCellRendered() throws IOException {
+      // Publish only the artifact containing a table with <image-link> references in cells.
+      List<Artifact> results = ArtifactQuery.getArtifactListFromTypeAndName(
+         CoreArtifactTypes.HeadingMarkdown, "Subsystem Component Overview",
+         DemoBranches.SAW_PL_Working_Branch_Markdown);
+      org.junit.Assume.assumeTrue("Subsystem Component Overview artifact must exist", !results.isEmpty());
+      Artifact tableArt = results.get(0);
+
+      var template_A = templateMap.get(PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A);
+
+      EnumRendererMap pubRenOpt = new EnumRendererMap(PublishingMarkdownAsPdfTest.rendererOptions);
+      PublishingTemplateRequest pubTemReq =
+         new PublishingTemplateRequest(template_A.getIdentifier().toString(), FormatIndicator.MARKDOWN);
+      PublishingRequestData requestData =
+         new PublishingRequestData(pubTemReq, pubRenOpt, List.of(ArtifactId.valueOf(tableArt.getId())));
+
+      var attachment = publishingEndpoint.publishMarkdownAsPdf(requestData);
+      try (PDDocument singleArtPdf = PDDocument.load(attachment.getDataHandler().getInputStream())) {
+         assertPdfContainsImage(singleArtPdf,
+            "PDF of table-only artifact should contain image XObjects rendered inside table cells");
+      }
+   }
+
+   /**
+    * Asserts that the given PDF document contains at least one image XObject.
+    */
+   private static void assertPdfContainsImage(PDDocument document, String message) throws IOException {
       boolean imageFound = false;
-      for (int i = 0; i < pdfDoc.getNumberOfPages(); i++) {
-         var page = pdfDoc.getPage(i);
+      for (int i = 0; i < document.getNumberOfPages(); i++) {
+         var page = document.getPage(i);
          var resources = page.getResources();
          for (org.apache.pdfbox.cos.COSName name : resources.getXObjectNames()) {
             if (resources.isImageXObject(name)) {
@@ -348,46 +380,6 @@ public class PublishingMarkdownAsPdfTest {
             break;
          }
       }
-      assertTrue("PDF should contain at least one rendered image XObject", imageFound);
-   }
-
-   @Test
-   public void testImageInTableCellRendered() throws IOException {
-      // Publish only the artifact containing a table with <image-link> references in cells.
-      List<Artifact> results = ArtifactQuery.getArtifactListFromTypeAndName(
-         CoreArtifactTypes.HeadingMarkdown, "Subsystem Component Overview",
-         DemoBranches.SAW_PL_Working_Branch_Markdown);
-      org.junit.Assume.assumeFalse("Subsystem Component Overview artifact must exist", results.isEmpty());
-      Artifact tableArt = results.get(0);
-
-      var template_A = new TestPublishingTemplateBuilder(PublishingMarkdownAsPdfTest.class)
-         .buildPublishingTemplates(PublishingMarkdownAsPdfTest.publishingTemplatesSupplier)
-         .get(PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A);
-
-      EnumRendererMap pubRenOpt = new EnumRendererMap(PublishingMarkdownAsPdfTest.rendererOptions);
-      PublishingTemplateRequest pubTemReq =
-         new PublishingTemplateRequest(template_A.getIdentifier().toString(), FormatIndicator.MARKDOWN);
-      PublishingRequestData requestData =
-         new PublishingRequestData(pubTemReq, pubRenOpt, List.of(ArtifactId.valueOf(tableArt.getId())));
-
-      var attachment = publishingEndpoint.publishMarkdownAsPdf(requestData);
-      try (PDDocument singleArtPdf = PDDocument.load(attachment.getDataHandler().getInputStream())) {
-         boolean imageFound = false;
-         for (int i = 0; i < singleArtPdf.getNumberOfPages(); i++) {
-            var page = singleArtPdf.getPage(i);
-            var resources = page.getResources();
-            for (org.apache.pdfbox.cos.COSName name : resources.getXObjectNames()) {
-               if (resources.isImageXObject(name)) {
-                  imageFound = true;
-                  break;
-               }
-            }
-            if (imageFound) {
-               break;
-            }
-         }
-         assertTrue("PDF of table-only artifact should contain image XObjects rendered inside table cells",
-            imageFound);
-      }
+      assertTrue(message, imageFound);
    }
 }

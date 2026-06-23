@@ -15,8 +15,13 @@ package org.eclipse.osee.ats.ide.integration.tests.publishing.markdown;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
+import javax.imageio.ImageIO;
 import org.eclipse.osee.framework.core.publishing.markdown.MarkdownConverter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,7 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests for {@link MarkdownConverter#embedImages(String, HashMap)}.
+ * Tests for {@link MarkdownConverter#embedImages(String, Map)}.
  * Verifies that images are embedded as data URIs with correct width/height attributes,
  * and that images inside table cells are constrained to a smaller max width than standalone images.
  *
@@ -34,32 +39,29 @@ import org.junit.Test;
  */
 public class EmbedImagesTest {
 
-   /** Minimal valid 2x2 white PNG for testing. */
-   private static final byte[] TEST_PNG_2x2 = new byte[] {
-      (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, // PNG signature
-      0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, // IHDR chunk length + type
-      0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x02, // width=2, height=2
-      0x08, 0x02, 0x00, 0x00, 0x00, (byte) 0xFD, (byte) 0xD4, (byte) 0x9A, 0x73, // bit depth, color type, CRC
-      0x00, 0x00, 0x00, 0x12, 0x49, 0x44, 0x41, 0x54, // IDAT chunk
-      0x08, (byte) 0xD7, 0x63, (byte) 0xF8, (byte) 0x0F, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00,
-      0x18, (byte) 0xDD, (byte) 0x8D, (byte) 0xB4, 0x00, 0x00, 0x00, 0x00, // filler
-      0x49, 0x45, 0x4E, 0x44, (byte) 0xAE, 0x42, 0x60, (byte) 0x82 // IEND
-   };
+   /** Minimal valid 2x2 PNG generated at test time. */
+   private static final byte[] TEST_PNG_2x2;
 
-   /** A 400x300 PNG header (only the first 24 bytes matter for dimension parsing). */
+   /** Valid 400x300 PNG generated at test time. */
    private static final byte[] TEST_PNG_400x300;
 
    static {
-      // Build a minimal PNG header with width=400 (0x190), height=300 (0x12C)
-      TEST_PNG_400x300 = new byte[] {
-         (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, // PNG signature
-         0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, // IHDR chunk length + type
-         0x00, 0x00, 0x01, (byte) 0x90,                   // width = 400
-         0x00, 0x00, 0x01, 0x2C,                           // height = 300
-         0x08, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // bit depth, color, etc.
-         0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, // IEND
-         (byte) 0xAE, 0x42, 0x60, (byte) 0x82
-      };
+      try {
+         TEST_PNG_2x2 = createValidPng(2, 2);
+         TEST_PNG_400x300 = createValidPng(400, 300);
+      } catch (IOException e) {
+         throw new ExceptionInInitializerError(e);
+      }
+   }
+
+   /**
+    * Creates a valid PNG byte array with the given dimensions using ImageIO.
+    */
+   private static byte[] createValidPng(int width, int height) throws IOException {
+      BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ImageIO.write(img, "png", baos);
+      return baos.toByteArray();
    }
 
    private static MarkdownConverter converter;
@@ -72,7 +74,7 @@ public class EmbedImagesTest {
    @Test
    public void testStandaloneImageGetsDataUri() {
       String html = "<html><body><p><img src=\"resources/test_1.png\" alt=\"test\" /></p></body></html>";
-      HashMap<String, String> imageMap = new HashMap<>();
+      Map<String, String> imageMap = new HashMap<>();
       imageMap.put("resources/test_1.png", Base64.getEncoder().encodeToString(TEST_PNG_2x2));
 
       String result = converter.embedImages(html, imageMap);
@@ -85,7 +87,7 @@ public class EmbedImagesTest {
    @Test
    public void testStandaloneImageHasWidthHeight() {
       String html = "<html><body><p><img src=\"resources/big_400x300.png\" alt=\"big\" /></p></body></html>";
-      HashMap<String, String> imageMap = new HashMap<>();
+      Map<String, String> imageMap = new HashMap<>();
       imageMap.put("resources/big_400x300.png", Base64.getEncoder().encodeToString(TEST_PNG_400x300));
 
       String result = converter.embedImages(html, imageMap);
@@ -97,8 +99,9 @@ public class EmbedImagesTest {
 
       int width = Integer.parseInt(img.attr("width"));
       int height = Integer.parseInt(img.attr("height"));
-      assertTrue("Standalone image width should be <= 468", width <= 468);
-      assertTrue("Aspect ratio should be preserved", height > 0);
+      // 400x300 is under the 468 standalone max, so dimensions should be unchanged
+      assertEquals("Standalone image width should remain at original 400", 400, width);
+      assertEquals("Standalone image height should remain at original 300", 300, height);
    }
 
    @Test
@@ -106,7 +109,7 @@ public class EmbedImagesTest {
       String html = "<html><body><table><tr>" +
          "<td><img src=\"resources/big_400x300.png\" alt=\"big\" /></td>" +
          "</tr></table></body></html>";
-      HashMap<String, String> imageMap = new HashMap<>();
+      Map<String, String> imageMap = new HashMap<>();
       imageMap.put("resources/big_400x300.png", Base64.getEncoder().encodeToString(TEST_PNG_400x300));
 
       String result = converter.embedImages(html, imageMap);
@@ -125,7 +128,7 @@ public class EmbedImagesTest {
          "<p><img src=\"resources/big_400x300.png\" alt=\"standalone\" /></p>" +
          "<table><tr><td><img src=\"resources/big_400x300.png\" alt=\"in-table\" /></td></tr></table>" +
          "</body></html>";
-      HashMap<String, String> imageMap = new HashMap<>();
+      Map<String, String> imageMap = new HashMap<>();
       imageMap.put("resources/big_400x300.png", Base64.getEncoder().encodeToString(TEST_PNG_400x300));
 
       String result = converter.embedImages(html, imageMap);
@@ -150,7 +153,7 @@ public class EmbedImagesTest {
    public void testSmallImageNotUpscaled() {
       // 2x2 PNG - should stay at 2x2, not upscaled
       String html = "<html><body><p><img src=\"resources/tiny.png\" alt=\"tiny\" /></p></body></html>";
-      HashMap<String, String> imageMap = new HashMap<>();
+      Map<String, String> imageMap = new HashMap<>();
       imageMap.put("resources/tiny.png", Base64.getEncoder().encodeToString(TEST_PNG_2x2));
 
       String result = converter.embedImages(html, imageMap);
@@ -167,7 +170,7 @@ public class EmbedImagesTest {
    @Test
    public void testUnmatchedImageNotModified() {
       String html = "<html><body><p><img src=\"resources/unknown.png\" alt=\"x\" /></p></body></html>";
-      HashMap<String, String> imageMap = new HashMap<>();
+      Map<String, String> imageMap = new HashMap<>();
       // imageMap does NOT contain "resources/unknown.png"
 
       String result = converter.embedImages(html, imageMap);
@@ -183,7 +186,7 @@ public class EmbedImagesTest {
       String html = "<html><body><table><tr>" +
          "<th><img src=\"resources/big_400x300.png\" alt=\"header-img\" /></th>" +
          "</tr></table></body></html>";
-      HashMap<String, String> imageMap = new HashMap<>();
+      Map<String, String> imageMap = new HashMap<>();
       imageMap.put("resources/big_400x300.png", Base64.getEncoder().encodeToString(TEST_PNG_400x300));
 
       String result = converter.embedImages(html, imageMap);
@@ -202,7 +205,7 @@ public class EmbedImagesTest {
          "<td><img src=\"resources/img2.png\" alt=\"img2\" /></td>" +
          "<td>Dog</td>" +
          "</tr></table></body></html>";
-      HashMap<String, String> imageMap = new HashMap<>();
+      Map<String, String> imageMap = new HashMap<>();
       imageMap.put("resources/img1.png", Base64.getEncoder().encodeToString(TEST_PNG_400x300));
       imageMap.put("resources/img2.png", Base64.getEncoder().encodeToString(TEST_PNG_400x300));
 

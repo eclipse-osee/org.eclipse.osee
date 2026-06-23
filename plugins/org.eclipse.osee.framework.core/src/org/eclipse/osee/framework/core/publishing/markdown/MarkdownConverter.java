@@ -24,15 +24,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import java.util.logging.Level;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
@@ -88,7 +88,7 @@ public class MarkdownConverter {
          zipOutputStream.closeEntry();
 
          // Add images to the zip
-         HashMap<String, String> imageContentMap = mdZip.getImageContentMap();
+         Map<String, String> imageContentMap = mdZip.getImageContentMap();
          for (String imageName : imageContentMap.keySet()) {
             ZipEntry imageEntry = new ZipEntry(imageName);
             zipOutputStream.putNextEntry(imageEntry);
@@ -166,7 +166,7 @@ public class MarkdownConverter {
       return htmlWithCss.getBytes(StandardCharsets.UTF_8);
    }
 
-   public byte[] convertToPdfBytes(Node markdownDocument, HashMap<String, String> imageContentMap, String collectedCss)
+   public byte[] convertToPdfBytes(Node markdownDocument, Map<String, String> imageContentMap, String collectedCss)
       throws IOException {
       HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
 
@@ -227,7 +227,7 @@ public class MarkdownConverter {
     * explicit dimensions they render at full intrinsic size and overflow. This method
     * caps image dimensions to prevent overflow.
     */
-   public String embedImages(String html, HashMap<String, String> imageContentMap) {
+   public String embedImages(String html, Map<String, String> imageContentMap) {
       org.jsoup.nodes.Document doc = Jsoup.parse(html);
       doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
       doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
@@ -287,6 +287,8 @@ public class MarkdownConverter {
       }
       try (ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes))) {
          if (iis == null) {
+            OseeLog.log(MarkdownConverter.class, Level.FINE,
+               "ImageIO returned null stream; embedding image without explicit size");
             return null;
          }
          Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
