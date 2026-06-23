@@ -354,7 +354,6 @@ public class PublishingMarkdownAsPdfTest {
    @Test
    public void testImageInTableCellRendered() throws IOException {
       // Publish only the artifact containing a table with <image-link> references in cells.
-      // Save the PDF to disk for manual verification.
       List<Artifact> results = ArtifactQuery.getArtifactListFromTypeAndName(
          CoreArtifactTypes.HeadingMarkdown, "Subsystem Component Overview",
          DemoBranches.SAW_PL_Working_Branch_Markdown);

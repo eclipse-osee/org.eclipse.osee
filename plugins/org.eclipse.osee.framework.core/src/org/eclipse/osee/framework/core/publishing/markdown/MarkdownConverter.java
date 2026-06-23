@@ -32,17 +32,31 @@ import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import java.util.logging.Level;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Entities;
 
 /**
  * @author Jaden W. Puckett
  */
 
 public class MarkdownConverter {
+
+   /**
+    * Maximum image width (in pixels) when rendered inside a table cell.
+    */
+   private static final int MAX_IMAGE_WIDTH_IN_TABLE = 150;
+
+   /**
+    * Maximum image width (in pixels) when rendered as a standalone image (~6.5in at 72dpi).
+    */
+   private static final int MAX_IMAGE_WIDTH_STANDALONE = 468;
 
    private MutableDataSet options;
 
@@ -208,25 +222,15 @@ public class MarkdownConverter {
    }
 
    /**
-    * Maximum image width (in pixels) when rendered inside a table cell.
-    */
-   private static final int MAX_IMAGE_WIDTH_IN_TABLE = 150;
-
-   /**
-    * Maximum image width (in pixels) when rendered as a standalone image (~6.5in at 72dpi).
-    */
-   private static final int MAX_IMAGE_WIDTH_STANDALONE = 468;
-
-   /**
     * Embeds images as base64 data URIs with explicit width/height attributes.
     * The CSS table-layout:fixed enables images to render in table cells, but without
     * explicit dimensions they render at full intrinsic size and overflow. This method
     * caps image dimensions to prevent overflow.
     */
    public String embedImages(String html, HashMap<String, String> imageContentMap) {
-      org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(html);
+      org.jsoup.nodes.Document doc = Jsoup.parse(html);
       doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
-      doc.outputSettings().escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml);
+      doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
 
       for (org.jsoup.nodes.Element img : doc.select("img[src]")) {
          String src = img.attr("src");
@@ -238,14 +242,21 @@ public class MarkdownConverter {
          // Build data URI
          String dataUri;
          byte[] imageBytes;
-         if (base64.startsWith("data:")) {
-            dataUri = base64;
-            int commaIdx = base64.indexOf(',');
-            imageBytes = (commaIdx >= 0) ? Base64.getDecoder().decode(base64.substring(commaIdx + 1)) : new byte[0];
-         } else {
-            String mediaType = guessMediaType(src);
-            dataUri = "data:" + mediaType + ";base64," + base64;
-            imageBytes = Base64.getDecoder().decode(base64);
+         try {
+            if (base64.startsWith("data:")) {
+               dataUri = base64;
+               int commaIdx = base64.indexOf(',');
+               imageBytes = (commaIdx >= 0) ? Base64.getDecoder().decode(base64.substring(commaIdx + 1)) : new byte[0];
+            } else {
+               String mediaType = guessMediaType(src);
+               dataUri = "data:" + mediaType + ";base64," + base64;
+               imageBytes = Base64.getDecoder().decode(base64);
+            }
+         } catch (IllegalArgumentException e) {
+            // Malformed base64 — skip this image
+            OseeLog.log(MarkdownConverter.class, Level.WARNING,
+               "Skipping image with malformed base64 data: " + src, e);
+            continue;
          }
 
          img.attr("src", dataUri);
@@ -291,7 +302,9 @@ public class MarkdownConverter {
             }
          }
       } catch (IOException e) {
-         // If we can't read dimensions, return null and the image will be embedded without sizing
+         // If we can't read dimensions, image will be embedded without explicit sizing
+         OseeLog.log(MarkdownConverter.class, Level.FINE,
+            "Unable to read image dimensions, embedding without explicit size", e);
       }
       return null;
    }
