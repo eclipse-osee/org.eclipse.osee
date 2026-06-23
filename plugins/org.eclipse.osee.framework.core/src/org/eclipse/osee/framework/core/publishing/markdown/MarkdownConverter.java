@@ -219,8 +219,9 @@ public class MarkdownConverter {
 
    /**
     * Embeds images as base64 data URIs with explicit width/height attributes.
-    * Explicit pixel dimensions are required because OpenHTMLToPDF cannot resolve
-    * percentage-based CSS sizing for images inside table cells.
+    * The CSS table-layout:fixed enables images to render in table cells, but without
+    * explicit dimensions they render at full intrinsic size and overflow. This method
+    * caps image dimensions to prevent overflow.
     */
    public String embedImages(String html, HashMap<String, String> imageContentMap) {
       org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(html);
