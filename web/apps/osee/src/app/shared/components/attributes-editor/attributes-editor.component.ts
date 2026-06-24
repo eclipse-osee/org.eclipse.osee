@@ -22,7 +22,8 @@ import {
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { attribute } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { BehaviorSubject } from 'rxjs';
 import { AttributeNameTrimPipe } from '../../pipes/attribute-name-trim/attribute-name-trim.pipe';
@@ -43,7 +44,7 @@ import {
 } from '@osee/attributes/constants';
 
 // Attributes Editor does not enforce required fields.
-// It will just highlight required fields based on an attribute's multiplicityId.
+// It will just highlight required fields based on an attribute's multiplicity.
 // Output is the changed attributes list for parent component to handle.
 @Component({
 	selector: 'osee-attributes-editor',
@@ -70,16 +71,16 @@ import {
 	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class AttributesEditorComponent {
-	attributes = input.required<attribute[]>();
+	attributes = input.required<attribute<string, ATTRIBUTETYPEID>[]>();
 	editable = input.required<boolean>();
 	artifactId = input<string>('');
 	branchId = input<string>('');
 
-	@Output() updatedAttributes = new BehaviorSubject<attribute[]>([]);
+	@Output() updatedAttributes = new BehaviorSubject<attribute<string, ATTRIBUTETYPEID>[]>([]);
 
 	// Track native content changes separately so they aren't lost
 	// when standard fields re-emit.
-	private nativeContentChanges: attribute[] = [];
+	private nativeContentChanges: attribute<string, ATTRIBUTETYPEID>[] = [];
 
 	// Pending display values for the native content editor
 	protected readonly pendingNativeName = signal<string | null>(null);
@@ -92,7 +93,7 @@ export class AttributesEditorComponent {
 			this.nativeContentChanges.map((a) => a.typeId)
 		);
 
-		const formattedAttributes: attribute[] = this.attributes()
+		const formattedAttributes: attribute<string, ATTRIBUTETYPEID>[] = this.attributes()
 			.map((attribute) => {
 				// Skip Input Stream attributes — handled by the native content editor.
 				if (attribute.storeType === 'Input Stream') {
@@ -115,7 +116,7 @@ export class AttributesEditorComponent {
 				return formattedAttribute;
 			})
 			.filter(
-				(attribute): attribute is attribute =>
+				(attribute): attribute is attribute<string, ATTRIBUTETYPEID> =>
 					attribute !== null && attribute.value !== ''
 			);
 
@@ -125,7 +126,7 @@ export class AttributesEditorComponent {
 		]);
 	}
 
-	handleNativeContentChanges(changes: attribute[]) {
+	handleNativeContentChanges(changes: attribute<string, ATTRIBUTETYPEID>[]) {
 		this.nativeContentChanges = changes;
 
 		// Extract pending display values from the changes
@@ -156,14 +157,14 @@ export class AttributesEditorComponent {
 
 	// Input is required if attribute multiplicity AT_LEAST_ONE or EXACTLY_ONE
 
-	isRequired(attribute: attribute) {
+	isRequired(attribute: attribute<string, ATTRIBUTETYPEID>) {
 		return attribute.name === 'Id'
 			? false
-			: attribute.multiplicityId === '2' ||
-					attribute.multiplicityId === '4';
+			: attribute.multiplicity?.id === '2' ||
+					attribute.multiplicity?.id === '4';
 	}
 
-	setAttribute(val: string, attribute: attribute) {
+	setAttribute(val: string, attribute: attribute<string, ATTRIBUTETYPEID>) {
 		const datePipe = new DatePipe('en-US');
 		const dateString = datePipe.transform(val);
 		attribute.value = dateString ? dateString : '';

@@ -152,7 +152,7 @@ export class AttachmentService {
 						gammaId: attachment.nameGamma,
 					};
 
-					const fileExtAttr: validAttribute<string, ATTRIBUTETYPEID> =
+					const fileExtAttr: validAttribute<string, typeof ATTRIBUTETYPEIDENUM.EXTENSION> =
 						{
 							id: attachment.extensionAtId,
 							value: getFileExtension(file.name),

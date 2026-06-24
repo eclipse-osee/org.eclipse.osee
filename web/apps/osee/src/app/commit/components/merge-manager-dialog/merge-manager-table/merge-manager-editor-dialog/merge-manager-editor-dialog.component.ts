@@ -23,7 +23,8 @@ import {
 } from '@angular/material/dialog';
 import { mergeData } from '@osee/commit/types';
 import { AttributesEditorComponent } from '@osee/shared/components';
-import { attribute } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -44,21 +45,21 @@ export class MergeManagerEditorDialogComponent implements OnInit {
 		inject<MatDialogRef<MergeManagerEditorDialogComponent>>(MatDialogRef);
 	data = inject<mergeData>(MAT_DIALOG_DATA);
 
-	attributes = new BehaviorSubject<attribute[]>([]);
+	attributes = new BehaviorSubject<attribute<string, ATTRIBUTETYPEID>[]>([]);
 
 	ngOnInit(): void {
-		const attr: attribute = {
+		const attr: attribute<string, ATTRIBUTETYPEID> = {
 			id: '-1',
-			multiplicityId: '-1',
+			gammaId: '-1',
 			name: this.data.attrMergeData.attrTypeName,
 			storeType: this.data.attrMergeData.storeType,
-			typeId: this.data.attrMergeData.attrType,
+			typeId: this.data.attrMergeData.attrType as ATTRIBUTETYPEID,
 			value: this.data.attrMergeData.mergeValue,
 		};
 		this.attributes.next([attr]);
 	}
 
-	handleUpdatedAttributes(updatedAttributes: attribute[]) {
+	handleUpdatedAttributes(updatedAttributes: attribute<string, ATTRIBUTETYPEID>[]) {
 		if (updatedAttributes.length === 0) {
 			return;
 		}

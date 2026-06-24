@@ -11,15 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { applic, applicabilitySentinel } from '@osee/applicability/types';
-import { attribute, iconVariant, twColor, twShade } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+import { iconVariant, twColor, twShade } from '@osee/shared/types';
 
 export type artifactWithRelations = {
 	name: string;
 	id: `${number}`;
+	gammaId: `${number}`;
 	typeId: `${number}`;
 	typeName: string;
 	icon: artifactTypeIcon;
-	attributes: attribute[];
+	attributes: attribute<string, ATTRIBUTETYPEID>[];
 	relations: artifactRelation[];
 	editable: boolean;
 	operationTypes: operationType[];
@@ -42,6 +45,7 @@ export type artifactRelation = {
 export type artifactRelationSide = {
 	name: string;
 	artifacts: artifactWithRelations[];
+	gammaIds: string[];
 	isSideA: boolean;
 	isSideB: boolean;
 };
@@ -86,6 +90,7 @@ export type artifactTokenWithIcon = {
 
 export const artifactWithRelationsSentinel: artifactWithRelations = {
 	id: '-1',
+	gammaId: '-1',
 	name: '',
 	typeId: '-1',
 	typeName: '',
