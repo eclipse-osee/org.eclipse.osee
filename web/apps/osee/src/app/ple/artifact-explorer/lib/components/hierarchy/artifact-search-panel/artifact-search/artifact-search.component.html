@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="tw-flex tw-flex-col">
-	<form class="tw-flex-grow">
+<div class="tw-flex tw-h-full tw-flex-col">
+	<form class="tw-shrink-0">
 		@if (advancedSearchCriteria | async; as _criteria) {
 			@if (
 				_criteria.artifactTypes.length > 0 ||
@@ -83,7 +83,7 @@
 			}
 		}
 		<mat-form-field
-			class="tw-w-full"
+			class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-transparent"
 			subscriptSizing="dynamic">
 			<mat-label> Search for Artifact </mat-label>
 			<input
@@ -113,7 +113,7 @@
 	@if ({ count: searchResultsCount | async }; as _count) {
 		@if (paginatedSearchResults | async; as _currentResults) {
 			@if (!useCount() || _count.count !== null) {
-				<div class="tw-max-h-80 tw-overflow-auto">
+				<div class="tw-min-h-0 tw-flex-1 tw-overflow-auto">
 					<osee-paginated-mat-list
 						[allItems]="allSearchResults()"
 						[currentPageItems]="_currentResults"

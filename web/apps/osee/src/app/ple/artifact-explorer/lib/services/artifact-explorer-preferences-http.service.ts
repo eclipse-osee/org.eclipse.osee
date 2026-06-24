@@ -48,12 +48,7 @@ export class ArtifactExplorerPreferencesHttpService {
 					typeId: ARTIFACTTYPEIDENUM.ARTIFACTEXPLORERPREFERENCES,
 					name: user.name + ' Artifact Explorer Preferences',
 					key: 'artifactExplorerPrefs',
-					attributes: [
-						{
-							typeName: 'Artifact Explorer Panel Location',
-							value: prefs.artifactExplorerPanelLocation,
-						},
-					],
+					attributes: [],
 				},
 			],
 			addRelations: [
@@ -73,15 +68,6 @@ export class ArtifactExplorerPreferencesHttpService {
 		updated: artifactExplorerUserPreferences
 	) {
 		const setAttributes: legacyAttributeType[] = [];
-		if (
-			current.artifactExplorerPanelLocation !==
-			updated.artifactExplorerPanelLocation
-		) {
-			setAttributes.push({
-				typeName: 'Artifact Explorer Panel Location',
-				value: updated.artifactExplorerPanelLocation,
-			});
-		}
 
 		const tx = {
 			branch: '570',

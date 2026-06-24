@@ -17,11 +17,14 @@ import { MatIcon } from '@angular/material/icon';
 import { MatMenuItem } from '@angular/material/menu';
 import { UiService } from '@osee/shared/services';
 import { TransactionService } from '@osee/transactions/services';
-import { attribute } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
 import { combineLatest, filter, map, switchMap, take, tap } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
+import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
+import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
 import { CreateChildArtifactDialogComponent } from './dialogs/create-child-artifact-dialog/create-child-artifact-dialog.component';
 import { DeleteArtifactDialogComponent } from './dialogs/delete-artifact-dialog/delete-artifact-dialog.component';
@@ -42,6 +45,8 @@ export class ArtifactOperationsContextMenuComponent {
 	private pathsService = inject(ArtifactHierarchyPathService);
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
 	private artifacticonService = inject(ArtifactIconService);
+	private expandedService = inject(ArtifactHierarchyArtifactsExpandedService);
+	private tabService = inject(ArtifactExplorerTabService);
 
 	artifactId = input.required<string>();
 	parentArtifactId = input.required<`${number}`>();
@@ -239,10 +244,10 @@ export class ArtifactOperationsContextMenuComponent {
 												typeId: result?.artifactTypeId,
 												attributes: result?.attributes
 													.filter(
-														(attr: attribute) =>
+														(attr: attribute<string, ATTRIBUTETYPEID>) =>
 															attr.value != null
 													)
-													.map((attr: attribute) => ({
+													.map((attr: attribute<string, ATTRIBUTETYPEID>) => ({
 														typeId: attr.typeId,
 														value: attr.value,
 													})),
@@ -257,22 +262,14 @@ export class ArtifactOperationsContextMenuComponent {
 									})
 									.pipe(
 										take(1),
-										map((txResult) => {
-											if (
-												txResult.results.success == true
-											) {
-												const firstId =
-													txResult.results.ids?.at(0);
-												if (firstId !== undefined)
-													this.pathsService.updatePaths(
-														firstId
-													);
-											}
-										}),
-										tap(
-											() =>
-												(this.uiService.updated = true)
-										)
+										tap(() => {
+											// Auto-expand the artifact we created under so the new child is visible
+											this.expandedService.expandArtifact(
+												this.parentArtifactId(),
+												this.artifactId()
+											);
+											this.uiService.updated = true;
+										})
 									)
 							)
 						)
@@ -327,24 +324,33 @@ export class ArtifactOperationsContextMenuComponent {
 																.success ===
 															true
 													),
-													map(() => {
-														if (
-															this.siblingArtifactId() !==
-															'0'
-														) {
-															this.pathsService.updatePaths(
-																this.siblingArtifactId()
-															);
-														} else {
-															this.pathsService.updatePaths(
-																this.parentArtifactId()
-															);
-														}
-													}),
 													tap(
-														() =>
-															(this.uiService.updated =
-																true)
+														() => {
+															// Close the tab if the deleted artifact was open
+															this.tabService.removeTabByArtifactId(
+																this.artifactId()
+															);
+															// Collapse deleted artifact from expanded state before refresh
+															this.expandedService.collapseArtifact(
+																this.parentArtifactId(),
+																this.artifactId()
+															);
+															// Notify open tabs to refresh their relations (deleted artifact may have been related)
+															this.tabService
+																.Tabs()
+																.filter(
+																	(t) =>
+																		t.tabType ===
+																		'Artifact'
+																)
+																.forEach(
+																	(t) => {
+																		this.uiService.updatedArtifact =
+																			t.artifact.id;
+																	}
+																);
+															this.uiService.updated = true;
+														}
 													)
 												)
 										)

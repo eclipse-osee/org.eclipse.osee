@@ -20,7 +20,6 @@
 
 // Note: Color palettes are generated from primary: #2979ff, secondary: #ffc400, tertiary: #00e676
 $_palettes: (
-	// TODO fix this to go light blue in dark mode
 	primary:
 		(
 			0: var(--osee-blue-0),
@@ -151,6 +150,55 @@ $_rest: (
 );
 $_primary: map.merge(map.get($_palettes, primary), $_rest);
 $_tertiary: map.merge(map.get($_palettes, tertiary), $_rest);
+
+// Dark mode primary uses light-blue tones for a brighter, more saturated appearance
+$_dark_primary_palette: (
+	0: var(--osee-light-blue-0),
+	10: var(--osee-light-blue-1),
+	20: var(--osee-light-blue-2),
+	25: var(--osee-light-blue-3),
+	30: var(--osee-light-blue-4),
+	35: var(--osee-light-blue-5),
+	40: var(--osee-light-blue-6),
+	50: var(--osee-light-blue-7),
+	60: var(--osee-light-blue-8),
+	70: var(--osee-light-blue-9),
+	80: var(--osee-light-blue-10),
+	90: var(--osee-light-blue-11),
+	95: var(--osee-light-blue-12),
+	98: var(--osee-light-blue-13),
+	99: var(--osee-light-blue-14),
+	100: var(--osee-light-blue-15),
+);
+$_dark_primary: map.merge($_dark_primary_palette, $_rest);
+
+// Dark mode error uses shifted red tones so the on-surface error color (slot 80)
+// is a vivid red (#ff5449) instead of the washed-out default (#ffb4ab).
+$_dark_error_palette: (
+	0: var(--osee-red-0),
+	10: var(--osee-red-1),
+	20: var(--osee-red-2),
+	25: var(--osee-red-3),
+	30: var(--osee-red-4),
+	35: var(--osee-red-5),
+	40: var(--osee-red-6),
+	50: var(--osee-red-7),
+	60: var(--osee-red-7),
+	70: var(--osee-red-8),
+	80: var(--osee-red-8),
+	90: var(--osee-red-9),
+	95: var(--osee-red-10),
+	98: var(--osee-red-11),
+	99: var(--osee-red-12),
+	100: var(--osee-red-15),
+);
+$_dark_rest: (
+	secondary: map.get($_palettes, secondary),
+	neutral: map.get($_palettes, neutral),
+	neutral-variant: map.get($_palettes, neutral-variant),
+	error: $_dark_error_palette,
+);
+$_dark_primary_with_error: map.merge($_dark_primary_palette, $_dark_rest);
 $light-theme: mat.define-theme(
 	(
 		color: (
@@ -173,7 +221,7 @@ $dark-theme: mat.define-theme(
 	(
 		color: (
 			theme-type: dark,
-			primary: $_primary,
+			primary: $_dark_primary_with_error,
 			tertiary: $_tertiary,
 			use-system-variables: true,
 			system-variables-prefix: sys,

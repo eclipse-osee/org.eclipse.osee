@@ -12,10 +12,11 @@
  **********************************************************************/
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { Component, computed, inject } from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
+import { MatTooltip } from '@angular/material/tooltip';
 import { ArtifactExplorerTabService } from '../../services/artifact-explorer-tab.service';
+import { ArtifactEditorDirtyService } from '../../services/artifact-editor-dirty.service';
 import { tab } from '../../types/artifact-explorer';
 import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-editor.component';
 
@@ -27,14 +28,57 @@ import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-edit
 		MatTab,
 		CdkDrag,
 		MatIcon,
-		MatIconButton,
 		MatTabLabel,
+		MatTooltip,
 		ArtifactEditorComponent,
 	],
 	templateUrl: './artifact-tab-group.component.html',
+	styles: [
+		`
+			:host ::ng-deep .mat-mdc-tab-header {
+				border-bottom: 1px solid var(--osee-background-hover, rgba(128, 128, 128, 0.2));
+				--mdc-tab-indicator-active-indicator-height: 2px;
+				--mdc-secondary-navigation-tab-container-height: 36px;
+			}
+			:host ::ng-deep .mdc-tab {
+				min-width: 0 !important;
+				padding: 0 !important;
+			}
+			:host ::ng-deep .mdc-tab--active {
+				opacity: 1;
+			}
+			:host ::ng-deep .mdc-tab:not(.mdc-tab--active) {
+				opacity: 0.6;
+			}
+			:host ::ng-deep .mdc-tab:not(.mdc-tab--active):hover {
+				opacity: 0.85;
+			}
+			:host ::ng-deep .mdc-tab__content {
+				padding: 0 !important;
+				gap: 0 !important;
+			}
+			:host ::ng-deep .mdc-tab__text-label {
+				padding: 0 14px;
+			}
+			/* Hide close button by default, show on tab hover */
+			:host ::ng-deep .mdc-tab .tab-close-btn {
+				opacity: 0;
+				transition: opacity 0.15s;
+			}
+			:host ::ng-deep .mdc-tab:hover .tab-close-btn,
+			:host ::ng-deep .mdc-tab--active .tab-close-btn {
+				opacity: 0.6;
+			}
+			:host ::ng-deep .mdc-tab .tab-close-btn:hover {
+				opacity: 1;
+				background: var(--osee-background-hover, rgba(128, 128, 128, 0.3));
+			}
+		`,
+	],
 })
 export class ArtifactTabGroupComponent {
 	private tabService = inject(ArtifactExplorerTabService);
+	private dirtyService = inject(ArtifactEditorDirtyService);
 
 	tabs = this.tabService.Tabs;
 
@@ -43,6 +87,14 @@ export class ArtifactTabGroupComponent {
 	selectedIndex = this.tabService.selectedIndex;
 
 	removeTab(index: number) {
+		if (this.dirtyService.hasDirtyEditors()) {
+			const confirmed = confirm(
+				'You have unsaved changes. Are you sure you want to close this tab?'
+			);
+			if (!confirmed) {
+				return;
+			}
+		}
 		this.tabService.removeTab(index);
 	}
 

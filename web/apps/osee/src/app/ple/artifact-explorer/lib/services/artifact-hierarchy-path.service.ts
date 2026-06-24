@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, computed, inject, linkedSignal } from '@angular/core';
-import { combineLatest, filter, repeat, shareReplay, switchMap } from 'rxjs';
+import { combineLatest, filter, shareReplay, switchMap, tap } from 'rxjs';
 import { UiService } from '@osee/shared/services';
 import { ArtifactExplorerHttpService } from './artifact-explorer-http.service';
 import { ArtifactHierarchyArtifactsExpandedService } from './artifact-hierarchy-artifacts-expanded.service';
@@ -86,18 +86,44 @@ export class ArtifactHierarchyPathService {
 				artId != ''
 		),
 		switchMap(([branchId, viewId, artId]) =>
-			this.artExpHttpService
-				.getPathToArtifact(branchId, artId, viewId)
-				.pipe(repeat({ delay: () => this.uiService.update }))
+			this.artExpHttpService.getPathToArtifact(branchId, artId, viewId)
 		),
+		tap((paths) => this.expandAlongPaths(paths)),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
+
+	/**
+	 * Expand all nodes along the returned paths so the target artifact is visible.
+	 * Each path is an array of artifact IDs from the target up to the root.
+	 * We expand parent→child pairs walking from root (end of array) to target (start).
+	 */
+	private expandAlongPaths(paths: string[][]) {
+		for (const path of paths) {
+			// Path is target → ... → root (reversed). Walk from root to target.
+			for (let i = path.length - 1; i > 0; i--) {
+				const parentId = path[i];
+				const childId = path[i - 1];
+				this.artifactsExpandedService.expandArtifact(
+					parentId,
+					childId
+				);
+			}
+		}
+	}
 
 	getPaths() {
 		return this.paths;
 	}
 
 	updatePaths(artifactId: string) {
+		this._selectedArtifactId.set(artifactId);
+	}
+
+	/**
+	 * Clears all expansion state and navigates to the given artifact.
+	 * Use only for full resets (e.g., "Show in Hierarchy" from search).
+	 */
+	navigateToArtifact(artifactId: string) {
 		this.artifactsExpandedService.clear();
 		this._selectedArtifactId.set(artifactId);
 	}

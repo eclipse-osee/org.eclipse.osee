@@ -10,92 +10,79 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-@if (panelLocation()) {
-	<mat-drawer-container
-		class="tw-h-full"
-		cdkDropListGroup
-		autosize>
-		<!-- Collapsable artifact explorer drawer -->
-		<mat-drawer
-			#drawer
-			class="tw-w-[30%] tw-max-w-[30%]"
-			mode="side"
-			[position]="panelLocation() || 'end'"
-			opened="true">
-			<osee-artifact-hierarchy-panel
-				[ngClass]="{ 'tw-hidden': currentPanel() !== 'Artifacts' }" />
-		</mat-drawer>
-		<div
-			class="tw-flex tw-h-full tw-min-w-0 tw-overflow-hidden"
-			[class.tw-flex-row-reverse]="panelLocation() === 'end'">
-			<div class="tw-flex tw-shrink-0 tw-flex-col">
-				@if (openTabs().length > 0) {
-					<button
-						mat-icon-button
-						[matMenuTriggerFor]="tabList"
-						matTooltip="View open tabs">
-						<mat-icon>more_horiz</mat-icon>
-					</button>
-				}
-				<button
-					mat-icon-button
-					class="primary-icon-button -tw-rotate-90 hover:tw-bg-osee-blue-7 hover:tw-text-white hover:dark:tw-bg-osee-blue-10 hover:dark:tw-text-background"
-					(click)="drawer.toggle()">
-					<mat-icon>
-						{{
-							panelLocation() === 'end'
-								? drawer.opened
-									? 'keyboard_double_arrow_down'
-									: 'keyboard_double_arrow_up'
-								: drawer.opened
-									? 'keyboard_double_arrow_up'
-									: 'keyboard_double_arrow_down'
-						}}
-					</mat-icon>
-				</button>
-				@if (drawer.opened) {
-					<button
-						mat-icon-button
-						(click)="setCurrentPanel('Artifacts')">
-						<mat-icon
-							[ngClass]="{
-								'tw-text-osee-blue-7 dark:tw-text-osee-blue-10':
-									currentPanel() === 'Artifacts',
-							}"
-							>padding</mat-icon
-						>
-					</button>
-				}
-			</div>
-			<osee-artifact-tab-group class="tw-min-w-0 tw-flex-1" />
-		</div>
-	</mat-drawer-container>
-}
-<mat-menu
-	#tabList="matMenu"
-	class="tw-max-w-none">
-	<div class="tw-max-h-96">
-		@for (tab of openTabs(); track $index) {
-			<div
-				[ngClass]="{
-					'tw-bg-primary-100 dark:tw-bg-primary-200':
-						$index === selectedTabIndex(),
-				}"
-				class="tw-flex tw-px-2">
-				<button
-					mat-menu-item
-					(click)="setSelectedTab($index)">
-					<mat-icon [class]="getTabIconClasses(tab)">{{
-						fetchIcon(tab)
-					}}</mat-icon>
-					<span>{{ tab.tabTitle }}</span>
-				</button>
-				<button
-					mat-icon-button
-					(click)="removeTab($event, $index)">
-					<mat-icon>clear</mat-icon>
-				</button>
-			</div>
-		}
+<div
+	class="tw-flex tw-h-full tw-overflow-hidden"
+	cdkDropListGroup
+	#layoutContainer>
+	<!-- Activity bar (vertical icon strip, like VS Code) -->
+	<div
+		class="tw-flex tw-h-full tw-w-12 tw-shrink-0 tw-flex-col tw-items-center tw-gap-1 tw-border-r tw-border-solid tw-border-r-background-hover tw-pt-2">
+		<button
+			mat-icon-button
+			(click)="toggleSection('hierarchy')"
+			matTooltip="Artifact Hierarchy"
+			aria-label="Artifact Hierarchy"
+			[class]="
+				!panelCollapsed() && activeSection() === 'hierarchy'
+					? 'tw-text-primary'
+					: 'tw-opacity-60'
+			">
+			<mat-icon>account_tree</mat-icon>
+		</button>
+		<button
+			mat-icon-button
+			(click)="toggleSection('search')"
+			matTooltip="Artifact Search"
+			aria-label="Artifact Search"
+			[class]="
+				!panelCollapsed() && activeSection() === 'search'
+					? 'tw-text-primary'
+					: 'tw-opacity-60'
+			">
+			<mat-icon>search</mat-icon>
+		</button>
+		<button
+			mat-icon-button
+			(click)="toggleSection('branch')"
+			matTooltip="Branch Management"
+			aria-label="Branch Management"
+			[class]="
+				!panelCollapsed() && activeSection() === 'branch'
+					? 'tw-text-primary'
+					: 'tw-opacity-60'
+			">
+			<mat-icon>merge_type</mat-icon>
+		</button>
 	</div>
-</mat-menu>
+	@if (!panelCollapsed()) {
+		<!-- Hierarchy panel (resizable) -->
+		<div
+			class="tw-h-full tw-shrink-0 tw-overflow-hidden"
+			[style.width.%]="panelWidthPercent()">
+			<osee-artifact-hierarchy-panel
+				class="tw-block tw-h-full"
+				[activeSection]="activeSection()"
+				(navigateToHierarchy)="activeSection.set('hierarchy')" />
+		</div>
+		<!-- Resize divider -->
+		<div
+			role="separator"
+			aria-orientation="vertical"
+			aria-label="Resize hierarchy and editor panels"
+			[attr.aria-valuenow]="panelWidthPercent()"
+			aria-valuemin="15"
+			aria-valuemax="50"
+			tabindex="0"
+			class="tw-group tw-flex tw-h-full tw-w-2.5 tw-shrink-0 tw-cursor-col-resize tw-items-center tw-justify-center tw-bg-background-hover tw-transition-colors hover:tw-bg-primary-300 active:tw-bg-primary-500"
+			(mousedown)="onDividerMouseDown($event)"
+			(keydown)="onDividerKeyDown($event)"
+			matTooltip="Drag To Resize">
+			<div
+				class="tw-h-8 tw-w-1 tw-rounded tw-bg-foreground-disabled"></div>
+		</div>
+	}
+	<!-- Editor area -->
+	<div class="tw-h-full tw-min-w-0 tw-flex-1 tw-overflow-hidden">
+		<osee-artifact-tab-group />
+	</div>
+</div>

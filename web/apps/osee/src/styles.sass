@@ -27,6 +27,30 @@ body
   margin: 0
   font-family: Roboto, 'Helvetica Neue', sans-serif
 
+// Compact context menu for artifact explorer
+.compact-context-menu .mat-mdc-menu-item
+  min-height: 32px !important
+  padding: 0 12px !important
+  .mat-icon
+    margin-right: 8px !important
+    font-size: 18px !important
+    width: 18px !important
+    height: 18px !important
+
+// Tighter radio button labels (branch type selector)
+osee-branch-type-selector .mdc-form-field
+  gap: 0
+  > label
+    padding-left: 0 !important
+
+// Artifact explorer: transparent form fields and primary text for selected values
+osee-artifact-explorer
+  --mdc-filled-text-field-container-color: transparent
+  --mat-form-field-container-color: transparent
+  .mat-mdc-form-field-infix input,
+  .mat-mdc-select-value-text
+    color: var(--osee-primary-default) !important
+
 .wide-mat-menu
   min-width: 480px
   max-width: 640px !important

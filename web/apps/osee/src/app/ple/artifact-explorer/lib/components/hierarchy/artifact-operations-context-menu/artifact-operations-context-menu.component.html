@@ -11,21 +11,17 @@
  *     Boeing - initial API and implementation
  -->
 @if (operationTypes(); as operationTypes) {
-	<div class="tw-flex tw-flex-col tw-text-foreground-base">
+	<div class="tw-flex tw-flex-col tw-text-foreground-base [&_.mat-mdc-menu-item]:tw-min-h-[36px] [&_.mat-mdc-menu-item]:tw-px-3">
 		@for (operationType of operationTypes; track operationType) {
 			<button
 				mat-menu-item
 				[disabled]="!_branchEditable()"
-				(click)="selectOption(operationType)"
-				class="tw-flex tw-w-full tw-items-center tw-truncate tw-px-4 tw-py-2 tw-text-left">
+				(click)="selectOption(operationType)">
 				<mat-icon
 					[class]="getIconClasses(operationType.materialIcon)"
-					class="tw-pr-2"
 					>{{ operationType.materialIcon.icon }}</mat-icon
 				>
-				<div class="tw-truncate">
-					{{ operationType.name }}
-				</div>
+				<span>{{ operationType.name }}</span>
 			</button>
 		}
 	</div>

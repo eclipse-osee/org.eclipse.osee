@@ -12,24 +12,24 @@
  -->
 <osee-artifact-dialog-title [operationType]="data.operationType" />
 <mat-dialog-content>
-	<div class="tw-flex tw-flex-row">
-		<div>Are you sure that you want to delete</div>
-		<div class="tw-px-2 tw-font-bold tw-text-warning">
-			{{ data.artifact.name }}
-		</div>
-		<div>?</div>
-	</div>
+	<p class="tw-text-sm">
+		Are you sure you want to delete
+		<span class="tw-font-medium tw-underline">{{ data.artifact.name }}</span>?
+	</p>
 </mat-dialog-content>
-<div mat-dialog-actions>
+<div
+	mat-dialog-actions
+	align="end"
+	class="tw-gap-2">
 	<button
-		mat-button
+		mat-stroked-button
+		class="tw-text-osee-red-8"
 		(click)="onCancel()">
 		Cancel
 	</button>
 	<button
-		mat-flat-button
-		(click)="onSubmit()"
-		class="primary-button">
-		Ok
+		mat-stroked-button
+		(click)="onSubmit()">
+		Delete
 	</button>
 </div>

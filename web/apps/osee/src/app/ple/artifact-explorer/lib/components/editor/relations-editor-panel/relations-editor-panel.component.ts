@@ -13,17 +13,14 @@
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
-import {
-	takeUntilDestroyed,
-	toObservable,
-	toSignal,
-} from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatList } from '@angular/material/list';
 import { ExpandIconComponent } from '@osee/shared/components';
 import { UiService } from '@osee/shared/services';
-import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { RELATIONTYPEID } from '@osee/shared/types/constants';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -46,15 +43,12 @@ import {
 	artifactRelationSide,
 } from '@osee/artifact-with-relations/types';
 import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relation-delete-dialog.component';
-import { ExpansionPanelComponent } from '@osee/shared/components';
-import { TransactionService } from '@osee/transactions/services';
 
 @Component({
 	selector: 'osee-relations-editor-panel',
 	imports: [
 		NgClass,
 		AsyncPipe,
-		ExpansionPanelComponent,
 		MatIcon,
 		CdkDropList,
 		MatList,
@@ -65,9 +59,9 @@ import { TransactionService } from '@osee/transactions/services';
 export class RelationsEditorPanelComponent {
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
 	private tabService = inject(ArtifactExplorerTabService);
-	private builder = inject(TransactionBuilderService);
+	private currentTxService = inject(CurrentTransactionService);
 	private uiService = inject(UiService);
-	dialog = inject(MatDialog);
+	private dialog = inject(MatDialog);
 	private artifactIconService = inject(ArtifactIconService);
 
 	artifactId = input.required<`${number}`>();
@@ -79,12 +73,7 @@ export class RelationsEditorPanelComponent {
 	private branchId$ = toObservable(this.branchId);
 	private viewId$ = toObservable(this.viewId);
 
-	private _hierarchyType = toSignal(this.uiService.type, {
-		initialValue: 'baseline',
-	});
-	private _hierarchyEditable = computed(
-		() => this._hierarchyType() === 'working'
-	);
+	private _hierarchyEditable = computed(() => this.editable());
 
 	artWithRelation$ = combineLatest([
 		this.branchId$,
@@ -121,17 +110,14 @@ export class RelationsEditorPanelComponent {
 			this.artifactIconService.getIconVariantClass(icon)
 		);
 	}
-	private transaction = inject(TransactionService);
 
 	toggleExpand(identifier: string) {
 		const newArray = this.dropdownsOpen.value;
 		const index = newArray.indexOf(identifier);
-		// If relation exists in relations dropdowns behavior subject, remove it
 		if (index !== -1) {
 			newArray.splice(index, 1);
 			this.dropdownsOpen.next(newArray);
 		} else {
-			// Otherwise add the relation to the behavior subject
 			this.dropdownsOpen.value.push(identifier);
 		}
 	}
@@ -143,40 +129,27 @@ export class RelationsEditorPanelComponent {
 	): void {
 		const droppedArt: artifactWithRelations = event.item.data;
 		if (this.editable() && this._hierarchyEditable()) {
-			// Build the transaction based on which side an artifact is dropped into
-			this.branchId$
+			this.currentTxService
+				.addRelationAndMutate(
+					'Adding relation in artifact explorer',
+					{
+						typeId: relation.relationTypeToken
+							.id as RELATIONTYPEID,
+						aArtId: side.isSideA
+							? droppedArt.id
+							: this.artifactId(),
+						bArtId: side.isSideA
+							? this.artifactId()
+							: droppedArt.id,
+						afterArtifact: 'end',
+					}
+				)
 				.pipe(
 					take(1),
-					filter((id) => id == this.uiService.id.value),
-					switchMap((branchId) =>
-						of(
-							this.builder.addRelation(
-								undefined,
-								relation.relationTypeToken.id,
-								side.isSideA
-									? droppedArt.id
-									: this.artifactId(),
-								side.isSideA
-									? this.artifactId()
-									: droppedArt.id,
-								'end',
-								undefined,
-								undefined,
-								branchId,
-								'Adding relation in OSEE web artifact explorer'
-							)
-						).pipe(
-							take(1),
-							switchMap((transaction) =>
-								this.transaction.performMutation(transaction)
-							),
-							tap(() => {
-								this.uiService.updated = true;
-								this.uiService.updatedArtifact =
-									this.artifactId();
-							})
-						)
-					)
+					tap(() => {
+						this.uiService.updatedArtifact =
+							this.artifactId();
+					})
 				)
 				.subscribe();
 		}
@@ -187,10 +160,6 @@ export class RelationsEditorPanelComponent {
 		relation: artifactRelation,
 		side: artifactRelationSide
 	) {
-		const branchId = this.branchId$.pipe(
-			take(1),
-			filter((id) => id !== '-1' && id !== '0' && id !== '')
-		);
 		this.artWithRelation$
 			.pipe(
 				take(1),
@@ -208,40 +177,28 @@ export class RelationsEditorPanelComponent {
 							switchMap((dialogResult: string) =>
 								iif(
 									() => dialogResult === 'ok',
-									branchId.pipe(
-										switchMap((id) =>
-											of(
-												this.builder.deleteRelation(
-													undefined,
-													relation.relationTypeToken
-														.id,
-													side.isSideA
-														? otherArt.id
-														: art.id,
-													side.isSideA
-														? art.id
-														: otherArt.id,
-													undefined,
-													undefined,
-													id,
-													'Deleting relation in OSEE web artifact explorer'
-												)
-											).pipe(
-												take(1),
-												switchMap((transaction) =>
-													this.transaction.performMutation(
-														transaction
-													)
-												),
-												tap(() => {
-													this.uiService.updated =
-														true;
-													this.uiService.updatedArtifact =
-														this.artifactId();
-												})
-											)
+									this.currentTxService
+										.deleteRelationAndMutate(
+											'Deleting relation in artifact explorer',
+											{
+												typeId: relation
+													.relationTypeToken
+													.id as RELATIONTYPEID,
+												aArtId: side.isSideA
+													? otherArt.id
+													: art.id,
+												bArtId: side.isSideA
+													? art.id
+													: otherArt.id,
+											}
 										)
-									),
+										.pipe(
+											take(1),
+											tap(() => {
+												this.uiService.updatedArtifact =
+													this.artifactId();
+											})
+										),
 									of()
 								)
 							)
@@ -249,12 +206,6 @@ export class RelationsEditorPanelComponent {
 				)
 			)
 			.subscribe();
-	}
-
-	// panel open/close state handling
-	panelOpen = new BehaviorSubject<boolean>(false);
-	togglePanel() {
-		this.panelOpen.next(!this.panelOpen.value);
 	}
 
 	// track the state of the UI as relation dropdowns expand and collapse

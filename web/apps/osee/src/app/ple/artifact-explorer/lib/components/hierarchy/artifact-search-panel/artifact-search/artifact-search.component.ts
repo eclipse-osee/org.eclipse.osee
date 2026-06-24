@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, signal, viewChild, inject } from '@angular/core';
+import { Component, signal, viewChild, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -89,6 +89,9 @@ export class ArtifactSearchComponent {
 	private artifactIconService = inject(ArtifactIconService);
 
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
+
+	/** Emits when user selects 'Show in Hierarchy' to switch the parent panel. */
+	navigateToHierarchy = output<void>();
 
 	searchText = new BehaviorSubject<string>('');
 	searchTrigger = new BehaviorSubject<boolean>(false);
@@ -286,7 +289,8 @@ export class ArtifactSearchComponent {
 	}
 
 	showInHierarchy(artifact: artifactTokenWithIcon) {
-		this.artHierPathService.updatePaths(artifact.id);
+		this.artHierPathService.navigateToArtifact(artifact.id);
+		this.navigateToHierarchy.emit();
 	}
 
 	openContextMenu(event: MouseEvent, artifact: artifactTokenWithIcon) {
