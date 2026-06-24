@@ -16,15 +16,17 @@ package org.eclipse.osee.framework.core.data;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Ryan D. Brooks
  */
 public final class AttributeTypeInputStream extends AttributeTypeGeneric<InputStream> {
+   /**
+    * Sentinel default value. This static instance is used only as a type reference / placeholder
+    * and should not be read from directly; consumers must not depend on its stream content.
+    */
    public static final InputStream defaultValue = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
 
    public AttributeTypeInputStream(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
@@ -47,12 +49,11 @@ public final class AttributeTypeInputStream extends AttributeTypeGeneric<InputSt
 
    @Override
    public String storageStringFromValue(InputStream value) {
-      throw new UnsupportedOperationException();
+      return "";
    }
 
    @Override
    public String getDisplayableString(InputStream date) {
-      // The SimpleDateFormat is not thread safe because it mutates its internal state for formatting and parsing
-      return date != null ? new SimpleDateFormat(DateUtil.MMDDYYHHMM).format(date) : "";
+      return date != null ? "<binary content>" : "";
    }
 }

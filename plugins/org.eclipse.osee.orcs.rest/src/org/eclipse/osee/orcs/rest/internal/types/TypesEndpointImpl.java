@@ -25,15 +25,17 @@ import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.ArtifactWithRelationsAttribute;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributePojo;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OperationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -99,11 +101,11 @@ public class TypesEndpointImpl implements TypesEndpoint {
    }
 
    @Override
-   public Collection<ArtifactWithRelationsAttribute> getArtifactTypeAttributes(ArtifactId artifactId) {
+   public Collection<AttributePojo<?>> getArtifactTypeAttributes(ArtifactId artifactId) {
       return orcsApi.tokenService().getArtifactTypes().stream().filter(
          art -> art.getId().equals(artifactId.getId())).flatMap(
             art -> art.getValidAttributeTypes().stream().map(
-               attr -> new ArtifactWithRelationsAttribute(attr, art.getMultiplicity(attr)))).collect(
+               attr -> AttributePojo.valueOf(Id.SENTINEL, attr, GammaId.SENTINEL, "", ""))).collect(
                   Collectors.toList());
    }
 
