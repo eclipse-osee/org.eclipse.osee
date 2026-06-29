@@ -461,7 +461,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(MarkdownContent)
       .zeroOrOne(Extension));
 
-   ArtifactTypeToken AbstractSpecRequirement = osee.add(osee.artifactType(58551193202327573L, "Abstract Spec Requirement", false, Requirement)
+   ArtifactTypeToken AbstractSpecRequirement = osee.add(osee.artifactType(58551193202327573L, "Abstract Spec Requirement", true, Requirement)
       .zeroOrOne(DoorsHierarchy)
       .any(DoorsId)
       .any(DoorsModId)
