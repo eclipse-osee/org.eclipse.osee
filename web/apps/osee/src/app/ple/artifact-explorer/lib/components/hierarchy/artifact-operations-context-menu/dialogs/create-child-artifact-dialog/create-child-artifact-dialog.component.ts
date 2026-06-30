@@ -79,6 +79,7 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 		MatDialogClose,
 	],
 	templateUrl: './create-child-artifact-dialog.component.html',
+	styles: [`:host { --mdc-filled-text-field-container-color: transparent; }`],
 	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class CreateChildArtifactDialogComponent {

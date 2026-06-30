@@ -36,7 +36,7 @@
 						[id]="'' + $index"
 						cdkDrag
 						cdkDragLockAxis="x"
-						class="tw-flex tw-items-center tw-gap-2 tw-px-3 tw-py-1">
+						class="tw-group tw-flex tw-items-center tw-gap-2 tw-px-3 tw-py-1">
 						<mat-icon
 							class="!tw-flex !tw-h-[18px] !tw-w-[18px] !tw-shrink-0 !tw-items-center !tw-justify-center !tw-text-[18px] !tw-leading-none"
 							[class]="getTabIconClasses(tab)">
@@ -49,7 +49,8 @@
 							{{ tab.tabTitle }}
 						</span>
 						<button
-							class="tab-close-btn tw-flex tw-h-5 tw-w-5 tw-shrink-0 tw-items-center tw-justify-center tw-rounded-sm"
+							class="tab-close-btn tw-flex tw-h-5 tw-w-5 tw-shrink-0 tw-items-center tw-justify-center tw-rounded-sm tw-opacity-0 tw-transition-opacity group-hover:tw-opacity-60 hover:!tw-opacity-100 hover:tw-bg-background-hover"
+							[class.!tw-opacity-60]="selectedIndex() === $index"
 							aria-label="Close tab"
 							(click)="removeTab($index)">
 							<svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">

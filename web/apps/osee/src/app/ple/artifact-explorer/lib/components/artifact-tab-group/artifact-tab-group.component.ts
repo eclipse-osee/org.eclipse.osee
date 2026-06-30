@@ -35,43 +35,13 @@ import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-edit
 	templateUrl: './artifact-tab-group.component.html',
 	styles: [
 		`
-			:host ::ng-deep .mat-mdc-tab-header {
-				border-bottom: 1px solid var(--osee-background-hover, rgba(128, 128, 128, 0.2));
-				--mdc-tab-indicator-active-indicator-height: 2px;
+			:host {
 				--mdc-secondary-navigation-tab-container-height: 36px;
-			}
-			:host ::ng-deep .mdc-tab {
-				min-width: 0 !important;
-				padding: 0 !important;
-			}
-			:host ::ng-deep .mdc-tab--active {
-				opacity: 1;
-			}
-			:host ::ng-deep .mdc-tab:not(.mdc-tab--active) {
-				opacity: 0.6;
-			}
-			:host ::ng-deep .mdc-tab:not(.mdc-tab--active):hover {
-				opacity: 0.85;
-			}
-			:host ::ng-deep .mdc-tab__content {
-				padding: 0 !important;
-				gap: 0 !important;
-			}
-			:host ::ng-deep .mdc-tab__text-label {
-				padding: 0 14px;
-			}
-			/* Hide close button by default, show on tab hover */
-			:host ::ng-deep .mdc-tab .tab-close-btn {
-				opacity: 0;
-				transition: opacity 0.15s;
-			}
-			:host ::ng-deep .mdc-tab:hover .tab-close-btn,
-			:host ::ng-deep .mdc-tab--active .tab-close-btn {
-				opacity: 0.6;
-			}
-			:host ::ng-deep .mdc-tab .tab-close-btn:hover {
-				opacity: 1;
-				background: var(--osee-background-hover, rgba(128, 128, 128, 0.3));
+				--mdc-tab-indicator-active-indicator-height: 2px;
+				--mat-tab-header-divider-color: var(--osee-background-hover, rgba(128, 128, 128, 0.2));
+				--mat-tab-header-divider-height: 1px;
+				--mat-tab-header-inactive-label-text-color: inherit;
+				--mat-tab-header-active-label-text-color: inherit;
 			}
 		`,
 	],

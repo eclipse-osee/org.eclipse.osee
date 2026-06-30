@@ -55,11 +55,9 @@ import { take } from 'rxjs';
 	templateUrl: './attributes-editor-panel.component.html',
 	styles: [
 		`
-			:host ::ng-deep .mdc-text-field--filled:hover::before {
-				opacity: 0 !important;
-			}
-			:host ::ng-deep .mdc-text-field--filled:hover {
-				background: transparent !important;
+			:host {
+				--mdc-filled-text-field-container-color: transparent;
+				--mat-select-enabled-trigger-text-color: inherit;
 			}
 		`,
 	],

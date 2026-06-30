@@ -25,14 +25,10 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 	templateUrl: './branch-type-selector.component.html',
 	styles: [
 		`
-			:host ::ng-deep .mdc-radio {
-				padding: 4px !important;
-			}
-			:host ::ng-deep .mdc-form-field {
-				gap: 0;
-			}
-			:host ::ng-deep .mdc-form-field > label {
-				padding-left: 2px !important;
+			:host {
+				--mdc-radio-state-layer-size: 24px;
+				--mdc-radio-icon-size: 16px;
+				--mat-radio-touch-target-display: none;
 			}
 		`,
 	],

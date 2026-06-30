@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 @if (operationTypes(); as operationTypes) {
-	<div class="tw-flex tw-flex-col tw-text-foreground-base [&_.mat-mdc-menu-item]:tw-min-h-[36px] [&_.mat-mdc-menu-item]:tw-px-3">
+	<div class="tw-flex tw-flex-col tw-text-foreground-base">
 		@for (operationType of operationTypes; track operationType) {
 			<button
 				mat-menu-item

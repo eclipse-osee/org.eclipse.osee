@@ -43,13 +43,16 @@ osee-branch-type-selector .mdc-form-field
   > label
     padding-left: 0 !important
 
-// Artifact explorer: transparent form fields and primary text for selected values
+// Artifact explorer: transparent form fields
 osee-artifact-explorer
   --mdc-filled-text-field-container-color: transparent
   --mat-form-field-container-color: transparent
-  .mat-mdc-form-field-infix input,
-  .mat-mdc-select-value-text
-    color: var(--osee-primary-default) !important
+  --mdc-filled-text-field-hover-container-color: transparent
+  --mdc-filled-text-field-disabled-container-color: transparent
+  .mdc-text-field--filled
+    background: transparent !important
+  .mdc-text-field--filled::before
+    display: none !important
 
 .wide-mat-menu
   min-width: 480px

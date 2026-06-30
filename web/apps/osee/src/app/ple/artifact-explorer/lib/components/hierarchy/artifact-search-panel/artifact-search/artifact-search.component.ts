@@ -78,6 +78,7 @@ import {
 		PaginatedMatListComponent,
 	],
 	templateUrl: './artifact-search.component.html',
+	styles: [`:host { --mdc-filled-text-field-container-color: transparent; }`],
 })
 export class ArtifactSearchComponent {
 	private artExpHttpService = inject(ArtifactExplorerHttpService);

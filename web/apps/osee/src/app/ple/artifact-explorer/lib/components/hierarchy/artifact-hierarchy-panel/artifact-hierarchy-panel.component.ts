@@ -43,12 +43,6 @@ export type HierarchySection = 'hierarchy' | 'search' | 'branch';
 			:host {
 				--mdc-filled-text-field-container-color: transparent;
 				--mat-form-field-container-color: transparent;
-				--mdc-filled-text-field-input-text-color: var(
-					--osee-primary-default
-				);
-				--mat-select-enabled-trigger-text-color: var(
-					--osee-primary-default
-				);
 				--mat-option-selected-state-label-text-color: var(
 					--osee-primary-default
 				);

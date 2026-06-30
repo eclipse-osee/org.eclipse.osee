@@ -49,6 +49,7 @@ import {
 		MatCheckbox,
 	],
 	templateUrl: './advanced-search-form.component.html',
+	styles: [`:host { --mdc-filled-text-field-container-color: transparent; }`],
 })
 export class AdvancedSearchFormComponent {
 	private artifactService = inject(ArtifactUiService);

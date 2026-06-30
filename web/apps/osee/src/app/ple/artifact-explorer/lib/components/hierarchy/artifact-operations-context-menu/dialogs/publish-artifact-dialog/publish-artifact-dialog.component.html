@@ -12,7 +12,7 @@
  -->
 <form #publishMarkdownForm="ngForm">
 	<osee-artifact-dialog-title [operationType]="data.operationType" />
-	<mat-dialog-content class="[&_.mdc-text-field--filled]:tw-bg-transparent">
+	<mat-dialog-content>
 		@if (
 			{
 				openedState: isOpen | async,

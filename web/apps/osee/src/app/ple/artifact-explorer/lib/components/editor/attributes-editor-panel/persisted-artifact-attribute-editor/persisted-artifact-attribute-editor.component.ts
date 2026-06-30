@@ -63,7 +63,8 @@ import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor
 			}
 			@case ('Enumeration') {
 				<mat-form-field
-					class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
+					class="tw-w-full"
+					style="--mdc-filled-text-field-container-color: transparent"
 					subscriptSizing="dynamic">
 					<mat-select
 						[disabled]="disabled()"

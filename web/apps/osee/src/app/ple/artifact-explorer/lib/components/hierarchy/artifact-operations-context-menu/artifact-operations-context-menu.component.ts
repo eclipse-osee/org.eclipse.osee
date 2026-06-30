@@ -38,6 +38,16 @@ import { PublishArtifactDialogComponent } from './dialogs/publish-artifact-dialo
 	selector: 'osee-artifact-operations-context-menu',
 	imports: [MatMenuItem, MatIcon],
 	templateUrl: './artifact-operations-context-menu.component.html',
+	styles: [
+		`
+			:host {
+				--mat-menu-item-label-text-size: 14px;
+				--mat-menu-item-one-line-container-height: 36px;
+				--mat-menu-item-icon-size: 20px;
+				--mat-menu-item-spacing: 8px;
+			}
+		`,
+	],
 })
 export class ArtifactOperationsContextMenuComponent {
 	dialog = inject(MatDialog);
