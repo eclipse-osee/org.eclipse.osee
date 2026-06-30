@@ -29,8 +29,8 @@ markdown-editor.component.ts     ← Toolbar buttons, table parsing, selection l
 
 ### Key types (exported from `@osee/shared/dialogs`)
 
-- `MarkdownTableDialogData` — Input data for the dialog (headers, cells, alignments, spans, isEdit)
-- `MarkdownTableDialogResult` — Output (`{ markdown: string }`)
+- `MarkdownTableDialogData` — Input data for the dialog (headers, cells, alignments, spans, isEdit, caption)
+- `MarkdownTableDialogResult` — Output (`{ markdown: string, caption: string }`)
 - `ColumnAlignment` — `'left' | 'center' | 'right'`
 
 ## Table parsing
@@ -38,10 +38,19 @@ markdown-editor.component.ts     ← Toolbar buttons, table parsing, selection l
 The markdown editor's `parseTableAtSelection()` method:
 1. Walks upward from the cursor through consecutive `|`-starting lines to find a separator line
 2. If not found going up (e.g., cursor is on the header row), checks the line immediately below the cursor for a separator
-3. If there's a text selection that overlaps a table anywhere in the document, falls back to a full scan
-4. Once the separator is found, identifies the header row above and data rows below
-5. Detects Flexmark colspan syntax (`||` = consecutive empty raw cells between pipes)
-6. Returns headers, headerSpans, cells, alignments, and character indices for selection/replacement
+3. If the cursor is on a `<table-caption>` line, skips blank lines above and walks into the table to find the separator
+4. If there's a text selection that overlaps a table anywhere in the document, falls back to a full scan
+5. Once the separator is found, identifies the header row above and data rows below
+6. Scans below the last data row (skipping blank lines) for a `<table-caption>` tag and includes it in the parsed result
+7. Detects Flexmark colspan syntax (`||` = consecutive empty raw cells between pipes)
+8. Returns headers, headerSpans, cells, alignments, caption text, and character indices for selection/replacement
+
+### Caption detection
+
+- A `<table-caption>Text</table-caption>` line following a table (possibly with blank lines in between) is associated with that table.
+- When the cursor is on the caption line, the editor recognizes it as being "in" the table — both "Select Table" and "Edit Table" work from the caption position.
+- The `endIndex` includes blank lines and the caption line, so selection and replacement cover the full table+caption range.
+- Captions are inserted with a single `\n` separator (no blank line) when creating or updating tables.
 
 ### Separator detection
 
@@ -66,11 +75,12 @@ In `parseHeaderRowWithSpans()`, the raw (untrimmed) split is checked — only tr
 - Tables >500 cells batch-load: first 10 rows immediately, then 45 rows per tick
 - Row drag uses direct DOM manipulation during drag, commits to signal on mouseup
 - Dialog teardown clears cells/headers signals before closing to speed up DOM destruction
+- Rows start with explicit pixel height (62px) so `height: 100%` resolves correctly from first render
 
 ## Undo/redo
 
-- Snapshot-based: captures full state (headers, spans, cells, alignments) before each structural operation
-- Text edits captured on `(focus)` — entering a field saves the pre-edit state
+- Snapshot-based: captures full state (headers, spans, cells, alignments, caption) before each structural operation
+- Text edits captured on `(focus)` — entering a field (including the caption input) saves the pre-edit state
 - Max 50 history entries
 - Ctrl+Z / Ctrl+Y / toolbar buttons
 - Listens on `document:keydown` (works regardless of focus position within dialog)
@@ -84,10 +94,18 @@ In `parseHeaderRowWithSpans()`, the raw (untrimmed) split is checked — only tr
 
 ## Toolbar integration
 
-The markdown editor toolbar provides:
-- **Table button** (`table_chart`): Opens create/edit dialog based on cursor position
-- **Select table button** (`select_all`): Highlights the full table at cursor in the textarea
-- Both are disabled during image preview mode with explanatory tooltips
+The markdown editor toolbar (left to right):
+- **Undo** (`undo`): Reverts the last content change in the main editor textarea
+- **Redo** (`redo`): Reapplies a reverted change
+- **Examples** (`lightbulb`): Opens a menu with example markdown snippets to insert; disabled during image preview
+- **Upload image** (`image`): Opens the upload image dialog with `disableClose: true`; disabled when no artifact is selected or upload is in progress; shows `hourglass_empty` during upload
+- **Table** (`table_chart`): Opens create/edit dialog based on cursor position (works from table body, header, separator, or caption line); disabled during image preview
+- **Select table** (`select_all`): Highlights the full table + caption at cursor in the textarea (works from caption line too); disabled during image preview
+- **Image preview toggle** (`visibility` / `edit`): Toggles between editing mode and rendered image preview; shows `hourglass_empty` while images load
+- **Preview panel toggle** (`view_sidebar` / `vertical_split`): Collapses or expands the markdown preview panel
+- **Fullscreen toggle** (`fullscreen` / `fullscreen_exit`): Enters or exits fullscreen mode
+
+All disabled buttons wrap their tooltip in a `<span>` so the tooltip remains visible even when the button is disabled.
 
 ## Dialog UX
 
@@ -96,7 +114,13 @@ The markdown editor toolbar provides:
 - Size inputs update on blur (not keystroke) to avoid erasing mid-type
 - Loading indicator in toolbar for large tables
 - Row resize via drag handles between rows (Excel-style)
+- Default row height: 62px (minimum enforced during resize)
+- Row numbers displayed between the up/down insert arrows in the left gutter
+- Arrow buttons use compact 28px hit area with centered icons
+- "Insert Row Above" tooltip appears above the button; "Insert Row Below" tooltip appears below
 - Sticky header (thead) and left gutter for scrolling
+- Caption input in the dialog actions area with `appearance="outline"`
+- Action buttons (Cancel, Update/Insert) grouped tightly together, separated from the caption input
 
 ## Testing
 
@@ -112,9 +136,12 @@ Test coverage includes:
 - Edit mode (parse headers, cells, alignments, spans from existing markdown)
 - Select table (full highlight including edge detection)
 - Controls (add/remove rows/columns, alignment cycling)
-- Undo/redo (keyboard + buttons, multiple operations)
+- Undo/redo (keyboard + buttons, multiple operations, caption included)
 - Header spans (merge, unmerge, colspan output, colspan parsing, span with insert)
 - Edge cases (backdrop click, Escape, `<br>` encoding, pipe escaping/unescaping, size limits)
+- Caption (insert with caption, parse existing caption, cursor-on-caption detection, blank lines between table and caption, caption undo/redo)
+- Row numbers (display, update on add, tooltip text)
+- Image upload dialog (disableClose behavior)
 
 ## Known limitations
 
