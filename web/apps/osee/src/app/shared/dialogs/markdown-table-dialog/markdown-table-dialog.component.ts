@@ -57,6 +57,7 @@ type TableSnapshot = {
 	readonly headerSpans: number[];
 	readonly cells: string[][];
 	readonly alignments: ColumnAlignment[];
+	readonly caption: string;
 };
 
 @Component({
@@ -131,6 +132,7 @@ export class MarkdownTableDialogComponent {
 			headerSpans: [...this.headerSpans()],
 			cells: this.cells().map((r) => [...r]),
 			alignments: [...this.alignments()],
+			caption: this.caption(),
 		};
 	}
 
@@ -172,6 +174,7 @@ export class MarkdownTableDialogComponent {
 		this.headerSpans.set(snapshot.headerSpans);
 		this.cells.set(snapshot.cells);
 		this.alignments.set(snapshot.alignments);
+		this.caption.set(snapshot.caption);
 	}
 	protected readonly isLoading = signal(true);
 
