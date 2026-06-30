@@ -53,6 +53,11 @@ function getDivider(page: Page): Locator {
 	return getEditor(page).locator('[role="separator"]');
 }
 
+/** Locates a cell textarea by row and column (1-indexed). */
+function getCellTextarea(page: Page, row: number, col: number): Locator {
+	return page.locator(`textarea[aria-label="Row ${row}, Column ${col}"]`);
+}
+
 test.describe('Markdown Editor', () => {
 	test.describe.configure({ mode: 'parallel' });
 
@@ -63,7 +68,9 @@ test.describe('Markdown Editor', () => {
 		await expect(getEditor(page)).toBeVisible({ timeout: 10000 });
 	});
 
-	test('should handle text editing, preview, undo, and redo', async ({ page }) => {
+	test('should handle text editing, preview, undo, and redo', async ({
+		page,
+	}) => {
 		const textarea = getTextarea(page);
 		const preview = getPreviewPanel(page);
 
@@ -102,19 +109,28 @@ test.describe('Markdown Editor', () => {
 				.getByRole('button')
 				.filter({ hasText: /^\s*fullscreen\s*$/ });
 			await fullscreenButton.click();
-			expect(await page.evaluate(() => !!document.fullscreenElement)).toBe(true);
+			expect(
+				await page.evaluate(() => !!document.fullscreenElement)
+			).toBe(true);
 			await getToolbarButton(page, 'fullscreen_exit').click();
-			expect(await page.evaluate(() => !!document.fullscreenElement)).toBe(false);
+			expect(
+				await page.evaluate(() => !!document.fullscreenElement)
+			).toBe(false);
 		});
 	});
 
-	test('should support draggable divider with accessibility', async ({ page }) => {
+	test('should support draggable divider with accessibility', async ({
+		page,
+	}) => {
 		const divider = getDivider(page);
 
 		// Accessibility attributes
 		await test.step('Verify accessibility attributes', async () => {
 			await expect(divider).toHaveAttribute('role', 'separator');
-			await expect(divider).toHaveAttribute('aria-orientation', 'vertical');
+			await expect(divider).toHaveAttribute(
+				'aria-orientation',
+				'vertical'
+			);
 			await expect(divider).toHaveAttribute('tabindex', '0');
 			await expect(divider).toHaveAttribute('aria-valuemin', '20');
 			await expect(divider).toHaveAttribute('aria-valuemax', '80');
@@ -130,7 +146,9 @@ test.describe('Markdown Editor', () => {
 			await page.mouse.down();
 			await page.mouse.move(startX + 100, startY, { steps: 5 });
 			await page.mouse.up();
-			const editorPane = getEditor(page).locator('[data-testid="editor-pane"]');
+			const editorPane = getEditor(page).locator(
+				'[data-testid="editor-pane"]'
+			);
 			expect(await editorPane.getAttribute('style')).toContain('width');
 		});
 
@@ -143,7 +161,9 @@ test.describe('Markdown Editor', () => {
 		});
 	});
 
-	test('should display toolbar buttons and handle disabled states', async ({ page }) => {
+	test('should display toolbar buttons and handle disabled states', async ({
+		page,
+	}) => {
 		await test.step('Core toolbar buttons are visible', async () => {
 			await expect(getToolbarButton(page, 'undo')).toBeVisible();
 			await expect(getToolbarButton(page, 'redo')).toBeVisible();
@@ -161,7 +181,9 @@ test.describe('Markdown Editor', () => {
 			const menuItems = page.getByRole('menuitem');
 			await expect(menuItems.first()).toBeVisible();
 			await menuItems.first().click();
-			expect((await textarea.inputValue()).length).toBeGreaterThan(initialValue.length);
+			expect((await textarea.inputValue()).length).toBeGreaterThan(
+				initialValue.length
+			);
 		});
 
 		await test.step('Image preview mode disables editing and table buttons', async () => {
@@ -175,14 +197,22 @@ test.describe('Markdown Editor', () => {
 		});
 	});
 
-	test('should create, edit, and select tables via the table dialog', async ({ page }) => {
+	test('should create, edit, and select tables via the table dialog', async ({
+		page,
+	}) => {
 		const textarea = getTextarea(page);
 
 		await test.step('Open dialog in create mode and insert table', async () => {
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible({ timeout: 5000 });
-			await expect(page.getByRole('spinbutton', { name: 'Column count' })).toBeVisible();
-			await expect(page.getByRole('spinbutton', { name: 'Row count' })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { name: /Insert Table/i })
+			).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('spinbutton', { name: 'Column count' })
+			).toBeVisible();
+			await expect(
+				page.getByRole('spinbutton', { name: 'Row count' })
+			).toBeVisible();
 			await page.getByRole('button', { name: 'Insert Table' }).click();
 			const value = await textarea.inputValue();
 			expect(value).toContain('|');
@@ -193,38 +223,56 @@ test.describe('Markdown Editor', () => {
 			await textarea.click();
 			await textarea.fill('Original content');
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('heading', { name: /Insert Table/i })
+			).toBeVisible({ timeout: 5000 });
 			await page.getByRole('button', { name: 'Cancel' }).click();
 			await expect(textarea).toHaveValue('Original content');
 		});
 
 		await test.step('Edit mode parses existing table', async () => {
 			await textarea.click();
-			await textarea.fill('| Name | Age |\n| :-- | :-: |\n| Alice | 30 |\n| Bob | 25 |');
+			await textarea.fill(
+				'| Name | Age |\n| :-- | :-: |\n| Alice | 30 |\n| Bob | 25 |'
+			);
 			await textarea.click();
 			await textarea.press('Home');
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Edit Table/i })).toBeVisible({ timeout: 5000 });
-			await expect(page.getByRole('textbox', { name: 'Header 1' })).toHaveValue('Name');
-			await expect(page.getByRole('textbox', { name: 'Header 2' })).toHaveValue('Age');
-			await expect(page.locator('textarea[aria-label="Row 1, Column 1"]')).toHaveValue('Alice');
-			await expect(page.locator('textarea[aria-label="Row 2, Column 2"]')).toHaveValue('25');
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('textbox', { name: 'Header 1' })
+			).toHaveValue('Name');
+			await expect(
+				page.getByRole('textbox', { name: 'Header 2' })
+			).toHaveValue('Age');
+			await expect(getCellTextarea(page, 1, 1)).toHaveValue('Alice');
+			await expect(getCellTextarea(page, 2, 2)).toHaveValue('25');
 			await page.getByRole('button', { name: 'Cancel' }).click();
-			await expect(page.getByRole('heading', { name: /Edit Table/i })).not.toBeVisible();
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).not.toBeVisible();
 		});
 
 		await test.step('Select table highlights correct range', async () => {
 			await textarea.click();
-			await textarea.fill('Before\n| X | Y |\n| :-- | :-- |\n| 1 | 2 |\nAfter');
+			await textarea.fill(
+				'Before\n| X | Y |\n| :-- | :-- |\n| 1 | 2 |\nAfter'
+			);
 			await page.evaluate(() => {
-				const ta = document.querySelector('textarea[aria-label="Markdown content editor"]') as HTMLTextAreaElement;
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
 				ta.selectionStart = 10;
 				ta.selectionEnd = 10;
 				ta.dispatchEvent(new Event('blur'));
 			});
 			await getToolbarButton(page, 'select_all').click();
 			const selection = await page.evaluate(() => {
-				const ta = document.querySelector('textarea[aria-label="Markdown content editor"]') as HTMLTextAreaElement;
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
 				return ta.value.substring(ta.selectionStart, ta.selectionEnd);
 			});
 			expect(selection).toContain('| X | Y |');
@@ -236,47 +284,96 @@ test.describe('Markdown Editor', () => {
 			await textarea.click();
 			await textarea.fill('No table here');
 			await getToolbarButton(page, 'select_all').click();
-			await expect(page.getByText('No table found at the cursor position.')).toBeVisible({ timeout: 3000 });
+			await expect(
+				page.getByText('No table found at the cursor position.')
+			).toBeVisible({ timeout: 3000 });
 		});
 	});
 
-	test('should add, remove rows and columns, and cycle alignment', async ({ page }) => {
+	test('should add, remove rows and columns, and cycle alignment', async ({
+		page,
+	}) => {
 		await getToolbarButton(page, 'table_chart').click();
-		await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible({ timeout: 5000 });
+		await expect(
+			page.getByRole('heading', { name: /Insert Table/i })
+		).toBeVisible({ timeout: 5000 });
 
 		const rowInput = page.getByRole('spinbutton', { name: 'Row count' });
 		const colInput = page.getByRole('spinbutton', { name: 'Column count' });
 
 		await test.step('Add and remove rows and columns', async () => {
-			await page.locator('button').filter({ hasText: 'keyboard_arrow_down' }).first().click();
+			await page
+				.locator('button')
+				.filter({ hasText: 'keyboard_arrow_down' })
+				.first()
+				.click();
 			expect(parseInt(await rowInput.inputValue())).toBe(4);
-			await page.locator('button').filter({ hasText: 'keyboard_arrow_right' }).first().click();
+			await page
+				.locator('button')
+				.filter({ hasText: 'keyboard_arrow_right' })
+				.first()
+				.click();
 			expect(parseInt(await colInput.inputValue())).toBe(4);
-			await page.locator('td button').filter({ hasText: 'close' }).first().click();
+			await page
+				.locator('td button')
+				.filter({ hasText: 'close' })
+				.first()
+				.click();
 			expect(parseInt(await rowInput.inputValue())).toBe(3);
-			await page.locator('thead button').filter({ hasText: 'close' }).first().click();
+			await page
+				.locator('thead button')
+				.filter({ hasText: 'close' })
+				.first()
+				.click();
 			expect(parseInt(await colInput.inputValue())).toBe(3);
 		});
 
 		await test.step('Cycle alignment and verify markdown output', async () => {
-			const alignButton = page.locator('thead button').filter({ hasText: 'format_align_left' }).first();
+			const alignButton = page
+				.locator('thead button')
+				.filter({ hasText: 'format_align_left' })
+				.first();
 			await alignButton.click();
-			await expect(page.locator('thead button').filter({ hasText: 'format_align_center' }).first()).toBeVisible();
-			await page.locator('thead button').filter({ hasText: 'format_align_center' }).first().click();
-			await expect(page.locator('thead button').filter({ hasText: 'format_align_right' }).first()).toBeVisible();
+			await expect(
+				page
+					.locator('thead button')
+					.filter({ hasText: 'format_align_center' })
+					.first()
+			).toBeVisible();
+			await page
+				.locator('thead button')
+				.filter({ hasText: 'format_align_center' })
+				.first()
+				.click();
+			await expect(
+				page
+					.locator('thead button')
+					.filter({ hasText: 'format_align_right' })
+					.first()
+			).toBeVisible();
 			const textarea = getTextarea(page);
 			await page.getByRole('button', { name: 'Insert Table' }).click();
 			expect(await textarea.inputValue()).toContain('--:');
 		});
 	});
 
-	test('should support undo/redo and header spans in the table dialog', async ({ page }) => {
+	test('should support undo/redo and header spans in the table dialog', async ({
+		page,
+	}) => {
 		await getToolbarButton(page, 'table_chart').click();
-		await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible({ timeout: 5000 });
+		await expect(
+			page.getByRole('heading', { name: /Insert Table/i })
+		).toBeVisible({ timeout: 5000 });
 
 		await test.step('Undo/redo structural changes', async () => {
-			const rowInput = page.getByRole('spinbutton', { name: 'Row count' });
-			await page.locator('button').filter({ hasText: 'keyboard_arrow_down' }).first().click();
+			const rowInput = page.getByRole('spinbutton', {
+				name: 'Row count',
+			});
+			await page
+				.locator('button')
+				.filter({ hasText: 'keyboard_arrow_down' })
+				.first()
+				.click();
 			expect(parseInt(await rowInput.inputValue())).toBe(4);
 			await page.keyboard.press('Control+z');
 			expect(parseInt(await rowInput.inputValue())).toBe(3);
@@ -286,10 +383,10 @@ test.describe('Markdown Editor', () => {
 		});
 
 		await test.step('Undo text input captured on focus', async () => {
-			const cell = page.locator('textarea[aria-label="Row 1, Column 1"]');
+			const cell = getCellTextarea(page, 1, 1);
 			await cell.click();
 			await cell.fill('Hello');
-			const cell2 = page.locator('textarea[aria-label="Row 1, Column 2"]');
+			const cell2 = getCellTextarea(page, 1, 2);
 			await cell2.click();
 			await cell2.fill('World');
 			await page.keyboard.press('Control+z');
@@ -299,50 +396,82 @@ test.describe('Markdown Editor', () => {
 		});
 
 		await test.step('Merge, unmerge, and verify colspan output', async () => {
-			await page.locator('button').filter({ hasText: 'merge_type' }).nth(1).click();
-			await expect(page.locator('mat-label').filter({ hasText: '2 cols' })).toBeVisible();
-			await page.locator('button').filter({ hasText: 'call_split' }).first().click();
-			await expect(page.locator('mat-label').filter({ hasText: '2 cols' })).not.toBeVisible();
+			await page
+				.locator('button')
+				.filter({ hasText: 'merge_type' })
+				.nth(1)
+				.click();
+			await expect(
+				page.locator('mat-label').filter({ hasText: '2 cols' })
+			).toBeVisible();
+			await page
+				.locator('button')
+				.filter({ hasText: 'call_split' })
+				.first()
+				.click();
+			await expect(
+				page.locator('mat-label').filter({ hasText: '2 cols' })
+			).not.toBeVisible();
 			const headerInput = page.getByRole('textbox', { name: /Header 1/ });
 			await headerInput.click();
 			await headerInput.fill('Merged');
-			await page.locator('button').filter({ hasText: 'merge_type' }).nth(1).click();
+			await page
+				.locator('button')
+				.filter({ hasText: 'merge_type' })
+				.nth(1)
+				.click();
 			const textarea = getTextarea(page);
 			await page.getByRole('button', { name: 'Insert Table' }).click();
 			expect(await textarea.inputValue()).toMatch(/Merged\s*\|\|/);
 		});
 	});
 
-	test('should parse colspan syntax and handle edge cases', async ({ page }) => {
+	test('should parse colspan syntax and handle edge cases', async ({
+		page,
+	}) => {
 		const textarea = getTextarea(page);
 
 		await test.step('Parse existing colspan in edit mode', async () => {
 			await textarea.click();
-			await textarea.fill('| Span1 ||| Span2 |\n| :-- | :-- | :-- | :-- |\n| a | b | c | d |');
+			await textarea.fill(
+				'| Span1 ||| Span2 |\n| :-- | :-- | :-- | :-- |\n| a | b | c | d |'
+			);
 			await textarea.click();
 			await textarea.press('Home');
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Edit Table/i })).toBeVisible({ timeout: 5000 });
-			await expect(page.locator('mat-label').filter({ hasText: '3 cols' })).toBeVisible();
-			await expect(page.getByRole('textbox', { name: /Header 1/ })).toHaveValue('Span1');
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.locator('mat-label').filter({ hasText: '3 cols' })
+			).toBeVisible();
+			await expect(
+				page.getByRole('textbox', { name: /Header 1/ })
+			).toHaveValue('Span1');
 			await page.getByRole('button', { name: 'Cancel' }).click();
-			await expect(page.getByRole('heading', { name: /Edit Table/i })).not.toBeVisible();
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).not.toBeVisible();
 		});
 
 		await test.step('Dialog does not close on backdrop click', async () => {
 			await textarea.click();
 			await textarea.fill('');
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('heading', { name: /Insert Table/i })
+			).toBeVisible({ timeout: 5000 });
 			await page.mouse.click(10, 10);
-			await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { name: /Insert Table/i })
+			).toBeVisible();
 		});
 
 		await test.step('Encode newlines and escape pipes in cells', async () => {
-			const cell = page.locator('textarea[aria-label="Row 1, Column 1"]');
+			const cell = getCellTextarea(page, 1, 1);
 			await cell.click();
 			await cell.fill('Line1\nLine2');
-			const cell2 = page.locator('textarea[aria-label="Row 1, Column 2"]');
+			const cell2 = getCellTextarea(page, 1, 2);
 			await cell2.click();
 			await cell2.fill('a | b');
 			await page.getByRole('button', { name: 'Insert Table' }).click();
@@ -356,58 +485,86 @@ test.describe('Markdown Editor', () => {
 			await textarea.fill('| H1 | H2 |\n| :-- | :-- |\n| a \\| b | c |');
 			await textarea.press('Home');
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Edit Table/i })).toBeVisible({ timeout: 5000 });
-			await expect(page.locator('textarea[aria-label="Row 1, Column 1"]')).toHaveValue('a | b');
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).toBeVisible({ timeout: 5000 });
+			await expect(getCellTextarea(page, 1, 1)).toHaveValue('a | b');
 			await page.getByRole('button', { name: 'Cancel' }).click();
 		});
 	});
 
-	test('should handle caption insertion, detection from caption line, and blank lines', async ({ page }) => {
+	test('should handle caption insertion, detection from caption line, and blank lines', async ({
+		page,
+	}) => {
 		const textarea = getTextarea(page);
 
 		await test.step('Insert table with caption', async () => {
 			await textarea.click();
 			await textarea.fill('');
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible({ timeout: 5000 });
-			const captionInput = page.getByRole('textbox', { name: 'Table caption' });
+			await expect(
+				page.getByRole('heading', { name: /Insert Table/i })
+			).toBeVisible({ timeout: 5000 });
+			const captionInput = page.getByRole('textbox', {
+				name: 'Table caption',
+			});
 			await captionInput.click();
 			await captionInput.fill('My Caption');
 			await page.getByRole('button', { name: 'Insert Table' }).click();
-			expect(await textarea.inputValue()).toContain('<table-caption>My Caption</table-caption>');
+			expect(await textarea.inputValue()).toContain(
+				'<table-caption>My Caption</table-caption>'
+			);
 		});
 
 		await test.step('Insert table without caption', async () => {
 			await textarea.click();
 			await textarea.fill('');
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('heading', { name: /Insert Table/i })
+			).toBeVisible({ timeout: 5000 });
 			await page.getByRole('button', { name: 'Insert Table' }).click();
-			expect(await textarea.inputValue()).not.toContain('<table-caption>');
+			expect(await textarea.inputValue()).not.toContain(
+				'<table-caption>'
+			);
 		});
 
 		await test.step('Detect table when cursor is on caption line', async () => {
 			await textarea.click();
-			await textarea.fill('| H1 | H2 |\n| :-- | :-- |\n| a | b |\n<table-caption>Caption Here</table-caption>');
+			await textarea.fill(
+				'| H1 | H2 |\n| :-- | :-- |\n| a | b |\n<table-caption>Caption Here</table-caption>'
+			);
 			await page.evaluate(() => {
-				const ta = document.querySelector('textarea[aria-label="Markdown content editor"]') as HTMLTextAreaElement;
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
 				const pos = ta.value.indexOf('<table-caption>') + 5;
 				ta.selectionStart = pos;
 				ta.selectionEnd = pos;
 				ta.dispatchEvent(new Event('blur'));
 			});
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Edit Table/i })).toBeVisible({ timeout: 5000 });
-			await expect(page.getByRole('textbox', { name: 'Table caption' })).toHaveValue('Caption Here');
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('textbox', { name: 'Table caption' })
+			).toHaveValue('Caption Here');
 			await page.getByRole('button', { name: 'Cancel' }).click();
-			await expect(page.getByRole('heading', { name: /Edit Table/i })).not.toBeVisible();
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).not.toBeVisible();
 		});
 
 		await test.step('Select table includes caption from caption line', async () => {
 			await textarea.click();
-			await textarea.fill('Before\n| H1 | H2 |\n| :-- | :-- |\n| a | b |\n<table-caption>Cap</table-caption>\nAfter');
+			await textarea.fill(
+				'Before\n| H1 | H2 |\n| :-- | :-- |\n| a | b |\n<table-caption>Cap</table-caption>\nAfter'
+			);
 			await page.evaluate(() => {
-				const ta = document.querySelector('textarea[aria-label="Markdown content editor"]') as HTMLTextAreaElement;
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
 				const pos = ta.value.indexOf('<table-caption>') + 3;
 				ta.selectionStart = pos;
 				ta.selectionEnd = pos;
@@ -415,7 +572,9 @@ test.describe('Markdown Editor', () => {
 			});
 			await getToolbarButton(page, 'select_all').click();
 			const selection = await page.evaluate(() => {
-				const ta = document.querySelector('textarea[aria-label="Markdown content editor"]') as HTMLTextAreaElement;
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
 				return ta.value.substring(ta.selectionStart, ta.selectionEnd);
 			});
 			expect(selection).toContain('| H1 | H2 |');
@@ -426,30 +585,44 @@ test.describe('Markdown Editor', () => {
 
 		await test.step('Detect table with blank lines between table and caption', async () => {
 			await textarea.click();
-			await textarea.fill('| H1 | H2 |\n| :-- | :-- |\n| a | b |\n\n<table-caption>Spaced</table-caption>');
+			await textarea.fill(
+				'| H1 | H2 |\n| :-- | :-- |\n| a | b |\n\n<table-caption>Spaced</table-caption>'
+			);
 			await page.evaluate(() => {
-				const ta = document.querySelector('textarea[aria-label="Markdown content editor"]') as HTMLTextAreaElement;
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
 				const pos = ta.value.indexOf('<table-caption>') + 5;
 				ta.selectionStart = pos;
 				ta.selectionEnd = pos;
 				ta.dispatchEvent(new Event('blur'));
 			});
 			await getToolbarButton(page, 'table_chart').click();
-			await expect(page.getByRole('heading', { name: /Edit Table/i })).toBeVisible({ timeout: 5000 });
-			await expect(page.getByRole('textbox', { name: 'Table caption' })).toHaveValue('Spaced');
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('textbox', { name: 'Table caption' })
+			).toHaveValue('Spaced');
 			await page.getByRole('button', { name: 'Cancel' }).click();
 		});
 	});
 
-	test('should include caption in undo/redo within the table dialog', async ({ page }) => {
+	test('should include caption in undo/redo within the table dialog', async ({
+		page,
+	}) => {
 		await getToolbarButton(page, 'table_chart').click();
-		await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible({ timeout: 5000 });
+		await expect(
+			page.getByRole('heading', { name: /Insert Table/i })
+		).toBeVisible({ timeout: 5000 });
 		// Focus caption (triggers saveUndoState)
-		const captionInput = page.getByRole('textbox', { name: 'Table caption' });
+		const captionInput = page.getByRole('textbox', {
+			name: 'Table caption',
+		});
 		await captionInput.click();
 		await captionInput.fill('First Caption');
 		// Focus a cell to save state
-		const cell = page.locator('textarea[aria-label="Row 1, Column 1"]');
+		const cell = getCellTextarea(page, 1, 1);
 		await cell.click();
 		await cell.fill('data');
 		// Change caption again
@@ -464,31 +637,47 @@ test.describe('Markdown Editor', () => {
 		await page.getByRole('button', { name: 'Cancel' }).click();
 	});
 
-	test('should display row numbers, update on add, and show correct tooltips', async ({ page }) => {
+	test('should display row numbers, update on add, and show correct tooltips', async ({
+		page,
+	}) => {
 		await getToolbarButton(page, 'table_chart').click();
-		await expect(page.getByRole('heading', { name: /Insert Table/i })).toBeVisible({ timeout: 5000 });
+		await expect(
+			page.getByRole('heading', { name: /Insert Table/i })
+		).toBeVisible({ timeout: 5000 });
 
 		// Row numbers 1, 2, 3 in the left gutter
-		const dataRows = page.locator('tbody tr:has(td.tw-sticky)');
-		await expect(dataRows.nth(0).locator('td.tw-sticky')).toContainText('1');
-		await expect(dataRows.nth(1).locator('td.tw-sticky')).toContainText('2');
-		await expect(dataRows.nth(2).locator('td.tw-sticky')).toContainText('3');
+		const rowHeaders = page.getByRole('rowheader');
+		await expect(rowHeaders.nth(0)).toHaveAttribute('aria-label', 'Row 1');
+		await expect(rowHeaders.nth(1)).toHaveAttribute('aria-label', 'Row 2');
+		await expect(rowHeaders.nth(2)).toHaveAttribute('aria-label', 'Row 3');
 
 		// Add a row and verify number updates
-		await page.locator('button').filter({ hasText: 'keyboard_arrow_down' }).first().click();
-		await expect(dataRows.nth(3).locator('td.tw-sticky')).toContainText('4');
+		await page
+			.locator('button')
+			.filter({ hasText: 'keyboard_arrow_down' })
+			.first()
+			.click();
+		await expect(rowHeaders.nth(3)).toHaveAttribute('aria-label', 'Row 4');
 
 		// Tooltip on up arrow button
-		const upButton = page.locator('tbody button').filter({ hasText: 'keyboard_arrow_up' }).first();
+		const upButton = page
+			.locator('tbody button')
+			.filter({ hasText: 'keyboard_arrow_up' })
+			.first();
 		await upButton.hover();
 		await expect(
-			page.locator('.mat-mdc-tooltip-surface').filter({ hasText: 'Insert Row Above' }).first()
+			page
+				.locator('.mat-mdc-tooltip-surface')
+				.filter({ hasText: 'Insert Row Above' })
+				.first()
 		).toBeVisible({ timeout: 3000 });
 
 		await page.getByRole('button', { name: 'Cancel' }).click();
 	});
 
-	test('should insert caption examples and edit table from caption position', async ({ page }) => {
+	test('should insert caption examples and edit table from caption position', async ({
+		page,
+	}) => {
 		const textarea = getTextarea(page);
 
 		// Insert table caption example
@@ -496,21 +685,27 @@ test.describe('Markdown Editor', () => {
 		await textarea.fill('');
 		await getToolbarButton(page, 'lightbulb').click();
 		await page.getByRole('menuitem', { name: 'Table Caption' }).click();
-		expect(await textarea.inputValue()).toContain('<table-caption>Table caption text</table-caption>');
+		expect(await textarea.inputValue()).toContain(
+			'<table-caption>Table caption text</table-caption>'
+		);
 
 		// Insert figure caption example
 		await textarea.click();
 		await textarea.fill('');
 		await getToolbarButton(page, 'lightbulb').click();
 		await page.getByRole('menuitem', { name: 'Figure Caption' }).click();
-		expect(await textarea.inputValue()).toContain('<figure-caption>Figure caption text</figure-caption>');
+		expect(await textarea.inputValue()).toContain(
+			'<figure-caption>Figure caption text</figure-caption>'
+		);
 
 		// Insert table + caption examples, then edit from caption position
 		await textarea.click();
 		await textarea.fill('');
 		await getToolbarButton(page, 'lightbulb').click();
-		await page.getByRole('menuitem', { name: 'Table', exact: true }).click();
-		let value = await textarea.inputValue();
+		await page
+			.getByRole('menuitem', { name: 'Table', exact: true })
+			.click();
+		const value = await textarea.inputValue();
 		expect(value).toContain('|col 1|col 2|col 3|');
 
 		await getToolbarButton(page, 'lightbulb').click();
@@ -519,11 +714,15 @@ test.describe('Markdown Editor', () => {
 		// Place cursor inside the <table-caption> tag text
 		await textarea.click();
 		const captionPos = await page.evaluate(() => {
-			const ta = document.querySelector('textarea[aria-label="Markdown content editor"]') as HTMLTextAreaElement;
+			const ta = document.querySelector(
+				'textarea[aria-label="Markdown content editor"]'
+			) as HTMLTextAreaElement;
 			return ta.value.indexOf('table-caption>') + 15;
 		});
 		await page.evaluate((pos) => {
-			const ta = document.querySelector('textarea[aria-label="Markdown content editor"]') as HTMLTextAreaElement;
+			const ta = document.querySelector(
+				'textarea[aria-label="Markdown content editor"]'
+			) as HTMLTextAreaElement;
 			ta.selectionStart = pos;
 			ta.selectionEnd = pos;
 			ta.focus();
@@ -532,26 +731,36 @@ test.describe('Markdown Editor', () => {
 
 		// Open table dialog — should be in Edit mode
 		await getToolbarButton(page, 'table_chart').click();
-		await expect(page.getByRole('heading', { name: /Edit Table/i })).toBeVisible({ timeout: 5000 });
-		await expect(page.getByRole('textbox', { name: 'Header 1' })).toHaveValue('col 1');
-		await expect(page.getByRole('textbox', { name: 'Table caption' })).toHaveValue('Table caption text');
+		await expect(
+			page.getByRole('heading', { name: /Edit Table/i })
+		).toBeVisible({ timeout: 5000 });
+		await expect(
+			page.getByRole('textbox', { name: 'Header 1' })
+		).toHaveValue('col 1');
+		await expect(
+			page.getByRole('textbox', { name: 'Table caption' })
+		).toHaveValue('Table caption text');
 		await page.getByRole('button', { name: 'Cancel' }).click();
 	});
 
-	test('should not close image upload dialog on backdrop click', async ({ page }) => {
+	test('should not close image upload dialog on backdrop click', async ({
+		page,
+	}) => {
 		const uploadButton = getToolbarButton(page, 'image');
-		const isDisabled = await uploadButton.isDisabled();
-		if (isDisabled) {
-			test.skip();
-			return;
-		}
+		await expect(uploadButton).toBeEnabled();
 		await uploadButton.click();
-		await expect(page.getByRole('heading', { name: /Upload Image/i })).toBeVisible({ timeout: 5000 });
+		await expect(
+			page.getByRole('heading', { name: /Upload Image/i })
+		).toBeVisible({ timeout: 5000 });
 		// Backdrop click should not close
 		await page.mouse.click(10, 10);
-		await expect(page.getByRole('heading', { name: /Upload Image/i })).toBeVisible();
+		await expect(
+			page.getByRole('heading', { name: /Upload Image/i })
+		).toBeVisible();
 		// Cancel closes
 		await page.getByRole('button', { name: 'Cancel' }).click();
-		await expect(page.getByRole('heading', { name: /Upload Image/i })).not.toBeVisible();
+		await expect(
+			page.getByRole('heading', { name: /Upload Image/i })
+		).not.toBeVisible();
 	});
 });

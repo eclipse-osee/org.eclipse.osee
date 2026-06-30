@@ -336,10 +336,7 @@ export class MarkdownEditorComponent {
 					switchMap((result) => {
 						this.isUploading.set(true);
 						return this.imageService
-							.uploadImageArtifact(
-								this.artifactId(),
-								result.file
-							)
+							.uploadImageArtifact(this.artifactId(), result.file)
 							.pipe(
 								map((uploadResult) => ({
 									uploadResult,
@@ -350,10 +347,7 @@ export class MarkdownEditorComponent {
 				)
 				.subscribe({
 					next: ({ uploadResult, caption }) => {
-						this.insertImageLink(
-							uploadResult.artifactId,
-							caption
-						);
+						this.insertImageLink(uploadResult.artifactId, caption);
 						this.isUploading.set(false);
 						if (wasFullscreen) {
 							this.enterFullscreen();
@@ -727,10 +721,7 @@ export class MarkdownEditorComponent {
 			if (captionMatch && cursorLineIndex > 0) {
 				// Skip blank lines above the caption to find the table
 				let searchFrom = cursorLineIndex - 1;
-				while (
-					searchFrom >= 0 &&
-					lines[searchFrom].trim() === ''
-				) {
+				while (searchFrom >= 0 && lines[searchFrom].trim() === '') {
 					searchFrom--;
 				}
 				// Walk upward from the last non-blank line to find the separator

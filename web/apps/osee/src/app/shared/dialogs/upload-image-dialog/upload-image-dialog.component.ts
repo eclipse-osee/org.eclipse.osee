@@ -13,6 +13,7 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	DestroyRef,
 	inject,
 	signal,
 } from '@angular/core';
@@ -75,6 +76,10 @@ export class UploadImageDialogComponent {
 		>(MatDialogRef);
 	protected readonly data = inject<UploadImageDialogData>(MAT_DIALOG_DATA);
 	private readonly uiService = inject(UiService);
+
+	private readonly cleanup = inject(DestroyRef).onDestroy(() =>
+		this.revokePreview()
+	);
 
 	protected readonly selectedFile = signal<File | null>(null);
 	protected readonly previewUrl = signal<string | null>(null);

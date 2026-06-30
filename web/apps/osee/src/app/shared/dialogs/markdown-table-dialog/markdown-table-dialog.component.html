@@ -224,20 +224,24 @@
 					<!-- Data row -->
 					<tr [style.height]="getRowHeight(rowIdx)">
 						<td
+							role="rowheader"
+							[attr.aria-label]="'Row ' + (rowIdx + 1)"
 							class="tw-sticky tw-left-0 tw-z-10 tw-border-b tw-border-r tw-border-osee-neutral-25 tw-bg-white tw-px-1 tw-py-0 tw-text-center dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
 							<div
 								class="tw-flex tw-items-center tw-justify-center tw-gap-1">
-								<div class="tw-flex tw-flex-col tw-items-center">
+								<div
+									class="tw-flex tw-flex-col tw-items-center">
 									<button
 										mat-icon-button
 										type="button"
 										matTooltip="Insert Row Above"
 										matTooltipPosition="above"
-										class="!tw-h-7 !tw-w-7 !tw-flex !tw-items-center !tw-justify-center tw-text-osee-blue-6"
+										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
 										(click)="insertRowAt(rowIdx)">
 										<mat-icon>keyboard_arrow_up</mat-icon>
 									</button>
 									<span
+										aria-hidden="true"
 										class="tw-text-xs tw-font-medium tw-leading-none tw-text-osee-neutral-60">
 										{{ rowIdx + 1 }}
 									</span>
@@ -245,7 +249,7 @@
 										mat-icon-button
 										type="button"
 										matTooltip="Insert Row Below"
-										class="!tw-h-7 !tw-w-7 !tw-flex !tw-items-center !tw-justify-center tw-text-osee-blue-6"
+										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
 										(click)="insertRowAt(rowIdx + 1)">
 										<mat-icon>keyboard_arrow_down</mat-icon>
 									</button>
@@ -263,11 +267,11 @@
 							</div>
 						</td>
 						@for (cell of row; track $index; let colIdx = $index) {
+							<!-- Inline style required: tw-h-full doesn't resolve on <td> when row height is set via [style.height] -->
 							<td
 								class="tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-px dark:tw-border-osee-neutral-100"
 								style="height: 100%">
-								<div
-									class="tw-flex tw-h-full tw-min-h-full">
+								<div class="tw-flex tw-h-full tw-min-h-full">
 									<textarea
 										rows="3"
 										[ngModel]="cell"

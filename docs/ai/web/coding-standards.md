@@ -163,6 +163,7 @@ npx playwright show-report
 
 - **Use accessible locators** in priority order: `getByRole`, `getByLabel`, `getByText`, `getByTestId`. Avoid CSS selectors and XPath — they break on refactors.
 - **Add `data-testid` attributes** to components when no accessible locator is available. Prefer this over fragile structural selectors.
+- **Prefer adding aria attributes over `data-testid`** when the element lacks a semantic role or label. Adding `role`, `aria-label`, or `aria-labelledby` to the component template improves both accessibility and testability — use `data-testid` only as a last resort when no meaningful aria semantics apply (e.g., a purely decorative wrapper). For tooltips, use `getByRole('tooltip', { name: '...' })` instead of targeting internal Material CSS classes.
 - **Wait for state, not time.** Use `expect(...).toBeVisible()`, `waitForResponse`, or `waitForSelector` instead of `waitForTimeout`. Fixed timeouts are flaky and slow.
 - **Keep tests independent.** Each test should set up its own state. Use `test.beforeEach` for shared navigation, not shared mutable state between tests.
 - **Use `test.describe` blocks** to group related tests and share setup via `beforeEach`.

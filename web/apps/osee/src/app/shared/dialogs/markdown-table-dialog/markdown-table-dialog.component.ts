@@ -697,14 +697,17 @@ export class MarkdownTableDialogComponent {
 		const startY = event.clientY;
 		const row = (event.target as HTMLElement).closest('tr')
 			?.previousElementSibling as HTMLTableRowElement | null;
-		const startHeight = row?.offsetHeight ?? 72;
+		const startHeight = row?.offsetHeight ?? this.defaultRowHeight;
 
 		document.body.style.cursor = 'row-resize';
 		document.body.style.userSelect = 'none';
 
 		const onMouseMove = (e: MouseEvent) => {
 			const delta = e.clientY - startY;
-			const newHeight = Math.max(this.defaultRowHeight, startHeight + delta);
+			const newHeight = Math.max(
+				this.defaultRowHeight,
+				startHeight + delta
+			);
 			// Direct DOM update during drag — avoids change detection per frame
 			if (row) {
 				row.style.height = `${newHeight}px`;
@@ -722,7 +725,10 @@ export class MarkdownTableDialogComponent {
 			cleanup();
 			// Commit final height to signal once
 			const delta = e.clientY - startY;
-			const finalHeight = Math.max(this.defaultRowHeight, startHeight + delta);
+			const finalHeight = Math.max(
+				this.defaultRowHeight,
+				startHeight + delta
+			);
 			this.rowHeights.update((h) => ({ ...h, [rowIdx]: finalHeight }));
 		};
 
