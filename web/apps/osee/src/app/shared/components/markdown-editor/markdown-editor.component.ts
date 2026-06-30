@@ -463,13 +463,9 @@ export class MarkdownEditorComponent {
 		const before = currentContent.substring(0, cursorPos);
 		const after = currentContent.substring(cursorPos);
 		if (captionTag && captionPosition === 'above') {
-			this.mdContent.set(
-				before + captionTag + '\n\n' + imageTag + after
-			);
+			this.mdContent.set(before + captionTag + '\n\n' + imageTag + after);
 		} else if (captionTag) {
-			this.mdContent.set(
-				before + imageTag + '\n\n' + captionTag + after
-			);
+			this.mdContent.set(before + imageTag + '\n\n' + captionTag + after);
 		} else {
 			this.mdContent.set(before + imageTag + after);
 		}
@@ -562,11 +558,19 @@ export class MarkdownEditorComponent {
 						const after = content.substring(parsedTable.endIndex);
 						if (captionTag && result.captionPosition === 'above') {
 							this.mdContent.set(
-								before + captionTag + '\n\n' + result.markdown + after
+								before +
+									captionTag +
+									'\n\n' +
+									result.markdown +
+									after
 							);
 						} else if (captionTag) {
 							this.mdContent.set(
-								before + result.markdown + '\n\n' + captionTag + after
+								before +
+									result.markdown +
+									'\n\n' +
+									captionTag +
+									after
 							);
 						} else {
 							this.mdContent.set(
@@ -940,7 +944,8 @@ export class MarkdownEditorComponent {
 					/^<table-caption(?:\s+position="(above|below)")?>([^<]+)<\/table-caption>$/
 				);
 				if (captionMatch) {
-					captionPosition = (captionMatch[1] as CaptionPosition) || 'below';
+					captionPosition =
+						(captionMatch[1] as CaptionPosition) || 'below';
 					caption = captionMatch[2];
 					// Extend endIndex to include blank lines and the caption line
 					endIndex = 0;
