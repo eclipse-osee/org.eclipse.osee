@@ -314,6 +314,7 @@ export class MarkdownEditorComponent {
 			const dialogRef = this.dialog.open(UploadImageDialogComponent, {
 				data: dialogData,
 				minWidth: '40%',
+				disableClose: true,
 			});
 
 			dialogRef
