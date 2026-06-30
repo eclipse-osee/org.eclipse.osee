@@ -77,8 +77,7 @@ export class UploadImageDialogComponent {
 		>(MatDialogRef);
 	protected readonly data = inject<UploadImageDialogData>(MAT_DIALOG_DATA);
 	private readonly uiService = inject(UiService);
-
-	private readonly cleanup = inject(DestroyRef).onDestroy(() =>
+	private readonly _destroyCleanup = inject(DestroyRef).onDestroy(() =>
 		this.revokePreview()
 	);
 

@@ -724,10 +724,7 @@ test.describe('Markdown Editor', () => {
 			.first();
 		await upButton.hover();
 		await expect(
-			page
-				.locator('.mat-mdc-tooltip-surface')
-				.filter({ hasText: 'Insert Row Above' })
-				.first()
+			page.locator('mat-tooltip-component').filter({ hasText: 'Insert Row Above' }).first()
 		).toBeVisible({ timeout: 3000 });
 
 		await page.getByRole('button', { name: 'Cancel' }).click();
