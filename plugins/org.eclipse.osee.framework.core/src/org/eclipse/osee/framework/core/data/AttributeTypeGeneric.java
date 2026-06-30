@@ -73,7 +73,7 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    public abstract T valueFromStorageString(String storedValue);
 
    public String storageStringFromValue(T value) {
-      return value.toString();
+      return value == null ? "" : value.toString();
    }
 
    /**

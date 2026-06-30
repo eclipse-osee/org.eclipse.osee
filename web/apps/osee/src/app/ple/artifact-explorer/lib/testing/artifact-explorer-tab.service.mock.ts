@@ -23,6 +23,7 @@ export const tabsMock: tab[] = [
 		artifact: {
 			name: 'Mock Artifact',
 			id: '123',
+			gammaId: '-1',
 			typeId: '456',
 			typeName: 'Mock Type',
 			icon: {
@@ -38,8 +39,8 @@ export const tabsMock: tab[] = [
 					value: 'Value 1',
 					typeId: '789',
 					id: '1',
+					gammaId: '-1',
 					storeType: 'String',
-					multiplicityId: '2',
 				},
 			],
 			relations: [],

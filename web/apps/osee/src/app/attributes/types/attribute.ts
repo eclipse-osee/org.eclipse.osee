@@ -17,12 +17,29 @@ type _newId = typeof __newId;
 
 type _id = `${number}`;
 
-//TODO: think about how to make readonly again?
+export type storeType =
+	| 'Boolean'
+	| 'Date'
+	| 'Enumeration'
+	| 'Integer'
+	| 'Long'
+	| 'String'
+	| 'Input Stream';
+
+export type multiplicity = {
+	id: `${number}`;
+	name: string;
+};
+
 export type validAttribute<T, U extends ATTRIBUTETYPEID> = {
-	id: _id; //used to be string also Omit
+	id: _id;
 	value: T;
 	readonly typeId: U;
 	readonly gammaId: _id;
+	name?: string;
+	storeType?: storeType;
+	multiplicity?: multiplicity;
+	enumOptions?: string[];
 };
 
 export type newAttribute<T, U extends ATTRIBUTETYPEID> = {
@@ -30,22 +47,30 @@ export type newAttribute<T, U extends ATTRIBUTETYPEID> = {
 	value: T;
 	readonly typeId: U;
 	readonly gammaId: _newId;
+	name?: string;
+	storeType?: storeType;
+	multiplicity?: multiplicity;
+	enumOptions?: string[];
 };
 
 export type invalidCondition<T, U extends ATTRIBUTETYPEID> = {
 	id: '';
-	//TODO think about signals binding here so that this can go away
 	value: T;
 	readonly typeId: U;
 	readonly gammaId: _id;
+	name?: string;
+	storeType?: storeType;
+	multiplicity?: multiplicity;
+	enumOptions?: string[];
 };
+
 export type attribute<T, U extends ATTRIBUTETYPEID> =
 	| validAttribute<T, U>
 	| newAttribute<T, U>
 	| invalidCondition<T, U>;
 
 export function isValidAttr<T, U extends ATTRIBUTETYPEID>(
-	attr: attribute<T, U> | undefined | null | Required<attribute<T, U>>
+	attr: attribute<T, U> | undefined | null
 ): attr is validAttribute<T, U> {
 	return (
 		attr !== undefined &&

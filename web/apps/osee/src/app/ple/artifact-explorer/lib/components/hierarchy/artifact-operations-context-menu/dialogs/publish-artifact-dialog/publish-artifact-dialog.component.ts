@@ -71,6 +71,7 @@ import { MatSelect } from '@angular/material/select';
 		MatSelect,
 	],
 	templateUrl: './publish-artifact-dialog.component.html',
+	styles: [`:host { --mdc-filled-text-field-container-color: transparent; }`],
 })
 export class PublishArtifactDialogComponent {
 	dialogRef =

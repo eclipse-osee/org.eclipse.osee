@@ -33,6 +33,37 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - For dialogs, return values via `MatDialogRef.close(value)`.
 - Use explicit interfaces for data passed via `MAT_DIALOG_DATA`.
 
+### Dialog styling (mandatory for all dialogs)
+
+All dialogs must follow this structure and styling:
+
+```html
+<h1 mat-dialog-title>
+  <div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+    <mat-icon>icon_name</mat-icon>
+    Dialog Title Text
+  </div>
+</h1>
+<mat-dialog-content>
+  <!-- content -->
+</mat-dialog-content>
+<div mat-dialog-actions align="end" class="tw-gap-2">
+  <button mat-stroked-button class="tw-text-osee-red-8" (click)="onCancel()">
+    Cancel
+  </button>
+  <button mat-stroked-button [mat-dialog-close]="data" [disabled]="form.invalid">
+    Submit
+  </button>
+</div>
+```
+
+Rules:
+- **Title**: `<h1 mat-dialog-title>` with icon + text in a flex row using `tw-gap-2`. No colored backgrounds on the title bar.
+- **Actions**: `<div mat-dialog-actions align="end" class="tw-gap-2">`. Always right-aligned with gap.
+- **Cancel button**: `mat-stroked-button` with `class="tw-text-osee-red-8"`. Text says "Cancel".
+- **Submit button**: `mat-stroked-button` (no extra color class). Text describes the action (e.g., "Insert Table", "Delete", "Ok").
+- **No `mat-flat-button` or `class="primary-button"`** in dialog actions. Use `mat-stroked-button` for both buttons.
+
 ## Typing + code style (apply broadly)
 
 - Keep code **strongly typed**.
@@ -120,6 +151,21 @@ Run all commands from `web/apps/osee/`.
 
 Always run prettier and eslint on changed files before committing. Use relative paths from `web/apps/osee/`. Do not run these automatically during development — only run when explicitly requested or at the end of a development session.
 
+## Pre-commit verification
+
+**Always verify changes compile and tests pass before making a git commit.** This is mandatory.
+
+1. **Build check**: Run `npx ng build` (or at minimum verify no TypeScript diagnostics) to ensure the project compiles.
+2. **Relevant tests**: Run any Playwright tests or unit tests that cover the changed code. If tests exist for the feature area, run them and fix failures before committing.
+3. **Lint/format**: Run prettier and eslint on changed files (as described above).
+
+Do not commit code that breaks the build or causes test regressions. If tests cannot be run (e.g., no backend available), state that explicitly and note what was verified vs. what could not be.
+
+**Important workflow rule:** Do NOT automatically run or write tests during development. Instead, **ask the user** if you should write or run tests at the end of a development chunk. This avoids getting bogged down with test execution mid-conversation. Only run tests when:
+- The user explicitly asks you to run them
+- You are about to make a final commit and the user has approved running tests
+- The user says "run the tests" or similar
+
 ## Playwright E2E tests
 
 Tests live in `web/apps/osee/playwright/specs/` organized by feature area (e.g., `mim/tests/`, `artifact-explorer/tests/`). The framework is `@ngx-playwright/test`.
@@ -162,7 +208,7 @@ npx playwright show-report
 ### Writing effective tests
 
 - **Use accessible locators** in priority order: `getByRole`, `getByLabel`, `getByText`, `getByTestId`. Avoid CSS selectors and XPath — they break on refactors.
-- **Add `data-testid` attributes** to components when no accessible locator is available. Prefer this over fragile structural selectors.
+- **Prefer adding aria attributes over `data-testid`** when the element lacks a semantic role or label. Adding `role`, `aria-label`, or `aria-labelledby` to the component template improves both accessibility and testability — use `data-testid` only as a last resort when no meaningful aria semantics apply (e.g., a purely decorative wrapper).
 - **Wait for state, not time.** Use `expect(...).toBeVisible()`, `waitForResponse`, or `waitForSelector` instead of `waitForTimeout`. Fixed timeouts are flaky and slow.
 - **Keep tests independent.** Each test should set up its own state. Use `test.beforeEach` for shared navigation, not shared mutable state between tests.
 - **Use `test.describe` blocks** to group related tests and share setup via `beforeEach`.
@@ -231,3 +277,23 @@ test.describe('Feature Name', () => {
 - **Screenshot-only tests** — screenshots are for documentation, not assertions. Always pair with `expect` calls.
 - **Testing only that something is visible** — always verify the content/value, not just presence. A dialog opening is not enough; verify the data inside it.
 - **Using `getByRole('button', { name: 'tooltip text' })` for icon buttons** — `matTooltip` doesn't set accessible name. Use `.filter({ hasText: 'icon_name' })` instead.
+
+## Documentation maintenance
+
+After completing a set of changes to web source code, **ask the user** if you should review and update the relevant `docs/ai/` documentation to reflect the changes. Do not automatically update docs — always request permission first.
+
+When asked to review, check:
+1. Do any `docs/ai/` files describe components, patterns, or architecture that was modified in this session?
+2. Are there new components, services, or patterns that should be documented?
+3. Do existing docs reference stale class names, signal names, CSS classes, or file paths?
+
+If changes are needed, propose them and wait for approval before writing. Keep docs concise and factual — describe what IS, not what was.
+
+## Playwright test verification
+
+After completing web source changes, **ask the user** if you should run the relevant Playwright tests to verify nothing is broken. Do not run tests automatically during development — always ask first.
+
+When asked to verify:
+1. Identify which test suites cover the changed components (check `playwright/specs/` for matching feature areas).
+2. Run those suites with `npx playwright test --project "Setup" --project "<Project>" --timeout 30000 -x`.
+3. If failures occur, diagnose and fix before presenting the result.

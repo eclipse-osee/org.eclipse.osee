@@ -10,35 +10,33 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<div class="tw-max-h-94vh">
-	<div class="tw-relative tw-py-2">
+<div class="tw-flex tw-h-full tw-flex-col">
+	<!-- Branch picker (always visible) -->
+	<div
+		class="tw-relative tw-z-10 tw-shrink-0 tw-whitespace-nowrap tw-px-2 tw-py-1 tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2)] dark:tw-shadow-[0_4px_6px_-1px_rgba(0,0,0,0.4)]">
 		<osee-branch-picker></osee-branch-picker>
-		<div class="tw-flex tw-w-full tw-items-center tw-gap-2 tw-pr-2 tw-pt-4">
+		<div class="tw-flex tw-w-full tw-items-center tw-gap-2 tw-pt-1">
 			@if (branchHasPleCategory()) {
 				<osee-current-view-selector />
 			}
 		</div>
 	</div>
-	<osee-branch-management />
-	<osee-artifact-search-panel></osee-artifact-search-panel>
-	<osee-expansion-panel
-		title="Artifact Hierarchy"
-		[openDefault]="true">
-		<div class="tw-w-full tw-overflow-x-auto tw-pt-2">
+	<!-- Active section content -->
+	<div class="tw-min-h-0 tw-flex-1 tw-overflow-hidden tw-flex tw-flex-col">
+		<div
+			class="hierarchy-scroll tw-min-h-0 tw-flex-1 tw-overflow-auto"
+			role="tree"
+			aria-label="Artifact hierarchy"
+			[class.tw-hidden]="activeSection() !== 'hierarchy'">
 			@if (branchIdValid() && branchType()) {
-				<div class="tw-flex tw-w-full tw-justify-end tw-px-2">
-					<osee-artifact-hierarchy-options />
-				</div>
 				<div
-					class="tw-h-full"
+					class="tw-pt-1"
 					cdkDropList
 					cdkDropListConnectedTo="relationList">
 					@if (paths | async; as paths) {
-						<div>
-							<osee-artifact-hierarchy
-								[paths]="paths"
-								artifactId="197818"></osee-artifact-hierarchy>
-						</div>
+						<osee-artifact-hierarchy
+							[paths]="paths"
+							artifactId="197818"></osee-artifact-hierarchy>
 					} @else {
 						<osee-artifact-hierarchy
 							artifactId="197818"></osee-artifact-hierarchy>
@@ -46,5 +44,12 @@
 				</div>
 			}
 		</div>
-	</osee-expansion-panel>
+		<osee-artifact-search
+			class="tw-min-h-0 tw-flex-1"
+			[class.tw-hidden]="activeSection() !== 'search'"
+			(navigateToHierarchy)="navigateToHierarchy.emit()" />
+		<div [class.tw-hidden]="activeSection() !== 'branch'">
+			<osee-branch-management-panel />
+		</div>
+	</div>
 </div>

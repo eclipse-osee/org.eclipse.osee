@@ -20,138 +20,94 @@ import { attribute } from '@osee/attributes/types';
 export class PlatformTypeSentinel implements PlatformType {
 	id: `${number}` = '-1';
 	gammaId: `${number}` = '-1';
-	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>> = {
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.NAME,
 	};
-	description: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
-	> = {
+	description: attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.DESCRIPTION,
 	};
-	interfaceLogicalType: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.LOGICALTYPE>
-	> = {
+	interfaceLogicalType: attribute<string, typeof ATTRIBUTETYPEIDENUM.LOGICALTYPE> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.LOGICALTYPE,
 	};
-	interfacePlatformType2sComplement: Required<
-		attribute<
-			boolean,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPE2SCOMPLEMENT
-		>
-	> = {
+	interfacePlatformType2sComplement: attribute<
+			boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPE2SCOMPLEMENT> = {
 		id: '-1',
 		value: false,
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPE2SCOMPLEMENT,
 	};
-	interfacePlatformTypeAnalogAccuracy: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY
-		>
-	> = {
+	interfacePlatformTypeAnalogAccuracy: attribute<
+			string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY,
 	};
-	interfacePlatformTypeBitsResolution: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION
-		>
-	> = {
+	interfacePlatformTypeBitsResolution: attribute<
+			string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION,
 	};
-	interfacePlatformTypeBitSize: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE
-		>
-	> = {
+	interfacePlatformTypeBitSize: attribute<
+			string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE,
 	};
-	interfacePlatformTypeCompRate: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE
-		>
-	> = {
+	interfacePlatformTypeCompRate: attribute<
+			string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE,
 	};
-	interfaceDefaultValue: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL>
-	> = {
+	interfaceDefaultValue: attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL,
 	};
-	interfacePlatformTypeMaxval: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL
-		>
-	> = {
+	interfacePlatformTypeMaxval: attribute<
+			string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL,
 	};
-	interfacePlatformTypeMinval: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL
-		>
-	> = {
+	interfacePlatformTypeMinval: attribute<
+			string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL,
 	};
-	interfacePlatformTypeMsbValue: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL
-		>
-	> = {
+	interfacePlatformTypeMsbValue: attribute<
+			string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL,
 	};
-	interfacePlatformTypeUnits: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS>
-	> = {
+	interfacePlatformTypeUnits: attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',
 		typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS,
 	};
-	interfacePlatformTypeValidRangeDescription: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEVALIDRANGEDESCRIPTION
-		>
-	> = {
+	interfacePlatformTypeValidRangeDescription: attribute<
+			string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEVALIDRANGEDESCRIPTION> = {
 		id: '-1',
 		value: '',
 		gammaId: '-1',

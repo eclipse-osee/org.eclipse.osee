@@ -12,23 +12,8 @@
  -->
 <h1 mat-dialog-title>Artifact Explorer Settings</h1>
 <mat-dialog-content>
-	<div class="tw-flex tw-flex-col">
-		<span>Side Panel Location</span>
-		<mat-button-toggle-group
-			[(ngModel)]="data.artifactExplorerPanelLocation"
-			aria-label="Side Panel Location"
-			class="tw-flex">
-			<mat-button-toggle
-				[value]="true"
-				class="tw-flex-grow"
-				>Left</mat-button-toggle
-			>
-			<mat-button-toggle
-				[value]="false"
-				class="tw-flex-grow"
-				>Right</mat-button-toggle
-			>
-		</mat-button-toggle-group>
+	<div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-py-4">
+		<span class="tw-text-sm tw-italic tw-opacity-50">No configurable settings at this time.</span>
 	</div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
@@ -36,13 +21,6 @@
 		mat-button
 		mat-dialog-close
 		data-cy="cancel-btn">
-		Cancel
-	</button>
-	<button
-		mat-flat-button
-		[mat-dialog-close]="data"
-		class="primary-button"
-		data-cy="submit-btn">
-		Ok
+		Close
 	</button>
 </mat-dialog-actions>

@@ -32,7 +32,8 @@ import { AttributesEditorComponent } from '@osee/shared/components';
 import { MatIcon } from '@angular/material/icon';
 import { TransactionService } from '@osee/transactions/services';
 import { CommitManagerButtonComponent } from '@osee/configuration-management/components';
-import { attribute } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import {
 	legacyAttributeType,
 	legacyModifyArtifact,
@@ -126,7 +127,7 @@ export class ActraWorkflowEditorComponent implements OnInit {
 			.join(', ')
 	);
 
-	updatedAttributes = signal<attribute[]>([]);
+	updatedAttributes = signal<attribute<string, ATTRIBUTETYPEID>[]>([]);
 	hasChanges = computed(() => this.updatedAttributes().length > 0);
 
 	workDef = toSignal(
@@ -152,7 +153,7 @@ export class ActraWorkflowEditorComponent implements OnInit {
 	);
 
 	stateAttributes = computed(() => {
-		const states = new Map<string, attribute[]>();
+		const states = new Map<string, attribute<string, ATTRIBUTETYPEID>[]>();
 		if (!this.twAttributeTypes()) {
 			return states;
 		}
@@ -170,7 +171,7 @@ export class ActraWorkflowEditorComponent implements OnInit {
 				return;
 			}
 
-			const attributes: attribute[] = [];
+			const attributes: attribute<string, ATTRIBUTETYPEID>[] = [];
 			attrIds.forEach((attrId) => {
 				let attr = this.workflow().artifact.attributes.find(
 					(a) => a.typeId === attrId
@@ -193,7 +194,7 @@ export class ActraWorkflowEditorComponent implements OnInit {
 		return states;
 	});
 
-	handleUpdatedAttributes(updatedAttributes: attribute[]) {
+	handleUpdatedAttributes(updatedAttributes: attribute<string, ATTRIBUTETYPEID>[]) {
 		updatedAttributes.forEach((attr) => {
 			const index = this.updatedAttributes().findIndex(
 				(a) => a.typeId === attr.typeId

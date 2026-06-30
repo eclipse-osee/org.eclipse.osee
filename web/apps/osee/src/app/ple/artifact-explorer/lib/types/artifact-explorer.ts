@@ -14,7 +14,8 @@ import {
 	artifactWithRelations,
 	operationType,
 } from '@osee/artifact-with-relations/types';
-import { attribute } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 
 type abstractTab = {
 	tabId: string;
@@ -40,7 +41,7 @@ export type createChildArtifactDialogData = {
 	name: string;
 	artifactTypeId: string;
 	parentArtifactId: string;
-	attributes: attribute[];
+	attributes: attribute<string, ATTRIBUTETYPEID>[];
 	operationType: operationType;
 };
 

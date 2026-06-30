@@ -12,67 +12,52 @@
 -->
 @if (branchId$ | async; as branchId) {
 	@if (branchType$ | async; as branchType) {
-		@if (artifactWithDirRelations | async; as artWithRel) {
-			@if (artifacts | async; as artifacts) {
-				@if (latestPaths | async; as paths) {
-					<!-- artifacts -->
-					@for (artifact of artifacts; track artifact.id) {
-						<div
-							(contextmenu)="openContextMenu($event, artWithRel)"
-							class="tw-flex tw-py-1 tw-pl-4"
-							[ngClass]="
-								artifactIsExpanded(artifact.id)
-									? 'tw-bg-background-hover'
-									: ''
-							">
-							<button
-								(click)="toggleExpandButton(artifact.id)"
-								class="tw-flex tw-items-center hover:tw-text-osee-blue-7 hover:dark:tw-text-osee-blue-10">
-								<osee-expand-icon
-									[open]="artifactIsExpanded(artifact.id)" />
-							</button>
-							<!-- artifact icon and name button -->
-							<button
-								(contextmenu)="
-									openContextMenu($event, artifact)
-								"
-								cdkDrag
-								[cdkDragData]="artifact"
-								class="tw-flex tw-items-center hover:tw-text-osee-blue-7 hover:dark:tw-text-osee-blue-10"
-								(click)="addTab(artifact)">
-								<div class="tw-flex tw-items-center tw-pl-4">
-									<mat-icon
-										[class]="getIconClasses(artifact.icon)">
-										{{ artifact.icon.icon }}
-									</mat-icon>
-								</div>
-								<div class="tw-whitespace-nowrap tw-pl-2">
-									{{ artifact.name }}
-								</div>
-							</button>
-						</div>
-						<!-- child artifacts -->
-						@if (artifactIsExpanded(artifact.id)) {
-							<div class="tw-pl-8">
-								@if (paths.length > 0) {
-									<osee-artifact-hierarchy
-										[artifactId]="artifact.id"
-										[paths]="paths" />
-								} @else {
-									<osee-artifact-hierarchy
-										[artifactId]="artifact.id" />
-								}
+		@if (artifacts | async; as artifacts) {
+			@if (latestPaths | async; as paths) {
+				<!-- artifacts -->
+				@for (artifact of artifacts; track artifact.id) {
+					<div
+						(contextmenu)="openContextMenu($event, artifact)"
+						class="tw-flex tw-rounded tw-py-1 tw-pl-4 hover:tw-bg-background-hover"
+						[class.tw-text-primary]="isOpenInTab(artifact.id)">
+						<button
+							(click)="toggleExpandButton(artifact.id)"
+							class="tw-flex tw-items-center">
+							<osee-expand-icon
+								[open]="artifactIsExpanded(artifact.id)" />
+						</button>
+						<!-- artifact icon and name button -->
+						<button
+							(contextmenu)="
+								openContextMenu($event, artifact)
+							"
+							cdkDrag
+							[cdkDragData]="artifact"
+							class="tw-flex tw-items-center"
+							(click)="addTab(artifact)">
+							<div class="tw-flex tw-items-center tw-pl-1">
+								<mat-icon
+									[class]="getIconClasses(artifact.icon)">
+									{{ artifact.icon.icon }}
+								</mat-icon>
 							</div>
-						}
-					}
-					<!-- relations (toggled via option) -->
-					@if (paths.length > 0) {
-						<osee-artifact-hierarchy-relations
-							[relation$]="relation$"
-							[paths]="paths" />
-					} @else {
-						<osee-artifact-hierarchy-relations
-							[relation$]="relation$" />
+							<div class="tw-whitespace-nowrap tw-pl-1.5">
+								{{ artifact.name }}
+							</div>
+						</button>
+					</div>
+					<!-- child artifacts -->
+					@if (artifactIsExpanded(artifact.id)) {
+						<div class="tw-pl-8">
+							@if (paths.length > 0) {
+								<osee-artifact-hierarchy
+									[artifactId]="artifact.id"
+									[paths]="paths" />
+							} @else {
+								<osee-artifact-hierarchy
+									[artifactId]="artifact.id" />
+							}
+						</div>
 					}
 				}
 			}
@@ -84,7 +69,7 @@
 	[style.left]="menuPosition.x"
 	[style.top]="menuPosition.y"
 	[matMenuTriggerFor]="contextMenu"></div>
-<mat-menu #contextMenu="matMenu">
+<mat-menu #contextMenu="matMenu" class="compact-context-menu">
 	<ng-template
 		matMenuContent
 		let-artifactId="artifactId"

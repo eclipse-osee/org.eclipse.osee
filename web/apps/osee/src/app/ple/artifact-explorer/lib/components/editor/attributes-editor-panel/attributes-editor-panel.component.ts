@@ -10,46 +10,63 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgClass } from '@angular/common';
-import { Component, computed, inject, input, viewChild } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
-import { AttributesEditorComponent } from '@osee/shared/components';
-import { FormDirective } from '@osee/shared/directives';
-import {
-	legacyAttributeType,
-	legacyModifyArtifact,
-	legacyTransaction,
-} from '@osee/transactions/types';
-import { BehaviorSubject, tap } from 'rxjs';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 import { artifactTab } from '../../../types/artifact-explorer';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
-import { MatIcon } from '@angular/material/icon';
-import { ExpansionPanelComponent } from '@osee/shared/components';
-import { attribute } from '@osee/shared/types';
-import { TransactionService } from '@osee/transactions/services';
+import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
+import { attribute } from '@osee/attributes/types';
+import {
+	ATTRIBUTETYPEID,
+	BASEATTRIBUTETYPEIDENUM,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/attributes/constants';
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { FormDirective } from '@osee/shared/directives';
+import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
+import { PersistedArtifactAttributeEditorComponent } from './persisted-artifact-attribute-editor/persisted-artifact-attribute-editor.component';
+import {
+	NativeContentEditorComponent,
+	NativeEditorAttributes,
+	NameAttribute,
+	ExtensionAttribute,
+	NativeContentAttribute,
+} from '../../../../../../shared/components/attributes-editor/native-content-editor/native-content-editor.component';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { take } from 'rxjs';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
 	imports: [
-		NgClass,
 		FormsModule,
-		AttributesEditorComponent,
-		FormDirective,
 		MatIcon,
-		ExpansionPanelComponent,
+		MatIconButton,
+		MatTooltip,
 		PersistedApplicabilityDropdownComponent,
-		MatTooltipModule,
+		FormDirective,
+		PersistedArtifactAttributeEditorComponent,
+		NativeContentEditorComponent,
 	],
+	viewProviders: [provideOptionalControlContainerNgForm()],
 	templateUrl: './attributes-editor-panel.component.html',
+	styles: [
+		`
+			:host {
+				--mdc-filled-text-field-container-color: transparent;
+				--mat-select-enabled-trigger-text-color: inherit;
+			}
+		`,
+	],
 })
 export class AttributesEditorPanelComponent {
-	private transactionService = inject(TransactionService);
 	private currBranchInfoService = inject(CurrentBranchInfoService);
-	private uiService = inject(UiService);
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
+	private tabService = inject(ArtifactExplorerTabService);
+	private currentTxService = inject(CurrentTransactionService);
 
 	tab = input.required<artifactTab>();
 
@@ -68,11 +85,131 @@ export class AttributesEditorPanelComponent {
 			this.viewId
 		);
 
-	protected attributes = computed<attribute[]>(
-		() =>
-			this.artifactResource.value()?.attributes ??
-			this.tab().artifact.attributes
+	/** Sync artifact name back to tab title when resource refreshes with a new name. */
+	private _nameSyncEffect = effect(() => {
+		const name = this.artifactResource.value()?.name;
+		if (name && name !== this.tab().artifact.name) {
+			this.tabService.updateTabTitle(this.tab().artifact.id, name);
+		}
+	});
+
+	/**
+	 * Computed that returns the current attributes sorted by typeId.
+	 * Intentionally caches the last known good value in `_lastAttributes` as a side effect
+	 * so that the UI does not flash empty while the resource is refetching.
+	 */
+	protected attributes = computed<attribute<string, ATTRIBUTETYPEID>[]>(
+		() => {
+			const resourceAttrs = this.artifactResource.value()?.attributes;
+			if (resourceAttrs) {
+				this._lastAttributes = [...resourceAttrs].sort((a, b) =>
+					a.typeId.localeCompare(b.typeId)
+				);
+			}
+			return (
+				this._lastAttributes ??
+				[...this.tab().artifact.attributes].sort((a, b) =>
+					a.typeId.localeCompare(b.typeId)
+				)
+			);
+		}
 	);
+
+	private _lastAttributes: attribute<string, ATTRIBUTETYPEID>[] | null =
+		null;
+
+	/** The Name attribute (always shown first). */
+	protected nameAttr = computed(() =>
+		this.attributes().find(
+			(a) => a.name?.toLowerCase() === 'name'
+		)
+	);
+
+	/** All attributes except Name and native-content-related ones (shown after applicability). */
+	protected otherAttrs = computed(() =>
+		this.attributes().filter(
+			(a) =>
+				a.name?.toLowerCase() !== 'name' &&
+				a.typeId !== ATTRIBUTETYPEIDENUM.NATIVE_CONTENT &&
+				a.typeId !== ATTRIBUTETYPEIDENUM.EXTENSION
+		)
+	);
+
+	/** Detect if this artifact has native content (Name + Extension + Native Content). */
+	protected nativeEditorAttrs = computed<NativeEditorAttributes | null>(
+		() => {
+			const attrs = this.attributes();
+			const name = attrs.find(
+				(a) => a.typeId === BASEATTRIBUTETYPEIDENUM.NAME
+			) as NameAttribute | undefined;
+			const ext = attrs.find(
+				(a) => a.typeId === ATTRIBUTETYPEIDENUM.EXTENSION
+			) as ExtensionAttribute | undefined;
+			const native = attrs.find(
+				(a) => a.typeId === ATTRIBUTETYPEIDENUM.NATIVE_CONTENT
+			) as NativeContentAttribute | undefined;
+			return name && native
+				? { name, extension: ext, nativeContent: native }
+				: null;
+		}
+	);
+
+	protected readonly pendingNativeName = signal<string | null>(null);
+	protected readonly pendingNativeExtension = signal<string | null>(null);
+	protected readonly hasUnsavedNativeChanges = signal<boolean>(false);
+	private nativeContentChanges: attribute<string, ATTRIBUTETYPEID>[] = [];
+
+	protected handleNativeContentChanges(
+		changes: attribute<string, ATTRIBUTETYPEID>[]
+	) {
+		this.nativeContentChanges = changes;
+
+		const nameChange = changes.find(
+			(a) => a.typeId === BASEATTRIBUTETYPEIDENUM.NAME
+		);
+		const extChange = changes.find(
+			(a) => a.typeId === ATTRIBUTETYPEIDENUM.EXTENSION
+		);
+
+		this.pendingNativeName.set(nameChange?.value ?? null);
+		this.pendingNativeExtension.set(extChange?.value ?? null);
+		this.hasUnsavedNativeChanges.set(changes.length > 0);
+	}
+
+	protected saveNativeContent() {
+		if (this.nativeContentChanges.length === 0) return;
+
+		// Build a single modifyArtifact call with all changes
+		const setAttrs = this.nativeContentChanges.filter(
+			(a) => !(a.id === '-1' && a.gammaId === '-1')
+		);
+		const addAttrs = this.nativeContentChanges.filter(
+			(a) => a.id === '-1' && a.gammaId === '-1'
+		);
+
+		this.currentTxService
+			.modifyArtifactAndMutate(
+				'Updating native content',
+				this.artifactId(),
+				this.applicability(),
+				{
+					...(setAttrs.length > 0 ? { set: setAttrs } : {}),
+					...(addAttrs.length > 0 ? { add: addAttrs } : {}),
+				}
+			)
+			.pipe(take(1))
+			.subscribe({
+				next: () => {
+					this.nativeContentChanges = [];
+					this.pendingNativeName.set(null);
+					this.pendingNativeExtension.set(null);
+					this.hasUnsavedNativeChanges.set(false);
+				},
+				error: () => {
+					// Leave hasUnsavedNativeChanges as true so the user knows the save failed
+				},
+			});
+	}
 
 	protected editable = computed<boolean>(
 		() =>
@@ -80,75 +217,15 @@ export class AttributesEditorPanelComponent {
 			this.tab().artifact.editable
 	);
 
-	protected artifactId = computed<string>(
-		() => this.artifactResource.value()?.id ?? this.tab().artifact.id
+	protected artifactId = computed<`${number}`>(
+		() =>
+			(this.artifactResource.value()?.id ??
+				this.tab().artifact.id) as `${number}`
 	);
 
-	saveChanges() {
-		if (this.updatedAttributes.value.length > 0) {
-			const t = this.tab();
-			const tx: legacyTransaction = {
-				branch: t.branchId,
-				txComment: 'Web Attribute Save',
-			};
-
-			const existingAttributes: legacyAttributeType[] = [];
-			const newAttributes: legacyAttributeType[] = [];
-
-			for (const attr of this.updatedAttributes.value) {
-				const legacyAttr: legacyAttributeType = {
-					typeId: attr.typeId,
-					value: attr.value,
-				};
-				if (attr.id === '-1') {
-					newAttributes.push(legacyAttr);
-				} else {
-					existingAttributes.push(legacyAttr);
-				}
-			}
-
-			const modifyArtifact: legacyModifyArtifact = {
-				id: t.artifact.id,
-			};
-			if (existingAttributes.length > 0) {
-				modifyArtifact.setAttributes = existingAttributes;
-			}
-			if (newAttributes.length > 0) {
-				modifyArtifact.addAttributes = newAttributes;
-			}
-
-			tx.modifyArtifacts = [modifyArtifact];
-			this.transactionService
-				.performMutation(tx)
-				.pipe(
-					tap(() => {
-						this.updatedAttributes.next([]);
-						this._attributesEditor()?.resetAfterSave();
-						this.uiService.updated = true;
-					})
-				)
-				.subscribe();
-		}
-	}
-
-	// Handle output attributes returned from attribute editor
-
-	updatedAttributes = new BehaviorSubject<attribute[]>([]);
-	handleUpdatedAttributes(updatedAttributes: attribute[]) {
-		this.updatedAttributes.next(updatedAttributes);
-	}
-
-	hasChanges(): boolean {
-		return this.updatedAttributes.value.length > 0;
-	}
-
-	// Handle form status change
-
-	protected _attributesEditorForm = viewChild.required(
-		'attributesEditorForm',
-		{ read: NgForm }
+	protected applicability = computed(
+		() =>
+			this.artifactResource.value()?.applicability ??
+			this.tab().artifact.applicability
 	);
-
-	protected _attributesEditor =
-		viewChild<AttributesEditorComponent>('attributesEditor');
 }

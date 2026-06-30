@@ -289,77 +289,33 @@ export class SubElementTableFieldComponent {
 			| PlatformType
 			| element[]
 			| `${number}`
-			| Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>
 			| Required<
 					attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
 			  >
-			| Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>>
-			| Required<
-					attribute<
-						number,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND
-					>
-			  >
-			| Required<
-					attribute<
-						number,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART
-					>
-			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE
-					>
-			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL
-					>
-			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER
-					>
-			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME
-					>
-			  >
-			| Required<
-					attribute<
-						arrayIndexOrder,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO
-					>
-			  >;
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>
+			| attribute<
+						number, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND>
+			| attribute<
+						number, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART>
+			| attribute<
+						boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE>
+			| attribute<
+						boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA>
+			| attribute<
+						string, typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL>
+			| attribute<
+						string, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL>
+			| attribute<
+						boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER>
+			| attribute<
+						boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME>
+			| attribute<
+						arrayIndexOrder, typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER>
+			| attribute<
+						string, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE>
+			| attribute<
+						string, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO>;
 	}>();
 
 	openGeneralMenu(
@@ -373,77 +329,33 @@ export class SubElementTableFieldComponent {
 			| PlatformType
 			| element[]
 			| `${number}`
-			| Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>
 			| Required<
 					attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
 			  >
-			| Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>>
-			| Required<
-					attribute<
-						number,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND
-					>
-			  >
-			| Required<
-					attribute<
-						number,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART
-					>
-			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE
-					>
-			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL
-					>
-			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER
-					>
-			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME
-					>
-			  >
-			| Required<
-					attribute<
-						arrayIndexOrder,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO
-					>
-			  >
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>
+			| attribute<
+						number, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND>
+			| attribute<
+						number, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART>
+			| attribute<
+						boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE>
+			| attribute<
+						boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA>
+			| attribute<
+						string, typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL>
+			| attribute<
+						string, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL>
+			| attribute<
+						boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER>
+			| attribute<
+						boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME>
+			| attribute<
+						arrayIndexOrder, typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER>
+			| attribute<
+						string, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE>
+			| attribute<
+						string, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO>
 	) {
 		this.menu.emit({ event, element, field });
 	}

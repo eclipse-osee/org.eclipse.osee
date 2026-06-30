@@ -23,7 +23,15 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 @Component({
 	selector: 'osee-branch-type-selector',
 	templateUrl: './branch-type-selector.component.html',
-	styles: [],
+	styles: [
+		`
+			:host {
+				--mdc-radio-state-layer-size: 24px;
+				--mdc-radio-icon-size: 16px;
+				--mat-radio-touch-target-display: none;
+			}
+		`,
+	],
 	imports: [
 		MatRadioGroup,
 		MatRadioButton,

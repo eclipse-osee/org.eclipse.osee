@@ -19,9 +19,7 @@ export type CIConfig = {
 	id: `${number}`;
 	gammaId: `${number}`;
 	applicability: applic;
-	testResultsToKeep: Required<
-		attribute<number, typeof ATTRIBUTETYPEIDENUM.TESTRESULTSTOKEEP>
-	>;
+	testResultsToKeep: attribute<number, typeof ATTRIBUTETYPEIDENUM.TESTRESULTSTOKEEP>;
 	branch: { id: `${number}`; viewId: `${number}` };
 };
 

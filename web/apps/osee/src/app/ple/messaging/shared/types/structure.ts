@@ -38,24 +38,24 @@ export type computedStructureAttributes = {
 };
 
 export type structureAttributes = {
-	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
-	nameAbbrev: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.NAMEABBREV>
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	nameAbbrev: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAMEABBREV>;
+	description: attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>;
+	interfaceMaxSimultaneity: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMAXSIMULTANEITY
 	>;
-	description: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
+	interfaceMinSimultaneity: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMINSIMULTANEITY
 	>;
-	interfaceMaxSimultaneity: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMAXSIMULTANEITY>
+	interfaceTaskFileType: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACETASKFILETYPE
 	>;
-	interfaceMinSimultaneity: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMINSIMULTANEITY>
-	>;
-	interfaceTaskFileType: Required<
-		attribute<number, typeof ATTRIBUTETYPEIDENUM.INTERFACETASKFILETYPE>
-	>;
-	interfaceStructureCategory: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACESTRUCTURECATEGORY>
+	interfaceStructureCategory: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACESTRUCTURECATEGORY
 	>;
 };
 

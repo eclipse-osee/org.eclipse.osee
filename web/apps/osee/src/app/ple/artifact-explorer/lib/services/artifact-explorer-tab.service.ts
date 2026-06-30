@@ -79,7 +79,7 @@ export class ArtifactExplorerTabService {
 		const currentIndex = this.tabs().findIndex(
 			(existingTab) =>
 				existingTab.tabType === 'Artifact' &&
-				existingTab.branchId === this.uiService.id.value &&
+				existingTab.branchId === branchId &&
 				existingTab.artifact?.id === artifact.id
 		);
 		if (currentIndex !== -1) {
@@ -100,6 +100,28 @@ export class ArtifactExplorerTabService {
 
 	removeTab(index: number) {
 		this.tabs.update((rows) => rows.filter((_, i) => index !== i));
+		if (this._selectedIndex() >= this.tabs().length) {
+			this._selectedIndex.set(Math.max(0, this.tabs().length - 1));
+		}
+	}
+
+	removeTabByArtifactId(artifactId: string) {
+		this.tabs.update((rows) =>
+			rows.filter(
+				(t) =>
+					!(t.tabType === 'Artifact' && t.artifact.id === artifactId)
+			)
+		);
+	}
+
+	updateTabTitle(artifactId: string, newTitle: string) {
+		this.tabs.update((rows) =>
+			rows.map((t) =>
+				t.tabType === 'Artifact' && t.artifact.id === artifactId
+					? { ...t, tabTitle: newTitle, artifact: { ...t.artifact, name: newTitle } }
+					: t
+			)
+		);
 	}
 
 	getTabIcon(tab: tab) {
@@ -140,7 +162,11 @@ export class ArtifactExplorerTabService {
 	}
 
 	onTabDropped(event: CdkDragDrop<unknown[]>) {
-		moveItemInArray(this.tabs(), event.previousIndex, event.currentIndex);
+		this.tabs.update((tabs) => {
+			const copy = [...tabs];
+			moveItemInArray(copy, event.previousIndex, event.currentIndex);
+			return copy;
+		});
 		if (this.selectedIndex() === event.previousIndex) {
 			this.selectedIndex.set(event.currentIndex);
 		}

@@ -10,37 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<osee-expansion-panel title="Artifact Info">
-	<div class="tw-p-4">
-		<div class="tw-flex tw-pb-2">
-			<div class="tw-font-bold">Artifact Name:</div>
-			<div class="tw-pl-4">
-				{{ tab.artifact.name }}
-			</div>
-		</div>
-		<div class="tw-flex tw-pb-2">
-			<div class="tw-font-bold">Artifact Id:</div>
-			<div class="tw-pl-4">
-				{{ tab.artifact.id }}
-			</div>
-		</div>
-		<div class="tw-flex tw-pb-2">
-			<div class="tw-font-bold">Artifact Type:</div>
-			<div class="tw-pl-4">
-				{{ tab.artifact.typeName }}
-			</div>
-		</div>
-		<div class="tw-flex tw-pb-2">
-			<div class="tw-font-bold">Branch Name:</div>
-			<div class="tw-pl-4">
-				{{ tab.branchName }}
-			</div>
-		</div>
-		<div class="tw-flex tw-pb-2">
-			<div class="tw-font-bold">Branch Id:</div>
-			<div class="tw-pl-4">
-				{{ tab.branchId }}
-			</div>
-		</div>
-	</div>
-</osee-expansion-panel>
+<div class="tw-grid tw-grid-cols-[max-content_1fr] tw-gap-x-4 tw-gap-y-2">
+	<div class="tw-font-bold">Artifact Name:</div>
+	<div>{{ tab.artifact.name }}</div>
+	<div class="tw-font-bold">Artifact Id:</div>
+	<div>{{ tab.artifact.id }}</div>
+	<div class="tw-font-bold">Artifact Type:</div>
+	<div>{{ tab.artifact.typeName }}</div>
+	<div class="tw-font-bold">Branch Name:</div>
+	<div>{{ tab.branchName }}</div>
+	<div class="tw-font-bold">Branch Id:</div>
+	<div>{{ tab.branchId }}</div>
+</div>

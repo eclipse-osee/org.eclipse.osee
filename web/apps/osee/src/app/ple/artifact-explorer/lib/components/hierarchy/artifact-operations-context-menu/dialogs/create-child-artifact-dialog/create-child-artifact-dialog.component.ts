@@ -38,7 +38,9 @@ import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
 import { ArtifactUiService } from '@osee/shared/services';
-import { NamedId, attribute } from '@osee/shared/types';
+import { NamedId } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
@@ -77,6 +79,7 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 		MatDialogClose,
 	],
 	templateUrl: './create-child-artifact-dialog.component.html',
+	styles: [`:host { --mdc-filled-text-field-container-color: transparent; }`],
 	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class CreateChildArtifactDialogComponent {
@@ -152,11 +155,11 @@ export class CreateChildArtifactDialogComponent {
 		),
 		map((attributes) =>
 			attributes
-				.filter((attribute) => attribute.name.toLowerCase() !== 'name')
+				.filter((attribute) => attribute.name?.toLowerCase() !== 'name')
 				.sort((a, b) =>
-					a.multiplicityId === '2' || a.multiplicityId === '4'
+					a.multiplicity?.id === '2' || a.multiplicity?.id === '4'
 						? -1
-						: b.multiplicityId === '2' || b.multiplicityId === '4'
+						: b.multiplicity?.id === '2' || b.multiplicity?.id === '4'
 							? 1
 							: 0
 				)
@@ -165,7 +168,7 @@ export class CreateChildArtifactDialogComponent {
 
 	// Handle attributes editor form attributes changes
 
-	handleUpdatedAttributes(updatedAttributes: attribute[]) {
+	handleUpdatedAttributes(updatedAttributes: attribute<string, ATTRIBUTETYPEID>[]) {
 		this.data.attributes = updatedAttributes;
 	}
 
@@ -177,7 +180,7 @@ export class CreateChildArtifactDialogComponent {
 			!!this.data.artifactTypeId &&
 			this.data.attributes.length > 0 &&
 			this.data.attributes.every((attribute) =>
-				['2', '4'].includes(attribute.multiplicityId)
+				attribute.multiplicity?.id === '2' || attribute.multiplicity?.id === '4'
 					? attribute.value !== ''
 					: true
 			)

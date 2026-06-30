@@ -39,23 +39,25 @@ import {
 	UpdateNativeContentDialogComponent,
 	UpdateNativeContentDialogData,
 } from '@osee/shared/dialogs';
-import { attribute, MAX_FILE_SIZE_BYTES } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+import { MAX_FILE_SIZE_BYTES } from '@osee/shared/types';
 import { NativeContentDownloadService } from './native-content-download.service';
 
 /**
  * Stricter attribute subtypes to guarantee identity and storeType.
  */
-export type NameAttribute = attribute & {
+export type NameAttribute = attribute<string, ATTRIBUTETYPEID> & {
 	typeId: typeof BASEATTRIBUTETYPEIDENUM.NAME;
 	storeType: 'String';
 };
 
-export type ExtensionAttribute = attribute & {
+export type ExtensionAttribute = attribute<string, ATTRIBUTETYPEID> & {
 	typeId: typeof ATTRIBUTETYPEIDENUM.EXTENSION;
 	storeType: 'String';
 };
 
-export type NativeContentAttribute = attribute & {
+export type NativeContentAttribute = attribute<string, ATTRIBUTETYPEID> & {
 	typeId: typeof ATTRIBUTETYPEIDENUM.NATIVE_CONTENT;
 	storeType: 'Input Stream';
 };
@@ -94,7 +96,8 @@ export class NativeContentEditorComponent {
 	pendingExtension = input<string | null>(null);
 
 	// Outputs
-	@Output() readonly updatedAttributes = new EventEmitter<attribute[]>();
+	@Output() readonly updatedAttributes =
+		new EventEmitter<attribute<string, ATTRIBUTETYPEID>[]>();
 
 	// DI
 	private readonly dialog = inject(MatDialog);
@@ -174,7 +177,7 @@ export class NativeContentEditorComponent {
 						value: binaryContent,
 					};
 
-					const changes: attribute[] = [];
+					const changes: attribute<string, ATTRIBUTETYPEID>[] = [];
 
 					// Only push if actually changed
 					if (
@@ -212,8 +215,8 @@ export class NativeContentEditorComponent {
 							name: 'Extension',
 							value: incomingExt,
 							typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
+							gammaId: '-1',
 							storeType: 'String',
-							multiplicityId: '3',
 						};
 						changes.push(newExt);
 					}

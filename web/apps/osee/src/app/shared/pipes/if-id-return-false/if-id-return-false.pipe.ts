@@ -17,7 +17,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 	standalone: true,
 })
 export class IfIdReturnFalsePipe implements PipeTransform {
-	transform(value: string, ..._args: unknown[]): boolean {
+	transform(value: string | undefined, ..._args: unknown[]): boolean {
 		return value !== 'Id';
 	}
 }
