@@ -36,6 +36,8 @@ import { MatInput } from '@angular/material/input';
 
 export type ColumnAlignment = 'left' | 'center' | 'right';
 
+export type CaptionPosition = 'above' | 'below';
+
 export type MarkdownTableDialogData = {
 	readonly rows: number;
 	readonly cols: number;
@@ -45,11 +47,13 @@ export type MarkdownTableDialogData = {
 	readonly alignments: ColumnAlignment[];
 	readonly isEdit: boolean;
 	readonly caption?: string;
+	readonly captionPosition?: CaptionPosition;
 };
 
 export type MarkdownTableDialogResult = {
 	readonly markdown: string;
 	readonly caption: string;
+	readonly captionPosition: CaptionPosition;
 };
 
 type TableSnapshot = {
@@ -58,6 +62,7 @@ type TableSnapshot = {
 	readonly cells: string[][];
 	readonly alignments: ColumnAlignment[];
 	readonly caption: string;
+	readonly captionPosition: CaptionPosition;
 };
 
 @Component({
@@ -108,6 +113,9 @@ export class MarkdownTableDialogComponent {
 
 	protected readonly isEdit = this.data.isEdit;
 	protected readonly caption = signal(this.data.caption ?? '');
+	protected readonly captionPosition = signal<CaptionPosition>(
+		this.data.captionPosition ?? 'below'
+	);
 	protected readonly headers = signal<string[]>([...this.data.headers]);
 	protected readonly headerSpans = signal<number[]>([
 		...this.data.headerSpans,
@@ -133,6 +141,7 @@ export class MarkdownTableDialogComponent {
 			cells: this.cells().map((r) => [...r]),
 			alignments: [...this.alignments()],
 			caption: this.caption(),
+			captionPosition: this.captionPosition(),
 		};
 	}
 
@@ -175,6 +184,7 @@ export class MarkdownTableDialogComponent {
 		this.cells.set(snapshot.cells);
 		this.alignments.set(snapshot.alignments);
 		this.caption.set(snapshot.caption);
+		this.captionPosition.set(snapshot.captionPosition);
 	}
 	protected readonly isLoading = signal(true);
 
@@ -669,10 +679,18 @@ export class MarkdownTableDialogComponent {
 	protected submitTable(): void {
 		const markdown = this.generateMarkdown();
 		const caption = this.caption().trim();
+		const captionPosition = this.captionPosition();
 		// Clear data first to speed up DOM teardown
 		this.cells.set([]);
 		this.headers.set([]);
-		this.dialogRef.close({ markdown, caption });
+		this.dialogRef.close({ markdown, caption, captionPosition });
+	}
+
+	protected toggleCaptionPosition(): void {
+		this.saveUndoState();
+		this.captionPosition.update((pos) =>
+			pos === 'above' ? 'below' : 'above'
+		);
 	}
 
 	protected cancelDialog(): void {

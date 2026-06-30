@@ -326,6 +326,21 @@
 			placeholder="Enter a caption for this table..."
 			aria-label="Table caption" />
 	</mat-form-field>
+	<button
+		mat-icon-button
+		type="button"
+		[matTooltip]="
+			captionPosition() === 'above'
+				? 'Caption appears above the table.'
+				: 'Caption appears below the table.'
+		"
+		(click)="toggleCaptionPosition()">
+		<mat-icon>{{
+			captionPosition() === 'above'
+				? 'vertical_align_top'
+				: 'vertical_align_bottom'
+		}}</mat-icon>
+	</button>
 	<div class="tw-flex tw-items-center tw-gap-2">
 		<button
 			mat-stroked-button

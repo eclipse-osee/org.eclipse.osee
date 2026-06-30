@@ -45,6 +45,7 @@ export type UploadImageDialogData = {
 export type UploadImageDialogResult = {
 	readonly file: File;
 	readonly caption: string;
+	readonly captionPosition: 'above' | 'below';
 };
 
 @Component({
@@ -84,6 +85,7 @@ export class UploadImageDialogComponent {
 	protected readonly selectedFile = signal<File | null>(null);
 	protected readonly previewUrl = signal<string | null>(null);
 	protected readonly caption = signal('');
+	protected readonly captionPosition = signal<'above' | 'below'>('below');
 	protected readonly acceptedTypes = ACCEPTED_IMAGE_INPUT_TYPES;
 	protected readonly supportedFormatsLabel = SUPPORTED_IMAGE_FORMATS_LABEL;
 
@@ -111,7 +113,17 @@ export class UploadImageDialogComponent {
 		if (!file) {
 			return;
 		}
-		this.dialogRef.close({ file, caption: this.caption().trim() });
+		this.dialogRef.close({
+			file,
+			caption: this.caption().trim(),
+			captionPosition: this.captionPosition(),
+		});
+	}
+
+	protected toggleCaptionPosition(): void {
+		this.captionPosition.update((pos) =>
+			pos === 'above' ? 'below' : 'above'
+		);
 	}
 
 	protected cancelDialog(): void {

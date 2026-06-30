@@ -59,6 +59,7 @@ import {
 	MarkdownTableDialogData,
 	MarkdownTableDialogResult,
 	ColumnAlignment,
+	CaptionPosition,
 } from '@osee/shared/dialogs';
 import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
@@ -341,13 +342,18 @@ export class MarkdownEditorComponent {
 								map((uploadResult) => ({
 									uploadResult,
 									caption: result.caption,
+									captionPosition: result.captionPosition,
 								}))
 							);
 					})
 				)
 				.subscribe({
-					next: ({ uploadResult, caption }) => {
-						this.insertImageLink(uploadResult.artifactId, caption);
+					next: ({ uploadResult, caption, captionPosition }) => {
+						this.insertImageLink(
+							uploadResult.artifactId,
+							caption,
+							captionPosition
+						);
 						this.isUploading.set(false);
 						if (wasFullscreen) {
 							this.enterFullscreen();
@@ -437,10 +443,16 @@ export class MarkdownEditorComponent {
 			});
 	}
 
-	private insertImageLink(artifactId: string, caption = ''): void {
+	private insertImageLink(
+		artifactId: string,
+		caption = '',
+		captionPosition: CaptionPosition = 'below'
+	): void {
 		const imageTag = `<image-link>${artifactId}</image-link>`;
+		const positionAttr =
+			captionPosition === 'above' ? ' position="above"' : '';
 		const captionTag = caption
-			? `\n<figure-caption>${caption}</figure-caption>`
+			? `<figure-caption${positionAttr}>${caption}</figure-caption>`
 			: '';
 		const currentContent = this.mdContent();
 		const cursorPos =
@@ -450,7 +462,17 @@ export class MarkdownEditorComponent {
 
 		const before = currentContent.substring(0, cursorPos);
 		const after = currentContent.substring(cursorPos);
-		this.mdContent.set(before + imageTag + captionTag + after);
+		if (captionTag && captionPosition === 'above') {
+			this.mdContent.set(
+				before + captionTag + '\n\n' + imageTag + after
+			);
+		} else if (captionTag) {
+			this.mdContent.set(
+				before + imageTag + '\n\n' + captionTag + after
+			);
+		} else {
+			this.mdContent.set(before + imageTag + after);
+		}
 	}
 
 	openTableDialog(): void {
@@ -486,6 +508,7 @@ export class MarkdownEditorComponent {
 						alignments: parsedTable.alignments,
 						isEdit: true,
 						caption: parsedTable.caption,
+						captionPosition: parsedTable.captionPosition,
 					}
 				: {
 						rows: 3,
@@ -523,8 +546,12 @@ export class MarkdownEditorComponent {
 					})
 				)
 				.subscribe((result) => {
+					const positionAttr =
+						result.captionPosition === 'above'
+							? ' position="above"'
+							: '';
 					const captionTag = result.caption
-						? `\n<table-caption>${result.caption}</table-caption>`
+						? `<table-caption${positionAttr}>${result.caption}</table-caption>`
 						: '';
 					if (parsedTable) {
 						// Replace existing table
@@ -533,9 +560,19 @@ export class MarkdownEditorComponent {
 							parsedTable.startIndex
 						);
 						const after = content.substring(parsedTable.endIndex);
-						this.mdContent.set(
-							before + result.markdown + captionTag + after
-						);
+						if (captionTag && result.captionPosition === 'above') {
+							this.mdContent.set(
+								before + captionTag + '\n\n' + result.markdown + after
+							);
+						} else if (captionTag) {
+							this.mdContent.set(
+								before + result.markdown + '\n\n' + captionTag + after
+							);
+						} else {
+							this.mdContent.set(
+								before + result.markdown + after
+							);
+						}
 					} else {
 						// Insert new table at cursor or end
 						const cursorPos =
@@ -556,11 +593,16 @@ export class MarkdownEditorComponent {
 									? '\n'
 									: '\n\n'
 								: '';
+						const tableWithCaption =
+							captionTag && result.captionPosition === 'above'
+								? captionTag + '\n\n' + result.markdown
+								: captionTag
+									? result.markdown + '\n\n' + captionTag
+									: result.markdown;
 						this.mdContent.set(
 							before +
 								prefixNewlines +
-								result.markdown +
-								captionTag +
+								tableWithCaption +
 								suffixNewlines +
 								after
 						);
@@ -619,6 +661,7 @@ export class MarkdownEditorComponent {
 		startIndex: number;
 		endIndex: number;
 		caption: string;
+		captionPosition: CaptionPosition;
 	} | null {
 		if (!content) {
 			return null;
@@ -716,7 +759,7 @@ export class MarkdownEditorComponent {
 		// that follows a table (possibly with blank lines in between)
 		if (separatorLineIndex === -1) {
 			const captionMatch = lines[cursorLineIndex].match(
-				/^<table-caption>[^<]*<\/table-caption>$/
+				/^<table-caption(?:\s+position="(?:above|below)")?>([^<]*)<\/table-caption>$/
 			);
 			if (captionMatch && cursorLineIndex > 0) {
 				// Skip blank lines above the caption to find the table
@@ -732,6 +775,30 @@ export class MarkdownEditorComponent {
 					}
 					if (!lines[i].trim().startsWith('|')) {
 						break;
+					}
+				}
+				// If not found above, the caption might be position="above" —
+				// look below for the table
+				if (separatorLineIndex === -1) {
+					let searchBelow = cursorLineIndex + 1;
+					while (
+						searchBelow < lines.length &&
+						lines[searchBelow].trim() === ''
+					) {
+						searchBelow++;
+					}
+					// Check if the line below is a table header (starts with |)
+					if (
+						searchBelow < lines.length &&
+						lines[searchBelow].trim().startsWith('|')
+					) {
+						// Look for separator on or after that line
+						if (
+							searchBelow + 1 < lines.length &&
+							isSeparatorLine(lines[searchBelow + 1])
+						) {
+							separatorLineIndex = searchBelow + 1;
+						}
 					}
 				}
 			}
@@ -823,6 +890,31 @@ export class MarkdownEditorComponent {
 			startIndex += lines[i].length + 1;
 		}
 
+		// Check if a table-caption tag precedes the table (position="above")
+		let caption = '';
+		let captionPosition: CaptionPosition = 'below';
+		let aboveCaptionLineIndex = headerLineIndex - 1;
+		while (
+			aboveCaptionLineIndex >= 0 &&
+			lines[aboveCaptionLineIndex].trim() === ''
+		) {
+			aboveCaptionLineIndex--;
+		}
+		if (aboveCaptionLineIndex >= 0) {
+			const aboveCaptionMatch = lines[aboveCaptionLineIndex].match(
+				/^<table-caption(?:\s+position="(above|below)")?>([^<]+)<\/table-caption>$/
+			);
+			if (aboveCaptionMatch && aboveCaptionMatch[1] === 'above') {
+				caption = aboveCaptionMatch[2];
+				captionPosition = 'above';
+				// Extend startIndex backward to include blank lines and caption line
+				startIndex = 0;
+				for (let i = 0; i < aboveCaptionLineIndex; i++) {
+					startIndex += lines[i].length + 1;
+				}
+			}
+		}
+
 		// endIndex points to the last character of the last table line
 		const lastTableLine = dataEndLine - 1;
 		let endIndex = 0;
@@ -834,27 +926,29 @@ export class MarkdownEditorComponent {
 		endIndex = Math.min(endIndex, content.length);
 
 		// Check if a table-caption tag follows the table (possibly with
-		// blank lines in between)
-		let caption = '';
-		let captionSearchIndex = dataEndLine;
-		while (
-			captionSearchIndex < lines.length &&
-			lines[captionSearchIndex].trim() === ''
-		) {
-			captionSearchIndex++;
-		}
-		if (captionSearchIndex < lines.length) {
-			const captionMatch = lines[captionSearchIndex].match(
-				/^<table-caption>([^<]+)<\/table-caption>$/
-			);
-			if (captionMatch) {
-				caption = captionMatch[1];
-				// Extend endIndex to include blank lines and the caption line
-				endIndex = 0;
-				for (let i = 0; i <= captionSearchIndex; i++) {
-					endIndex += lines[i].length + 1;
+		// blank lines in between) — only if no caption was found above
+		if (!caption) {
+			let captionSearchIndex = dataEndLine;
+			while (
+				captionSearchIndex < lines.length &&
+				lines[captionSearchIndex].trim() === ''
+			) {
+				captionSearchIndex++;
+			}
+			if (captionSearchIndex < lines.length) {
+				const captionMatch = lines[captionSearchIndex].match(
+					/^<table-caption(?:\s+position="(above|below)")?>([^<]+)<\/table-caption>$/
+				);
+				if (captionMatch) {
+					captionPosition = (captionMatch[1] as CaptionPosition) || 'below';
+					caption = captionMatch[2];
+					// Extend endIndex to include blank lines and the caption line
+					endIndex = 0;
+					for (let i = 0; i <= captionSearchIndex; i++) {
+						endIndex += lines[i].length + 1;
+					}
+					endIndex = Math.min(endIndex, content.length);
 				}
-				endIndex = Math.min(endIndex, content.length);
 			}
 		}
 
@@ -866,6 +960,7 @@ export class MarkdownEditorComponent {
 			startIndex,
 			endIndex,
 			caption,
+			captionPosition,
 		};
 	}
 

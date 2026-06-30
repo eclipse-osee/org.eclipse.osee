@@ -606,6 +606,64 @@ test.describe('Markdown Editor', () => {
 			).toHaveValue('Spaced');
 			await page.getByRole('button', { name: 'Cancel' }).click();
 		});
+
+		await test.step('Insert table with caption position above', async () => {
+			await textarea.click();
+			await textarea.fill('');
+			await getToolbarButton(page, 'table_chart').click();
+			await expect(
+				page.getByRole('heading', { name: /Insert Table/i })
+			).toBeVisible({ timeout: 5000 });
+			const captionInput = page.getByRole('textbox', {
+				name: 'Table caption',
+			});
+			await captionInput.click();
+			await captionInput.fill('Above Caption');
+			// Toggle position to above
+			await page
+				.locator('button')
+				.filter({ hasText: 'vertical_align_bottom' })
+				.click();
+			await page.getByRole('button', { name: 'Insert Table' }).click();
+			const value = await textarea.inputValue();
+			// Caption should appear before the table with position attribute
+			expect(value).toContain(
+				'<table-caption position="above">Above Caption</table-caption>'
+			);
+			// Caption should be before the table content
+			const captionIdx = value.indexOf('<table-caption');
+			const tableIdx = value.indexOf('|');
+			expect(captionIdx).toBeLessThan(tableIdx);
+		});
+
+		await test.step('Parse caption with position above in edit mode', async () => {
+			await textarea.click();
+			await textarea.fill(
+				'<table-caption position="above">Above Cap</table-caption>\n\n| H1 | H2 |\n| :-- | :-- |\n| a | b |'
+			);
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				// Place cursor in the table body
+				const pos = ta.value.indexOf('| H1');
+				ta.selectionStart = pos;
+				ta.selectionEnd = pos;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'table_chart').click();
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('textbox', { name: 'Table caption' })
+			).toHaveValue('Above Cap');
+			// Position toggle should show "above" state (vertical_align_top icon)
+			await expect(
+				page.locator('button').filter({ hasText: 'vertical_align_top' })
+			).toBeVisible();
+			await page.getByRole('button', { name: 'Cancel' }).click();
+		});
 	});
 
 	test('should include caption in undo/redo within the table dialog', async ({

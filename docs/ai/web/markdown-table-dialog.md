@@ -29,9 +29,10 @@ markdown-editor.component.ts     ← Toolbar buttons, table parsing, selection l
 
 ### Key types (exported from `@osee/shared/dialogs`)
 
-- `MarkdownTableDialogData` — Input data for the dialog (headers, cells, alignments, spans, isEdit, caption)
-- `MarkdownTableDialogResult` — Output (`{ markdown: string, caption: string }`)
+- `MarkdownTableDialogData` — Input data for the dialog (headers, cells, alignments, spans, isEdit, caption, captionPosition)
+- `MarkdownTableDialogResult` — Output (`{ markdown: string, caption: string, captionPosition: CaptionPosition }`)
 - `ColumnAlignment` — `'left' | 'center' | 'right'`
+- `CaptionPosition` — `'above' | 'below'`
 
 ## Table parsing
 
@@ -47,10 +48,12 @@ The markdown editor's `parseTableAtSelection()` method:
 
 ### Caption detection
 
-- A `<table-caption>Text</table-caption>` line following a table (possibly with blank lines in between) is associated with that table.
-- When the cursor is on the caption line, the editor recognizes it as being "in" the table — both "Select Table" and "Edit Table" work from the caption position.
-- The `endIndex` includes blank lines and the caption line, so selection and replacement cover the full table+caption range.
-- Captions are inserted with a single `\n` separator (no blank line) when creating or updating tables.
+- A `<table-caption>Text</table-caption>` or `<table-caption position="above">Text</table-caption>` tag near a table is associated with it.
+- The `position` attribute controls rendering placement: `"above"` places the caption before the table, `"below"` (or omitted) places it after.
+- Captions are separated from the table by a blank line (`\n\n`) in both above and below positions for markdown parsing compatibility and visual consistency.
+- The parser checks both above (before the header line) and below (after the last data row) for captions, skipping blank lines in both directions.
+- When the cursor is on a caption line, the editor recognizes it as being "in" the table — both "Select Table" and "Edit Table" work from the caption position (for both above and below captions).
+- The `endIndex`/`startIndex` includes blank lines and the caption line, so selection and replacement cover the full table+caption range.
 
 ### Separator detection
 
@@ -79,8 +82,9 @@ In `parseHeaderRowWithSpans()`, the raw (untrimmed) split is checked — only tr
 
 ## Undo/redo
 
-- Snapshot-based: captures full state (headers, spans, cells, alignments, caption) before each structural operation
+- Snapshot-based: captures full state (headers, spans, cells, alignments, caption, captionPosition) before each structural operation
 - Text edits captured on `(focus)` — entering a field (including the caption input) saves the pre-edit state
+- Toggling caption position also saves undo state
 - Max 50 history entries
 - Ctrl+Z / Ctrl+Y / toolbar buttons
 - Listens on `document:keydown` (works regardless of focus position within dialog)
@@ -91,6 +95,8 @@ In `parseHeaderRowWithSpans()`, the raw (untrimmed) split is checked — only tr
 - Newlines in cells encoded as `<br>`
 - Colspan syntax: header cell followed by empty `|` for each spanned column
 - Whitespace trimmed from cells; empty cells output as single space
+- Caption tag includes `position="above"` attribute when above is selected; omits the attribute for below (backward-compatible default)
+- Caption is separated from table/image by a blank line (`\n\n`) in both positions
 
 ## Toolbar integration
 
@@ -120,6 +126,7 @@ All disabled buttons wrap their tooltip in a `<span>` so the tooltip remains vis
 - "Insert Row Above" tooltip appears above the button; "Insert Row Below" tooltip appears below
 - Sticky header (thead) and left gutter for scrolling
 - Caption input in the dialog actions area with `appearance="outline"`
+- Caption position toggle button (vertical_align_top/bottom icon) next to caption input — toggles between above and below with explanatory tooltip
 - Action buttons (Cancel, Update/Insert) grouped tightly together, separated from the caption input
 
 ## Testing
@@ -139,9 +146,10 @@ Test coverage includes:
 - Undo/redo (keyboard + buttons, multiple operations, caption included)
 - Header spans (merge, unmerge, colspan output, colspan parsing, span with insert)
 - Edge cases (backdrop click, Escape, `<br>` encoding, pipe escaping/unescaping, size limits)
-- Caption (insert with caption, parse existing caption, cursor-on-caption detection, blank lines between table and caption, caption undo/redo)
+- Caption (insert with/without caption, cursor-on-caption detection, blank lines between table and caption, caption undo/redo, position toggle above/below)
 - Row numbers (display, update on add, tooltip text)
-- Image upload dialog (disableClose behavior)
+- Caption examples (table caption, figure caption, table example, edit from caption)
+- Image upload dialog (disableClose behavior, caption position toggle)
 
 ## Known limitations
 
@@ -158,5 +166,6 @@ import {
   MarkdownTableDialogData,
   MarkdownTableDialogResult,
   ColumnAlignment,
+  CaptionPosition,
 } from '@osee/shared/dialogs';
 ```
