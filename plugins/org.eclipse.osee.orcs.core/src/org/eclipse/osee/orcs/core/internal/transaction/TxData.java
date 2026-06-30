@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -54,13 +53,13 @@ public class TxData implements HasSession, HasBranchId {
       COMMIT_FAILED;
    }
    private static final long SPACING = (long) Math.pow(2.0, 18.0);
-   private static final int REORDER_THRESHOLD_MAX = (int) (Integer.MAX_VALUE - SPACING * 2);
-   private static final int REORDER_THRESHOLD_MIN = (int) (Integer.MIN_VALUE + SPACING * 2);
+   private static final long TOTAL_ORDER_RANGE = (long) Integer.MAX_VALUE - (long) Integer.MIN_VALUE;
    /**
     * When reordering, pack existing relations into the lower 25% of the integer range, reserving 75% as runway for
     * end-insertions.
     */
    private static final double REORDER_TAIL_RESERVE_RATIO = 0.75;
+   private static final double REORDER_HEAD_RESERVE_RATIO = 0.25;
    private final OrcsSession session;
    private final GraphData graph;
    private final List<TupleData> tuples = new ArrayList<>();
@@ -241,20 +240,44 @@ public class TxData implements HasSession, HasBranchId {
       return (int) ((long) (afterIndex) + beforeIndex) / 2;
    }
 
-   public static int getReorderThresholdMax() {
-      return REORDER_THRESHOLD_MAX;
+   /**
+    * Returns true if reordering would produce a better minimum order value than what currently exists. This avoids
+    * triggering a reorder when the relation count is high enough that the post-reorder min would still be near the
+    * boundary.
+    */
+   public static boolean shouldReorderForMin(int currentMin, int relationCount) {
+      long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
+      long pad = usableRange / (relationCount + 1);
+      long postReorderMin = (long) Integer.MIN_VALUE + pad;
+      return currentMin < postReorderMin;
    }
 
-   public static int getReorderThresholdMin() {
-      return REORDER_THRESHOLD_MIN;
+   /**
+    * Returns true if reordering would produce a better maximum order value than what currently exists. This avoids
+    * triggering a reorder when the relation count is high enough that the post-reorder max would still be near the
+    * boundary.
+    */
+   public static boolean shouldReorderForMax(int currentMax, int relationCount) {
+      long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
+      long pad = usableRange / (relationCount + 1);
+      long postReorderMax = (long) Integer.MIN_VALUE + pad * relationCount;
+      return currentMax > postReorderMax;
    }
 
    public static long getSpacing() {
       return SPACING;
    }
 
+   public static long getTotalOrderRange() {
+      return TOTAL_ORDER_RANGE;
+   }
+
    public static double getReorderTailReserveRatio() {
       return REORDER_TAIL_RESERVE_RATIO;
+   }
+
+   public static double getReorderHeadReserveRatio() {
+      return REORDER_HEAD_RESERVE_RATIO;
    }
 
    public void addGammaId(GammaId gammaId) {
@@ -272,4 +295,5 @@ public class TxData implements HasSession, HasBranchId {
    public List<GammaId> getGammaIdsFailed() {
       return this.gammaIdsFailed;
    }
+
 }
