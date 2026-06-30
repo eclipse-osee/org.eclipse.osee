@@ -679,11 +679,14 @@ export class MarkdownTableDialogComponent {
 		this.dialogRef.close(undefined);
 	}
 
+	/** Default row height in pixels (minimum enforced during resize). */
+	private readonly defaultRowHeight = 62;
+
 	/** Row height stored per row index. */
 	protected readonly rowHeights = signal<Record<number, number>>({});
 	protected getRowHeight(rowIdx: number): string {
 		const h = this.rowHeights()[rowIdx];
-		return h ? `${h}px` : 'auto';
+		return `${h || this.defaultRowHeight}px`;
 	}
 
 	protected onRowDividerMouseDown(event: MouseEvent, rowIdx: number): void {
@@ -698,7 +701,7 @@ export class MarkdownTableDialogComponent {
 
 		const onMouseMove = (e: MouseEvent) => {
 			const delta = e.clientY - startY;
-			const newHeight = Math.max(40, startHeight + delta);
+			const newHeight = Math.max(this.defaultRowHeight, startHeight + delta);
 			// Direct DOM update during drag — avoids change detection per frame
 			if (row) {
 				row.style.height = `${newHeight}px`;
@@ -716,7 +719,7 @@ export class MarkdownTableDialogComponent {
 			cleanup();
 			// Commit final height to signal once
 			const delta = e.clientY - startY;
-			const finalHeight = Math.max(40, startHeight + delta);
+			const finalHeight = Math.max(this.defaultRowHeight, startHeight + delta);
 			this.rowHeights.update((h) => ({ ...h, [rowIdx]: finalHeight }));
 		};
 
