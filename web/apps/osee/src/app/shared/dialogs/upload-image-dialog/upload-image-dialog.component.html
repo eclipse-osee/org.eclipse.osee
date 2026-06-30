@@ -59,6 +59,17 @@
 					<mat-icon>close</mat-icon>
 				</button>
 			</div>
+			<mat-form-field class="tw-w-full">
+				<mat-label>Figure Caption (optional)</mat-label>
+				<input
+					matInput
+					type="text"
+					[ngModel]="caption()"
+					(ngModelChange)="caption.set($event)"
+					name="figure-caption"
+					placeholder="Enter a caption for this figure..."
+					aria-label="Figure caption" />
+			</mat-form-field>
 		</div>
 	}
 </div>

@@ -334,15 +334,25 @@ export class MarkdownEditorComponent {
 					}),
 					switchMap((result) => {
 						this.isUploading.set(true);
-						return this.imageService.uploadImageArtifact(
-							this.artifactId(),
-							result.file
-						);
+						return this.imageService
+							.uploadImageArtifact(
+								this.artifactId(),
+								result.file
+							)
+							.pipe(
+								map((uploadResult) => ({
+									uploadResult,
+									caption: result.caption,
+								}))
+							);
 					})
 				)
 				.subscribe({
-					next: (uploadResult) => {
-						this.insertImageLink(uploadResult.artifactId);
+					next: ({ uploadResult, caption }) => {
+						this.insertImageLink(
+							uploadResult.artifactId,
+							caption
+						);
 						this.isUploading.set(false);
 						if (wasFullscreen) {
 							this.enterFullscreen();
@@ -432,8 +442,11 @@ export class MarkdownEditorComponent {
 			});
 	}
 
-	private insertImageLink(artifactId: string): void {
+	private insertImageLink(artifactId: string, caption = ''): void {
 		const imageTag = `<image-link>${artifactId}</image-link>`;
+		const captionTag = caption
+			? `\n<figure-caption>${caption}</figure-caption>`
+			: '';
 		const currentContent = this.mdContent();
 		const cursorPos =
 			this.savedSelectionStart >= 0
@@ -442,7 +455,7 @@ export class MarkdownEditorComponent {
 
 		const before = currentContent.substring(0, cursorPos);
 		const after = currentContent.substring(cursorPos);
-		this.mdContent.set(before + imageTag + after);
+		this.mdContent.set(before + imageTag + captionTag + after);
 	}
 
 	openTableDialog(): void {
@@ -477,6 +490,7 @@ export class MarkdownEditorComponent {
 						cells: parsedTable.cells,
 						alignments: parsedTable.alignments,
 						isEdit: true,
+						caption: parsedTable.caption,
 					}
 				: {
 						rows: 3,
@@ -514,6 +528,9 @@ export class MarkdownEditorComponent {
 					})
 				)
 				.subscribe((result) => {
+					const captionTag = result.caption
+						? `\n<table-caption>${result.caption}</table-caption>`
+						: '';
 					if (parsedTable) {
 						// Replace existing table
 						const before = content.substring(
@@ -521,7 +538,9 @@ export class MarkdownEditorComponent {
 							parsedTable.startIndex
 						);
 						const after = content.substring(parsedTable.endIndex);
-						this.mdContent.set(before + result.markdown + after);
+						this.mdContent.set(
+							before + result.markdown + captionTag + after
+						);
 					} else {
 						// Insert new table at cursor or end
 						const cursorPos =
@@ -546,6 +565,7 @@ export class MarkdownEditorComponent {
 							before +
 								prefixNewlines +
 								result.markdown +
+								captionTag +
 								suffixNewlines +
 								after
 						);
@@ -603,6 +623,7 @@ export class MarkdownEditorComponent {
 		alignments: ColumnAlignment[];
 		startIndex: number;
 		endIndex: number;
+		caption: string;
 	} | null {
 		if (!content) {
 			return null;
@@ -792,6 +813,21 @@ export class MarkdownEditorComponent {
 		// Subtract 1 to point to the newline, or use content.length if at end
 		endIndex = Math.min(endIndex, content.length);
 
+		// Check if the line immediately after the table is a table-caption tag
+		let caption = '';
+		const captionLineIndex = dataEndLine;
+		if (captionLineIndex < lines.length) {
+			const captionMatch = lines[captionLineIndex].match(
+				/^<table-caption>([^<]+)<\/table-caption>$/
+			);
+			if (captionMatch) {
+				caption = captionMatch[1];
+				// Extend endIndex to include the caption line
+				endIndex += lines[captionLineIndex].length + 1;
+				endIndex = Math.min(endIndex, content.length);
+			}
+		}
+
 		return {
 			headers,
 			headerSpans,
@@ -799,6 +835,7 @@ export class MarkdownEditorComponent {
 			alignments,
 			startIndex,
 			endIndex,
+			caption,
 		};
 	}
 

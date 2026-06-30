@@ -44,10 +44,12 @@ export type MarkdownTableDialogData = {
 	readonly cells: string[][];
 	readonly alignments: ColumnAlignment[];
 	readonly isEdit: boolean;
+	readonly caption?: string;
 };
 
 export type MarkdownTableDialogResult = {
 	readonly markdown: string;
+	readonly caption: string;
 };
 
 type TableSnapshot = {
@@ -104,6 +106,7 @@ export class MarkdownTableDialogComponent {
 	}
 
 	protected readonly isEdit = this.data.isEdit;
+	protected readonly caption = signal(this.data.caption ?? '');
 	protected readonly headers = signal<string[]>([...this.data.headers]);
 	protected readonly headerSpans = signal<number[]>([
 		...this.data.headerSpans,
@@ -662,10 +665,11 @@ export class MarkdownTableDialogComponent {
 
 	protected submitTable(): void {
 		const markdown = this.generateMarkdown();
+		const caption = this.caption().trim();
 		// Clear data first to speed up DOM teardown
 		this.cells.set([]);
 		this.headers.set([]);
-		this.dialogRef.close({ markdown });
+		this.dialogRef.close({ markdown, caption });
 	}
 
 	protected cancelDialog(): void {

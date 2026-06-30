@@ -74,4 +74,14 @@ export const mdExamples: mdExample[] = [
 		icon: 'code',
 		markdown: '```const oseeIsGreat = true;```',
 	},
+	{
+		name: 'Figure Caption',
+		icon: 'image',
+		markdown: '<figure-caption>Figure caption text</figure-caption>',
+	},
+	{
+		name: 'Table Caption',
+		icon: 'table_chart',
+		markdown: '<table-caption>Table caption text</table-caption>',
+	},
 ];
