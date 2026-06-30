@@ -717,6 +717,34 @@ export class MarkdownEditorComponent {
 			}
 		}
 
+		// If not found, check if cursor is on a <table-caption> line
+		// that follows a table (possibly with blank lines in between)
+		if (separatorLineIndex === -1) {
+			const captionMatch = lines[cursorLineIndex].match(
+				/^<table-caption>[^<]*<\/table-caption>$/
+			);
+			if (captionMatch && cursorLineIndex > 0) {
+				// Skip blank lines above the caption to find the table
+				let searchFrom = cursorLineIndex - 1;
+				while (
+					searchFrom >= 0 &&
+					lines[searchFrom].trim() === ''
+				) {
+					searchFrom--;
+				}
+				// Walk upward from the last non-blank line to find the separator
+				for (let i = searchFrom; i >= 0; i--) {
+					if (isSeparatorLine(lines[i])) {
+						separatorLineIndex = i;
+						break;
+					}
+					if (!lines[i].trim().startsWith('|')) {
+						break;
+					}
+				}
+			}
+		}
+
 		// Handle selection that may overlap a table
 		if (separatorLineIndex === -1 && selStart !== selEnd) {
 			// Search all lines in the document for a separator whose table
@@ -813,17 +841,27 @@ export class MarkdownEditorComponent {
 		// Subtract 1 to point to the newline, or use content.length if at end
 		endIndex = Math.min(endIndex, content.length);
 
-		// Check if the line immediately after the table is a table-caption tag
+		// Check if a table-caption tag follows the table (possibly with
+		// blank lines in between)
 		let caption = '';
-		const captionLineIndex = dataEndLine;
-		if (captionLineIndex < lines.length) {
-			const captionMatch = lines[captionLineIndex].match(
+		let captionSearchIndex = dataEndLine;
+		while (
+			captionSearchIndex < lines.length &&
+			lines[captionSearchIndex].trim() === ''
+		) {
+			captionSearchIndex++;
+		}
+		if (captionSearchIndex < lines.length) {
+			const captionMatch = lines[captionSearchIndex].match(
 				/^<table-caption>([^<]+)<\/table-caption>$/
 			);
 			if (captionMatch) {
 				caption = captionMatch[1];
-				// Extend endIndex to include the caption line
-				endIndex += lines[captionLineIndex].length + 1;
+				// Extend endIndex to include blank lines and the caption line
+				endIndex = 0;
+				for (let i = 0; i <= captionSearchIndex; i++) {
+					endIndex += lines[i].length + 1;
+				}
 				endIndex = Math.min(endIndex, content.length);
 			}
 		}

@@ -298,7 +298,7 @@
 
 <div
 	mat-dialog-actions
-	class="tw-flex tw-items-center tw-gap-3 tw-px-4">
+	class="tw-flex tw-items-center tw-gap-4 tw-px-4">
 	<mat-form-field
 		class="tw-flex-1"
 		subscriptSizing="dynamic"
@@ -313,17 +313,19 @@
 			placeholder="Enter a caption for this table..."
 			aria-label="Table caption" />
 	</mat-form-field>
-	<button
-		mat-stroked-button
-		type="button"
-		class="tw-text-osee-red-8"
-		(click)="cancelDialog()">
-		Cancel
-	</button>
-	<button
-		mat-stroked-button
-		type="button"
-		(click)="submitTable()">
-		{{ isEdit ? 'Update Table' : 'Insert Table' }}
-	</button>
+	<div class="tw-flex tw-items-center tw-gap-2">
+		<button
+			mat-stroked-button
+			type="button"
+			class="tw-text-osee-red-8"
+			(click)="cancelDialog()">
+			Cancel
+		</button>
+		<button
+			mat-stroked-button
+			type="button"
+			(click)="submitTable()">
+			{{ isEdit ? 'Update Table' : 'Insert Table' }}
+		</button>
+	</div>
 </div>
