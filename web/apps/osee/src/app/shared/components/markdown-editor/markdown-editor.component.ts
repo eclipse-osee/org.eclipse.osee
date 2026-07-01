@@ -451,8 +451,9 @@ export class MarkdownEditorComponent {
 		const imageTag = `<image-link>${artifactId}</image-link>`;
 		const positionAttr =
 			captionPosition === 'above' ? ' position="above"' : '';
-		const captionTag = caption
-			? `<figure-caption${positionAttr}>${caption}</figure-caption>`
+		const escapedCaption = caption.replace(/</g, '&lt;');
+		const captionTag = escapedCaption
+			? `<figure-caption${positionAttr}>${escapedCaption}</figure-caption>`
 			: '';
 		const currentContent = this.mdContent();
 		const cursorPos =
@@ -554,8 +555,9 @@ export class MarkdownEditorComponent {
 						result.captionPosition === 'above'
 							? ' position="above"'
 							: '';
-					const captionTag = result.caption
-						? `<table-caption${positionAttr}>${result.caption}</table-caption>`
+					const escapedCaption = result.caption.replace(/</g, '&lt;');
+					const captionTag = escapedCaption
+						? `<table-caption${positionAttr}>${escapedCaption}</table-caption>`
 						: '';
 					if (parsedTable) {
 						// Replace existing table
@@ -924,7 +926,7 @@ export class MarkdownEditorComponent {
 				/^<table-caption(?:\s+position="(above|below)")?>([^<]+)<\/table-caption>$/
 			);
 			if (aboveCaptionMatch && aboveCaptionMatch[1] === 'above') {
-				caption = aboveCaptionMatch[2];
+				caption = aboveCaptionMatch[2].replace(/&lt;/g, '<');
 				captionPosition = 'above';
 				// Extend startIndex backward to include blank lines and caption line
 				startIndex = 0;
@@ -964,7 +966,7 @@ export class MarkdownEditorComponent {
 				if (captionMatch && captionMatch[1] !== 'above') {
 					captionPosition =
 						(captionMatch[1] as CaptionPosition) || 'below';
-					caption = captionMatch[2];
+					caption = captionMatch[2].replace(/&lt;/g, '<');
 					// Extend endIndex to include blank lines and the caption line
 					endIndex = 0;
 					for (let i = 0; i <= captionSearchIndex; i++) {

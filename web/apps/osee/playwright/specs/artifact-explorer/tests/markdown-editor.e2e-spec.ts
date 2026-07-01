@@ -693,6 +693,44 @@ test.describe('Markdown Editor', () => {
 			).toHaveValue('Above');
 			await page.getByRole('button', { name: 'Cancel' }).click();
 		});
+
+		await test.step('Escape < in caption and unescape on edit', async () => {
+			await textarea.click();
+			await textarea.fill('');
+			await getToolbarButton(page, 'table_chart').click();
+			await expect(
+				page.getByRole('heading', { name: /Insert Table/i })
+			).toBeVisible({ timeout: 5000 });
+			const captionInput = page.getByRole('textbox', {
+				name: 'Table caption',
+			});
+			await captionInput.click();
+			await captionInput.fill('Values < 100');
+			await page.getByRole('button', { name: 'Insert Table' }).click();
+			// Raw markdown should have escaped < as &lt;
+			const raw = await textarea.inputValue();
+			expect(raw).toContain(
+				'<table-caption>Values &lt; 100</table-caption>'
+			);
+			// Place cursor inside the table (on a pipe line) and edit
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				const pos = ta.value.indexOf('|');
+				ta.selectionStart = pos;
+				ta.selectionEnd = pos;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'table_chart').click();
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('textbox', { name: 'Table caption' })
+			).toHaveValue('Values < 100');
+			await page.getByRole('button', { name: 'Cancel' }).click();
+		});
 	});
 
 	test('should include caption in undo/redo within the table dialog', async ({
