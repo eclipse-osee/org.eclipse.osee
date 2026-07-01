@@ -58,6 +58,7 @@ public class ReportEndpointTest {
    private static RelationEndpoint relationEndpoint;
 
    private static ArtifactToken templateArt;
+   private static ArtifactToken followForkTemplateArt;
    private static ArtifactToken subsystemReqArt;
    private static ArtifactToken codeUnitArt;
 
@@ -89,6 +90,36 @@ public class ReportEndpointTest {
       sb.append("}\n");
       return sb.toString();
    }
+
+   private static final String FOLLOW_FORK_TEMPLATE_CODE = getFollowForkTemplateCode();
+
+   private static String getFollowForkTemplateCode() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("package org.eclipse.osee.orcs.rest.internal.writers;\n");
+      sb.append("import org.eclipse.osee.framework.core.data.ArtifactId;\n");
+      sb.append("import org.eclipse.osee.framework.core.data.ArtifactTypeToken;\n");
+      sb.append("import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;\n");
+      sb.append("import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;\n");
+      sb.append("import org.eclipse.osee.framework.core.enums.CoreRelationTypes;\n");
+      sb.append("import org.eclipse.osee.orcs.rest.model.GenericReport;\n");
+      sb.append("/**\n");
+      sb.append(" * @author David W. Miller\n");
+      sb.append(" */\n");
+      sb.append("public class GenericReportCode {\n");
+      sb.append("   public void testFollowFork(GenericReport report) {\n");
+      sb.append("      report.level(\"Subsystem Requirements\", report.query().andIsOfType(CoreArtifactTypes.SubsystemRequirementMsWord)). //\n");
+      sb.append("         column(\"Artifact ID\"). //\n");
+      sb.append("         column(\"Requirement Name\", CoreAttributeTypes.Name); //\n");
+      sb.append("      report.relationLevel(\"Related Code unit\", \"Code-Requirement\", \"SIDE_A\"). //\n");
+      sb.append("         followFork(\"Supporting Info\", \"SIDE_B\"). //\n");
+      sb.append("         followFork(\"Requirement Trace\", \"SIDE_B\"). //\n");
+      sb.append("         column(\"Artifact ID\"). //\n");
+      sb.append("         column(\"Code Unit\", CoreAttributeTypes.Name). //\n");
+      sb.append("         column(\"File System Path\", CoreAttributeTypes.FileSystemPath); //\n");
+      sb.append("   }\n");
+      sb.append("}\n");
+      return sb.toString();
+   }
    // @formatter:on
 
    @BeforeClass
@@ -103,6 +134,12 @@ public class ReportEndpointTest {
       templateArt = commonArtifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.ReportTemplate,
          DefaultHierarchyRoot, "ReportEndpointTest Template");
       commonArtifactEndpoint.setSoleAttributeValue(COMMON, templateArt, CoreAttributeTypes.JavaCode, TEMPLATE_CODE);
+
+      // Create a second ReportTemplate for followFork testing
+      followForkTemplateArt = commonArtifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.ReportTemplate,
+         DefaultHierarchyRoot, "ReportEndpointTest FollowFork Template");
+      commonArtifactEndpoint.setSoleAttributeValue(COMMON, followForkTemplateArt, CoreAttributeTypes.JavaCode,
+         FOLLOW_FORK_TEMPLATE_CODE);
 
       // Create a SubsystemRequirementMsWord artifact on the working branch
       subsystemReqArt = workingBranchArtifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
@@ -131,6 +168,9 @@ public class ReportEndpointTest {
       if (templateArt != null) {
          commonArtifactEndpoint.deleteArtifact(COMMON, templateArt);
       }
+      if (followForkTemplateArt != null) {
+         commonArtifactEndpoint.deleteArtifact(COMMON, followForkTemplateArt);
+      }
    }
 
    @Test
@@ -149,51 +189,57 @@ public class ReportEndpointTest {
       String url = String.format("orcs/report/%s/view/%s/template/%s", branchId, viewId, templateId);
 
       Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_XML).get();
-
-      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
-
-      String responseBody = "";
       try {
-         Object entity = response.getEntity();
-         if (entity instanceof InputStream) {
-            responseBody = Lib.inputStreamToString((InputStream) entity);
-         } else {
-            responseBody = entity.toString();
+         assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+
+         String responseBody = "";
+         try {
+            Object entity = response.getEntity();
+            if (entity instanceof InputStream) {
+               responseBody = Lib.inputStreamToString((InputStream) entity);
+            } else {
+               responseBody = entity.toString();
+            }
+         } catch (Exception ex) {
+            throw new RuntimeException("Failed to read response entity", ex);
          }
-      } catch (Exception ex) {
-         throw new RuntimeException("Failed to read response entity", ex);
+
+         // Verify the response contains Excel XML content
+         assertTrue("Response should contain XML worksheet data", responseBody.contains("<Worksheet"));
+
+         // Verify the report contains our test data
+         assertTrue("Response should contain the subsystem requirement name",
+            responseBody.contains("ReportEndpointTest Subsystem Req"));
+         assertTrue("Response should contain the code unit name",
+            responseBody.contains("ReportEndpointTest Code Unit"));
+         assertTrue("Response should contain the file system path",
+            responseBody.contains("/src/test/TestFile.java"));
+
+         // Verify the report structure headers
+         assertTrue("Response should contain the level name 'Subsystem Requirements'",
+            responseBody.contains("Subsystem Requirements"));
+         assertTrue("Response should contain the level name 'Related Code unit'",
+            responseBody.contains("Related Code unit"));
+      } finally {
+         response.close();
       }
-
-      // Verify the response contains Excel XML content
-      assertTrue("Response should contain XML worksheet data", responseBody.contains("<Worksheet"));
-
-      // Verify the report contains our test data
-      assertTrue("Response should contain the subsystem requirement name",
-         responseBody.contains("ReportEndpointTest Subsystem Req"));
-      assertTrue("Response should contain the code unit name",
-         responseBody.contains("ReportEndpointTest Code Unit"));
-      assertTrue("Response should contain the file system path",
-         responseBody.contains("/src/test/TestFile.java"));
-
-      // Verify the report structure headers
-      assertTrue("Response should contain the level name 'Subsystem Requirements'",
-         responseBody.contains("Subsystem Requirements"));
-      assertTrue("Response should contain the level name 'Related Code unit'",
-         responseBody.contains("Related Code unit"));
    }
 
    @Test
    public void testReportEndpointWithInvalidTemplate() {
       String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
       String viewId = ArtifactId.SENTINEL.getIdString();
-      String invalidTemplateId = "-1";
+      String invalidTemplateId = ArtifactId.SENTINEL.getIdString();
 
       String url = String.format("orcs/report/%s/view/%s/template/%s", branchId, viewId, invalidTemplateId);
 
       Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_XML).get();
-
-      // The endpoint should still return a response (with error info in the debug sheet)
-      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+      try {
+         // The endpoint should still return a response (with error info in the debug sheet)
+         assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+      } finally {
+         response.close();
+      }
    }
 
    @Test
@@ -210,30 +256,82 @@ public class ReportEndpointTest {
       assertTrue("viewId should not be empty", !viewId.isEmpty());
       assertTrue("templateId should not be empty", !templateId.isEmpty());
 
-      String url =
-         String.format("orcs/report/%s/view/%s/template/%s/async/%s", branchId, viewId, templateId, email);
+      String url = String.format("orcs/report/%s/view/%s/template/%s/async/%s", branchId, viewId, templateId, email);
 
       Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).get();
-
-      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
-
-      String responseBody = "";
       try {
-         Object entity = response.getEntity();
-         if (entity instanceof InputStream) {
-            responseBody = Lib.inputStreamToString((InputStream) entity);
-         } else {
-            responseBody = entity.toString();
-         }
-      } catch (Exception ex) {
-         throw new RuntimeException("Failed to read response entity", ex);
-      }
+         assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
 
-      assertTrue("Response should indicate report generation started",
-         responseBody.contains("Report generation started"));
-      assertTrue("Response should contain the file name", responseBody.contains("Generic_Trace_Report_"));
-      assertTrue("Response should contain the branch", responseBody.contains(branchId));
-      assertTrue("Response should contain the template", responseBody.contains(templateId));
-      assertTrue("Response should contain the email recipient", responseBody.contains(email));
+         String responseBody = "";
+         try {
+            Object entity = response.getEntity();
+            if (entity instanceof InputStream) {
+               responseBody = Lib.inputStreamToString((InputStream) entity);
+            } else {
+               responseBody = entity.toString();
+            }
+         } catch (Exception ex) {
+            throw new RuntimeException("Failed to read response entity", ex);
+         }
+
+         assertTrue("Response should indicate report generation started",
+            responseBody.contains("Report generation started"));
+         assertTrue("Response should contain the file name", responseBody.contains("Generic_Trace_Report_"));
+         assertTrue("Response should contain the branch", responseBody.contains(branchId));
+         assertTrue("Response should contain the template", responseBody.contains(templateId));
+         assertTrue("Response should contain the email recipient", responseBody.contains(email));
+      } finally {
+         response.close();
+      }
+   }
+
+   @Test
+   public void testReportEndpointWithFollowFork() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String viewId = ArtifactId.SENTINEL.getIdString();
+      String templateId = followForkTemplateArt.getIdString();
+
+      assertNotNull("branchId should not be null", branchId);
+      assertNotNull("viewId should not be null", viewId);
+      assertNotNull("templateId should not be null", templateId);
+      assertTrue("branchId should not be empty", !branchId.isEmpty());
+      assertTrue("viewId should not be empty", !viewId.isEmpty());
+      assertTrue("templateId should not be empty", !templateId.isEmpty());
+
+      String url = String.format("orcs/report/%s/view/%s/template/%s", branchId, viewId, templateId);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_XML).get();
+      try {
+         assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+
+         String responseBody = "";
+         try {
+            Object entity = response.getEntity();
+            if (entity instanceof InputStream) {
+               responseBody = Lib.inputStreamToString((InputStream) entity);
+            } else {
+               responseBody = entity.toString();
+            }
+         } catch (Exception ex) {
+            throw new RuntimeException("Failed to read response entity", ex);
+         }
+
+         // Verify the response contains Excel XML content
+         assertTrue("Response should contain XML worksheet data", responseBody.contains("<Worksheet"));
+
+         // Verify the report structure parsed correctly (followFork didn't cause errors)
+         assertTrue("Response should contain the level name 'Subsystem Requirements'",
+            responseBody.contains("Subsystem Requirements"));
+         assertTrue("Response should contain the level name 'Related Code unit'",
+            responseBody.contains("Related Code unit"));
+
+         // Verify data is present (followFork eagerly loads additional relations but doesn't prevent base results)
+         assertTrue("Response should contain the subsystem requirement name",
+            responseBody.contains("ReportEndpointTest Subsystem Req"));
+         assertTrue("Response should contain the code unit name",
+            responseBody.contains("ReportEndpointTest Code Unit"));
+      } finally {
+         response.close();
+      }
    }
 }
