@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -83,7 +84,7 @@ public class MarkdownHtmlUtil {
    //@formatter:on
 
    private static boolean isImageFile(String fileName) {
-      String lowerName = fileName.toLowerCase();
+      String lowerName = fileName.toLowerCase(Locale.ROOT);
       return SUPPORTED_IMAGE_EXTENSIONS.stream().anyMatch(lowerName::endsWith);
    }
 
