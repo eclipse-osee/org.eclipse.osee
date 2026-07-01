@@ -99,7 +99,7 @@
 									mat-icon-button
 									type="button"
 									matTooltip="Insert Column Before"
-									class="tw-text-osee-blue-6"
+									class="tw-text-primary"
 									(click)="insertColumnAt($index)">
 									<mat-icon>keyboard_arrow_left</mat-icon>
 								</button>
@@ -121,7 +121,7 @@
 									</button>
 									@if (getSpan($index) > 1) {
 										<span
-											class="tw-absolute -tw-right-1 -tw-top-1 tw-flex tw-size-4 tw-items-center tw-justify-center tw-rounded-full tw-bg-osee-blue-6 tw-text-[10px] tw-font-bold tw-text-white">
+											class="tw-absolute -tw-right-1 -tw-top-1 tw-flex tw-size-4 tw-items-center tw-justify-center tw-rounded-full tw-bg-primary tw-text-[10px] tw-font-bold tw-text-white">
 											H
 										</span>
 									}
@@ -130,7 +130,7 @@
 									mat-icon-button
 									type="button"
 									matTooltip="Insert Column After"
-									class="tw-text-osee-blue-6"
+									class="tw-text-primary"
 									(click)="insertColumnAt($index + 1)">
 									<mat-icon>keyboard_arrow_right</mat-icon>
 								</button>
@@ -139,7 +139,7 @@
 										mat-icon-button
 										type="button"
 										matTooltip="Remove Column"
-										class="tw-text-osee-red-24 hover:tw-text-osee-red-21"
+										class="tw-text-warning hover:tw-text-warning-lighter"
 										(click)="removeColumn($index)">
 										<mat-icon>close</mat-icon>
 									</button>
@@ -164,7 +164,7 @@
 										mat-icon-button
 										type="button"
 										matTooltip="Merge Into Left Header"
-										class="tw-shrink-0 tw-text-osee-blue-6"
+										class="tw-shrink-0 tw-text-primary"
 										(click)="mergeLeft(idx)">
 										<mat-icon>merge_type</mat-icon>
 									</button>
@@ -207,7 +207,7 @@
 										mat-icon-button
 										type="button"
 										matTooltip="Unmerge Last Column"
-										class="tw-shrink-0 tw-text-osee-blue-6"
+										class="tw-shrink-0 tw-text-primary"
 										(click)="
 											unmerge(idx + getSpan(idx) - 1)
 										">
@@ -236,7 +236,7 @@
 										type="button"
 										matTooltip="Insert Row Above"
 										matTooltipPosition="above"
-										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
+										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-primary"
 										(click)="insertRowAt(rowIdx)">
 										<mat-icon>keyboard_arrow_up</mat-icon>
 									</button>
@@ -249,7 +249,7 @@
 										mat-icon-button
 										type="button"
 										matTooltip="Insert Row Below"
-										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
+										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-primary"
 										(click)="insertRowAt(rowIdx + 1)">
 										<mat-icon>keyboard_arrow_down</mat-icon>
 									</button>
@@ -259,7 +259,7 @@
 										mat-icon-button
 										type="button"
 										matTooltip="Remove Row"
-										class="tw-text-osee-red-24 hover:tw-text-osee-red-21"
+										class="tw-text-warning hover:tw-text-warning-lighter"
 										(click)="removeRow(rowIdx)">
 										<mat-icon>close</mat-icon>
 									</button>
@@ -280,7 +280,8 @@
 										(focus)="saveUndoState()"
 										name="cell-{{ rowIdx }}-{{ colIdx }}"
 										spellcheck="true"
-										class="tw-flex-1 tw-resize-none tw-rounded tw-border-none tw-bg-transparent tw-px-2 tw-py-1 tw-text-sm tw-outline-none focus:tw-ring-1 focus:tw-ring-osee-blue-6"
+										class="tw-flex-1 tw-resize-none tw-rounded tw-border-none tw-bg-transparent tw-px-2 tw-py-1 tw-text-sm tw-outline-none focus:tw-ring-1 focus:tw-ring-primary"
+										style="height: 100%"
 										[attr.aria-label]="
 											'Row ' +
 											(rowIdx + 1) +
@@ -295,7 +296,7 @@
 					<tr>
 						<td
 							[attr.colspan]="colCount() + 1"
-							class="tw-h-1 tw-cursor-row-resize tw-p-0 hover:tw-bg-osee-blue-6/40"
+							class="hover:tw-bg-primary/40 tw-h-1 tw-cursor-row-resize tw-p-0"
 							(mousedown)="
 								onRowDividerMouseDown($event, rowIdx)
 							"></td>
@@ -343,7 +344,7 @@
 		<button
 			mat-stroked-button
 			type="button"
-			class="tw-text-osee-red-8"
+			class="tw-text-foreground-text"
 			(click)="cancelDialog()">
 			Cancel
 		</button>

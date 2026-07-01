@@ -35,7 +35,7 @@ import { RouterLink } from '@angular/router';
 			target="_blank">
 			<button
 				mat-flat-button
-				class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
+				class="tw-flex tw-justify-center tw-bg-primary tw-text-background-background [&_*]:tw-m-0"
 				matTooltip="Change Report">
 				<mat-icon class="material-icons-outlined">differences</mat-icon>
 			</button>

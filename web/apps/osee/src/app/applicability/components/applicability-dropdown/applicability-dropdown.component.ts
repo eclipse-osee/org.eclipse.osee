@@ -27,7 +27,11 @@ import {
 	MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 import { MatOption } from '@angular/material/core';
-import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { applic } from '@osee/applicability/types';
@@ -63,9 +67,11 @@ import {
 @Component({
 	selector: 'osee-applicability-dropdown',
 	template: `<mat-form-field
+		appearance="outline"
 		subscriptSizing="dynamic"
 		id="applicability-selector"
-		class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit">
+		class="tw-w-full tw-pt-4">
+		<mat-label>Applicability</mat-label>
 		<input
 			type="text"
 			matInput
@@ -119,6 +125,7 @@ import {
 		AsyncPipe,
 		FormsModule,
 		MatFormField,
+		MatLabel,
 		MatInput,
 		MatAutocomplete,
 		MatAutocompleteTrigger,

@@ -94,6 +94,7 @@ export const artifactWithRelationsMock: artifactWithRelations = {
 					],
 					isSideA: true,
 					isSideB: false,
+					gammaIds: ['-1'],
 				},
 			],
 		},

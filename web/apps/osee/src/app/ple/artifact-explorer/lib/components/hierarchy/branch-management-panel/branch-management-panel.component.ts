@@ -29,82 +29,71 @@ import {
 	UpdateFromParentButtonComponent,
 } from '@osee/commit/components';
 import { branchSentinel } from '@osee/shared/types';
-import { ExpansionPanelComponent } from '@osee/shared/components';
 import { ChangeReportButtonComponent } from '../change-report-button/change-report-button.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { CreateActionButtonComponent } from '@osee/configuration-management/components';
 
 @Component({
-	selector: 'osee-branch-management',
+	selector: 'osee-branch-management-panel',
 	imports: [
 		MatButton,
 		MatIcon,
 		CreateBranchButtonComponent,
 		CommitBranchButtonComponent,
 		UpdateFromParentButtonComponent,
-		ExpansionPanelComponent,
 		ChangeReportButtonComponent,
 		MatTooltip,
 		RouterLink,
 		CreateActionButtonComponent,
 	],
 	template: `
-		<osee-expansion-panel
-			title="Branch Management"
-			[openDefault]="false">
-			<div>
-				@if (branchId() !== '' && branchId() !== '570') {
-					<!-- ATS Branch -->
-					@if (displayWorkflowButtons()) {
-						<div class="tw-flex tw-items-center tw-gap-1">
-							@if (branchType() === 'working') {
-								<a
-									routerLink="/actra/workflow"
-									[queryParams]="{
-										id: branchWorkflowToken().id,
-									}"
-									target="_blank">
-									<button
-										mat-raised-button
-										class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
-										matTooltip="Open Team Workflow in tab">
-										<mat-icon
-											class="material-icons-outlined"
-											>assignment</mat-icon
-										>
-									</button>
-								</a>
-							} @else {
-								<osee-create-action-button
-									[opensDialog]="false" />
-							}
-						</div>
-					}
-					<!-- Non-ATS Branch -->
-					@if (showCreateBranch()) {
-						<div class="tw-flex tw-items-center tw-gap-1">
-							<osee-create-branch-button />
-							<osee-commit-branch-button
-								[sourceBranchId]="currBranchId()"
-								[destBranchId]="currBranchParentId()"
-								[disabled]="branchCommitButtonIsDisabled()"
-								disabledMessage="Only working branches can be committed." />
-							<!-- Could add change detection to show this update from parent button only when there are changes on (committed to from another working branch) the parent branch that are not on this branch yet. Would make this button more responsive. -->
-							<osee-update-from-parent-button
-								[workingBranch]="currBranch()"
-								[disabled]="isBaseline()"
-								disabledMessage="Baseline branches cannot be updated." />
-							<osee-change-report-button />
-						</div>
+		<div class="tw-flex tw-flex-wrap tw-items-center tw-gap-1 tw-p-4">
+			@if (branchId() !== '' && branchId() !== '570') {
+				@if (displayWorkflowButtons()) {
+					@if (branchType() === 'working') {
+						<a
+							routerLink="/actra/workflow"
+							[queryParams]="{
+								id: branchWorkflowToken().id,
+							}"
+							target="_blank">
+							<button
+								mat-raised-button
+								class="tw-flex tw-justify-center tw-bg-primary tw-text-background-background [&_*]:tw-m-0"
+								matTooltip="Open Team Workflow in tab">
+								<mat-icon class="material-icons-outlined"
+									>assignment</mat-icon
+								>
+							</button>
+						</a>
+					} @else {
+						<osee-create-action-button [opensDialog]="false" />
 					}
 				}
-			</div>
-		</osee-expansion-panel>
+				@if (showCreateBranch()) {
+					<osee-create-branch-button />
+					<osee-commit-branch-button
+						[sourceBranchId]="currBranchId()"
+						[destBranchId]="currBranchParentId()"
+						[disabled]="branchCommitButtonIsDisabled()"
+						disabledMessage="Only working branches can be committed." />
+					<osee-update-from-parent-button
+						[workingBranch]="currBranch()"
+						[disabled]="isBaseline()"
+						disabledMessage="Baseline branches cannot be updated." />
+					<osee-change-report-button />
+				}
+			} @else {
+				<div class="tw-text-sm tw-opacity-50">
+					Select a branch to see management options.
+				</div>
+			}
+		</div>
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BranchManagementComponent {
+export class BranchManagementPanelComponent {
 	private currBranchInfoService = inject(CurrentBranchInfoService);
 	private currentActionService = inject(CurrentActionService);
 	private uiService = inject(UiService);

@@ -27,6 +27,21 @@ body
   margin: 0
   font-family: Roboto, 'Helvetica Neue', sans-serif
 
+// Context menu compact sizing via public tokens
+.compact-context-menu
+  --mat-menu-item-label-text-size: 14px
+  --mat-menu-item-one-line-container-height: 32px
+  --mat-menu-item-icon-size: 18px
+  --mat-menu-item-spacing: 8px
+
+// Branch type selector tighter spacing via public tokens
+osee-branch-type-selector
+  --mdc-radio-state-layer-size: 20px
+  --mdc-radio-icon-size: 14px
+  --mat-radio-touch-target-display: none
+  label
+    margin-left: -4px !important
+
 .wide-mat-menu
   min-width: 480px
   max-width: 640px !important

@@ -18,9 +18,9 @@
 	as autoCompleteState
 ) {
 	<mat-form-field
-		appearance="fill"
+		appearance="outline"
 		subscriptSizing="dynamic"
-		class="branch-form-field tw-w-full">
+		class="branch-form-field tw-w-full tw-pt-4">
 		<mat-label>Select a Branch</mat-label>
 		<input
 			type="text"
@@ -57,7 +57,16 @@
 									[attr.data-cy]="'option-' + option.name"
 									[value]="option"
 									[id]="option.id">
-									{{ option.name }}
+									<div
+										class="tw-flex tw-items-center tw-gap-2">
+										{{ option.name }}
+										@if (isProductLine(option)) {
+											<span
+												class="tw-bg-primary/20 tw-rounded tw-px-1.5 tw-py-0.5 tw-text-[10px] tw-text-primary"
+												>PL</span
+											>
+										}
+									</div>
 								</mat-option>
 							</ng-template>
 						</osee-mat-option-loading>

@@ -10,59 +10,53 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<osee-expansion-panel
-	title="Attributes Editor"
-	[openDefault]="true">
-	<div class="tw-pt-4">
-		<form
-			#attributesEditorForm="ngForm"
-			oseeForm>
-			<!--Save Attributes Button-->
-			<div class="tw-flex tw-pb-4 tw-pl-4">
-				<button
-					matTooltip="Save attribute changes"
-					matTooltipPosition="right"
-					class="tw-mr-auto"
-					[disabled]="attributesEditorForm.invalid"
-					(click)="saveChanges()">
-					<mat-icon
-						[ngClass]="[
-							attributesEditorForm.invalid
-								? 'tw-text-warning'
-								: '',
-							hasChanges() ? 'tw-text-primary' : '',
-						]"
-						>save</mat-icon
-					>
-				</button>
-			</div>
-			<!--Applicability Dropdown-->
-			<div class="tw-flex tw-items-center tw-justify-between tw-pb-4">
-				@if (branchHasPleCategory()) {
-					<div class="tw-w-1/6 tw-pl-4 tw-font-bold">
-						Applicability:
-					</div>
-					<osee-persisted-applicability-dropdown
-						[artifactId]="tab().artifact.id"
-						[(applicability)]="tab().artifact.applicability"
-						[disabled]="!editable()"
-						[branchIdOverride]="tab().branchId"
-						class="tw-w-5/6 tw-pb-4 tw-pl-4" />
-				}
-			</div>
-			@if (attributesEditorForm.invalid) {
-				<div class="tw-pb-4 tw-italic tw-text-warning">
-					*Required fields not filled out
-				</div>
-			}
-			<!--Attributes Editor-->
-			<osee-attributes-editor
-				#attributesEditor
-				[attributes]="attributes()"
+<div class="tw-flex tw-flex-col tw-gap-2 tw-px-4 tw-py-2">
+	<!--Native Content Editor (shown when artifact has native content)-->
+	@if (nativeEditorAttrs(); as nativeAttrs) {
+		<div class="tw-py-2">
+			<osee-native-content-editor
+				[nativeEditorAttributes]="nativeAttrs"
 				[editable]="editable()"
-				[artifactId]="artifactId()"
 				[branchId]="tab().branchId"
-				(updatedAttributes)="handleUpdatedAttributes($event)" />
+				[artifactId]="tab().artifact.id"
+				[hasUnsavedChanges]="hasUnsavedNativeChanges()"
+				[pendingName]="pendingNativeName()"
+				[pendingExtension]="pendingNativeExtension()"
+				(updatedAttributes)="handleNativeContentChanges($event)" />
+			@if (hasUnsavedNativeChanges()) {
+				<button
+					mat-icon-button
+					matTooltip="Save native content changes"
+					(click)="saveNativeContent()">
+					<mat-icon>save</mat-icon>
+				</button>
+			}
+		</div>
+	}
+	<!--Name attribute (always first)-->
+	@if (nameAttr(); as name) {
+		<osee-persisted-artifact-attribute-editor
+			[attr]="name"
+			[artifactId]="artifactId()"
+			[artifactApplicability]="applicability()"
+			[disabled]="!editable()" />
+	}
+	<!--Applicability Dropdown-->
+	@if (branchHasPleCategory()) {
+		<form oseeForm>
+			<osee-persisted-applicability-dropdown
+				[artifactId]="tab().artifact.id"
+				[(applicability)]="tab().artifact.applicability"
+				[disabled]="!editable()"
+				[branchIdOverride]="tab().branchId" />
 		</form>
-	</div>
-</osee-expansion-panel>
+	}
+	<!--Remaining attributes (auto-save on change)-->
+	@for (attr of otherAttrs(); track attr.typeId) {
+		<osee-persisted-artifact-attribute-editor
+			[attr]="attr"
+			[artifactId]="artifactId()"
+			[artifactApplicability]="applicability()"
+			[disabled]="!editable()" />
+	}
+</div>

@@ -17,24 +17,20 @@
 	[class.tw-bg-white]="isFullscreen()"
 	[class.dark:tw-bg-osee-neutral-6]="isFullscreen()">
 	<div
-		class="tw-flex tw-shrink-0 tw-flex-wrap tw-gap-4 tw-px-4"
+		class="tw-flex tw-shrink-0 tw-flex-wrap tw-gap-1 tw-px-4"
 		role="toolbar"
 		aria-label="Markdown editor toolbar">
 		<button
 			mat-icon-button
 			matTooltip="Undo"
 			(click)="undo()">
-			<div>
-				<mat-icon> undo </mat-icon>
-			</div>
+			<mat-icon> undo </mat-icon>
 		</button>
 		<button
 			mat-icon-button
 			matTooltip="Redo"
 			(click)="redo()">
-			<div>
-				<mat-icon> redo </mat-icon>
-			</div>
+			<mat-icon> redo </mat-icon>
 		</button>
 		<span
 			[matTooltip]="
@@ -47,9 +43,7 @@
 				[matMenuTriggerFor]="mdExamplesMenu"
 				[disabled]="showImages()"
 				[class.tw-opacity-40]="showImages()">
-				<div>
-					<mat-icon> lightbulb </mat-icon>
-				</div>
+				<mat-icon> lightbulb </mat-icon>
 			</button>
 		</span>
 		<mat-menu #mdExamplesMenu="matMenu">
@@ -89,9 +83,7 @@
 				[disabled]="disabled() || showImages()"
 				[class.tw-opacity-40]="disabled() || showImages()"
 				(click)="openTableDialog()">
-				<div>
-					<mat-icon> table_chart </mat-icon>
-				</div>
+				<mat-icon> table_chart </mat-icon>
 			</button>
 		</span>
 
@@ -101,9 +93,7 @@
 				[disabled]="disabled() || showImages()"
 				[class.tw-opacity-40]="disabled() || showImages()"
 				(click)="selectTableAtCursor()">
-				<div>
-					<mat-icon> select_all </mat-icon>
-				</div>
+				<mat-icon> select_all </mat-icon>
 			</button>
 		</span>
 
@@ -159,12 +149,17 @@
 	<div
 		#editorContainer
 		data-testid="editor-container"
-		class="tw-relative tw-flex tw-min-h-0 tw-overflow-hidden tw-border-osee-neutral-25 dark:tw-border-osee-neutral-100"
+		class="tw-relative tw-flex tw-min-h-0 tw-overflow-hidden tw-rounded tw-border tw-border-black/50 tw-transition-[border-color,box-shadow] dark:tw-border-white/50"
+		[class.hover:tw-border-black]="!focused()"
+		[class.dark:hover:tw-border-white]="!focused()"
 		[class.tw-flex-1]="isFullscreen()"
-		[class.tw-border]="!dragActive()"
 		[class.tw-border-2]="dragActive()"
 		[class.tw-border-dashed]="dragActive()"
 		[class.tw-border-osee-blue-6]="dragActive()"
+		[style.border-color]="focused() ? 'var(--osee-primary-default)' : null"
+		[style.box-shadow]="
+			focused() ? 'inset 0 0 0 1px var(--osee-primary-default)' : null
+		"
 		[style.height]="isFullscreen() ? null : height()"
 		(dragover)="onEditorDragOver($event)"
 		(dragenter)="onEditorDragEnter($event)"

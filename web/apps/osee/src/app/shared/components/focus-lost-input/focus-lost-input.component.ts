@@ -35,10 +35,11 @@ let nextUniqueId = 0;
 	imports: [MatFormField, MatInput, MatTooltip, FormsModule, MatLabel],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <mat-form-field
+		appearance="outline"
 		(focusin)="focus.set(true)"
 		(focusout)="focus.set(false)"
 		[subscriptSizing]="subscriptSizing()"
-		class="tw-w-full tw-bg-inherit tw-px-2 tw-text-inherit [&>.mat-mdc-form-field-input-control]:tw-text-inherit [&>.mdc-text-field--filled]:tw-bg-inherit">
+		class="tw-w-full tw-pt-4">
 		@if (label() !== '') {
 			<mat-label>{{ label() }}</mat-label>
 		}

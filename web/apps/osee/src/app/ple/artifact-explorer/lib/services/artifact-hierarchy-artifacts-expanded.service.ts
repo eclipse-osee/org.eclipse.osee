@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, inject, linkedSignal } from '@angular/core';
+import {
+	Injectable,
+	effect,
+	inject,
+	linkedSignal,
+	signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
 
@@ -21,21 +27,33 @@ export class ArtifactHierarchyArtifactsExpandedService {
 	private uiService = inject(UiService);
 
 	private _id = toSignal(this.uiService.id);
+	private _viewId = toSignal(this.uiService.viewId);
 
-	private artifactsExpandedStructArray = linkedSignal<
-		string | undefined,
-		artifactsExpandedStruct[]
-	>({
+	/** Resets expanded state on branch OR view change. */
+	private _branchAndView = linkedSignal<string | undefined, string>({
 		source: this._id,
-		computation: (updatedId, previous) => {
-			if (previous === undefined) {
-				return [];
-			}
-			if (updatedId === undefined) {
-				return previous.value;
-			}
-			return [];
-		},
+		computation: () => '',
+	});
+
+	private _viewReset = linkedSignal<string | undefined, string>({
+		source: this._viewId,
+		computation: () => '',
+	});
+
+	private artifactsExpandedStructArray = signal<artifactsExpandedStruct[]>(
+		[]
+	);
+
+	/** Effect to clear on branch change. */
+	private _branchClearEffect = effect(() => {
+		this._branchAndView();
+		this.artifactsExpandedStructArray.set([]);
+	});
+
+	/** Effect to clear on view change. */
+	private _viewClearEffect = effect(() => {
+		this._viewReset();
+		this.artifactsExpandedStructArray.set([]);
 	});
 
 	setArtifactsExpandedStructArray(artifactArray: artifactsExpandedStruct[]) {
@@ -43,32 +61,44 @@ export class ArtifactHierarchyArtifactsExpandedService {
 	}
 
 	expandArtifact(artifactId: string, childArtifactId: string) {
-		const existingArtifact = this.artifactsExpandedStructArray().find(
-			(artifact) => artifact.artifactId === artifactId
-		);
-		if (existingArtifact) {
-			existingArtifact.childArtifactIds.push(childArtifactId);
-		} else {
-			this.artifactsExpandedStructArray.update((arts) => [
+		this.artifactsExpandedStructArray.update((arts) => {
+			const existing = arts.find((a) => a.artifactId === artifactId);
+			if (existing) {
+				if (!existing.childArtifactIds.includes(childArtifactId)) {
+					return arts.map((a) =>
+						a.artifactId === artifactId
+							? {
+									...a,
+									childArtifactIds: [
+										...a.childArtifactIds,
+										childArtifactId,
+									],
+								}
+							: a
+					);
+				}
+				return arts;
+			}
+			return [
 				...arts,
-				{
-					artifactId,
-					childArtifactIds: [childArtifactId],
-				},
-			]);
-		}
+				{ artifactId, childArtifactIds: [childArtifactId] },
+			];
+		});
 	}
 
 	collapseArtifact(artifactId: string, childArtifactId: string) {
-		const existingArtifact = this.artifactsExpandedStructArray().find(
-			(artifact) => artifact.artifactId === artifactId
+		this.artifactsExpandedStructArray.update((arts) =>
+			arts.map((a) =>
+				a.artifactId === artifactId
+					? {
+							...a,
+							childArtifactIds: a.childArtifactIds.filter(
+								(id) => id !== childArtifactId
+							),
+						}
+					: a
+			)
 		);
-		if (existingArtifact) {
-			existingArtifact.childArtifactIds =
-				existingArtifact.childArtifactIds.filter(
-					(id) => id !== childArtifactId
-				);
-		}
 	}
 
 	isExpanded(artifactId: string, childArtifactId: string): boolean {

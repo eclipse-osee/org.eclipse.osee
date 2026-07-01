@@ -12,11 +12,11 @@
  -->
 @if (tabs().length === 0) {
 	<div
-		class="tw-flex tw-h-[55%] tw-w-full tw-flex-col tw-items-center tw-justify-center">
-		<span
-			class="tw-select-none tw-text-4xl tw-font-bold tw-text-background-status-bar tw-opacity-70"
-			>No open tabs</span
-		>
+		class="tw-flex tw-h-full tw-w-full tw-flex-col tw-items-center tw-justify-center tw-gap-6">
+		<mat-icon class="tw-scale-[3] tw-opacity-50">account_tree</mat-icon>
+		<span class="tw-select-none tw-text-lg tw-font-medium tw-opacity-50">
+			Select an artifact from the hierarchy to begin.
+		</span>
 	</div>
 } @else {
 	<mat-tab-group
@@ -25,7 +25,6 @@
 		(selectedIndexChange)="selectIndex($event)"
 		mat-stretch-tabs="false"
 		mat-align-tabs="start"
-		fitInkBarToContent
 		cdkDropList
 		(cdkDropListDropped)="onTabDropped($event)"
 		cdkDropListOrientation="horizontal">
@@ -35,24 +34,43 @@
 					<div
 						[id]="'' + $index"
 						cdkDrag
-						cdkDragLockAxis="x">
-						<div class="tw-flex tw-items-center">
-							<mat-icon [class]="getTabIconClasses(tab)">{{
-								getTabIcon(tab)
-							}}</mat-icon>
-							<div class="tw-pl-4">
-								{{ tab.tabTitle }}
-							</div>
-							<button
-								mat-icon-button
-								(click)="removeTab($index)">
-								<mat-icon>clear</mat-icon>
-							</button>
-						</div>
+						cdkDragLockAxis="x"
+						class="tw-group tw-flex tw-items-center tw-gap-2 tw-px-3 tw-py-1">
+						<mat-icon
+							class="!tw-flex !tw-h-[18px] !tw-w-[18px] !tw-shrink-0 !tw-items-center !tw-justify-center !tw-text-[18px] !tw-leading-none"
+							[class]="getTabIconClasses(tab)">
+							{{ getTabIcon(tab) }}
+						</mat-icon>
+						<span
+							class="tw-max-w-[20ch] tw-truncate tw-text-sm tw-leading-none"
+							[matTooltip]="
+								tab.tabTitle.length > 20 ? tab.tabTitle : ''
+							"
+							matTooltipShowDelay="500">
+							{{ tab.tabTitle }}
+						</span>
+						<button
+							class="tab-close-btn tw-flex tw-h-5 tw-w-5 tw-shrink-0 tw-items-center tw-justify-center tw-rounded-sm tw-opacity-0 tw-transition-opacity hover:tw-bg-background-hover hover:!tw-opacity-100 group-hover:tw-opacity-60"
+							[class.!tw-opacity-60]="selectedIndex() === $index"
+							aria-label="Close tab"
+							(click)="removeTab($index)">
+							<svg
+								width="12"
+								height="12"
+								viewBox="0 0 12 12"
+								fill="currentColor">
+								<path
+									d="M1.5 1.5L10.5 10.5M10.5 1.5L1.5 10.5"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+									fill="none" />
+							</svg>
+						</button>
 					</div>
 				</ng-template>
 
-				<div class="tw-max-h-[88vh] tw-overflow-auto">
+				<div class="tw-h-[calc(100vh-112px)] tw-overflow-auto">
 					@switch (tab.tabType) {
 						@case ('Artifact') {
 							<osee-artifact-editor [tab]="tab" />

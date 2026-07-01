@@ -18,9 +18,13 @@
 	as autoCompleteState
 ) {
 	<mat-form-field
+		appearance="outline"
 		subscriptSizing="dynamic"
 		id="enum-selector"
-		class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit">
+		class="tw-w-full tw-pt-4">
+		@if (label) {
+			<mat-label>{{ label }}</mat-label>
+		}
 		<input
 			type="text"
 			matInput

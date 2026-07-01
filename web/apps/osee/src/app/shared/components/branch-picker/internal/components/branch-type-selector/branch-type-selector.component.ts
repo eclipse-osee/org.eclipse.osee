@@ -10,32 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { LowerCasePipe, NgClass } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import {
-	MatRadioButton,
-	MatRadioChange,
-	MatRadioGroup,
-} from '@angular/material/radio';
+	MatButtonToggle,
+	MatButtonToggleChange,
+	MatButtonToggleGroup,
+} from '@angular/material/button-toggle';
 import { BranchRoutedUIService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-branch-type-selector',
 	templateUrl: './branch-type-selector.component.html',
-	styles: [],
-	imports: [
-		MatRadioGroup,
-		MatRadioButton,
-		FormsModule,
-		NgClass,
-		LowerCasePipe,
+	styles: [
+		`
+			:host {
+				--mat-button-toggle-label-text-size: 13px;
+				--mat-button-toggle-height: 32px;
+				--mat-button-toggle-selected-state-background-color: var(
+					--osee-primary-default
+				);
+				--mat-button-toggle-selected-state-text-color: var(
+					--osee-background-background
+				);
+				--mat-button-toggle-shape: 4px;
+			}
+		`,
 	],
+	imports: [MatButtonToggleGroup, MatButtonToggle],
 })
 export class BranchTypeSelectorComponent implements OnInit {
 	private routerState = inject(BranchRoutedUIService);
 
-	branchTypes: string[] = ['Product Line', 'Working'];
 	branchType = '';
 
 	ngOnInit(): void {
@@ -44,17 +49,10 @@ export class BranchTypeSelectorComponent implements OnInit {
 		});
 	}
 
-	changeBranchType(value: 'working' | 'baseline' | '') {
-		this.routerState.branchType = value;
-	}
-
-	selectType(event: MatRadioChange) {
-		this.changeBranchType(event.value as 'working' | 'baseline' | '');
-	}
-	normalizeType(type: string) {
-		if (type === 'product line') {
-			return 'baseline';
-		}
-		return type;
+	selectType(event: MatButtonToggleChange) {
+		this.routerState.branchType = event.value as
+			| 'working'
+			| 'baseline'
+			| '';
 	}
 }
