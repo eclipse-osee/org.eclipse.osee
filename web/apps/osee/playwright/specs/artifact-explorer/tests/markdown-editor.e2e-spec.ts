@@ -664,6 +664,35 @@ test.describe('Markdown Editor', () => {
 			).toBeVisible();
 			await page.getByRole('button', { name: 'Cancel' }).click();
 		});
+
+		await test.step('Show warning when table has both above and below captions', async () => {
+			await textarea.click();
+			await textarea.fill(
+				'<table-caption position="above">Above</table-caption>\n\n| H1 | H2 |\n| :-- | :-- |\n| a | b |\n\n<table-caption>Below</table-caption>'
+			);
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				const pos = ta.value.indexOf('| H1');
+				ta.selectionStart = pos;
+				ta.selectionEnd = pos;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'table_chart').click();
+			// Should show duplicate caption warning
+			await expect(
+				page.getByText('This table has captions both above and below')
+			).toBeVisible({ timeout: 3000 });
+			// Should open in edit mode with the above caption
+			await expect(
+				page.getByRole('heading', { name: /Edit Table/i })
+			).toBeVisible({ timeout: 5000 });
+			await expect(
+				page.getByRole('textbox', { name: 'Table caption' })
+			).toHaveValue('Above');
+			await page.getByRole('button', { name: 'Cancel' }).click();
+		});
 	});
 
 	test('should include caption in undo/redo within the table dialog', async ({

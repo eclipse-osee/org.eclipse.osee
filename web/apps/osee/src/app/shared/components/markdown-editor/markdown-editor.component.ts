@@ -520,6 +520,14 @@ export class MarkdownEditorComponent {
 						isEdit: false,
 					};
 
+			if (parsedTable?.hasDuplicateCaption) {
+				this.snackBar.open(
+					'This table has captions both above and below. Only the above caption is editable here.',
+					'Dismiss',
+					{ duration: 3000 }
+				);
+			}
+
 			const dialogRef = this.dialog.open(MarkdownTableDialogComponent, {
 				data: dialogData,
 				minWidth: '50%',
@@ -651,6 +659,14 @@ export class MarkdownEditorComponent {
 		textarea.focus();
 		textarea.selectionStart = parsedTable.startIndex;
 		textarea.selectionEnd = parsedTable.endIndex;
+
+		if (parsedTable.hasDuplicateCaption) {
+			this.snackBar.open(
+				'This table has captions both above and below. Only the above caption is included in the selection.',
+				'Dismiss',
+				{ duration: 3000 }
+			);
+		}
 	}
 
 	private parseTableAtSelection(
@@ -666,6 +682,7 @@ export class MarkdownEditorComponent {
 		endIndex: number;
 		caption: string;
 		captionPosition: CaptionPosition;
+		hasDuplicateCaption: boolean;
 	} | null {
 		if (!content) {
 			return null;
@@ -760,30 +777,15 @@ export class MarkdownEditorComponent {
 		}
 
 		// If not found, check if cursor is on a <table-caption> line
-		// that follows a table (possibly with blank lines in between)
 		if (separatorLineIndex === -1) {
 			const captionMatch = lines[cursorLineIndex].match(
-				/^<table-caption(?:\s+position="(?:above|below)")?>([^<]*)<\/table-caption>$/
+				/^<table-caption(?:\s+position="(above|below)")?>([^<]*)<\/table-caption>$/
 			);
-			if (captionMatch && cursorLineIndex > 0) {
-				// Skip blank lines above the caption to find the table
-				let searchFrom = cursorLineIndex - 1;
-				while (searchFrom >= 0 && lines[searchFrom].trim() === '') {
-					searchFrom--;
-				}
-				// Walk upward from the last non-blank line to find the separator
-				for (let i = searchFrom; i >= 0; i--) {
-					if (isSeparatorLine(lines[i])) {
-						separatorLineIndex = i;
-						break;
-					}
-					if (!lines[i].trim().startsWith('|')) {
-						break;
-					}
-				}
-				// If not found above, the caption might be position="above" —
-				// look below for the table
-				if (separatorLineIndex === -1) {
+			if (captionMatch) {
+				const captionPos = captionMatch[1] || 'below';
+
+				if (captionPos === 'above') {
+					// Caption is above its table — search BELOW for the table
 					let searchBelow = cursorLineIndex + 1;
 					while (
 						searchBelow < lines.length &&
@@ -791,17 +793,30 @@ export class MarkdownEditorComponent {
 					) {
 						searchBelow++;
 					}
-					// Check if the line below is a table header (starts with |)
 					if (
 						searchBelow < lines.length &&
 						lines[searchBelow].trim().startsWith('|')
 					) {
-						// Look for separator on or after that line
 						if (
 							searchBelow + 1 < lines.length &&
 							isSeparatorLine(lines[searchBelow + 1])
 						) {
 							separatorLineIndex = searchBelow + 1;
+						}
+					}
+				} else {
+					// Caption is below its table — search ABOVE for the table
+					let searchFrom = cursorLineIndex - 1;
+					while (searchFrom >= 0 && lines[searchFrom].trim() === '') {
+						searchFrom--;
+					}
+					for (let i = searchFrom; i >= 0; i--) {
+						if (isSeparatorLine(lines[i])) {
+							separatorLineIndex = i;
+							break;
+						}
+						if (!lines[i].trim().startsWith('|')) {
+							break;
 						}
 					}
 				}
@@ -931,6 +946,9 @@ export class MarkdownEditorComponent {
 
 		// Check if a table-caption tag follows the table (possibly with
 		// blank lines in between) — only if no caption was found above
+		// and only if the caption's position is not "above" (which would
+		// belong to the next table)
+		let hasDuplicateCaption = false;
 		if (!caption) {
 			let captionSearchIndex = dataEndLine;
 			while (
@@ -943,7 +961,7 @@ export class MarkdownEditorComponent {
 				const captionMatch = lines[captionSearchIndex].match(
 					/^<table-caption(?:\s+position="(above|below)")?>([^<]+)<\/table-caption>$/
 				);
-				if (captionMatch) {
+				if (captionMatch && captionMatch[1] !== 'above') {
 					captionPosition =
 						(captionMatch[1] as CaptionPosition) || 'below';
 					caption = captionMatch[2];
@@ -953,6 +971,23 @@ export class MarkdownEditorComponent {
 						endIndex += lines[i].length + 1;
 					}
 					endIndex = Math.min(endIndex, content.length);
+				}
+			}
+		} else {
+			// Caption was found above — check if there's also one below (duplicate)
+			let captionSearchIndex = dataEndLine;
+			while (
+				captionSearchIndex < lines.length &&
+				lines[captionSearchIndex].trim() === ''
+			) {
+				captionSearchIndex++;
+			}
+			if (captionSearchIndex < lines.length) {
+				const captionMatch = lines[captionSearchIndex].match(
+					/^<table-caption(?:\s+position="(above|below)")?>([^<]+)<\/table-caption>$/
+				);
+				if (captionMatch && captionMatch[1] !== 'above') {
+					hasDuplicateCaption = true;
 				}
 			}
 		}
@@ -966,6 +1001,7 @@ export class MarkdownEditorComponent {
 			endIndex,
 			caption,
 			captionPosition,
+			hasDuplicateCaption,
 		};
 	}
 
