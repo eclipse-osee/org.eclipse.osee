@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { attribute } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import {
 	artifactWithRelations,
 	artifactTypeIcon,
@@ -25,20 +26,22 @@ export const artifactTypeIconMock: artifactTypeIcon = {
 	variant: '',
 };
 
-export const artifactTypeAttributesMock: attribute[] = [
-	{
-		name: 'subsystem',
-		value: 'data management',
-		typeId: '7',
-		id: '11111',
-		storeType: 'Enumeration',
-		multiplicityId: '2',
-	},
-];
+export const artifactTypeAttributesMock: attribute<string, ATTRIBUTETYPEID>[] =
+	[
+		{
+			name: 'subsystem',
+			value: 'data management',
+			typeId: '7' as ATTRIBUTETYPEID,
+			id: '11111',
+			gammaId: '-1',
+			storeType: 'Enumeration',
+		},
+	];
 
 export const artifactWithRelationsMock: artifactWithRelations = {
 	name: 'test',
 	id: '1234',
+	gammaId: '-1',
 	typeId: '1111',
 	typeName: 'requirement',
 	icon: artifactTypeIconMock,
@@ -63,6 +66,7 @@ export const artifactWithRelationsMock: artifactWithRelations = {
 						{
 							name: 'Mock Artifact',
 							id: '123',
+							gammaId: '-1',
 							typeId: '456',
 							typeName: 'Mock Type',
 							icon: {
@@ -76,10 +80,10 @@ export const artifactWithRelationsMock: artifactWithRelations = {
 								{
 									name: 'Attribute 1',
 									value: 'Value 1',
-									typeId: '789',
+									typeId: '789' as ATTRIBUTETYPEID,
 									id: '1',
+									gammaId: '-1',
 									storeType: 'String',
-									multiplicityId: '2',
 								},
 							],
 							relations: [],

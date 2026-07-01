@@ -71,7 +71,7 @@ export const artifactUiServiceMock: Partial<ArtifactUiService> = {
 		return of([
 			{
 				id: '1',
-				multiplicityId: '1',
+				gammaId: '-1',
 				name: 'Test Attribute',
 				storeType: 'String',
 				typeId: '123',

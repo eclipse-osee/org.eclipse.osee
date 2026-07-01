@@ -63,7 +63,11 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
    public List<BranchToken> getBranches(BranchType type, String workType, BranchCategoryToken category,
       BranchCategoryToken excludeCategory, String filter, long pageNum, long pageSize) {
       BranchQuery query = getBranchQuery(type, workType, category, excludeCategory, filter, pageNum, pageSize);
-      return query.getResultsAsId().getList();
+      query.includeCategories();
+      List<Branch> branches = query.getResults().getList();
+      return branches.stream().map(
+         b -> BranchToken.create(b.getId(), b.getName(), b.getViewId(), b.getCategories())).collect(
+            Collectors.toList());
    }
 
    private BranchQuery getBranchQuery(BranchType type, String workType, BranchCategoryToken category,
