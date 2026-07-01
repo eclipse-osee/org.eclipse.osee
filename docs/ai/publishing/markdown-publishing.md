@@ -88,6 +88,8 @@ Each caption is replaced with:
 1. An anchor: `<a id="figure-caption-N"></a>` or `<a id="table-caption-N"></a>`
 2. A numbered div: `<div class="figure-caption" style="...">Figure N: text</div>`
 
+The caption text is unescaped (`<` → `<`) before rendering, since the web editor escapes `<` to prevent regex breakage in the raw markdown.
+
 Captions are numbered sequentially (Figure 1, Figure 2... / Table 1, Table 2...) in document order regardless of position attribute.
 
 ## CSS (PDF)

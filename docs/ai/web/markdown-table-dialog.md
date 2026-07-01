@@ -93,10 +93,12 @@ In `parseHeaderRowWithSpans()`, the raw (untrimmed) split is checked — only tr
 
 - Pipes in cell content escaped as `\|`
 - Newlines in cells encoded as `<br>`
+- `<` in caption text escaped as `<` (unescaped back to `<` when parsing for edit)
 - Colspan syntax: header cell followed by empty `|` for each spanned column
 - Whitespace trimmed from cells; empty cells output as single space
 - Caption tag includes `position="above"` attribute when above is selected; omits the attribute for below (backward-compatible default)
 - Caption is separated from table/image by a blank line (`\n\n`) in both positions
+- Only `<table-caption>` is associated with tables; `<figure-caption>` is for images only and is not recognized by the table parser
 
 ## Toolbar integration
 
@@ -153,6 +155,7 @@ Test coverage includes:
 
 ## Known limitations
 
+- **One caption per table**: A table supports either an above or below caption, not both. If both exist, the above caption takes priority and a snackbar warning is shown.
 - **Undo captures on focus, not on change**: Focusing 50 cells without editing fills the undo stack with duplicate snapshots. The 50-entry cap keeps memory bounded.
 - **Ctrl+Z intercepts native undo**: The `document:keydown` listener captures Ctrl+Z globally while the dialog is open. Pressing Ctrl+Z in a cell undoes the last structural change (not the text just typed). Browser-native text undo within individual textareas is overridden.
 - **No column width resize**: Column widths are auto-sized with a 160px minimum. Manual column resize was attempted but removed due to complexity with sticky headers.
