@@ -51,4 +51,28 @@
     </Or>
   </Match>
 
+  <!--
+    MarkdownHtmlUtil.processCaptions uses \n in String.format to produce HTML
+    output. Using %n would insert platform-specific line separators (\r\n on
+    Windows) which is incorrect for HTML generation.
+  -->
+  <Match>
+    <Class name="org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil" />
+    <Method name="processCaptions" />
+    <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE" />
+  </Match>
+
+  <!--
+    JUnit @Rule fields are accessed reflectively by the test framework.
+    SpotBugs reports them as unread because there are no explicit Java reads.
+  -->
+  <Match>
+    <Class name="org.eclipse.osee.ats.ide.integration.tests.publishing.markdown.PublishingMarkdownTest" />
+    <Or>
+      <Field name="notProduction" />
+      <Field name="testName" />
+    </Or>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD" />
+  </Match>
+
 </FindBugsFilter>

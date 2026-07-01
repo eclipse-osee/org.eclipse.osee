@@ -40,6 +40,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -106,7 +107,7 @@ public class PublishingMarkdownTest {
 
    //@formatter:off
    @ClassRule
-   public static TestRule classRuleChain =
+   public static final TestRule classRuleChain =
       RuleChain
          .outerRule( new NotProductionDataStoreRule() )
          .around( new ExitDatabaseInitializationRule() )
@@ -281,10 +282,10 @@ public class PublishingMarkdownTest {
       var template_MD_Content = templateMap.get(PUBLISHING_MARKDOWN_TEST_TEMPLATE_MD_CONTENT);
 
       PublishingTemplateRequest pubTemReq =
-         new PublishingTemplateRequest(template_A.getIdentifier().toString(), FormatIndicator.MARKDOWN);
+         new PublishingTemplateRequest(template_A.getIdentifier(), FormatIndicator.MARKDOWN);
 
       PublishingTemplateRequest pubTemReq_MD_Content =
-         new PublishingTemplateRequest(template_MD_Content.getIdentifier().toString(), FormatIndicator.MARKDOWN);
+         new PublishingTemplateRequest(template_MD_Content.getIdentifier(), FormatIndicator.MARKDOWN);
 
       for (Long viewId : products) {
          //@formatter:off
@@ -504,7 +505,7 @@ public class PublishingMarkdownTest {
          for (Element table : tables) {
             // Check for a main header that contains the word "Relation"
             Element headerRow = table.selectFirst("tr");
-            if (headerRow == null || !headerRow.text().toLowerCase().contains("relation")) {
+            if (headerRow == null || !headerRow.text().toLowerCase(Locale.ROOT).contains("relation")) {
                continue;
             }
 
@@ -596,7 +597,7 @@ public class PublishingMarkdownTest {
             nextElement = nextElement.nextElementSibling().nextElementSibling().nextElementSibling();
 
             // Check if the paragraph contains the expected string
-            String expectedDataRightsString = headerRow.text().split(" - ")[0].toUpperCase();
+            String expectedDataRightsString = headerRow.text().split(" - ")[0].toUpperCase(Locale.ROOT);
             assertTrue(
                "The paragraph should contain the string: \"" + expectedDataRightsString + "\". Text is: " + nextElement.text(),
                StringUtils.containsIgnoreCase(nextElement.text(), expectedDataRightsString));
