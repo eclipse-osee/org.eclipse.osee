@@ -224,23 +224,32 @@
 					<!-- Data row -->
 					<tr [style.height]="getRowHeight(rowIdx)">
 						<td
+							role="rowheader"
+							[attr.aria-label]="'Row ' + (rowIdx + 1)"
 							class="tw-sticky tw-left-0 tw-z-10 tw-border-b tw-border-r tw-border-osee-neutral-25 tw-bg-white tw-px-1 tw-py-0 tw-text-center dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
 							<div
 								class="tw-flex tw-items-center tw-justify-center tw-gap-1">
-								<div class="tw-flex tw-flex-col">
+								<div
+									class="tw-flex tw-flex-col tw-items-center">
 									<button
 										mat-icon-button
 										type="button"
-										matTooltip="Insert Row Before"
-										class="tw-text-osee-blue-6"
+										matTooltip="Insert Row Above"
+										matTooltipPosition="above"
+										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
 										(click)="insertRowAt(rowIdx)">
 										<mat-icon>keyboard_arrow_up</mat-icon>
 									</button>
+									<span
+										aria-hidden="true"
+										class="tw-text-xs tw-font-medium tw-leading-none tw-text-osee-neutral-60">
+										{{ rowIdx + 1 }}
+									</span>
 									<button
 										mat-icon-button
 										type="button"
-										matTooltip="Insert Row After"
-										class="tw-text-osee-blue-6"
+										matTooltip="Insert Row Below"
+										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
 										(click)="insertRowAt(rowIdx + 1)">
 										<mat-icon>keyboard_arrow_down</mat-icon>
 									</button>
@@ -258,9 +267,11 @@
 							</div>
 						</td>
 						@for (cell of row; track $index; let colIdx = $index) {
+							<!-- Inline style required: tw-h-full doesn't resolve on <td> when row height is set via [style.height] -->
 							<td
-								class="tw-h-full tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-0 dark:tw-border-osee-neutral-100">
-								<div class="tw-flex tw-h-full">
+								class="tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-px dark:tw-border-osee-neutral-100"
+								style="height: 100%">
+								<div class="tw-flex tw-h-full tw-min-h-full">
 									<textarea
 										rows="3"
 										[ngModel]="cell"
@@ -271,6 +282,7 @@
 										name="cell-{{ rowIdx }}-{{ colIdx }}"
 										spellcheck="true"
 										class="tw-flex-1 tw-resize-none tw-rounded tw-border-none tw-bg-transparent tw-px-2 tw-py-1 tw-text-sm tw-outline-none focus:tw-ring-1 focus:tw-ring-osee-blue-6"
+										style="height: 100%"
 										[attr.aria-label]="
 											'Row ' +
 											(rowIdx + 1) +
@@ -298,19 +310,50 @@
 
 <div
 	mat-dialog-actions
-	align="end"
-	class="tw-gap-2">
+	class="tw-flex tw-items-center tw-gap-4 tw-px-4">
+	<mat-form-field
+		class="tw-flex-1"
+		subscriptSizing="dynamic"
+		appearance="outline">
+		<mat-label>Table Caption (optional)</mat-label>
+		<input
+			matInput
+			type="text"
+			[ngModel]="caption()"
+			(ngModelChange)="caption.set($event)"
+			(focus)="saveUndoState()"
+			name="table-caption"
+			placeholder="Enter a caption for this table..."
+			aria-label="Table caption" />
+	</mat-form-field>
 	<button
-		mat-stroked-button
+		mat-icon-button
 		type="button"
-		class="tw-text-osee-red-8"
-		(click)="cancelDialog()">
-		Cancel
+		[matTooltip]="
+			captionPosition() === 'above'
+				? 'Caption appears above the table.'
+				: 'Caption appears below the table.'
+		"
+		(click)="toggleCaptionPosition()">
+		<mat-icon>{{
+			captionPosition() === 'above'
+				? 'vertical_align_top'
+				: 'vertical_align_bottom'
+		}}</mat-icon>
 	</button>
-	<button
-		mat-stroked-button
-		type="button"
-		(click)="submitTable()">
-		{{ isEdit ? 'Update Table' : 'Insert Table' }}
-	</button>
+	<div class="tw-flex tw-items-center tw-gap-2">
+		<button
+			mat-stroked-button
+			type="button"
+			class="tw-text-osee-red-8"
+			(click)="cancelDialog()">
+			Cancel
+		</button>
+		<button
+			mat-stroked-button
+			type="button"
+			(click)="submitTable()">
+			{{ isEdit ? 'Update Table' : 'Insert Table' }}
+		</button>
+	</div>
 </div>

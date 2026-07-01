@@ -27,7 +27,7 @@ All publishing endpoints are in `plugins/org.eclipse.osee.define/src/org/eclipse
    - `processApplicability` — Resolves feature/config tags
    - `processArtifactLinks` — Converts `<artifact-link>` to markdown links
    - `processImageLinks` — Converts `<image-link>ID</image-link>` to `![name](resources/name_ID.ext "name")`
-   - `processCaptions` — Converts `<figure-caption>` / `<table-caption>` to HTML divs
+   - `processCaptions` — Converts `<figure-caption>` / `<table-caption>` (with optional `position` attribute) to numbered HTML divs
    - `processTableOfContents` — Builds TOC, figure list, table list
 3. **`WordTemplateProcessorServer.packageMarkdown`** — Bundles processed markdown + image binaries into a zip
 4. **`MarkdownConverter.convertMarkdownZipToPdf`** (PDF path) — Parses markdown with flexmark, renders to HTML, embeds images, converts to PDF via OpenHTMLToPDF
@@ -61,6 +61,37 @@ The CSS `table-layout: fixed` is what enables images to render inside table cell
    - **150px** inside `<td>` / `<th>` (table cells)
    - **468px** standalone (~6.5in at 72dpi, matching page content width)
 
+## Captions
+
+### Syntax
+
+```
+<table-caption>Caption text</table-caption>
+<table-caption position="above">Caption text</table-caption>
+<figure-caption>Caption text</figure-caption>
+<figure-caption position="above">Caption text</figure-caption>
+```
+
+- `position="above"` — Caption is placed above the table/figure in the source markdown
+- `position="below"` or no attribute — Caption is placed below (default)
+- Captions are separated from their table/figure by a blank line in the raw markdown
+
+### Processing (`MarkdownHtmlUtil.processCaptions`)
+
+The regex patterns accept an optional `position` attribute:
+- `FIGURE_CAPTION_PATTERN`: `<figure-caption(?:\s+position="(above|below)")?>([^<]+)</figure-caption>`
+- `TABLE_CAPTION_PATTERN`: `<table-caption(?:\s+position="(above|below)")?>([^<]+)</table-caption>`
+
+Group 1 = position (may be null), Group 2 = caption text.
+
+Each caption is replaced with:
+1. An anchor: `<a id="figure-caption-N"></a>` or `<a id="table-caption-N"></a>`
+2. A numbered div: `<div class="figure-caption" style="...">Figure N: text</div>`
+
+The caption text is unescaped (`<` → `<`) before rendering, since the web editor escapes `<` to prevent regex breakage in the raw markdown.
+
+Captions are numbered sequentially (Figure 1, Figure 2... / Table 1, Table 2...) in document order regardless of position attribute.
+
 ## CSS (PDF)
 
 Location: `plugins/org.eclipse.osee.framework.core/OSEE-INF/markdown/markdownToPdfStyles.css`
@@ -84,14 +115,15 @@ Location: `plugins/org.eclipse.osee.ats.ide.integration.tests/.../publishing/mar
 
 | Test Class | What It Tests |
 | :-- | :-- |
+| `PublishingMarkdownConversionTest` | Raw markdown-to-HTML string conversion |
 | `PublishingMarkdownTest` | Raw markdown zip output |
-| `PublishingMarkdownAsHtmlTest` | HTML output: structure, images, links, applicability, captions |
+| `PublishingMarkdownAsHtmlTest` | HTML output: structure, images, links, applicability, captions (incl. `position` attribute) |
 | `PublishingMarkdownAsPdfTest` | PDF output: content, data rights, image rendering |
-| `EmbedImagesTest` | Unit tests for `embedImages`: dimension capping, table vs standalone context |
-| `PublishingMarkdownConversionTest` | Markdown-to-HTML string conversion |
 | `MarkdownSanitizerTest` | Applicability tag sanitization |
+| `WordTemplateContentToMarkdownContentConversionTest` | Word template to markdown content conversion |
+| `EmbedImagesTest` | Unit tests for `embedImages`: dimension capping, table vs standalone context |
 
-Suite: `PublishingMarkdownTestSuite`
+Suite: `PublishingMarkdownTestSuite` (`plugins/org.eclipse.osee.ats.ide.integration.tests/.../publishing/markdown/`)
 
 ## Dependencies
 

@@ -688,6 +688,18 @@ public class PublishingMarkdownAsHtmlTest {
       Elements tableCaptionElements = htmlDoc.select(".table-caption");
       checkCaptionsAreRendered(html, tableCaptionElements, MarkdownHtmlUtil.TABLE_CAPTION_PATTERN);
 
+      // Verify that the positioned caption (position="above") was rendered
+      // The demo data includes "Device Interface Timing Requirements" with position="above"
+      boolean foundPositionedCaption = false;
+      for (org.jsoup.nodes.Element el : tableCaptionElements) {
+         if (el.text().contains("Device Interface Timing Requirements")) {
+            foundPositionedCaption = true;
+            break;
+         }
+      }
+      assertTrue(
+         "A table caption with position=\"above\" (Device Interface Timing Requirements) should have been rendered. HTML: " + html,
+         foundPositionedCaption);
    }
 
    private boolean isClassificationHr(Element element) {

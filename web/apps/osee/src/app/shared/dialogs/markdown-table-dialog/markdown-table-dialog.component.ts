@@ -36,6 +36,8 @@ import { MatInput } from '@angular/material/input';
 
 export type ColumnAlignment = 'left' | 'center' | 'right';
 
+export type CaptionPosition = 'above' | 'below';
+
 export type MarkdownTableDialogData = {
 	readonly rows: number;
 	readonly cols: number;
@@ -44,10 +46,14 @@ export type MarkdownTableDialogData = {
 	readonly cells: string[][];
 	readonly alignments: ColumnAlignment[];
 	readonly isEdit: boolean;
+	readonly caption?: string;
+	readonly captionPosition?: CaptionPosition;
 };
 
 export type MarkdownTableDialogResult = {
 	readonly markdown: string;
+	readonly caption: string;
+	readonly captionPosition: CaptionPosition;
 };
 
 type TableSnapshot = {
@@ -55,6 +61,8 @@ type TableSnapshot = {
 	readonly headerSpans: number[];
 	readonly cells: string[][];
 	readonly alignments: ColumnAlignment[];
+	readonly caption: string;
+	readonly captionPosition: CaptionPosition;
 };
 
 @Component({
@@ -104,6 +112,10 @@ export class MarkdownTableDialogComponent {
 	}
 
 	protected readonly isEdit = this.data.isEdit;
+	protected readonly caption = signal(this.data.caption ?? '');
+	protected readonly captionPosition = signal<CaptionPosition>(
+		this.data.captionPosition ?? 'below'
+	);
 	protected readonly headers = signal<string[]>([...this.data.headers]);
 	protected readonly headerSpans = signal<number[]>([
 		...this.data.headerSpans,
@@ -128,6 +140,8 @@ export class MarkdownTableDialogComponent {
 			headerSpans: [...this.headerSpans()],
 			cells: this.cells().map((r) => [...r]),
 			alignments: [...this.alignments()],
+			caption: this.caption(),
+			captionPosition: this.captionPosition(),
 		};
 	}
 
@@ -169,6 +183,8 @@ export class MarkdownTableDialogComponent {
 		this.headerSpans.set(snapshot.headerSpans);
 		this.cells.set(snapshot.cells);
 		this.alignments.set(snapshot.alignments);
+		this.caption.set(snapshot.caption);
+		this.captionPosition.set(snapshot.captionPosition);
 	}
 	protected readonly isLoading = signal(true);
 
@@ -662,10 +678,19 @@ export class MarkdownTableDialogComponent {
 
 	protected submitTable(): void {
 		const markdown = this.generateMarkdown();
+		const caption = this.caption().trim();
+		const captionPosition = this.captionPosition();
 		// Clear data first to speed up DOM teardown
 		this.cells.set([]);
 		this.headers.set([]);
-		this.dialogRef.close({ markdown });
+		this.dialogRef.close({ markdown, caption, captionPosition });
+	}
+
+	protected toggleCaptionPosition(): void {
+		this.saveUndoState();
+		this.captionPosition.update((pos) =>
+			pos === 'above' ? 'below' : 'above'
+		);
 	}
 
 	protected cancelDialog(): void {
@@ -675,11 +700,14 @@ export class MarkdownTableDialogComponent {
 		this.dialogRef.close(undefined);
 	}
 
+	/** Default row height in pixels (minimum enforced during resize). */
+	private readonly defaultRowHeight = 62;
+
 	/** Row height stored per row index. */
 	protected readonly rowHeights = signal<Record<number, number>>({});
 	protected getRowHeight(rowIdx: number): string {
 		const h = this.rowHeights()[rowIdx];
-		return h ? `${h}px` : 'auto';
+		return `${h || this.defaultRowHeight}px`;
 	}
 
 	protected onRowDividerMouseDown(event: MouseEvent, rowIdx: number): void {
@@ -687,14 +715,17 @@ export class MarkdownTableDialogComponent {
 		const startY = event.clientY;
 		const row = (event.target as HTMLElement).closest('tr')
 			?.previousElementSibling as HTMLTableRowElement | null;
-		const startHeight = row?.offsetHeight ?? 72;
+		const startHeight = row?.offsetHeight ?? this.defaultRowHeight;
 
 		document.body.style.cursor = 'row-resize';
 		document.body.style.userSelect = 'none';
 
 		const onMouseMove = (e: MouseEvent) => {
 			const delta = e.clientY - startY;
-			const newHeight = Math.max(40, startHeight + delta);
+			const newHeight = Math.max(
+				this.defaultRowHeight,
+				startHeight + delta
+			);
 			// Direct DOM update during drag — avoids change detection per frame
 			if (row) {
 				row.style.height = `${newHeight}px`;
@@ -712,7 +743,10 @@ export class MarkdownTableDialogComponent {
 			cleanup();
 			// Commit final height to signal once
 			const delta = e.clientY - startY;
-			const finalHeight = Math.max(40, startHeight + delta);
+			const finalHeight = Math.max(
+				this.defaultRowHeight,
+				startHeight + delta
+			);
 			this.rowHeights.update((h) => ({ ...h, [rowIdx]: finalHeight }));
 		};
 

@@ -51,8 +51,10 @@ public class MarkdownHtmlUtil {
    public static final String FIGURE_TOC_STRING = "[FIGURE-TOC]";
    public static final String TABLE_TOC_STRING = "[TABLE-TOC]";
 
-   public static final String FIGURE_CAPTION_PATTERN = "<figure-caption>([^<]+)</figure-caption>";
-   public static final String TABLE_CAPTION_PATTERN = "<table-caption>([^<]+)</table-caption>";
+   public static final String FIGURE_CAPTION_PATTERN =
+      "<figure-caption(?:\\s+position=\"(above|below)\")?>([^<]+)</figure-caption>";
+   public static final String TABLE_CAPTION_PATTERN =
+      "<table-caption(?:\\s+position=\"(above|below)\")?>([^<]+)</table-caption>";
 
    public static final String CAPTION_CONTENT_SYNTAX = "%s %d: %s";
    public static final String CAPTION_DIV_SYNTAX = "<div class=\"%s\"%s>%s</div>";
@@ -195,7 +197,7 @@ public class MarkdownHtmlUtil {
 
       int index = 1;
       while (matcher.find()) {
-         String match = matcher.group(1);
+         String match = matcher.group(2).replace("&lt;", "<");
          String captionStr = String.format(CAPTION_CONTENT_SYNTAX, label, index, match);
          String captionDivStr = String.format(CAPTION_DIV_SYNTAX, cssClass, defaultCaptionStyle, captionStr);
          String anchorStr = String.format("<a id=\"%s-%d\"></a>\n", cssClass, index);

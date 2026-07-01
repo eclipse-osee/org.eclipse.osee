@@ -59,6 +59,37 @@
 					<mat-icon>close</mat-icon>
 				</button>
 			</div>
+			<div class="tw-flex tw-w-full tw-items-center tw-gap-1">
+				<mat-form-field
+					class="tw-flex-1"
+					subscriptSizing="dynamic"
+					appearance="outline">
+					<mat-label>Figure Caption (optional)</mat-label>
+					<input
+						matInput
+						type="text"
+						[ngModel]="caption()"
+						(ngModelChange)="caption.set($event)"
+						name="figure-caption"
+						placeholder="Enter a caption for this figure..."
+						aria-label="Figure caption" />
+				</mat-form-field>
+				<button
+					mat-icon-button
+					type="button"
+					[matTooltip]="
+						captionPosition() === 'above'
+							? 'Caption appears above the figure.'
+							: 'Caption appears below the figure.'
+					"
+					(click)="toggleCaptionPosition()">
+					<mat-icon>{{
+						captionPosition() === 'above'
+							? 'vertical_align_top'
+							: 'vertical_align_bottom'
+					}}</mat-icon>
+				</button>
+			</div>
 		</div>
 	}
 </div>
@@ -78,7 +109,7 @@
 	</span>
 	<span
 		class="tw-inline-flex"
-		[matTooltip]="!selectedFile() ? 'Select an image file first' : ''"
+		[matTooltip]="!selectedFile() ? 'Select an image file first.' : ''"
 		[matTooltipDisabled]="!!selectedFile()">
 		<button
 			mat-stroked-button
