@@ -54,11 +54,6 @@ public class TxData implements HasSession, HasBranchId {
    }
    private static final long SPACING = (long) Math.pow(2.0, 18.0);
    private static final long TOTAL_ORDER_RANGE = (long) Integer.MAX_VALUE - (long) Integer.MIN_VALUE;
-   /**
-    * When reordering, pack existing relations into the lower 25% of the integer range, reserving 75% as runway for
-    * end-insertions.
-    */
-   private static final double REORDER_TAIL_RESERVE_RATIO = 0.75;
    private static final double REORDER_HEAD_RESERVE_RATIO = 0.25;
    private final OrcsSession session;
    private final GraphData graph;
@@ -237,30 +232,38 @@ public class TxData implements HasSession, HasBranchId {
    }
 
    public int calculateInsertionOrderIndex(int afterIndex, int beforeIndex) {
-      return (int) ((long) (afterIndex) + beforeIndex) / 2;
+      return (int) (((long) afterIndex + (long) beforeIndex) / 2);
    }
 
    /**
     * Returns true if reordering would produce a better minimum order value than what currently exists. This avoids
     * triggering a reorder when the relation count is high enough that the post-reorder min would still be near the
-    * boundary.
+    * boundary. Fires when there is less than SPACING room below currentMin AND reordering would actually improve it.
     */
    public static boolean shouldReorderForMin(int currentMin, int relationCount) {
+      if ((long) currentMin - (long) Integer.MIN_VALUE >= SPACING) {
+         return false; // still have room for head-insertions, no reorder needed
+      }
+      // Near lower boundary — only reorder if the result would be better
       long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
       long pad = usableRange / (relationCount + 1);
-      long postReorderMin = (long) Integer.MIN_VALUE + pad;
+      long postReorderMin = Integer.MIN_VALUE + pad;
       return currentMin < postReorderMin;
    }
 
    /**
     * Returns true if reordering would produce a better maximum order value than what currently exists. This avoids
     * triggering a reorder when the relation count is high enough that the post-reorder max would still be near the
-    * boundary.
+    * boundary. Fires when there is less than SPACING room above currentMax AND reordering would actually improve it.
     */
    public static boolean shouldReorderForMax(int currentMax, int relationCount) {
+      if ((long) Integer.MAX_VALUE - (long) currentMax >= SPACING) {
+         return false; // still have room for end-insertions, no reorder needed
+      }
+      // Near upper boundary — only reorder if the result would be better
       long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
       long pad = usableRange / (relationCount + 1);
-      long postReorderMax = (long) Integer.MIN_VALUE + pad * relationCount;
+      long postReorderMax = Integer.MIN_VALUE + pad * relationCount;
       return currentMax > postReorderMax;
    }
 
@@ -268,16 +271,21 @@ public class TxData implements HasSession, HasBranchId {
       return SPACING;
    }
 
-   public static long getTotalOrderRange() {
-      return TOTAL_ORDER_RANGE;
-   }
-
-   public static double getReorderTailReserveRatio() {
-      return REORDER_TAIL_RESERVE_RATIO;
-   }
-
-   public static double getReorderHeadReserveRatio() {
-      return REORDER_HEAD_RESERVE_RATIO;
+   /**
+    * Computes evenly-spaced order values for the given relations, packing them into the head-reserve portion of the
+    * integer range. Returns a new TreeMap with redistributed keys preserving the original iteration order.
+    */
+   public static TreeMap<Integer, Pair<ArtifactId, GammaId>> computeRedistributedOrders(
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
+      long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
+      long pad = usableRange / (relOrders.size() + 1);
+      long orderValue = Integer.MIN_VALUE + pad;
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> result = new TreeMap<>();
+      for (Pair<ArtifactId, GammaId> entry : relOrders.values()) {
+         result.put((int) orderValue, entry);
+         orderValue += pad;
+      }
+      return result;
    }
 
    public void addGammaId(GammaId gammaId) {
