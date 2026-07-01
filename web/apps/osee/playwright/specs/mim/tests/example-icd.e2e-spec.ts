@@ -17,7 +17,7 @@ test('test', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Product Line').check();
+	await page.getByRole('radio', { name: 'Baseline' }).click();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('SAW Product Line').click();
 

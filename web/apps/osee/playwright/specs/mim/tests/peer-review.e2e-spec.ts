@@ -14,6 +14,7 @@ import { test, expect } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { APP_BASE } from '../../../shared/test-config';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -114,9 +115,7 @@ test('peer review branch', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Product Line').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('SAW Product Line').click();
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 
 	await page.screenshot({
 		animations: 'disabled',
@@ -194,9 +193,7 @@ test('commit branches', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Product Line').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('SAW Product Line').click();
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 
 	await page.getByRole('button', { name: 'Peer Review' }).click();
 

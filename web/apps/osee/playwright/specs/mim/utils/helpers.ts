@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Page } from '@ngx-playwright/test';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 export const createWorkingBranchFromPL = async (
 	page: Page,
@@ -19,9 +20,7 @@ export const createWorkingBranchFromPL = async (
 	branchDescription?: string,
 	screenshots?: boolean
 ) => {
-	await page.getByLabel('Product Line').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText(plBranchName || 'SAW Product Line').click();
+	await selectBranch(page, 'Baseline', plBranchName || 'SAW Product Line');
 
 	await page.getByRole('button', { name: 'Create Action' }).click();
 	await page.getByLabel('Title').fill(branchName);

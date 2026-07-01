@@ -33,6 +33,85 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - For dialogs, return values via `MatDialogRef.close(value)`.
 - Use explicit interfaces for data passed via `MAT_DIALOG_DATA`.
 
+### Dialog styling (mandatory for all dialogs)
+
+All dialogs must follow this structure and styling:
+
+```html
+<h1 mat-dialog-title>
+  <div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+    <mat-icon>icon_name</mat-icon>
+    Dialog Title Text
+  </div>
+</h1>
+<mat-dialog-content>
+  <!-- content -->
+</mat-dialog-content>
+<div mat-dialog-actions align="end" class="tw-gap-2">
+  <button mat-stroked-button class="tw-text-foreground-text" (click)="onCancel()">
+    Cancel
+  </button>
+  <button mat-stroked-button [mat-dialog-close]="data" [disabled]="form.invalid">
+    Submit
+  </button>
+</div>
+```
+
+Rules:
+- **Title**: `<h1 mat-dialog-title>` with icon + text in a flex row using `tw-gap-2`. No colored backgrounds on the title bar.
+- **Actions**: `<div mat-dialog-actions align="end" class="tw-gap-2">`. Always right-aligned with gap.
+- **Cancel button**: `mat-stroked-button` with `class="tw-text-foreground-text"`. Always use the word "Cancel" (not "Close" or "Dismiss"). This overrides Material's default primary color to use the neutral foreground color.
+- **Submit button**: `mat-stroked-button` (no extra color class). Text describes the action (e.g., "Insert Table", "Ok").
+- **Destructive button**: `mat-stroked-button` with `class="tw-text-warning"`. Only for actions that permanently delete or destroy data (e.g., "Delete", "Remove", "Purge"). Never use warning color on Cancel/Close.
+- **No `mat-flat-button` or `class="primary-button"`** in dialog actions. Use `mat-stroked-button` for all buttons.
+
+## Empty state messages
+
+When a panel or section has no content to display (e.g., no branch selected, no artifact open, no results), show a helpful empty state message following these rules:
+
+- **Text**: `tw-text-sm tw-opacity-50` — small, muted, not italic.
+- **Icons** (if used): same `tw-opacity-50` as the text.
+- **Container padding**: `tw-p-4` to align with form field content edges.
+- **No italic** — plain text only.
+- **Message content**: Tell the user what action to take (e.g., "Select a branch to browse the artifact hierarchy.").
+
+## Toggle button groups
+
+- Use `mat-button-toggle-group` for mutually exclusive options (not radio buttons).
+- Always add `hideSingleSelectionIndicator` to remove the default checkmark indicator on the selected toggle. This is purely visual — it does not prevent setting a default `[value]` on the group.
+- Selected state: **primary background with background-colored text** (filled). Use tokens:
+  - `--mat-button-toggle-selected-state-background-color: var(--osee-primary-default)`
+  - `--mat-button-toggle-selected-state-text-color: var(--osee-background-background)`
+- Never use white text on a colored (filled) background for toggle selections — use the background token so it adapts to light/dark mode.
+
+## Form field appearance
+
+- **Prefer `appearance="outline"`** for `mat-form-field` elements for a consistent look across the app. Exceptions are allowed where outline styling doesn't fit the context (e.g., inline table cell editors) — use judgment.
+- **Add `tw-pt-4` to every outline `mat-form-field`** to provide 1rem of space above the field for the floating label to move into when focused/populated. Without this padding, the label overlaps surrounding content when it floats above the outline notch.
+- Always include `subscriptSizing="dynamic"` unless the field needs a fixed-height hint/error area.
+- Prefer Tailwind utility classes for spacing and layout around form fields over custom component styles.
+
+Example:
+
+```html
+<mat-form-field appearance="outline" class="tw-w-full tw-pt-4" subscriptSizing="dynamic">
+  <mat-label>Field Label</mat-label>
+  <input matInput ... />
+</mat-form-field>
+```
+
+## Styling Angular Material components
+
+- **Prefer Tailwind utility classes** for layout, spacing, colors, and typography where they work. Only use Material CSS tokens when customizing Material-specific visual behaviors that Tailwind can't reach (e.g., selected state colors, indicator heights).
+- **Never target internal Material/MDC classes** (`.mdc-text-field--filled`, `.mdc-tab--active`, `.mat-mdc-menu-item`, `.mdc-form-field`, etc.) in component styles or global styles. These are implementation details that break on dependency upgrades.
+- **Use Material CSS custom property tokens** to customize component appearance. These are the public API for theming. Examples:
+  - `--mdc-filled-text-field-container-color: transparent` (form field background)
+  - `--mat-menu-item-one-line-container-height: 36px` (menu item height)
+  - `--mdc-radio-state-layer-size: 24px` (radio button touch target)
+  - `--mdc-tab-indicator-active-indicator-height: 2px` (tab indicator)
+- **Set tokens on `:host`** in component styles for scoped overrides, or on the component's element selector in `styles.sass` for global overrides that need to cascade through child components.
+- **If no token exists**, prefer changing the component's `appearance` (e.g., `appearance="outline"` for borderless fields) or restructuring the template over targeting internals. **Do not use `::ng-deep`** — it is deprecated and creates fragile, hard-to-maintain styles. If a Material component doesn't expose the customization you need, restructure the template or use a different component.
+
 ## Typing + code style (apply broadly)
 
 - Keep code **strongly typed**.
@@ -49,6 +128,35 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - When creating new shared types, services, or components, **add them to the appropriate `public-api.ts`** barrel so consumers can import via the `@osee/` path.
 - Use relative imports only for files within the same feature folder that are not exported from a barrel (e.g., sibling files like `./markdown-editor-examples`).
 - **Beware of circular barrel dependencies.** A cycle occurs when barrel A exports a file that (transitively) imports from barrel B, and barrel B exports a file that imports from barrel A. Symptoms include `Cannot read properties of undefined (reading 'ɵcmp')` errors in tests. To break cycles, use a relative import for the specific file instead of the barrel import at the point where the cycle would close.
+
+## Theme colors
+
+The app uses a token-based color system via CSS variables and Tailwind utilities. Colors adapt automatically to light/dark mode.
+
+### Primary palette (blue in light, light-blue in dark)
+
+| Tailwind class | Light mode | Dark mode | Use case |
+|---|---|---|---|
+| `tw-text-primary` | `#2979ff` (blue-28) | `#4fc3f7` (light-blue-19) | Default primary accent |
+| `tw-text-primary-lighter` | `#2962ff` (blue-29) | `#81d4fa` (light-blue-18) | Lighter primary variant |
+| `tw-text-primary-darker` | `#0d47a1` (blue-25) | `#29b6f6` (light-blue-20) | Darker primary variant |
+| `tw-text-primary-500` | `#2196f3` (blue-21) | `#03a9f4` (light-blue-21) | M2 500-weight primary |
+
+### Warning/error palette (red in both modes)
+
+| Tailwind class | Light mode | Dark mode | Use case |
+|---|---|---|---|
+| `tw-text-warning` | `#ff1744` (red-28) | `#ff1744` (red-28) | Destructive actions (Delete, Remove) |
+| `tw-text-warning-lighter` | `#ef5350` (red-20) | `#ef5350` (red-20) | Lighter warning variant |
+| `tw-text-warning-darker` | `#b71c1c` (red-25) | `#b71c1c` (red-25) | Darker warning variant |
+
+### Usage guidelines
+
+- Use `tw-text-primary` / `tw-bg-primary` for primary-colored text and backgrounds.
+- Use `tw-text-warning` for destructive actions only (Delete, Remove, Purge). **Do not use on Cancel/Close buttons.** Do not use hard-coded slot numbers like `tw-text-osee-red-8` — always prefer the semantic `tw-text-warning` token which adapts to the theme.
+- Use the Material `primary-button`, `tertiary-button`, `error-button` CSS classes on `mat-raised-button` / `mat-flat-button` for pre-themed buttons (these use the M3 theming system, not Tailwind).
+- For foreground/background semantic tokens (adapt to light/dark automatically): `tw-text-foreground-base`, `tw-bg-background-card`, `tw-bg-background-hover`, etc.
+- Prefer semantic color tokens over hard-coded `osee-*` slot numbers. Use `tw-text-primary` instead of `tw-text-osee-blue-28`, use `tw-text-warning` instead of `tw-text-osee-red-8`.
 
 ## Templates + Tailwind
 
@@ -177,6 +285,16 @@ npx playwright show-report
 - **Test programmatic state via `page.evaluate()`** when no visible indicator exists — e.g., reading selection ranges, scroll positions, or computed values from the DOM.
 - **Use `locator.filter({ hasText })` for icon-only buttons** — buttons with only an icon and no label often lack accessible names. Filter by the icon's text content.
 - **Scope locators to reduce ambiguity** — prefer `page.locator('section button')` over `page.getByRole('button')` when multiple buttons share similar names across different page regions.
+
+### Testing auto-save (focus-lost) editors
+
+The artifact explorer uses persistent editors that save automatically when focus leaves the editor. To avoid test state leaking between tests:
+
+- **Use a unique artifact per test.** Each test that modifies editor content should open a different artifact. This eliminates cross-test interference entirely — no blur-save waits needed.
+- **Use parallel mode** when each test has its own artifact. Serial mode is only needed if tests intentionally share state.
+- **The table dialog reads from the textarea's DOM value directly**, not from the backend. No save is needed before opening the dialog — just `fill()` and click the toolbar button.
+- **For cursor positioning**, use `page.evaluate()` to set `selectionStart`/`selectionEnd` after `textarea.click()`. No blur dispatch needed.
+- **Scope dialog button locators to `mat-dialog-container`** to avoid matching buttons behind the dialog backdrop.
 - **Test disabled states and their explanations** — verify the button is disabled and that the user receives feedback explaining why (tooltip, message, etc.).
 - **Use `.first()` for tooltip assertions** — Angular Material can leave stale tooltip overlays in the DOM. Use `.first()` when asserting tooltip visibility to avoid strict-mode violations.
 
@@ -242,3 +360,13 @@ Page navigation is the primary time cost (~5s per test). Minimize it:
 - **Consolidate related assertions into fewer tests.** Group assertions that test the same feature area into one test with multiple steps. A single test that verifies "insert with caption, insert without caption, and edit existing caption" is faster than three separate tests each paying the navigation cost. Use `await test.step('step name', async () => { ... })` to label each phase — failure reports will show exactly which step failed.
 - **Reset state within a test instead of relying on fresh navigation.** Use `textarea.fill('')` or similar resets between sub-steps within a consolidated test rather than creating a new test.
 - **Keep `beforeEach` minimal.** Only include shared navigation. Dialog-specific setup (opening the table dialog) belongs in individual tests or a nested describe's own `beforeEach`.
+
+## After development checklist
+
+Before presenting changes as complete, **ask the user** if you should run through these steps. Do not perform them automatically during development — only when the user approves or at the end of a development chunk.
+
+1. **Format and lint** — Run prettier and eslint on changed files (see [Formatting and linting](#formatting-and-linting) above). The `/web-lint-prettier-changed` hook automates this.
+2. **Build check** — Verify no TypeScript diagnostics exist in changed files.
+3. **Run relevant tests** — Identify which Playwright test suites cover the changed components (`playwright/specs/` by feature area). Run them per the instructions in [Running tests](#running-tests). If failures occur, diagnose and fix before presenting the result.
+4. **Code review** — Trigger the "Review Changed Code" hook (`.kiro/hooks/code-review.kiro.hook`) to review all changed web and Java files for code quality, bugs, and standards adherence.
+5. **Review documentation** — Check if any `docs/ai/` files describe components, patterns, or architecture that was modified. If docs reference stale class names, signal names, CSS classes, or file paths, propose updates and wait for approval before writing. Keep docs concise and factual — describe what IS, not what was.

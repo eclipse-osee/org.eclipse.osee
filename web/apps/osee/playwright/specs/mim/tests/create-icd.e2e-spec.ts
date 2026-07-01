@@ -12,6 +12,7 @@
  **********************************************************************/
 import { test, expect, Page } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL } from '../utils/helpers';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 const branchName = 'New MIM ICD';
 
@@ -20,9 +21,7 @@ test('create action', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Product Line').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('SAW PL Hardening Branch').click();
+	await selectBranch(page, 'Baseline', 'SAW PL Hardening Branch');
 	await page.waitForTimeout(500);
 
 	await page.screenshot({
@@ -45,9 +44,7 @@ test('create nodes', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText(branchName).click();
+	await selectBranch(page, 'Working', branchName);
 
 	await page.getByText('account_circle').click();
 
@@ -103,9 +100,7 @@ test('create enum list artifacts', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'List Configuration' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText(branchName).click();
+	await selectBranch(page, 'Working', branchName);
 
 	await page.screenshot({
 		animations: 'disabled',
@@ -206,9 +201,7 @@ test('create transport type', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Transport Types' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByPlaceholder('Branches').click();
-	await page.getByText(branchName).click();
+	await selectBranch(page, 'Working', branchName);
 	await page.locator('button').filter({ hasText: 'add' }).click();
 	await page.getByLabel('Name').fill('Ethernet');
 	await page.getByLabel('Byte Align Validation', { exact: true }).click();
@@ -275,9 +268,7 @@ test('create connection', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText(branchName).click();
+	await selectBranch(page, 'Working', branchName);
 	await page.locator('rect').nth(1).click({
 		button: 'right',
 	});
@@ -301,9 +292,7 @@ test('create message and submessage', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText(branchName).click();
+	await selectBranch(page, 'Working', branchName);
 	await page.getByText('Connection A-B', { exact: true }).click();
 
 	await page.screenshot({
@@ -380,9 +369,7 @@ test('create structure', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText(branchName).click();
+	await selectBranch(page, 'Working', branchName);
 	await page.getByText('Connection A-B', { exact: true }).click();
 	await page
 		.locator('button')
@@ -421,9 +408,7 @@ test('create elements', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByPlaceholder('Branches').click();
-	await page.getByText(branchName).click();
+	await selectBranch(page, 'Working', branchName);
 	await page.getByText('Connection A-B', { exact: true }).click();
 	await page
 		.locator('button')
@@ -593,8 +578,7 @@ test('create elements', async ({ page }) => {
 test('add array element', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 900 });
 	await page.goto('/ple/messaging/connections/working');
-	await page.getByText('Select a Branch').click();
-	await page.getByText(branchName).click();
+	await selectBranch(page, 'Working', branchName);
 	await page.getByText('Connection A-B', { exact: true }).click();
 	await page
 		.locator('button')

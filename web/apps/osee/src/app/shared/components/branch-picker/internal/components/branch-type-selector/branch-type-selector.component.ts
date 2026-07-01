@@ -26,11 +26,9 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 			:host {
 				--mat-button-toggle-label-text-size: 13px;
 				--mat-button-toggle-height: 32px;
-				--mat-button-toggle-selected-state-background-color: var(
-					--osee-primary-default
-				);
+				--mat-button-toggle-selected-state-background-color: transparent;
 				--mat-button-toggle-selected-state-text-color: var(
-					--osee-background-background
+					--osee-primary-default
 				);
 				--mat-button-toggle-shape: 4px;
 			}

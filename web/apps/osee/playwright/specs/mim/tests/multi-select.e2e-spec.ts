@@ -12,6 +12,7 @@
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 test.describe.configure({ mode: 'parallel' });
 
@@ -19,22 +20,7 @@ test('screenshot', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Working').check();
-
-	await Promise.all([
-		page.waitForResponse(
-			(res) => res.url().includes('branch') && res.status() === 200
-		),
-		page.getByText('Select a Branch').click(),
-	]);
-
-	await Promise.all([
-		page.waitForResponse(
-			(res) => res.url().includes('graph') && res.status() === 200,
-			{ timeout: 60000 }
-		),
-		page.getByText('MIM Demo').click({ timeout: 60000 }),
-	]);
+	await selectBranch(page, 'Working', 'MIM Demo');
 
 	await enableEditMode(page);
 

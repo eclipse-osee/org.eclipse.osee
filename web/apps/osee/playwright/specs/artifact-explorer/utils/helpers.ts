@@ -14,7 +14,7 @@ import { expect, Page } from '@ngx-playwright/test';
 import { APIRequestContext } from '@playwright/test';
 import { API_BASE, AUTH_HEADER } from '../../../shared/test-config';
 import { selectBranch } from '../../../shared/branch-helpers';
-export { selectBranch } from '../../../shared/branch-helpers';
+export { selectBranch, selectBranchType } from '../../../shared/branch-helpers';
 
 /** SAW_Bld_1 branch ID used as the parent for test working branches. */
 const SAW_BLD_1_BRANCH_ID = '3';
@@ -77,39 +77,13 @@ export const navigateToArtifactExplorer = async (page: Page) => {
 	await page.goto('/ple/artifact/explorer');
 };
 
-/** Select a branch by type and name using the branch picker. */
-export const selectBranch = async (
-	page: Page,
-	branchType: 'Working' | 'Baseline',
-	branchName: string
-) => {
-	await page.getByRole('button', { name: branchType }).click();
-	const branchCombobox = page.getByRole('combobox', {
-		name: 'Select a Branch',
-	});
-	// Wait for combobox to be enabled (disabled while no type selected)
-	await expect(branchCombobox).toBeEnabled({ timeout: 5000 });
-	await branchCombobox.click({ force: true });
-	await branchCombobox.fill('');
-	await branchCombobox.type(branchName);
-	// Wait for and click the matching option
-	await expect(
-		page.locator('mat-option').filter({ hasText: branchName }).first()
-	).toBeVisible({ timeout: 15000 });
-	await page
-		.locator('mat-option')
-		.filter({ hasText: branchName })
-		.first()
-		.click();
-};
-
 /**
  * Create a working branch off SAW_Bld_1 via the UI.
  * Navigates to artifact explorer, selects baseline, creates branch.
  */
 export const createTestBranch = async (page: Page, branchName: string) => {
 	await navigateToArtifactExplorer(page);
-	await page.getByRole('button', { name: 'Baseline' }).click();
+	await page.getByRole('radio', { name: 'Baseline' }).click();
 	const branchCombobox = page.getByRole('combobox', {
 		name: 'Select a Branch',
 	});

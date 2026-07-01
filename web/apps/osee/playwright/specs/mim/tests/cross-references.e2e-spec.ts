@@ -12,15 +12,14 @@
  **********************************************************************/
 import { expect, test } from '@ngx-playwright/test';
 import { enableEditMode } from '../utils/helpers';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 test('test', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 800 });
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Cross-References' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('MIM Demo').click();
+	await selectBranch(page, 'Working', 'MIM Demo');
 	await page.getByLabel('Select a Connection').locator('span').click();
 	await page.getByText('Connection A-B').click();
 	await page.waitForTimeout(500);

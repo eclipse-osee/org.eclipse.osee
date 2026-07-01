@@ -12,6 +12,7 @@
  **********************************************************************/
 import { expect, test } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL } from '../utils/helpers';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -32,12 +33,7 @@ test('set up relations', async ({ page }) => {
 	});
 
 	await page.getByText('travel_explore Artifact').click();
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page
-		.getByRole('option', { name: 'Traceability' })
-		.locator('span')
-		.click();
+	await selectBranch(page, 'Working', 'Traceability');
 
 	// Open Demo Fault tab
 	await page.getByRole('button', { name: 'Artifact Search' }).click();
@@ -113,9 +109,7 @@ test('trace report', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Reports' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByPlaceholder('Branches').click();
-	await page.getByText('Traceability').click();
+	await selectBranch(page, 'Working', 'Traceability');
 	await page.getByRole('link', { name: 'Traceability Report' }).click();
 	await page.getByRole('radio', { name: 'Requirements' }).click();
 	await expect(page.getByText('Demo Fault')).toBeVisible();
