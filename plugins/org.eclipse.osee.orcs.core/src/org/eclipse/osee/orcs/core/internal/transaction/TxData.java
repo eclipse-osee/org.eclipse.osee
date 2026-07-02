@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -54,6 +53,8 @@ public class TxData implements HasSession, HasBranchId {
       COMMIT_FAILED;
    }
    private static final long SPACING = (long) Math.pow(2.0, 18.0);
+   private static final long TOTAL_ORDER_RANGE = (long) Integer.MAX_VALUE - (long) Integer.MIN_VALUE;
+   private static final double REORDER_HEAD_RESERVE_RATIO = 0.25;
    private final OrcsSession session;
    private final GraphData graph;
    private final List<TupleData> tuples = new ArrayList<>();
@@ -231,7 +232,60 @@ public class TxData implements HasSession, HasBranchId {
    }
 
    public int calculateInsertionOrderIndex(int afterIndex, int beforeIndex) {
-      return (int) ((long) (afterIndex) + beforeIndex) / 2;
+      return (int) (((long) afterIndex + (long) beforeIndex) / 2);
+   }
+
+   /**
+    * Returns true if reordering would produce a better minimum order value than what currently exists. This avoids
+    * triggering a reorder when the relation count is high enough that the post-reorder min would still be near the
+    * boundary. Fires when there is less than SPACING room below currentMin AND reordering would actually improve it.
+    */
+   public static boolean shouldReorderForMin(int currentMin, int relationCount) {
+      if ((long) currentMin - (long) Integer.MIN_VALUE >= SPACING) {
+         return false; // still have room for head-insertions, no reorder needed
+      }
+      // Near lower boundary — only reorder if the result would be better
+      long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
+      long pad = usableRange / (relationCount + 1);
+      long postReorderMin = Integer.MIN_VALUE + pad;
+      return currentMin < postReorderMin;
+   }
+
+   /**
+    * Returns true if reordering would produce a better maximum order value than what currently exists. This avoids
+    * triggering a reorder when the relation count is high enough that the post-reorder max would still be near the
+    * boundary. Fires when there is less than SPACING room above currentMax AND reordering would actually improve it.
+    */
+   public static boolean shouldReorderForMax(int currentMax, int relationCount) {
+      if ((long) Integer.MAX_VALUE - (long) currentMax >= SPACING) {
+         return false; // still have room for end-insertions, no reorder needed
+      }
+      // Near upper boundary — only reorder if the result would be better
+      long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
+      long pad = usableRange / (relationCount + 1);
+      long postReorderMax = Integer.MIN_VALUE + pad * relationCount;
+      return currentMax > postReorderMax;
+   }
+
+   public static long getSpacing() {
+      return SPACING;
+   }
+
+   /**
+    * Computes evenly-spaced order values for the given relations, packing them into the head-reserve portion of the
+    * integer range. Returns a new TreeMap with redistributed keys preserving the original iteration order.
+    */
+   public static TreeMap<Integer, Pair<ArtifactId, GammaId>> computeRedistributedOrders(
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
+      long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
+      long pad = usableRange / (relOrders.size() + 1);
+      long orderValue = Integer.MIN_VALUE + pad;
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> result = new TreeMap<>();
+      for (Pair<ArtifactId, GammaId> entry : relOrders.values()) {
+         result.put((int) orderValue, entry);
+         orderValue += pad;
+      }
+      return result;
    }
 
    public void addGammaId(GammaId gammaId) {
@@ -249,4 +303,5 @@ public class TxData implements HasSession, HasBranchId {
    public List<GammaId> getGammaIdsFailed() {
       return this.gammaIdsFailed;
    }
+
 }
