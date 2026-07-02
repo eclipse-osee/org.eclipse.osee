@@ -836,7 +836,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
          // Export to cold storage before purging if requested
          if (coldStorage) {
             TxsColdStorage cold = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
-            cold.archiveSingleBranch(branchId);
+            XResultData archiveResult = cold.archiveSingleBranch(branchId);
+            if (archiveResult.isErrors()) {
+               return Response.serverError().entity(archiveResult).build();
+            }
          }
 
          orcsApi.getJdbcService().getClient().runQuery(stmt -> impactedGammaIds.add(stmt.getLong("gamma_id")),

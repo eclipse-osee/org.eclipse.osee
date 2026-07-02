@@ -19,21 +19,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -48,6 +44,8 @@ public class TxsColdStorage {
 
    private static final String MAGIC = "OSEE_TXS_COLD_V1";
    private static final int SCHEMA_VERSION = 1;
+   private static final DateTimeFormatter FILE_DATE_FORMAT =
+      DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").withZone(ZoneOffset.UTC);
 
    // @formatter:off
    private static final String SELECT_ELIGIBLE_BRANCHES =
@@ -131,7 +129,7 @@ public class TxsColdStorage {
    public XResultData archiveSingleBranch(BranchId branchId) {
       XResultData results = new XResultData();
 
-      String coldPath = getColdStoragePath();
+      String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {
          results.error("Unable to determine server data path for cold storage");
          return results;
@@ -150,12 +148,8 @@ public class TxsColdStorage {
          return results;
       }
 
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-      String fileName = "txs_cold_branch_" + branchId.getIdString() + "_" + dateFormat.format(new Date()) + ".gz";
+      String fileName = "txs_cold_branch_" + branchId.getIdString() + "_" + FILE_DATE_FORMAT.format(Instant.now()) + ".gz";
       String filePath = coldPath + File.separator + fileName;
-
-      List<BranchInfo> branches = new ArrayList<>();
-      branches.add(new BranchInfo(branchId.getId(), branchName[0], branchState[0]));
 
       try {
          int totalTxsRows = 0;
@@ -185,6 +179,7 @@ public class TxsColdStorage {
                writeBranchRow(dos, row);
             }
 
+            // Write tx_details rows
             dos.writeUTF("TX_DETAILS_DATA");
             List<TxDetailsRow> txDetailsRows = new ArrayList<>();
             jdbcClient.runQuery(stmt -> {
@@ -195,6 +190,7 @@ public class TxsColdStorage {
                row.writeTo(dos);
             }
 
+            // Write txs_archived rows
             dos.writeUTF("TXS_ARCHIVED_DATA");
             List<TxsArchivedRow> txsRows = new ArrayList<>();
             jdbcClient.runQuery(stmt -> {
@@ -230,7 +226,8 @@ public class TxsColdStorage {
    /**
     * Archives eligible branches to cold storage. Finds branches in committed, rebaselined, or deleted state whose last
     * transaction is older than retentionDays, exports their data to a compressed binary file, and purges them from the
-    * database.
+    * database. Each branch is archived and purged atomically — the catalog row is inserted before the purge so that
+    * a crash between steps leaves recoverable state.
     *
     * @param limit maximum number of branches to archive in this invocation
     * @param retentionDays minimum age (in days) since last transaction before a branch is eligible
@@ -239,7 +236,7 @@ public class TxsColdStorage {
    public XResultData archiveBranches(int limit, int retentionDays) {
       XResultData results = new XResultData();
 
-      String coldPath = getColdStoragePath();
+      String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {
          results.error("Unable to determine server data path for cold storage");
          return results;
@@ -261,8 +258,7 @@ public class TxsColdStorage {
 
       results.logf("Found %d eligible branches for cold storage", eligibleBranches.size());
 
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-      String fileName = "txs_cold_" + dateFormat.format(new Date()) + ".gz";
+      String fileName = "txs_cold_" + FILE_DATE_FORMAT.format(Instant.now()) + ".gz";
       String filePath = coldPath + File.separator + fileName;
 
       try {
@@ -329,7 +325,8 @@ public class TxsColdStorage {
             }
          }
 
-         // Now purge from DB and insert catalog rows
+         // Now purge from DB and insert catalog rows.
+         // Insert the catalog row BEFORE purging so that a crash between these steps leaves recoverable state.
          long fileSize = new File(filePath).length();
 
          for (BranchInfo branchInfo : eligibleBranches) {
@@ -340,12 +337,12 @@ public class TxsColdStorage {
             int txDetailsRowCount = jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_tx_details WHERE BRANCH_ID = ?",
                branchId);
 
-            // Delegate to existing PurgeBranchDatabaseCallable via OrcsBranch
-            orcsApi.getBranchOps().purgeBranch(BranchId.valueOf(branchId), false).call();
-
-            // Insert catalog row
+            // Insert catalog row BEFORE purge to ensure crash-recovery
             jdbcClient.runPreparedUpdate(INSERT_CATALOG, branchId, branchInfo.branchName, fileName, txsRowCount,
                txDetailsRowCount, branchInfo.branchState);
+
+            // Delegate to existing PurgeBranchDatabaseCallable via OrcsBranch
+            orcsApi.getBranchOps().purgeBranch(BranchId.valueOf(branchId), false).call();
          }
 
          results.logf("Archive complete: %s (%d bytes, %d branches, %d total txs rows, %d total tx_details rows)",
@@ -369,7 +366,7 @@ public class TxsColdStorage {
    public XResultData restoreBranch(BranchId branchId) {
       XResultData results = new XResultData();
 
-      String coldPath = getColdStoragePath();
+      String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {
          results.error("Unable to determine server data path for cold storage");
          return results;
@@ -414,7 +411,7 @@ public class TxsColdStorage {
          boolean found = false;
 
          for (int b = 0; b < branchCount; b++) {
-            String marker = dis.readUTF(); // BRANCH_START
+            dis.readUTF(); // BRANCH_START
             long fileBranchId = dis.readLong();
 
             if (fileBranchId == targetBranchId) {
@@ -496,7 +493,7 @@ public class TxsColdStorage {
       int remainingRefs = jdbcClient.fetch(0,
          "SELECT COUNT(1) FROM osee_txs_cold_storage WHERE EXPORT_FILE = ?", exportFile[0]);
       if (remainingRefs == 0) {
-         String coldPath = getColdStoragePath();
+         String coldPath = ColdStorageUtil.getColdStoragePath();
          if (coldPath != null) {
             File file = new File(coldPath + File.separator + exportFile[0]);
             if (file.exists()) {
@@ -515,7 +512,7 @@ public class TxsColdStorage {
     * storage.
     */
    public void previewBranch(BranchId branchId, java.util.zip.ZipOutputStream zipOut) throws IOException {
-      String coldPath = getColdStoragePath();
+      String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {
          throw new IOException("Unable to determine cold storage path");
       }
@@ -570,7 +567,7 @@ public class TxsColdStorage {
       for (int i = 0; i < branchRowCount; i++) {
          Object[] row = readBranchRowFromFile(dis);
          writer.printf("INSERT INTO osee_branch (BRANCH_ID, BRANCH_TYPE, BRANCH_STATE, BRANCH_NAME, PARENT_BRANCH_ID, PARENT_TRANSACTION_ID, BASELINE_TRANSACTION_ID, ASSOCIATED_ART_ID, ARCHIVED, INHERIT_ACCESS_CONTROL) VALUES (%d, %d, %d, '%s', %d, %d, %d, %d, %d, %d);%n",
-            row[0], (short) row[1], (short) row[2], escapeSql((String) row[3]), row[4], row[5], row[6], row[7],
+            row[0], (short) row[1], (short) row[2], ColdStorageUtil.escapeSql((String) row[3]), row[4], row[5], row[6], row[7],
             (short) row[8], (short) row[9]);
       }
       writer.flush();
@@ -582,8 +579,9 @@ public class TxsColdStorage {
       zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_tx_details.sql"));
       for (int i = 0; i < txDetailsCount; i++) {
          Object[] row = readTxDetailsRow(dis);
+         Timestamp ts = (Timestamp) row[3];
          writer.printf("INSERT INTO osee_tx_details (BRANCH_ID, TRANSACTION_ID, AUTHOR, TIME, OSEE_COMMENT, TX_TYPE, COMMIT_ART_ID, BUILD_ID) VALUES (%d, %d, %d, '%s', '%s', %d, %d, %d);%n",
-            row[0], row[1], row[2], row[3], escapeSql((String) row[4]), (short) row[5], row[6], row[7]);
+            row[0], row[1], row[2], ColdStorageUtil.formatTimestamp(ts), ColdStorageUtil.escapeSql((String) row[4]), (short) row[5], row[6], row[7]);
       }
       writer.flush();
       zipOut.closeEntry();
@@ -603,35 +601,7 @@ public class TxsColdStorage {
       dis.readUTF(); // "BRANCH_END"
    }
 
-   private String escapeSql(String value) {
-      if (value == null) {
-         return "";
-      }
-      return value.replace("'", "''");
-   }
-
    // ---- Private helpers ----
-
-   private String getColdStoragePath() {
-      String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      if (serverPath == null) {
-         serverPath = System.getProperty("user.home");
-      }
-      if ("null".equals(serverPath)) {
-         return null;
-      }
-      Path purgeFolder = Paths.get(serverPath + File.separator + "purge");
-      if (Files.exists(purgeFolder)) {
-         serverPath = purgeFolder.toString();
-      }
-      Path coldFolder = Paths.get(serverPath + File.separator + "cold_storage");
-      try {
-         Files.createDirectories(coldFolder);
-      } catch (IOException ex) {
-         throw OseeCoreException.wrap(ex);
-      }
-      return coldFolder.toString();
-   }
 
    private Object[] readBranchRowFromDb(JdbcStatement stmt) {
       return new Object[] {
@@ -703,9 +673,7 @@ public class TxsColdStorage {
          row[5] = realParentTxId;
          row[6] = realBaselineTxId;
       }
-      for (Object[] row : txDetailsRows) {
-         jdbcClient.runPreparedUpdate(INSERT_TX_DETAILS, row);
-      }
+      jdbcClient.runBatchUpdate(INSERT_TX_DETAILS, txDetailsRows);
       for (Object[] row : branchRows) {
          long branchId = (long) row[0];
          long realBaselineTxId = (long) row[6];

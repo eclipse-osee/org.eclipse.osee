@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -864,7 +865,27 @@ public class TransactionEndpointTest {
          txToken, DemoBranches.SAW_PL_Working_Branch);
       assertTrue(txsRestored > 0);
 
-      // Clean up - purge again without cold storage by directly purging the transaction
+      // Clean up - decache the test artifact and remove the cold storage archive file
       ArtifactCache.deCache(testArt);
+
+      // Delete cold storage files created during this test
+      String serverPath = System.getProperty("osee.application.server.data");
+      if (serverPath == null) {
+         serverPath = System.getProperty("user.home");
+      }
+      File purgeDir = new File(serverPath + File.separator + "purge");
+      if (purgeDir.exists()) {
+         serverPath = purgeDir.getPath();
+      }
+      File coldDir = new File(serverPath + File.separator + "cold_storage");
+      if (coldDir.exists()) {
+         File[] archiveFiles = coldDir.listFiles(
+            (d, name) -> name.startsWith("tx_purge_") && name.contains(txToken.getIdString()));
+         if (archiveFiles != null) {
+            for (File f : archiveFiles) {
+               f.delete();
+            }
+         }
+      }
    }
 }

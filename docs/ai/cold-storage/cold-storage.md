@@ -1,7 +1,7 @@
 ---
 summary: "Cold storage tiered data lifecycle for OSEE transaction and branch data"
 tags: [cold-storage, archival, transactions, branches, purge, restore]
-fileMatch: "**/ColdStorage*,**/TxsColdStorage*,**/TxPurgeColdStorage*"
+fileMatch: "**/ColdStorage*,**/TxsColdStorage*,**/TxPurgeColdStorage*,**/ColdStorageUtil*"
 ---
 
 # Cold Storage Strategy
@@ -25,8 +25,10 @@ Cold storage provides a tiered data lifecycle for OSEE's transaction and branch 
 When a branch has been in committed, rebaselined, or deleted state for longer than the retention period (default 365 days), its data becomes eligible for cold storage. The archive process:
 
 1. Exports `osee_branch`, `osee_tx_details`, and `osee_txs_archived` rows to a gzip-compressed binary file
-2. Purges the rows from the database (using existing `PurgeBranchDatabaseCallable`)
-3. Inserts a catalog row into `osee_txs_cold_storage` tracking the branch name, file location, and row counts
+2. Inserts a catalog row into `osee_txs_cold_storage` tracking the branch name, file location, and row counts
+3. Purges the rows from the database (using existing `PurgeBranchDatabaseCallable`)
+
+The catalog row is inserted before the purge so that a crash between steps leaves recoverable state (the catalog points to the file, and the data remains in the database).
 
 ### Catalog Table
 
@@ -87,6 +89,8 @@ When a user explicitly purges a branch via `DELETE /branch/{branchId}`, the bran
 
 Internal batch operations (`purgeDeletedBranches`, `purgeWorkingBranchesOfClosedPrograms`) pass `coldStorage=false` since deleted branches don't need recovery.
 
+If the cold storage export fails, the purge is aborted and an error response is returned. Similarly, transaction purge via `DELETE /orcs/txs/{tx-ids}` will fail if the cold storage export cannot be written.
+
 ## Transaction Purge Cold Storage
 
 When transactions are purged via `DELETE /orcs/txs/{tx-ids}`, the following data is exported to a compressed binary file before deletion:
@@ -135,6 +139,7 @@ Both branch and transaction cold storage support a preview endpoint that returns
 
 | File | Purpose |
 |------|---------|
+| `ColdStorageUtil.java` | Shared utilities: path resolution, SQL escaping, timestamp formatting |
 | `OseeDb.java` | `TXS_COLD_STORAGE_TABLE` catalog table definition |
 | `DatabaseCreation.java` | Creates the catalog table on DB init |
 | `TxsColdStorage.java` | Branch cold storage: archive, restore, preview, list, purge |

@@ -19,23 +19,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -49,6 +45,8 @@ public class TxPurgeColdStorage {
 
    private static final String MAGIC = "OSEE_TX_PURGE_V1";
    private static final int SCHEMA_VERSION = 1;
+   private static final DateTimeFormatter FILE_DATE_FORMAT =
+      DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").withZone(ZoneOffset.UTC);
 
    // @formatter:off
    private static final String SELECT_TXS_FOR_TX =
@@ -92,9 +90,6 @@ public class TxPurgeColdStorage {
    private static final String INSERT_RELATION2 =
       "INSERT INTO osee_relation (REL_TYPE, A_ART_ID, B_ART_ID, REL_ART_ID, REL_ORDER, GAMMA_ID) " +
       "VALUES (?, ?, ?, ?, ?, ?)";
-
-   private static final String SELECT_IMPACTED_GAMMAS =
-      "SELECT gamma_id FROM osee_txs WHERE branch_id = ? AND transaction_id = ?";
    // @formatter:on
 
    private final JdbcClient jdbcClient;
@@ -113,17 +108,16 @@ public class TxPurgeColdStorage {
     * @return the filename of the cold storage archive, or null if export failed
     */
    public String exportTransactions(List<TransactionId> txIds) {
-      String coldPath = getColdStoragePath();
+      String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {
          return null;
       }
 
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
       String fileName = "tx_purge_" + txIds.get(0).getIdString();
       if (txIds.size() > 1) {
          fileName += "_to_" + txIds.get(txIds.size() - 1).getIdString();
       }
-      fileName += "_" + dateFormat.format(new Date()) + ".gz";
+      fileName += "_" + FILE_DATE_FORMAT.format(Instant.now()) + ".gz";
       String filePath = coldPath + File.separator + fileName;
 
       try (FileOutputStream fos = new FileOutputStream(filePath);
@@ -281,7 +275,7 @@ public class TxPurgeColdStorage {
    public XResultData restoreTransaction(String fileName, TransactionId txId) {
       XResultData results = new XResultData();
 
-      String coldPath = getColdStoragePath();
+      String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {
          results.error("Unable to determine cold storage path");
          return results;
@@ -325,7 +319,7 @@ public class TxPurgeColdStorage {
          for (int t = 0; t < txCount; t++) {
             dis.readUTF(); // "TX_START"
             long fileTxId = dis.readLong();
-            long fileBranchId = dis.readLong();
+            dis.readLong(); // branchId
 
             if (fileTxId == targetTxId) {
                found = true;
@@ -354,7 +348,7 @@ public class TxPurgeColdStorage {
     */
    public XResultData listPurgedTransactionArchives() {
       XResultData results = new XResultData();
-      String coldPath = getColdStoragePath();
+      String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {
          results.error("Unable to determine cold storage path");
          return results;
@@ -383,7 +377,7 @@ public class TxPurgeColdStorage {
    public void previewTransaction(String fileName, TransactionId txId, java.util.zip.ZipOutputStream zipOut)
       throws IOException {
 
-      String coldPath = getColdStoragePath();
+      String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {
          throw new IOException("Unable to determine cold storage path");
       }
@@ -414,7 +408,7 @@ public class TxPurgeColdStorage {
          for (int t = 0; t < txCount; t++) {
             dis.readUTF(); // TX_START
             long fileTxId = dis.readLong();
-            long fileBranchId = dis.readLong();
+            dis.readLong(); // branchId
 
             if (fileTxId == targetTxId) {
                writePreviewSqlForTransaction(dis, zipOut);
@@ -437,8 +431,9 @@ public class TxPurgeColdStorage {
       zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_tx_details.sql"));
       for (int i = 0; i < txDetailsCount; i++) {
          Object[] row = readTxDetailsRow(dis);
+         Timestamp ts = (Timestamp) row[3];
          writer.printf("INSERT INTO osee_tx_details (BRANCH_ID, TRANSACTION_ID, AUTHOR, TIME, OSEE_COMMENT, TX_TYPE, COMMIT_ART_ID, BUILD_ID) VALUES (%d, %d, %d, '%s', '%s', %d, %d, %d);%n",
-            row[0], row[1], row[2], row[3], escapeSql((String) row[4]), (short) row[5], row[6], row[7]);
+            row[0], row[1], row[2], ColdStorageUtil.formatTimestamp(ts), ColdStorageUtil.escapeSql((String) row[4]), (short) row[5], row[6], row[7]);
       }
       writer.flush();
       zipOut.closeEntry();
@@ -465,7 +460,7 @@ public class TxPurgeColdStorage {
          long artTypeId = dis.readLong();
          String guid = dis.readUTF();
          writer.printf("INSERT INTO osee_artifact (ART_ID, GAMMA_ID, ART_TYPE_ID, GUID) VALUES (%d, %d, %d, '%s');%n",
-            artId, gammaId, artTypeId, escapeSql(guid));
+            artId, gammaId, artTypeId, ColdStorageUtil.escapeSql(guid));
       }
       writer.flush();
       zipOut.closeEntry();
@@ -482,7 +477,7 @@ public class TxPurgeColdStorage {
          String value = dis.readUTF();
          String uri = dis.readUTF();
          writer.printf("INSERT INTO osee_attribute (ATTR_ID, GAMMA_ID, ART_ID, ATTR_TYPE_ID, VALUE, URI) VALUES (%d, %d, %d, %d, '%s', '%s');%n",
-            attrId, gammaId, artId, attrTypeId, escapeSql(value), escapeSql(uri));
+            attrId, gammaId, artId, attrTypeId, ColdStorageUtil.escapeSql(value), ColdStorageUtil.escapeSql(uri));
       }
       writer.flush();
       zipOut.closeEntry();
@@ -499,7 +494,7 @@ public class TxPurgeColdStorage {
          long relLinkId = dis.readLong();
          String rationale = dis.readUTF();
          writer.printf("INSERT INTO osee_relation_link (REL_LINK_TYPE_ID, A_ART_ID, B_ART_ID, GAMMA_ID, REL_LINK_ID, RATIONALE) VALUES (%d, %d, %d, %d, %d, '%s');%n",
-            relTypeId, aArtId, bArtId, gammaId, relLinkId, escapeSql(rationale));
+            relTypeId, aArtId, bArtId, gammaId, relLinkId, ColdStorageUtil.escapeSql(rationale));
       }
       writer.flush();
       zipOut.closeEntry();
@@ -524,39 +519,11 @@ public class TxPurgeColdStorage {
       dis.readUTF(); // "TX_END"
    }
 
-   private String escapeSql(String value) {
-      if (value == null) {
-         return "";
-      }
-      return value.replace("'", "''");
-   }
-
    // ---- Private helpers ----
 
-   private String getColdStoragePath() {
-      String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      if (serverPath == null) {
-         serverPath = System.getProperty("user.home");
-      }
-      if ("null".equals(serverPath)) {
-         return null;
-      }
-      Path purgeFolder = Paths.get(serverPath + File.separator + "purge");
-      if (Files.exists(purgeFolder)) {
-         serverPath = purgeFolder.toString();
-      }
-      Path coldFolder = Paths.get(serverPath + File.separator + "cold_storage");
-      try {
-         Files.createDirectories(coldFolder);
-      } catch (IOException ex) {
-         throw OseeCoreException.wrap(ex);
-      }
-      return coldFolder.toString();
-   }
-
    /**
-    * Searches cold storage directory for an archive file containing the given transaction ID. Scans file headers to
-    * find the matching transaction.
+    * Searches cold storage directory for an archive file containing the given transaction ID. First checks structured
+    * filename patterns with exact ID matching, then falls back to scanning file contents.
     */
    private String findArchiveForTransaction(String coldPath, TransactionId txId) {
       File dir = new File(coldPath);
@@ -566,9 +533,11 @@ public class TxPurgeColdStorage {
       }
 
       long targetTxId = txId.getId();
+      String targetIdStr = String.valueOf(targetTxId);
+
+      // Check structured filename: tx_purge_{startId}[_to_{endId}]_timestamp.gz
       for (File file : files) {
-         // Quick check: if the filename contains the tx ID, try it first
-         if (file.getName().contains(String.valueOf(targetTxId))) {
+         if (matchesTransactionInFilename(file.getName(), targetIdStr)) {
             return file.getName();
          }
       }
@@ -601,6 +570,51 @@ public class TxPurgeColdStorage {
          }
       }
       return null;
+   }
+
+   /**
+    * Checks if a filename structurally matches the given transaction ID. Filenames follow the pattern:
+    * tx_purge_{startId}[_to_{endId}]_timestamp.gz
+    * This avoids false positives from substring matching (e.g., "1234" matching in "12345").
+    */
+   private boolean matchesTransactionInFilename(String fileName, String targetIdStr) {
+      // Strip prefix "tx_purge_" and suffix (timestamp + ".gz")
+      String body = fileName.substring("tx_purge_".length());
+      // body is like: "12345_20260101_120000.gz" or "12345_to_67890_20260101_120000.gz"
+
+      int toIdx = body.indexOf("_to_");
+      if (toIdx >= 0) {
+         // Range format: {startId}_to_{endId}_timestamp.gz
+         String startIdStr = body.substring(0, toIdx);
+         String afterTo = body.substring(toIdx + "_to_".length());
+         // endId is everything up to the next underscore
+         int nextUnderscore = afterTo.indexOf('_');
+         if (nextUnderscore < 0) {
+            return false;
+         }
+         String endIdStr = afterTo.substring(0, nextUnderscore);
+
+         // Check if targetId matches either endpoint exactly, or falls within the range
+         if (targetIdStr.equals(startIdStr) || targetIdStr.equals(endIdStr)) {
+            return true;
+         }
+         try {
+            long startId = Long.parseLong(startIdStr);
+            long endId = Long.parseLong(endIdStr);
+            long targetId = Long.parseLong(targetIdStr);
+            return targetId >= startId && targetId <= endId;
+         } catch (NumberFormatException e) {
+            return false;
+         }
+      } else {
+         // Single tx format: {txId}_timestamp.gz
+         int firstUnderscore = body.indexOf('_');
+         if (firstUnderscore < 0) {
+            return false;
+         }
+         String singleIdStr = body.substring(0, firstUnderscore);
+         return targetIdStr.equals(singleIdStr);
+      }
    }
 
    private void writeTxDetailsRow(DataOutputStream dos, Object[] row) throws IOException {
@@ -681,20 +695,21 @@ public class TxPurgeColdStorage {
       dis.readUTF(); // "TX_END"
 
       // Insert in order: backing data first, then tx_details, then txs
-      for (Object[] row : artRows) {
-         jdbcClient.runPreparedUpdate(INSERT_ARTIFACT, row);
+      // Use batch inserts for performance
+      if (!artRows.isEmpty()) {
+         jdbcClient.runBatchUpdate(INSERT_ARTIFACT, artRows);
       }
-      for (Object[] row : attrRows) {
-         jdbcClient.runPreparedUpdate(INSERT_ATTRIBUTE, row);
+      if (!attrRows.isEmpty()) {
+         jdbcClient.runBatchUpdate(INSERT_ATTRIBUTE, attrRows);
       }
-      for (Object[] row : relRows) {
-         jdbcClient.runPreparedUpdate(INSERT_RELATION, row);
+      if (!relRows.isEmpty()) {
+         jdbcClient.runBatchUpdate(INSERT_RELATION, relRows);
       }
-      for (Object[] row : rel2Rows) {
-         jdbcClient.runPreparedUpdate(INSERT_RELATION2, row);
+      if (!rel2Rows.isEmpty()) {
+         jdbcClient.runBatchUpdate(INSERT_RELATION2, rel2Rows);
       }
-      for (Object[] row : txDetailsRows) {
-         jdbcClient.runPreparedUpdate(INSERT_TX_DETAILS, row);
+      if (!txDetailsRows.isEmpty()) {
+         jdbcClient.runBatchUpdate(INSERT_TX_DETAILS, txDetailsRows);
       }
       jdbcClient.runBatchUpdate(INSERT_TXS, txsRows);
 

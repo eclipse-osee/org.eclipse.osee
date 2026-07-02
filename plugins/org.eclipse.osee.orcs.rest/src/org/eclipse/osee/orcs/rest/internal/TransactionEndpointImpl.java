@@ -154,7 +154,10 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       }
       if (!txList.isEmpty()) {
          TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
-         txColdStorage.exportTransactions(txList);
+         String exportFile = txColdStorage.exportTransactions(txList);
+         if (exportFile == null) {
+            return Response.serverError().entity("Failed to export transactions to cold storage before purge").build();
+         }
       }
 
       return asResponse(orcsApi.getTransactionFactory().purgeTxs(txIds));
