@@ -54,7 +54,8 @@ public class TxData implements HasSession, HasBranchId {
    }
    private static final long SPACING = (long) Math.pow(2.0, 18.0);
    private static final long TOTAL_ORDER_RANGE = (long) Integer.MAX_VALUE - (long) Integer.MIN_VALUE;
-   private static final double REORDER_HEAD_RESERVE_RATIO = 0.25;
+   private static final double HEAD_RESERVE_RATIO = 0.10;
+   private static final double ITEM_RANGE_RATIO = 0.25;
    private final OrcsSession session;
    private final GraphData graph;
    private final List<TupleData> tuples = new ArrayList<>();
@@ -236,35 +237,13 @@ public class TxData implements HasSession, HasBranchId {
    }
 
    /**
-    * Returns true if reordering would produce a better minimum order value than what currently exists. This avoids
-    * triggering a reorder when the relation count is high enough that the post-reorder min would still be near the
-    * boundary. Fires when there is less than SPACING room below currentMin AND reordering would actually improve it.
+    * Returns true if a reorder is needed — either less than SPACING room below currentMin (head insertions) or less
+    * than SPACING room above currentMax (end appends).
     */
-   public static boolean shouldReorderForMin(int currentMin, int relationCount) {
-      if ((long) currentMin - (long) Integer.MIN_VALUE >= SPACING) {
-         return false; // still have room for head-insertions, no reorder needed
-      }
-      // Near lower boundary — only reorder if the result would be better
-      long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
-      long pad = usableRange / (relationCount + 1);
-      long postReorderMin = Integer.MIN_VALUE + pad;
-      return currentMin < postReorderMin;
-   }
-
-   /**
-    * Returns true if reordering would produce a better maximum order value than what currently exists. This avoids
-    * triggering a reorder when the relation count is high enough that the post-reorder max would still be near the
-    * boundary. Fires when there is less than SPACING room above currentMax AND reordering would actually improve it.
-    */
-   public static boolean shouldReorderForMax(int currentMax, int relationCount) {
-      if ((long) Integer.MAX_VALUE - (long) currentMax >= SPACING) {
-         return false; // still have room for end-insertions, no reorder needed
-      }
-      // Near upper boundary — only reorder if the result would be better
-      long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
-      long pad = usableRange / (relationCount + 1);
-      long postReorderMax = Integer.MIN_VALUE + pad * relationCount;
-      return currentMax > postReorderMax;
+   public static boolean shouldReorder(int currentMin, int currentMax) {
+      boolean lowOnHeadRoom = (long) currentMin - (long) Integer.MIN_VALUE < SPACING;
+      boolean lowOnTailRoom = (long) Integer.MAX_VALUE - (long) currentMax < SPACING;
+      return lowOnHeadRoom || lowOnTailRoom;
    }
 
    public static long getSpacing() {
@@ -272,14 +251,16 @@ public class TxData implements HasSession, HasBranchId {
    }
 
    /**
-    * Computes evenly-spaced order values for the given relations, packing them into the head-reserve portion of the
-    * integer range. Returns a new TreeMap with redistributed keys preserving the original iteration order.
+    * Computes evenly-spaced order values for the given relations. Items are packed into 25% of the integer range,
+    * starting after a 10% head reserve. This leaves ~65% of the range above the last item for end-appends (the most
+    * common operation) and 10% below for head insertions.
     */
    public static TreeMap<Integer, Pair<ArtifactId, GammaId>> computeRedistributedOrders(
       TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
-      long usableRange = (long) (TOTAL_ORDER_RANGE * REORDER_HEAD_RESERVE_RATIO);
-      long pad = usableRange / (relOrders.size() + 1);
-      long orderValue = Integer.MIN_VALUE + pad;
+      long headReserve = (long) (TOTAL_ORDER_RANGE * HEAD_RESERVE_RATIO);
+      long itemRange = (long) (TOTAL_ORDER_RANGE * ITEM_RANGE_RATIO);
+      long pad = itemRange / (relOrders.size() + 1);
+      long orderValue = Integer.MIN_VALUE + headReserve + pad;
       TreeMap<Integer, Pair<ArtifactId, GammaId>> result = new TreeMap<>();
       for (Pair<ArtifactId, GammaId> entry : relOrders.values()) {
          result.put((int) orderValue, entry);

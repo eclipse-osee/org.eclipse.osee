@@ -639,7 +639,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          }
          int relationCount = txData.getNewRelations().get(relType, artA).getRelOrders().size();
          if (insertType.equals("start")) {
-            if (relationCount > 0 && TxData.shouldReorderForMin(minOrder, relationCount)) {
+            if (relationCount > 0 && TxData.shouldReorder(minOrder, maxOrder)) {
                TreeMap<Integer, Pair<ArtifactId, GammaId>> reorderedData = reOrderRelTypeArtA(relType, artA);
                txData.addRelationSideA(relType, artA, reorderedData);
                minOrder = reorderedData.firstKey();
@@ -678,7 +678,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             }
             txData.getNewRelations().get(relType, artA).addRelOrder(artB, relOrder);
          } else {
-            if (relationCount > 0 && TxData.shouldReorderForMax(maxOrder, relationCount)) {
+            if (relationCount > 0 && TxData.shouldReorder(minOrder, maxOrder)) {
                TreeMap<Integer, Pair<ArtifactId, GammaId>> reorderedData = reOrderRelTypeArtA(relType, artA);
                txData.addRelationSideA(relType, artA, reorderedData);
                maxOrder = reorderedData.lastKey();
@@ -761,34 +761,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    private List<Object[]> reOrderRelations(RelationTypeToken relType, ArtifactId artA,
       TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
 
-      int min_value = relOrders.firstKey();
-      int max_value = relOrders.lastKey();
-
-      // If orders have drifted near integer bounds, redistribute across the head-reserve range
-      if (TxData.shouldReorderForMin(min_value, relOrders.size()) || TxData.shouldReorderForMax(max_value, relOrders.size())) {
-         TreeMap<Integer, Pair<ArtifactId, GammaId>> redistributed = TxData.computeRedistributedOrders(relOrders);
-         List<Object[]> updateStatements = new ArrayList<>();
-         for (Entry<Integer, Pair<ArtifactId, GammaId>> entry : redistributed.entrySet()) {
-            updateStatements.add(
-               new Object[] {entry.getKey(), relType.getId(), artA.getId(), entry.getValue().getSecond().getId()});
-         }
-         return updateStatements;
-      }
-
-      int range = max_value - min_value;
-      int pad = range / relOrders.size();
-      int rel_order = min_value;
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> redistributed = TxData.computeRedistributedOrders(relOrders);
       List<Object[]> updateStatements = new ArrayList<>();
-      for (Entry<Integer, Pair<ArtifactId, GammaId>> entry : relOrders.entrySet()) {
+      for (Entry<Integer, Pair<ArtifactId, GammaId>> entry : redistributed.entrySet()) {
          updateStatements.add(
-            new Object[] {rel_order, relType.getId(), artA.getId(), entry.getValue().getSecond().getId()});
-         rel_order = rel_order + pad;
-         while (relOrders.containsKey(rel_order)) {
-            rel_order = rel_order + 1;
-         }
+            new Object[] {entry.getKey(), relType.getId(), artA.getId(), entry.getValue().getSecond().getId()});
       }
       return updateStatements;
-
    }
 
    @Override
