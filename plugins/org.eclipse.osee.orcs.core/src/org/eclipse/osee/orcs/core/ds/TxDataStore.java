@@ -34,8 +34,7 @@ public interface TxDataStore {
 
    int[] purgeUnusedBackingDataAndTransactions(int rowCount);
 
-   int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge, List<String> additionalStatements,
-      String prefixRecoveryFile);
+   int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge);
 
    Callable<Void> setTransactionComment(OrcsSession session, TransactionId transaction, String comment);
 
