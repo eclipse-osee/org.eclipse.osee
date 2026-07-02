@@ -96,6 +96,8 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
    public void writeSelectFields(AbstractSqlWriter writer) {
       if (this.criteria.getRelationType().isNewRelationTable()) {
          writer.write(", rel_type as top_rel_type, rel_order as top_rel_order");
+      } else {
+         writer.write(", 0 as top_rel_type, 0 as top_rel_order");
       }
    }
 }
