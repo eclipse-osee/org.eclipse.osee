@@ -140,15 +140,16 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
             }
             Matcher oseeImageLinkMatcher = XTextOseeImageLinkListener.oseeImageLinkPattern.matcher(mdContent);
             while (oseeImageLinkMatcher.find()) {
-               String idStr = oseeImageLinkMatcher.group(1);
+               String idStr = oseeImageLinkMatcher.group(2);
 
                if (ArtifactQuery.getArtifactOrNull(ArtifactId.valueOf(idStr), getArtifact().getBranch(),
                   DeletionFlag.EXCLUDE_DELETED) == null) {
                   // Show that image was deleted
                   String artNotFound = String.format(
                      "Linked artifact [%s] has not been found and is likely deleted. Remove this text.", idStr);
-                  String originalLink = String.format("<image-link>%s</image-link>", idStr);
-                  mdContent = mdContent.replace(originalLink, artNotFound);
+                  mdContent = mdContent.replace(oseeImageLinkMatcher.group(0), artNotFound);
+                  // Re-create matcher since content changed
+                  oseeImageLinkMatcher = XTextOseeImageLinkListener.oseeImageLinkPattern.matcher(mdContent);
                }
             }
          }

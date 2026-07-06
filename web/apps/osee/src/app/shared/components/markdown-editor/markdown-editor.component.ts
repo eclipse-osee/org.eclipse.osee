@@ -55,6 +55,7 @@ import {
 	UploadImageDialogComponent,
 	UploadImageDialogData,
 	UploadImageDialogResult,
+	ImageSize,
 	MarkdownTableDialogComponent,
 	MarkdownTableDialogData,
 	MarkdownTableDialogResult,
@@ -250,9 +251,10 @@ export class MarkdownEditorComponent {
 		}
 
 		const content = this.mdContent();
-		const imageLinkRegex = /<image-link>(\d+)<\/image-link>/g;
+		const imageLinkRegex =
+			/<image-link(?:\s+size="(xs|s|m|l)")?>(\d+)<\/image-link>/g;
 		const matches = [...content.matchAll(imageLinkRegex)];
-		const artifactIds = [...new Set(matches.map((m) => m[1]))];
+		const artifactIds = [...new Set(matches.map((m) => m[2]))];
 
 		if (artifactIds.length === 0) {
 			this.showImages.set(true);
@@ -272,9 +274,25 @@ export class MarkdownEditorComponent {
 					);
 					let contentWithImages = content;
 					for (const img of imageUrls) {
-						contentWithImages = contentWithImages.replaceAll(
-							`<image-link>${img.artifactId}</image-link>`,
-							`![Image ${img.artifactId}](${img.objectUrl})`
+						// Replace all variants of the image-link tag (with or without size)
+						const tagRegex = new RegExp(
+							`<image-link(?:\\s+size="(xs|s|m|l)")?>` +
+								img.artifactId.replace(
+									/[.*+?^${}()|[\]\\]/g,
+									'\\$&'
+								) +
+								`</image-link>`,
+							'g'
+						);
+						contentWithImages = contentWithImages.replace(
+							tagRegex,
+							(_, size) => {
+								const sizePercent = this.getSizePercent(size);
+								const style = sizePercent
+									? ` style="max-width:${sizePercent}%"`
+									: '';
+								return `<img src="${img.objectUrl}" alt="Image ${img.artifactId}"${style} />`;
+							}
 						);
 					}
 					return this.artExpHttpService
@@ -295,6 +313,21 @@ export class MarkdownEditorComponent {
 					this.isLoadingImages.set(false);
 				},
 			});
+	}
+
+	private getSizePercent(size: string | undefined): number | null {
+		switch (size) {
+			case 'xs':
+				return 25;
+			case 's':
+				return 50;
+			case 'm':
+				return 75;
+			case 'l':
+				return 100;
+			default:
+				return null;
+		}
 	}
 
 	addExampleToMdContent(markdownExample: string) {
@@ -343,16 +376,23 @@ export class MarkdownEditorComponent {
 									uploadResult,
 									caption: result.caption,
 									captionPosition: result.captionPosition,
+									size: result.size,
 								}))
 							);
 					})
 				)
 				.subscribe({
-					next: ({ uploadResult, caption, captionPosition }) => {
+					next: ({
+						uploadResult,
+						caption,
+						captionPosition,
+						size,
+					}) => {
 						this.insertImageLink(
 							uploadResult.artifactId,
 							caption,
-							captionPosition
+							captionPosition,
+							size
 						);
 						this.isUploading.set(false);
 						if (wasFullscreen) {
@@ -446,9 +486,11 @@ export class MarkdownEditorComponent {
 	private insertImageLink(
 		artifactId: string,
 		caption = '',
-		captionPosition: CaptionPosition = 'below'
+		captionPosition: CaptionPosition = 'below',
+		size: ImageSize | null = null
 	): void {
-		const imageTag = `<image-link>${artifactId}</image-link>`;
+		const sizeAttr = size ? ` size="${size}"` : '';
+		const imageTag = `<image-link${sizeAttr}>${artifactId}</image-link>`;
 		const positionAttr =
 			captionPosition === 'above' ? ' position="above"' : '';
 		const escapedCaption = caption.replace(/</g, '&lt;');

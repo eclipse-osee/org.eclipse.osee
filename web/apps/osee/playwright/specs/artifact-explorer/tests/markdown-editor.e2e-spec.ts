@@ -888,4 +888,62 @@ test.describe('Markdown Editor', () => {
 			page.getByRole('heading', { name: /Upload Image/i })
 		).not.toBeVisible();
 	});
+
+	test('should display size selector in image upload dialog', async ({
+		page,
+	}) => {
+		const uploadButton = getToolbarButton(page, 'image');
+		await uploadButton.click();
+		await expect(
+			page.getByRole('heading', { name: /Upload Image/i })
+		).toBeVisible({ timeout: 5000 });
+
+		await test.step('Size selector is not visible before file selection', async () => {
+			// Before file is selected, only the drag-and-drop area is shown
+			await expect(
+				page.getByText('Drag & drop an image here')
+			).toBeVisible();
+			await expect(page.getByText('Publish Size')).not.toBeVisible();
+		});
+
+		await test.step('Size selector visible after file selection with Auto default', async () => {
+			// Upload a test image file
+			const fileInput = page.locator('input[type="file"]');
+			await fileInput.setInputFiles({
+				name: 'test-image.png',
+				mimeType: 'image/png',
+				buffer: Buffer.from(
+					'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+					'base64'
+				),
+			});
+			await expect(page.getByText('Publish Size')).toBeVisible();
+			// Auto should be the default (selected)
+			const autoToggle = page.locator('mat-button-toggle[value=""]');
+			await expect(autoToggle).toHaveClass(/mat-button-toggle-checked/);
+		});
+
+		await test.step('Size toggles are selectable and show tooltips', async () => {
+			const xsToggle = page.locator('mat-button-toggle[value="xs"]');
+			await xsToggle.click();
+			await expect(xsToggle).toHaveClass(/mat-button-toggle-checked/);
+
+			const mToggle = page.locator('mat-button-toggle[value="m"]');
+			await mToggle.click();
+			await expect(mToggle).toHaveClass(/mat-button-toggle-checked/);
+			// XS should no longer be selected
+			await expect(xsToggle).not.toHaveClass(/mat-button-toggle-checked/);
+
+			// Tooltip on hover
+			await mToggle.hover();
+			await expect(
+				page
+					.locator('mat-tooltip-component')
+					.filter({ hasText: '75% of max width' })
+					.first()
+			).toBeVisible({ timeout: 3000 });
+		});
+
+		await page.getByRole('button', { name: 'Cancel' }).click();
+	});
 });

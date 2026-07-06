@@ -30,6 +30,10 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import {
+	MatButtonToggle,
+	MatButtonToggleGroup,
+} from '@angular/material/button-toggle';
 import { DragAndDropUploadComponent } from '../../components/drag-and-drop-upload/drag-and-drop-upload.component';
 import { UiService } from '@osee/shared/services';
 import {
@@ -37,6 +41,8 @@ import {
 	SUPPORTED_IMAGE_FORMATS_LABEL,
 } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
+
+export type ImageSize = 'xs' | 's' | 'm' | 'l';
 
 export type UploadImageDialogData = {
 	readonly artifactId: string;
@@ -46,6 +52,7 @@ export type UploadImageDialogResult = {
 	readonly file: File;
 	readonly caption: string;
 	readonly captionPosition: 'above' | 'below';
+	readonly size: ImageSize | null;
 };
 
 @Component({
@@ -62,6 +69,8 @@ export type UploadImageDialogResult = {
 		MatFormField,
 		MatLabel,
 		MatInput,
+		MatButtonToggle,
+		MatButtonToggleGroup,
 		DragAndDropUploadComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -85,6 +94,7 @@ export class UploadImageDialogComponent {
 	protected readonly previewUrl = signal<string | null>(null);
 	protected readonly caption = signal('');
 	protected readonly captionPosition = signal<'above' | 'below'>('below');
+	protected readonly size = signal<ImageSize | null>(null);
 	protected readonly acceptedTypes = ACCEPTED_IMAGE_INPUT_TYPES;
 	protected readonly supportedFormatsLabel = SUPPORTED_IMAGE_FORMATS_LABEL;
 
@@ -116,6 +126,7 @@ export class UploadImageDialogComponent {
 			file,
 			caption: this.caption().trim(),
 			captionPosition: this.captionPosition(),
+			size: this.size(),
 		});
 	}
 

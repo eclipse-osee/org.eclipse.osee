@@ -240,8 +240,7 @@ public class PublishingMarkdownAsHtmlTest {
       var attachment =
          PublishingMarkdownAsHtmlTest.publishingEndpoint.publishMarkdownAsHtml(publishMarkdownAsHtmlRequestData);
 
-      assertNotNull("HTML attachment should be present",
-         attachment.getContentType().getType().equals(MediaType.TEXT_HTML));
+      assertNotNull("Attachment from publishMarkdownAsHtml should not be null", attachment);
 
       // Read and parse the HTML
       try (ZipInputStream zipInputStream = new ZipInputStream(attachment.getDataHandler().getInputStream())) {
@@ -498,6 +497,24 @@ public class PublishingMarkdownAsHtmlTest {
       }
 
       assertEquals("The found images do not match the expected image names.", imageNames, foundImages);
+   }
+
+   @Test
+   public void testSizedImageHasInlineStyle() {
+      // The demo data has <image-link size="s">1646203177483523742</image-link>
+      // In the HTML output, this should render as an <img> with style="max-width:50%;height:auto"
+      Elements imgElements = htmlDoc.select("img[style]");
+      boolean foundSizedImage = false;
+      for (Element img : imgElements) {
+         String style = img.attr("style");
+         if (style.contains("max-width:50%")) {
+            foundSizedImage = true;
+            assertTrue("Sized image should have height:auto in style",
+               style.contains("height:auto"));
+            break;
+         }
+      }
+      assertTrue("Should find at least one image with max-width:50% style (size='s')", foundSizedImage);
    }
 
    @Test
