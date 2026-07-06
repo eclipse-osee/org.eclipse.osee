@@ -170,10 +170,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          handlers.add(new ChildrenFollowRelationSqlHandler()); //will be used to add 0 rel_type, 0 rel_order for non-new relation type artWith clauses
       }
 
-      if (queryDataCursor.getAllCriteria().contains(previousFollow)) {
-         //sort handlers
-         Collections.sort(handlers, HANDLER_COMPARATOR);
-      }
+      //sort handlers
+      Collections.sort(handlers, HANDLER_COMPARATOR);
       String artWithAlias = write(handlers, "artWith");
       artWithAliases.add(artWithAlias);
       QueryData tempQueryDataCursor = queryDataCursor;
