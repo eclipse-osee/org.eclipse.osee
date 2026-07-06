@@ -13,9 +13,11 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	DestroyRef,
 	inject,
 	signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -26,6 +28,12 @@ import {
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import {
+	MatButtonToggle,
+	MatButtonToggleGroup,
+} from '@angular/material/button-toggle';
 import { DragAndDropUploadComponent } from '../../components/drag-and-drop-upload/drag-and-drop-upload.component';
 import { UiService } from '@osee/shared/services';
 import {
@@ -34,17 +42,23 @@ import {
 } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
 
+export type ImageSize = 'xs' | 's' | 'm' | 'l';
+
 export type UploadImageDialogData = {
 	readonly artifactId: string;
 };
 
 export type UploadImageDialogResult = {
 	readonly file: File;
+	readonly caption: string;
+	readonly captionPosition: 'above' | 'below';
+	readonly size: ImageSize | null;
 };
 
 @Component({
 	selector: 'osee-upload-image-dialog',
 	imports: [
+		FormsModule,
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,
@@ -52,6 +66,11 @@ export type UploadImageDialogResult = {
 		MatIconButton,
 		MatIcon,
 		MatTooltip,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatButtonToggle,
+		MatButtonToggleGroup,
 		DragAndDropUploadComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,9 +86,15 @@ export class UploadImageDialogComponent {
 		>(MatDialogRef);
 	protected readonly data = inject<UploadImageDialogData>(MAT_DIALOG_DATA);
 	private readonly uiService = inject(UiService);
+	private readonly _destroyCleanup = inject(DestroyRef).onDestroy(() =>
+		this.revokePreview()
+	);
 
 	protected readonly selectedFile = signal<File | null>(null);
 	protected readonly previewUrl = signal<string | null>(null);
+	protected readonly caption = signal('');
+	protected readonly captionPosition = signal<'above' | 'below'>('below');
+	protected readonly size = signal<ImageSize | null>(null);
 	protected readonly acceptedTypes = ACCEPTED_IMAGE_INPUT_TYPES;
 	protected readonly supportedFormatsLabel = SUPPORTED_IMAGE_FORMATS_LABEL;
 
@@ -97,7 +122,18 @@ export class UploadImageDialogComponent {
 		if (!file) {
 			return;
 		}
-		this.dialogRef.close({ file });
+		this.dialogRef.close({
+			file,
+			caption: this.caption().trim(),
+			captionPosition: this.captionPosition(),
+			size: this.size(),
+		});
+	}
+
+	protected toggleCaptionPosition(): void {
+		this.captionPosition.update((pos) =>
+			pos === 'above' ? 'below' : 'above'
+		);
 	}
 
 	protected cancelDialog(): void {

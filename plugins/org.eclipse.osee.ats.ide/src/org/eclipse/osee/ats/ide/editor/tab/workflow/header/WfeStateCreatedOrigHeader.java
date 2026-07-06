@@ -16,9 +16,11 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.workdef.StateColorToSwtColor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -26,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -73,8 +76,16 @@ public class WfeStateCreatedOrigHeader extends Composite {
             stateValueLabel.setText(workItem.getCurrentStateName() + " (Hold)");
             stateValueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_YELLOW));
          } else {
+            StateColor color = workItem.getWorkDefinition().getStateByName(workItem.getCurrentStateName()).getColor();
+            if (color != null) {
+               int swtColor = StateColorToSwtColor.convert(color);
+               stateValueLabel.setForeground(Displays.getSystemColor(swtColor));
+               stateValueLabel.setFont(FontManager.getCourierNew12Bold());
+            } else {
+               stateValueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+               stateValueLabel.setFont(FontManager.getCourierNew12());
+            }
             stateValueLabel.setText(workItem.getCurrentStateName());
-            stateValueLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }
          createdValueLabel.setText(DateUtil.getMMDDYYHHMM(workItem.getCreatedDate()));
       }

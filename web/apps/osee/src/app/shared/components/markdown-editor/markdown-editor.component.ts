@@ -55,10 +55,12 @@ import {
 	UploadImageDialogComponent,
 	UploadImageDialogData,
 	UploadImageDialogResult,
+	ImageSize,
 	MarkdownTableDialogComponent,
 	MarkdownTableDialogData,
 	MarkdownTableDialogResult,
 	ColumnAlignment,
+	CaptionPosition,
 } from '@osee/shared/dialogs';
 import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
@@ -249,9 +251,10 @@ export class MarkdownEditorComponent {
 		}
 
 		const content = this.mdContent();
-		const imageLinkRegex = /<image-link>(\d+)<\/image-link>/g;
+		const imageLinkRegex =
+			/<image-link(?:\s+size="(xs|s|m|l)")?>(\d+)<\/image-link>/g;
 		const matches = [...content.matchAll(imageLinkRegex)];
-		const artifactIds = [...new Set(matches.map((m) => m[1]))];
+		const artifactIds = [...new Set(matches.map((m) => m[2]))];
 
 		if (artifactIds.length === 0) {
 			this.showImages.set(true);
@@ -271,9 +274,25 @@ export class MarkdownEditorComponent {
 					);
 					let contentWithImages = content;
 					for (const img of imageUrls) {
-						contentWithImages = contentWithImages.replaceAll(
-							`<image-link>${img.artifactId}</image-link>`,
-							`![Image ${img.artifactId}](${img.objectUrl})`
+						// Replace all variants of the image-link tag (with or without size)
+						const tagRegex = new RegExp(
+							`<image-link(?:\\s+size="(xs|s|m|l)")?>` +
+								img.artifactId.replace(
+									/[.*+?^${}()|[\]\\]/g,
+									'\\$&'
+								) +
+								`</image-link>`,
+							'g'
+						);
+						contentWithImages = contentWithImages.replace(
+							tagRegex,
+							(_, size) => {
+								const sizePercent = this.getSizePercent(size);
+								const style = sizePercent
+									? ` style="max-width:${sizePercent}%"`
+									: '';
+								return `<img src="${img.objectUrl}" alt="Image ${img.artifactId}"${style} />`;
+							}
 						);
 					}
 					return this.artExpHttpService
@@ -296,6 +315,21 @@ export class MarkdownEditorComponent {
 			});
 	}
 
+	private getSizePercent(size: string | undefined): number | null {
+		switch (size) {
+			case 'xs':
+				return 25;
+			case 's':
+				return 50;
+			case 'm':
+				return 75;
+			case 'l':
+				return 100;
+			default:
+				return null;
+		}
+	}
+
 	addExampleToMdContent(markdownExample: string) {
 		this.mdContent.set(this.mdContent() + '\n\n' + markdownExample);
 	}
@@ -314,6 +348,7 @@ export class MarkdownEditorComponent {
 			const dialogRef = this.dialog.open(UploadImageDialogComponent, {
 				data: dialogData,
 				minWidth: '40%',
+				disableClose: true,
 			});
 
 			dialogRef
@@ -334,15 +369,31 @@ export class MarkdownEditorComponent {
 					}),
 					switchMap((result) => {
 						this.isUploading.set(true);
-						return this.imageService.uploadImageArtifact(
-							this.artifactId(),
-							result.file
-						);
+						return this.imageService
+							.uploadImageArtifact(this.artifactId(), result.file)
+							.pipe(
+								map((uploadResult) => ({
+									uploadResult,
+									caption: result.caption,
+									captionPosition: result.captionPosition,
+									size: result.size,
+								}))
+							);
 					})
 				)
 				.subscribe({
-					next: (uploadResult) => {
-						this.insertImageLink(uploadResult.artifactId);
+					next: ({
+						uploadResult,
+						caption,
+						captionPosition,
+						size,
+					}) => {
+						this.insertImageLink(
+							uploadResult.artifactId,
+							caption,
+							captionPosition,
+							size
+						);
 						this.isUploading.set(false);
 						if (wasFullscreen) {
 							this.enterFullscreen();
@@ -432,8 +483,20 @@ export class MarkdownEditorComponent {
 			});
 	}
 
-	private insertImageLink(artifactId: string): void {
-		const imageTag = `<image-link>${artifactId}</image-link>`;
+	private insertImageLink(
+		artifactId: string,
+		caption = '',
+		captionPosition: CaptionPosition = 'below',
+		size: ImageSize | null = null
+	): void {
+		const sizeAttr = size ? ` size="${size}"` : '';
+		const imageTag = `<image-link${sizeAttr}>${artifactId}</image-link>`;
+		const positionAttr =
+			captionPosition === 'above' ? ' position="above"' : '';
+		const escapedCaption = caption.replace(/</g, '&lt;');
+		const captionTag = escapedCaption
+			? `<figure-caption${positionAttr}>${escapedCaption}</figure-caption>`
+			: '';
 		const currentContent = this.mdContent();
 		const cursorPos =
 			this.savedSelectionStart >= 0
@@ -442,7 +505,13 @@ export class MarkdownEditorComponent {
 
 		const before = currentContent.substring(0, cursorPos);
 		const after = currentContent.substring(cursorPos);
-		this.mdContent.set(before + imageTag + after);
+		if (captionTag && captionPosition === 'above') {
+			this.mdContent.set(before + captionTag + '\n\n' + imageTag + after);
+		} else if (captionTag) {
+			this.mdContent.set(before + imageTag + '\n\n' + captionTag + after);
+		} else {
+			this.mdContent.set(before + imageTag + after);
+		}
 	}
 
 	openTableDialog(): void {
@@ -477,6 +546,8 @@ export class MarkdownEditorComponent {
 						cells: parsedTable.cells,
 						alignments: parsedTable.alignments,
 						isEdit: true,
+						caption: parsedTable.caption,
+						captionPosition: parsedTable.captionPosition,
 					}
 				: {
 						rows: 3,
@@ -491,6 +562,14 @@ export class MarkdownEditorComponent {
 						alignments: ['left', 'left', 'left'],
 						isEdit: false,
 					};
+
+			if (parsedTable?.hasDuplicateCaption) {
+				this.snackBar.open(
+					'This table has captions both above and below. Only the above caption is editable here.',
+					'Dismiss',
+					{ duration: 3000 }
+				);
+			}
 
 			const dialogRef = this.dialog.open(MarkdownTableDialogComponent, {
 				data: dialogData,
@@ -514,6 +593,14 @@ export class MarkdownEditorComponent {
 					})
 				)
 				.subscribe((result) => {
+					const positionAttr =
+						result.captionPosition === 'above'
+							? ' position="above"'
+							: '';
+					const escapedCaption = result.caption.replace(/</g, '&lt;');
+					const captionTag = escapedCaption
+						? `<table-caption${positionAttr}>${escapedCaption}</table-caption>`
+						: '';
 					if (parsedTable) {
 						// Replace existing table
 						const before = content.substring(
@@ -521,7 +608,27 @@ export class MarkdownEditorComponent {
 							parsedTable.startIndex
 						);
 						const after = content.substring(parsedTable.endIndex);
-						this.mdContent.set(before + result.markdown + after);
+						if (captionTag && result.captionPosition === 'above') {
+							this.mdContent.set(
+								before +
+									captionTag +
+									'\n\n' +
+									result.markdown +
+									after
+							);
+						} else if (captionTag) {
+							this.mdContent.set(
+								before +
+									result.markdown +
+									'\n\n' +
+									captionTag +
+									after
+							);
+						} else {
+							this.mdContent.set(
+								before + result.markdown + after
+							);
+						}
 					} else {
 						// Insert new table at cursor or end
 						const cursorPos =
@@ -542,10 +649,16 @@ export class MarkdownEditorComponent {
 									? '\n'
 									: '\n\n'
 								: '';
+						const tableWithCaption =
+							captionTag && result.captionPosition === 'above'
+								? captionTag + '\n\n' + result.markdown
+								: captionTag
+									? result.markdown + '\n\n' + captionTag
+									: result.markdown;
 						this.mdContent.set(
 							before +
 								prefixNewlines +
-								result.markdown +
+								tableWithCaption +
 								suffixNewlines +
 								after
 						);
@@ -590,6 +703,14 @@ export class MarkdownEditorComponent {
 		textarea.focus();
 		textarea.selectionStart = parsedTable.startIndex;
 		textarea.selectionEnd = parsedTable.endIndex;
+
+		if (parsedTable.hasDuplicateCaption) {
+			this.snackBar.open(
+				'This table has captions both above and below. Only the above caption is included in the selection.',
+				'Dismiss',
+				{ duration: 3000 }
+			);
+		}
 	}
 
 	private parseTableAtSelection(
@@ -603,6 +724,9 @@ export class MarkdownEditorComponent {
 		alignments: ColumnAlignment[];
 		startIndex: number;
 		endIndex: number;
+		caption: string;
+		captionPosition: CaptionPosition;
+		hasDuplicateCaption: boolean;
 	} | null {
 		if (!content) {
 			return null;
@@ -696,6 +820,53 @@ export class MarkdownEditorComponent {
 			}
 		}
 
+		// If not found, check if cursor is on a <table-caption> line
+		if (separatorLineIndex === -1) {
+			const captionMatch = lines[cursorLineIndex].match(
+				/^<table-caption(?:\s+position="(above|below)")?>([^<]*)<\/table-caption>$/
+			);
+			if (captionMatch) {
+				const captionPos = captionMatch[1] || 'below';
+
+				if (captionPos === 'above') {
+					// Caption is above its table — search BELOW for the table
+					let searchBelow = cursorLineIndex + 1;
+					while (
+						searchBelow < lines.length &&
+						lines[searchBelow].trim() === ''
+					) {
+						searchBelow++;
+					}
+					if (
+						searchBelow < lines.length &&
+						lines[searchBelow].trim().startsWith('|')
+					) {
+						if (
+							searchBelow + 1 < lines.length &&
+							isSeparatorLine(lines[searchBelow + 1])
+						) {
+							separatorLineIndex = searchBelow + 1;
+						}
+					}
+				} else {
+					// Caption is below its table — search ABOVE for the table
+					let searchFrom = cursorLineIndex - 1;
+					while (searchFrom >= 0 && lines[searchFrom].trim() === '') {
+						searchFrom--;
+					}
+					for (let i = searchFrom; i >= 0; i--) {
+						if (isSeparatorLine(lines[i])) {
+							separatorLineIndex = i;
+							break;
+						}
+						if (!lines[i].trim().startsWith('|')) {
+							break;
+						}
+					}
+				}
+			}
+		}
+
 		// Handle selection that may overlap a table
 		if (separatorLineIndex === -1 && selStart !== selEnd) {
 			// Search all lines in the document for a separator whose table
@@ -782,6 +953,31 @@ export class MarkdownEditorComponent {
 			startIndex += lines[i].length + 1;
 		}
 
+		// Check if a table-caption tag precedes the table (position="above")
+		let caption = '';
+		let captionPosition: CaptionPosition = 'below';
+		let aboveCaptionLineIndex = headerLineIndex - 1;
+		while (
+			aboveCaptionLineIndex >= 0 &&
+			lines[aboveCaptionLineIndex].trim() === ''
+		) {
+			aboveCaptionLineIndex--;
+		}
+		if (aboveCaptionLineIndex >= 0) {
+			const aboveCaptionMatch = lines[aboveCaptionLineIndex].match(
+				/^<table-caption(?:\s+position="(above|below)")?>([^<]+)<\/table-caption>$/
+			);
+			if (aboveCaptionMatch && aboveCaptionMatch[1] === 'above') {
+				caption = aboveCaptionMatch[2].replace(/&lt;/g, '<');
+				captionPosition = 'above';
+				// Extend startIndex backward to include blank lines and caption line
+				startIndex = 0;
+				for (let i = 0; i < aboveCaptionLineIndex; i++) {
+					startIndex += lines[i].length + 1;
+				}
+			}
+		}
+
 		// endIndex points to the last character of the last table line
 		const lastTableLine = dataEndLine - 1;
 		let endIndex = 0;
@@ -792,6 +988,54 @@ export class MarkdownEditorComponent {
 		// Subtract 1 to point to the newline, or use content.length if at end
 		endIndex = Math.min(endIndex, content.length);
 
+		// Check if a table-caption tag follows the table (possibly with
+		// blank lines in between) — only if no caption was found above
+		// and only if the caption's position is not "above" (which would
+		// belong to the next table)
+		let hasDuplicateCaption = false;
+		if (!caption) {
+			let captionSearchIndex = dataEndLine;
+			while (
+				captionSearchIndex < lines.length &&
+				lines[captionSearchIndex].trim() === ''
+			) {
+				captionSearchIndex++;
+			}
+			if (captionSearchIndex < lines.length) {
+				const captionMatch = lines[captionSearchIndex].match(
+					/^<table-caption(?:\s+position="(above|below)")?>([^<]+)<\/table-caption>$/
+				);
+				if (captionMatch && captionMatch[1] !== 'above') {
+					captionPosition =
+						(captionMatch[1] as CaptionPosition) || 'below';
+					caption = captionMatch[2].replace(/&lt;/g, '<');
+					// Extend endIndex to include blank lines and the caption line
+					endIndex = 0;
+					for (let i = 0; i <= captionSearchIndex; i++) {
+						endIndex += lines[i].length + 1;
+					}
+					endIndex = Math.min(endIndex, content.length);
+				}
+			}
+		} else {
+			// Caption was found above — check if there's also one below (duplicate)
+			let captionSearchIndex = dataEndLine;
+			while (
+				captionSearchIndex < lines.length &&
+				lines[captionSearchIndex].trim() === ''
+			) {
+				captionSearchIndex++;
+			}
+			if (captionSearchIndex < lines.length) {
+				const captionMatch = lines[captionSearchIndex].match(
+					/^<table-caption(?:\s+position="(above|below)")?>([^<]+)<\/table-caption>$/
+				);
+				if (captionMatch && captionMatch[1] !== 'above') {
+					hasDuplicateCaption = true;
+				}
+			}
+		}
+
 		return {
 			headers,
 			headerSpans,
@@ -799,6 +1043,9 @@ export class MarkdownEditorComponent {
 			alignments,
 			startIndex,
 			endIndex,
+			caption,
+			captionPosition,
+			hasDuplicateCaption,
 		};
 	}
 

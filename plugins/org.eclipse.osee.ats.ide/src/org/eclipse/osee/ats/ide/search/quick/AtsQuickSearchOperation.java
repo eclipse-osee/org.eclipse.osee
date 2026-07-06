@@ -40,7 +40,7 @@ import org.eclipse.search.ui.NewSearchUI;
  * ATS Quick Search Operation that can display results in either the WorldEditor or the Eclipse Search View.
  * <p>
  * Usage for WorldEditor results (default):
- * 
+ *
  * <pre>
  * AtsQuickSearchData data = new AtsQuickSearchData("ATS Quick Search", searchStr, includeCompleteCancelled);
  * AtsQuickSearchOperation operation = new AtsQuickSearchOperation(data);
@@ -48,7 +48,7 @@ import org.eclipse.search.ui.NewSearchUI;
  * </pre>
  * <p>
  * Usage for Eclipse Search View results:
- * 
+ *
  * <pre>
  * AtsQuickSearchData data = new AtsQuickSearchData("ATS Quick Search", searchStr, includeCompleteCancelled);
  * data.setUseEclipseSearchView(true);
@@ -114,10 +114,16 @@ public class AtsQuickSearchOperation extends AbstractOperation implements WorldE
    @Override
    public Collection<Artifact> performSearch() {
       allArtifacts.clear();
-      allArtifacts.addAll(AtsApiService.get().getQueryServiceIde().getArtifactsByIdsOrAtsIds(data.getSearchStr()));
+      for (Artifact art : AtsApiService.get().getQueryServiceIde().getArtifactsByIdsOrAtsIds(data.getSearchStr())) {
+         if (!(art instanceof AbstractWorkflowArtifact awa)) {
+            continue;
+         }
+         if (data.isIncludeCompleteCancelled() || !awa.isCompletedOrCancelled()) {
+            allArtifacts.add(art);
+         }
+      }
 
-      DeletionFlag deletionFlag =
-         data.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
+      DeletionFlag deletionFlag = data.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
 
       for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsApiService.get().getAtsBranch(),
          data.getSearchStr(), data.isCaseSensitive(), deletionFlag, false)) {

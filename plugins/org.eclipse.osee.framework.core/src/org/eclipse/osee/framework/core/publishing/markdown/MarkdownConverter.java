@@ -261,19 +261,50 @@ public class MarkdownConverter {
 
          img.attr("src", dataUri);
 
+         // Read size percentage from inline style (max-width:N%) if present
+         Double sizePercent = extractMaxWidthPercent(img);
+
          // Set explicit dimensions scaled to context
          int[] dimensions = getImageDimensions(imageBytes);
          if (dimensions != null && dimensions[0] > 0 && dimensions[1] > 0) {
             boolean insideTableCell = img.closest("td") != null || img.closest("th") != null;
             int maxWidth = insideTableCell ? MAX_IMAGE_WIDTH_IN_TABLE : MAX_IMAGE_WIDTH_STANDALONE;
+
+            if (sizePercent != null) {
+               maxWidth = (int) Math.round(maxWidth * sizePercent);
+            }
+
             int renderWidth = Math.min(dimensions[0], maxWidth);
             int renderHeight = (int) Math.round((double) dimensions[1] * renderWidth / dimensions[0]);
             img.attr("width", String.valueOf(renderWidth));
             img.attr("height", String.valueOf(renderHeight));
          }
+
+         // Remove inline max-width style — explicit width/height attributes take over for PDF
+         img.removeAttr("style");
       }
 
       return doc.html();
+   }
+
+   /**
+    * Extracts the max-width percentage from an img element's inline style.
+    * Looks for "max-width:N%" pattern. Returns the fraction (0.0–1.0) or null if not found.
+    */
+   private static final java.util.regex.Pattern MAX_WIDTH_PERCENT_PATTERN =
+      java.util.regex.Pattern.compile("max-width:\\s*(\\d+)%");
+
+   private Double extractMaxWidthPercent(org.jsoup.nodes.Element img) {
+      String style = img.attr("style");
+      if (style == null || style.isEmpty()) {
+         return null;
+      }
+      java.util.regex.Matcher matcher = MAX_WIDTH_PERCENT_PATTERN.matcher(style);
+      if (matcher.find()) {
+         int percent = Integer.parseInt(matcher.group(1));
+         return percent / 100.0;
+      }
+      return null;
    }
 
    /**

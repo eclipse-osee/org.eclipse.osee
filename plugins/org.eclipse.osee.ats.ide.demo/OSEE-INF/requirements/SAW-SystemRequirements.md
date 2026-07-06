@@ -169,6 +169,16 @@ The latency of the force data (e.g., time between physical application of force 
 
 The latency of the tracker data (e.g., time between physical motion and software reception of new position) shall be no more than 100 msec.
 
+### 4.3.4 Device Interface Timing Summary
+
+<table-caption position="above">Device Interface Timing Requirements</table-caption>
+
+| **Interface** | **Max Latency (ms)** | **Min Rate (Hz)** |
+| :-- | :-: | :-: |
+| Visualization | 10 | — |
+| Force Sensor | 40 | 50 |
+| Tracker | 100 | 50 |
+
 ## 4.4 Calibration and registration
 
 Note: Calibration and registration performance requirements shall be specified in the application requirements document, rather than in this system (workstation) requirements document.
@@ -267,7 +277,7 @@ The system shall be designed to operate on Red Hat Enterprise Linux WS 4. It is 
 
 The software shall be written in C/C++.
 
-<image-link>1646203177483523742</image-link>
+<image-link size="s">1646203177483523742</image-link>
 
 <figure-caption>C/C++ Language</figure-caption>
 

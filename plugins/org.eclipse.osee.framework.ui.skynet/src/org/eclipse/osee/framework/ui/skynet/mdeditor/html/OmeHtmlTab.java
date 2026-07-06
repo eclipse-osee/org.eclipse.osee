@@ -104,7 +104,7 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
          Set<ArtifactId> imageLinkIds = new HashSet<>();
 
          while (imageLinkMatcher.find()) {
-            imageLinkIds.add(ArtifactId.valueOf(imageLinkMatcher.group(1)));
+            imageLinkIds.add(ArtifactId.valueOf(imageLinkMatcher.group(2)));
          }
 
          List<Artifact> imageArtifacts =
@@ -112,7 +112,7 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
 
          for (Artifact art : imageArtifacts) {
             String artId = art.getIdString();
-            String tagToReplace = "<image-link>" + artId + "</image-link>";
+            String tagPattern = "<image-link(?:\\s+size=\"(?:xs|s|m|l)\")?>" + java.util.regex.Pattern.quote(artId) + "</image-link>";
             // If "Display Images" option is toggled
             if (((ArtOmeData) omeData).getDisplayImagesBool()) {
                FileSystemRenderer renderer = new NativeRenderer();
@@ -125,7 +125,7 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
                   String extension = art.getSoleAttributeValue(CoreAttributeTypes.Extension);
 
                   String imgTag = "<img src=\"data:image/" + extension + ";base64," + base64image + "\" />";
-                  mdContent = mdContent.replace(tagToReplace, imgTag);
+                  mdContent = mdContent.replaceAll(tagPattern, java.util.regex.Matcher.quoteReplacement(imgTag));
 
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -141,19 +141,15 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
             } else {
                String name = art.getSoleAttributeValue(CoreAttributeTypes.Name);
                String hrefImageArt = String.format("<a href=\"%s\">%s</a>", artId, name);
-               mdContent = mdContent.replace(tagToReplace, hrefImageArt);
+               mdContent = mdContent.replaceAll(tagPattern, java.util.regex.Matcher.quoteReplacement(hrefImageArt));
             }
-
-            final PublishingOutputFormatter outputFormatter = new HtmlPublishingOutputFormatter();
-
-            // Process table captions
-            StringModificationResult result = MarkdownHtmlUtil.processTableCaptions(mdContent, outputFormatter);
-
-            // Process figure captions
-            result = MarkdownHtmlUtil.processFigureCaptions(result.getModifiedString(), outputFormatter);
-
-            mdContent = result.getModifiedString();
          }
+
+         // Process captions after all image links have been resolved
+         final PublishingOutputFormatter outputFormatter = new HtmlPublishingOutputFormatter();
+         StringModificationResult result = MarkdownHtmlUtil.processTableCaptions(mdContent, outputFormatter);
+         result = MarkdownHtmlUtil.processFigureCaptions(result.getModifiedString(), outputFormatter);
+         mdContent = result.getModifiedString();
 
          try {
             String html = PublishingRequestHandler.convertMarkdownToHtml(mdContent);

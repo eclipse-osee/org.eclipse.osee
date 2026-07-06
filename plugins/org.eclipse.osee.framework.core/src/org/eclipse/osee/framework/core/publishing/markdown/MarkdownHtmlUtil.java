@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -51,8 +52,10 @@ public class MarkdownHtmlUtil {
    public static final String FIGURE_TOC_STRING = "[FIGURE-TOC]";
    public static final String TABLE_TOC_STRING = "[TABLE-TOC]";
 
-   public static final String FIGURE_CAPTION_PATTERN = "<figure-caption>([^<]+)</figure-caption>";
-   public static final String TABLE_CAPTION_PATTERN = "<table-caption>([^<]+)</table-caption>";
+   public static final String FIGURE_CAPTION_PATTERN =
+      "<figure-caption(?:\\s+position=\"(above|below)\")?>([^<]+)</figure-caption>";
+   public static final String TABLE_CAPTION_PATTERN =
+      "<table-caption(?:\\s+position=\"(above|below)\")?>([^<]+)</table-caption>";
 
    public static final String CAPTION_CONTENT_SYNTAX = "%s %d: %s";
    public static final String CAPTION_DIV_SYNTAX = "<div class=\"%s\"%s>%s</div>";
@@ -61,12 +64,26 @@ public class MarkdownHtmlUtil {
    public static final String TABLE_CAPTION_CSS_CLASS = "table-caption";
 
    public static final String RENDERED_FIGURE_CAPTION_PATTERN =
-      "<div class=\"" + FIGURE_CAPTION_CSS_CLASS + "\"(?: style=\"[^\"]*\")>Figure \\d+: [^<]+</div>";
+      "<div class=\"" + FIGURE_CAPTION_CSS_CLASS + "\"(?: style=\"[^\"]*\")?>Figure \\d+: [^<]+</div>";
    public static final String RENDERED_TABLE_CAPTION_PATTERN =
-      "<div class=\"" + TABLE_CAPTION_CSS_CLASS + "\"(?: style=\"[^\"]*\")>Table \\d+: [^<]+</div>";
+      "<div class=\"" + TABLE_CAPTION_CSS_CLASS + "\"(?: style=\"[^\"]*\")?>Table \\d+: [^<]+</div>";
 
    public static final Set<String> SUPPORTED_IMAGE_EXTENSIONS =
       Set.of("png", "jpg", "jpeg", "gif", "bmp", "webp", "svg");
+
+   /**
+    * Valid image size labels for the size attribute on image-link tags.
+    */
+   public static final String IMAGE_SIZE_VALUES = "xs|s|m|l";
+
+   /**
+    * Pattern matching an image-link tag with an optional size attribute.
+    * Group 1 = size (may be null), Group 2 = artifact ID.
+    */
+   public static final String IMAGE_LINK_PATTERN_STRING =
+      "<image-link(?:\\s+size=\"(" + IMAGE_SIZE_VALUES + ")\")?>(\\d+)</image-link>";
+
+   public static final Pattern IMAGE_LINK_PATTERN = Pattern.compile(IMAGE_LINK_PATTERN_STRING);
 
    //@formatter:off
    public static final Map<String, String> EXTENSION_TO_MEDIA_TYPE = Map.of(
@@ -81,7 +98,7 @@ public class MarkdownHtmlUtil {
    //@formatter:on
 
    private static boolean isImageFile(String fileName) {
-      String lowerName = fileName.toLowerCase();
+      String lowerName = fileName.toLowerCase(Locale.ROOT);
       return SUPPORTED_IMAGE_EXTENSIONS.stream().anyMatch(lowerName::endsWith);
    }
 
@@ -195,7 +212,7 @@ public class MarkdownHtmlUtil {
 
       int index = 1;
       while (matcher.find()) {
-         String match = matcher.group(1);
+         String match = matcher.group(2).replace("&lt;", "<");
          String captionStr = String.format(CAPTION_CONTENT_SYNTAX, label, index, match);
          String captionDivStr = String.format(CAPTION_DIV_SYNTAX, cssClass, defaultCaptionStyle, captionStr);
          String anchorStr = String.format("<a id=\"%s-%d\"></a>\n", cssClass, index);

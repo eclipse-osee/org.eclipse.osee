@@ -40,6 +40,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -106,7 +107,7 @@ public class PublishingMarkdownTest {
 
    //@formatter:off
    @ClassRule
-   public static TestRule classRuleChain =
+   public static final TestRule classRuleChain =
       RuleChain
          .outerRule( new NotProductionDataStoreRule() )
          .around( new ExitDatabaseInitializationRule() )
@@ -281,10 +282,10 @@ public class PublishingMarkdownTest {
       var template_MD_Content = templateMap.get(PUBLISHING_MARKDOWN_TEST_TEMPLATE_MD_CONTENT);
 
       PublishingTemplateRequest pubTemReq =
-         new PublishingTemplateRequest(template_A.getIdentifier().toString(), FormatIndicator.MARKDOWN);
+         new PublishingTemplateRequest(template_A.getIdentifier(), FormatIndicator.MARKDOWN);
 
       PublishingTemplateRequest pubTemReq_MD_Content =
-         new PublishingTemplateRequest(template_MD_Content.getIdentifier().toString(), FormatIndicator.MARKDOWN);
+         new PublishingTemplateRequest(template_MD_Content.getIdentifier(), FormatIndicator.MARKDOWN);
 
       for (Long viewId : products) {
          //@formatter:off
@@ -504,7 +505,7 @@ public class PublishingMarkdownTest {
          for (Element table : tables) {
             // Check for a main header that contains the word "Relation"
             Element headerRow = table.selectFirst("tr");
-            if (headerRow == null || !headerRow.text().toLowerCase().contains("relation")) {
+            if (headerRow == null || !headerRow.text().toLowerCase(Locale.ROOT).contains("relation")) {
                continue;
             }
 
@@ -596,7 +597,7 @@ public class PublishingMarkdownTest {
             nextElement = nextElement.nextElementSibling().nextElementSibling().nextElementSibling();
 
             // Check if the paragraph contains the expected string
-            String expectedDataRightsString = headerRow.text().split(" - ")[0].toUpperCase();
+            String expectedDataRightsString = headerRow.text().split(" - ")[0].toUpperCase(Locale.ROOT);
             assertTrue(
                "The paragraph should contain the string: \"" + expectedDataRightsString + "\". Text is: " + nextElement.text(),
                StringUtils.containsIgnoreCase(nextElement.text(), expectedDataRightsString));
@@ -608,6 +609,8 @@ public class PublishingMarkdownTest {
 
    @Test
    public void testImageReferences() {
+      Pattern imgSrcPattern = Pattern.compile("src=\"([^\"]+)\"");
+
       for (Long productId : products) {
          Node mdDocument = productMarkdownDocs.get(productId);
 
@@ -617,15 +620,43 @@ public class PublishingMarkdownTest {
 
          HashSet<String> foundImages = new HashSet<>();
 
-         NodeVisitor visitor = new NodeVisitor(new VisitHandler<>(Image.class, image -> {
-            String imageUrl = image.getUrl().toString();
-            foundImages.add(imageUrl);
-         }));
+         // Collects src from inline HTML img tags (used for sized images)
+         java.util.function.Consumer<com.vladsch.flexmark.util.ast.Node> collectHtmlImgSrc = node -> {
+            Matcher imgMatcher = imgSrcPattern.matcher(node.getChars().toString());
+            while (imgMatcher.find()) {
+               foundImages.add(imgMatcher.group(1));
+            }
+         };
+
+         NodeVisitor visitor = new NodeVisitor(
+            new VisitHandler<>(Image.class, image -> foundImages.add(image.getUrl().toString())),
+            new VisitHandler<>(HtmlInline.class, html -> collectHtmlImgSrc.accept(html)),
+            new VisitHandler<>(HtmlBlock.class, html -> collectHtmlImgSrc.accept(html))
+         );
 
          visitor.visit(mdDocument);
 
          assertEquals("The found images do not match the expected image names for product ID: " + productId, imageNames,
             foundImages);
+      }
+   }
+
+   @Test
+   public void testSizedImageHasInlineStyle() {
+      // The demo data has <image-link size="s">1646203177483523742</image-link>
+      // After processImageLinks, this should become an inline <img> tag with style="max-width:50%;height:auto"
+      for (Long productId : products) {
+         Node mdDocument = productMarkdownDocs.get(productId);
+         String rawMarkdown = mdDocument.getChars().toString();
+
+         // Verify no raw <image-link> tags remain (including ones with size attribute)
+         assertFalse("No raw <image-link> tags should remain in product ID: " + productId,
+            rawMarkdown.contains("<image-link"));
+
+         // Verify the sized image was converted to an img tag with inline style
+         assertTrue(
+            "Sized image should be converted to <img> with max-width style in product ID: " + productId,
+            rawMarkdown.contains("style=\"max-width:50%;height:auto\""));
       }
    }
 
@@ -844,6 +875,17 @@ public class PublishingMarkdownTest {
       Elements tableCaptionElements = htmlDoc.select(".table-caption");
       checkCaptionsAreRendered(html, tableCaptionElements, MarkdownHtmlUtil.TABLE_CAPTION_PATTERN);
 
+      // Verify that the positioned caption (position="above") was rendered
+      boolean foundPositionedCaption = false;
+      for (org.jsoup.nodes.Element el : tableCaptionElements) {
+         if (el.text().contains("Device Interface Timing Requirements")) {
+            foundPositionedCaption = true;
+            break;
+         }
+      }
+      assertTrue(
+         "A table caption with position=\"above\" (Device Interface Timing Requirements) should have been rendered. HTML: " + html,
+         foundPositionedCaption);
    }
 
    private boolean isClassificationHr(Element element) {

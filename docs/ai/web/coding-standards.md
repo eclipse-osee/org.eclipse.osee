@@ -126,20 +126,20 @@ Tests live in `web/apps/osee/playwright/specs/` organized by feature area (e.g.,
 
 ### Running tests
 
-All commands run from `web/apps/osee/`. The OSEE backend (port 8089) and Angular dev server (port 4200) must be running.
+All commands run from `web/apps/osee/`. The OSEE backend (port 8089) and Angular dev server (port 4200) must be running. Always pass `--config playwright.config.ng.ts` to use the correct project configuration.
 
 ```bash
 # Run all tests (includes setup)
-npx playwright test
+npx playwright test --config playwright.config.ng.ts
 
 # Run a specific project
-npx playwright test --project "Setup" --project "Artifact Explorer Tests"
+npx playwright test --config playwright.config.ng.ts --project "Setup" --project "Artifact Explorer Tests"
 
 # Run tests matching a grep pattern
-npx playwright test --project "Setup" --project "Artifact Explorer Tests" --grep "Table Dialog"
+npx playwright test --config playwright.config.ng.ts --project "Setup" --project "Artifact Explorer Tests" --grep "Table Dialog"
 
 # Run a single test file
-npx playwright test --project "Setup" --project "Artifact Explorer Tests" playwright/specs/artifact-explorer/tests/markdown-editor.e2e-spec.ts
+npx playwright test --config playwright.config.ng.ts --project "Setup" --project "Artifact Explorer Tests" playwright/specs/artifact-explorer/tests/markdown-editor.e2e-spec.ts
 
 # Run in headed mode for debugging
 npx playwright test --headed --grep "should insert a table"
@@ -163,11 +163,12 @@ npx playwright show-report
 
 - **Use accessible locators** in priority order: `getByRole`, `getByLabel`, `getByText`, `getByTestId`. Avoid CSS selectors and XPath — they break on refactors.
 - **Add `data-testid` attributes** to components when no accessible locator is available. Prefer this over fragile structural selectors.
+- **Prefer adding aria attributes over `data-testid`** when the element lacks a semantic role or label. Adding `role`, `aria-label`, or `aria-labelledby` to the component template improves both accessibility and testability — use `data-testid` only as a last resort when no meaningful aria semantics apply (e.g., a purely decorative wrapper). For tooltips, use `getByRole('tooltip', { name: '...' })` instead of targeting internal Material CSS classes.
 - **Wait for state, not time.** Use `expect(...).toBeVisible()`, `waitForResponse`, or `waitForSelector` instead of `waitForTimeout`. Fixed timeouts are flaky and slow.
 - **Keep tests independent.** Each test should set up its own state. Use `test.beforeEach` for shared navigation, not shared mutable state between tests.
 - **Use `test.describe` blocks** to group related tests and share setup via `beforeEach`.
 - **Assert on outcomes, not implementation.** Check that the user sees the right content — don't assert internal class names or DOM structure that could change.
-- **One logical assertion per test.** A test should verify one behavior. Multiple related `expect` calls for a single user action are fine; testing unrelated behaviors in one test is not.
+- **One logical behavior per test** — or consolidate related behaviors that share setup cost. Multiple related `expect` calls verifying different aspects of a single workflow are fine. Separate tests for unrelated features that could run in parallel.
 
 ### Writing robust tests
 
@@ -177,6 +178,7 @@ npx playwright show-report
 - **Use `locator.filter({ hasText })` for icon-only buttons** — buttons with only an icon and no label often lack accessible names. Filter by the icon's text content.
 - **Scope locators to reduce ambiguity** — prefer `page.locator('section button')` over `page.getByRole('button')` when multiple buttons share similar names across different page regions.
 - **Test disabled states and their explanations** — verify the button is disabled and that the user receives feedback explaining why (tooltip, message, etc.).
+- **Use `.first()` for tooltip assertions** — Angular Material can leave stale tooltip overlays in the DOM. Use `.first()` when asserting tooltip visibility to avoid strict-mode violations.
 
 ### Patterns to follow
 
@@ -231,3 +233,12 @@ test.describe('Feature Name', () => {
 - **Screenshot-only tests** — screenshots are for documentation, not assertions. Always pair with `expect` calls.
 - **Testing only that something is visible** — always verify the content/value, not just presence. A dialog opening is not enough; verify the data inside it.
 - **Using `getByRole('button', { name: 'tooltip text' })` for icon buttons** — `matTooltip` doesn't set accessible name. Use `.filter({ hasText: 'icon_name' })` instead.
+
+### Writing efficient tests
+
+Page navigation is the primary time cost (~5s per test). Minimize it:
+
+- **Enable parallel execution.** Add `test.describe.configure({ mode: 'parallel' })` at the top of each describe block whose tests are independent (no shared mutable state). This runs tests across multiple workers simultaneously.
+- **Consolidate related assertions into fewer tests.** Group assertions that test the same feature area into one test with multiple steps. A single test that verifies "insert with caption, insert without caption, and edit existing caption" is faster than three separate tests each paying the navigation cost. Use `await test.step('step name', async () => { ... })` to label each phase — failure reports will show exactly which step failed.
+- **Reset state within a test instead of relying on fresh navigation.** Use `textarea.fill('')` or similar resets between sub-steps within a consolidated test rather than creating a new test.
+- **Keep `beforeEach` minimal.** Only include shared navigation. Dialog-specific setup (opening the table dialog) belongs in individual tests or a nested describe's own `beforeEach`.

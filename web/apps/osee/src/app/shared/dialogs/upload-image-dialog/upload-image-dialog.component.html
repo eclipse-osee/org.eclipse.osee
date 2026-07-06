@@ -42,7 +42,7 @@
 				<img
 					[src]="url"
 					[alt]="selectedFile()?.name ?? 'Image preview'"
-					class="tw-max-h-64 tw-max-w-full tw-rounded tw-object-contain" />
+					class="tw-max-h-40 tw-max-w-full tw-rounded tw-object-contain" />
 			}
 			<div class="tw-flex tw-items-center tw-gap-3">
 				<span
@@ -58,6 +58,73 @@
 					class="tw-text-osee-red-24 hover:tw-text-osee-red-21">
 					<mat-icon>close</mat-icon>
 				</button>
+			</div>
+			<div class="tw-flex tw-w-full tw-items-center tw-gap-1">
+				<mat-form-field
+					class="tw-flex-1"
+					subscriptSizing="dynamic"
+					appearance="outline">
+					<mat-label>Figure Caption</mat-label>
+					<input
+						matInput
+						type="text"
+						[ngModel]="caption()"
+						(ngModelChange)="caption.set($event)"
+						name="figure-caption"
+						placeholder="Enter a caption for this figure..."
+						aria-label="Figure caption" />
+				</mat-form-field>
+				<button
+					mat-icon-button
+					type="button"
+					[matTooltip]="
+						captionPosition() === 'above'
+							? 'Caption appears above the figure.'
+							: 'Caption appears below the figure.'
+					"
+					(click)="toggleCaptionPosition()">
+					<mat-icon>{{
+						captionPosition() === 'above'
+							? 'vertical_align_top'
+							: 'vertical_align_bottom'
+					}}</mat-icon>
+				</button>
+			</div>
+			<div class="tw-flex tw-w-full tw-flex-col tw-gap-1">
+				<span class="tw-text-xs tw-font-medium tw-text-osee-neutral-60"
+					>Publish Size</span
+				>
+				<mat-button-toggle-group
+					class="tw-self-start"
+					[value]="size() ?? ''"
+					(change)="size.set($event.value || null)"
+					aria-label="Image publish size">
+					<mat-button-toggle
+						value=""
+						matTooltip="Auto sizing with max cap (default)."
+						>Auto</mat-button-toggle
+					>
+					<mat-button-toggle
+						value="xs"
+						matTooltip="25% of max width."
+						>XS</mat-button-toggle
+					>
+					<mat-button-toggle
+						value="s"
+						matTooltip="50% of max width."
+						>S</mat-button-toggle
+					>
+					<mat-button-toggle
+						value="m"
+						matTooltip="75% of max width."
+						>M</mat-button-toggle
+					>
+					<mat-button-toggle
+						value="l"
+						matTooltip="100% of max width (still capped by image resolution)."
+						>L</mat-button-toggle
+					>
+				</mat-button-toggle-group>
 			</div>
 		</div>
 	}
@@ -78,7 +145,7 @@
 	</span>
 	<span
 		class="tw-inline-flex"
-		[matTooltip]="!selectedFile() ? 'Select an image file first' : ''"
+		[matTooltip]="!selectedFile() ? 'Select an image file first.' : ''"
 		[matTooltipDisabled]="!!selectedFile()">
 		<button
 			mat-stroked-button

@@ -339,6 +339,15 @@ public class PublishingMarkdownAsPdfTest {
    }
 
    @Test
+   public void testSizedImageRenderedInPdf() throws IOException {
+      // The demo data has <image-link size="s">1646203177483523742</image-link> in the
+      // "Programming Language" section. Verify the full pipeline handles the size attribute
+      // without errors and still renders the image in the PDF.
+      assertPdfContainsImage(pdfDoc,
+         "PDF should contain images including the sized image (size='s') from Programming Language section");
+   }
+
+   @Test
    public void testImageInTableCellRendered() throws IOException {
       // Publish only the artifact containing a table with <image-link> references in cells.
       List<Artifact> results = ArtifactQuery.getArtifactListFromTypeAndName(

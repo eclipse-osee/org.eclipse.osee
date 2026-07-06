@@ -180,6 +180,7 @@ html
       @include mat.select-color(theme.$light-theme)
       @include mat.datepicker-color(theme.$light-theme)
       @include mat.button-toggle-color(theme.$light-theme)
+      @include mat.button-toggle-overrides((selected-state-background-color: var(--osee-blue-11), selected-state-text-color: var(--osee-blue-4)))
       @include mat.ripple-color(theme.$light-theme)
       ::-webkit-scrollbar
         background-color: rgb(189 189 189 /12%)
@@ -262,6 +263,7 @@ html
       @include mat.select-color(theme.$dark-theme)
       @include mat.datepicker-color(theme.$dark-theme)
       @include mat.button-toggle-color(theme.$dark-theme)
+      @include mat.button-toggle-overrides((selected-state-background-color: var(--osee-blue-5), selected-state-text-color: var(--osee-blue-12)))
       @include mat.ripple-color(theme.$dark-theme)
       --mat-dialog-container-color: #1f1f23
       ::-webkit-scrollbar
