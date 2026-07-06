@@ -277,7 +277,7 @@ The system shall be designed to operate on Red Hat Enterprise Linux WS 4. It is 
 
 The software shall be written in C/C++.
 
-<image-link>1646203177483523742</image-link>
+<image-link size="s">1646203177483523742</image-link>
 
 <figure-caption>C/C++ Language</figure-caption>
 

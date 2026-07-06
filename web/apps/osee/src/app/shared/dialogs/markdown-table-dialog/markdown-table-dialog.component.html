@@ -267,11 +267,10 @@
 							</div>
 						</td>
 						@for (cell of row; track $index; let colIdx = $index) {
-							<!-- Inline style required: tw-h-full doesn't resolve on <td> when row height is set via [style.height] -->
 							<td
-								class="tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-px dark:tw-border-osee-neutral-100"
-								style="height: 100%">
-								<div class="tw-flex tw-h-full tw-min-h-full">
+								class="tw-relative tw-border-b tw-border-osee-neutral-25 tw-px-1 tw-py-px dark:tw-border-osee-neutral-100">
+								<div
+									class="tw-absolute tw-inset-0 tw-flex tw-p-px">
 									<textarea
 										rows="3"
 										[ngModel]="cell"
@@ -282,7 +281,6 @@
 										name="cell-{{ rowIdx }}-{{ colIdx }}"
 										spellcheck="true"
 										class="tw-flex-1 tw-resize-none tw-rounded tw-border-none tw-bg-transparent tw-px-2 tw-py-1 tw-text-sm tw-outline-none focus:tw-ring-1 focus:tw-ring-osee-blue-6"
-										style="height: 100%"
 										[attr.aria-label]="
 											'Row ' +
 											(rowIdx + 1) +
@@ -315,7 +313,7 @@
 		class="tw-flex-1"
 		subscriptSizing="dynamic"
 		appearance="outline">
-		<mat-label>Table Caption (optional)</mat-label>
+		<mat-label>Table Caption</mat-label>
 		<input
 			matInput
 			type="text"
