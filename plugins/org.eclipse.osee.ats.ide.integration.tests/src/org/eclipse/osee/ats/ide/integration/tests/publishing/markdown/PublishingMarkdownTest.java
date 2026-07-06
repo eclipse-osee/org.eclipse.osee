@@ -609,6 +609,8 @@ public class PublishingMarkdownTest {
 
    @Test
    public void testImageReferences() {
+      Pattern imgSrcPattern = Pattern.compile("src=\"([^\"]+)\"");
+
       for (Long productId : products) {
          Node mdDocument = productMarkdownDocs.get(productId);
 
@@ -618,15 +620,43 @@ public class PublishingMarkdownTest {
 
          HashSet<String> foundImages = new HashSet<>();
 
-         NodeVisitor visitor = new NodeVisitor(new VisitHandler<>(Image.class, image -> {
-            String imageUrl = image.getUrl().toString();
-            foundImages.add(imageUrl);
-         }));
+         // Collects src from inline HTML img tags (used for sized images)
+         java.util.function.Consumer<com.vladsch.flexmark.util.ast.Node> collectHtmlImgSrc = node -> {
+            Matcher imgMatcher = imgSrcPattern.matcher(node.getChars().toString());
+            while (imgMatcher.find()) {
+               foundImages.add(imgMatcher.group(1));
+            }
+         };
+
+         NodeVisitor visitor = new NodeVisitor(
+            new VisitHandler<>(Image.class, image -> foundImages.add(image.getUrl().toString())),
+            new VisitHandler<>(HtmlInline.class, html -> collectHtmlImgSrc.accept(html)),
+            new VisitHandler<>(HtmlBlock.class, html -> collectHtmlImgSrc.accept(html))
+         );
 
          visitor.visit(mdDocument);
 
          assertEquals("The found images do not match the expected image names for product ID: " + productId, imageNames,
             foundImages);
+      }
+   }
+
+   @Test
+   public void testSizedImageHasInlineStyle() {
+      // The demo data has <image-link size="s">1646203177483523742</image-link>
+      // After processImageLinks, this should become an inline <img> tag with style="max-width:50%;height:auto"
+      for (Long productId : products) {
+         Node mdDocument = productMarkdownDocs.get(productId);
+         String rawMarkdown = mdDocument.getChars().toString();
+
+         // Verify no raw <image-link> tags remain (including ones with size attribute)
+         assertFalse("No raw <image-link> tags should remain in product ID: " + productId,
+            rawMarkdown.contains("<image-link"));
+
+         // Verify the sized image was converted to an img tag with inline style
+         assertTrue(
+            "Sized image should be converted to <img> with max-width style in product ID: " + productId,
+            rawMarkdown.contains("style=\"max-width:50%;height:auto\""));
       }
    }
 

@@ -1555,12 +1555,12 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
 
    protected String processImageLinks(String markdownContent) {
-      Pattern oseeImageLinkPattern = Pattern.compile("<image-link>(\\d+)</image-link>");
+      Pattern oseeImageLinkPattern = MarkdownHtmlUtil.IMAGE_LINK_PATTERN;
       Matcher imageLinkMatcher = oseeImageLinkPattern.matcher(markdownContent);
       Set<ArtifactId> imageLinkIds = new HashSet<>();
 
       while (imageLinkMatcher.find()) {
-         imageLinkIds.add(ArtifactId.valueOf(imageLinkMatcher.group(1)));
+         imageLinkIds.add(ArtifactId.valueOf(imageLinkMatcher.group(2)));
       }
 
       Set<ImageArtifact> imageArtifacts = loadImageArtifactContent(imageLinkIds);
@@ -1569,15 +1569,46 @@ public class WordTemplateProcessorServer implements ToMessage {
          String name = imageArt.getName();
          String idStr = imageArt.getId();
 
-         String mdLink =
-            "![" + name + "](resources/" + name + "_" + idStr + "." + imageArt.getExtension() + " \"" + name + "\")";
-         String tagToReplace = "<image-link>" + idStr + "</image-link>";
-         markdownContent = markdownContent.replace(tagToReplace, mdLink);
+         // Match the specific tag for this artifact (with or without size attribute)
+         Pattern specificTagPattern =
+            Pattern.compile("<image-link(?:\\s+size=\"(" + MarkdownHtmlUtil.IMAGE_SIZE_VALUES + ")\")?>" + Pattern.quote(idStr) + "</image-link>");
+         Matcher specificMatcher = specificTagPattern.matcher(markdownContent);
+
+         while (specificMatcher.find()) {
+            String sizeAttr = specificMatcher.group(1);
+            String resourcePath = "resources/" + name + "_" + idStr + "." + imageArt.getExtension();
+            String replacement;
+            if (sizeAttr != null && !sizeAttr.isEmpty()) {
+               int percent = getSizePercent(sizeAttr);
+               replacement = "<img src=\"" + resourcePath + "\" alt=\"" + name + "\" style=\"max-width:" + percent + "%;height:auto\" />";
+            } else {
+               // Standard markdown image syntax for auto-sized images
+               replacement = "![" + name + "](" + resourcePath + " \"" + name + "\")";
+            }
+            markdownContent = markdownContent.replace(specificMatcher.group(0), replacement);
+            // Re-create matcher since content changed
+            specificMatcher = specificTagPattern.matcher(markdownContent);
+         }
 
          linkedMdImages.add(imageArt);
       }
 
       return markdownContent;
+   }
+
+   private static int getSizePercent(String size) {
+      switch (size) {
+         case "xs":
+            return 25;
+         case "s":
+            return 50;
+         case "m":
+            return 75;
+         case "l":
+            return 100;
+         default:
+            return 100;
+      }
    }
 
    protected String processArtifactLinks(String markdownContent) {

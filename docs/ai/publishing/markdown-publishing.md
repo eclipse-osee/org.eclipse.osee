@@ -10,6 +10,16 @@ fileMatch: "**/publishing/markdown/Markdown*,**/MarkdownConverter*,**/markdownTo
 
 The markdown publishing system converts artifact markdown content into HTML, PDF, or raw markdown output. It processes `<image-link>` references, applicability tags, artifact links, captions, and tables of contents before rendering the final document.
 
+## Design Principles
+
+1. **Uniform processing across output formats.** Post-processing transformations in `WordTemplateProcessorServer` (image links, captions, applicability, etc.) should produce output that works for all formats (markdown, HTML, PDF, and eventually DOCX) without format-specific branching. Where format-specific behavior is unavoidable, use the `PublishingOutputFormatter` abstraction (determined at API entry) rather than inline conditionals.
+
+2. **Minimize cyclomatic complexity and edge cases.** Prefer a single code path that produces universally valid output (e.g., inline HTML with styles that work in both markdown viewers and browsers) over separate branches per format. Each branch doubles the testing surface and introduces potential divergence.
+
+3. **Deterministic processing.** Transformations should be order-independent where possible and produce identical results given identical inputs. Avoid state that accumulates differently depending on output format.
+
+4. **Format differences belong in converters, not processors.** The shared pipeline (`postProcessMarkdown`) should output format-neutral content. Format-specific enhancement (e.g., `embedImages` computing exact pixel dimensions for PDF) belongs in the downstream converter, not the shared processing stage.
+
 ## Architecture
 
 ### Endpoints
@@ -46,10 +56,29 @@ All publishing endpoints are in `plugins/org.eclipse.osee.define/src/org/eclipse
 
 ### `<image-link>` Resolution
 
-Markdown content stores image references as `<image-link>ARTIFACT_ID</image-link>`. During `processImageLinks`, each is:
+Markdown content stores image references as `<image-link>ARTIFACT_ID</image-link>`. An optional `size` attribute controls the rendered dimensions: `<image-link size="m">ARTIFACT_ID</image-link>`.
+
+Valid size values:
+| Size | % of max width | Standalone result | Table cell result |
+|------|---------------|-------------------|-------------------|
+| `xs` | 25% | up to 117px | up to 37px |
+| `s` | 50% | up to 234px | up to 75px |
+| `m` | 75% | up to 351px | up to 112px |
+| `l` | 100% | up to 468px | up to 150px |
+| _(omitted)_ | 100% (default) | up to 468px | up to 150px |
+
+All sizes are capped by the image's native resolution — images are never upscaled.
+
+During `processImageLinks`, each tag is:
 1. Resolved to an `ImageArtifact` via database query
-2. Replaced with standard markdown: `![sanitized_name](resources/sanitized_name_ID.ext "sanitized_name")`
-3. The image bytes are stored in `linkedMdImages` for later zip packaging
+2. If no size attribute: replaced with standard markdown `![sanitized_name](resources/sanitized_name_ID.ext "sanitized_name")`
+3. If size attribute present: replaced with inline HTML `<img src="resources/sanitized_name_ID.ext" alt="sanitized_name" style="max-width:75%;height:auto" />` — flexmark passes raw HTML through unchanged
+4. The image bytes are stored in `linkedMdImages` for later zip packaging
+
+The inline `style` attribute is the single mechanism for all output formats:
+- **PDF path:** `embedImages` reads `max-width:N%` from the style, calculates pixel dimensions accordingly, then removes the style (explicit `width`/`height` attributes take over)
+- **HTML path:** The style is already in the rendered HTML — browsers respect it natively
+- **Raw markdown path:** The `<img>` tag with inline style is embedded directly in the markdown (valid — markdown allows inline HTML). Most viewers that render inline HTML will respect the sizing.
 
 ### PDF Image Embedding (`MarkdownConverter.embedImages`)
 
@@ -57,9 +86,12 @@ The CSS `table-layout: fixed` is what enables images to render inside table cell
 1. Parse the HTML into a DOM
 2. Replace each `<img src="...">` with its base64 data URI
 3. Read image dimensions via `javax.imageio.ImageIO` (header-only, no full decode)
-4. Set explicit `width`/`height` attributes capped to:
+4. Read `max-width:N%` from the image's inline `style` attribute if present, apply as percentage-based width cap, then remove the style (explicit `width`/`height` take over for PDF rendering)
+5. Set explicit `width`/`height` attributes capped to:
    - **150px** inside `<td>` / `<th>` (table cells)
    - **468px** standalone (~6.5in at 72dpi, matching page content width)
+   - If a size hint is present, the cap is further reduced to `sizePercent × maxWidth`
+   - Images are never upscaled beyond their native resolution
 
 ## Captions
 
