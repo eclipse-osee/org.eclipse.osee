@@ -38,8 +38,6 @@ import org.eclipse.osee.orcs.OrcsApi;
  * Manages cold storage for purged transactions. Before a transaction is purged, its data (osee_txs, osee_tx_details,
  * and backing artifact/attribute/relation rows for orphaned gammas) is exported to a compressed binary file for
  * potential future restoration.
- *
- * @author Ryan D. Brooks
  */
 public class TxPurgeColdStorage {
 
@@ -121,8 +119,8 @@ public class TxPurgeColdStorage {
       String filePath = coldPath + File.separator + fileName;
 
       try (FileOutputStream fos = new FileOutputStream(filePath);
-           GZIPOutputStream gzos = new GZIPOutputStream(fos);
-           DataOutputStream dos = new DataOutputStream(gzos)) {
+         GZIPOutputStream gzos = new GZIPOutputStream(fos);
+         DataOutputStream dos = new DataOutputStream(gzos)) {
 
          // Write header
          dos.writeUTF(MAGIC);
@@ -142,10 +140,14 @@ public class TxPurgeColdStorage {
             List<Object[]> txDetailsRows = new ArrayList<>();
             jdbcClient.runQuery(stmt -> {
                txDetailsRows.add(new Object[] {
-                  stmt.getLong("BRANCH_ID"), stmt.getLong("TRANSACTION_ID"), stmt.getLong("AUTHOR"),
-                  stmt.getTimestamp("TIME"), stmt.getString("OSEE_COMMENT"), stmt.getInt("TX_TYPE"),
-                  stmt.getLong("COMMIT_ART_ID"), stmt.getLong("BUILD_ID")
-               });
+                  stmt.getLong("BRANCH_ID"),
+                  stmt.getLong("TRANSACTION_ID"),
+                  stmt.getLong("AUTHOR"),
+                  stmt.getTimestamp("TIME"),
+                  stmt.getString("OSEE_COMMENT"),
+                  stmt.getInt("TX_TYPE"),
+                  stmt.getLong("COMMIT_ART_ID"),
+                  stmt.getLong("BUILD_ID")});
             }, SELECT_TX_DETAILS_FOR_TX, branchId, txId);
             dos.writeInt(txDetailsRows.size());
             for (Object[] row : txDetailsRows) {
@@ -157,9 +159,12 @@ public class TxPurgeColdStorage {
             List<Object[]> txsRows = new ArrayList<>();
             jdbcClient.runQuery(stmt -> {
                txsRows.add(new Object[] {
-                  stmt.getLong("BRANCH_ID"), stmt.getLong("GAMMA_ID"), stmt.getLong("TRANSACTION_ID"),
-                  stmt.getInt("TX_CURRENT"), stmt.getInt("MOD_TYPE"), stmt.getLong("APP_ID")
-               });
+                  stmt.getLong("BRANCH_ID"),
+                  stmt.getLong("GAMMA_ID"),
+                  stmt.getLong("TRANSACTION_ID"),
+                  stmt.getInt("TX_CURRENT"),
+                  stmt.getInt("MOD_TYPE"),
+                  stmt.getLong("APP_ID")});
             }, SELECT_TXS_FOR_TX, branchId, txId);
             dos.writeInt(txsRows.size());
             for (Object[] row : txsRows) {
@@ -178,9 +183,10 @@ public class TxPurgeColdStorage {
             for (Long gamma : gammas) {
                jdbcClient.runQuery(stmt -> {
                   artRows.add(new Object[] {
-                     stmt.getLong("ART_ID"), stmt.getLong("GAMMA_ID"), stmt.getLong("ART_TYPE_ID"),
-                     stmt.getString("GUID")
-                  });
+                     stmt.getLong("ART_ID"),
+                     stmt.getLong("GAMMA_ID"),
+                     stmt.getLong("ART_TYPE_ID"),
+                     stmt.getString("GUID")});
                }, SELECT_ARTIFACTS_BY_GAMMA, gamma);
             }
             dos.writeInt(artRows.size());
@@ -197,9 +203,12 @@ public class TxPurgeColdStorage {
             for (Long gamma : gammas) {
                jdbcClient.runQuery(stmt -> {
                   attrRows.add(new Object[] {
-                     stmt.getLong("ATTR_ID"), stmt.getLong("GAMMA_ID"), stmt.getLong("ART_ID"),
-                     stmt.getLong("ATTR_TYPE_ID"), stmt.getString("VALUE"), stmt.getString("URI")
-                  });
+                     stmt.getLong("ATTR_ID"),
+                     stmt.getLong("GAMMA_ID"),
+                     stmt.getLong("ART_ID"),
+                     stmt.getLong("ATTR_TYPE_ID"),
+                     stmt.getString("VALUE"),
+                     stmt.getString("URI")});
                }, SELECT_ATTRIBUTES_BY_GAMMA, gamma);
             }
             dos.writeInt(attrRows.size());
@@ -218,9 +227,12 @@ public class TxPurgeColdStorage {
             for (Long gamma : gammas) {
                jdbcClient.runQuery(stmt -> {
                   relRows.add(new Object[] {
-                     stmt.getLong("REL_LINK_TYPE_ID"), stmt.getLong("A_ART_ID"), stmt.getLong("B_ART_ID"),
-                     stmt.getLong("GAMMA_ID"), stmt.getLong("REL_LINK_ID"), stmt.getString("RATIONALE")
-                  });
+                     stmt.getLong("REL_LINK_TYPE_ID"),
+                     stmt.getLong("A_ART_ID"),
+                     stmt.getLong("B_ART_ID"),
+                     stmt.getLong("GAMMA_ID"),
+                     stmt.getLong("REL_LINK_ID"),
+                     stmt.getString("RATIONALE")});
                }, SELECT_RELATIONS_BY_GAMMA, gamma);
             }
             dos.writeInt(relRows.size());
@@ -239,9 +251,12 @@ public class TxPurgeColdStorage {
             for (Long gamma : gammas) {
                jdbcClient.runQuery(stmt -> {
                   rel2Rows.add(new Object[] {
-                     stmt.getLong("REL_TYPE"), stmt.getLong("A_ART_ID"), stmt.getLong("B_ART_ID"),
-                     stmt.getLong("REL_ART_ID"), stmt.getInt("REL_ORDER"), stmt.getLong("GAMMA_ID")
-                  });
+                     stmt.getLong("REL_TYPE"),
+                     stmt.getLong("A_ART_ID"),
+                     stmt.getLong("B_ART_ID"),
+                     stmt.getLong("REL_ART_ID"),
+                     stmt.getInt("REL_ORDER"),
+                     stmt.getLong("GAMMA_ID")});
                }, SELECT_RELATIONS2_BY_GAMMA, gamma);
             }
             dos.writeInt(rel2Rows.size());
@@ -297,8 +312,8 @@ public class TxPurgeColdStorage {
       }
 
       try (FileInputStream fis = new FileInputStream(filePath);
-           GZIPInputStream gzis = new GZIPInputStream(fis);
-           DataInputStream dis = new DataInputStream(gzis)) {
+         GZIPInputStream gzis = new GZIPInputStream(fis);
+         DataInputStream dis = new DataInputStream(gzis)) {
 
          String magic = dis.readUTF();
          if (!MAGIC.equals(magic)) {
@@ -392,8 +407,8 @@ public class TxPurgeColdStorage {
       String filePath = coldPath + File.separator + fileName;
 
       try (FileInputStream fis = new FileInputStream(filePath);
-           GZIPInputStream gzis = new GZIPInputStream(fis);
-           DataInputStream dis = new DataInputStream(gzis)) {
+         GZIPInputStream gzis = new GZIPInputStream(fis);
+         DataInputStream dis = new DataInputStream(gzis)) {
 
          String magic = dis.readUTF();
          if (!MAGIC.equals(magic)) {
@@ -432,8 +447,10 @@ public class TxPurgeColdStorage {
       for (int i = 0; i < txDetailsCount; i++) {
          Object[] row = readTxDetailsRow(dis);
          Timestamp ts = (Timestamp) row[3];
-         writer.printf("INSERT INTO osee_tx_details (BRANCH_ID, TRANSACTION_ID, AUTHOR, TIME, OSEE_COMMENT, TX_TYPE, COMMIT_ART_ID, BUILD_ID) VALUES (%d, %d, %d, '%s', '%s', %d, %d, %d);%n",
-            row[0], row[1], row[2], ColdStorageUtil.formatTimestamp(ts), ColdStorageUtil.escapeSql((String) row[4]), (short) row[5], row[6], row[7]);
+         writer.printf(
+            "INSERT INTO osee_tx_details (BRANCH_ID, TRANSACTION_ID, AUTHOR, TIME, OSEE_COMMENT, TX_TYPE, COMMIT_ART_ID, BUILD_ID) VALUES (%d, %d, %d, '%s', '%s', %d, %d, %d);%n",
+            row[0], row[1], row[2], ColdStorageUtil.formatTimestamp(ts), ColdStorageUtil.escapeSql((String) row[4]),
+            (short) row[5], row[6], row[7]);
       }
       writer.flush();
       zipOut.closeEntry();
@@ -444,7 +461,8 @@ public class TxPurgeColdStorage {
       zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_txs.sql"));
       for (int i = 0; i < txsCount; i++) {
          Object[] row = readTxsRow(dis);
-         writer.printf("INSERT INTO osee_txs (BRANCH_ID, GAMMA_ID, TRANSACTION_ID, TX_CURRENT, MOD_TYPE, APP_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
+         writer.printf(
+            "INSERT INTO osee_txs (BRANCH_ID, GAMMA_ID, TRANSACTION_ID, TX_CURRENT, MOD_TYPE, APP_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
             row[0], row[1], row[2], (short) row[3], (short) row[4], row[5]);
       }
       writer.flush();
@@ -476,7 +494,8 @@ public class TxPurgeColdStorage {
          long attrTypeId = dis.readLong();
          String value = dis.readUTF();
          String uri = dis.readUTF();
-         writer.printf("INSERT INTO osee_attribute (ATTR_ID, GAMMA_ID, ART_ID, ATTR_TYPE_ID, VALUE, URI) VALUES (%d, %d, %d, %d, '%s', '%s');%n",
+         writer.printf(
+            "INSERT INTO osee_attribute (ATTR_ID, GAMMA_ID, ART_ID, ATTR_TYPE_ID, VALUE, URI) VALUES (%d, %d, %d, %d, '%s', '%s');%n",
             attrId, gammaId, artId, attrTypeId, ColdStorageUtil.escapeSql(value), ColdStorageUtil.escapeSql(uri));
       }
       writer.flush();
@@ -493,7 +512,8 @@ public class TxPurgeColdStorage {
          long gammaId = dis.readLong();
          long relLinkId = dis.readLong();
          String rationale = dis.readUTF();
-         writer.printf("INSERT INTO osee_relation_link (REL_LINK_TYPE_ID, A_ART_ID, B_ART_ID, GAMMA_ID, REL_LINK_ID, RATIONALE) VALUES (%d, %d, %d, %d, %d, '%s');%n",
+         writer.printf(
+            "INSERT INTO osee_relation_link (REL_LINK_TYPE_ID, A_ART_ID, B_ART_ID, GAMMA_ID, REL_LINK_ID, RATIONALE) VALUES (%d, %d, %d, %d, %d, '%s');%n",
             relTypeId, aArtId, bArtId, gammaId, relLinkId, ColdStorageUtil.escapeSql(rationale));
       }
       writer.flush();
@@ -510,7 +530,8 @@ public class TxPurgeColdStorage {
          long relArtId = dis.readLong();
          int relOrder = dis.readInt();
          long gammaId = dis.readLong();
-         writer.printf("INSERT INTO osee_relation (REL_TYPE, A_ART_ID, B_ART_ID, REL_ART_ID, REL_ORDER, GAMMA_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
+         writer.printf(
+            "INSERT INTO osee_relation (REL_TYPE, A_ART_ID, B_ART_ID, REL_ART_ID, REL_ORDER, GAMMA_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
             relType, aArtId, bArtId, relArtId, relOrder, gammaId);
       }
       writer.flush();
@@ -545,8 +566,8 @@ public class TxPurgeColdStorage {
       // If not found by name, scan file contents
       for (File file : files) {
          try (FileInputStream fis = new FileInputStream(file);
-              GZIPInputStream gzis = new GZIPInputStream(fis);
-              DataInputStream dis = new DataInputStream(gzis)) {
+            GZIPInputStream gzis = new GZIPInputStream(fis);
+            DataInputStream dis = new DataInputStream(gzis)) {
 
             String magic = dis.readUTF();
             if (!MAGIC.equals(magic)) {
@@ -574,8 +595,8 @@ public class TxPurgeColdStorage {
 
    /**
     * Checks if a filename structurally matches the given transaction ID. Filenames follow the pattern:
-    * tx_purge_{startId}[_to_{endId}]_timestamp.gz
-    * This avoids false positives from substring matching (e.g., "1234" matching in "12345").
+    * tx_purge_{startId}[_to_{endId}]_timestamp.gz This avoids false positives from substring matching (e.g., "1234"
+    * matching in "12345").
     */
    private boolean matchesTransactionInFilename(String fileName, String targetIdStr) {
       // Strip prefix "tx_purge_" and suffix (timestamp + ".gz")
@@ -618,23 +639,23 @@ public class TxPurgeColdStorage {
    }
 
    private void writeTxDetailsRow(DataOutputStream dos, Object[] row) throws IOException {
-      dos.writeLong((long) row[0]);                      // BRANCH_ID
-      dos.writeLong((long) row[1]);                      // TRANSACTION_ID
-      dos.writeLong((long) row[2]);                      // AUTHOR
-      dos.writeLong(((Timestamp) row[3]).getTime());     // TIME
+      dos.writeLong((long) row[0]); // BRANCH_ID
+      dos.writeLong((long) row[1]); // TRANSACTION_ID
+      dos.writeLong((long) row[2]); // AUTHOR
+      dos.writeLong(((Timestamp) row[3]).getTime()); // TIME
       dos.writeUTF(row[4] != null ? (String) row[4] : ""); // OSEE_COMMENT
-      dos.writeShort((int) row[5]);                      // TX_TYPE
-      dos.writeLong((long) row[6]);                      // COMMIT_ART_ID
-      dos.writeLong((long) row[7]);                      // BUILD_ID
+      dos.writeShort((int) row[5]); // TX_TYPE
+      dos.writeLong((long) row[6]); // COMMIT_ART_ID
+      dos.writeLong((long) row[7]); // BUILD_ID
    }
 
    private void writeTxsRow(DataOutputStream dos, Object[] row) throws IOException {
-      dos.writeLong((long) row[0]);  // BRANCH_ID
-      dos.writeLong((long) row[1]);  // GAMMA_ID
-      dos.writeLong((long) row[2]);  // TRANSACTION_ID
-      dos.writeShort((int) row[3]);  // TX_CURRENT
-      dos.writeShort((int) row[4]);  // MOD_TYPE
-      dos.writeLong((long) row[5]);  // APP_ID
+      dos.writeLong((long) row[0]); // BRANCH_ID
+      dos.writeLong((long) row[1]); // GAMMA_ID
+      dos.writeLong((long) row[2]); // TRANSACTION_ID
+      dos.writeShort((int) row[3]); // TX_CURRENT
+      dos.writeShort((int) row[4]); // MOD_TYPE
+      dos.writeLong((long) row[5]); // APP_ID
    }
 
    private void restoreTransactionData(DataInputStream dis, XResultData results) throws IOException {
@@ -668,8 +689,12 @@ public class TxPurgeColdStorage {
       List<Object[]> attrRows = new ArrayList<>();
       for (int i = 0; i < attrCount; i++) {
          attrRows.add(new Object[] {
-            dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF(), dis.readUTF()
-         });
+            dis.readLong(),
+            dis.readLong(),
+            dis.readLong(),
+            dis.readLong(),
+            dis.readUTF(),
+            dis.readUTF()});
       }
 
       // Read RELATIONS
@@ -678,8 +703,12 @@ public class TxPurgeColdStorage {
       List<Object[]> relRows = new ArrayList<>();
       for (int i = 0; i < relCount; i++) {
          relRows.add(new Object[] {
-            dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF()
-         });
+            dis.readLong(),
+            dis.readLong(),
+            dis.readLong(),
+            dis.readLong(),
+            dis.readLong(),
+            dis.readUTF()});
       }
 
       // Read RELATIONS2
@@ -688,8 +717,12 @@ public class TxPurgeColdStorage {
       List<Object[]> rel2Rows = new ArrayList<>();
       for (int i = 0; i < rel2Count; i++) {
          rel2Rows.add(new Object[] {
-            dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readInt(), dis.readLong()
-         });
+            dis.readLong(),
+            dis.readLong(),
+            dis.readLong(),
+            dis.readLong(),
+            dis.readInt(),
+            dis.readLong()});
       }
 
       dis.readUTF(); // "TX_END"
@@ -736,28 +769,46 @@ public class TxPurgeColdStorage {
       dis.readUTF();
       int artCount = dis.readInt();
       for (int i = 0; i < artCount; i++) {
-         dis.readLong(); dis.readLong(); dis.readLong(); dis.readUTF();
+         dis.readLong();
+         dis.readLong();
+         dis.readLong();
+         dis.readUTF();
       }
 
       // Skip ATTRIBUTES
       dis.readUTF();
       int attrCount = dis.readInt();
       for (int i = 0; i < attrCount; i++) {
-         dis.readLong(); dis.readLong(); dis.readLong(); dis.readLong(); dis.readUTF(); dis.readUTF();
+         dis.readLong();
+         dis.readLong();
+         dis.readLong();
+         dis.readLong();
+         dis.readUTF();
+         dis.readUTF();
       }
 
       // Skip RELATIONS
       dis.readUTF();
       int relCount = dis.readInt();
       for (int i = 0; i < relCount; i++) {
-         dis.readLong(); dis.readLong(); dis.readLong(); dis.readLong(); dis.readLong(); dis.readUTF();
+         dis.readLong();
+         dis.readLong();
+         dis.readLong();
+         dis.readLong();
+         dis.readLong();
+         dis.readUTF();
       }
 
       // Skip RELATIONS2
       dis.readUTF();
       int rel2Count = dis.readInt();
       for (int i = 0; i < rel2Count; i++) {
-         dis.readLong(); dis.readLong(); dis.readLong(); dis.readLong(); dis.readInt(); dis.readLong();
+         dis.readLong();
+         dis.readLong();
+         dis.readLong();
+         dis.readLong();
+         dis.readInt();
+         dis.readLong();
       }
 
       dis.readUTF(); // "TX_END"
@@ -765,25 +816,25 @@ public class TxPurgeColdStorage {
 
    private Object[] readTxDetailsRow(DataInputStream dis) throws IOException {
       return new Object[] {
-         dis.readLong(),                // BRANCH_ID
-         dis.readLong(),                // TRANSACTION_ID
-         dis.readLong(),                // AUTHOR
+         dis.readLong(), // BRANCH_ID
+         dis.readLong(), // TRANSACTION_ID
+         dis.readLong(), // AUTHOR
          new Timestamp(dis.readLong()), // TIME
-         dis.readUTF(),                 // OSEE_COMMENT
-         dis.readShort(),               // TX_TYPE
-         dis.readLong(),                // COMMIT_ART_ID
-         dis.readLong()                 // BUILD_ID
+         dis.readUTF(), // OSEE_COMMENT
+         dis.readShort(), // TX_TYPE
+         dis.readLong(), // COMMIT_ART_ID
+         dis.readLong() // BUILD_ID
       };
    }
 
    private Object[] readTxsRow(DataInputStream dis) throws IOException {
       return new Object[] {
-         dis.readLong(),  // BRANCH_ID
-         dis.readLong(),  // GAMMA_ID
-         dis.readLong(),  // TRANSACTION_ID
+         dis.readLong(), // BRANCH_ID
+         dis.readLong(), // GAMMA_ID
+         dis.readLong(), // TRANSACTION_ID
          dis.readShort(), // TX_CURRENT
          dis.readShort(), // MOD_TYPE
-         dis.readLong()   // APP_ID
+         dis.readLong() // APP_ID
       };
    }
 }

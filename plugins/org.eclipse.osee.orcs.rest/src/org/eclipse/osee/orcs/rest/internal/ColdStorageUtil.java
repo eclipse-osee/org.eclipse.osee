@@ -25,13 +25,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Shared utilities for cold storage operations (path resolution, SQL escaping, timestamp formatting).
- *
- * @author Ryan D. Brooks
  */
 public final class ColdStorageUtil {
 
-   private static final DateTimeFormatter TIMESTAMP_FORMAT =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+   private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
    private ColdStorageUtil() {
       // utility class

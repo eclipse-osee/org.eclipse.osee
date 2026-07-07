@@ -37,8 +37,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * Manages cold storage archival of transaction data for committed/rebaselined branches. Exports osee_txs_archived,
  * osee_tx_details, and osee_branch rows to compressed binary files, then purges them from the database.
- *
- * @author Ryan D. Brooks
  */
 public class TxsColdStorage {
 
@@ -148,7 +146,8 @@ public class TxsColdStorage {
          return results;
       }
 
-      String fileName = "txs_cold_branch_" + branchId.getIdString() + "_" + FILE_DATE_FORMAT.format(Instant.now()) + ".gz";
+      String fileName =
+         "txs_cold_branch_" + branchId.getIdString() + "_" + FILE_DATE_FORMAT.format(Instant.now()) + ".gz";
       String filePath = coldPath + File.separator + fileName;
 
       try {
@@ -156,8 +155,8 @@ public class TxsColdStorage {
          int totalTxDetailsRows = 0;
 
          try (FileOutputStream fos = new FileOutputStream(filePath);
-              GZIPOutputStream gzos = new GZIPOutputStream(fos);
-              DataOutputStream dos = new DataOutputStream(gzos)) {
+            GZIPOutputStream gzos = new GZIPOutputStream(fos);
+            DataOutputStream dos = new DataOutputStream(gzos)) {
 
             dos.writeUTF(MAGIC);
             dos.writeInt(SCHEMA_VERSION);
@@ -226,8 +225,8 @@ public class TxsColdStorage {
    /**
     * Archives eligible branches to cold storage. Finds branches in committed, rebaselined, or deleted state whose last
     * transaction is older than retentionDays, exports their data to a compressed binary file, and purges them from the
-    * database. Each branch is archived and purged atomically — the catalog row is inserted before the purge so that
-    * a crash between steps leaves recoverable state.
+    * database. Each branch is archived and purged atomically — the catalog row is inserted before the purge so that a
+    * crash between steps leaves recoverable state.
     *
     * @param limit maximum number of branches to archive in this invocation
     * @param retentionDays minimum age (in days) since last transaction before a branch is eligible
@@ -266,8 +265,8 @@ public class TxsColdStorage {
          int totalTxDetailsRows = 0;
 
          try (FileOutputStream fos = new FileOutputStream(filePath);
-              GZIPOutputStream gzos = new GZIPOutputStream(fos);
-              DataOutputStream dos = new DataOutputStream(gzos)) {
+            GZIPOutputStream gzos = new GZIPOutputStream(fos);
+            DataOutputStream dos = new DataOutputStream(gzos)) {
 
             // Write file header
             dos.writeUTF(MAGIC);
@@ -332,10 +331,10 @@ public class TxsColdStorage {
          for (BranchInfo branchInfo : eligibleBranches) {
             long branchId = branchInfo.branchId;
 
-            int txsRowCount = jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_txs_archived WHERE BRANCH_ID = ?",
-               branchId);
-            int txDetailsRowCount = jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_tx_details WHERE BRANCH_ID = ?",
-               branchId);
+            int txsRowCount =
+               jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_txs_archived WHERE BRANCH_ID = ?", branchId);
+            int txDetailsRowCount =
+               jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_tx_details WHERE BRANCH_ID = ?", branchId);
 
             // Insert catalog row BEFORE purge to ensure crash-recovery
             jdbcClient.runPreparedUpdate(INSERT_CATALOG, branchId, branchInfo.branchName, fileName, txsRowCount,
@@ -390,8 +389,8 @@ public class TxsColdStorage {
       }
 
       try (FileInputStream fis = new FileInputStream(filePath);
-           GZIPInputStream gzis = new GZIPInputStream(fis);
-           DataInputStream dis = new DataInputStream(gzis)) {
+         GZIPInputStream gzis = new GZIPInputStream(fis);
+         DataInputStream dis = new DataInputStream(gzis)) {
 
          // Read and validate header
          String magic = dis.readUTF();
@@ -431,8 +430,8 @@ public class TxsColdStorage {
          // Remove catalog entry
          jdbcClient.runPreparedUpdate(DELETE_CATALOG, branchId);
 
-         int remainingRefs = jdbcClient.fetch(0,
-            "SELECT COUNT(1) FROM osee_txs_cold_storage WHERE EXPORT_FILE = ?", exportFile[0]);
+         int remainingRefs =
+            jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_txs_cold_storage WHERE EXPORT_FILE = ?", exportFile[0]);
          if (remainingRefs == 0) {
             results.logf("No remaining branches reference file %s - file can be cleaned up manually", exportFile[0]);
          }
@@ -454,10 +453,11 @@ public class TxsColdStorage {
       List<String> entries = new ArrayList<>();
 
       jdbcClient.runQuery(stmt -> {
-         entries.add(String.format("Branch %d (%s) - state: %d, file: %s, exported: %s, txs_rows: %d, tx_details_rows: %d",
-            stmt.getLong("BRANCH_ID"), stmt.getString("BRANCH_NAME"), stmt.getInt("BRANCH_STATE"),
-            stmt.getString("EXPORT_FILE"), stmt.getTimestamp("EXPORT_DATE").toString(),
-            stmt.getLong("TXS_ROW_COUNT"), stmt.getLong("TX_DETAILS_ROW_COUNT")));
+         entries.add(
+            String.format("Branch %d (%s) - state: %d, file: %s, exported: %s, txs_rows: %d, tx_details_rows: %d",
+               stmt.getLong("BRANCH_ID"), stmt.getString("BRANCH_NAME"), stmt.getInt("BRANCH_STATE"),
+               stmt.getString("EXPORT_FILE"), stmt.getTimestamp("EXPORT_DATE").toString(),
+               stmt.getLong("TXS_ROW_COUNT"), stmt.getLong("TX_DETAILS_ROW_COUNT")));
       }, SELECT_ALL_CATALOG);
 
       if (entries.isEmpty()) {
@@ -490,8 +490,8 @@ public class TxsColdStorage {
 
       jdbcClient.runPreparedUpdate(DELETE_CATALOG, branchId);
 
-      int remainingRefs = jdbcClient.fetch(0,
-         "SELECT COUNT(1) FROM osee_txs_cold_storage WHERE EXPORT_FILE = ?", exportFile[0]);
+      int remainingRefs =
+         jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_txs_cold_storage WHERE EXPORT_FILE = ?", exportFile[0]);
       if (remainingRefs == 0) {
          String coldPath = ColdStorageUtil.getColdStoragePath();
          if (coldPath != null) {
@@ -529,8 +529,8 @@ public class TxsColdStorage {
       String filePath = coldPath + File.separator + exportFile[0];
 
       try (FileInputStream fis = new FileInputStream(filePath);
-           GZIPInputStream gzis = new GZIPInputStream(fis);
-           DataInputStream dis = new DataInputStream(gzis)) {
+         GZIPInputStream gzis = new GZIPInputStream(fis);
+         DataInputStream dis = new DataInputStream(gzis)) {
 
          String magic = dis.readUTF();
          if (!MAGIC.equals(magic)) {
@@ -566,9 +566,10 @@ public class TxsColdStorage {
       zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_branch.sql"));
       for (int i = 0; i < branchRowCount; i++) {
          Object[] row = readBranchRowFromFile(dis);
-         writer.printf("INSERT INTO osee_branch (BRANCH_ID, BRANCH_TYPE, BRANCH_STATE, BRANCH_NAME, PARENT_BRANCH_ID, PARENT_TRANSACTION_ID, BASELINE_TRANSACTION_ID, ASSOCIATED_ART_ID, ARCHIVED, INHERIT_ACCESS_CONTROL) VALUES (%d, %d, %d, '%s', %d, %d, %d, %d, %d, %d);%n",
-            row[0], (short) row[1], (short) row[2], ColdStorageUtil.escapeSql((String) row[3]), row[4], row[5], row[6], row[7],
-            (short) row[8], (short) row[9]);
+         writer.printf(
+            "INSERT INTO osee_branch (BRANCH_ID, BRANCH_TYPE, BRANCH_STATE, BRANCH_NAME, PARENT_BRANCH_ID, PARENT_TRANSACTION_ID, BASELINE_TRANSACTION_ID, ASSOCIATED_ART_ID, ARCHIVED, INHERIT_ACCESS_CONTROL) VALUES (%d, %d, %d, '%s', %d, %d, %d, %d, %d, %d);%n",
+            row[0], (short) row[1], (short) row[2], ColdStorageUtil.escapeSql((String) row[3]), row[4], row[5], row[6],
+            row[7], (short) row[8], (short) row[9]);
       }
       writer.flush();
       zipOut.closeEntry();
@@ -580,8 +581,10 @@ public class TxsColdStorage {
       for (int i = 0; i < txDetailsCount; i++) {
          Object[] row = readTxDetailsRow(dis);
          Timestamp ts = (Timestamp) row[3];
-         writer.printf("INSERT INTO osee_tx_details (BRANCH_ID, TRANSACTION_ID, AUTHOR, TIME, OSEE_COMMENT, TX_TYPE, COMMIT_ART_ID, BUILD_ID) VALUES (%d, %d, %d, '%s', '%s', %d, %d, %d);%n",
-            row[0], row[1], row[2], ColdStorageUtil.formatTimestamp(ts), ColdStorageUtil.escapeSql((String) row[4]), (short) row[5], row[6], row[7]);
+         writer.printf(
+            "INSERT INTO osee_tx_details (BRANCH_ID, TRANSACTION_ID, AUTHOR, TIME, OSEE_COMMENT, TX_TYPE, COMMIT_ART_ID, BUILD_ID) VALUES (%d, %d, %d, '%s', '%s', %d, %d, %d);%n",
+            row[0], row[1], row[2], ColdStorageUtil.formatTimestamp(ts), ColdStorageUtil.escapeSql((String) row[4]),
+            (short) row[5], row[6], row[7]);
       }
       writer.flush();
       zipOut.closeEntry();
@@ -592,7 +595,8 @@ public class TxsColdStorage {
       zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_txs_archived.sql"));
       for (int i = 0; i < txsCount; i++) {
          Object[] row = readTxsArchivedRow(dis);
-         writer.printf("INSERT INTO osee_txs_archived (BRANCH_ID, GAMMA_ID, TRANSACTION_ID, TX_CURRENT, MOD_TYPE, APP_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
+         writer.printf(
+            "INSERT INTO osee_txs_archived (BRANCH_ID, GAMMA_ID, TRANSACTION_ID, TX_CURRENT, MOD_TYPE, APP_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
             row[0], row[1], row[2], (short) row[3], (short) row[4], row[5]);
       }
       writer.flush();
@@ -614,19 +618,18 @@ public class TxsColdStorage {
          stmt.getLong("BASELINE_TRANSACTION_ID"),
          stmt.getLong("ASSOCIATED_ART_ID"),
          (short) stmt.getInt("ARCHIVED"),
-         (short) stmt.getInt("INHERIT_ACCESS_CONTROL")
-      };
+         (short) stmt.getInt("INHERIT_ACCESS_CONTROL")};
    }
 
    private void writeBranchRow(DataOutputStream dos, Object[] row) throws IOException {
-      dos.writeLong((long) row[0]);   // BRANCH_ID
+      dos.writeLong((long) row[0]); // BRANCH_ID
       dos.writeShort((short) row[1]); // BRANCH_TYPE
       dos.writeShort((short) row[2]); // BRANCH_STATE
-      dos.writeUTF((String) row[3]);  // BRANCH_NAME
-      dos.writeLong((long) row[4]);   // PARENT_BRANCH_ID
-      dos.writeLong((long) row[5]);   // PARENT_TRANSACTION_ID
-      dos.writeLong((long) row[6]);   // BASELINE_TRANSACTION_ID
-      dos.writeLong((long) row[7]);   // ASSOCIATED_ART_ID
+      dos.writeUTF((String) row[3]); // BRANCH_NAME
+      dos.writeLong((long) row[4]); // PARENT_BRANCH_ID
+      dos.writeLong((long) row[5]); // PARENT_TRANSACTION_ID
+      dos.writeLong((long) row[6]); // BASELINE_TRANSACTION_ID
+      dos.writeLong((long) row[7]); // ASSOCIATED_ART_ID
       dos.writeShort((short) row[8]); // ARCHIVED
       dos.writeShort((short) row[9]); // INHERIT_ACCESS_CONTROL
    }
@@ -713,40 +716,40 @@ public class TxsColdStorage {
 
    private Object[] readBranchRowFromFile(DataInputStream dis) throws IOException {
       return new Object[] {
-         dis.readLong(),  // BRANCH_ID
+         dis.readLong(), // BRANCH_ID
          dis.readShort(), // BRANCH_TYPE
          dis.readShort(), // BRANCH_STATE
-         dis.readUTF(),   // BRANCH_NAME
-         dis.readLong(),  // PARENT_BRANCH_ID
-         dis.readLong(),  // PARENT_TRANSACTION_ID
-         dis.readLong(),  // BASELINE_TRANSACTION_ID
-         dis.readLong(),  // ASSOCIATED_ART_ID
+         dis.readUTF(), // BRANCH_NAME
+         dis.readLong(), // PARENT_BRANCH_ID
+         dis.readLong(), // PARENT_TRANSACTION_ID
+         dis.readLong(), // BASELINE_TRANSACTION_ID
+         dis.readLong(), // ASSOCIATED_ART_ID
          dis.readShort(), // ARCHIVED
-         dis.readShort()  // INHERIT_ACCESS_CONTROL
+         dis.readShort() // INHERIT_ACCESS_CONTROL
       };
    }
 
    private Object[] readTxDetailsRow(DataInputStream dis) throws IOException {
       return new Object[] {
-         dis.readLong(),                // BRANCH_ID
-         dis.readLong(),                // TRANSACTION_ID
-         dis.readLong(),                // AUTHOR
+         dis.readLong(), // BRANCH_ID
+         dis.readLong(), // TRANSACTION_ID
+         dis.readLong(), // AUTHOR
          new Timestamp(dis.readLong()), // TIME
-         dis.readUTF(),                 // OSEE_COMMENT
-         dis.readShort(),               // TX_TYPE
-         dis.readLong(),                // COMMIT_ART_ID
-         dis.readLong()                 // BUILD_ID
+         dis.readUTF(), // OSEE_COMMENT
+         dis.readShort(), // TX_TYPE
+         dis.readLong(), // COMMIT_ART_ID
+         dis.readLong() // BUILD_ID
       };
    }
 
    private Object[] readTxsArchivedRow(DataInputStream dis) throws IOException {
       return new Object[] {
-         dis.readLong(),  // BRANCH_ID
-         dis.readLong(),  // GAMMA_ID
-         dis.readLong(),  // TRANSACTION_ID
+         dis.readLong(), // BRANCH_ID
+         dis.readLong(), // GAMMA_ID
+         dis.readLong(), // TRANSACTION_ID
          dis.readShort(), // TX_CURRENT
          dis.readShort(), // MOD_TYPE
-         dis.readLong()   // APP_ID
+         dis.readLong() // APP_ID
       };
    }
 
