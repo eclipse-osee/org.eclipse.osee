@@ -69,10 +69,10 @@ export class HelpAnchorDirective {
 		const el = this.el.nativeElement as HTMLElement;
 		this.renderer.addClass(el, 'osee-help-highlight');
 
-		// Auto-remove highlight after animation completes
+		// Auto-remove highlight after animation completes (3s animation)
 		this.animationTimeout = setTimeout(() => {
 			this.helpDrawerService.clearHighlight();
-		}, 2000);
+		}, 3200);
 
 		// Scroll the element into view if not visible
 		el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

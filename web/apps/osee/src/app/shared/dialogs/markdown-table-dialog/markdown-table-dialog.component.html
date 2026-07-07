@@ -32,55 +32,61 @@
 	class="tw-flex !tw-max-h-[calc(87vh-120px)] tw-flex-col tw-gap-0 !tw-overflow-hidden !tw-p-0">
 	<!-- Fixed toolbar -->
 	<div
-		oseeHelpAnchor="table-dialog-dimensions"
 		class="tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-2 tw-border-b tw-border-osee-neutral-25 tw-px-4 tw-py-2 dark:tw-border-osee-neutral-100">
-		<button
-			mat-icon-button
-			type="button"
+		<span
 			oseeHelpAnchor="table-dialog-undo"
-			matTooltip="Undo"
-			[disabled]="!canUndo()"
-			[class.tw-opacity-40]="!canUndo()"
-			(click)="undo()">
-			<mat-icon>undo</mat-icon>
-		</button>
-		<button
-			mat-icon-button
-			type="button"
-			matTooltip="Redo"
-			[disabled]="!canRedo()"
-			[class.tw-opacity-40]="!canRedo()"
-			(click)="redo()">
-			<mat-icon>redo</mat-icon>
-		</button>
-		<mat-form-field
-			class="tw-w-20"
-			subscriptSizing="dynamic">
-			<mat-label>Cols</mat-label>
-			<input
-				matInput
-				type="number"
-				min="1"
-				max="50"
-				[ngModel]="colCount()"
-				(change)="onColCountChange($event)"
-				name="col-count"
-				aria-label="Column count" />
-		</mat-form-field>
-		<mat-form-field
-			class="tw-w-20"
-			subscriptSizing="dynamic">
-			<mat-label>Rows</mat-label>
-			<input
-				matInput
-				type="number"
-				min="1"
-				max="100"
-				[ngModel]="rowCount()"
-				(change)="onRowCountChange($event)"
-				name="row-count"
-				aria-label="Row count" />
-		</mat-form-field>
+			class="tw-flex tw-items-center tw-gap-1 tw-rounded">
+			<button
+				mat-icon-button
+				type="button"
+				matTooltip="Undo"
+				[disabled]="!canUndo()"
+				[class.tw-opacity-40]="!canUndo()"
+				(click)="undo()">
+				<mat-icon>undo</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				type="button"
+				matTooltip="Redo"
+				[disabled]="!canRedo()"
+				[class.tw-opacity-40]="!canRedo()"
+				(click)="redo()">
+				<mat-icon>redo</mat-icon>
+			</button>
+		</span>
+		<span
+			oseeHelpAnchor="table-dialog-dimensions"
+			class="tw-flex tw-items-center tw-gap-2 tw-rounded tw-px-1 tw-py-0.5">
+			<mat-form-field
+				class="tw-w-20"
+				subscriptSizing="dynamic">
+				<mat-label>Cols</mat-label>
+				<input
+					matInput
+					type="number"
+					min="1"
+					max="50"
+					[ngModel]="colCount()"
+					(change)="onColCountChange($event)"
+					name="col-count"
+					aria-label="Column count" />
+			</mat-form-field>
+			<mat-form-field
+				class="tw-w-20"
+				subscriptSizing="dynamic">
+				<mat-label>Rows</mat-label>
+				<input
+					matInput
+					type="number"
+					min="1"
+					max="100"
+					[ngModel]="rowCount()"
+					(change)="onRowCountChange($event)"
+					name="row-count"
+					aria-label="Row count" />
+			</mat-form-field>
+		</span>
 		@if (isLoading()) {
 			<div
 				class="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-osee-neutral-60">
@@ -322,6 +328,7 @@
 	mat-dialog-actions
 	class="tw-flex tw-items-center tw-gap-4 tw-px-4">
 	<mat-form-field
+		oseeHelpAnchor="table-dialog-caption"
 		class="tw-flex-1"
 		subscriptSizing="dynamic"
 		appearance="outline">
@@ -329,7 +336,6 @@
 		<input
 			matInput
 			type="text"
-			oseeHelpAnchor="table-dialog-caption"
 			[ngModel]="caption()"
 			(ngModelChange)="caption.set($event)"
 			(focus)="saveUndoState()"
