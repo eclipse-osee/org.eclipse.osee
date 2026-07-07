@@ -1280,17 +1280,6 @@ export class MarkdownEditorComponent {
 		document.body.style.userSelect = '';
 	}
 
-	onDividerKeyDown(event: KeyboardEvent): void {
-		const step = 2;
-		if (event.key === 'ArrowLeft') {
-			event.preventDefault();
-			this.editorWidthPercent.update((v) => Math.max(20, v - step));
-		} else if (event.key === 'ArrowRight') {
-			event.preventDefault();
-			this.editorWidthPercent.update((v) => Math.min(80, v + step));
-		}
-	}
-
 	undo() {
 		const latestHistoryValue = this.history()?.pop();
 

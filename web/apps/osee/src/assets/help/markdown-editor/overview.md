@@ -95,7 +95,6 @@ Press **Escape** or click the <span class="material-icons" style="font-size:14px
 | Ctrl+Z | Undo. |
 | Ctrl+Y | Redo. |
 | Escape | Exit fullscreen. |
-| Arrow Left/Right | Resize divider (when focused). |
 
 ## Tips
 
