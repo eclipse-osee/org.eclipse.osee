@@ -14,7 +14,6 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import static org.eclipse.osee.orcs.OseeDb.*;
-import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
@@ -30,9 +29,6 @@ public final class DatabaseCreation {
 
    public void createDataStore() {
       dropTables();
-      if (jdbcClient.getDbType().equals(DatabaseType.hsql)) {
-         jdbcClient.runPreparedUpdate("SET DATABASE SQL SYNTAX ORA TRUE;");
-      }
       jdbcClient.createTable(ARTIFACT_TABLE);
       jdbcClient.createTable(ATTRIBUTE_TABLE);
       jdbcClient.createTable(RELATION_TABLE);
@@ -52,15 +48,6 @@ public final class DatabaseCreation {
       jdbcClient.createTable(OSEE_BRANCH_ACL_TABLE);
       jdbcClient.createTable(OSEE_SEARCH_TAGS_TABLE);
       jdbcClient.createTable(OSEE_TAG_GAMMA_QUEUE_TABLE);
-
-      // Create full-text search index on attribute values for databases that support it
-      DatabaseType dbType = jdbcClient.getDbType();
-      if (dbType.supportsFullTextSearch()) {
-         String ftsIndexDdl = dbType.getFullTextIndexDdl("osee_attribute", "value", "osee_attr_fts_idx");
-         if (ftsIndexDdl != null) {
-            jdbcClient.runPreparedUpdate(ftsIndexDdl);
-         }
-      }
       jdbcClient.createTable(OSEE_SEQUENCE_TABLE);
       jdbcClient.createTable(OSEE_INFO_TABLE);
       jdbcClient.createTable(OSEE_MERGE_TABLE);
