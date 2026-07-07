@@ -160,11 +160,9 @@
 		</button>
 
 		<span
-			[matTooltip]="isFullscreen() ? 'Exit fullscreen to use help.' : 'Help'">
+			[matTooltip]="isFullscreen() ? 'Open Help (exits fullscreen)' : 'Help'">
 			<button
 				mat-icon-button
-				[disabled]="isFullscreen()"
-				[class.tw-opacity-40]="isFullscreen()"
 				(click)="toggleHelp()">
 				<div>
 					<mat-icon> help_outline </mat-icon>

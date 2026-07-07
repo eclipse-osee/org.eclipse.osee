@@ -1190,9 +1190,6 @@ export class MarkdownEditorComponent {
 					'Unable to exit fullscreen. Try pressing Escape.';
 			});
 		} else {
-			// Close help drawer before entering fullscreen
-			// (fixed-position overlay is not visible inside fullscreen element)
-			this.helpDrawerService.close();
 			this.enterFullscreen();
 		}
 	}
