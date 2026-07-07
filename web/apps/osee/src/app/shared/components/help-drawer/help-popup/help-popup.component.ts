@@ -116,7 +116,7 @@ export class HelpPopupComponent {
 
 				const showMeBtn = document.createElement('button');
 				showMeBtn.className = 'osee-help-show-me-btn';
-				showMeBtn.title = `Highlight "${matchingSection.label}" in the UI`;
+				showMeBtn.title = `Highlight "${matchingSection.label}" in the UI.`;
 				showMeBtn.innerHTML =
 					'<span class="material-icons" style="font-size: 14px; vertical-align: middle; font-feature-settings: \'liga\'; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; letter-spacing: normal; word-wrap: normal; white-space: nowrap; direction: ltr;">visibility</span> Show Me';
 				showMeBtn.addEventListener('click', () => {

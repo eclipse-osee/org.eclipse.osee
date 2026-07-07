@@ -16,8 +16,8 @@ The first row of the table represents column headers. Each header cell is editab
 
 **Column spanning (merge):** Headers can span multiple columns, useful for grouping related columns under a single heading.
 
-- Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">merge_type</span> button to merge a column into the header to its left
-- Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">call_split</span> button to unmerge (split) a spanned column back into independent headers
+- Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">merge_type</span> button to merge a column into the header to its left.
+- Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">call_split</span> button to unmerge (split) a spanned column back into independent headers.
 
 Merged columns show an indicator (← Header Name) to show which header owns them. A small **H** badge appears on the alignment button for headers that span multiple columns.
 
@@ -28,26 +28,26 @@ Merged columns show an indicator (← Header Name) to show which header owns the
 Click any cell to edit its content. Cells support multi-line text — press Enter to add a newline within a cell.
 
 **Special characters:**
-- Pipe characters (`|`) are automatically escaped in the output so they don't break the table structure
-- Newlines are converted to `<br>` tags in the markdown output since table rows must be single lines
+- Pipe characters (`|`) are automatically escaped in the output so they don't break the table structure.
+- Newlines are converted to `<br>` tags in the markdown output since table rows must be single lines.
 
 **Adding rows and columns:**
-- Use the <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_up</span> / <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_down</span> buttons in the row gutter to insert rows above or below
-- Use the <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_left</span> / <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_right</span> buttons above column headers to insert columns
-- Row numbers are displayed between the arrow buttons for easy reference
+- Use the <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_up</span> / <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_down</span> buttons in the row gutter to insert rows above or below.
+- Use the <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_left</span> / <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_right</span> buttons above column headers to insert columns.
+- Row numbers are displayed between the arrow buttons for easy reference.
 
 **Removing rows and columns:**
-- Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">close</span> icon (red) next to a row or column to remove it
-- At least one row and one column must remain
+- Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">close</span> icon (red) next to a row or column to remove it.
+- At least one row and one column must remain.
 
 ## Column Alignment
 
 Each column has an alignment setting: **Left**, **Center**, or **Right**.
 
 Click the alignment icon below a column header to cycle through the options:
-- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_left</span> — Left aligned
-- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_center</span> — Center aligned
-- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_right</span> — Right aligned
+- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_left</span> — Left aligned.
+- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_center</span> — Center aligned.
+- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_right</span> — Right aligned.
 
 Alignment is reflected in the markdown separator row (`:--`, `:-:`, `--:`).
 
@@ -56,8 +56,8 @@ Alignment is reflected in the markdown separator row (`:--`, `:-:`, `--:`).
 Tables can have an optional caption displayed above or below.
 
 **To add a caption:**
-1. Type your caption text in the **Table Caption** input field at the bottom of the dialog
-2. Toggle the position button (<span class="material-icons" style="font-size:14px;vertical-align:middle">vertical_align_top</span> / <span class="material-icons" style="font-size:14px;vertical-align:middle">vertical_align_bottom</span>) to switch between above and below placement
+1. Type your caption text in the **Table Caption** input field at the bottom of the dialog.
+2. Toggle the position button (<span class="material-icons" style="font-size:14px;vertical-align:middle">vertical_align_top</span> / <span class="material-icons" style="font-size:14px;vertical-align:middle">vertical_align_bottom</span>) to switch between above and below placement.
 
 **Caption syntax:** Captions are output as `<table-caption>` tags adjacent to the table, separated by a blank line.
 
@@ -80,10 +80,10 @@ The undo history holds up to 50 states.
 
 | Shortcut | Action |
 | :-- | :-- |
-| Ctrl+Z | Undo last change |
-| Ctrl+Y | Redo last undone change |
-| Escape | Cancel and close (same as Cancel button) |
-| Tab | Move between cells |
+| Ctrl+Z | Undo last change. |
+| Ctrl+Y | Redo last undone change. |
+| Escape | Cancel and close (same as Cancel button). |
+| Tab | Move between cells. |
 
 ## Tips
 
