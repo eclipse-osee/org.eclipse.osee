@@ -313,3 +313,44 @@ html
 
       .error-checkbox
         @include mat.checkbox-color(theme.$dark-theme, $color-variant:error)
+
+// Help drawer highlight animation
+@keyframes osee-help-pulse
+  0%
+    box-shadow: 0 0 0 0 rgba(var(--mat-sys-primary-rgb, 103 80 164), 0.6)
+  50%
+    box-shadow: 0 0 0 8px rgba(var(--mat-sys-primary-rgb, 103 80 164), 0.15)
+  100%
+    box-shadow: 0 0 0 0 rgba(var(--mat-sys-primary-rgb, 103 80 164), 0)
+
+.osee-help-highlight
+  animation: osee-help-pulse 0.8s ease-in-out 3
+  outline: 2px solid var(--mat-sys-primary, #6750a4)
+  outline-offset: 3px
+  border-radius: 4px
+  position: relative
+  z-index: 9999
+
+// "Show Me" button injected into help markdown h2 headings
+.osee-help-show-me-btn
+  display: inline-flex
+  align-items: center
+  gap: 4px
+  margin-left: auto
+  padding: 2px 8px
+  border: 1px solid var(--mat-sys-outline-variant, #ccc)
+  border-radius: 12px
+  background: transparent
+  color: var(--mat-sys-primary, #6750a4)
+  font-size: 11px
+  font-weight: 500
+  cursor: pointer
+  transition: background-color 0.15s, border-color 0.15s
+  white-space: nowrap
+  &:hover
+    background-color: rgba(var(--mat-sys-primary-rgb, 103 80 164), 0.08)
+    border-color: var(--mat-sys-primary, #6750a4)
+
+// Help markdown section heading active state (scroll tracking)
+.osee-help-markdown h2
+  scroll-margin-top: 8px

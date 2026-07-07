@@ -33,6 +33,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { HelpDrawerService } from '../../components/help-drawer/help-drawer.service';
+import { HelpAnchorDirective } from '../../components/help-drawer/help-anchor.directive';
 
 export type ColumnAlignment = 'left' | 'center' | 'right';
 
@@ -79,6 +81,7 @@ type TableSnapshot = {
 		MatFormField,
 		MatLabel,
 		MatInput,
+		HelpAnchorDirective,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './markdown-table-dialog.component.html',
@@ -94,6 +97,7 @@ export class MarkdownTableDialogComponent {
 	private readonly data = inject<MarkdownTableDialogData>(MAT_DIALOG_DATA);
 	private readonly snackBar = inject(MatSnackBar);
 	private readonly destroyRef = inject(DestroyRef);
+	private readonly helpDrawerService = inject(HelpDrawerService);
 
 	private readonly maxCols = 50;
 	private readonly maxRows = 100;
@@ -691,6 +695,10 @@ export class MarkdownTableDialogComponent {
 		this.captionPosition.update((pos) =>
 			pos === 'above' ? 'below' : 'above'
 		);
+	}
+
+	protected toggleHelp(): void {
+		this.helpDrawerService.toggle('markdown-table-dialog');
 	}
 
 	protected cancelDialog(): void {

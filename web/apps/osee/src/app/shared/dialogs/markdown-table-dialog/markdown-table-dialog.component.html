@@ -16,6 +16,14 @@
 	<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
 		<mat-icon>table_chart</mat-icon>
 		{{ isEdit ? 'Edit Table' : 'Insert Table' }}
+		<span class="tw-flex-1"></span>
+		<button
+			mat-icon-button
+			type="button"
+			matTooltip="Help"
+			(click)="toggleHelp()">
+			<mat-icon>help_outline</mat-icon>
+		</button>
 	</div>
 </h1>
 
@@ -24,6 +32,7 @@
 	class="tw-flex !tw-max-h-[calc(87vh-120px)] tw-flex-col tw-gap-0 !tw-overflow-hidden !tw-p-0">
 	<!-- Fixed toolbar -->
 	<div
+		oseeHelpAnchor="table-dialog-dimensions"
 		class="tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-2 tw-border-b tw-border-osee-neutral-25 tw-px-4 tw-py-2 dark:tw-border-osee-neutral-100">
 		<button
 			mat-icon-button
@@ -317,6 +326,7 @@
 		<input
 			matInput
 			type="text"
+			oseeHelpAnchor="table-dialog-caption"
 			[ngModel]="caption()"
 			(ngModelChange)="caption.set($event)"
 			(focus)="saveUndoState()"

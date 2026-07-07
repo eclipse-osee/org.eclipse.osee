@@ -1,0 +1,79 @@
+<!--
+ * Copyright (c) 2026 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div
+	class="tw-flex tw-h-full tw-w-[420px] tw-flex-col tw-overflow-hidden tw-rounded-lg tw-border tw-border-border tw-bg-background-background tw-shadow-2xl"
+	role="complementary"
+	aria-label="Help panel">
+	<!-- Header -->
+	<div
+		class="tw-flex tw-items-center tw-justify-between tw-border-b tw-border-border tw-bg-background-status-bar tw-px-4 tw-py-2">
+		<div class="tw-flex tw-items-center tw-gap-2">
+			<mat-icon class="tw-text-primary">help_outline</mat-icon>
+			<h2 class="tw-m-0 tw-text-base tw-font-medium">
+				{{ topicLabel() }}
+			</h2>
+		</div>
+		<button
+			mat-icon-button
+			(click)="close()"
+			matTooltip="Close Help">
+			<mat-icon>close</mat-icon>
+		</button>
+	</div>
+
+	<!-- Section navigation with highlight + scroll buttons -->
+	@if (sections().length > 0) {
+		<nav
+			class="tw-border-b tw-border-border tw-px-3 tw-py-2"
+			aria-label="Help sections">
+			<ul class="tw-m-0 tw-flex tw-list-none tw-flex-wrap tw-gap-1 tw-p-0">
+				@for (section of sections(); track section.id) {
+					<li class="tw-flex tw-items-center">
+						<button
+							class="tw-flex tw-cursor-pointer tw-items-center tw-gap-1 tw-rounded-full tw-border tw-px-2 tw-py-0.5 tw-text-xs tw-transition-colors"
+							[class.tw-border-primary-600]="activeSection() === section.id"
+							[class.tw-bg-primary-50]="activeSection() === section.id"
+							[class.dark:tw-bg-primary-900]="activeSection() === section.id"
+							[class.tw-border-border]="activeSection() !== section.id"
+							[class.tw-bg-transparent]="activeSection() !== section.id"
+							[class.hover:tw-bg-primary-50]="activeSection() !== section.id"
+							[class.dark:hover:tw-bg-primary-900]="activeSection() !== section.id"
+							(click)="highlightAndScroll(section)"
+							[matTooltip]="'Show &quot;' + section.label + '&quot; in the UI and scroll to docs'">
+							<mat-icon class="!tw-size-3.5 !tw-text-[14px]">visibility</mat-icon>
+							{{ section.label }}
+						</button>
+					</li>
+				}
+			</ul>
+		</nav>
+	}
+
+	<!-- Markdown content area -->
+	<div
+		#contentArea
+		class="tw-flex-1 tw-overflow-y-auto tw-px-4 tw-py-3"
+		(scroll)="$event">
+		@if (markdownPath()) {
+			<markdown
+				[src]="markdownPath()"
+				[disableSanitizer]="true"
+				(ready)="onMarkdownReady()"
+				class="osee-help-markdown [&_a]:tw-text-primary-700 [&_code]:tw-rounded [&_code]:tw-bg-background-status-bar [&_code]:tw-px-1.5 [&_code]:tw-py-0.5 [&_code]:tw-text-xs [&_h2]:tw-mt-6 [&_h2]:tw-flex [&_h2]:tw-items-center [&_h2]:tw-gap-2 [&_h2]:tw-border-b [&_h2]:tw-border-border [&_h2]:tw-pb-1 [&_h2]:tw-text-sm [&_h2]:tw-font-semibold [&_h3]:tw-mt-4 [&_h3]:tw-text-sm [&_h3]:tw-font-medium [&_img]:tw-my-2 [&_img]:tw-max-w-full [&_img]:tw-rounded [&_img]:tw-border [&_img]:tw-border-border [&_li]:tw-mb-1 [&_li]:tw-text-sm [&_ol]:tw-list-decimal [&_ol]:tw-pl-5 [&_p]:tw-my-2 [&_p]:tw-text-sm [&_p]:tw-leading-relaxed [&_table]:tw-my-3 [&_table]:tw-w-full [&_table]:tw-text-xs [&_td]:tw-border [&_td]:tw-border-border [&_td]:tw-px-2 [&_td]:tw-py-1 [&_th]:tw-border [&_th]:tw-border-border [&_th]:tw-bg-background-status-bar [&_th]:tw-px-2 [&_th]:tw-py-1 [&_th]:tw-text-left [&_th]:tw-font-medium [&_ul]:tw-list-disc [&_ul]:tw-pl-5 dark:[&_a]:tw-text-primary-400 dark:[&_code]:tw-bg-background-card"></markdown>
+		} @else {
+			<p class="tw-text-sm tw-text-foreground-text-secondary">
+				No help content available for this topic.
+			</p>
+		}
+	</div>
+</div>

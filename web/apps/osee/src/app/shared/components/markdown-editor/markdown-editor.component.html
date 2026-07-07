@@ -12,14 +12,15 @@
  -->
 <div
 	#fullscreenWrapper
-	class="tw-flex tw-flex-col"
+	class="tw-flex tw-min-w-0 tw-flex-1 tw-flex-col"
 	[class.tw-h-full]="isFullscreen()"
 	[class.tw-bg-white]="isFullscreen()"
 	[class.dark:tw-bg-osee-neutral-6]="isFullscreen()">
 	<div
 		class="tw-flex tw-shrink-0 tw-flex-wrap tw-gap-4 tw-px-4"
 		role="toolbar"
-		aria-label="Markdown editor toolbar">
+		aria-label="Markdown editor toolbar"
+		oseeHelpAnchor="md-editor-toolbar">
 		<button
 			mat-icon-button
 			matTooltip="Undo"
@@ -70,6 +71,7 @@
 		<span [matTooltip]="uploadImageTooltip()">
 			<button
 				mat-icon-button
+				oseeHelpAnchor="md-editor-image-btn"
 				[disabled]="!canUploadImage() || isUploading()"
 				[class.tw-opacity-40]="!canUploadImage() || isUploading()"
 				(click)="openUploadImageDialog()">
@@ -86,6 +88,7 @@
 		<span [matTooltip]="tableButtonTooltip()">
 			<button
 				mat-icon-button
+				oseeHelpAnchor="md-editor-table-btn"
 				[disabled]="disabled() || showImages()"
 				[class.tw-opacity-40]="disabled() || showImages()"
 				(click)="openTableDialog()">
@@ -145,6 +148,7 @@
 		<button
 			mat-icon-button
 			[matTooltip]="isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen'"
+			oseeHelpAnchor="md-editor-fullscreen-btn"
 			(click)="toggleFullscreen()">
 			<div>
 				@if (isFullscreen()) {
@@ -154,6 +158,19 @@
 				}
 			</div>
 		</button>
+
+		<span
+			[matTooltip]="isFullscreen() ? 'Exit fullscreen to use help.' : 'Help'">
+			<button
+				mat-icon-button
+				[disabled]="isFullscreen()"
+				[class.tw-opacity-40]="isFullscreen()"
+				(click)="toggleHelp()">
+				<div>
+					<mat-icon> help_outline </mat-icon>
+				</div>
+			</button>
+		</span>
 	</div>
 
 	<div
@@ -193,6 +210,7 @@
 			[style.flex-shrink]="isPreviewCollapsed() ? null : 0">
 			<textarea
 				#editorTextarea
+				oseeHelpAnchor="md-editor-textarea"
 				class="tw-size-full tw-min-h-0 tw-flex-1 tw-resize-none tw-overflow-y-auto tw-border-none tw-bg-transparent tw-p-4 tw-pr-2 tw-outline-none placeholder:tw-font-mat-bold placeholder:tw-opacity-50"
 				[class.tw-ring-2]="keyboardFocused()"
 				[class.tw-ring-inset]="keyboardFocused()"
@@ -233,12 +251,14 @@
 					class="tw-h-full tw-min-h-0 tw-min-w-0 tw-flex-1 tw-overflow-auto tw-p-4"
 					role="region"
 					aria-label="Markdown preview with images"
+					oseeHelpAnchor="md-editor-preview"
 					[innerHtml]="imagePreviewHtml()"></div>
 			} @else {
 				<div
 					class="tw-h-full tw-min-h-0 tw-min-w-0 tw-flex-1 tw-overflow-auto tw-p-4"
 					role="region"
 					aria-label="Markdown preview"
+					oseeHelpAnchor="md-editor-preview"
 					[innerHtml]="mdPreview()"></div>
 			}
 		}
