@@ -34,8 +34,8 @@ import { HelpTopicRegistryService } from './help-topic-registry.service';
 	templateUrl: './help-drawer.component.html',
 	host: {
 		'[class.tw-hidden]': '!helpDrawerService.isOpen()',
-		class: 'tw-fixed tw-right-4 tw-top-4 tw-z-[10000] tw-block',
-		'[class.tw-bottom-4]': 'true',
+		class: 'tw-fixed tw-right-4 tw-top-4 tw-bottom-4 tw-block',
+		style: 'z-index: 10001',
 	},
 })
 export class HelpDrawerComponent {
@@ -122,7 +122,7 @@ export class HelpDrawerComponent {
 					'osee-help-show-me-btn';
 				showMeBtn.title = `Highlight "${matchingSection.label}" in the UI`;
 				showMeBtn.innerHTML =
-					'<span class="material-icons" style="font-size: 16px; vertical-align: middle;">visibility</span> Show Me';
+					'<span class="material-icons" style="font-size: 14px; vertical-align: middle; font-feature-settings: \'liga\'; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; letter-spacing: normal; word-wrap: normal; white-space: nowrap; direction: ltr;">visibility</span> Show Me';
 				showMeBtn.addEventListener('click', () => {
 					this.helpDrawerService.highlightAnchor(
 						matchingSection.anchorId
