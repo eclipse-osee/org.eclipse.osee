@@ -32,32 +32,69 @@ export type HelpSection = {
 export class HelpDrawerService {
 	private readonly document = inject(DOCUMENT);
 
-	private readonly helpOpenClass = 'osee-help-open';
+	/** The currently highlighted anchor ID (for UI annotation). */
+	readonly highlightedAnchor = signal<string>('');
 
-	/** Whether the drawer is currently open. */
+	/** Reference to the popup window, if open. */
+	private helpWindow: Window | null = null;
+
+	/** Whether the help popup is currently open. */
 	readonly isOpen = signal(false);
 
 	/** The currently active topic ID. */
 	readonly activeTopic = signal<string>('');
 
-	/** The currently highlighted anchor ID (for UI annotation). */
-	readonly highlightedAnchor = signal<string>('');
+	constructor() {
+		// Listen for highlight messages from the popup window
+		window.addEventListener('message', (event) => {
+			if (
+				event.data?.type === 'osee-help-highlight' &&
+				event.data?.anchorId
+			) {
+				this.highlightAnchor(event.data.anchorId);
+			}
+		});
+	}
 
-	/** Opens the help drawer to the specified topic. */
+	/** Opens help in a popup window for the specified topic. */
 	open(topicId: string): void {
 		this.activeTopic.set(topicId);
+		const url = `${this.document.location.origin}${this.getBasePath()}/help-popup?topic=${topicId}`;
+
+		if (this.helpWindow && !this.helpWindow.closed) {
+			// Reuse existing window, navigate to new topic
+			this.helpWindow.location.href = url;
+			this.helpWindow.focus();
+		} else {
+			this.helpWindow = window.open(
+				url,
+				'osee-help',
+				'width=480,height=700,scrollbars=yes,resizable=yes'
+			);
+		}
 		this.isOpen.set(true);
-		this.document.body.classList.add(this.helpOpenClass);
+
+		// Track window close
+		const checkClosed = setInterval(() => {
+			if (!this.helpWindow || this.helpWindow.closed) {
+				this.isOpen.set(false);
+				this.helpWindow = null;
+				clearInterval(checkClosed);
+			}
+		}, 500);
 	}
 
-	/** Closes the help drawer. */
+	/** Closes the help popup window. */
 	close(): void {
+		if (this.helpWindow && !this.helpWindow.closed) {
+			this.helpWindow.close();
+		}
+		this.helpWindow = null;
 		this.isOpen.set(false);
 		this.clearHighlight();
-		this.document.body.classList.remove(this.helpOpenClass);
 	}
 
-	/** Toggles the help drawer for the specified topic. */
+	/** Toggles the help popup for the specified topic. */
 	toggle(topicId: string): void {
 		if (this.isOpen() && this.activeTopic() === topicId) {
 			this.close();
@@ -74,5 +111,12 @@ export class HelpDrawerService {
 	/** Clears the current highlight. */
 	clearHighlight(): void {
 		this.highlightedAnchor.set('');
+	}
+
+	private getBasePath(): string {
+		// Detect base href from the document
+		const base = this.document.querySelector('base');
+		const href = base?.getAttribute('href') ?? '/';
+		return href.endsWith('/') ? href.slice(0, -1) : href;
 	}
 }

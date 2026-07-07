@@ -28,7 +28,6 @@ export * from './create-branch-button/create-branch-button.component';
 export * from './create-branch-dialog/create-branch-dialog.component';
 export * from './drag-and-drop-upload/drag-and-drop-upload.component';
 export * from './site-banner/site-banner.component';
-export * from './help-drawer/help-drawer.component';
 export * from './help-drawer/help-drawer.service';
 export * from './help-drawer/help-topic-registry.service';
 export * from './help-drawer/help-anchor.directive';

@@ -15,10 +15,7 @@ import { map } from 'rxjs';
 import { SideNavService } from '@osee/shared/services/layout';
 import { NavContainerComponent } from '@osee/layout/container';
 import { RouterOutlet } from '@angular/router';
-import {
-	SnackbarWrapperComponent,
-	HelpDrawerComponent,
-} from '@osee/shared/components';
+import { SnackbarWrapperComponent } from '@osee/shared/components';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { osee_logo } from './osee_logo';
@@ -26,7 +23,7 @@ import { osee_logo } from './osee_logo';
 @Component({
 	selector: 'osee-root',
 	templateUrl: './app.component.html',
-	imports: [RouterOutlet, NavContainerComponent, SnackbarWrapperComponent, HelpDrawerComponent],
+	imports: [RouterOutlet, NavContainerComponent, SnackbarWrapperComponent],
 })
 export class AppComponent {
 	private sideNavService = inject(SideNavService);

@@ -314,13 +314,40 @@ html
       .error-checkbox
         @include mat.checkbox-color(theme.$dark-theme, $color-variant:error)
 
-// Help drawer floating panel - must be above CDK overlay container
+// Help popup window styles
+.osee-help-popup-header
+  background: #f5f5f5
+  border-color: #e0e0e0
+
+.osee-help-popup-nav
+  border-color: #e0e0e0
+
+.osee-help-section-chip
+  border-color: #e0e0e0
+  color: #555
+  background: transparent
+  &:hover, &.active
+    background: #1976d2
+    color: white
+    border-color: #1976d2
+
+@media (prefers-color-scheme: dark)
+  .osee-help-popup-header
+    background: #2a2a2e
+    border-color: #444
+  .osee-help-popup-nav
+    border-color: #444
+  .osee-help-section-chip
+    border-color: #444
+    color: #ccc
+    &:hover, &.active
+      background: #1976d2
+      color: white
+      border-color: #1976d2
+
+// Help drawer floating popup styles
 osee-help-drawer
-  z-index: 10001 !important
-  pointer-events: auto
   color: #333
-  &:not(.tw-hidden)
-    display: block
   // Ensure Material Icons ligatures render inside the help panel
   .material-icons, mat-icon
     font-feature-settings: 'liga'
@@ -328,15 +355,6 @@ osee-help-drawer
     text-rendering: optimizeLegibility
   @media (prefers-color-scheme: dark)
     color: #e0e0e0
-
-// When help drawer is open, allow pointer events to pass through the
-// CDK overlay backdrop so the help panel remains interactive.
-// The dialog pane itself retains pointer-events via its own styles.
-body.osee-help-open .cdk-overlay-backdrop
-  pointer-events: none !important
-
-body.osee-help-open .cdk-overlay-pane
-  pointer-events: auto
 
 // Help drawer highlight animation
 @keyframes osee-help-pulse
