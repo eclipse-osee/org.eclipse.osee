@@ -11,10 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	afterNextRender,
 	ChangeDetectionStrategy,
 	Component,
 	computed,
 	DestroyRef,
+	effect,
 	ElementRef,
 	inject,
 	signal,
@@ -42,9 +44,36 @@ export class HelpDrawerComponent {
 	protected readonly helpDrawerService = inject(HelpDrawerService);
 	private readonly registry = inject(HelpTopicRegistryService);
 	private readonly destroyRef = inject(DestroyRef);
+	private readonly hostEl = inject(ElementRef);
 
 	private readonly contentEl =
 		viewChild<ElementRef<HTMLDivElement>>('contentArea');
+
+	constructor() {
+		// Move element to document.body AFTER the CDK overlay container
+		// so it renders above dialog backdrops.
+		afterNextRender(() => {
+			document.body.appendChild(this.hostEl.nativeElement);
+		});
+
+		// Re-append to body every time the drawer opens, ensuring it's
+		// always the last child (after CDK overlay container).
+		effect(() => {
+			if (this.helpDrawerService.isOpen()) {
+				const el = this.hostEl.nativeElement as HTMLElement;
+				if (el.parentNode === document.body) {
+					document.body.appendChild(el);
+				}
+			}
+		});
+
+		this.destroyRef.onDestroy(() => {
+			const el = this.hostEl.nativeElement as HTMLElement;
+			if (el.parentNode === document.body) {
+				document.body.removeChild(el);
+			}
+		});
+	}
 
 	protected readonly activeTopic = computed(() => {
 		const topicId = this.helpDrawerService.activeTopic();

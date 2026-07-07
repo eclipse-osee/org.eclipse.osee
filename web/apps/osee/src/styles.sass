@@ -314,7 +314,7 @@ html
       .error-checkbox
         @include mat.checkbox-color(theme.$dark-theme, $color-variant:error)
 
-// Help drawer floating panel - must be above CDK overlay container (z-index: 1000)
+// Help drawer floating panel - must be above CDK overlay container
 osee-help-drawer
   z-index: 10001 !important
   pointer-events: auto
@@ -329,9 +329,14 @@ osee-help-drawer
   @media (prefers-color-scheme: dark)
     color: #e0e0e0
 
-// When help drawer is visible, prevent CDK backdrop from blocking it
-.cdk-overlay-container
-  // CDK default is z-index 1000 — help drawer at 10001 floats above
+// When help drawer is open, allow pointer events to pass through the
+// CDK overlay backdrop so the help panel remains interactive.
+// The dialog pane itself retains pointer-events via its own styles.
+body.osee-help-open .cdk-overlay-backdrop
+  pointer-events: none !important
+
+body.osee-help-open .cdk-overlay-pane
+  pointer-events: auto
 
 // Help drawer highlight animation
 @keyframes osee-help-pulse

@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 export type HelpTopic = {
 	readonly id: string;
@@ -29,6 +30,10 @@ export type HelpSection = {
 	providedIn: 'root',
 })
 export class HelpDrawerService {
+	private readonly document = inject(DOCUMENT);
+
+	private readonly helpOpenClass = 'osee-help-open';
+
 	/** Whether the drawer is currently open. */
 	readonly isOpen = signal(false);
 
@@ -42,12 +47,14 @@ export class HelpDrawerService {
 	open(topicId: string): void {
 		this.activeTopic.set(topicId);
 		this.isOpen.set(true);
+		this.document.body.classList.add(this.helpOpenClass);
 	}
 
 	/** Closes the help drawer. */
 	close(): void {
 		this.isOpen.set(false);
 		this.clearHighlight();
+		this.document.body.classList.remove(this.helpOpenClass);
 	}
 
 	/** Toggles the help drawer for the specified topic. */
