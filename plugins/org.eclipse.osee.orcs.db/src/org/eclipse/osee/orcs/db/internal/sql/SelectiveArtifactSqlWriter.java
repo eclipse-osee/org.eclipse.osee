@@ -161,12 +161,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          }
       }
       /*
-       * If new relation type is not used in the parent Query but is used in the child query must add
+       * If relation type is not used in the parent Query but is used in the child query must add
        * ChildrenFollowRelationSqlHandler so that union of all artWiths will have same number of columns
        */
-      boolean notNewRelInCriteria = !newRelationInCriteria(Collections.singletonList(queryDataCursor));
-      boolean newRelationInChildrenCriteria = newRelationInCriteria(queryDataCursor.getChildrenQueryData());
-      if (notNewRelInCriteria && newRelationInChildrenCriteria) {
+      boolean relInCriteria = relationInCriteria(Collections.singletonList(queryDataCursor));
+      boolean relationInChildrenCriteria = relationInCriteria(queryDataCursor.getChildrenQueryData());
+      if (!relInCriteria && relationInChildrenCriteria) {
          handlers.add(new ChildrenFollowRelationSqlHandler()); //will be used to add 0 rel_type, 0 rel_order for non-new relation type artWith clauses
       }
 
@@ -196,6 +196,22 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                if (((RelationTypeSideCriteria) criteria).getRelationTypeSide().isNewRelationTable()) {
                   return true;
                }
+            }
+         }
+         if (queryData.getChildrenQueryData().size() > 0) {
+            newRelationInCriteria(queryData.getChildrenQueryData());
+         }
+      }
+      return false;
+   }
+
+   private boolean relationInCriteria(List<QueryData> queryDatas) {
+
+      for (QueryData queryData : queryDatas) {
+         for (Criteria criteria : queryData.getAllCriteria()) {
+            boolean notRelTypeExists = !(criteria instanceof CriteriaRelationTypeExists);
+            if ((criteria instanceof RelationTypeCriteria || criteria instanceof RelationTypeSideCriteria) && notRelTypeExists) {
+               return true;
             }
          }
       }
@@ -338,8 +354,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       FollowSearchSqlHandler followSearchHandler = (FollowSearchSqlHandler) handlerFactory.createHandler(
          rootQueryData.getCriteriaByType(CriteriaFollowSearch.class).get(0));
 
-      boolean newRelationUsed = newRelationInCriteria(
-         Collections.singletonList(queryDataCursor)) || newRelationInCriteria(queryDataCursor.getChildrenQueryData());
+      boolean newRelationUsed = newRelationInCriteria(Collections.singletonList(queryDataCursor));
       attrSearchAlias = followSearchHandler.writeFollowSearchCommonTableExpression(this, attsAlias, newRelationUsed,
          (rootQueryData.hasCriteriaType(
             CriteriaPagination.class) ? rootQueryData.getCriteriaByType(CriteriaPagination.class).get(0) : null));
