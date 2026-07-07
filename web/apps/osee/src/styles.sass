@@ -315,6 +315,16 @@ html
         @include mat.checkbox-color(theme.$dark-theme, $color-variant:error)
 
 // Help popup window styles
+osee-root:has(osee-help-popup)
+  display: block
+  height: 100vh
+  overflow: hidden
+
+.osee-help-popup-root
+  background: #ffffff
+  color: #333
+  height: 100%
+
 .osee-help-popup-header
   background: #f5f5f5
   border-color: #e0e0e0
@@ -332,6 +342,9 @@ html
     border-color: #1976d2
 
 @media (prefers-color-scheme: dark)
+  .osee-help-popup-root
+    background: #1e1e22
+    color: #e0e0e0
   .osee-help-popup-header
     background: #2a2a2e
     border-color: #444
