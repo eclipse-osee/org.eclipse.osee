@@ -106,13 +106,41 @@ export class MarkdownTableDialogComponent {
 		label: 'Table Editor',
 		markdownPath: 'assets/help/markdown-table-dialog/overview.md',
 		sections: [
-			{ id: 'table-size', label: 'Table Size', anchorId: 'table-dialog-dimensions' },
-			{ id: 'headers-spans', label: 'Headers & Spans', anchorId: 'table-dialog-headers' },
-			{ id: 'editing-cells', label: 'Editing Cells', anchorId: 'table-dialog-cells' },
-			{ id: 'adding--removing-rows-and-columns', label: 'Adding & Removing Rows and Columns', anchorId: 'table-dialog-add-remove' },
-			{ id: 'column-alignment', label: 'Column Alignment', anchorId: 'table-dialog-alignment' },
-			{ id: 'captions', label: 'Captions', anchorId: 'table-dialog-caption' },
-			{ id: 'undo-redo', label: 'Undo & Redo', anchorId: 'table-dialog-undo' },
+			{
+				id: 'table-size',
+				label: 'Table Size',
+				anchorId: 'table-dialog-dimensions',
+			},
+			{
+				id: 'headers-spans',
+				label: 'Headers & Spans',
+				anchorId: 'table-dialog-headers',
+			},
+			{
+				id: 'editing-cells',
+				label: 'Editing Cells',
+				anchorId: 'table-dialog-cells',
+			},
+			{
+				id: 'adding--removing-rows-and-columns',
+				label: 'Adding & Removing Rows and Columns',
+				anchorId: 'table-dialog-add-remove',
+			},
+			{
+				id: 'column-alignment',
+				label: 'Column Alignment',
+				anchorId: 'table-dialog-alignment',
+			},
+			{
+				id: 'captions',
+				label: 'Captions',
+				anchorId: 'table-dialog-caption',
+			},
+			{
+				id: 'undo-redo',
+				label: 'Undo & Redo',
+				anchorId: 'table-dialog-undo',
+			},
 		],
 	});
 

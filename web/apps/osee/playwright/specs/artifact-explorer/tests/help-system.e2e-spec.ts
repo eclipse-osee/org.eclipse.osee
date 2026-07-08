@@ -25,7 +25,9 @@ function getEditor(page: Page): Locator {
 }
 
 function getHelpButton(page: Page): Locator {
-	return getEditor(page).getByRole('button').filter({ hasText: 'help_outline' });
+	return getEditor(page)
+		.getByRole('button')
+		.filter({ hasText: 'help_outline' });
 }
 
 test.describe('Help System', () => {
@@ -179,9 +181,9 @@ test.describe('Help System', () => {
 			.click();
 
 		// Wait for dialog
-		await expect(
-			page.getByRole('heading', { name: /Table/i })
-		).toBeVisible({ timeout: 5000 });
+		await expect(page.getByRole('heading', { name: /Table/i })).toBeVisible(
+			{ timeout: 5000 }
+		);
 
 		// Click help button in the dialog
 		const dialogHelpBtn = page
@@ -228,9 +230,9 @@ test.describe('Help System', () => {
 			.filter({ hasText: 'table_chart' })
 			.click();
 
-		await expect(
-			page.getByRole('heading', { name: /Table/i })
-		).toBeVisible({ timeout: 5000 });
+		await expect(page.getByRole('heading', { name: /Table/i })).toBeVisible(
+			{ timeout: 5000 }
+		);
 
 		await page
 			.getByRole('dialog')

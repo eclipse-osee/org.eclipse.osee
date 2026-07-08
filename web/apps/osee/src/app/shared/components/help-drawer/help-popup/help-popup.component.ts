@@ -46,7 +46,9 @@ export class HelpPopupComponent {
 		viewChild<ElementRef<HTMLDivElement>>('contentArea');
 
 	private readonly topicId = toSignal(
-		this.route.queryParamMap.pipe(map((params) => params.get('topic') ?? '')),
+		this.route.queryParamMap.pipe(
+			map((params) => params.get('topic') ?? '')
+		),
 		{ initialValue: '' }
 	);
 
@@ -158,9 +160,7 @@ export class HelpPopupComponent {
 					const match = parentSections.find(
 						(p) => p.label.toLowerCase() === d.label.toLowerCase()
 					);
-					return match
-						? { ...d, anchorId: match.anchorId }
-						: d;
+					return match ? { ...d, anchorId: match.anchorId } : d;
 				});
 				this.sections.set(merged);
 				this.injectShowMeButtons(container, merged);
@@ -232,7 +232,8 @@ export class HelpPopupComponent {
 			}
 
 			const scrollTop = container.scrollTop;
-			const scrollHeight = container.scrollHeight - container.clientHeight;
+			const scrollHeight =
+				container.scrollHeight - container.clientHeight;
 
 			if (scrollHeight <= 0) {
 				this.activeSection.set(headings[0].id);

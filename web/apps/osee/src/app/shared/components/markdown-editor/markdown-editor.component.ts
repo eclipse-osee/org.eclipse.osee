@@ -119,11 +119,19 @@ export class MarkdownEditorComponent {
 		markdownPath: 'assets/help/markdown-editor/overview.md',
 		sections: [
 			{ id: 'toolbar', label: 'Toolbar', anchorId: 'md-editor-toolbar' },
-			{ id: 'formatting', label: 'Formatting', anchorId: 'md-editor-textarea' },
+			{
+				id: 'formatting',
+				label: 'Formatting',
+				anchorId: 'md-editor-textarea',
+			},
 			{ id: 'images', label: 'Images', anchorId: 'md-editor-image-btn' },
 			{ id: 'tables', label: 'Tables', anchorId: 'md-editor-table-btn' },
 			{ id: 'preview', label: 'Preview', anchorId: 'md-editor-preview' },
-			{ id: 'fullscreen', label: 'Fullscreen', anchorId: 'md-editor-fullscreen-btn' },
+			{
+				id: 'fullscreen',
+				label: 'Fullscreen',
+				anchorId: 'md-editor-fullscreen-btn',
+			},
 		],
 	});
 

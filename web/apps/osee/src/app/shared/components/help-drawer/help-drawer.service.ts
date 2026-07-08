@@ -49,7 +49,8 @@ export class HelpDrawerService {
 	/** The currently active topic ID. */
 	readonly activeTopic = signal<string>('');
 
-	private readonly origin = typeof window !== 'undefined' ? window.location.origin : '';
+	private readonly origin =
+		typeof window !== 'undefined' ? window.location.origin : '';
 
 	constructor() {
 		// Listen for messages from the popup window
