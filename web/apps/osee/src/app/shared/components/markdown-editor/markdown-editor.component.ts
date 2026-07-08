@@ -584,6 +584,7 @@ export class MarkdownEditorComponent {
 				minWidth: '50%',
 				maxWidth: '90vw',
 				disableClose: true,
+				autoFocus: false,
 			});
 
 			dialogRef
