@@ -147,8 +147,8 @@
 
 		<button
 			mat-icon-button
-			[matTooltip]="isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen'"
 			oseeHelpAnchor="md-editor-fullscreen-btn"
+			[matTooltip]="isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen'"
 			(click)="toggleFullscreen()">
 			<div>
 				@if (isFullscreen()) {
