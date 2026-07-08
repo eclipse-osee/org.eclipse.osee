@@ -159,16 +159,7 @@
 			</div>
 		</button>
 
-		<span
-			[matTooltip]="isFullscreen() ? 'Open help (exits fullscreen).' : 'Help'">
-			<button
-				mat-icon-button
-				(click)="toggleHelp()">
-				<div>
-					<mat-icon> help_outline </mat-icon>
-				</div>
-			</button>
-		</span>
+		<osee-help-button topicId="markdown-editor"></osee-help-button>
 	</div>
 
 	<div

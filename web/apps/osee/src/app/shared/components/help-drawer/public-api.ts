@@ -13,3 +13,4 @@
 export * from './help-drawer.service';
 export * from './help-topic-registry.service';
 export * from './help-anchor.directive';
+export * from './help-button.component';

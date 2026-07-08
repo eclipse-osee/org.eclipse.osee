@@ -33,9 +33,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { HelpDrawerService } from '../../components/help-drawer/help-drawer.service';
 import { HelpTopicRegistryService } from '../../components/help-drawer/help-topic-registry.service';
 import { HelpAnchorDirective } from '../../components/help-drawer/help-anchor.directive';
+import { HelpButtonComponent } from '../../components/help-drawer/help-button.component';
 
 export type ColumnAlignment = 'left' | 'center' | 'right';
 
@@ -83,6 +83,7 @@ type TableSnapshot = {
 		MatLabel,
 		MatInput,
 		HelpAnchorDirective,
+		HelpButtonComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './markdown-table-dialog.component.html',
@@ -98,7 +99,6 @@ export class MarkdownTableDialogComponent {
 	private readonly data = inject<MarkdownTableDialogData>(MAT_DIALOG_DATA);
 	private readonly snackBar = inject(MatSnackBar);
 	private readonly destroyRef = inject(DestroyRef);
-	private readonly helpDrawerService = inject(HelpDrawerService);
 	private readonly helpRegistry = inject(HelpTopicRegistryService);
 
 	private readonly _registerHelp = this.helpRegistry.register({
@@ -711,10 +711,6 @@ export class MarkdownTableDialogComponent {
 		this.captionPosition.update((pos) =>
 			pos === 'above' ? 'below' : 'above'
 		);
-	}
-
-	protected toggleHelp(): void {
-		this.helpDrawerService.toggle('markdown-table-dialog');
 	}
 
 	protected cancelDialog(): void {

@@ -65,9 +65,9 @@ import {
 import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
 import { MarkdownImageService } from './markdown-image.service';
-import { HelpDrawerService } from '../help-drawer/help-drawer.service';
 import { HelpTopicRegistryService } from '../help-drawer/help-topic-registry.service';
 import { HelpAnchorDirective } from '../help-drawer/help-anchor.directive';
+import { HelpButtonComponent } from '../help-drawer/help-button.component';
 
 @Component({
 	selector: 'osee-markdown-editor',
@@ -79,6 +79,7 @@ import { HelpAnchorDirective } from '../help-drawer/help-anchor.directive';
 		MatMenuTrigger,
 		MatMenuItem,
 		HelpAnchorDirective,
+		HelpButtonComponent,
 	],
 	templateUrl: './markdown-editor.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -110,7 +111,6 @@ export class MarkdownEditorComponent {
 	private readonly imageService = inject(MarkdownImageService);
 	private readonly artExpHttpService = inject(ArtifactExplorerHttpService);
 	private readonly domSanitizer = inject(DomSanitizer);
-	private readonly helpDrawerService = inject(HelpDrawerService);
 	private readonly helpRegistry = inject(HelpTopicRegistryService);
 
 	private readonly _registerHelp = this.helpRegistry.register({
@@ -348,10 +348,6 @@ export class MarkdownEditorComponent {
 			default:
 				return null;
 		}
-	}
-
-	toggleHelp(): void {
-		this.helpDrawerService.toggle('markdown-editor');
 	}
 
 	addExampleToMdContent(markdownExample: string) {
