@@ -340,6 +340,11 @@
 	<button
 		mat-icon-button
 		type="button"
+		[attr.aria-label]="
+			captionPosition() === 'above'
+				? 'Caption position: above. Click to move below.'
+				: 'Caption position: below. Click to move above.'
+		"
 		[matTooltip]="
 			captionPosition() === 'above'
 				? 'Caption appears above the table.'

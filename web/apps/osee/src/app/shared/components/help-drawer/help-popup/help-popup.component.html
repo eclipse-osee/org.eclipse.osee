@@ -47,8 +47,11 @@
 	}
 
 	<!-- Markdown content area -->
+	<!-- Content is loaded from local assets/help/ — safe to disable sanitizer for icon HTML -->
 	<div
 		#contentArea
+		role="region"
+		aria-label="Help content"
 		class="tw-flex-1 tw-overflow-y-auto tw-px-4 tw-py-3">
 		@if (markdownPath()) {
 			<markdown

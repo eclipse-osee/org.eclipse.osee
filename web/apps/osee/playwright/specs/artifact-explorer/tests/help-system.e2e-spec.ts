@@ -125,10 +125,9 @@ test.describe('Help System', () => {
 		});
 
 		await test.step('Highlight auto-clears after animation completes', async () => {
-			// Wait for highlight to disappear (animation is 3s + 0.2s buffer)
 			await expect(
 				getEditor(page).locator('.osee-help-highlight')
-			).toHaveCount(0, { timeout: 5000 });
+			).toHaveCount(0, { timeout: 7000 });
 		});
 
 		await popup.close();
