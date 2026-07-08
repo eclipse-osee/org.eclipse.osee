@@ -89,11 +89,6 @@ public class IndexerDataSourceImpl extends ByteSource implements IndexedResource
    }
 
    @Override
-   public boolean isExternalResource() {
-      return isUriValid();
-   }
-
-   @Override
    public InputStream getResourceInput() throws IOException {
       return openStream();
    }
