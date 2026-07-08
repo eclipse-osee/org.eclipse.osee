@@ -102,10 +102,14 @@ public class TxPurgeColdStorage {
     * Exports transaction data to cold storage before purging. Captures osee_txs, osee_tx_details, and backing data
     * (artifacts, attributes, relations) for the given transactions.
     *
-    * @param txIds list of transaction IDs being purged
-    * @return the filename of the cold storage archive, or null if export failed
+    * @param txIds list of transaction IDs being purged (must not be empty)
+    * @return the filename of the cold storage archive, or null if export failed or txIds is empty
     */
    public String exportTransactions(List<TransactionId> txIds) {
+      if (txIds == null || txIds.isEmpty()) {
+         return null;
+      }
+
       String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {
          return null;
@@ -289,6 +293,14 @@ public class TxPurgeColdStorage {
     */
    public XResultData restoreTransaction(String fileName, TransactionId txId) {
       XResultData results = new XResultData();
+
+      // Check if transaction already exists in the database
+      int existingCount = jdbcClient.fetch(0,
+         "SELECT COUNT(1) FROM osee_tx_details WHERE TRANSACTION_ID = ?", txId);
+      if (existingCount > 0) {
+         results.errorf("Transaction %s already exists in the database; cannot restore a duplicate", txId);
+         return results;
+      }
 
       String coldPath = ColdStorageUtil.getColdStoragePath();
       if (coldPath == null) {

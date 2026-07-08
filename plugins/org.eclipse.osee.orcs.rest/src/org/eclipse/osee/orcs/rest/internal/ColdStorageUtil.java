@@ -20,6 +20,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public final class ColdStorageUtil {
 
+   private static final Logger LOGGER = Logger.getLogger(ColdStorageUtil.class.getName());
    private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
    private ColdStorageUtil() {
@@ -35,17 +38,21 @@ public final class ColdStorageUtil {
    }
 
    /**
-    * Resolves the cold storage directory path, creating it if necessary.
+    * Resolves the cold storage directory path, creating it if necessary. Falls back to user.home if the server data
+    * path system property is not set (a warning is logged in that case).
     *
     * @return the absolute path to the cold_storage directory, or null if the server data path cannot be determined
     */
    public static String getColdStoragePath() {
       String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      if (serverPath == null) {
-         serverPath = System.getProperty("user.home");
-      }
-      if ("null".equals(serverPath)) {
-         return null;
+      if (serverPath == null || serverPath.isBlank() || "null".equals(serverPath)) {
+         String fallback = System.getProperty("user.home");
+         if (fallback == null || fallback.isBlank() || "null".equals(fallback)) {
+            return null;
+         }
+         LOGGER.log(Level.WARNING,
+            "OSEE server data path not configured; cold storage will use fallback: {0}", fallback);
+         serverPath = fallback;
       }
       Path purgeFolder = Paths.get(serverPath + File.separator + "purge");
       if (Files.exists(purgeFolder)) {
@@ -61,8 +68,9 @@ public final class ColdStorageUtil {
    }
 
    /**
-    * Escapes single quotes and backslashes in a string for use in SQL INSERT statement previews. Also escapes newline
-    * characters to prevent SQL injection in preview output.
+    * Escapes single quotes, backslashes, newlines, and percent signs in a string for use in SQL INSERT statement
+    * previews (which are written via printf). Also escapes newline characters to prevent SQL injection in preview
+    * output.
     *
     * @param value the string to escape
     * @return the escaped string, or empty string if value is null
@@ -71,7 +79,8 @@ public final class ColdStorageUtil {
       if (value == null) {
          return "";
       }
-      return value.replace("\\", "\\\\").replace("'", "''").replace("\n", "\\n").replace("\r", "\\r");
+      return value.replace("\\", "\\\\").replace("'", "''").replace("\n", "\\n").replace("\r", "\\r").replace("%",
+         "%%");
    }
 
    /**

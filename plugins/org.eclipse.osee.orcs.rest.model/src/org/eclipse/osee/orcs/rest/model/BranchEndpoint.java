@@ -309,7 +309,7 @@ public interface BranchEndpoint {
    @Path("{branch}")
    Response purgeBranch(@PathParam("branch") BranchId branch,
       @DefaultValue("false") @QueryParam("recurse") boolean recurse,
-      @DefaultValue("true") @QueryParam("coldStorage") boolean coldStorage);
+      @DefaultValue("false") @QueryParam("coldStorage") boolean coldStorage);
 
    @DELETE
    @Path("purgeDeletedBranches")

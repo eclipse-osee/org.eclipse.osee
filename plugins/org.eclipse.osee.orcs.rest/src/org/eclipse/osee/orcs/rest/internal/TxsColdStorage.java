@@ -340,8 +340,14 @@ public class TxsColdStorage {
             jdbcClient.runPreparedUpdate(INSERT_CATALOG, branchId, branchInfo.branchName, fileName, txsRowCount,
                txDetailsRowCount, branchInfo.branchState);
 
-            // Delegate to existing PurgeBranchDatabaseCallable via OrcsBranch
-            orcsApi.getBranchOps().purgeBranch(BranchId.valueOf(branchId), false).call();
+            try {
+               // Delegate to existing PurgeBranchDatabaseCallable via OrcsBranch
+               orcsApi.getBranchOps().purgeBranch(BranchId.valueOf(branchId), false).call();
+            } catch (Exception ex) {
+               results.errorf("Failed to purge branch %d (%s): %s — aborting remaining branches",
+                  branchId, branchInfo.branchName, ex.getMessage());
+               break;
+            }
          }
 
          results.logf("Archive complete: %s (%d bytes, %d branches, %d total txs rows, %d total tx_details rows)",
@@ -349,8 +355,6 @@ public class TxsColdStorage {
 
       } catch (IOException ex) {
          results.errorf("Failed to write cold storage file: %s", ex.getMessage());
-      } catch (Exception ex) {
-         results.errorf("Failed to purge branch: %s", ex.getMessage());
       }
 
       return results;
@@ -792,7 +796,7 @@ public class TxsColdStorage {
          dos.writeLong(branchId);
          dos.writeLong(transactionId);
          dos.writeLong(author);
-         dos.writeLong(time.getTime());
+         dos.writeLong(time != null ? time.getTime() : 0L);
          dos.writeUTF(comment != null ? comment : "");
          dos.writeShort(txType);
          dos.writeLong(commitArtId);

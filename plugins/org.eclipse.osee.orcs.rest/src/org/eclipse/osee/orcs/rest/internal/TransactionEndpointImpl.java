@@ -154,13 +154,27 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       }
       if (!txList.isEmpty()) {
          TxPurgeColdStorage txColdStorage = new TxPurgeColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
-         String exportFile = txColdStorage.exportTransactions(txList);
-         if (exportFile == null) {
-            return Response.serverError().entity("Failed to export transactions to cold storage before purge").build();
+         try {
+            String exportFile = txColdStorage.exportTransactions(txList);
+            if (exportFile == null) {
+               return Response.serverError().entity(
+                  "Failed to export transactions to cold storage before purge. " +
+                  "Verify server data path is configured and writable.").build();
+            }
+         } catch (Exception ex) {
+            return Response.serverError().entity(
+               "Failed to export transactions to cold storage before purge: " + ex.getMessage()).build();
          }
       }
 
-      return asResponse(orcsApi.getTransactionFactory().purgeTxs(txIds));
+      Response purgeResponse = asResponse(orcsApi.getTransactionFactory().purgeTxs(txIds));
+      // If purge fails after successful cold storage export, log that an orphaned archive exists
+      if (purgeResponse.getStatus() != Response.Status.OK.getStatusCode()) {
+         orcsApi.getActivityLog().createEntry(
+            org.eclipse.osee.framework.core.data.CoreActivityTypes.OSEE_ERROR, 100,
+            String.format("Cold storage archive was created for txs [%s] but purge failed — orphaned archive may exist", txIds));
+      }
+      return purgeResponse;
    }
 
    @Override
