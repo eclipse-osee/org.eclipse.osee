@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import com.google.common.collect.Sets;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -135,6 +136,24 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
       Integer result = executeCallable(op);
       boolean modified = result > 0;
       return asResponse(modified);
+   }
+
+   @Override
+   public Response reindexAllCurrent(long attrTypeId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      List<Long> attrTypeIds = new ArrayList<>();
+      if (attrTypeId > 0) {
+         attrTypeIds.add(attrTypeId);
+      } else {
+         for (var attrType : orcsApi.tokenService().getTaggedAttrs()) {
+            attrTypeIds.add(attrType.getId());
+         }
+      }
+
+      orcsApi.getQueryIndexer().indexMissingByAttrTypeIds(attrTypeIds);
+
+      return Response.ok("Reindex completed for " + attrTypeIds.size() + " attribute type(s)").build();
    }
 
 }

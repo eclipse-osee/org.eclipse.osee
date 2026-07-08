@@ -58,4 +58,13 @@ public interface IndexerEndpoint {
    @Path("reindex/baseline")
    Response reindexBaselineBranches(@DefaultValue("false") @QueryParam("includeWorking") boolean includeWorking);
 
+   /**
+    * Fast re-index of all current attributes. Queries osee_attribute directly (no branch traversal) for all taggable
+    * attributes with tx_current = 1. Much faster than the branch-based reindex for full migration after truncating
+    * osee_search_tags. Returns the number of gammas processed. Optionally pass an attrTypeId to index only one type.
+    */
+   @POST
+   @Path("reindex/all")
+   Response reindexAllCurrent(@DefaultValue("0") @QueryParam("attrTypeId") long attrTypeId);
+
 }
