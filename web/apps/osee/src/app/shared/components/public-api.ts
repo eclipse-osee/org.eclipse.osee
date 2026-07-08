@@ -31,3 +31,4 @@ export * from './site-banner/site-banner.component';
 export * from './help-drawer/help-drawer.service';
 export * from './help-drawer/help-topic-registry.service';
 export * from './help-drawer/help-anchor.directive';
+export * from './help-drawer/help-button.component';

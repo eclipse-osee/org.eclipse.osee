@@ -510,11 +510,11 @@ export class MarkdownTableDialogComponent {
 	protected getAlignmentLabel(alignment: ColumnAlignment): string {
 		switch (alignment) {
 			case 'left':
-				return 'Left Aligned';
+				return 'Left';
 			case 'center':
-				return 'Center Aligned';
+				return 'Center';
 			case 'right':
-				return 'Right Aligned';
+				return 'Right';
 		}
 	}
 

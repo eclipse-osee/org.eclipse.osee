@@ -40,15 +40,23 @@ export class HelpDrawerService {
 	/** Reference to the popup window, if open. */
 	private helpWindow: Window | null = null;
 
+	/** Interval ID for tracking popup window close. */
+	private closeCheckInterval: ReturnType<typeof setInterval> | null = null;
+
 	/** Whether the help popup is currently open. */
 	readonly isOpen = signal(false);
 
 	/** The currently active topic ID. */
 	readonly activeTopic = signal<string>('');
 
+	private readonly origin = typeof window !== 'undefined' ? window.location.origin : '';
+
 	constructor() {
 		// Listen for messages from the popup window
 		window.addEventListener('message', (event) => {
+			if (event.origin !== this.origin) {
+				return;
+			}
 			if (
 				event.data?.type === 'osee-help-highlight' &&
 				event.data?.anchorId
@@ -62,7 +70,7 @@ export class HelpDrawerService {
 							type: 'osee-help-sections-response',
 							sections: topic.sections ?? [],
 						},
-						'*'
+						this.origin
 					);
 				}
 			}
@@ -75,7 +83,6 @@ export class HelpDrawerService {
 		const url = `${this.document.location.origin}${this.getBasePath()}/help-popup?topic=${topicId}`;
 
 		if (this.helpWindow && !this.helpWindow.closed) {
-			// Reuse existing window, navigate to new topic
 			this.helpWindow.location.href = url;
 			this.helpWindow.focus();
 		} else {
@@ -87,18 +94,30 @@ export class HelpDrawerService {
 		}
 		this.isOpen.set(true);
 
+		// Clear any existing interval before starting a new one
+		if (this.closeCheckInterval) {
+			clearInterval(this.closeCheckInterval);
+		}
+
 		// Track window close
-		const checkClosed = setInterval(() => {
+		this.closeCheckInterval = setInterval(() => {
 			if (!this.helpWindow || this.helpWindow.closed) {
 				this.isOpen.set(false);
 				this.helpWindow = null;
-				clearInterval(checkClosed);
+				if (this.closeCheckInterval) {
+					clearInterval(this.closeCheckInterval);
+					this.closeCheckInterval = null;
+				}
 			}
 		}, 500);
 	}
 
 	/** Closes the help popup window. */
 	close(): void {
+		if (this.closeCheckInterval) {
+			clearInterval(this.closeCheckInterval);
+			this.closeCheckInterval = null;
+		}
 		if (this.helpWindow && !this.helpWindow.closed) {
 			this.helpWindow.close();
 		}

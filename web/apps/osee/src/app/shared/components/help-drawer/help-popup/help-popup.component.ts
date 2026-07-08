@@ -72,7 +72,7 @@ export class HelpPopupComponent {
 		if (window.opener && !window.opener.closed) {
 			window.opener.postMessage(
 				{ type: 'osee-help-highlight', anchorId: section.anchorId },
-				'*'
+				window.location.origin
 			);
 		}
 		this.scrollToSection(section);
@@ -145,7 +145,7 @@ export class HelpPopupComponent {
 		if (window.opener && !window.opener.closed) {
 			window.opener.postMessage(
 				{ type: 'osee-help-request-sections', topicId: this.topicId() },
-				'*'
+				window.location.origin
 			);
 		}
 
