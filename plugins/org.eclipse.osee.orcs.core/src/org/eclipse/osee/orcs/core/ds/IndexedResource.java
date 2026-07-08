@@ -28,12 +28,4 @@ public interface IndexedResource {
    AttributeTypeToken getAttributeType();
 
    InputStream getResourceInput() throws IOException;
-
-   /**
-    * Returns true if this resource's content is stored externally (e.g., on the file system) rather than inline in the
-    * attribute value column.
-    */
-   default boolean isExternalResource() {
-      return false;
-   }
 }

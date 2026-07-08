@@ -1,4 +1,4 @@
-# Hybrid Full-Text Search Migration
+# Search Tag Encoding Migration
 
 ## Problem Statement
 
@@ -14,98 +14,34 @@ Examples of collisions:
 
 This meant keyword searches could return incorrect results.
 
-## Solution: Hybrid Full-Text Search
+## Solution: FNV-1a Hash-Based Tag Encoding
 
-Rather than just fixing the bit-packing bug, we implemented a hybrid approach:
-
-1. **Native DB full-text search** for inline attribute values (stored directly in `osee_attribute.value`)
-2. **Hash-based token table** (`osee_search_tags`) for external documents stored on the file system
-
-This eliminates the entire class of encoding bugs for inline attributes and provides better search
-quality (stemming, ranking) via the database engine, while maintaining DB-agnostic search capability
-for external resources.
-
-## Architecture
-
-### Query Path (AttributeTokenSqlHandler)
-
-When the database supports native FTS (Oracle, PostgreSQL):
-```sql
--- Inline attributes: native full-text search
-SELECT gamma_id FROM osee_attribute att WHERE CONTAINS(att.value, ?) > 0
-UNION
--- External documents: hash-based token lookup
-SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?
-INTERSECT
-SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?
-```
-
-When the database does NOT support native FTS (H2, HSQL):
-```sql
--- Token-based search only (fallback)
-SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?
-INTERSECT
-SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?
-```
-
-### Indexing Path (IndexingTaskDatabaseTxCallable)
-
-- If DB supports FTS AND attribute is inline → skip tagging (native index handles it)
-- If attribute is external (URI-based) → hash the tokens and store in `osee_search_tags`
-
-### Tag Encoding (TagEncoder)
-
-Replaced bit-packing with FNV-1a 64-bit hashing:
+The bit-packing encoder was replaced with FNV-1a 64-bit hashing:
 - One word = one hash = one tag
 - No collisions in practice (64-bit hash space)
 - Case-insensitive (normalizes to lowercase before hashing)
+
+All attributes (inline and external) continue to be indexed into `osee_search_tags` using
+this new encoding. The query path remains unchanged — token-based lookup via `coded_tag_id`.
 
 ## Files Modified
 
 | File | Change |
 |------|--------|
-| `plugins/org.eclipse.osee.jdbc/src/org/eclipse/osee/jdbc/DatabaseType.java` | Added `supportsFullTextSearch()`, `getFullTextSearchSql()`, `getFullTextIndexDdl()` |
 | `plugins/org.eclipse.osee.orcs.db/src/org/eclipse/osee/orcs/db/internal/search/tagger/TagEncoder.java` | Replaced bit-packing with FNV-1a 64-bit hash |
-| `plugins/org.eclipse.osee.orcs.db/src/org/eclipse/osee/orcs/db/internal/search/tagger/TagProcessor.java` | Removed debug code |
-| `plugins/org.eclipse.osee.orcs.core/src/org/eclipse/osee/orcs/core/ds/IndexedResource.java` | Added `isExternalResource()` default method |
-| `plugins/org.eclipse.osee.orcs.db/src/org/eclipse/osee/orcs/db/internal/search/indexer/data/IndexerDataSourceImpl.java` | Implemented `isExternalResource()` |
-| `plugins/org.eclipse.osee.orcs.db/src/org/eclipse/osee/orcs/db/internal/search/indexer/callable/consumer/IndexingTaskDatabaseTxCallable.java` | Skip tagging inline attributes when DB supports FTS |
-| `plugins/org.eclipse.osee.orcs.db/src/org/eclipse/osee/orcs/db/internal/search/handlers/AttributeTokenSqlHandler.java` | Hybrid query generation (native FTS UNION token lookup) |
-| `plugins/org.eclipse.osee.orcs.rest.model/src/org/eclipse/osee/orcs/rest/model/IndexerEndpoint.java` | Added `POST /index/reindex/baseline` endpoint |
-| `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/IndexerEndpointImpl.java` | Implemented `reindexBaselineBranches()` |
-| `plugins/org.eclipse.osee.orcs.db/src/org/eclipse/osee/orcs/db/internal/DatabaseCreation.java` | Creates FTS index during programmatic DB creation |
-| `.github/docker/utility/osee-postgres/files/init.sql` | Added GIN index for PostgreSQL deployments |
+| `plugins/org.eclipse.osee.orcs.db/src/org/eclipse/osee/orcs/db/internal/search/handlers/AttributeTokenSqlHandler.java` | Minor cleanup |
+| `plugins/org.eclipse.osee.orcs.rest.model/src/org/eclipse/osee/orcs/rest/model/IndexerEndpoint.java` | Added re-index REST endpoints |
+| `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/IndexerEndpointImpl.java` | Implemented `reindexBaselineBranches()` and `reindexAllCurrent()` |
+| `plugins/org.eclipse.osee.orcs.db/src/org/eclipse/osee/orcs/db/internal/DatabaseCreation.java` | Removed HSQL syntax workaround |
 
 ## Files Created
 
 | File | Purpose |
 |------|---------|
-| `plugins/org.eclipse.osee.orcs.db/src/org/eclipse/osee/orcs/db/internal/search/fulltext/FullTextIndexDdl.java` | Utility for creating FTS index on existing databases (idempotent) |
+| `plugins/org.eclipse.osee.orcs.db.test/src/org/eclipse/osee/orcs/db/internal/search/handlers/AttributeTokenSqlHandlerHybridQueryTest.java` | Tests for query-time tag consistency |
 | `plugins/org.eclipse.osee.orcs.db.test/src/org/eclipse/osee/orcs/db/internal/search/tagger/TagEncoderTest.java` | Rewritten tests for hash-based encoder |
 
-## Migration Plan (Oracle 12c)
-
-### Prerequisites
-
-- Oracle user must have: `GRANT CTXAPP TO osee_user; GRANT EXECUTE ON CTXSYS.CTX_DDL TO osee_user;`
-- Verify free space in OSEE_INDEX tablespace (need 8-12 GB for 6.4 GB of source text)
-- Schedule during downtime (no concurrent DML)
-
-### Check available space
-
-```sql
-SELECT tablespace_name,
-       ROUND(SUM(bytes) / 1024 / 1024 / 1024, 2) AS free_gb
-FROM dba_free_space
-WHERE tablespace_name = 'OSEE_INDEX'
-GROUP BY tablespace_name;
-```
-
-### Add space if needed
-
-```sql
-ALTER TABLESPACE OSEE_INDEX ADD DATAFILE SIZE 12G AUTOEXTEND ON NEXT 1G MAXSIZE 20G;
-```
+## Migration Plan
 
 ### Step 1: Deploy new code
 
@@ -120,27 +56,24 @@ TRUNCATE TABLE osee_search_tags;
 This is safe because:
 - The table is purely a search optimization, no FK references
 - Old bit-packed values are incompatible with new hash values
-- Inline attribute search will work via native FTS index immediately after Step 3
 
-### Step 3: Create the full-text index
+### Step 3: Start application server
 
-```sql
-CREATE INDEX osee_attr_fts_idx ON osee_attribute(value)
-   INDEXTYPE IS CTXSYS.CONTEXT
-   PARAMETERS ('MEMORY 4G SYNC (ON COMMIT)')
-   TABLESPACE OSEE_INDEX
-   PARALLEL 20;
+### Step 4: Re-index all attributes
 
-ALTER INDEX osee_attr_fts_idx NOPARALLEL;
+Call the new REST endpoint to regenerate hash-based tags for all current attributes:
+
+```
+POST /index/reindex/all
 ```
 
-With 40 cores, PARALLEL 20, and 4G memory on 6.4 GB of text: estimated ~5-10 minutes.
+Or to re-index a specific attribute type:
 
-### Step 4: Start application server
+```
+POST /index/reindex/all?attrTypeId=<type_id>
+```
 
-### Step 5: Re-index external documents
-
-Call the new REST endpoint to regenerate hash-based tags for external resources:
+Alternatively, re-index by branch:
 
 ```
 POST /index/reindex/baseline
@@ -154,13 +87,12 @@ POST /index/reindex/baseline?includeWorking=true
 
 ## Test Considerations
 
-The `TagProcessorTest` has 9 `.tags.txt` data files containing hardcoded expected tag values from
-the old bit-packing encoder. These must be regenerated with the new FNV-1a hash values before
-the test suite will pass.
+The `TagProcessorTest` previously used 9 `.tags.txt` data files containing hardcoded expected
+tag values from the old bit-packing encoder. The tests have been rewritten to validate consistency
+and determinism without coupling to specific encoded values.
 
 ## Future Considerations
 
-When documents are moved from the file system into the database (planned CLOB sub-table), the
-`osee_search_tags` table and `TagEncoder` become unnecessary entirely. The native FTS index would
-cover all content, and the hybrid UNION in the query handler simplifies to just native FTS across
-the strings and CLOBs tables.
+When documents are moved from the file system into the database (planned CLOB sub-table), native
+DB full-text search could replace the `osee_search_tags` table entirely. At that point the
+`TagEncoder` and token-based query path would become unnecessary.

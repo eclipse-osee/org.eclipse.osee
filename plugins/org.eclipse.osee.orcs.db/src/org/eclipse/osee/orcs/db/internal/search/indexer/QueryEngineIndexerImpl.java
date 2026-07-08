@@ -13,15 +13,18 @@
 
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
@@ -117,24 +120,63 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
 
    @Override
    public void indexAttrTypeMissingOnly(OrcsTokenService tokenService, Iterable<Long> attrTypeIds) {
+      List<Long> typeIdList = new ArrayList<>();
+      for (Long id : attrTypeIds) {
+         typeIdList.add(id);
+      }
+
+      int threadCount = Math.min(typeIdList.size(), 4);
+      ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+      List<Future<?>> typeFutures = new ArrayList<>();
+
+      for (Long attrTypeId : typeIdList) {
+         typeFutures.add(executor.submit(() -> indexSingleAttrTypeMissing(tokenService, attrTypeId)));
+      }
+
+      executor.shutdown();
+      try {
+         executor.awaitTermination(4, TimeUnit.HOURS);
+      } catch (InterruptedException ex) {
+         Thread.currentThread().interrupt();
+         OseeCoreException.wrapAndThrow(ex);
+      }
+
+      // Check for exceptions from individual type tasks
+      for (Future<?> future : typeFutures) {
+         try {
+            future.get();
+         } catch (Exception ex) {
+            logger.error(ex, "Error during attr type indexing");
+         }
+      }
+   }
+
+   private void indexSingleAttrTypeMissing(OrcsTokenService tokenService, Long attrTypeId) {
       String MISSING_GAMMAS_BY_TYPE =
-         "SELECT DISTINCT att.gamma_id FROM OSEE_ATTRIBUTE att, osee_txs txs WHERE attr_type_id IN (" + Collections.toString(
-            ",",
-            attrTypeIds) + ") AND att.GAMMA_ID = txs.gamma_id AND txs.tx_current = 1 AND NOT EXISTS (SELECT 1 FROM osee_search_tags tag WHERE tag.gamma_id = att.gamma_id) AND length(value) > 0";
+         "SELECT DISTINCT att.gamma_id FROM osee_attribute att, osee_txs txs WHERE att.attr_type_id = ? AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND NOT EXISTS (SELECT 1 FROM osee_search_tags tag WHERE tag.gamma_id = att.gamma_id) AND length(att.value) > 0";
       List<Long> gammaIds = new LinkedList<>();
       try (JdbcStatement chStmt = jdbcClient.getStatement()) {
-         chStmt.runPreparedQueryWithMaxFetchSize(MISSING_GAMMAS_BY_TYPE);
+         chStmt.runPreparedQueryWithMaxFetchSize(MISSING_GAMMAS_BY_TYPE, attrTypeId);
          while (chStmt.next()) {
             gammaIds.add(chStmt.getLong("gamma_id"));
          }
       }
-      System.out.println("Found gammas to tag: " + gammaIds.size());
+      System.out.println(String.format("Found %d gammas to tag for attr type %d", gammaIds.size(), attrTypeId));
+      if (gammaIds.isEmpty()) {
+         return;
+      }
       try {
-         new IndexerDatabaseCallable(logger, null, jdbcClient, joinFactory, tokenService, consumer, null,
-            IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, gammaIds).call();
+         List<Future<?>> indexFutures = new IndexerDatabaseCallable(logger, null, jdbcClient, joinFactory,
+            tokenService, consumer, null, IndexerConstants.INDEXER_CACHE_ALL_ITEMS,
+            IndexerConstants.INDEXER_CACHE_LIMIT, gammaIds).call();
+         // Wait for all indexing tasks to complete before returning
+         for (Future<?> future : indexFutures) {
+            future.get(10, TimeUnit.MINUTES);
+         }
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
+      System.out.println(String.format("Completed tagging for attr type %d", attrTypeId));
    }
 
    private IndexerCollector merge(IndexerCollector... collectors) {
