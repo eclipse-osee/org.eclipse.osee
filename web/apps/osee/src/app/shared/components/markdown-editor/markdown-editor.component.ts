@@ -66,6 +66,7 @@ import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
 import { MarkdownImageService } from './markdown-image.service';
 import { HelpDrawerService } from '../help-drawer/help-drawer.service';
+import { HelpTopicRegistryService } from '../help-drawer/help-topic-registry.service';
 import { HelpAnchorDirective } from '../help-drawer/help-anchor.directive';
 
 @Component({
@@ -110,6 +111,21 @@ export class MarkdownEditorComponent {
 	private readonly artExpHttpService = inject(ArtifactExplorerHttpService);
 	private readonly domSanitizer = inject(DomSanitizer);
 	private readonly helpDrawerService = inject(HelpDrawerService);
+	private readonly helpRegistry = inject(HelpTopicRegistryService);
+
+	private readonly _registerHelp = this.helpRegistry.register({
+		id: 'markdown-editor',
+		label: 'Markdown Editor',
+		markdownPath: 'assets/help/markdown-editor/overview.md',
+		sections: [
+			{ id: 'toolbar', label: 'Toolbar', anchorId: 'md-editor-toolbar' },
+			{ id: 'formatting', label: 'Formatting', anchorId: 'md-editor-textarea' },
+			{ id: 'images', label: 'Images', anchorId: 'md-editor-image-btn' },
+			{ id: 'tables', label: 'Tables', anchorId: 'md-editor-table-btn' },
+			{ id: 'preview', label: 'Preview', anchorId: 'md-editor-preview' },
+			{ id: 'fullscreen', label: 'Fullscreen', anchorId: 'md-editor-fullscreen-btn' },
+		],
+	});
 
 	private readonly branchId = toSignal(this.uiService.id, {
 		initialValue: '',

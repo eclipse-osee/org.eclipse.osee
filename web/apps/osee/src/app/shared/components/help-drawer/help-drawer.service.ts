@@ -12,6 +12,7 @@
  **********************************************************************/
 import { inject, Injectable, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { HelpTopicRegistryService } from './help-topic-registry.service';
 
 export type HelpTopic = {
 	readonly id: string;
@@ -31,6 +32,7 @@ export type HelpSection = {
 })
 export class HelpDrawerService {
 	private readonly document = inject(DOCUMENT);
+	private readonly registry = inject(HelpTopicRegistryService);
 
 	/** The currently highlighted anchor ID (for UI annotation). */
 	readonly highlightedAnchor = signal<string>('');
@@ -45,13 +47,24 @@ export class HelpDrawerService {
 	readonly activeTopic = signal<string>('');
 
 	constructor() {
-		// Listen for highlight messages from the popup window
+		// Listen for messages from the popup window
 		window.addEventListener('message', (event) => {
 			if (
 				event.data?.type === 'osee-help-highlight' &&
 				event.data?.anchorId
 			) {
 				this.highlightAnchor(event.data.anchorId);
+			} else if (event.data?.type === 'osee-help-request-sections') {
+				const topic = this.registry.getTopic(event.data.topicId);
+				if (topic && this.helpWindow && !this.helpWindow.closed) {
+					this.helpWindow.postMessage(
+						{
+							type: 'osee-help-sections-response',
+							sections: topic.sections ?? [],
+						},
+						'*'
+					);
+				}
 			}
 		});
 	}

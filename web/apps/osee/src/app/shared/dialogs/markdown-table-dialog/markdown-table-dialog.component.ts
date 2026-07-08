@@ -34,6 +34,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { HelpDrawerService } from '../../components/help-drawer/help-drawer.service';
+import { HelpTopicRegistryService } from '../../components/help-drawer/help-topic-registry.service';
 import { HelpAnchorDirective } from '../../components/help-drawer/help-anchor.directive';
 
 export type ColumnAlignment = 'left' | 'center' | 'right';
@@ -98,6 +99,21 @@ export class MarkdownTableDialogComponent {
 	private readonly snackBar = inject(MatSnackBar);
 	private readonly destroyRef = inject(DestroyRef);
 	private readonly helpDrawerService = inject(HelpDrawerService);
+	private readonly helpRegistry = inject(HelpTopicRegistryService);
+
+	private readonly _registerHelp = this.helpRegistry.register({
+		id: 'markdown-table-dialog',
+		label: 'Table Editor',
+		markdownPath: 'assets/help/markdown-table-dialog/overview.md',
+		sections: [
+			{ id: 'table-size', label: 'Table Size', anchorId: 'table-dialog-dimensions' },
+			{ id: 'headers-spans', label: 'Headers & Spans', anchorId: 'table-dialog-headers' },
+			{ id: 'editing-cells', label: 'Editing Cells', anchorId: 'table-dialog-cells' },
+			{ id: 'column-alignment', label: 'Column Alignment', anchorId: 'table-dialog-alignment' },
+			{ id: 'captions', label: 'Captions', anchorId: 'table-dialog-caption' },
+			{ id: 'undo-redo', label: 'Undo & Redo', anchorId: 'table-dialog-undo' },
+		],
+	});
 
 	private readonly maxCols = 50;
 	private readonly maxRows = 100;
