@@ -11,33 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-:host
-  display: block
-  height: 100vh
-  overflow: hidden
+.osee-help-section-chip.active
+  background: #1976d2 !important
+  color: white !important
+  border-color: #1976d2 !important
 
-.osee-help-popup-root
-  background: #ffffff
-  color: #333
-  height: 100%
-
-.osee-help-popup-header
-  background: #f5f5f5
-  border-color: #e0e0e0
-
-.osee-help-popup-nav
-  border-color: #e0e0e0
-
-.osee-help-section-chip
-  border-color: #e0e0e0
-  color: #555
-  background: transparent
-  &:hover, &.active
-    background: #1976d2
-    color: white
-    border-color: #1976d2
-
-// "Show Me" button injected into markdown h2 headings
+// Dynamically injected "Show Me" buttons
 ::ng-deep .osee-help-show-me-btn
   display: inline-flex
   align-items: center
@@ -51,7 +30,7 @@
   font-size: 11px
   font-weight: 500
   cursor: pointer
-  transition: background-color 0.15s, border-color 0.15s
+  transition: background-color 0.15s
   white-space: nowrap
   line-height: 1.6
   &:hover
@@ -61,7 +40,7 @@
     -webkit-font-smoothing: antialiased
     text-rendering: optimizeLegibility
 
-// Markdown content styling
+// Dynamically rendered markdown content
 ::ng-deep .osee-help-markdown
   color: #333
   font-size: 14px
@@ -128,21 +107,6 @@
     font-weight: 500
 
 @media (prefers-color-scheme: dark)
-  .osee-help-popup-root
-    background: #1e1e22
-    color: #e0e0e0
-  .osee-help-popup-header
-    background: #2a2a2e
-    border-color: #444
-  .osee-help-popup-nav
-    border-color: #444
-  .osee-help-section-chip
-    border-color: #444
-    color: #ccc
-    &:hover, &.active
-      background: #1976d2
-      color: white
-      border-color: #1976d2
   ::ng-deep .osee-help-markdown
     color: #e0e0e0
     h2

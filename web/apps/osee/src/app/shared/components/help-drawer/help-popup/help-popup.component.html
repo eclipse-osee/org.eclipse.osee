@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="osee-help-popup-root tw-flex tw-h-full tw-flex-col tw-overflow-hidden">
+<div class="tw-flex tw-h-full tw-flex-col tw-overflow-hidden tw-bg-white tw-text-[#333] dark:tw-bg-[#1e1e22] dark:tw-text-[#e0e0e0]">
 	<!-- Header -->
 	<div
-		class="osee-help-popup-header tw-flex tw-items-center tw-justify-between tw-border-b tw-px-4 tw-py-2">
+		class="tw-flex tw-items-center tw-justify-between tw-border-b tw-border-[#e0e0e0] tw-bg-[#f5f5f5] tw-px-4 tw-py-2 dark:tw-border-[#444] dark:tw-bg-[#2a2a2e]">
 		<div class="tw-flex tw-items-center tw-gap-2">
 			<mat-icon>help_outline</mat-icon>
 			<h1 class="tw-m-0 tw-text-base tw-font-medium">
@@ -25,13 +25,13 @@
 	<!-- Section navigation -->
 	@if (sections().length > 0) {
 		<nav
-			class="osee-help-popup-nav tw-border-b tw-px-3 tw-py-2"
+			class="tw-border-b tw-border-[#e0e0e0] tw-px-3 tw-py-2 dark:tw-border-[#444]"
 			aria-label="Help sections">
 			<ul class="tw-m-0 tw-flex tw-list-none tw-flex-wrap tw-gap-1 tw-p-0">
 				@for (section of sections(); track section.id) {
 					<li class="tw-flex tw-items-center">
 						<button
-							class="osee-help-section-chip tw-flex tw-cursor-pointer tw-items-center tw-gap-1 tw-rounded-full tw-border tw-px-2.5 tw-py-1 tw-text-xs tw-font-medium tw-transition-colors"
+							class="osee-help-section-chip tw-flex tw-cursor-pointer tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-[#e0e0e0] tw-bg-transparent tw-px-2.5 tw-py-1 tw-text-xs tw-font-medium tw-text-[#555] tw-transition-colors hover:tw-border-[#1976d2] hover:tw-bg-[#1976d2] hover:tw-text-white dark:tw-border-[#444] dark:tw-text-[#ccc]"
 							[class.active]="activeSection() === section.id"
 							(click)="highlightInParent(section)"
 							[matTooltip]="'Highlight in UI and scroll to docs.'">
