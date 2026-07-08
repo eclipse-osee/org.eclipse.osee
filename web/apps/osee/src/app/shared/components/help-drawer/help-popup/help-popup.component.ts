@@ -24,7 +24,6 @@ import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MarkdownComponent } from 'ngx-markdown';
 import {
@@ -34,7 +33,7 @@ import { HelpSection } from '../help-drawer.service';
 
 @Component({
 	selector: 'osee-help-popup',
-	imports: [MatIcon, MatIconButton, MatTooltip, MarkdownComponent],
+	imports: [MatIcon, MatTooltip, MarkdownComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './help-popup.component.html',
 	host: {
