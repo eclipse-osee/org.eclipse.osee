@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HelpTopic } from './help-drawer.service';
 
 /**
@@ -21,21 +21,17 @@ import { HelpTopic } from './help-drawer.service';
 	providedIn: 'root',
 })
 export class HelpTopicRegistryService {
-	private readonly topicMap = signal<Map<string, HelpTopic>>(new Map());
+	private readonly topicMap = new Map<string, HelpTopic>();
 
 	getTopic(id: string): HelpTopic | undefined {
-		return this.topicMap().get(id);
+		return this.topicMap.get(id);
 	}
 
 	getAllTopics(): HelpTopic[] {
-		return [...this.topicMap().values()];
+		return [...this.topicMap.values()];
 	}
 
 	register(topic: HelpTopic): void {
-		this.topicMap.update((m) => {
-			const copy = new Map(m);
-			copy.set(topic.id, topic);
-			return copy;
-		});
+		this.topicMap.set(topic.id, topic);
 	}
 }

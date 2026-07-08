@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './help-drawer.component';
 export * from './help-drawer.service';
 export * from './help-topic-registry.service';
 export * from './help-anchor.directive';
