@@ -273,7 +273,8 @@ public class BlockApplicabilityOps {
 
          if (type.equals(ApplicabilityType.Feature)) {
             toInsert =
-               getValidFeatureContent(insideText, applic.isInTable(), parser.getIdValuesMap(), parser.getOperators());
+               getValidFeatureContent(insideText, applic.isInTable(), parser.getIdValuesMap(), parser.getOperators(),
+                  applicabilityExpression);
          } else if (type.equals(ApplicabilityType.Configuration) || type.equals(ApplicabilityType.NotConfiguration)) {
             toInsert = getValidConfigurationContent(type, insideText, parser.getIdValuesMap());
          } else if (type.equals(ApplicabilityType.ConfigurationGroup) || type.equals(
@@ -290,7 +291,8 @@ public class BlockApplicabilityOps {
    }
 
    private String getValidFeatureContent(String fullText, boolean isInTable,
-      HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
+      HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators,
+      String applicabilityExpression) {
       Matcher match = ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
@@ -325,7 +327,13 @@ public class BlockApplicabilityOps {
          Object evalResult = context.evaluateString(scope, expression, "JavaScript", 1, null);
          result = Context.toBoolean(evalResult);
       } catch (Exception ex) {
-         throw new OseeCoreException("Failed to parse expression: " + expression);
+         // Surface a user-meaningful error that points back to the original Feature[...] snippet,
+         // rather than the internal boolean expression (for example, "false &&").
+         logger.error(String.format(
+            "Failed to parse feature applicability definition \"%s\". Internal expression: %s",
+            applicabilityExpression, expression));
+         throw new OseeCoreException(
+            "Failed to parse feature applicability definition: " + applicabilityExpression);
       }
 
       StringBuilder toReturn = new StringBuilder();
