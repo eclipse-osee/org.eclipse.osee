@@ -314,63 +314,13 @@ html
       .error-checkbox
         @include mat.checkbox-color(theme.$dark-theme, $color-variant:error)
 
-// Help popup window styles
+// Help popup app root override
 osee-root:has(osee-help-popup)
   display: block
   height: 100vh
   overflow: hidden
 
-.osee-help-popup-root
-  background: #ffffff
-  color: #333
-  height: 100%
-
-.osee-help-popup-header
-  background: #f5f5f5
-  border-color: #e0e0e0
-
-.osee-help-popup-nav
-  border-color: #e0e0e0
-
-.osee-help-section-chip
-  border-color: #e0e0e0
-  color: #555
-  background: transparent
-  &:hover, &.active
-    background: #1976d2
-    color: white
-    border-color: #1976d2
-
-@media (prefers-color-scheme: dark)
-  .osee-help-popup-root
-    background: #1e1e22
-    color: #e0e0e0
-  .osee-help-popup-header
-    background: #2a2a2e
-    border-color: #444
-  .osee-help-popup-nav
-    border-color: #444
-  .osee-help-section-chip
-    border-color: #444
-    color: #ccc
-    &:hover, &.active
-      background: #1976d2
-      color: white
-      border-color: #1976d2
-
-// Help drawer floating popup styles
-osee-help-drawer
-  color: #333
-  // Ensure Material Icons ligatures render inside the help panel
-  .material-icons, mat-icon
-    font-feature-settings: 'liga'
-    -webkit-font-smoothing: antialiased
-    text-rendering: optimizeLegibility
-  @media (prefers-color-scheme: dark)
-    color: #e0e0e0
-
-// Help drawer highlight animation
-// One flash, longer hold, then fade out (total ~3s)
+// Help highlight animation
 @keyframes osee-help-pulse
   0%
     outline: 3px solid rgba(25, 118, 210, 0)
@@ -397,111 +347,3 @@ osee-help-drawer
   position: relative
   z-index: 9999
   outline-offset: -3px
-
-// "Show Me" button injected into help markdown h2 headings
-.osee-help-show-me-btn
-  display: inline-flex
-  align-items: center
-  gap: 4px
-  margin-left: auto
-  padding: 2px 10px
-  border: 1px solid #1976d2
-  border-radius: 12px
-  background: transparent
-  color: #1976d2
-  font-size: 11px
-  font-weight: 500
-  cursor: pointer
-  transition: background-color 0.15s, border-color 0.15s
-  white-space: nowrap
-  line-height: 1.6
-  &:hover
-    background-color: rgba(25, 118, 210, 0.1)
-  .material-icons
-    font-feature-settings: 'liga'
-    -webkit-font-smoothing: antialiased
-    text-rendering: optimizeLegibility
-
-// Help markdown section heading active state (scroll tracking)
-.osee-help-markdown h2
-  scroll-margin-top: 8px
-
-// Help markdown content styling (uses media query for dark mode since
-// the panel is outside the Tailwind dark-mode scope)
-.osee-help-markdown
-  color: #333
-  font-size: 14px
-  line-height: 1.6
-  h1
-    font-size: 1.125rem
-    font-weight: 600
-    margin-bottom: 12px
-  h2
-    font-size: 0.875rem
-    font-weight: 600
-    margin-top: 24px
-    margin-bottom: 8px
-    padding-bottom: 4px
-    border-bottom: 1px solid #e0e0e0
-    display: flex
-    align-items: center
-    gap: 8px
-  h3
-    font-size: 0.875rem
-    font-weight: 500
-    margin-top: 16px
-  p
-    margin: 8px 0
-    font-size: 0.875rem
-    line-height: 1.6
-  ul
-    list-style: disc
-    padding-left: 20px
-  ol
-    list-style: decimal
-    padding-left: 20px
-  li
-    margin-bottom: 4px
-    font-size: 0.875rem
-  code
-    background: #f5f5f5
-    padding: 2px 6px
-    border-radius: 3px
-    font-size: 0.75rem
-  a
-    color: #1976d2
-  strong
-    font-weight: 600
-  blockquote
-    margin: 8px 0
-    padding: 8px 12px
-    border-left: 4px solid #1976d2
-    background: #f5f5f5
-    font-style: italic
-    font-size: 0.875rem
-  table
-    width: 100%
-    margin: 12px 0
-    font-size: 0.75rem
-    border-collapse: collapse
-  th, td
-    border: 1px solid #e0e0e0
-    padding: 4px 8px
-    text-align: left
-  th
-    background: #f5f5f5
-    font-weight: 500
-  @media (prefers-color-scheme: dark)
-    color: #e0e0e0
-    h2
-      border-bottom-color: #444
-    code
-      background: #2a2a2e
-    blockquote
-      background: #2a2a2e
-    th
-      background: #2a2a2e
-    th, td
-      border-color: #444
-    a
-      color: #64b5f6

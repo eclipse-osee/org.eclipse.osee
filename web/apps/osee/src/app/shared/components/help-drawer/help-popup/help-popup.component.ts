@@ -36,6 +36,7 @@ import { HelpSection } from '../help-drawer.service';
 	imports: [MatIcon, MatTooltip, MarkdownComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './help-popup.component.html',
+	styleUrl: './help-popup.component.sass',
 	host: {
 		class: 'tw-block tw-h-screen tw-overflow-hidden',
 	},
