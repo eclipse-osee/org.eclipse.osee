@@ -158,7 +158,9 @@ export class HelpPopupComponent {
 					const match = parentSections.find(
 						(p) => p.label.toLowerCase() === d.label.toLowerCase()
 					);
-					return match ? { ...d, anchorId: match.anchorId } : d;
+					return match
+						? { ...d, anchorId: match.anchorId }
+						: d;
 				});
 				this.sections.set(merged);
 				this.injectShowMeButtons(container, merged);

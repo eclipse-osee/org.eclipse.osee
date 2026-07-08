@@ -99,7 +99,7 @@
 			style="border-spacing: 0; border-collapse: separate">
 			<thead class="tw-sticky tw-top-0 tw-z-20">
 				<!-- Alignment controls row -->
-				<tr oseeHelpAnchor="table-dialog-alignment">
+				<tr>
 					<th
 						class="tw-sticky tw-left-0 tw-z-30 tw-border-b tw-border-r tw-border-osee-neutral-25 tw-bg-white tw-p-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6"></th>
 					@for (alignment of alignments(); track $index) {
@@ -110,6 +110,7 @@
 								<button
 									mat-icon-button
 									type="button"
+									oseeHelpAnchor="table-dialog-add-remove"
 									matTooltip="Insert Column Before"
 									class="tw-text-osee-blue-6"
 									(click)="insertColumnAt($index)">
@@ -119,11 +120,12 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-alignment"
 										[matTooltip]="
 											'Alignment: ' +
 											getAlignmentLabel(alignment) +
 											(getSpan($index) > 1
-												? ' - controls spanned header'
+												? ' — controls spanned header'
 												: '')
 										"
 										(click)="cycleAlignment($index)">
@@ -141,6 +143,7 @@
 								<button
 									mat-icon-button
 									type="button"
+									oseeHelpAnchor="table-dialog-add-remove"
 									matTooltip="Insert Column After"
 									class="tw-text-osee-blue-6"
 									(click)="insertColumnAt($index + 1)">
@@ -150,6 +153,7 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-add-remove"
 										matTooltip="Remove Column"
 										class="tw-text-osee-red-24 hover:tw-text-osee-red-21"
 										(click)="removeColumn($index)">
@@ -246,6 +250,7 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-add-remove"
 										matTooltip="Insert Row Above"
 										matTooltipPosition="above"
 										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
@@ -260,6 +265,7 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-add-remove"
 										matTooltip="Insert Row Below"
 										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
 										(click)="insertRowAt(rowIdx + 1)">
@@ -270,6 +276,7 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-add-remove"
 										matTooltip="Remove Row"
 										class="tw-text-osee-red-24 hover:tw-text-osee-red-21"
 										(click)="removeRow(rowIdx)">

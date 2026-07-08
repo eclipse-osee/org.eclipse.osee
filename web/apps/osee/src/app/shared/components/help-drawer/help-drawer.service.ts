@@ -34,7 +34,7 @@ export class HelpDrawerService {
 	private readonly document = inject(DOCUMENT);
 	private readonly registry = inject(HelpTopicRegistryService);
 
-	/** The currently highlighted anchor ID (for UI annotation). */
+	/** The currently highlighted anchor ID (for directive-based highlighting). */
 	readonly highlightedAnchor = signal<string>('');
 
 	/** Reference to the popup window, if open. */
@@ -57,11 +57,10 @@ export class HelpDrawerService {
 			if (event.origin !== this.origin) {
 				return;
 			}
-			if (
-				event.data?.type === 'osee-help-highlight' &&
-				event.data?.anchorId
-			) {
-				this.highlightAnchor(event.data.anchorId);
+			if (event.data?.type === 'osee-help-highlight') {
+				if (event.data.anchorId) {
+					this.highlightAnchor(event.data.anchorId);
+				}
 			} else if (event.data?.type === 'osee-help-request-sections') {
 				const topic = this.registry.getTopic(event.data.topicId);
 				if (topic && this.helpWindow && !this.helpWindow.closed) {

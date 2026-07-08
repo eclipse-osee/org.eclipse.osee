@@ -31,12 +31,16 @@ Click any cell to edit its content. Cells support multi-line text — press Ente
 - Pipe characters (`|`) are automatically escaped in the output so they don't break the table structure.
 - Newlines are converted to `<br>` tags in the markdown output since table rows must be single lines.
 
-**Adding rows and columns:**
+**Row resizing:** Drag the horizontal divider between rows to adjust row height for multi-line content.
+
+## Adding & Removing Rows and Columns
+
+**Adding:**
 - Use the <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_up</span> / <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_down</span> buttons in the row gutter to insert rows above or below.
 - Use the <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_left</span> / <span class="material-icons" style="font-size:14px;vertical-align:middle">keyboard_arrow_right</span> buttons above column headers to insert columns.
 - Row numbers are displayed between the arrow buttons for easy reference.
 
-**Removing rows and columns:**
+**Removing:**
 - Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">close</span> icon (red) next to a row or column to remove it.
 - At least one row and one column must remain.
 
@@ -89,6 +93,4 @@ The undo history holds up to 50 states.
 
 - **Large tables:** Tables with more than 500 cells use progressive loading — you'll see a loading indicator as rows appear in batches.
 - **Edit existing tables:** If your cursor is inside a table in the markdown editor, opening the table dialog will pre-load that table for editing. This works even if your cursor is on the caption line.
-- **Quick column alignment:** Click the alignment icon repeatedly to cycle through left → center → right → left.
-- **Row resizing:** Drag the horizontal divider between rows to adjust row height for multi-line content.
-- **Merge carefully:** Once columns are merged, cell data in the hidden columns is preserved in the data rows. Unmerging restores the columns with their original data intact.
+- **Merge carefully:** Merging a column clears its header text. Use Ctrl+Z to undo if needed.
