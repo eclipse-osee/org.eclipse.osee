@@ -20,7 +20,9 @@ export const selectBranchType = async (
 	page: Page,
 	branchType: 'Working' | 'Baseline'
 ) => {
-	await page.getByRole('radio', { name: branchType }).click();
+	await page
+		.locator(`mat-button-toggle[data-cy="${branchType.toLowerCase()}"]`)
+		.click();
 };
 
 /**

@@ -32,8 +32,12 @@ test('branch picker is visible and functional', async ({ page }) => {
 	await expect(page.getByText('Select a Branch')).toBeVisible();
 
 	// Verify branch type toggle buttons are available
-	await expect(page.getByRole('radio', { name: 'Working' })).toBeVisible();
-	await expect(page.getByRole('radio', { name: 'Baseline' })).toBeVisible();
+	await expect(
+		page.locator('mat-button-toggle[data-cy="working"]')
+	).toBeVisible();
+	await expect(
+		page.locator('mat-button-toggle[data-cy="baseline"]')
+	).toBeVisible();
 });
 
 test('loading indicator appears when branch is selected', async ({ page }) => {

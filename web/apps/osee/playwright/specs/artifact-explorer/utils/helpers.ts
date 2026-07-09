@@ -83,13 +83,7 @@ export const navigateToArtifactExplorer = async (page: Page) => {
  */
 export const createTestBranch = async (page: Page, branchName: string) => {
 	await navigateToArtifactExplorer(page);
-	await page.getByRole('radio', { name: 'Baseline' }).click();
-	const branchCombobox = page.getByRole('combobox', {
-		name: 'Select a Branch',
-	});
-	await branchCombobox.click();
-	await branchCombobox.fill('SAW_Bld_1');
-	await page.getByRole('option', { name: 'SAW_Bld_1' }).click();
+	await selectBranch(page, 'Baseline', 'SAW_Bld_1');
 
 	await page.getByRole('button', { name: 'Branch Management' }).click();
 	await page.getByRole('button', { name: 'Create Branch' }).click();

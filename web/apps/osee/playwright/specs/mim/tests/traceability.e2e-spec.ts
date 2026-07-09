@@ -48,8 +48,14 @@ test('set up relations', async ({ page }) => {
 		.fill('element');
 	await page.getByText('Interface DataElement', { exact: true }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
-	await page.locator('button').filter({ hasText: 'search' }).click();
+	await page
+		.locator('osee-artifact-search button')
+		.filter({ hasText: 'search' })
+		.click();
 	await page.getByRole('button', { name: 'Demo Fault' }).click();
+
+	// Switch to hierarchy view after selecting search result
+	await page.getByRole('button', { name: 'Artifact Hierarchy' }).click();
 
 	// Create software requirement
 	await page
@@ -59,42 +65,49 @@ test('set up relations', async ({ page }) => {
 		});
 	await page.getByRole('menuitem', { name: 'Create Child Artifact' }).click();
 	await page.getByLabel('Enter a Name:').fill('Fault Handling');
-	await page.getByPlaceholder('Unspecified').click();
-	await page.getByPlaceholder('Unspecified').fill('software requirement');
+	await page.getByPlaceholder('Unspecified').first().click();
+	await page
+		.getByPlaceholder('Unspecified')
+		.first()
+		.fill('software requirement');
 	await page.getByText('Software Requirement', { exact: true }).click();
-	await page.locator('input[name="\\30 "]').click();
-	await page.getByText('C', { exact: true }).click();
-	await page.locator('[id="\\31 "]').click();
-	await page.getByText('Design Constraint').click();
-	await page.locator('[id="\\32 "]').click();
-	await page.getByText('Navigation').click();
-	await page.locator('[id="\\33 "]').click();
-	await page.getByText('Aircraft Systems').click();
-	await page.locator('[id="\\33 "]').fill('');
-	await page.getByText('Navigation').click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 
 	// Relate requirement to element
-	await page.getByRole('button', { name: 'Relations Editor' }).click();
+	await page.getByRole('button', { name: 'Relations' }).click();
 	await page.waitForTimeout(500);
-	await page.keyboard.press('End');
-	await page
-		.locator('div:nth-child(19) > div > button')
-		.click({ force: true });
-	await page.waitForTimeout(500);
-	await page.keyboard.press('End');
-	await page
-		.locator('#relationList > div > button')
-		.first()
-		.click({ force: true });
-	await page.waitForTimeout(500);
-	await page.keyboard.press('End');
 
-	// Drag and drop requirement to relation tree
+	// Expand the "Requirements to Interface" relation type
+	const reqToInterfaceRelation = page
+		.locator('osee-relations-editor-panel')
+		.getByText('Requirements to Interface');
+	await reqToInterfaceRelation.scrollIntoViewIfNeeded();
+	await reqToInterfaceRelation
+		.locator('..')
+		.locator('..')
+		.locator('button')
+		.first()
+		.click();
+	await page.waitForTimeout(300);
+
+	// Expand the "Requirement Artifact" relation side
+	const requirementArtifactSide = page
+		.locator('osee-relations-editor-panel')
+		.getByText('Requirement Artifact');
+	await requirementArtifactSide.scrollIntoViewIfNeeded();
+	await requirementArtifactSide
+		.locator('..')
+		.locator('..')
+		.locator('button')
+		.first()
+		.click();
+	await page.waitForTimeout(300);
+
+	// Drag and drop "Fault Handling" from hierarchy to the relation side
 	await page.getByRole('button', { name: 'Fault Handling' }).hover();
 	await page.mouse.down();
-	await page.getByText('Requirement Artifact').hover();
-	await page.getByText('Requirement Artifact').hover();
+	await requirementArtifactSide.hover();
+	await requirementArtifactSide.hover();
 	await page.mouse.up();
 	await page.waitForTimeout(500);
 

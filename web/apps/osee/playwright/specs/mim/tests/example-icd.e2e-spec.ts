@@ -11,15 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 test('test', async ({ page }) => {
 	test.setTimeout(600000);
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByRole('radio', { name: 'Baseline' }).click();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('SAW Product Line').click();
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 
 	await expect(page.getByText('Node B')).toBeVisible();
 	await page.keyboard.press('Escape'); // Get rid of a tooltip
