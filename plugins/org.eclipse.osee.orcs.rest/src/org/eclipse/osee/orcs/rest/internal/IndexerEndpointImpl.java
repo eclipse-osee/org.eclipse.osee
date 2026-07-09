@@ -156,4 +156,24 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
       return Response.ok("Reindex completed for " + attrTypeIds.size() + " attribute type(s)").build();
    }
 
+   @Override
+   public Response reindexDirect(long attrTypeId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      List<Long> attrTypeIds = new ArrayList<>();
+      if (attrTypeId > 0) {
+         attrTypeIds.add(attrTypeId);
+      } else {
+         for (var attrType : orcsApi.tokenService().getTaggedAttrs()) {
+            attrTypeIds.add(attrType.getId());
+         }
+      }
+
+      for (Long typeId : attrTypeIds) {
+         orcsApi.getQueryIndexer().indexDirectByAttrType(typeId);
+      }
+
+      return Response.ok("Direct reindex completed for " + attrTypeIds.size() + " attribute type(s)").build();
+   }
+
 }

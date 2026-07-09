@@ -96,6 +96,7 @@ public final class Engines {
       IndexerCallableFactory callableFactory =
          new IndexerCallableFactoryImpl(logger, jdbcClient, taggingEngine, resourceLoader);
       IndexingTaskConsumer indexConsumer = new IndexingTaskConsumerImpl(executorAdmin, callableFactory);
-      return new QueryEngineIndexerImpl(logger, jdbcClient, sqlJoinFactory, indexConsumer);
+      return new QueryEngineIndexerImpl(logger, jdbcClient, sqlJoinFactory, indexConsumer, taggingEngine,
+         resourceManager);
    }
 }

@@ -91,4 +91,9 @@ public class QueryIndexerImpl implements QueryIndexer {
       return engineIndexer.purgeAllIndexes(session);
    }
 
+   @Override
+   public void indexDirectByAttrType(Long attrTypeId) {
+      engineIndexer.indexDirectByAttrType(tokenService, attrTypeId);
+   }
+
 }
