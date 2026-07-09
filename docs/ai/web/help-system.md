@@ -132,8 +132,8 @@ Click-to-scroll positions the viewport at `(headingPercent - 0.02) * maxScroll` 
 ## Highlight Animation
 
 Defined in `styles.sass` (global, since the directive applies it to arbitrary elements):
-- **Containers/panels**: outline + background tint flash in orange (`#f57c00`), with `outline-offset: 0px`. Background tint ensures visibility even inside `overflow: hidden` parents.
-- **Buttons**: icon scale pulse (1.3×) + orange color flash. No outline (avoids asymmetric padding issues on icon buttons).
+- **Containers/panels**: outline + background tint flash in purple (`#e040fb`), with `outline-offset: 0px`. Background tint ensures visibility even inside `overflow: hidden` parents.
+- **Buttons**: icon scale pulse (1.2×) + purple color flash. No outline (avoids asymmetric padding issues on icon buttons).
 - Both variants: one flash, hold, fade out over 3 seconds.
 - Auto-clears after 3.2 seconds via the directive's timeout.
 - Multiple elements can share the same `anchorId` — all flash simultaneously when triggered.
