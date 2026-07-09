@@ -8,7 +8,11 @@ Set the number of rows and columns using the **Cols** and **Rows** input fields 
 
 **Limits:** Tables support up to 50 columns and 100 rows.
 
-**To resize quickly:** Type a new number in the Columns or Rows input field and press Tab or click away — the table resizes immediately.
+**To resize quickly:** Type a new number in the Columns or Rows input field and press Tab or click away. The table resizes immediately.
+
+**Large tables:** Tables with more than 500 cells use progressive loading. You'll see a loading indicator as rows appear in batches.
+
+If your cursor is inside a table in the markdown editor, opening the table dialog will pre-load that table for editing. This works even if your cursor is on the caption line.
 
 ## Headers & Spans
 
@@ -23,9 +27,11 @@ Merged columns show an indicator (← Header Name) to show which header owns the
 
 **Colspan in markdown:** Spanned headers output using the `||` syntax (empty pipes for spanned columns), which is rendered by the Flexmark parser.
 
+> Note: Merging a column clears its header text. Use Ctrl+Z to undo if needed.
+
 ## Editing Cells
 
-Click any cell to edit its content. Cells support multi-line text — press Enter to add a newline within a cell.
+Click any cell to edit its content. Cells support multi-line text. Press Enter to add a newline within a cell.
 
 **Special characters:**
 - Pipe characters (`|`) are automatically escaped in the output so they don't break the table structure.
@@ -49,9 +55,9 @@ Click any cell to edit its content. Cells support multi-line text — press Ente
 Each column has an alignment setting: **Left**, **Center**, or **Right**.
 
 Click the alignment icon below a column header to cycle through the options:
-- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_left</span> — Left aligned.
-- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_center</span> — Center aligned.
-- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_right</span> — Right aligned.
+- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_left</span> Left aligned.
+- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_center</span> Center aligned.
+- <span class="material-icons" style="font-size:14px;vertical-align:middle">format_align_right</span> Right aligned.
 
 Alignment is reflected in the markdown separator row (`:--`, `:-:`, `--:`).
 
@@ -76,7 +82,7 @@ The table editor tracks all structural changes in an undo history.
 **To undo:** Press **Ctrl+Z** or click the <span class="material-icons" style="font-size:14px;vertical-align:middle">undo</span> button in the toolbar.
 **To redo:** Press **Ctrl+Y** or click the <span class="material-icons" style="font-size:14px;vertical-align:middle">redo</span> button in the toolbar.
 
-Text edits within individual cells are captured when you focus the cell — the pre-edit state is saved so you can undo back to it. The caption input also saves undo state on focus.
+Text edits within individual cells are captured when you focus the cell. The pre-edit state is saved so you can undo back to it. The caption input also saves undo state on focus.
 
 The undo history holds up to 50 states.
 
@@ -88,9 +94,3 @@ The undo history holds up to 50 states.
 | Ctrl+Y | Redo last undone change. |
 | Escape | Cancel and close (same as Cancel button). |
 | Tab | Move between cells. |
-
-## Tips
-
-- **Large tables:** Tables with more than 500 cells use progressive loading — you'll see a loading indicator as rows appear in batches.
-- **Edit existing tables:** If your cursor is inside a table in the markdown editor, opening the table dialog will pre-load that table for editing. This works even if your cursor is on the caption line.
-- **Merge carefully:** Merging a column clears its header text. Use Ctrl+Z to undo if needed.

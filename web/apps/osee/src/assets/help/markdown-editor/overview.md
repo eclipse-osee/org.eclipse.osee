@@ -46,12 +46,12 @@ Upload images to embed them in your content. Images are stored as OSEE artifacts
 **Drag and drop:** You can also drag an image file directly onto the editor textarea.
 
 **Size options:**
-- XS — 25% width.
-- S — 50% width.
-- M — 75% width.
-- L — 100% width.
+- XS: 25% width.
+- S: 50% width.
+- M: 75% width.
+- L: 100% width.
 
-**Image preview:** Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">visibility</span> icon to see images rendered inline instead of as tags. Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">edit</span> icon to return to editing.
+**Image preview:** Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">visibility</span> icon to see images rendered inline instead of as tags. Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">edit</span> icon to return to editing. Large markdown content with many images may take a moment to render in preview mode. A loading indicator appears while images are being fetched.
 
 > Note: The image upload button is only available after the artifact has been saved at least once.
 
@@ -67,10 +67,12 @@ Create and edit markdown tables using a visual dialog.
 
 **To edit an existing table:**
 1. Place your cursor anywhere inside an existing table (including on a caption line).
-2. Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">table_chart</span> button — it opens in edit mode with the table pre-loaded.
+2. Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">table_chart</span> button. It opens in edit mode with the table pre-loaded.
 
 **To select an entire table:**
 Click the <span class="material-icons" style="font-size:14px;vertical-align:middle">select_all</span> button to highlight the full table at your cursor position in the textarea, making it easy to copy or delete.
+
+Tables are stored as standard markdown pipe syntax and can be edited as raw text or through the visual dialog.
 
 ## Preview
 
@@ -96,8 +98,3 @@ Press **Escape** or click the <span class="material-icons" style="font-size:14px
 | Ctrl+Y | Redo. |
 | Escape | Exit fullscreen. |
 
-## Tips
-
-- The editor preserves your cursor position when toolbar buttons steal focus, so formatting is always applied where you expect.
-- Large markdown content with many images may take a moment to render in preview mode — a loading indicator appears while images are being fetched.
-- Tables are stored as standard markdown pipe syntax and can be edited as raw text or through the visual dialog.

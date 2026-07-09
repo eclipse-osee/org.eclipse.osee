@@ -73,9 +73,10 @@ Place `oseeHelpAnchor` on elements you want the "Show Me" feature to highlight:
 
 **Anchor placement guidelines:**
 - Place on a visually bounded container, not on individual text elements
-- Avoid placing on elements with `overflow: hidden` on their parent (outline gets clipped)
-- For toolbar buttons, wrap related buttons in a `<span>` with the anchor rather than putting it on individual circular buttons
+- For toolbar buttons, place the anchor on the `<button>` directly — the button gets an icon flash instead of an outline
+- For groups of repeated buttons (e.g., row/column insert buttons in a `@for` loop), use the same `anchorId` on each — they all flash simultaneously
 - For `mat-form-field`, place the anchor on the `<mat-form-field>` element, not the inner `<input>`
+- The outline highlight uses `outline-offset: 0px` with a background tint fallback for elements inside `overflow: hidden` parents
 
 ### Step 3: Add a help button
 
@@ -131,9 +132,11 @@ Click-to-scroll positions the viewport at `(headingPercent - 0.02) * maxScroll` 
 ## Highlight Animation
 
 Defined in `styles.sass` (global, since the directive applies it to arbitrary elements):
-- One flash (on → off → on), hold solid, fade out over 3 seconds
-- `outline: 3px solid rgba(25, 118, 210, ...)` with `outline-offset: -3px`
-- Auto-clears after 3.2 seconds via the directive's timeout
+- **Containers/panels**: outline + background tint flash in orange (`#f57c00`), with `outline-offset: 0px`. Background tint ensures visibility even inside `overflow: hidden` parents.
+- **Buttons**: icon scale pulse (1.3×) + orange color flash. No outline (avoids asymmetric padding issues on icon buttons).
+- Both variants: one flash, hold, fade out over 3 seconds.
+- Auto-clears after 3.2 seconds via the directive's timeout.
+- Multiple elements can share the same `anchorId` — all flash simultaneously when triggered.
 
 ## Key Files to Modify
 
