@@ -88,6 +88,14 @@ export class ArtifactSearchComponent {
 	private tabService = inject(ArtifactExplorerTabService);
 	private artifactIconService = inject(ArtifactIconService);
 
+	// Author: Daria Berezianska (dvydybor) task 111 
+	constructor() {
+		// subscribe to advanced criteria so it's latest value for validation
+		this.advancedSearchService.advancedSearchCriteria.subscribe((c) => {
+			this._latestAdvancedCriteria = c;
+		});
+	}
+
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
 	searchText = new BehaviorSubject<string>('');
@@ -100,6 +108,10 @@ export class ArtifactSearchComponent {
 
 	pageNum = new BehaviorSubject<number>(1);
 	pageSize = 100;
+
+	// Author: Daria Berezianska (dvydybor) task 111 keep the latest criteria synchronously for validation checks
+	private _latestAdvancedCriteria: AdvancedSearchCriteria | null = null;
+
 	menuPosition = {
 		x: '0',
 		y: '0',
@@ -195,6 +207,20 @@ export class ArtifactSearchComponent {
 
 	performSearch(e: Event) {
 		e.stopPropagation();
+
+		//Author: Daria Berezianska (dvydybor) task 111
+		// validation: if search text is empty but filters are set, alert the user
+		const currentFilter = this.searchText.getValue().trim();
+		const crit = this._latestAdvancedCriteria;
+		if (
+			currentFilter === '' &&
+			crit &&
+			(crit.artifactTypes.length > 0 || crit.attributeTypes.length > 0)
+		) {
+			
+			return;
+		}
+
 		this.allSearchResults.set([]);
 		this.pageNum.next(1);
 		this.searchTrigger.next(true);
