@@ -82,6 +82,12 @@ Restoring re-inserts data using a two-phase approach to satisfy circular FK cons
 
 When a user explicitly purges a branch via `DELETE /branch/{branchId}`, the branch data is automatically exported to cold storage before deletion (default behavior). This allows accidental purges to be recovered.
 
+The cold storage export includes:
+- `osee_branch` row
+- `osee_tx_details` rows
+- `osee_txs` or `osee_txs_archived` rows (depending on whether the branch was archived)
+- Orphaned backing data: `osee_artifact`, `osee_attribute`, `osee_relation_link`, `osee_relation`, and `osee_search_tags` rows for gammas that are only referenced by this branch and will become unreferenced after purge
+
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `recurse` | false | Also purge child branches |

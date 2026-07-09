@@ -41,16 +41,17 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class TxsColdStorage {
 
    private static final String MAGIC = "OSEE_TXS_COLD_V1";
-   private static final int SCHEMA_VERSION = 1;
+   private static final int SCHEMA_VERSION = 2;
    private static final DateTimeFormatter FILE_DATE_FORMAT =
       DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").withZone(ZoneOffset.UTC);
 
    // @formatter:off
    private static final String SELECT_ELIGIBLE_BRANCHES =
-      "SELECT b.BRANCH_ID, b.BRANCH_NAME, b.BRANCH_STATE FROM osee_branch b " +
+      "SELECT b.BRANCH_ID, b.BRANCH_NAME, b.BRANCH_STATE, b.ARCHIVED FROM osee_branch b " +
       "WHERE b.BRANCH_STATE IN (?, ?, ?) " +
       "AND b.BRANCH_ID NOT IN (SELECT BRANCH_ID FROM osee_txs_cold_storage) " +
-      "AND EXISTS (SELECT 1 FROM osee_txs_archived t WHERE t.BRANCH_ID = b.BRANCH_ID) " +
+      "AND (EXISTS (SELECT 1 FROM osee_txs_archived t WHERE t.BRANCH_ID = b.BRANCH_ID) " +
+      " OR EXISTS (SELECT 1 FROM osee_txs t2 WHERE t2.BRANCH_ID = b.BRANCH_ID)) " +
       "AND b.BRANCH_ID IN (" +
       "  SELECT txd.BRANCH_ID FROM osee_tx_details txd " +
       "  WHERE txd.BRANCH_ID = b.BRANCH_ID " +
@@ -69,9 +70,38 @@ public class TxsColdStorage {
       "SELECT BRANCH_ID, GAMMA_ID, TRANSACTION_ID, TX_CURRENT, MOD_TYPE, APP_ID " +
       "FROM osee_txs_archived WHERE BRANCH_ID = ? ORDER BY TRANSACTION_ID, GAMMA_ID";
 
+   private static final String SELECT_TXS_FOR_BRANCH =
+      "SELECT BRANCH_ID, GAMMA_ID, TRANSACTION_ID, TX_CURRENT, MOD_TYPE, APP_ID " +
+      "FROM osee_txs WHERE BRANCH_ID = ? ORDER BY TRANSACTION_ID, GAMMA_ID";
+
    private static final String SELECT_TX_DETAILS_FOR_BRANCH =
       "SELECT BRANCH_ID, TRANSACTION_ID, AUTHOR, TIME, OSEE_COMMENT, TX_TYPE, COMMIT_ART_ID, BUILD_ID " +
       "FROM osee_tx_details WHERE BRANCH_ID = ? ORDER BY TRANSACTION_ID";
+
+   private static final String SELECT_GAMMAS_ABOVE_BASELINE =
+      "SELECT GAMMA_ID FROM osee_txs WHERE BRANCH_ID = ? AND TRANSACTION_ID > ? " +
+      "UNION SELECT GAMMA_ID FROM osee_txs_archived WHERE BRANCH_ID = ? AND TRANSACTION_ID > ?";
+
+   private static final String IS_GAMMA_ONLY_ON_BRANCH =
+      "SELECT COUNT(1) FROM (" +
+      "SELECT gamma_id FROM osee_txs WHERE gamma_id = ? AND branch_id <> ? " +
+      "UNION ALL SELECT gamma_id FROM osee_txs_archived WHERE gamma_id = ? AND branch_id <> ?" +
+      ") t1";
+
+   private static final String SELECT_ARTIFACT_BY_GAMMA =
+      "SELECT ART_ID, GAMMA_ID, ART_TYPE_ID, GUID FROM osee_artifact WHERE GAMMA_ID = ?";
+
+   private static final String SELECT_ATTRIBUTE_BY_GAMMA =
+      "SELECT ATTR_ID, GAMMA_ID, ART_ID, ATTR_TYPE_ID, VALUE, URI FROM osee_attribute WHERE GAMMA_ID = ?";
+
+   private static final String SELECT_RELATION_BY_GAMMA =
+      "SELECT REL_LINK_TYPE_ID, A_ART_ID, B_ART_ID, GAMMA_ID, REL_LINK_ID, RATIONALE FROM osee_relation_link WHERE GAMMA_ID = ?";
+
+   private static final String SELECT_RELATION2_BY_GAMMA =
+      "SELECT REL_TYPE, A_ART_ID, B_ART_ID, REL_ART_ID, REL_ORDER, GAMMA_ID FROM osee_relation WHERE GAMMA_ID = ?";
+
+   private static final String SELECT_SEARCH_TAGS_BY_GAMMA =
+      "SELECT GAMMA_ID, CODED_TAG_ID FROM osee_search_tags WHERE GAMMA_ID = ?";
 
    private static final String SELECT_BRANCH_ROW =
       "SELECT BRANCH_ID, BRANCH_TYPE, BRANCH_STATE, BRANCH_NAME, PARENT_BRANCH_ID, " +
@@ -136,9 +166,13 @@ public class TxsColdStorage {
       // Get branch info
       String[] branchName = {""};
       int[] branchState = {0};
+      boolean[] isArchived = {false};
+      long[] baselineTxId = {0L};
       jdbcClient.runQuery(stmt -> {
          branchName[0] = stmt.getString("BRANCH_NAME");
          branchState[0] = stmt.getInt("BRANCH_STATE");
+         isArchived[0] = stmt.getInt("ARCHIVED") == 1;
+         baselineTxId[0] = stmt.getLong("BASELINE_TRANSACTION_ID");
       }, SELECT_BRANCH_ROW, branchId);
 
       if (branchName[0].isEmpty()) {
@@ -153,6 +187,7 @@ public class TxsColdStorage {
       try {
          int totalTxsRows = 0;
          int totalTxDetailsRows = 0;
+         int totalOrphanedGammas = 0;
 
          try (FileOutputStream fos = new FileOutputStream(filePath);
             GZIPOutputStream gzos = new GZIPOutputStream(fos);
@@ -189,21 +224,130 @@ public class TxsColdStorage {
                row.writeTo(dos);
             }
 
-            // Write txs_archived rows
+            // Write txs rows (from osee_txs_archived if branch is archived, osee_txs otherwise)
             dos.writeUTF("TXS_ARCHIVED_DATA");
             List<TxsArchivedRow> txsRows = new ArrayList<>();
+            String txsQuery = isArchived[0] ? SELECT_TXS_ARCHIVED_FOR_BRANCH : SELECT_TXS_FOR_BRANCH;
             jdbcClient.runQuery(stmt -> {
                txsRows.add(new TxsArchivedRow(stmt));
-            }, SELECT_TXS_ARCHIVED_FOR_BRANCH, branchId);
+            }, txsQuery, branchId);
             dos.writeInt(txsRows.size());
             for (TxsArchivedRow row : txsRows) {
                row.writeTo(dos);
+            }
+
+            // Collect gammas above baseline that will become orphaned after purge
+            List<Long> orphanedGammas = new ArrayList<>();
+            List<Long> impactedGammas = new ArrayList<>();
+            jdbcClient.runQuery(stmt -> impactedGammas.add(stmt.getLong("GAMMA_ID")),
+               SELECT_GAMMAS_ABOVE_BASELINE, branchId, baselineTxId[0], branchId, baselineTxId[0]);
+            for (Long gamma : impactedGammas) {
+               int otherRefs = jdbcClient.fetch(0, IS_GAMMA_ONLY_ON_BRANCH, gamma, branchId, gamma, branchId);
+               if (otherRefs == 0) {
+                  orphanedGammas.add(gamma);
+               }
+            }
+
+            // Write orphaned backing data: artifacts
+            dos.writeUTF("ARTIFACTS_DATA");
+            List<Object[]> artRows = new ArrayList<>();
+            for (Long gamma : orphanedGammas) {
+               jdbcClient.runQuery(stmt -> {
+                  artRows.add(new Object[] {
+                     stmt.getLong("ART_ID"), stmt.getLong("GAMMA_ID"),
+                     stmt.getLong("ART_TYPE_ID"), stmt.getString("GUID")});
+               }, SELECT_ARTIFACT_BY_GAMMA, gamma);
+            }
+            dos.writeInt(artRows.size());
+            for (Object[] row : artRows) {
+               dos.writeLong((long) row[0]);
+               dos.writeLong((long) row[1]);
+               dos.writeLong((long) row[2]);
+               dos.writeUTF((String) row[3]);
+            }
+
+            // Write orphaned backing data: attributes
+            dos.writeUTF("ATTRIBUTES_DATA");
+            List<Object[]> attrRows = new ArrayList<>();
+            for (Long gamma : orphanedGammas) {
+               jdbcClient.runQuery(stmt -> {
+                  attrRows.add(new Object[] {
+                     stmt.getLong("ATTR_ID"), stmt.getLong("GAMMA_ID"),
+                     stmt.getLong("ART_ID"), stmt.getLong("ATTR_TYPE_ID"),
+                     stmt.getString("VALUE"), stmt.getString("URI")});
+               }, SELECT_ATTRIBUTE_BY_GAMMA, gamma);
+            }
+            dos.writeInt(attrRows.size());
+            for (Object[] row : attrRows) {
+               dos.writeLong((long) row[0]);
+               dos.writeLong((long) row[1]);
+               dos.writeLong((long) row[2]);
+               dos.writeLong((long) row[3]);
+               dos.writeUTF(row[4] != null ? (String) row[4] : "");
+               dos.writeUTF(row[5] != null ? (String) row[5] : "");
+            }
+
+            // Write orphaned backing data: relations (legacy)
+            dos.writeUTF("RELATIONS_DATA");
+            List<Object[]> relRows = new ArrayList<>();
+            for (Long gamma : orphanedGammas) {
+               jdbcClient.runQuery(stmt -> {
+                  relRows.add(new Object[] {
+                     stmt.getLong("REL_LINK_TYPE_ID"), stmt.getLong("A_ART_ID"),
+                     stmt.getLong("B_ART_ID"), stmt.getLong("GAMMA_ID"),
+                     stmt.getLong("REL_LINK_ID"), stmt.getString("RATIONALE")});
+               }, SELECT_RELATION_BY_GAMMA, gamma);
+            }
+            dos.writeInt(relRows.size());
+            for (Object[] row : relRows) {
+               dos.writeLong((long) row[0]);
+               dos.writeLong((long) row[1]);
+               dos.writeLong((long) row[2]);
+               dos.writeLong((long) row[3]);
+               dos.writeLong((long) row[4]);
+               dos.writeUTF(row[5] != null ? (String) row[5] : "");
+            }
+
+            // Write orphaned backing data: relations2 (new format)
+            dos.writeUTF("RELATIONS2_DATA");
+            List<Object[]> rel2Rows = new ArrayList<>();
+            for (Long gamma : orphanedGammas) {
+               jdbcClient.runQuery(stmt -> {
+                  rel2Rows.add(new Object[] {
+                     stmt.getLong("REL_TYPE"), stmt.getLong("A_ART_ID"),
+                     stmt.getLong("B_ART_ID"), stmt.getLong("REL_ART_ID"),
+                     stmt.getInt("REL_ORDER"), stmt.getLong("GAMMA_ID")});
+               }, SELECT_RELATION2_BY_GAMMA, gamma);
+            }
+            dos.writeInt(rel2Rows.size());
+            for (Object[] row : rel2Rows) {
+               dos.writeLong((long) row[0]);
+               dos.writeLong((long) row[1]);
+               dos.writeLong((long) row[2]);
+               dos.writeLong((long) row[3]);
+               dos.writeInt((int) row[4]);
+               dos.writeLong((long) row[5]);
+            }
+
+            // Write orphaned search tags
+            dos.writeUTF("SEARCH_TAGS_DATA");
+            List<long[]> tagRows = new ArrayList<>();
+            for (Long gamma : orphanedGammas) {
+               jdbcClient.runQuery(stmt -> {
+                  tagRows.add(new long[] {stmt.getLong("GAMMA_ID"), stmt.getLong("CODED_TAG_ID")});
+               }, SELECT_SEARCH_TAGS_BY_GAMMA, gamma);
+            }
+            dos.writeInt(tagRows.size());
+            for (long[] row : tagRows) {
+               dos.writeLong(row[0]);
+               dos.writeLong(row[1]);
             }
 
             dos.writeUTF("BRANCH_END");
 
             totalTxsRows = txsRows.size();
             totalTxDetailsRows = txDetailsRows.size();
+            totalOrphanedGammas = orphanedGammas.size();
          }
 
          long fileSize = new File(filePath).length();
@@ -212,8 +356,8 @@ public class TxsColdStorage {
          jdbcClient.runPreparedUpdate(INSERT_CATALOG, branchId.getId(), branchName[0], fileName, totalTxsRows,
             totalTxDetailsRows, branchState[0]);
 
-         results.logf("Archived branch %d (%s) to cold storage: %s (%d bytes, %d txs rows, %d tx_details rows)",
-            branchId.getId(), branchName[0], fileName, fileSize, totalTxsRows, totalTxDetailsRows);
+         results.logf("Archived branch %d (%s) to cold storage: %s (%d bytes, %d txs rows, %d tx_details rows, %d orphaned gammas archived)",
+            branchId.getId(), branchName[0], fileName, fileSize, totalTxsRows, totalTxDetailsRows, totalOrphanedGammas);
 
       } catch (IOException ex) {
          results.errorf("Failed to write cold storage file: %s", ex.getMessage());
@@ -246,7 +390,8 @@ public class TxsColdStorage {
       List<BranchInfo> eligibleBranches = new ArrayList<>();
       jdbcClient.runQuery(stmt -> {
          eligibleBranches.add(
-            new BranchInfo(stmt.getLong("BRANCH_ID"), stmt.getString("BRANCH_NAME"), stmt.getInt("BRANCH_STATE")));
+            new BranchInfo(stmt.getLong("BRANCH_ID"), stmt.getString("BRANCH_NAME"), stmt.getInt("BRANCH_STATE"),
+               stmt.getInt("ARCHIVED") == 1));
       }, SELECT_ELIGIBLE_BRANCHES, BranchState.COMMITTED.getId(), BranchState.REBASELINED.getId(),
          BranchState.DELETED.getId(), cutoffDate, limit);
 
@@ -303,12 +448,13 @@ public class TxsColdStorage {
                   row.writeTo(dos);
                }
 
-               // Write osee_txs_archived rows
+               // Write txs rows (from osee_txs_archived if branch is archived, osee_txs otherwise)
                dos.writeUTF("TXS_ARCHIVED_DATA");
                List<TxsArchivedRow> txsRows = new ArrayList<>();
+               String txsQuery = branchInfo.isArchived ? SELECT_TXS_ARCHIVED_FOR_BRANCH : SELECT_TXS_FOR_BRANCH;
                jdbcClient.runQuery(stmt -> {
                   txsRows.add(new TxsArchivedRow(stmt));
-               }, SELECT_TXS_ARCHIVED_FOR_BRANCH, branchId);
+               }, txsQuery, branchId);
                dos.writeInt(txsRows.size());
                for (TxsArchivedRow row : txsRows) {
                   row.writeTo(dos);
@@ -331,8 +477,9 @@ public class TxsColdStorage {
          for (BranchInfo branchInfo : eligibleBranches) {
             long branchId = branchInfo.branchId;
 
+            String countTable = branchInfo.isArchived ? "osee_txs_archived" : "osee_txs";
             int txsRowCount =
-               jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_txs_archived WHERE BRANCH_ID = ?", branchId);
+               jdbcClient.fetch(0, "SELECT COUNT(1) FROM " + countTable + " WHERE BRANCH_ID = ?", branchId);
             int txDetailsRowCount =
                jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_tx_details WHERE BRANCH_ID = ?", branchId);
 
@@ -606,6 +753,83 @@ public class TxsColdStorage {
       writer.flush();
       zipOut.closeEntry();
 
+      // Handle backing data sections
+      dis.readUTF(); // "ARTIFACTS_DATA"
+      int artCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_artifact.sql"));
+      for (int i = 0; i < artCount; i++) {
+         long artId = dis.readLong();
+         long gammaId = dis.readLong();
+         long artTypeId = dis.readLong();
+         String guid = dis.readUTF();
+         writer.printf("INSERT INTO osee_artifact (ART_ID, GAMMA_ID, ART_TYPE_ID, GUID) VALUES (%d, %d, %d, '%s');%n",
+            artId, gammaId, artTypeId, ColdStorageUtil.escapeSql(guid));
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      dis.readUTF(); // "ATTRIBUTES_DATA"
+      int attrCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_attribute.sql"));
+      for (int i = 0; i < attrCount; i++) {
+         long attrId = dis.readLong();
+         long gammaId = dis.readLong();
+         long artId = dis.readLong();
+         long attrTypeId = dis.readLong();
+         String value = dis.readUTF();
+         String uri = dis.readUTF();
+         writer.printf(
+            "INSERT INTO osee_attribute (ATTR_ID, GAMMA_ID, ART_ID, ATTR_TYPE_ID, VALUE, URI) VALUES (%d, %d, %d, %d, '%s', '%s');%n",
+            attrId, gammaId, artId, attrTypeId, ColdStorageUtil.escapeSql(value), ColdStorageUtil.escapeSql(uri));
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      dis.readUTF(); // "RELATIONS_DATA"
+      int relCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_relation_link.sql"));
+      for (int i = 0; i < relCount; i++) {
+         long relTypeId = dis.readLong();
+         long aArtId = dis.readLong();
+         long bArtId = dis.readLong();
+         long gammaId = dis.readLong();
+         long relLinkId = dis.readLong();
+         String rationale = dis.readUTF();
+         writer.printf(
+            "INSERT INTO osee_relation_link (REL_LINK_TYPE_ID, A_ART_ID, B_ART_ID, GAMMA_ID, REL_LINK_ID, RATIONALE) VALUES (%d, %d, %d, %d, %d, '%s');%n",
+            relTypeId, aArtId, bArtId, gammaId, relLinkId, ColdStorageUtil.escapeSql(rationale));
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      dis.readUTF(); // "RELATIONS2_DATA"
+      int rel2Count = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_relation.sql"));
+      for (int i = 0; i < rel2Count; i++) {
+         long relType = dis.readLong();
+         long aArtId = dis.readLong();
+         long bArtId = dis.readLong();
+         long relArtId = dis.readLong();
+         int relOrder = dis.readInt();
+         long gammaId = dis.readLong();
+         writer.printf(
+            "INSERT INTO osee_relation (REL_TYPE, A_ART_ID, B_ART_ID, REL_ART_ID, REL_ORDER, GAMMA_ID) VALUES (%d, %d, %d, %d, %d, %d);%n",
+            relType, aArtId, bArtId, relArtId, relOrder, gammaId);
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
+      dis.readUTF(); // "SEARCH_TAGS_DATA"
+      int tagCount = dis.readInt();
+      zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_search_tags.sql"));
+      for (int i = 0; i < tagCount; i++) {
+         long gammaId = dis.readLong();
+         long codedTagId = dis.readLong();
+         writer.printf("INSERT INTO osee_search_tags (GAMMA_ID, CODED_TAG_ID) VALUES (%d, %d);%n", gammaId, codedTagId);
+      }
+      writer.flush();
+      zipOut.closeEntry();
+
       dis.readUTF(); // "BRANCH_END"
    }
 
@@ -663,34 +887,100 @@ public class TxsColdStorage {
          txsRows.add(readTxsArchivedRow(dis));
       }
 
+      // Read backing data sections
+      dis.readUTF(); // "ARTIFACTS_DATA"
+      int artCount = dis.readInt();
+      List<Object[]> artRows = new ArrayList<>();
+      for (int i = 0; i < artCount; i++) {
+         artRows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF()});
+      }
+
+      dis.readUTF(); // "ATTRIBUTES_DATA"
+      int attrCount = dis.readInt();
+      List<Object[]> attrRows = new ArrayList<>();
+      for (int i = 0; i < attrCount; i++) {
+         attrRows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF(), dis.readUTF()});
+      }
+
+      dis.readUTF(); // "RELATIONS_DATA"
+      int relCount = dis.readInt();
+      List<Object[]> relRows = new ArrayList<>();
+      for (int i = 0; i < relCount; i++) {
+         relRows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF()});
+      }
+
+      dis.readUTF(); // "RELATIONS2_DATA"
+      int rel2Count = dis.readInt();
+      List<Object[]> rel2Rows = new ArrayList<>();
+      for (int i = 0; i < rel2Count; i++) {
+         rel2Rows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readInt(), dis.readLong()});
+      }
+
+      dis.readUTF(); // "SEARCH_TAGS_DATA"
+      int tagCount = dis.readInt();
+      List<long[]> tagRows = new ArrayList<>();
+      for (int i = 0; i < tagCount; i++) {
+         tagRows.add(new long[] {dis.readLong(), dis.readLong()});
+      }
+
       dis.readUTF(); // "BRANCH_END"
 
-      // Restore order to satisfy circular FKs:
-      // 1. Insert branch with baseline_transaction_id = 1 (always exists on system root)
-      // 2. Insert tx_details (needs branch to exist due to BRANCH_ID_FK1)
-      // 3. Update branch to real baseline_transaction_id (now tx_details row exists)
-      // 4. Insert txs_archived
+      // Restore order: backing data first (so FKs are satisfied), then branch, tx_details, txs
+      // 1. Insert backing data (artifacts, attributes, relations)
+      if (!artRows.isEmpty()) {
+         jdbcClient.runBatchUpdate(
+            "INSERT INTO osee_artifact (ART_ID, GAMMA_ID, ART_TYPE_ID, GUID) VALUES (?, ?, ?, ?)", artRows);
+      }
+      if (!attrRows.isEmpty()) {
+         jdbcClient.runBatchUpdate(
+            "INSERT INTO osee_attribute (ATTR_ID, GAMMA_ID, ART_ID, ATTR_TYPE_ID, VALUE, URI) VALUES (?, ?, ?, ?, ?, ?)", attrRows);
+      }
+      if (!relRows.isEmpty()) {
+         jdbcClient.runBatchUpdate(
+            "INSERT INTO osee_relation_link (REL_LINK_TYPE_ID, A_ART_ID, B_ART_ID, GAMMA_ID, REL_LINK_ID, RATIONALE) VALUES (?, ?, ?, ?, ?, ?)", relRows);
+      }
+      if (!rel2Rows.isEmpty()) {
+         jdbcClient.runBatchUpdate(
+            "INSERT INTO osee_relation (REL_TYPE, A_ART_ID, B_ART_ID, REL_ART_ID, REL_ORDER, GAMMA_ID) VALUES (?, ?, ?, ?, ?, ?)", rel2Rows);
+      }
+      if (!tagRows.isEmpty()) {
+         List<Object[]> tagData = new ArrayList<>();
+         for (long[] row : tagRows) {
+            tagData.add(new Object[] {row[0], row[1]});
+         }
+         jdbcClient.runBatchUpdate(
+            "INSERT INTO osee_search_tags (GAMMA_ID, CODED_TAG_ID) VALUES (?, ?)", tagData);
+      }
+
+      // 2. Insert branch with temporary baseline; force archived = 1 since data goes into osee_txs_archived
       for (Object[] row : branchRows) {
          long realBaselineTxId = (long) row[6];
          long realParentTxId = (long) row[5];
          row[5] = 1L; // temporary PARENT_TRANSACTION_ID
          row[6] = 1L; // temporary BASELINE_TRANSACTION_ID
+         row[8] = (short) 1; // force archived since txs rows restore into osee_txs_archived
          jdbcClient.runPreparedUpdate(INSERT_BRANCH, row);
-         // Restore real values after row reference
          row[5] = realParentTxId;
          row[6] = realBaselineTxId;
       }
+
+      // 3. Insert tx_details
       jdbcClient.runBatchUpdate(INSERT_TX_DETAILS, txDetailsRows);
+
+      // 4. Update branch to real baseline
       for (Object[] row : branchRows) {
          long branchId = (long) row[0];
          long realBaselineTxId = (long) row[6];
          long realParentTxId = (long) row[5];
          jdbcClient.runPreparedUpdate(UPDATE_BRANCH_BASELINE, realBaselineTxId, realParentTxId, branchId);
       }
+
+      // 5. Insert txs_archived
       jdbcClient.runBatchUpdate(INSERT_TXS_ARCHIVED, txsRows);
 
-      results.logf("  Restored: %d branch rows, %d tx_details rows, %d txs_archived rows", branchRows.size(),
-         txDetailsRows.size(), txsRows.size());
+      results.logf("  Restored: %d branch rows, %d tx_details rows, %d txs_archived rows, %d artifacts, %d attributes, %d relations",
+         branchRows.size(), txDetailsRows.size(), txsRows.size(), artRows.size(), attrRows.size(),
+         relRows.size() + rel2Rows.size());
    }
 
    private void skipBranchData(DataInputStream dis) throws IOException {
@@ -713,6 +1003,41 @@ public class TxsColdStorage {
       int txsCount = dis.readInt();
       for (int i = 0; i < txsCount; i++) {
          readTxsArchivedRow(dis);
+      }
+
+      // Skip ARTIFACTS_DATA
+      dis.readUTF(); // "ARTIFACTS_DATA"
+      int artCount = dis.readInt();
+      for (int i = 0; i < artCount; i++) {
+         dis.readLong(); dis.readLong(); dis.readLong(); dis.readUTF();
+      }
+
+      // Skip ATTRIBUTES_DATA
+      dis.readUTF(); // "ATTRIBUTES_DATA"
+      int attrCount = dis.readInt();
+      for (int i = 0; i < attrCount; i++) {
+         dis.readLong(); dis.readLong(); dis.readLong(); dis.readLong(); dis.readUTF(); dis.readUTF();
+      }
+
+      // Skip RELATIONS_DATA
+      dis.readUTF(); // "RELATIONS_DATA"
+      int relCount = dis.readInt();
+      for (int i = 0; i < relCount; i++) {
+         dis.readLong(); dis.readLong(); dis.readLong(); dis.readLong(); dis.readLong(); dis.readUTF();
+      }
+
+      // Skip RELATIONS2_DATA
+      dis.readUTF(); // "RELATIONS2_DATA"
+      int rel2Count = dis.readInt();
+      for (int i = 0; i < rel2Count; i++) {
+         dis.readLong(); dis.readLong(); dis.readLong(); dis.readLong(); dis.readInt(); dis.readLong();
+      }
+
+      // Skip SEARCH_TAGS_DATA
+      dis.readUTF(); // "SEARCH_TAGS_DATA"
+      int tagCount = dis.readInt();
+      for (int i = 0; i < tagCount; i++) {
+         dis.readLong(); dis.readLong();
       }
 
       dis.readUTF(); // "BRANCH_END"
@@ -763,11 +1088,13 @@ public class TxsColdStorage {
       final long branchId;
       final String branchName;
       final int branchState;
+      final boolean isArchived;
 
-      BranchInfo(long branchId, String branchName, int branchState) {
+      BranchInfo(long branchId, String branchName, int branchState, boolean isArchived) {
          this.branchId = branchId;
          this.branchName = branchName;
          this.branchState = branchState;
+         this.isArchived = isArchived;
       }
    }
 
