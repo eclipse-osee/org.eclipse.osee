@@ -43,4 +43,6 @@ public interface QueryIndexer {
 
    CancellableCallable<Integer> purgeAllIndexes();
 
+   void indexDirectByAttrType(Long attrTypeId);
+
 }

@@ -67,4 +67,13 @@ public interface IndexerEndpoint {
    @Path("reindex/all")
    Response reindexAllCurrent(@DefaultValue("0") @QueryParam("attrTypeId") long attrTypeId);
 
+   /**
+    * Direct batch re-index that bypasses the async pipeline. Streams attribute data, tokenizes in Java, and batch
+    * inserts tags directly into osee_search_tags. Designed for bulk migration performance. Processes one attr type at a
+    * time synchronously; parallelize by calling multiple types concurrently from client side.
+    */
+   @POST
+   @Path("reindex/direct")
+   Response reindexDirect(@DefaultValue("0") @QueryParam("attrTypeId") long attrTypeId);
+
 }

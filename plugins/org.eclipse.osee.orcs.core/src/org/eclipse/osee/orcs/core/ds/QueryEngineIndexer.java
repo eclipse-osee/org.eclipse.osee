@@ -49,4 +49,10 @@ public interface QueryEngineIndexer {
    void indexAttrTypeIds(OrcsSession session, OrcsTokenService tokenService, Iterable<Long> attrTypeIds);
 
    void indexAttrTypeMissingOnly(OrcsTokenService tokenService, Iterable<Long> attrTypeIds);
+
+   /**
+    * Direct batch re-index that bypasses the async pipeline. Streams attribute data, tokenizes in Java, and batch
+    * inserts tags directly. Much faster for bulk migration after truncating osee_search_tags.
+    */
+   void indexDirectByAttrType(OrcsTokenService tokenService, Long attrTypeId);
 }

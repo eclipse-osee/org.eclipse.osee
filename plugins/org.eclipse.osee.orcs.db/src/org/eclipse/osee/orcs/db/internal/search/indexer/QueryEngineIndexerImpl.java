@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -23,20 +25,31 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.resource.management.IResource;
+import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
+import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.DeleteTagSetDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.IndexerDatabaseStatisticsCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.PurgeAllTagsDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexAllInQueueCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexBranchesDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexerDatabaseCallable;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
+import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
@@ -49,14 +62,18 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
    private final IndexingTaskConsumer consumer;
+   private final TaggingEngine taggingEngine;
+   private final IResourceManager resourceManager;
 
    private final IndexerCollectorNotifier systemCollector;
 
-   public QueryEngineIndexerImpl(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IndexingTaskConsumer indexingConsumer) {
+   public QueryEngineIndexerImpl(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IndexingTaskConsumer indexingConsumer, TaggingEngine taggingEngine, IResourceManager resourceManager) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.consumer = indexingConsumer;
+      this.taggingEngine = taggingEngine;
+      this.resourceManager = resourceManager;
       this.systemCollector = new IndexerCollectorNotifier(logger);
    }
 
@@ -177,6 +194,91 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
          OseeCoreException.wrapAndThrow(ex);
       }
       System.out.println(String.format("Completed tagging for attr type %d", attrTypeId));
+   }
+
+   @Override
+   public void indexDirectByAttrType(OrcsTokenService tokenService, Long attrTypeId) {
+      String QUERY_ATTRS =
+         "SELECT DISTINCT att.gamma_id, att.value, att.uri FROM osee_attribute att, osee_txs txs WHERE att.attr_type_id = ? AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1";
+
+      TaggerTypeToken taggerType =
+         tokenService.getAttributeTypeOrSentinel(attrTypeId).getTaggerType();
+      if (!taggerType.isValid()) {
+         System.out.println(String.format("Attr type %d has no valid tagger, skipping", attrTypeId));
+         return;
+      }
+
+      Tagger tagger = taggingEngine.getTagger(taggerType);
+      List<Object[]> batchData = new ArrayList<>();
+      long totalGammas = 0;
+      long totalTags = 0;
+
+      try (JdbcStatement chStmt = jdbcClient.getStatement()) {
+         chStmt.runPreparedQueryWithMaxFetchSize(QUERY_ATTRS, attrTypeId);
+         while (chStmt.next()) {
+            long gammaId = chStmt.getLong("gamma_id");
+            String value = chStmt.getString("value");
+            String uri = chStmt.getString("uri");
+
+            Set<Long> tags = new HashSet<>();
+            TagCollector collector = (word, codedTag) -> tags.add(codedTag);
+
+            try {
+               InputStream input = getInputStream(value, uri);
+               if (input != null) {
+                  tagger.tagIt(input, collector);
+                  input.close();
+               }
+            } catch (Exception ex) {
+               logger.error(ex, "Error tagging gamma %d", gammaId);
+               continue;
+            }
+
+            for (Long tag : tags) {
+               batchData.add(new Object[] {tag, gammaId});
+            }
+            totalTags += tags.size();
+            totalGammas++;
+
+            if (batchData.size() >= 10000) {
+               jdbcClient.runBatchUpdate(OseeDb.OSEE_SEARCH_TAGS_TABLE.getInsertSql(), batchData);
+               batchData.clear();
+            }
+         }
+      }
+
+      if (!batchData.isEmpty()) {
+         jdbcClient.runBatchUpdate(OseeDb.OSEE_SEARCH_TAGS_TABLE.getInsertSql(), batchData);
+         batchData.clear();
+      }
+
+      System.out.println(
+         String.format("Direct index complete for attr type %d: %d gammas, %d tags", attrTypeId, totalGammas,
+            totalTags));
+   }
+
+   private InputStream getInputStream(String value, String uri) throws Exception {
+      if (Strings.isValid(uri)) {
+         try {
+            java.net.URI parsedUri = new java.net.URI(uri);
+            if (parsedUri.toASCIIString().startsWith(ResourceConstants.ATTRIBUTE_RESOURCE_PROTOCOL)) {
+               org.eclipse.osee.framework.jdk.core.type.PropertyStore options =
+                  new org.eclipse.osee.framework.jdk.core.type.PropertyStore();
+               options.put(StandardOptions.DecompressOnAquire.name(), true);
+               IResourceLocator locator = resourceManager.getResourceLocator(uri);
+               IResource resource = resourceManager.acquire(locator, options);
+               if (resource != null) {
+                  return resource.getContent();
+               }
+            }
+         } catch (Exception ex) {
+            // fall through to value-based input
+         }
+      }
+      if (Strings.isValid(value)) {
+         return new java.io.ByteArrayInputStream(value.getBytes("UTF-8"));
+      }
+      return null;
    }
 
    private IndexerCollector merge(IndexerCollector... collectors) {
