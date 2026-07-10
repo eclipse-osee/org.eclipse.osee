@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  -->
 <div
-	class="tw-flex tw-h-full tw-flex-col tw-overflow-hidden tw-bg-white tw-text-[#333] dark:tw-bg-[#1e1e22] dark:tw-text-[#e0e0e0]">
+	class="tw-flex tw-h-full tw-flex-col tw-overflow-hidden tw-bg-white tw-text-[var(--osee-help-text)] dark:tw-bg-[var(--osee-help-surface-dark)] dark:tw-text-[var(--osee-help-text-dark)]">
 	<!-- Header -->
 	<div
-		class="tw-flex tw-items-center tw-justify-between tw-border-b tw-border-[#e0e0e0] tw-bg-[#f5f5f5] tw-px-4 tw-py-2 dark:tw-border-[#444] dark:tw-bg-[#2a2a2e]">
+		class="tw-flex tw-items-center tw-justify-between tw-border-b tw-border-[var(--osee-help-border)] tw-bg-[var(--osee-help-surface)] tw-px-4 tw-py-2 dark:tw-border-[var(--osee-help-border-dark)] dark:tw-bg-[var(--osee-neutral-19)]">
 		<div class="tw-flex tw-items-center tw-gap-2">
 			<mat-icon>help_outline</mat-icon>
 			<h1 class="tw-m-0 tw-text-base tw-font-medium">
@@ -26,14 +26,14 @@
 	<!-- Section navigation -->
 	@if (sections().length > 0) {
 		<nav
-			class="tw-border-b tw-border-[#e0e0e0] tw-px-3 tw-py-2 dark:tw-border-[#444]"
+			class="tw-border-b tw-border-[var(--osee-help-border)] tw-px-3 tw-py-2 dark:tw-border-[var(--osee-help-border-dark)]"
 			aria-label="Help sections">
 			<ul
 				class="tw-m-0 tw-flex tw-list-none tw-flex-wrap tw-gap-1 tw-p-0">
 				@for (section of sections(); track section.id) {
 					<li class="tw-flex tw-items-center">
 						<button
-							class="osee-help-section-chip tw-flex tw-cursor-pointer tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-[#e0e0e0] tw-bg-transparent tw-px-2.5 tw-py-1 tw-text-xs tw-font-medium tw-text-[#555] tw-transition-colors hover:tw-border-[#1976d2] hover:tw-bg-[#1976d2] hover:tw-text-white dark:tw-border-[#444] dark:tw-text-[#ccc]"
+							class="osee-help-section-chip tw-flex tw-cursor-pointer tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-[var(--osee-help-border)] tw-bg-transparent tw-px-2.5 tw-py-1 tw-text-xs tw-font-medium tw-text-[var(--osee-help-text)] tw-transition-colors hover:tw-border-[var(--osee-blue-23)] hover:tw-bg-[var(--osee-blue-23)] hover:tw-text-white dark:tw-border-[var(--osee-help-border-dark)] dark:tw-text-[var(--osee-help-text-dark)]"
 							[class.active]="activeSection() === section.id"
 							(click)="
 								section.anchorId

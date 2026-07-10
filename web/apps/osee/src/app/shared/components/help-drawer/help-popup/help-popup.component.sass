@@ -12,9 +12,9 @@
  **********************************************************************/
 
 .osee-help-section-chip.active
-  background: #1976d2 !important
+  background: var(--osee-blue-23) !important
   color: white !important
-  border-color: #1976d2 !important
+  border-color: var(--osee-blue-23) !important
 
 // Dynamically injected "Show Me" buttons
 ::ng-deep .osee-help-show-me-btn
@@ -23,10 +23,10 @@
   gap: 4px
   margin-left: auto
   padding: 2px 10px
-  border: 1px solid #e040fb
+  border: 1px solid var(--osee-help-highlight)
   border-radius: 12px
   background: transparent
-  color: #e040fb
+  color: var(--osee-help-highlight)
   font-size: 11px
   font-weight: 500
   cursor: pointer
@@ -34,7 +34,7 @@
   white-space: nowrap
   line-height: 1.6
   &:hover
-    background-color: rgba(224, 64, 251, 0.1)
+    background-color: rgba(var(--osee-help-highlight-rgb), 0.1)
   .material-icons
     font-feature-settings: 'liga'
     -webkit-font-smoothing: antialiased
@@ -42,7 +42,7 @@
 
 // Dynamically rendered markdown content
 ::ng-deep .osee-help-markdown
-  color: #333
+  color: var(--osee-help-text)
   font-size: 14px
   line-height: 1.6
   h1
@@ -55,7 +55,7 @@
     margin-top: 24px
     margin-bottom: 8px
     padding-bottom: 4px
-    border-bottom: 1px solid #e0e0e0
+    border-bottom: 1px solid var(--osee-help-border)
     display: flex
     align-items: center
     gap: 8px
@@ -78,19 +78,19 @@
     margin-bottom: 4px
     font-size: 0.875rem
   code
-    background: #f5f5f5
+    background: var(--osee-help-surface)
     padding: 2px 6px
     border-radius: 3px
     font-size: 0.75rem
   a
-    color: #1976d2
+    color: var(--osee-blue-23)
   strong
     font-weight: 600
   blockquote
     margin: 8px 0
     padding: 8px 12px
-    border-left: 4px solid #1976d2
-    background: #f5f5f5
+    border-left: 4px solid var(--osee-blue-23)
+    background: var(--osee-help-surface)
     font-style: italic
     font-size: 0.875rem
   table
@@ -99,25 +99,25 @@
     font-size: 0.75rem
     border-collapse: collapse
   th, td
-    border: 1px solid #e0e0e0
+    border: 1px solid var(--osee-help-border)
     padding: 4px 8px
     text-align: left
   th
-    background: #f5f5f5
+    background: var(--osee-help-surface)
     font-weight: 500
 
 @media (prefers-color-scheme: dark)
   ::ng-deep .osee-help-markdown
-    color: #e0e0e0
+    color: var(--osee-help-text-dark)
     h2
-      border-bottom-color: #444
+      border-bottom-color: var(--osee-help-border-dark)
     code
-      background: #2a2a2e
+      background: var(--osee-help-surface-dark)
     blockquote
-      background: #2a2a2e
+      background: var(--osee-help-surface-dark)
     th
-      background: #2a2a2e
+      background: var(--osee-help-surface-dark)
     th, td
-      border-color: #444
+      border-color: var(--osee-help-border-dark)
     a
-      color: #64b5f6
+      color: var(--osee-blue-19)
