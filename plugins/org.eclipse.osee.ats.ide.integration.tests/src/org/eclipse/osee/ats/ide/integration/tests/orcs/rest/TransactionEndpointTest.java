@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -789,5 +790,102 @@ public class TransactionEndpointTest {
       }
       int afterRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute where gamma_id = -1");
       Assert.assertNotEquals(initialRowCount, afterRowCount);
+   }
+
+   @Test
+   public void testColdStorageListEmpty() {
+      XResultData results = transactionEndpoint.listColdStorage();
+      assertTrue(results.isSuccess());
+   }
+
+   @Test
+   public void testColdStorageArchiveAndRestore() {
+      // Archive with default params - should find no eligible branches (none old enough)
+      XResultData archiveResults = transactionEndpoint.archiveToColdStorage(10, 365);
+      assertTrue(archiveResults.isSuccess());
+      assertTrue(archiveResults.toString().contains("No eligible branches"));
+   }
+
+   @Test
+   public void testTxPurgeColdStorageAndRestore() {
+      // Create a transaction with test data
+      SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         "ColdStorageTest: Create artifact for purge/restore test");
+      Artifact testArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement,
+         DemoBranches.SAW_PL_Working_Branch, "ColdStorageTestArtifact");
+      testArt.persist(transaction);
+      TransactionToken txToken = transaction.execute();
+
+      JdbcClient client = AtsApiService.get().getJdbcService().getClient();
+
+      // Verify the transaction exists
+      int txDetailsBefore = client.fetch(0,
+         "SELECT count(1) FROM osee_tx_details WHERE transaction_id = ?", txToken);
+      assertEquals(1, txDetailsBefore);
+
+      int txsBefore = client.fetch(0,
+         "SELECT count(1) FROM osee_txs WHERE transaction_id = ? AND branch_id = ?",
+         txToken, DemoBranches.SAW_PL_Working_Branch);
+      assertTrue(txsBefore > 0);
+
+      // Purge the transaction (this should export to cold storage first)
+      try (Response response = transactionEndpoint.purgeTxs(txToken.getIdString())) {
+         assertTrue(response.getStatusInfo().getFamily() == Family.SUCCESSFUL);
+      }
+
+      // Verify the transaction is gone
+      int txDetailsAfter = client.fetch(0,
+         "SELECT count(1) FROM osee_tx_details WHERE transaction_id = ?", txToken);
+      assertEquals(0, txDetailsAfter);
+
+      // List purged tx archives - should find one
+      XResultData listResults = transactionEndpoint.listPurgedTransactionArchives();
+      assertTrue(listResults.isSuccess());
+      assertTrue(listResults.toString().contains("tx_purge_"));
+
+      // Preview the restore (verify it returns a zip)
+      try (Response previewResponse = transactionEndpoint.previewPurgedTransaction(txToken, null)) {
+         assertEquals(200, previewResponse.getStatus());
+         String contentType = previewResponse.getHeaderString("Content-Type");
+         assertTrue(contentType.contains("zip"));
+      }
+
+      // Restore the purged transaction
+      XResultData restoreResults = transactionEndpoint.restorePurgedTransaction(null, txToken);
+      assertTrue(restoreResults.isSuccess());
+      assertTrue(restoreResults.toString().contains("Successfully restored"));
+
+      // Verify the transaction is back
+      int txDetailsRestored = client.fetch(0,
+         "SELECT count(1) FROM osee_tx_details WHERE transaction_id = ?", txToken);
+      assertEquals(1, txDetailsRestored);
+
+      int txsRestored = client.fetch(0,
+         "SELECT count(1) FROM osee_txs WHERE transaction_id = ? AND branch_id = ?",
+         txToken, DemoBranches.SAW_PL_Working_Branch);
+      assertTrue(txsRestored > 0);
+
+      // Clean up - decache the test artifact and remove the cold storage archive file
+      ArtifactCache.deCache(testArt);
+
+      // Delete cold storage files created during this test
+      String serverPath = System.getProperty("osee.application.server.data");
+      if (serverPath == null) {
+         serverPath = System.getProperty("user.home");
+      }
+      File purgeDir = new File(serverPath + File.separator + "purge");
+      if (purgeDir.exists()) {
+         serverPath = purgeDir.getPath();
+      }
+      File coldDir = new File(serverPath + File.separator + "cold_storage");
+      if (coldDir.exists()) {
+         File[] archiveFiles = coldDir.listFiles(
+            (d, name) -> name.startsWith("tx_purge_") && name.contains(txToken.getIdString()));
+         if (archiveFiles != null) {
+            for (File f : archiveFiles) {
+               f.delete();
+            }
+         }
+      }
    }
 }
