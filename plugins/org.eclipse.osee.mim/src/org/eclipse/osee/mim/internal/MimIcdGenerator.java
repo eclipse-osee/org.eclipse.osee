@@ -1842,14 +1842,54 @@ public class MimIcdGenerator {
          defaultValue}; // 14
 
       if (startIndex < endIndex) {
+         // Compute the parent's starting byte location for array position comparison.
+         // parentElement positions correspond to index 0, so offset by (i - startIndex) * byteSize per iteration.
+         int parentByteLocation =
+            parentElement.isValid() ? (parentElement.getBeginWord().intValue() * 4) + parentElement.getBeginByte().intValue() : 0;
+         int parentStartIndex =
+            parentElement.isValid() ? parentElement.getInterfaceElementIndexStart().getValue() : startIndex;
+
          for (int i = startIndex; i < endIndex + 1; i++) {
             boolean arrayElementAdded =
                elementAdded || (elementDiff.isPresent() && isNewArrayElement(elementDiff.get(), i));
-            CELLSTYLE arrByteSizeStyle = arrayElementAdded ? CELLSTYLE.GREEN : byteSizeStyle;
-            CELLSTYLE arrBeginWordStyle = arrayElementAdded ? CELLSTYLE.GREEN : beginWordStyle;
-            CELLSTYLE arrEndWordStyle = arrayElementAdded ? CELLSTYLE.GREEN : endWordStyle;
-            CELLSTYLE arrBeginByteStyle = arrayElementAdded ? CELLSTYLE.GREEN : beginByteStyle;
-            CELLSTYLE arrEndByteStyle = arrayElementAdded ? CELLSTYLE.GREEN : endByteStyle;
+
+            // Recompute byte position styles per iteration using the parent's corresponding positions for this array index
+            CELLSTYLE arrBeginWordStyle;
+            CELLSTYLE arrEndWordStyle;
+            CELLSTYLE arrBeginByteStyle;
+            CELLSTYLE arrEndByteStyle;
+            CELLSTYLE arrByteSizeStyle;
+            if (arrayElementAdded || elementStyle.equals(CELLSTYLE.GREEN)) {
+               arrBeginWordStyle = CELLSTYLE.GREEN;
+               arrEndWordStyle = CELLSTYLE.GREEN;
+               arrBeginByteStyle = CELLSTYLE.GREEN;
+               arrEndByteStyle = CELLSTYLE.GREEN;
+               arrByteSizeStyle = CELLSTYLE.GREEN;
+            } else if (parentElement.isValid()) {
+               int parentOffsetByteLocation = parentByteLocation + (i - parentStartIndex) * byteSize;
+               Integer parentBeginWord = Math.floorDiv(parentOffsetByteLocation, 4);
+               Integer parentBeginByte = Math.floorMod(parentOffsetByteLocation, 4);
+               Integer parentEndWord = Math.max(0, Math.floorDiv(parentOffsetByteLocation + byteSize - 1, 4));
+               Integer parentEndByte = Math.max(0, Math.floorMod(parentOffsetByteLocation + byteSize - 1, 4));
+
+               arrBeginWordStyle =
+                  beginWord.intValue() != parentBeginWord.intValue() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrEndWordStyle =
+                  endWord.intValue() != parentEndWord.intValue() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrBeginByteStyle =
+                  beginByte.intValue() != parentBeginByte.intValue() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrEndByteStyle =
+                  endByte.intValue() != parentEndByte.intValue() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrByteSizeStyle =
+                  elementToken.getElementSizeInBytes() != parentElement.getElementSizeInBytes() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+            } else {
+               arrBeginWordStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrEndWordStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrBeginByteStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrEndByteStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrByteSizeStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+            }
+
             CELLSTYLE arrPTypeStyle = arrayElementAdded ? CELLSTYLE.GREEN : pTypeStyle;
             CELLSTYLE arrEnumStyle = arrayElementAdded ? CELLSTYLE.GREEN : enumStyle;
             CELLSTYLE arrLogicalTypeStyle = arrayElementAdded ? CELLSTYLE.GREEN : logicalTypeStyle;
