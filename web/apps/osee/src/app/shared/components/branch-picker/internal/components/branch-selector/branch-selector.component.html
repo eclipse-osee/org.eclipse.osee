@@ -43,32 +43,34 @@
 			#autoBranches="matAutocomplete"
 			[displayWith]="displayFn"
 			(optionSelected)="selectBranch($event.option.value)">
-			@if (_branches | async; as branches) {
-				@if (_count | async; as count) {
-					@if (_size | async; as size) {
-						<osee-mat-option-loading
-							[data]="branches"
-							objectName="Branches"
-							[paginationSize]="size"
-							paginationMode="AUTO"
-							[count]="count">
-							<ng-template let-option>
-								<mat-option
-									[attr.data-cy]="'option-' + option.name"
-									[value]="option"
-									[id]="option.id">
-									{{ option.name }}
-								</mat-option>
-							</ng-template>
-						</osee-mat-option-loading>
-					} @else {
-						<mat-option
-							id="-1"
-							disabled
-							[value]="{ id: '-1', name: 'invalid' }">
-							Loading...
-						</mat-option>
-					}
+			@if (
+				{
+					branches: _branches | async,
+					count: _count | async,
+					size: _size | async,
+				};
+				as dropdownState
+			) {
+				@if (
+					dropdownState.branches !== null &&
+					dropdownState.count !== null &&
+					dropdownState.size !== null
+				) {
+					<osee-mat-option-loading
+						[data]="dropdownState.branches"
+						objectName="Branches"
+						[paginationSize]="dropdownState.size"
+						paginationMode="AUTO"
+						[count]="dropdownState.count">
+						<ng-template let-option>
+							<mat-option
+								[attr.data-cy]="'option-' + option.name"
+								[value]="option"
+								[id]="option.id">
+								{{ option.name }}
+							</mat-option>
+						</ng-template>
+					</osee-mat-option-loading>
 				} @else {
 					<mat-option
 						id="-1"
@@ -77,13 +79,6 @@
 						Loading...
 					</mat-option>
 				}
-			} @else {
-				<mat-option
-					id="-1"
-					disabled
-					[value]="{ id: '-1', name: 'invalid' }">
-					Loading...
-				</mat-option>
 			}
 		</mat-autocomplete>
 	</mat-form-field>
