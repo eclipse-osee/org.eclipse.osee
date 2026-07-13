@@ -17,13 +17,15 @@
 	[class.tw-bg-white]="isFullscreen()"
 	[class.dark:tw-bg-osee-neutral-6]="isFullscreen()">
 	<div
-		class="tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-4 tw-px-4"
+		class="tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-1 tw-px-4 tw-py-1"
 		role="toolbar"
 		aria-label="Markdown editor toolbar"
 		oseeHelpAnchor="md-editor-toolbar">
 		<button
 			mat-icon-button
 			matTooltip="Undo"
+			[disabled]="!canUndo()"
+			[class.tw-opacity-40]="!canUndo()"
 			(click)="undo()">
 			<div>
 				<mat-icon> undo </mat-icon>
@@ -32,41 +34,32 @@
 		<button
 			mat-icon-button
 			matTooltip="Redo"
+			[disabled]="!canRedo()"
+			[class.tw-opacity-40]="!canRedo()"
 			(click)="redo()">
 			<div>
 				<mat-icon> redo </mat-icon>
 			</div>
 		</button>
+
 		<span
 			[matTooltip]="
-				showImages()
-					? 'Exit image preview to use examples.'
-					: 'Examples'
+				isEditorDisabled()
+					? 'Exit image preview to use formatting.'
+					: 'Insert Formatting'
 			">
 			<button
 				mat-icon-button
-				[matMenuTriggerFor]="mdExamplesMenu"
-				[disabled]="showImages()"
-				[class.tw-opacity-40]="showImages()">
+				[disabled]="isEditorDisabled()"
+				[class.tw-opacity-40]="isEditorDisabled()"
+				(click)="toggleFormattingPanel()">
 				<div>
-					<mat-icon> lightbulb </mat-icon>
+					<mat-icon>
+						{{ showFormattingPanel() ? 'expand_less' : 'text_format' }}
+					</mat-icon>
 				</div>
 			</button>
 		</span>
-		<mat-menu #mdExamplesMenu="matMenu">
-			@for (mdExample of mdExamples; track $index) {
-				<button
-					(click)="addExampleToMdContent(mdExample.markdown)"
-					mat-menu-item>
-					<div class="tw-flex tw-items-center">
-						<div class="tw-flex tw-items-center">
-							<mat-icon> {{ mdExample.icon }} </mat-icon>
-						</div>
-						{{ mdExample.name }}
-					</div>
-				</button>
-			}
-		</mat-menu>
 
 		<span [matTooltip]="uploadImageTooltip()">
 			<button
@@ -163,6 +156,27 @@
 			topicId="markdown-editor"
 			class="tw-relative -tw-top-0.5"></osee-help-button>
 	</div>
+
+	@if (showFormattingPanel()) {
+		<div
+			class="tw-mx-4 tw-flex tw-flex-wrap tw-items-center tw-gap-1 tw-rounded tw-border tw-border-osee-neutral-25 tw-bg-white tw-px-3 tw-py-2 tw-shadow-sm dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6"
+			role="toolbar"
+			aria-label="Formatting options">
+			@for (action of formattingActions; track action.name) {
+				<button
+					mat-icon-button
+					class="!tw-h-9 !tw-w-9"
+					[matTooltip]="action.name"
+					(click)="applyFormattingAndClose(action)">
+					<div>
+						<mat-icon class="!tw-text-[20px] !tw-leading-5">
+							{{ action.icon }}
+						</mat-icon>
+					</div>
+				</button>
+			}
+		</div>
+	}
 
 	<div
 		#editorContainer

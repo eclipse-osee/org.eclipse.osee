@@ -33,7 +33,7 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatIconButton } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -43,13 +43,12 @@ import {
 	filter,
 	fromEvent,
 	map,
-	scan,
 	startWith,
 	switchMap,
 	take,
 	takeUntil,
 } from 'rxjs';
-import { mdExamples } from './markdown-editor-examples';
+import { markdownFormattingActions } from './markdown-editor-examples';
 import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
 import {
 	UploadImageDialogComponent,
@@ -73,11 +72,9 @@ import { HelpButtonComponent } from '../help-drawer/help-button.component';
 	selector: 'osee-markdown-editor',
 	imports: [
 		MatIcon,
+		MatIconButton,
 		FormsModule,
 		MatTooltip,
-		MatMenu,
-		MatMenuTrigger,
-		MatMenuItem,
 		HelpAnchorDirective,
 		HelpButtonComponent,
 	],
@@ -92,18 +89,20 @@ export class MarkdownEditorComponent {
 	artifactId = input<string>('');
 	mdContent = model.required<string>();
 
-	private readonly _history = toObservable(this.mdContent).pipe(
-		scan((acc, curr) => {
-			if (acc.length === this.maxHistory()) {
-				acc = acc.splice(1);
-			}
-			return [...acc, curr];
-		}, [] as string[])
-	);
-	private readonly history = toSignal(this._history);
-	protected readonly redoHistory = signal([] as string[]);
-	private readonly maxHistory = signal(100);
-	protected readonly mdExamples = mdExamples;
+	/**
+	 * VS Code-style undo/redo stack.
+	 * `undoStack` stores previous states (oldest first).
+	 * `redoStack` stores states undone (newest first).
+	 * `isUndoRedoAction` prevents recording history during undo/redo.
+	 */
+	private readonly undoStack: string[] = [];
+	private readonly redoStack: string[] = [];
+	private isUndoRedoAction = false;
+	private readonly maxHistory = 200;
+	protected readonly canUndo = signal(false);
+	protected readonly canRedo = signal(false);
+	protected readonly showFormattingPanel = signal(false);
+	protected readonly formattingActions = markdownFormattingActions;
 
 	private readonly dialog = inject(MatDialog);
 	private readonly snackBar = inject(MatSnackBar);
@@ -196,8 +195,39 @@ export class MarkdownEditorComponent {
 						this.savedSelectionEnd =
 							textarea.nativeElement.selectionEnd;
 					});
+
+				// Intercept Ctrl+Z / Ctrl+Y for custom undo/redo.
+				fromEvent<KeyboardEvent>(textarea.nativeElement, 'keydown')
+					.pipe(takeUntilDestroyed(this.destroyRef))
+					.subscribe((e) => {
+						if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
+							e.preventDefault();
+							this.undo();
+						} else if (
+							(e.ctrlKey && e.key === 'y') ||
+							(e.ctrlKey && e.shiftKey && e.key === 'Z')
+						) {
+							e.preventDefault();
+							this.redo();
+						}
+					});
+
+				// Record initial state so first undo has something to revert to.
+				this.undoStack.push(this.mdContent());
+				this.canUndo.set(false);
 			}
 		});
+
+		// Watch mdContent changes to build undo stack (skip undo/redo-initiated changes).
+		toObservable(this.mdContent)
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((value) => {
+				if (this.isUndoRedoAction) {
+					return;
+				}
+				this.pushUndoState(value);
+			});
+
 		this.destroyRef.onDestroy(() => {
 			if (this.isDragging) {
 				this.clearDragStyles();
@@ -358,8 +388,67 @@ export class MarkdownEditorComponent {
 		}
 	}
 
-	addExampleToMdContent(markdownExample: string) {
-		this.mdContent.set(this.mdContent() + '\n\n' + markdownExample);
+	/**
+	 * Applies a formatting action at the cursor position.
+	 * If text is selected and the action has a prefix/suffix,
+	 * wraps the selection. Otherwise inserts the template text.
+	 */
+	applyFormatting(action: (typeof markdownFormattingActions)[number]): void {
+		const content = this.mdContent();
+		const cursorPos =
+			this.savedSelectionStart >= 0
+				? this.savedSelectionStart
+				: content.length;
+		const selEnd =
+			this.savedSelectionEnd >= 0
+				? this.savedSelectionEnd
+				: content.length;
+
+		const selectedText = content.substring(cursorPos, selEnd);
+		const before = content.substring(0, cursorPos);
+		const after = content.substring(selEnd);
+
+		let insertedText: string;
+		let newCursorPos: number;
+
+		if (selectedText && action.prefix !== undefined) {
+			// Wrap selected text with prefix/suffix
+			const suffix = action.suffix ?? action.prefix;
+			insertedText = action.prefix + selectedText + suffix;
+			newCursorPos = cursorPos + insertedText.length;
+		} else if (!selectedText && action.prefix !== undefined) {
+			// No selection — insert prefix + placeholder + suffix and select placeholder
+			const suffix = action.suffix ?? action.prefix;
+			const placeholder = action.placeholder ?? 'text';
+			insertedText = action.prefix + placeholder + suffix;
+			// Position cursor to select the placeholder
+			newCursorPos = cursorPos + action.prefix.length;
+			this.savedSelectionStart = newCursorPos;
+			this.savedSelectionEnd = newCursorPos + placeholder.length;
+			this.mdContent.set(before + insertedText + after);
+			this.restoreTextareaSelection();
+			return;
+		} else {
+			// Block-level insertion (no prefix/suffix)
+			insertedText = action.markdown;
+			newCursorPos = cursorPos + insertedText.length;
+		}
+
+		this.mdContent.set(before + insertedText + after);
+		this.savedSelectionStart = newCursorPos;
+		this.savedSelectionEnd = newCursorPos;
+		this.restoreTextareaSelection();
+	}
+
+	toggleFormattingPanel(): void {
+		this.showFormattingPanel.update((v) => !v);
+	}
+
+	applyFormattingAndClose(
+		action: (typeof markdownFormattingActions)[number]
+	): void {
+		this.applyFormatting(action);
+		this.showFormattingPanel.set(false);
 	}
 
 	openUploadImageDialog(): void {
@@ -1301,46 +1390,52 @@ export class MarkdownEditorComponent {
 		document.body.style.userSelect = '';
 	}
 
-	undo() {
-		const latestHistoryValue = this.history()?.pop();
-
-		if (latestHistoryValue) {
-			if (latestHistoryValue === this.mdContent()) {
-				const nextValue = computed(() => this.history()?.pop())();
-
-				if (nextValue) {
-					this.updateRedoHistory(this.mdContent());
-					this.mdContent.set(nextValue);
-				}
-			} else {
-				this.updateRedoHistory(this.mdContent());
-				this.mdContent.set(latestHistoryValue);
-			}
+	/**
+	 * Pushes a new state onto the undo stack and clears the redo stack.
+	 * Deduplicates consecutive identical states.
+	 */
+	private pushUndoState(value: string): void {
+		const top = this.undoStack[this.undoStack.length - 1];
+		if (top === value) {
+			return;
 		}
+		if (this.undoStack.length >= this.maxHistory) {
+			this.undoStack.shift();
+		}
+		this.undoStack.push(value);
+		this.redoStack.length = 0;
+		this.canUndo.set(this.undoStack.length > 1);
+		this.canRedo.set(false);
 	}
 
-	private updateRedoHistory(latestHistoryValue: string) {
-		if (
-			this.redoHistory()[this.redoHistory().length - 1] !==
-			latestHistoryValue
-		) {
-			this.redoHistory.update((curr) => [...curr, latestHistoryValue]);
+	undo(): void {
+		if (this.undoStack.length <= 1) {
+			return;
 		}
+		const current = this.undoStack.pop()!;
+		this.redoStack.push(current);
+		const previous = this.undoStack[this.undoStack.length - 1];
+
+		this.isUndoRedoAction = true;
+		this.mdContent.set(previous);
+		this.isUndoRedoAction = false;
+
+		this.canUndo.set(this.undoStack.length > 1);
+		this.canRedo.set(this.redoStack.length > 0);
 	}
 
-	redo() {
-		const latestRedoHistoryValue = this.redoHistory().pop();
-
-		if (latestRedoHistoryValue) {
-			if (latestRedoHistoryValue === this.mdContent()) {
-				const nextValue = computed(() => this.history()?.pop())();
-
-				if (nextValue) {
-					this.mdContent.set(nextValue);
-				}
-			} else {
-				this.mdContent.set(latestRedoHistoryValue);
-			}
+	redo(): void {
+		if (this.redoStack.length === 0) {
+			return;
 		}
+		const next = this.redoStack.pop()!;
+		this.undoStack.push(next);
+
+		this.isUndoRedoAction = true;
+		this.mdContent.set(next);
+		this.isUndoRedoAction = false;
+
+		this.canUndo.set(this.undoStack.length > 1);
+		this.canRedo.set(this.redoStack.length > 0);
 	}
 }

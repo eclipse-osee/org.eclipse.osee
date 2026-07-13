@@ -10,78 +10,106 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export type mdExample = {
+
+/**
+ * A formatting action that can either wrap selected text (inline)
+ * or insert a block-level markdown snippet at the cursor.
+ *
+ * - Inline actions use `prefix`/`suffix` to wrap text (e.g. **bold**).
+ * - Block actions use `markdown` for direct insertion (e.g. a list).
+ */
+export type MarkdownFormattingAction = {
+	/** Display name shown as tooltip */
 	name: string;
+	/** Material icon name */
 	icon: string;
+	/**
+	 * Full markdown to insert when no wrapping behavior applies.
+	 * Also used as fallback for block-level insertions.
+	 */
 	markdown: string;
+	/** Prefix to wrap selected text (inline formatting) */
+	prefix?: string;
+	/** Suffix to wrap selected text. Defaults to prefix if omitted. */
+	suffix?: string;
+	/** Placeholder text inserted when no text is selected */
+	placeholder?: string;
 };
 
-export const mdExamples: mdExample[] = [
-	{
-		name: 'Italics',
-		icon: 'format_italic',
-		markdown: '*Italics*',
-	},
+export const markdownFormattingActions: MarkdownFormattingAction[] = [
 	{
 		name: 'Bold',
 		icon: 'format_bold',
-		markdown: '**Bold**',
+		markdown: '**bold text**',
+		prefix: '**',
+		placeholder: 'bold text',
 	},
 	{
-		name: 'Table',
-		icon: 'border_all',
-		markdown:
-			'|col 1|col 2|col 3|\n|:--|:-:|--:|\n|this is left aligned|this is center aligned|this is right aligned|',
+		name: 'Italic',
+		icon: 'format_italic',
+		markdown: '*italic text*',
+		prefix: '*',
+		placeholder: 'italic text',
 	},
 	{
-		name: 'Heading 1',
-		icon: 'title',
-		markdown: '# Heading 1',
+		name: 'Strikethrough',
+		icon: 'strikethrough_s',
+		markdown: '~~strikethrough~~',
+		prefix: '~~',
+		placeholder: 'strikethrough',
 	},
 	{
-		name: 'Heading 2',
-		icon: 'title',
-		markdown: '## Heading 2',
-	},
-	{
-		name: 'Heading 3',
-		icon: 'title',
-		markdown: '### Heading 3',
-	},
-	{
-		name: 'Heading 4',
-		icon: 'title',
-		markdown: '#### Heading 4',
-	},
-	{
-		name: 'Heading 5',
-		icon: 'title',
-		markdown: '##### Heading 5',
-	},
-	{
-		name: 'Heading 6',
-		icon: 'title',
-		markdown: '###### Heading 6',
-	},
-	{
-		name: 'Hyperlink',
-		icon: 'link',
-		markdown:
-			'![OSEE Logo](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdFmNLYa0Ec0J_V2-uxyo0YPBeL-AnLULpmEQ62min3aka6Gj0qeXkKY3LaIgHVbwxb5U&usqp=CAU)',
-	},
-	{
-		name: 'Code',
+		name: 'Inline Code',
 		icon: 'code',
-		markdown: '```const oseeIsGreat = true;```',
+		markdown: '`code`',
+		prefix: '`',
+		placeholder: 'code',
 	},
 	{
-		name: 'Figure Caption',
-		icon: 'image',
-		markdown: '<figure-caption>Figure caption text</figure-caption>',
+		name: 'Link',
+		icon: 'link',
+		markdown: '[link text](url)',
+		prefix: '[',
+		suffix: '](url)',
+		placeholder: 'link text',
 	},
 	{
-		name: 'Table Caption',
-		icon: 'table_chart',
-		markdown: '<table-caption>Table caption text</table-caption>',
+		name: 'Heading',
+		icon: 'title',
+		markdown: '## Heading',
+		prefix: '## ',
+		suffix: '',
+		placeholder: 'Heading',
+	},
+	{
+		name: 'Bulleted List',
+		icon: 'format_list_bulleted',
+		markdown: '- Item 1\n- Item 2\n- Item 3',
+	},
+	{
+		name: 'Numbered List',
+		icon: 'format_list_numbered',
+		markdown: '1. First item\n2. Second item\n3. Third item',
+	},
+	{
+		name: 'Blockquote',
+		icon: 'format_quote',
+		markdown: '> quote',
+		prefix: '> ',
+		suffix: '',
+		placeholder: 'quote',
+	},
+	{
+		name: 'Code Block',
+		icon: 'data_object',
+		markdown: '```\ncode block\n```',
+		prefix: '```\n',
+		suffix: '\n```',
+		placeholder: 'code block',
+	},
+	{
+		name: 'Horizontal Rule',
+		icon: 'horizontal_rule',
+		markdown: '---',
 	},
 ];
