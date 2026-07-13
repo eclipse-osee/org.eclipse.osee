@@ -16,6 +16,8 @@
 	<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
 		<mat-icon>table_chart</mat-icon>
 		{{ isEdit ? 'Edit Table' : 'Insert Table' }}
+		<span class="tw-flex-1"></span>
+		<osee-help-button topicId="markdown-table-dialog"></osee-help-button>
 	</div>
 </h1>
 
@@ -25,52 +27,60 @@
 	<!-- Fixed toolbar -->
 	<div
 		class="tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-2 tw-border-b tw-border-osee-neutral-25 tw-px-4 tw-py-2 dark:tw-border-osee-neutral-100">
-		<button
-			mat-icon-button
-			type="button"
-			matTooltip="Undo"
-			[disabled]="!canUndo()"
-			[class.tw-opacity-40]="!canUndo()"
-			(click)="undo()">
-			<mat-icon>undo</mat-icon>
-		</button>
-		<button
-			mat-icon-button
-			type="button"
-			matTooltip="Redo"
-			[disabled]="!canRedo()"
-			[class.tw-opacity-40]="!canRedo()"
-			(click)="redo()">
-			<mat-icon>redo</mat-icon>
-		</button>
-		<mat-form-field
-			class="tw-w-20"
-			subscriptSizing="dynamic">
-			<mat-label>Cols</mat-label>
-			<input
-				matInput
-				type="number"
-				min="1"
-				max="50"
-				[ngModel]="colCount()"
-				(change)="onColCountChange($event)"
-				name="col-count"
-				aria-label="Column count" />
-		</mat-form-field>
-		<mat-form-field
-			class="tw-w-20"
-			subscriptSizing="dynamic">
-			<mat-label>Rows</mat-label>
-			<input
-				matInput
-				type="number"
-				min="1"
-				max="100"
-				[ngModel]="rowCount()"
-				(change)="onRowCountChange($event)"
-				name="row-count"
-				aria-label="Row count" />
-		</mat-form-field>
+		<span
+			oseeHelpAnchor="table-dialog-undo"
+			class="tw-flex tw-items-center tw-gap-1 tw-rounded">
+			<button
+				mat-icon-button
+				type="button"
+				matTooltip="Undo"
+				[disabled]="!canUndo()"
+				[class.tw-opacity-40]="!canUndo()"
+				(click)="undo()">
+				<mat-icon>undo</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				type="button"
+				matTooltip="Redo"
+				[disabled]="!canRedo()"
+				[class.tw-opacity-40]="!canRedo()"
+				(click)="redo()">
+				<mat-icon>redo</mat-icon>
+			</button>
+		</span>
+		<span
+			oseeHelpAnchor="table-dialog-dimensions"
+			class="tw-flex tw-items-center tw-gap-2 tw-rounded tw-px-1 tw-py-0.5">
+			<mat-form-field
+				class="tw-w-20"
+				subscriptSizing="dynamic">
+				<mat-label>Cols</mat-label>
+				<input
+					matInput
+					type="number"
+					min="1"
+					max="50"
+					[ngModel]="colCount()"
+					(change)="onColCountChange($event)"
+					name="col-count"
+					aria-label="Column count" />
+			</mat-form-field>
+			<mat-form-field
+				class="tw-w-20"
+				subscriptSizing="dynamic">
+				<mat-label>Rows</mat-label>
+				<input
+					matInput
+					type="number"
+					min="1"
+					max="100"
+					[ngModel]="rowCount()"
+					(change)="onRowCountChange($event)"
+					name="row-count"
+					aria-label="Row count" />
+			</mat-form-field>
+		</span>
 		@if (isLoading()) {
 			<div
 				class="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-text-osee-neutral-60">
@@ -81,7 +91,9 @@
 	</div>
 
 	<!-- Scrollable table area -->
-	<div class="tw-min-h-0 tw-flex-1 tw-overflow-auto">
+	<div
+		oseeHelpAnchor="table-dialog-cells"
+		class="tw-min-h-0 tw-flex-1 tw-overflow-auto">
 		<table
 			class="tw-w-full"
 			style="border-spacing: 0; border-collapse: separate">
@@ -98,6 +110,7 @@
 								<button
 									mat-icon-button
 									type="button"
+									oseeHelpAnchor="table-dialog-add-remove"
 									matTooltip="Insert Column Before"
 									class="tw-text-osee-blue-6"
 									(click)="insertColumnAt($index)">
@@ -107,11 +120,12 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-alignment"
 										[matTooltip]="
 											'Alignment: ' +
 											getAlignmentLabel(alignment) +
 											(getSpan($index) > 1
-												? ' (also controls header)'
+												? ' — controls spanned header'
 												: '')
 										"
 										(click)="cycleAlignment($index)">
@@ -129,6 +143,7 @@
 								<button
 									mat-icon-button
 									type="button"
+									oseeHelpAnchor="table-dialog-add-remove"
 									matTooltip="Insert Column After"
 									class="tw-text-osee-blue-6"
 									(click)="insertColumnAt($index + 1)">
@@ -138,6 +153,7 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-add-remove"
 										matTooltip="Remove Column"
 										class="tw-text-osee-red-24 hover:tw-text-osee-red-21"
 										(click)="removeColumn($index)">
@@ -149,7 +165,7 @@
 					}
 				</tr>
 				<!-- Header row (uses colspan for spans) -->
-				<tr>
+				<tr oseeHelpAnchor="table-dialog-headers">
 					<th
 						class="tw-sticky tw-left-0 tw-z-30 tw-border-b tw-border-r tw-border-osee-neutral-25 tw-bg-white tw-p-1 tw-text-center tw-text-xs tw-font-medium tw-text-osee-neutral-60 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6">
 						H
@@ -234,6 +250,7 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-add-remove"
 										matTooltip="Insert Row Above"
 										matTooltipPosition="above"
 										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
@@ -248,6 +265,7 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-add-remove"
 										matTooltip="Insert Row Below"
 										class="!tw-flex !tw-h-7 !tw-w-7 !tw-items-center !tw-justify-center tw-text-osee-blue-6"
 										(click)="insertRowAt(rowIdx + 1)">
@@ -258,6 +276,7 @@
 									<button
 										mat-icon-button
 										type="button"
+										oseeHelpAnchor="table-dialog-add-remove"
 										matTooltip="Remove Row"
 										class="tw-text-osee-red-24 hover:tw-text-osee-red-21"
 										(click)="removeRow(rowIdx)">
@@ -310,6 +329,7 @@
 	mat-dialog-actions
 	class="tw-flex tw-items-center tw-gap-4 tw-px-4">
 	<mat-form-field
+		oseeHelpAnchor="table-dialog-caption"
 		class="tw-flex-1"
 		subscriptSizing="dynamic"
 		appearance="outline">
@@ -327,6 +347,11 @@
 	<button
 		mat-icon-button
 		type="button"
+		[attr.aria-label]="
+			captionPosition() === 'above'
+				? 'Caption position: above. Click to move below.'
+				: 'Caption position: below. Click to move above.'
+		"
 		[matTooltip]="
 			captionPosition() === 'above'
 				? 'Caption appears above the table.'

@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject } from '@angular/core';
-import { map } from 'rxjs';
+import { Component, inject, signal } from '@angular/core';
+import { filter, map } from 'rxjs';
 import { SideNavService } from '@osee/shared/services/layout';
 import { NavContainerComponent } from '@osee/layout/container';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SnackbarWrapperComponent } from '@osee/shared/components';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -29,10 +29,16 @@ export class AppComponent {
 	private sideNavService = inject(SideNavService);
 	private matIconRegistry = inject(MatIconRegistry);
 	private domSanitizer = inject(DomSanitizer);
+	private router = inject(Router);
 
 	rightSideNavOpened = this.sideNavService.rightSideNavOpened;
 	leftSideNavOpened = this.sideNavService.leftSideNav.pipe(
 		map((v) => v.opened)
+	);
+
+	/** True when the current route is a popup (no app shell needed). */
+	protected readonly isPopupMode = signal(
+		window.location.pathname.includes('help-popup')
 	);
 
 	constructor() {
@@ -40,6 +46,22 @@ export class AppComponent {
 			'osee_logo',
 			this.domSanitizer.bypassSecurityTrustHtml(osee_logo)
 		);
+
+		// Also update on navigation in case of late detection
+		this.router.events
+			.pipe(
+				filter((e) => e instanceof NavigationEnd),
+				map((e) =>
+					(e as NavigationEnd).urlAfterRedirects.startsWith(
+						'/help-popup'
+					)
+				)
+			)
+			.subscribe((isPopup) => {
+				if (isPopup) {
+					this.isPopupMode.set(true);
+				}
+			});
 	}
 
 	toggleTopLevelNavIcon() {
