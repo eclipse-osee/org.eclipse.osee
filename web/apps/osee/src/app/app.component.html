@@ -10,11 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
-<div
-	class="light-theme"
-	(keydown.escape)="closeTopLevelNavIcon()">
-	<router-outlet name="toolbar"></router-outlet>
-	<osee-snackbar-wrapper></osee-snackbar-wrapper>
-	<osee-nav-container></osee-nav-container>
-</div>
+@if (isPopupMode()) {
+	<router-outlet></router-outlet>
+} @else {
+	<!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -->
+	<div
+		class="light-theme"
+		(keydown.escape)="closeTopLevelNavIcon()">
+		<router-outlet name="toolbar"></router-outlet>
+		<osee-snackbar-wrapper></osee-snackbar-wrapper>
+		<osee-nav-container></osee-nav-container>
+	</div>
+}

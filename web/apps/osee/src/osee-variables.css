@@ -266,6 +266,16 @@ html {
 	--osee-misc-9: #424242;
 	--osee-misc-10: #303030;
 
+	/* Help system highlight */
+	--osee-help-highlight: #e040fb;
+	--osee-help-highlight-rgb: 224, 64, 251;
+	--osee-help-text: #333333;
+	--osee-help-text-dark: #e0e0e0;
+	--osee-help-border: #e0e0e0;
+	--osee-help-border-dark: #444444;
+	--osee-help-surface: #f5f5f5;
+	--osee-help-surface-dark: #2a2a2e;
+
 	@media (prefers-color-scheme: light) {
 		/* M2 BACK COMPAT */
 		--osee-primary-16: var(--osee-blue-16);
