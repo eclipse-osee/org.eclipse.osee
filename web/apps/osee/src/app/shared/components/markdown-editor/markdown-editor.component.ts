@@ -53,6 +53,7 @@ import {
 	headingLevels,
 	HeadingLevel,
 	listOptions,
+	headingOptions,
 } from './markdown-editor-examples';
 import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
 import {
@@ -72,6 +73,7 @@ import { MarkdownImageService } from './markdown-image.service';
 import { HelpTopicRegistryService } from '../help-drawer/help-topic-registry.service';
 import { HelpAnchorDirective } from '../help-drawer/help-anchor.directive';
 import { HelpButtonComponent } from '../help-drawer/help-button.component';
+import { SplitButtonComponent } from '../split-button/split-button.component';
 
 @Component({
 	selector: 'osee-markdown-editor',
@@ -82,6 +84,7 @@ import { HelpButtonComponent } from '../help-drawer/help-button.component';
 		MatTooltip,
 		HelpAnchorDirective,
 		HelpButtonComponent,
+		SplitButtonComponent,
 	],
 	templateUrl: './markdown-editor.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -118,9 +121,9 @@ export class MarkdownEditorComponent {
 	private readonly undoGroupDelay = 1000;
 	protected readonly canUndo = signal(false);
 	protected readonly canRedo = signal(false);
-	protected readonly showListDropdown = signal(false);
 	protected readonly formattingActions = markdownFormattingActions;
 	protected readonly headingLevels = headingLevels;
+	protected readonly headingOptions = headingOptions;
 	protected readonly listOptions = listOptions;
 
 	private readonly dialog = inject(MatDialog);
@@ -507,10 +510,6 @@ export class MarkdownEditorComponent {
 			markdown: option.markdown,
 			group: 'block',
 		});
-	}
-
-	toggleListDropdown(): void {
-		this.showListDropdown.update((v) => !v);
 	}
 
 	openUploadImageDialog(): void {

@@ -127,6 +127,24 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 export const headingLevels = [1, 2, 3, 4, 5, 6] as const;
 export type HeadingLevel = (typeof headingLevels)[number];
 
+export const headingOptions: SplitButtonCompatibleOption[] = [
+	{ value: '1', name: 'Heading 1', icon: 'looks_one' },
+	{ value: '2', name: 'Heading 2', icon: 'looks_two' },
+	{ value: '3', name: 'Heading 3', icon: 'looks_3' },
+	{ value: '4', name: 'Heading 4', icon: 'looks_4' },
+	{ value: '5', name: 'Heading 5', icon: 'looks_5' },
+	{ value: '6', name: 'Heading 6', icon: 'looks_6' },
+];
+
+/**
+ * Minimal shape compatible with SplitButtonOption.
+ */
+export type SplitButtonCompatibleOption = {
+	value: string;
+	name: string;
+	icon: string;
+};
+
 export type ListOption = {
 	name: string;
 	value: string;

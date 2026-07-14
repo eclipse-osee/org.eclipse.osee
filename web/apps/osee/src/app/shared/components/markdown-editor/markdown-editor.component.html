@@ -49,26 +49,18 @@
 		</span>
 
 		<!-- Format -->
-		<select
-			class="tw-h-7 tw-cursor-pointer tw-rounded tw-border tw-border-gray-300 tw-bg-white tw-px-1.5 tw-text-xs tw-outline-none focus:tw-ring-1 focus:tw-ring-osee-blue-6 disabled:tw-cursor-not-allowed disabled:tw-opacity-40 dark:tw-border-gray-600 dark:tw-bg-osee-neutral-6 dark:tw-text-gray-200"
-			[disabled]="isEditorDisabled()"
-			aria-label="Heading level"
-			(change)="applyHeading($any($event.target).value); $any($event.target).value = ''"
-			[matTooltip]="
+		<osee-split-button
+			icon="title"
+			[tooltip]="
 				isEditorDisabled()
 					? 'Exit image preview to format.'
-					: 'Insert Heading'
-			">
-			<option
-				value=""
-				disabled
-				selected>
-				Heading
-			</option>
-			@for (level of headingLevels; track level) {
-				<option [value]="level">Heading {{ level }}</option>
-			}
-		</select>
+					: 'Heading 2'
+			"
+			dropdownTooltip="More Heading Levels"
+			[disabled]="isEditorDisabled()"
+			[options]="headingOptions"
+			(defaultAction)="applyHeading('2')"
+			(optionSelected)="applyHeading($event)"></osee-split-button>
 
 		@for (action of formattingActions; track action.name) {
 			@if (action.group === 'inline') {
@@ -99,52 +91,18 @@
 		</span>
 
 		<!-- Insert blocks: List split button -->
-		<span
-			class="tw-group tw-relative tw-inline-flex tw-items-stretch tw-overflow-visible tw-rounded tw-border tw-border-transparent hover:tw-border-gray-300 dark:hover:tw-border-gray-600"
-			[class.tw-opacity-40]="isEditorDisabled()">
-			<button
-				class="tw-flex tw-cursor-pointer tw-items-center tw-justify-center tw-border-0 tw-bg-transparent tw-p-1 tw-outline-none hover:tw-bg-gray-100 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-transparent dark:hover:tw-bg-gray-700"
-				[disabled]="isEditorDisabled()"
-				[matTooltip]="
-					isEditorDisabled()
-						? 'Exit image preview to format.'
-						: 'Bulleted List'
-				"
-				(click)="applyList('bulleted')">
-				<mat-icon
-					class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]">
-					format_list_bulleted
-				</mat-icon>
-			</button>
-			<span
-				class="tw-w-px tw-self-stretch tw-bg-transparent group-hover:tw-bg-gray-300 dark:group-hover:tw-bg-gray-600"></span>
-			<button
-				class="tw-flex tw-w-4 tw-cursor-pointer tw-items-center tw-justify-center tw-border-0 tw-bg-transparent tw-p-0 tw-outline-none hover:tw-bg-gray-100 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-transparent dark:hover:tw-bg-gray-700"
-				[disabled]="isEditorDisabled()"
-				[matTooltip]="'More List Types'"
-				(click)="toggleListDropdown()">
-				<mat-icon
-					class="!tw-h-4 !tw-w-4 !tw-text-[16px] !tw-leading-[16px]">
-					arrow_drop_down
-				</mat-icon>
-			</button>
-			@if (showListDropdown()) {
-				<div
-					class="tw-absolute tw-left-0 tw-top-full tw-z-20 tw-mt-0.5 tw-flex tw-flex-col tw-divide-y tw-divide-gray-200 tw-overflow-hidden tw-rounded tw-border tw-border-gray-300 tw-bg-white tw-shadow-md dark:tw-divide-gray-600 dark:tw-border-gray-600 dark:tw-bg-osee-neutral-6">
-					@for (option of listOptions; track option.value) {
-						<button
-							class="tw-flex tw-cursor-pointer tw-items-center tw-gap-3 tw-whitespace-nowrap tw-border-0 tw-bg-transparent tw-px-3 tw-py-2 tw-text-left tw-text-sm hover:tw-bg-gray-100 dark:tw-text-gray-200 dark:hover:tw-bg-gray-700"
-							(click)="applyList(option.value); showListDropdown.set(false)">
-							<mat-icon
-								class="!tw-h-5 !tw-w-5 !tw-shrink-0 !tw-text-[20px] !tw-leading-[20px]">
-								{{ option.icon }}
-							</mat-icon>
-							<span>{{ option.name }}</span>
-						</button>
-					}
-				</div>
-			}
-		</span>
+		<osee-split-button
+			icon="format_list_bulleted"
+			[tooltip]="
+				isEditorDisabled()
+					? 'Exit image preview to format.'
+					: 'Bulleted List'
+			"
+			dropdownTooltip="More List Types"
+			[disabled]="isEditorDisabled()"
+			[options]="listOptions"
+			(defaultAction)="applyList('bulleted')"
+			(optionSelected)="applyList($event)"></osee-split-button>
 		@for (action of formattingActions; track action.name) {
 			@if (action.group === 'block' || action.group === 'structure') {
 				<span
