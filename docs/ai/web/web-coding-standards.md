@@ -86,18 +86,47 @@ When a panel or section has no content to display (e.g., no branch selected, no 
 
 ## Form field appearance
 
-- **Prefer `appearance="outline"`** for `mat-form-field` elements for a consistent look across the app. Exceptions are allowed where outline styling doesn't fit the context (e.g., inline table cell editors) — use judgment.
-- **Add `tw-pt-4` to every outline `mat-form-field`** to provide 1rem of space above the field for the floating label to move into when focused/populated. Without this padding, the label overlaps surrounding content when it floats above the outline notch.
+- **Prefer `appearance="outline"`** for all `mat-form-field` elements and shared input components. Outline is the standard style across the app — it provides clear field boundaries and consistent visuals. Use `appearance="fill"` only in legacy table cells (e.g., MIM messaging tables) where the compact fill style is still in use.
+- **All form fields use transparent backgrounds** — set globally via `--mdc-filled-text-field-container-color: transparent` in `styles.sass`. This ensures fields inherit the container's background rather than adding their own fill color. Do not override this per-component.
+- **`appearance="outline"` is the standard default** for all shared input components (`applicability-dropdown`, `persisted-string-attribute-input`, `persisted-number-attribute-input`, `focus-lost-input`). Outline gives clear field boundaries and works well in standalone editors, dialogs, and panels.
+- **Form field components must not define their own padding.** The parent page or container is responsible for spacing around editors. This keeps components reusable across contexts (dialogs, tables, panels) without fighting built-in spacing.
 - Always include `subscriptSizing="dynamic"` unless the field needs a fixed-height hint/error area.
 - Prefer Tailwind utility classes for spacing and layout around form fields over custom component styles.
 
-Example:
+### Customizing shared inputs (`appearance` and `showLabel`)
+
+Shared input components expose signal inputs for context-specific customization:
+
+| Input | Type | Default | Purpose |
+|-------|------|---------|---------|
+| `appearance` | `'outline' \| 'fill'` | `'outline'` | Controls `mat-form-field` appearance |
+| `showLabel` | `boolean` | `true` | Controls whether `<mat-label>` renders (applicability dropdown) |
+
+**When to use each value:**
+
+- **Standalone editors** (artifact explorer, dialogs): Use defaults — outline with label shown.
+- **Table cells** (MIM messaging tables, CI dashboard): Use `appearance="fill"` and `[showLabel]="false"`. Fill is more compact in constrained cells, and the column header already identifies the field.
+
+Examples:
 
 ```html
-<mat-form-field appearance="outline" class="tw-w-full tw-pt-4" subscriptSizing="dynamic">
-  <mat-label>Field Label</mat-label>
-  <input matInput ... />
-</mat-form-field>
+<!-- Artifact explorer (defaults: outline + label) -->
+<osee-persisted-applicability-dropdown
+  [artifactId]="artifact.id"
+  [(applicability)]="artifact.applicability" />
+
+<!-- MIM table cell (fill + no label) -->
+<osee-persisted-applicability-dropdown
+  appearance="fill"
+  [showLabel]="false"
+  [artifactId]="item.id"
+  [(applicability)]="item.applicability" />
+
+<!-- String input in table cell -->
+<osee-persisted-string-attribute-input
+  appearance="fill"
+  [artifactId]="item.id"
+  [value]="item.name" />
 ```
 
 ## Styling Angular Material components

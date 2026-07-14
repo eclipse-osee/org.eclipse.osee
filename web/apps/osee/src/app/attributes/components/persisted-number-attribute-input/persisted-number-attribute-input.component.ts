@@ -47,6 +47,7 @@ import { ControlContainer } from '@angular/forms';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <osee-focus-lost-input
 		[disabled]="disabled()"
+		[appearance]="appearance()"
 		type="number"
 		[(value)]="attrValue"
 		[label]="label()"
@@ -74,6 +75,7 @@ export class PersistedNumberAttributeInputComponent<U extends ATTRIBUTETYPEID> {
 	value = model.required<attribute<number | `${number}`, U>>();
 	protected attrValue = writableSlice(this.value, 'value');
 	disabled = input(false);
+	appearance = input<'outline' | 'fill'>('outline');
 
 	private _notValid = this.statusSignal().pipe(
 		filter((v) => v === 'INVALID' || v === 'DISABLED')

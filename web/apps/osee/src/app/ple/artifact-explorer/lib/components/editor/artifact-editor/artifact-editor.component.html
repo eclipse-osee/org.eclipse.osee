@@ -67,7 +67,7 @@
 <!-- Section content (hidden/shown to preserve state) -->
 <div>
 	<div
-		class="tw-px-2 tw-py-2"
+		class="tw-p-2"
 		[class.tw-hidden]="activeSection() !== 'attributes'">
 		<osee-attributes-editor-panel [tab]="tab()" />
 	</div>
@@ -79,12 +79,12 @@
 			[viewId]="tab().viewId" />
 	</div>
 	<div
-		class="tw-px-2 tw-py-2"
+		class="tw-p-2"
 		[class.tw-hidden]="activeSection() !== 'history'">
 		<osee-artifact-history-panel [tab]="tab()" />
 	</div>
 	<div
-		class="tw-px-2 tw-py-2"
+		class="tw-p-2"
 		[class.tw-hidden]="activeSection() !== 'info'">
 		<osee-artifact-info-panel [tab]="tab()" />
 	</div>

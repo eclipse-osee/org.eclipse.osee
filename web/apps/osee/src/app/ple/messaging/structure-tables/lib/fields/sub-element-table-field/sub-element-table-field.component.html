@@ -36,7 +36,7 @@
 						#defaultForm="ngForm"
 						[artifactId]="element().id"
 						oseeElementImpactsValidator>
-						<osee-persisted-string-attribute-input
+						<osee-persisted-string-attribute-input appearance="fill"
 							[artifactId]="element().id"
 							[artifactApplicability]="element().applicability"
 							[value]="stringValue()"
@@ -96,6 +96,7 @@
 						[artifactId]="element().id"
 						oseeElementImpactsValidator>
 						<osee-persisted-number-attribute-input
+							appearance="fill"
 							[artifactId]="element().id"
 							[artifactApplicability]="element().applicability"
 							[value]="numberValue()"
@@ -113,7 +114,7 @@
 						#defaultForm="ngForm"
 						[artifactId]="element().id"
 						oseeElementImpactsValidator>
-						<osee-persisted-applicability-dropdown
+						<osee-persisted-applicability-dropdown appearance="fill" [showLabel]="false"
 							[artifactId]="element().id"
 							[(applicability)]="applicability"
 							[required]="true"

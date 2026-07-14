@@ -67,7 +67,7 @@ import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor
 			}
 			@case ('Enumeration') {
 				<mat-form-field
-					class="tw-w-full tw-pt-4"
+					class="tw-w-full"
 					appearance="outline"
 					subscriptSizing="dynamic">
 					<mat-label>{{ attr().name ?? '' }}</mat-label>
@@ -93,7 +93,7 @@ import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor
 			@default {
 				@if (attr().name === 'Markdown Content') {
 					<osee-markdown-editor
-						class="tw-mt-4 tw-block"
+						class="tw-block"
 						[mdContent]="displayValue()"
 						(mdContentChange)="onMarkdownChange($event)"
 						[disabled]="!editable()"
@@ -187,6 +187,8 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	onValueChange(newValue: string) {
 		if (newValue !== this.previousValue()) {
 			this.saveAttribute(newValue);
+		} else {
+			this.dirtyService.markClean(this.editorKey());
 		}
 	}
 

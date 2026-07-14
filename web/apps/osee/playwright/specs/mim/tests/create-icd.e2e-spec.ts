@@ -357,10 +357,7 @@ test('create message and submessage', async ({ page }) => {
 
 	await page.waitForTimeout(500);
 	await expect(
-		page.getByRole('row', {
-			name: 'Submessage 1 1 Go To Message Details Base',
-			exact: true,
-		})
+		page.getByTestId('sub-message-table-row-Submessage 1')
 	).toBeVisible();
 });
 
@@ -375,13 +372,7 @@ test('create structure', async ({ page }) => {
 		.locator('button')
 		.filter({ hasText: /^expand_more$/ })
 		.click();
-	await page
-		.getByRole('row', {
-			name: 'Submessage 1 1 Go To Message Details Base',
-			exact: true,
-		})
-		.getByRole('link')
-		.click();
+	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page.getByTestId('add-structure').waitFor({ state: 'visible' });
 	await page.getByTestId('add-structure').click();
 	await page.getByRole('button', { name: 'Create new Structure' }).click();
@@ -414,13 +405,7 @@ test('create elements', async ({ page }) => {
 		.locator('button')
 		.filter({ hasText: /^expand_more$/ })
 		.click();
-	await page
-		.getByRole('row', {
-			name: 'Submessage 1 1 Go To Message Details Base',
-			exact: true,
-		})
-		.getByRole('link')
-		.click();
+	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
 		.getByRole('button')
@@ -584,13 +569,7 @@ test('add array element', async ({ page }) => {
 		.locator('button')
 		.filter({ hasText: /^expand_more$/ })
 		.click();
-	await page
-		.getByRole('row', {
-			name: 'Submessage 1 1 Go To Message Details Base',
-			exact: true,
-		})
-		.getByRole('link')
-		.click();
+	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
 		.getByRole('button')

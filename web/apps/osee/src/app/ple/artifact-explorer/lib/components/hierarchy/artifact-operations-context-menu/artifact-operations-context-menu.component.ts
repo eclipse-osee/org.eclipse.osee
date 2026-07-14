@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { NgClass } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
@@ -36,7 +37,7 @@ import { PublishArtifactDialogComponent } from './dialogs/publish-artifact-dialo
 
 @Component({
 	selector: 'osee-artifact-operations-context-menu',
-	imports: [MatMenuItem, MatIcon],
+	imports: [MatMenuItem, MatIcon, NgClass],
 	templateUrl: './artifact-operations-context-menu.component.html',
 	styles: [
 		`
@@ -45,6 +46,11 @@ import { PublishArtifactDialogComponent } from './dialogs/publish-artifact-dialo
 				--mat-menu-item-one-line-container-height: 36px;
 				--mat-menu-item-icon-size: 20px;
 				--mat-menu-item-spacing: 8px;
+			}
+			:host mat-icon {
+				display: flex;
+				align-items: center;
+				justify-content: center;
 			}
 		`,
 	],

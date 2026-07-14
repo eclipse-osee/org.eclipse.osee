@@ -98,8 +98,10 @@ test('create working branches', async ({ page }) => {
 			.click({ force: true }),
 	]);
 	await page
-		.getByText('Float', { exact: true })
-		.click({ timeout: 60000, force: true });
+		.locator('mat-option')
+		.filter({ hasText: 'Float' })
+		.first()
+		.click({ timeout: 60000 });
 	await page.getByRole('button', { name: 'Next' }).click();
 
 	await Promise.all([

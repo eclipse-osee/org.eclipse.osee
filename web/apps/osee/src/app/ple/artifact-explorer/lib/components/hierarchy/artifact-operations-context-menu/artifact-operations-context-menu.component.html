@@ -18,7 +18,7 @@
 				[disabled]="!_branchEditable()"
 				(click)="selectOption(operationType)">
 				<mat-icon
-					[class]="getIconClasses(operationType.materialIcon)"
+					[ngClass]="getIconClasses(operationType.materialIcon)"
 					>{{ operationType.materialIcon.icon }}</mat-icon
 				>
 				<span>{{ operationType.name }}</span>

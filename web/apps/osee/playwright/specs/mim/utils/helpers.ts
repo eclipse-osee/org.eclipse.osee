@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Page } from '@ngx-playwright/test';
+import { Page, expect } from '@ngx-playwright/test';
 import { selectBranch } from '../../../shared/branch-helpers';
 
 export const createWorkingBranchFromPL = async (
@@ -57,7 +57,10 @@ export const enableEditMode = async (page: Page) => {
 	await page.getByText('account_circle').click();
 	await page.getByRole('menuitem', { name: 'Settings' }).click();
 
-	const editCheckbox = await page.getByLabel('Edit Mode');
+	const editCheckbox = page.getByLabel('Edit Mode');
+	await editCheckbox.waitFor({ state: 'visible' });
+	// Wait for the checkbox to become interactive
+	await expect(editCheckbox).toBeEnabled({ timeout: 10000 });
 	const isChecked = await editCheckbox.isChecked();
 	if (!isChecked) {
 		await editCheckbox.check();

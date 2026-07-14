@@ -29,13 +29,7 @@ test('screenshot', async ({ page }) => {
 		.locator('button')
 		.filter({ hasText: /^expand_more$/ })
 		.click();
-	await page
-		.getByRole('row', {
-			name: 'Submessage 1 1 Go To Message Details Base',
-			exact: true,
-		})
-		.getByRole('link')
-		.click();
+	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page.getByTestId('structure-table-expand-button').click();
 	await page
 		.getByTestId('element-table-row-Integer Element')
@@ -71,13 +65,7 @@ test('remove elements', async ({ page }) => {
 		.locator('button')
 		.filter({ hasText: /^expand_more$/ })
 		.click();
-	await page
-		.getByRole('row', {
-			name: 'Submessage 1 1 Go To Message Details Base',
-			exact: true,
-		})
-		.getByRole('link')
-		.click();
+	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page.getByTestId('structure-table').getByRole('button').click();
 
 	await expect(
@@ -135,13 +123,7 @@ test('delete elements', async ({ page }) => {
 		.locator('button')
 		.filter({ hasText: /^expand_more$/ })
 		.click();
-	await page
-		.getByRole('row', {
-			name: 'Submessage 1 1 Go To Message Details Base',
-			exact: true,
-		})
-		.getByRole('link')
-		.click();
+	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page.getByTestId('structure-table-expand-button').click();
 
 	await expect(

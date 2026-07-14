@@ -12,7 +12,7 @@
  -->
 @if (tabs().length === 0) {
 	<div
-		class="tw-flex tw-h-full tw-w-full tw-flex-col tw-items-center tw-justify-center tw-gap-6">
+		class="tw-flex tw-size-full tw-flex-col tw-items-center tw-justify-center tw-gap-6">
 		<mat-icon class="tw-scale-[3] tw-opacity-50">account_tree</mat-icon>
 		<span class="tw-select-none tw-text-lg tw-font-medium tw-opacity-50">
 			Select an artifact from the hierarchy to begin.
@@ -50,7 +50,7 @@
 							{{ tab.tabTitle }}
 						</span>
 						<button
-							class="tab-close-btn tw-flex tw-h-5 tw-w-5 tw-shrink-0 tw-items-center tw-justify-center tw-rounded-sm tw-opacity-0 tw-transition-opacity hover:tw-bg-background-hover hover:!tw-opacity-100 group-hover:tw-opacity-60"
+							class="tab-close-btn tw-flex tw-size-5 tw-shrink-0 tw-items-center tw-justify-center tw-rounded-sm tw-opacity-0 tw-transition-opacity hover:tw-bg-background-hover hover:!tw-opacity-100 group-hover:tw-opacity-60"
 							[class.!tw-opacity-60]="selectedIndex() === $index"
 							aria-label="Close tab"
 							(click)="removeTab($index)">

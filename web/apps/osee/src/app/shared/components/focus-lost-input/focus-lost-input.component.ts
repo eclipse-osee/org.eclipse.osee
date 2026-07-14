@@ -35,11 +35,11 @@ let nextUniqueId = 0;
 	imports: [MatFormField, MatInput, MatTooltip, FormsModule, MatLabel],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <mat-form-field
-		appearance="outline"
+		[appearance]="appearance()"
 		(focusin)="focus.set(true)"
 		(focusout)="focus.set(false)"
 		[subscriptSizing]="subscriptSizing()"
-		class="tw-w-full tw-pt-4">
+		class="tw-w-full tw-bg-inherit [&>.mdc-text-field--filled]:tw-bg-inherit">
 		@if (label() !== '') {
 			<mat-label>{{ label() }}</mat-label>
 		}
@@ -64,6 +64,7 @@ export class FocusLostInputComponent<T> {
 	disabled = input(false);
 	value = model.required<T>();
 	label = input('');
+	appearance = input<'outline' | 'fill'>('outline');
 
 	subscriptSizing = input<SubscriptSizing>('dynamic');
 	focus = signal(false);

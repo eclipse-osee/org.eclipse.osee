@@ -67,11 +67,13 @@ import {
 @Component({
 	selector: 'osee-applicability-dropdown',
 	template: `<mat-form-field
-		appearance="outline"
+		[appearance]="appearance()"
 		subscriptSizing="dynamic"
 		id="applicability-selector"
-		class="tw-w-full tw-pt-4">
-		<mat-label>Applicability</mat-label>
+		class="tw-w-full tw-bg-inherit [&>.mdc-text-field--filled]:tw-bg-inherit">
+		@if (showLabel()) {
+			<mat-label>Applicability</mat-label>
+		}
 		<input
 			type="text"
 			matInput
@@ -145,6 +147,8 @@ export class ApplicabilityDropdownComponent {
 	applicability = model<applic>({ id: '-1', name: '' });
 	required = input(false);
 	disabled = input(false);
+	showLabel = input(true);
+	appearance = input<'outline' | 'fill'>('outline');
 
 	private _updateFilterBasedOnApplic = effect(() => {
 		this.filter.set(this.applicability().name);
