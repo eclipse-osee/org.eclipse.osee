@@ -1407,17 +1407,16 @@ export class MarkdownEditorComponent {
 	}
 
 	private restoreTextareaSelection(): void {
-		afterNextRender(
-			() => {
-				const textarea = this.editorTextarea()?.nativeElement;
-				if (textarea && this.savedSelectionStart >= 0) {
-					textarea.selectionStart = this.savedSelectionStart;
-					textarea.selectionEnd = this.savedSelectionEnd;
-					textarea.focus();
-				}
-			},
-			{ injector: this.injector }
-		);
+		const start = this.savedSelectionStart;
+		const end = this.savedSelectionEnd;
+		setTimeout(() => {
+			const textarea = this.editorTextarea()?.nativeElement;
+			if (textarea && start >= 0) {
+				textarea.focus();
+				textarea.selectionStart = start;
+				textarea.selectionEnd = end;
+			}
+		});
 	}
 
 	togglePreviewCollapsed(): void {

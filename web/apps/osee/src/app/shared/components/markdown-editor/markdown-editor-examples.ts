@@ -34,8 +34,8 @@ export type MarkdownFormattingAction = {
 	suffix?: string;
 	/** Placeholder text inserted when no text is selected */
 	placeholder?: string;
-	/** Visual group for layout in the panel */
-	group: 'inline' | 'block' | 'structure';
+	/** Visual group for layout in the toolbar */
+	group: 'inline' | 'block' | 'media';
 };
 
 export const markdownFormattingActions: MarkdownFormattingAction[] = [
@@ -69,7 +69,7 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		markdown: '`code`',
 		prefix: '`',
 		placeholder: 'code',
-		group: 'inline',
+		group: 'block',
 	},
 	{
 		name: 'Link',
@@ -78,7 +78,7 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		prefix: '[',
 		suffix: '](url)',
 		placeholder: 'link text',
-		group: 'inline',
+		group: 'block',
 	},
 	{
 		name: 'Blockquote',
@@ -102,25 +102,25 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		name: 'Horizontal Rule',
 		icon: 'horizontal_rule',
 		markdown: '---',
-		group: 'structure',
+		group: 'block',
 	},
 	{
 		name: 'Figure Caption',
-		icon: 'closed_caption',
+		icon: 'video_label',
 		markdown: '<figure-caption>caption text</figure-caption>',
 		prefix: '<figure-caption>',
 		suffix: '</figure-caption>',
 		placeholder: 'caption text',
-		group: 'structure',
+		group: 'media',
 	},
 	{
 		name: 'Table Caption',
-		icon: 'subtitles',
+		icon: 'legend_toggle',
 		markdown: '<table-caption>caption text</table-caption>',
 		prefix: '<table-caption>',
 		suffix: '</table-caption>',
 		placeholder: 'caption text',
-		group: 'structure',
+		group: 'media',
 	},
 ];
 

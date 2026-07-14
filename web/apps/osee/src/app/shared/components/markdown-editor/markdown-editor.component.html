@@ -30,7 +30,7 @@
 			[disabled]="!canUndo()"
 			[class.tw-opacity-40]="!canUndo()"
 			(click)="undo()">
-			<mat-icon class="!tw-text-[20px]"> undo </mat-icon>
+			<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> undo </mat-icon>
 		</button>
 		<button
 			mat-icon-button
@@ -39,11 +39,11 @@
 			[disabled]="!canRedo()"
 			[class.tw-opacity-40]="!canRedo()"
 			(click)="redo()">
-			<mat-icon class="!tw-text-[20px]"> redo </mat-icon>
+			<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> redo </mat-icon>
 		</button>
 
 		<span
-			class="tw-mx-1 tw-text-[10px] tw-text-gray-300 dark:tw-text-gray-600"
+			class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
 			aria-hidden="true">
 			│
 		</span>
@@ -76,7 +76,7 @@
 						[disabled]="isEditorDisabled()"
 						[class.tw-opacity-40]="isEditorDisabled()"
 						(click)="applyFormattingAndClose(action)">
-						<mat-icon class="!tw-text-[20px]">
+						<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]">
 							{{ action.icon }}
 						</mat-icon>
 					</button>
@@ -85,7 +85,7 @@
 		}
 
 		<span
-			class="tw-mx-1 tw-text-[10px] tw-text-gray-300 dark:tw-text-gray-600"
+			class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
 			aria-hidden="true">
 			│
 		</span>
@@ -104,7 +104,7 @@
 			(defaultAction)="applyList('bulleted')"
 			(optionSelected)="applyList($event)"></osee-split-button>
 		@for (action of formattingActions; track action.name) {
-			@if (action.group === 'block' || action.group === 'structure') {
+			@if (action.group === 'block') {
 				<span
 					[matTooltip]="
 						isEditorDisabled()
@@ -117,7 +117,7 @@
 						[disabled]="isEditorDisabled()"
 						[class.tw-opacity-40]="isEditorDisabled()"
 						(click)="applyFormattingAndClose(action)">
-						<mat-icon class="!tw-text-[20px]">
+						<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]">
 							{{ action.icon }}
 						</mat-icon>
 					</button>
@@ -126,7 +126,7 @@
 		}
 
 		<span
-			class="tw-mx-1 tw-text-[10px] tw-text-gray-300 dark:tw-text-gray-600"
+			class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
 			aria-hidden="true">
 			│
 		</span>
@@ -141,11 +141,11 @@
 				[class.tw-opacity-40]="!canUploadImage() || isUploading()"
 				(click)="openUploadImageDialog()">
 				@if (isUploading()) {
-					<mat-icon class="!tw-text-[20px]">
+					<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]">
 						hourglass_empty
 					</mat-icon>
 				} @else {
-					<mat-icon class="!tw-text-[20px]"> image </mat-icon>
+					<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> image </mat-icon>
 				}
 			</button>
 		</span>
@@ -157,7 +157,7 @@
 				[disabled]="disabled() || showImages()"
 				[class.tw-opacity-40]="disabled() || showImages()"
 				(click)="openTableDialog()">
-				<mat-icon class="!tw-text-[20px]"> table_chart </mat-icon>
+				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> table_chart </mat-icon>
 			</button>
 		</span>
 		<span [matTooltip]="selectTableTooltip()">
@@ -167,12 +167,33 @@
 				[disabled]="disabled() || showImages()"
 				[class.tw-opacity-40]="disabled() || showImages()"
 				(click)="selectTableAtCursor()">
-				<mat-icon class="!tw-text-[20px]"> select_all </mat-icon>
+				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> select_all </mat-icon>
 			</button>
 		</span>
+		@for (action of formattingActions; track action.name) {
+			@if (action.group === 'media') {
+				<span
+					[matTooltip]="
+						isEditorDisabled()
+							? 'Exit image preview to format.'
+							: action.name
+					">
+					<button
+						mat-icon-button
+						class="!tw-h-8 !tw-w-8"
+						[disabled]="isEditorDisabled()"
+						[class.tw-opacity-40]="isEditorDisabled()"
+						(click)="applyFormattingAndClose(action)">
+						<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]">
+							{{ action.icon }}
+						</mat-icon>
+					</button>
+				</span>
+			}
+		}
 
 		<span
-			class="tw-mx-1 tw-text-[10px] tw-text-gray-300 dark:tw-text-gray-600"
+			class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
 			aria-hidden="true">
 			│
 		</span>
@@ -187,13 +208,13 @@
 			[disabled]="isLoadingImages()"
 			(click)="toggleShowImages()">
 			@if (isLoadingImages()) {
-				<mat-icon class="!tw-text-[20px]"> hourglass_empty </mat-icon>
+				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> hourglass_empty </mat-icon>
 			} @else if (showImages()) {
-				<mat-icon class="!tw-text-[20px] tw-text-primary">
+				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px] tw-text-primary">
 					edit
 				</mat-icon>
 			} @else {
-				<mat-icon class="!tw-text-[20px]"> visibility </mat-icon>
+				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> visibility </mat-icon>
 			}
 		</button>
 		<button
@@ -206,9 +227,9 @@
 			"
 			(click)="togglePreviewCollapsed()">
 			@if (isPreviewCollapsed()) {
-				<mat-icon class="!tw-text-[20px]"> vertical_split </mat-icon>
+				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> vertical_split </mat-icon>
 			} @else {
-				<mat-icon class="!tw-text-[20px]"> view_sidebar </mat-icon>
+				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> view_sidebar </mat-icon>
 			}
 		</button>
 		<button
@@ -218,14 +239,14 @@
 			[matTooltip]="isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen'"
 			(click)="toggleFullscreen()">
 			@if (isFullscreen()) {
-				<mat-icon class="!tw-text-[20px]"> fullscreen_exit </mat-icon>
+				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> fullscreen_exit </mat-icon>
 			} @else {
-				<mat-icon class="!tw-text-[20px]"> fullscreen </mat-icon>
+				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> fullscreen </mat-icon>
 			}
 		</button>
 		<osee-help-button
 			topicId="markdown-editor"
-			class="tw-relative -tw-top-0.5"></osee-help-button>
+			class="tw-ml-auto tw-self-center"></osee-help-button>
 	</div>
 
 	<!-- Editor body -->
