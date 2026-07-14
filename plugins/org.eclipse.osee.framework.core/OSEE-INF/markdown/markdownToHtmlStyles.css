@@ -19,5 +19,114 @@ img {
 
 .figure-caption,
 .table-caption {
-    text-align: center;
+	text-align: center;
+}
+
+blockquote {
+	border-left: 4px solid #d1d5db;
+	margin: 1em 0;
+	padding: 0.5em 1em;
+	color: #4b5563;
+	background-color: #f9fafb;
+}
+
+blockquote p {
+	margin: 0;
+}
+
+del, s {
+	text-decoration: line-through;
+	color: #6b7280;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: bold;
+	margin: 0.5em 0;
+}
+
+h1 { font-size: 2em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1.1em; }
+h5 { font-size: 1em; }
+h6 { font-size: 0.9em; }
+
+ul {
+	list-style-type: disc;
+	padding-left: 2em;
+	margin: 0.5em 0;
+}
+
+ol {
+	list-style-type: decimal;
+	padding-left: 2em;
+	margin: 0.5em 0;
+}
+
+li {
+	margin: 0.25em 0;
+}
+
+code {
+	background-color: #f3f4f6;
+	padding: 0.15em 0.4em;
+	border-radius: 3px;
+	font-size: 0.9em;
+}
+
+pre {
+	background-color: #f3f4f6;
+	padding: 1em;
+	border-radius: 4px;
+	overflow-x: auto;
+}
+
+pre code {
+	background-color: transparent;
+	padding: 0;
+}
+
+a {
+	color: #2563eb;
+	text-decoration: underline;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid #d1d5db;
+	margin: 1.5em 0;
+}
+
+@media (prefers-color-scheme: dark) {
+	blockquote {
+		border-left-color: #4b5563;
+		color: #d1d5db;
+		background-color: #1f2937;
+	}
+
+	del, s {
+		color: #9ca3af;
+	}
+
+	code {
+		background-color: #1f2937;
+		color: #e5e7eb;
+	}
+
+	pre {
+		background-color: #1f2937;
+		color: #e5e7eb;
+	}
+
+	a {
+		color: #60a5fa;
+	}
+
+	hr {
+		border-top-color: #4b5563;
+	}
+
+	table, th, td {
+		border-color: #4b5563;
+	}
 }
