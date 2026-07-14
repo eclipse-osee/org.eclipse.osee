@@ -23,6 +23,8 @@ export class MockPersistedApplicabilityDropdownComponent {
 	applicability = model.required<applic>();
 	comment = input('Modifying applicability');
 	disabled = input(false);
+	showLabel = input(true);
+	appearance = input<'outline' | 'fill'>('outline');
 
 	required = input(false);
 }

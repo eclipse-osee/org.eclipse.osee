@@ -22,4 +22,6 @@ export class MockApplicabilityDropdownComponent {
 	applicability = model<applic>({ id: '-1', name: '' });
 	required = input(false);
 	disabled = input(false);
+	showLabel = input(true);
+	appearance = input<'outline' | 'fill'>('outline');
 }
