@@ -13,7 +13,9 @@
 package org.eclipse.osee.framework.core.publishing.markdown;
 
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
 import com.vladsch.flexmark.ext.superscript.SuperscriptExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
@@ -46,7 +48,8 @@ public class MarkdownHtmlUtil {
 
    public static final MutableDataSet markdownParserOptions =
       new MutableDataSet().set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create(),
-         TocExtension.create(), AutolinkExtension.create(), SuperscriptExtension.create())).set(TocExtension.LIST_CLASS,
+         TocExtension.create(), AutolinkExtension.create(), SuperscriptExtension.create(),
+         StrikethroughExtension.create(), GitLabExtension.create())).set(TocExtension.LIST_CLASS,
             "toc");
    public static final String TOC_PATTERN_STRING = "\\[TOC[^\\]]*\\]";
    public static final String FIGURE_TOC_STRING = "[FIGURE-TOC]";
