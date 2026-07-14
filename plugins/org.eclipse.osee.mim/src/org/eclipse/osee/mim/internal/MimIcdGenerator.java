@@ -296,7 +296,7 @@ public class MimIcdGenerator {
             try {
                msgRate = Integer.parseInt(msgRateText);
             } catch (NumberFormatException nfe) {
-               //do nothing
+               // Expected for non-numeric rates (e.g. "Aperiodic"); msgRate remains -1
             }
          } else {
             msgRateText = msgPeriodicity;
@@ -307,7 +307,7 @@ public class MimIcdGenerator {
                try {
                   msgRate = Integer.parseInt(msgRateText);
                } catch (NumberFormatException nfe) {
-                  //do nothing
+                  // Expected for non-numeric rates (e.g. "Aperiodic"); msgRate remains -1
                }
             }
             if (msgPeriodicity.equals("Aperiodic") && !msgRateText.equals("Aperiodic")) {
@@ -342,7 +342,7 @@ public class MimIcdGenerator {
                         String currentList = currentSubMsgPair.get().getSecond();
                         String subMsgLevelICDCN = getRelatedWorkFlow(subMsgDiffItem.getItemTxIds(), branch);
                         if (!currentList.contains(subMsgLevelICDCN)) {
-                           currentList = currentList + "," + subMsgLevelICDCN;
+                           currentSubMsgPair.get().setSecond(currentList + "," + subMsgLevelICDCN);
                         }
 
                      } else {
@@ -373,7 +373,7 @@ public class MimIcdGenerator {
                if (structDiffItem != null) {
                   if (structDiffItem.isAdded() || structDiffItem.isAddedDueToApplicChange() || structDiffItem.hasAttributeChanges(
                      CoreAttributeTypes.InterfaceMinSimultaneity.getId()) || structDiffItem.hasAttributeChanges(
-                        CoreAttributeTypes.InterfaceMinSimultaneity.getId())) {
+                        CoreAttributeTypes.InterfaceMaxSimultaneity.getId())) {
                      if (msgHeaderICDCNs.containsKey(message.getArtifactId())) {
                         List<Pair<ArtifactId, String>> list = msgHeaderICDCNs.get(message.getArtifactId());
                         Optional<Pair<ArtifactId, String>> currentSubMsgPair =
@@ -400,11 +400,12 @@ public class MimIcdGenerator {
                               }
                               if (simTxIds.size() > 0) {
                                  String simICDCNs = getRelatedWorkFlow(simTxIds, branch);
-                                 if (!currentList.contains(structLevelICDCN)) {
+                                 if (!currentList.contains(simICDCNs)) {
                                     currentList = currentList + "," + simICDCNs;
                                  }
                               }
                            }
+                           currentSubMsgPair.get().setSecond(currentList);
 
                         } else {
 
@@ -1549,12 +1550,13 @@ public class MimIcdGenerator {
       Branch b = orcsApi.getQueryFactory().branchQuery().andId(branch).includeCategories().getResults().getExactlyOne();
       boolean isWorking = b.getBranchType().isWorkingBranch();
       boolean isPeer = b.getCategories().contains(CoreBranchCategoryTokens.PR);
-      String rtn = Strings.EMPTY_STRING;
+      StringBuilder rtn = new StringBuilder();
       if (isWorking && !isPeer) {
          if (txIds.stream().anyMatch(a -> a.getId() > b.getBaselineTx().getId())) {
-            rtn = releaseArtifacts.get(b.getAssociatedArtifact()).getSecond() != null && !releaseArtifacts.get(
+            String value = releaseArtifacts.get(b.getAssociatedArtifact()).getSecond() != null && !releaseArtifacts.get(
                b.getAssociatedArtifact()).getSecond().isBlank() ? releaseArtifacts.get(
                   b.getAssociatedArtifact()).getSecond() : releaseArtifacts.get(b.getAssociatedArtifact()).getFirst();
+            rtn.append(value);
          }
       } else {
          if (!releaseArtifacts.isEmpty() && !txIds.isEmpty()) {
@@ -1571,13 +1573,13 @@ public class MimIcdGenerator {
                   String tw = (releaseArtifacts.get(artifactId).getSecond() != null && !releaseArtifacts.get(
                      artifactId).getSecond().isBlank()) ? releaseArtifacts.get(
                         artifactId).getSecond() : releaseArtifacts.get(artifactId).getFirst();
-                  rtn = rtn + "," + tw;
+                  rtn.append(",").append(tw);
                }
 
             }
          }
       }
-      return rtn.replaceAll("^,+", "");
+      return rtn.toString().replaceAll("^,+", "");
    }
 
    private int[] printHeaderStructureElementRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex,
@@ -1596,7 +1598,7 @@ public class MimIcdGenerator {
       String validRange = getValidRangeString(element, platformType, dataType);
       String alterable = element.getInterfaceElementAlterable().getValue() ? "Yes" : "No";
       String preProcessedDescription =
-         element.getDescription().getValue() == Strings.EMPTY_STRING ? "n/a" : element.getDescription().getValue();
+         element.getDescription().getValue().equals(Strings.EMPTY_STRING) ? "n/a" : element.getDescription().getValue();
       String description =
          view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(preProcessedDescription, "", "md",
             configurationFiles.get(0)).getSanitizedContent() : preProcessedDescription;
@@ -2149,8 +2151,9 @@ public class MimIcdGenerator {
       int previousIndex = 0;
       int lastIndex = 0;
       boolean first = true;
-      for (Integer superscript : messageNotes.keySet()) {
-         MessageNote note = messageNotes.get(superscript);
+      for (Map.Entry<Integer, MessageNote> entry : messageNotes.entrySet()) {
+         Integer superscript = entry.getKey();
+         MessageNote note = entry.getValue();
          if (first) {
             first = false;
             previousValue = note.getText();
@@ -2513,7 +2516,7 @@ public class MimIcdGenerator {
          "sShort").replace("unsigned integer", "uInteger").replace("integer", "sInteger");
    }
 
-   private class MessageNote {
+   private static class MessageNote {
       final String text;
       final CELLSTYLE color;
 
@@ -2531,7 +2534,7 @@ public class MimIcdGenerator {
       }
    }
 
-   private class StructureInfo {
+   private static class StructureInfo {
       final Long id;
       final String name;
       final String nameAbbrev;
