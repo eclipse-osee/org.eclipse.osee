@@ -48,7 +48,12 @@ import {
 	take,
 	takeUntil,
 } from 'rxjs';
-import { markdownFormattingActions } from './markdown-editor-examples';
+import {
+	markdownFormattingActions,
+	headingLevels,
+	HeadingLevel,
+	listOptions,
+} from './markdown-editor-examples';
 import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
 import {
 	UploadImageDialogComponent,
@@ -90,19 +95,33 @@ export class MarkdownEditorComponent {
 	mdContent = model.required<string>();
 
 	/**
-	 * VS Code-style undo/redo stack.
-	 * `undoStack` stores previous states (oldest first).
-	 * `redoStack` stores states undone (newest first).
-	 * `isUndoRedoAction` prevents recording history during undo/redo.
+	 * VS Code-style undo/redo with intelligent grouping.
+	 *
+	 * Typing groups are coalesced into a single undo entry until a boundary:
+	 * - Pause in typing (debounce timeout)
+	 * - Cursor position jump (click elsewhere)
+	 * - Whitespace after non-whitespace (word boundary)
+	 * - Explicit programmatic action (toolbar button, paste)
+	 *
+	 * `undoStack` stores committed states (oldest first).
+	 * `redoStack` stores states undone (newest redo-able first).
 	 */
 	private readonly undoStack: string[] = [];
 	private readonly redoStack: string[] = [];
 	private isUndoRedoAction = false;
 	private readonly maxHistory = 200;
+	private undoGroupTimer: ReturnType<typeof setTimeout> | null = null;
+	private lastEditCursorPos = -1;
+	private lastCharWasWhitespace = false;
+	private pendingGroupStart: string | null = null;
+	/** Pause duration (ms) before typing commits as a group. */
+	private readonly undoGroupDelay = 1000;
 	protected readonly canUndo = signal(false);
 	protected readonly canRedo = signal(false);
-	protected readonly showFormattingPanel = signal(false);
+	protected readonly showListDropdown = signal(false);
 	protected readonly formattingActions = markdownFormattingActions;
+	protected readonly headingLevels = headingLevels;
+	protected readonly listOptions = listOptions;
 
 	private readonly dialog = inject(MatDialog);
 	private readonly snackBar = inject(MatSnackBar);
@@ -212,23 +231,26 @@ export class MarkdownEditorComponent {
 						}
 					});
 
+				// Listen to input events to detect typing boundaries for undo grouping.
+				fromEvent<InputEvent>(textarea.nativeElement, 'input')
+					.pipe(takeUntilDestroyed(this.destroyRef))
+					.subscribe((e) => {
+						if (this.isUndoRedoAction) {
+							return;
+						}
+						this.handleInputForUndoGrouping(e, textarea.nativeElement);
+					});
+
 				// Record initial state so first undo has something to revert to.
 				this.undoStack.push(this.mdContent());
 				this.canUndo.set(false);
 			}
 		});
 
-		// Watch mdContent changes to build undo stack (skip undo/redo-initiated changes).
-		toObservable(this.mdContent)
-			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe((value) => {
-				if (this.isUndoRedoAction) {
-					return;
-				}
-				this.pushUndoState(value);
-			});
-
 		this.destroyRef.onDestroy(() => {
+			if (this.undoGroupTimer) {
+				clearTimeout(this.undoGroupTimer);
+			}
 			if (this.isDragging) {
 				this.clearDragStyles();
 			}
@@ -394,6 +416,9 @@ export class MarkdownEditorComponent {
 	 * wraps the selection. Otherwise inserts the template text.
 	 */
 	applyFormatting(action: (typeof markdownFormattingActions)[number]): void {
+		// Commit any pending typing as its own undo group first.
+		this.commitExplicitUndoState();
+
 		const content = this.mdContent();
 		const cursorPos =
 			this.savedSelectionStart >= 0
@@ -425,7 +450,10 @@ export class MarkdownEditorComponent {
 			newCursorPos = cursorPos + action.prefix.length;
 			this.savedSelectionStart = newCursorPos;
 			this.savedSelectionEnd = newCursorPos + placeholder.length;
+			this.isUndoRedoAction = true;
 			this.mdContent.set(before + insertedText + after);
+			this.isUndoRedoAction = false;
+			this.commitCurrentState(before + insertedText + after);
 			this.restoreTextareaSelection();
 			return;
 		} else {
@@ -434,21 +462,55 @@ export class MarkdownEditorComponent {
 			newCursorPos = cursorPos + insertedText.length;
 		}
 
+		this.isUndoRedoAction = true;
 		this.mdContent.set(before + insertedText + after);
+		this.isUndoRedoAction = false;
+		this.commitCurrentState(before + insertedText + after);
+
 		this.savedSelectionStart = newCursorPos;
 		this.savedSelectionEnd = newCursorPos;
 		this.restoreTextareaSelection();
-	}
-
-	toggleFormattingPanel(): void {
-		this.showFormattingPanel.update((v) => !v);
 	}
 
 	applyFormattingAndClose(
 		action: (typeof markdownFormattingActions)[number]
 	): void {
 		this.applyFormatting(action);
-		this.showFormattingPanel.set(false);
+	}
+
+	applyHeading(level: HeadingLevel | string): void {
+		const numLevel =
+			typeof level === 'string' ? (parseInt(level, 10) as HeadingLevel) : level;
+		if (numLevel < 1 || numLevel > 6) {
+			return;
+		}
+		const prefix = '#'.repeat(numLevel) + ' ';
+		this.applyFormatting({
+			name: `Heading ${numLevel}`,
+			icon: 'title',
+			markdown: `${prefix}Heading ${numLevel}`,
+			prefix,
+			suffix: '',
+			placeholder: `Heading ${numLevel}`,
+			group: 'block',
+		});
+	}
+
+	applyList(value: string): void {
+		const option = this.listOptions.find((o) => o.value === value);
+		if (!option) {
+			return;
+		}
+		this.applyFormatting({
+			name: option.name,
+			icon: option.icon,
+			markdown: option.markdown,
+			group: 'block',
+		});
+	}
+
+	toggleListDropdown(): void {
+		this.showListDropdown.update((v) => !v);
 	}
 
 	openUploadImageDialog(): void {
@@ -606,6 +668,8 @@ export class MarkdownEditorComponent {
 		captionPosition: CaptionPosition = 'below',
 		size: ImageSize | null = null
 	): void {
+		this.commitExplicitUndoState();
+
 		const sizeAttr = size ? ` size="${size}"` : '';
 		const imageTag = `<image-link${sizeAttr}>${artifactId}</image-link>`;
 		const positionAttr =
@@ -622,13 +686,18 @@ export class MarkdownEditorComponent {
 
 		const before = currentContent.substring(0, cursorPos);
 		const after = currentContent.substring(cursorPos);
+		let newContent: string;
 		if (captionTag && captionPosition === 'above') {
-			this.mdContent.set(before + captionTag + '\n\n' + imageTag + after);
+			newContent = before + captionTag + '\n\n' + imageTag + after;
 		} else if (captionTag) {
-			this.mdContent.set(before + imageTag + '\n\n' + captionTag + after);
+			newContent = before + imageTag + '\n\n' + captionTag + after;
 		} else {
-			this.mdContent.set(before + imageTag + after);
+			newContent = before + imageTag + after;
 		}
+		this.isUndoRedoAction = true;
+		this.mdContent.set(newContent);
+		this.isUndoRedoAction = false;
+		this.commitCurrentState(newContent);
 	}
 
 	openTableDialog(): void {
@@ -711,6 +780,8 @@ export class MarkdownEditorComponent {
 					})
 				)
 				.subscribe((result) => {
+					this.commitExplicitUndoState();
+
 					const positionAttr =
 						result.captionPosition === 'above'
 							? ' position="above"'
@@ -719,6 +790,7 @@ export class MarkdownEditorComponent {
 					const captionTag = escapedCaption
 						? `<table-caption${positionAttr}>${escapedCaption}</table-caption>`
 						: '';
+					let newContent: string;
 					if (parsedTable) {
 						// Replace existing table
 						const before = content.substring(
@@ -727,25 +799,21 @@ export class MarkdownEditorComponent {
 						);
 						const after = content.substring(parsedTable.endIndex);
 						if (captionTag && result.captionPosition === 'above') {
-							this.mdContent.set(
+							newContent =
 								before +
-									captionTag +
-									'\n\n' +
-									result.markdown +
-									after
-							);
+								captionTag +
+								'\n\n' +
+								result.markdown +
+								after;
 						} else if (captionTag) {
-							this.mdContent.set(
+							newContent =
 								before +
-									result.markdown +
-									'\n\n' +
-									captionTag +
-									after
-							);
+								result.markdown +
+								'\n\n' +
+								captionTag +
+								after;
 						} else {
-							this.mdContent.set(
-								before + result.markdown + after
-							);
+							newContent = before + result.markdown + after;
 						}
 					} else {
 						// Insert new table at cursor or end
@@ -773,14 +841,18 @@ export class MarkdownEditorComponent {
 								: captionTag
 									? result.markdown + '\n\n' + captionTag
 									: result.markdown;
-						this.mdContent.set(
+						newContent =
 							before +
-								prefixNewlines +
-								tableWithCaption +
-								suffixNewlines +
-								after
-						);
+							prefixNewlines +
+							tableWithCaption +
+							suffixNewlines +
+							after;
 					}
+					this.isUndoRedoAction = true;
+					this.mdContent.set(newContent);
+					this.isUndoRedoAction = false;
+					this.commitCurrentState(newContent);
+
 					if (wasFullscreen) {
 						this.enterFullscreen();
 					}
@@ -1391,24 +1463,128 @@ export class MarkdownEditorComponent {
 	}
 
 	/**
-	 * Pushes a new state onto the undo stack and clears the redo stack.
-	 * Deduplicates consecutive identical states.
+	 * Handles input events to implement VS Code-style undo grouping.
+	 *
+	 * Groups consecutive typing at the same cursor position into one undo entry.
+	 * Starts a new group on:
+	 * - Word boundaries (whitespace typed after non-whitespace)
+	 * - Cursor jumps (selection-based edits like paste, or delete-selection)
+	 * - Non-insertText input types (paste, cut, delete, etc.)
+	 * - Idle timeout (user pauses typing)
 	 */
-	private pushUndoState(value: string): void {
+	private handleInputForUndoGrouping(
+		event: InputEvent,
+		textarea: HTMLTextAreaElement
+	): void {
+		const currentValue = this.mdContent();
+		const cursorPos = textarea.selectionStart;
+
+		const isTyping = event.inputType === 'insertText';
+		const isNewline =
+			event.inputType === 'insertLineBreak' ||
+			event.inputType === 'insertParagraph';
+		const typedChar = event.data ?? '';
+		const isWhitespace = /\s/.test(typedChar);
+
+		// Determine if we need to break the group
+		let shouldBreakGroup = false;
+
+		if (!isTyping && !isNewline) {
+			// Non-typing input (paste, cut, drop, delete, etc.) — always a new group
+			shouldBreakGroup = true;
+		} else if (isNewline) {
+			// Newline always starts a new group
+			shouldBreakGroup = true;
+		} else if (
+			this.lastEditCursorPos >= 0 &&
+			cursorPos !== this.lastEditCursorPos + 1
+		) {
+			// Cursor jumped (user clicked elsewhere then typed)
+			shouldBreakGroup = true;
+		} else if (isWhitespace && !this.lastCharWasWhitespace) {
+			// Word boundary: transition from non-whitespace to whitespace
+			shouldBreakGroup = true;
+		}
+
+		if (shouldBreakGroup) {
+			this.commitPendingUndoGroup();
+		}
+
+		// If no pending group, record the state before this edit
+		if (this.pendingGroupStart === null) {
+			this.pendingGroupStart =
+				this.undoStack[this.undoStack.length - 1] ?? '';
+		}
+
+		this.lastEditCursorPos = cursorPos;
+		this.lastCharWasWhitespace = isWhitespace || isNewline;
+
+		// Reset the debounce timer
+		if (this.undoGroupTimer) {
+			clearTimeout(this.undoGroupTimer);
+		}
+		this.undoGroupTimer = setTimeout(() => {
+			this.commitCurrentState(currentValue);
+		}, this.undoGroupDelay);
+
+		// Clear redo on new input
+		if (this.redoStack.length > 0) {
+			this.redoStack.length = 0;
+			this.canRedo.set(false);
+		}
+	}
+
+	/**
+	 * Commits the pending typing group to the undo stack.
+	 * Called when a group boundary is detected or after idle timeout.
+	 */
+	private commitPendingUndoGroup(): void {
+		if (this.undoGroupTimer) {
+			clearTimeout(this.undoGroupTimer);
+			this.undoGroupTimer = null;
+		}
+		// Commit the current content as the latest undo state
+		const current = this.mdContent();
 		const top = this.undoStack[this.undoStack.length - 1];
-		if (top === value) {
-			return;
+		if (current !== top) {
+			if (this.undoStack.length >= this.maxHistory) {
+				this.undoStack.shift();
+			}
+			this.undoStack.push(current);
+			this.canUndo.set(this.undoStack.length > 1);
 		}
-		if (this.undoStack.length >= this.maxHistory) {
-			this.undoStack.shift();
+		this.pendingGroupStart = null;
+	}
+
+	/**
+	 * Commits a specific value as the latest undo state (used by idle timeout).
+	 */
+	private commitCurrentState(value: string): void {
+		this.undoGroupTimer = null;
+		const top = this.undoStack[this.undoStack.length - 1];
+		if (value !== top) {
+			if (this.undoStack.length >= this.maxHistory) {
+				this.undoStack.shift();
+			}
+			this.undoStack.push(value);
+			this.canUndo.set(this.undoStack.length > 1);
 		}
-		this.undoStack.push(value);
-		this.redoStack.length = 0;
-		this.canUndo.set(this.undoStack.length > 1);
-		this.canRedo.set(false);
+		this.pendingGroupStart = null;
+	}
+
+	/**
+	 * Commits the current state immediately as its own undo group.
+	 * Used for programmatic changes (toolbar actions, dialog results)
+	 * that should each be a single undo step.
+	 */
+	private commitExplicitUndoState(): void {
+		this.commitPendingUndoGroup();
 	}
 
 	undo(): void {
+		// First commit any pending typing group
+		this.commitPendingUndoGroup();
+
 		if (this.undoStack.length <= 1) {
 			return;
 		}
@@ -1420,6 +1596,7 @@ export class MarkdownEditorComponent {
 		this.mdContent.set(previous);
 		this.isUndoRedoAction = false;
 
+		this.lastEditCursorPos = -1;
 		this.canUndo.set(this.undoStack.length > 1);
 		this.canRedo.set(this.redoStack.length > 0);
 	}
@@ -1435,6 +1612,7 @@ export class MarkdownEditorComponent {
 		this.mdContent.set(next);
 		this.isUndoRedoAction = false;
 
+		this.lastEditCursorPos = -1;
 		this.canUndo.set(this.undoStack.length > 1);
 		this.canRedo.set(this.redoStack.length > 0);
 	}

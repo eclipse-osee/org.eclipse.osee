@@ -12,181 +12,270 @@
  -->
 <div
 	#fullscreenWrapper
-	class="tw-flex tw-min-w-0 tw-flex-1 tw-flex-col"
+	class="tw-flex tw-min-w-0 tw-flex-1 tw-flex-col tw-overflow-hidden tw-rounded-lg tw-border tw-border-osee-neutral-25 dark:tw-border-osee-neutral-100"
 	[class.tw-h-full]="isFullscreen()"
-	[class.tw-bg-white]="isFullscreen()"
-	[class.dark:tw-bg-osee-neutral-6]="isFullscreen()">
+	[class.!tw-rounded-none]="isFullscreen()"
+	[class.!tw-border-0]="isFullscreen()">
+	<!-- Toolbar -->
 	<div
-		class="tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-1 tw-px-4 tw-py-1"
+		class="tw-flex tw-shrink-0 tw-flex-wrap tw-items-center tw-gap-0.5 tw-border-b tw-border-osee-neutral-25 tw-bg-gray-50 tw-px-2 tw-py-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6"
 		role="toolbar"
 		aria-label="Markdown editor toolbar"
 		oseeHelpAnchor="md-editor-toolbar">
+		<!-- History -->
 		<button
 			mat-icon-button
+			class="!tw-h-8 !tw-w-8"
 			matTooltip="Undo"
 			[disabled]="!canUndo()"
 			[class.tw-opacity-40]="!canUndo()"
 			(click)="undo()">
-			<div>
-				<mat-icon> undo </mat-icon>
-			</div>
+			<mat-icon class="!tw-text-[20px]"> undo </mat-icon>
 		</button>
 		<button
 			mat-icon-button
+			class="!tw-h-8 !tw-w-8"
 			matTooltip="Redo"
 			[disabled]="!canRedo()"
 			[class.tw-opacity-40]="!canRedo()"
 			(click)="redo()">
-			<div>
-				<mat-icon> redo </mat-icon>
-			</div>
+			<mat-icon class="!tw-text-[20px]"> redo </mat-icon>
 		</button>
 
 		<span
-			[matTooltip]="
-				isEditorDisabled()
-					? 'Exit image preview to use formatting.'
-					: 'Insert Formatting'
-			">
-			<button
-				mat-icon-button
-				[disabled]="isEditorDisabled()"
-				[class.tw-opacity-40]="isEditorDisabled()"
-				(click)="toggleFormattingPanel()">
-				<div>
-					<mat-icon>
-						{{ showFormattingPanel() ? 'expand_less' : 'text_format' }}
-					</mat-icon>
-				</div>
-			</button>
+			class="tw-mx-1 tw-text-[10px] tw-text-gray-300 dark:tw-text-gray-600"
+			aria-hidden="true">
+			│
 		</span>
 
+		<!-- Format -->
+		<select
+			class="tw-h-7 tw-cursor-pointer tw-rounded tw-border tw-border-gray-300 tw-bg-white tw-px-1.5 tw-text-xs tw-outline-none focus:tw-ring-1 focus:tw-ring-osee-blue-6 disabled:tw-cursor-not-allowed disabled:tw-opacity-40 dark:tw-border-gray-600 dark:tw-bg-osee-neutral-6 dark:tw-text-gray-200"
+			[disabled]="isEditorDisabled()"
+			aria-label="Heading level"
+			(change)="applyHeading($any($event.target).value); $any($event.target).value = ''"
+			[matTooltip]="
+				isEditorDisabled()
+					? 'Exit image preview to format.'
+					: 'Insert Heading'
+			">
+			<option
+				value=""
+				disabled
+				selected>
+				Heading
+			</option>
+			@for (level of headingLevels; track level) {
+				<option [value]="level">Heading {{ level }}</option>
+			}
+		</select>
+
+		@for (action of formattingActions; track action.name) {
+			@if (action.group === 'inline') {
+				<span
+					[matTooltip]="
+						isEditorDisabled()
+							? 'Exit image preview to format.'
+							: action.name
+					">
+					<button
+						mat-icon-button
+						class="!tw-h-8 !tw-w-8"
+						[disabled]="isEditorDisabled()"
+						[class.tw-opacity-40]="isEditorDisabled()"
+						(click)="applyFormattingAndClose(action)">
+						<mat-icon class="!tw-text-[20px]">
+							{{ action.icon }}
+						</mat-icon>
+					</button>
+				</span>
+			}
+		}
+
+		<span
+			class="tw-mx-1 tw-text-[10px] tw-text-gray-300 dark:tw-text-gray-600"
+			aria-hidden="true">
+			│
+		</span>
+
+		<!-- Insert blocks: List split button -->
+		<span
+			class="tw-group tw-relative tw-inline-flex tw-items-stretch tw-overflow-visible tw-rounded tw-border tw-border-transparent hover:tw-border-gray-300 dark:hover:tw-border-gray-600"
+			[class.tw-opacity-40]="isEditorDisabled()">
+			<button
+				class="tw-flex tw-cursor-pointer tw-items-center tw-justify-center tw-border-0 tw-bg-transparent tw-p-1 tw-outline-none hover:tw-bg-gray-100 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-transparent dark:hover:tw-bg-gray-700"
+				[disabled]="isEditorDisabled()"
+				[matTooltip]="
+					isEditorDisabled()
+						? 'Exit image preview to format.'
+						: 'Bulleted List'
+				"
+				(click)="applyList('bulleted')">
+				<mat-icon
+					class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]">
+					format_list_bulleted
+				</mat-icon>
+			</button>
+			<span
+				class="tw-w-px tw-self-stretch tw-bg-transparent group-hover:tw-bg-gray-300 dark:group-hover:tw-bg-gray-600"></span>
+			<button
+				class="tw-flex tw-w-4 tw-cursor-pointer tw-items-center tw-justify-center tw-border-0 tw-bg-transparent tw-p-0 tw-outline-none hover:tw-bg-gray-100 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-transparent dark:hover:tw-bg-gray-700"
+				[disabled]="isEditorDisabled()"
+				[matTooltip]="'More List Types'"
+				(click)="toggleListDropdown()">
+				<mat-icon
+					class="!tw-h-4 !tw-w-4 !tw-text-[16px] !tw-leading-[16px]">
+					arrow_drop_down
+				</mat-icon>
+			</button>
+			@if (showListDropdown()) {
+				<div
+					class="tw-absolute tw-left-0 tw-top-full tw-z-20 tw-mt-0.5 tw-flex tw-flex-col tw-divide-y tw-divide-gray-200 tw-overflow-hidden tw-rounded tw-border tw-border-gray-300 tw-bg-white tw-shadow-md dark:tw-divide-gray-600 dark:tw-border-gray-600 dark:tw-bg-osee-neutral-6">
+					@for (option of listOptions; track option.value) {
+						<button
+							class="tw-flex tw-cursor-pointer tw-items-center tw-gap-3 tw-whitespace-nowrap tw-border-0 tw-bg-transparent tw-px-3 tw-py-2 tw-text-left tw-text-sm hover:tw-bg-gray-100 dark:tw-text-gray-200 dark:hover:tw-bg-gray-700"
+							(click)="applyList(option.value); showListDropdown.set(false)">
+							<mat-icon
+								class="!tw-h-5 !tw-w-5 !tw-shrink-0 !tw-text-[20px] !tw-leading-[20px]">
+								{{ option.icon }}
+							</mat-icon>
+							<span>{{ option.name }}</span>
+						</button>
+					}
+				</div>
+			}
+		</span>
+		@for (action of formattingActions; track action.name) {
+			@if (action.group === 'block' || action.group === 'structure') {
+				<span
+					[matTooltip]="
+						isEditorDisabled()
+							? 'Exit image preview to format.'
+							: action.name
+					">
+					<button
+						mat-icon-button
+						class="!tw-h-8 !tw-w-8"
+						[disabled]="isEditorDisabled()"
+						[class.tw-opacity-40]="isEditorDisabled()"
+						(click)="applyFormattingAndClose(action)">
+						<mat-icon class="!tw-text-[20px]">
+							{{ action.icon }}
+						</mat-icon>
+					</button>
+				</span>
+			}
+		}
+
+		<span
+			class="tw-mx-1 tw-text-[10px] tw-text-gray-300 dark:tw-text-gray-600"
+			aria-hidden="true">
+			│
+		</span>
+
+		<!-- Media -->
 		<span [matTooltip]="uploadImageTooltip()">
 			<button
 				mat-icon-button
+				class="!tw-h-8 !tw-w-8"
 				oseeHelpAnchor="md-editor-image-btn"
 				[disabled]="!canUploadImage() || isUploading()"
 				[class.tw-opacity-40]="!canUploadImage() || isUploading()"
 				(click)="openUploadImageDialog()">
-				<div>
-					@if (isUploading()) {
-						<mat-icon> hourglass_empty </mat-icon>
-					} @else {
-						<mat-icon> image </mat-icon>
-					}
-				</div>
+				@if (isUploading()) {
+					<mat-icon class="!tw-text-[20px]">
+						hourglass_empty
+					</mat-icon>
+				} @else {
+					<mat-icon class="!tw-text-[20px]"> image </mat-icon>
+				}
 			</button>
 		</span>
-
 		<span [matTooltip]="tableButtonTooltip()">
 			<button
 				mat-icon-button
+				class="!tw-h-8 !tw-w-8"
 				oseeHelpAnchor="md-editor-table-btn"
 				[disabled]="disabled() || showImages()"
 				[class.tw-opacity-40]="disabled() || showImages()"
 				(click)="openTableDialog()">
-				<div>
-					<mat-icon> table_chart </mat-icon>
-				</div>
+				<mat-icon class="!tw-text-[20px]"> table_chart </mat-icon>
 			</button>
 		</span>
-
 		<span [matTooltip]="selectTableTooltip()">
 			<button
 				mat-icon-button
+				class="!tw-h-8 !tw-w-8"
 				[disabled]="disabled() || showImages()"
 				[class.tw-opacity-40]="disabled() || showImages()"
 				(click)="selectTableAtCursor()">
-				<div>
-					<mat-icon> select_all </mat-icon>
-				</div>
+				<mat-icon class="!tw-text-[20px]"> select_all </mat-icon>
 			</button>
 		</span>
 
+		<span
+			class="tw-mx-1 tw-text-[10px] tw-text-gray-300 dark:tw-text-gray-600"
+			aria-hidden="true">
+			│
+		</span>
+
+		<!-- View -->
 		<button
 			mat-icon-button
+			class="!tw-h-8 !tw-w-8"
 			[matTooltip]="
 				showImages() ? 'Return to editing.' : 'Preview With Images'
 			"
 			[disabled]="isLoadingImages()"
 			(click)="toggleShowImages()">
-			<div>
-				@if (isLoadingImages()) {
-					<mat-icon> hourglass_empty </mat-icon>
-				} @else if (showImages()) {
-					<mat-icon class="tw-text-primary"> edit </mat-icon>
-				} @else {
-					<mat-icon> visibility </mat-icon>
-				}
-			</div>
+			@if (isLoadingImages()) {
+				<mat-icon class="!tw-text-[20px]"> hourglass_empty </mat-icon>
+			} @else if (showImages()) {
+				<mat-icon class="!tw-text-[20px] tw-text-primary">
+					edit
+				</mat-icon>
+			} @else {
+				<mat-icon class="!tw-text-[20px]"> visibility </mat-icon>
+			}
 		</button>
-
 		<button
 			mat-icon-button
+			class="!tw-h-8 !tw-w-8"
 			[matTooltip]="
 				isPreviewCollapsed()
 					? 'Show Preview Panel'
 					: 'Hide Preview Panel'
 			"
 			(click)="togglePreviewCollapsed()">
-			<div>
-				@if (isPreviewCollapsed()) {
-					<mat-icon> vertical_split </mat-icon>
-				} @else {
-					<mat-icon> view_sidebar </mat-icon>
-				}
-			</div>
+			@if (isPreviewCollapsed()) {
+				<mat-icon class="!tw-text-[20px]"> vertical_split </mat-icon>
+			} @else {
+				<mat-icon class="!tw-text-[20px]"> view_sidebar </mat-icon>
+			}
 		</button>
-
 		<button
 			mat-icon-button
+			class="!tw-h-8 !tw-w-8"
 			oseeHelpAnchor="md-editor-fullscreen-btn"
 			[matTooltip]="isFullscreen() ? 'Exit Fullscreen' : 'Fullscreen'"
 			(click)="toggleFullscreen()">
-			<div>
-				@if (isFullscreen()) {
-					<mat-icon> fullscreen_exit </mat-icon>
-				} @else {
-					<mat-icon> fullscreen </mat-icon>
-				}
-			</div>
+			@if (isFullscreen()) {
+				<mat-icon class="!tw-text-[20px]"> fullscreen_exit </mat-icon>
+			} @else {
+				<mat-icon class="!tw-text-[20px]"> fullscreen </mat-icon>
+			}
 		</button>
-
 		<osee-help-button
 			topicId="markdown-editor"
 			class="tw-relative -tw-top-0.5"></osee-help-button>
 	</div>
 
-	@if (showFormattingPanel()) {
-		<div
-			class="tw-mx-4 tw-flex tw-flex-wrap tw-items-center tw-gap-1 tw-rounded tw-border tw-border-osee-neutral-25 tw-bg-white tw-px-3 tw-py-2 tw-shadow-sm dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6"
-			role="toolbar"
-			aria-label="Formatting options">
-			@for (action of formattingActions; track action.name) {
-				<button
-					mat-icon-button
-					class="!tw-h-9 !tw-w-9"
-					[matTooltip]="action.name"
-					(click)="applyFormattingAndClose(action)">
-					<div>
-						<mat-icon class="!tw-text-[20px] !tw-leading-5">
-							{{ action.icon }}
-						</mat-icon>
-					</div>
-				</button>
-			}
-		</div>
-	}
-
+	<!-- Editor body -->
 	<div
 		#editorContainer
 		data-testid="editor-container"
-		class="tw-relative tw-flex tw-min-h-0 tw-overflow-hidden tw-border-osee-neutral-25 dark:tw-border-osee-neutral-100"
+		class="tw-relative tw-flex tw-min-h-0 tw-bg-white dark:tw-bg-osee-neutral-6"
 		[class.tw-flex-1]="isFullscreen()"
-		[class.tw-border]="!dragActive()"
-		[class.tw-border-2]="dragActive()"
-		[class.tw-border-dashed]="dragActive()"
-		[class.tw-border-osee-blue-6]="dragActive()"
 		[style.height]="isFullscreen() ? null : height()"
 		(dragover)="onEditorDragOver($event)"
 		(dragenter)="onEditorDragEnter($event)"
@@ -194,7 +283,7 @@
 		(drop)="onEditorDrop($event)">
 		@if (dragActive()) {
 			<div
-				class="tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-bg-white/90 dark:tw-bg-osee-neutral-6/90">
+				class="tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-rounded-b-lg tw-bg-white/90 dark:tw-bg-osee-neutral-6/90">
 				<mat-icon
 					class="tw-size-12 tw-text-5xl tw-leading-[48px] tw-text-osee-blue-6">
 					cloud_upload

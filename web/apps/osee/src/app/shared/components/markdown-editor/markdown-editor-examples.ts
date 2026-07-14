@@ -19,7 +19,7 @@
  * - Block actions use `markdown` for direct insertion (e.g. a list).
  */
 export type MarkdownFormattingAction = {
-	/** Display name shown as tooltip */
+	/** Display name shown in the panel */
 	name: string;
 	/** Material icon name */
 	icon: string;
@@ -34,6 +34,8 @@ export type MarkdownFormattingAction = {
 	suffix?: string;
 	/** Placeholder text inserted when no text is selected */
 	placeholder?: string;
+	/** Visual group for layout in the panel */
+	group: 'inline' | 'block' | 'structure';
 };
 
 export const markdownFormattingActions: MarkdownFormattingAction[] = [
@@ -43,6 +45,7 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		markdown: '**bold text**',
 		prefix: '**',
 		placeholder: 'bold text',
+		group: 'inline',
 	},
 	{
 		name: 'Italic',
@@ -50,6 +53,7 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		markdown: '*italic text*',
 		prefix: '*',
 		placeholder: 'italic text',
+		group: 'inline',
 	},
 	{
 		name: 'Strikethrough',
@@ -57,6 +61,7 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		markdown: '~~strikethrough~~',
 		prefix: '~~',
 		placeholder: 'strikethrough',
+		group: 'inline',
 	},
 	{
 		name: 'Inline Code',
@@ -64,6 +69,7 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		markdown: '`code`',
 		prefix: '`',
 		placeholder: 'code',
+		group: 'inline',
 	},
 	{
 		name: 'Link',
@@ -72,24 +78,7 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		prefix: '[',
 		suffix: '](url)',
 		placeholder: 'link text',
-	},
-	{
-		name: 'Heading',
-		icon: 'title',
-		markdown: '## Heading',
-		prefix: '## ',
-		suffix: '',
-		placeholder: 'Heading',
-	},
-	{
-		name: 'Bulleted List',
-		icon: 'format_list_bulleted',
-		markdown: '- Item 1\n- Item 2\n- Item 3',
-	},
-	{
-		name: 'Numbered List',
-		icon: 'format_list_numbered',
-		markdown: '1. First item\n2. Second item\n3. Third item',
+		group: 'inline',
 	},
 	{
 		name: 'Blockquote',
@@ -98,6 +87,7 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		prefix: '> ',
 		suffix: '',
 		placeholder: 'quote',
+		group: 'block',
 	},
 	{
 		name: 'Code Block',
@@ -106,10 +96,61 @@ export const markdownFormattingActions: MarkdownFormattingAction[] = [
 		prefix: '```\n',
 		suffix: '\n```',
 		placeholder: 'code block',
+		group: 'block',
 	},
 	{
 		name: 'Horizontal Rule',
 		icon: 'horizontal_rule',
 		markdown: '---',
+		group: 'structure',
+	},
+	{
+		name: 'Figure Caption',
+		icon: 'closed_caption',
+		markdown: '<figure-caption>caption text</figure-caption>',
+		prefix: '<figure-caption>',
+		suffix: '</figure-caption>',
+		placeholder: 'caption text',
+		group: 'structure',
+	},
+	{
+		name: 'Table Caption',
+		icon: 'subtitles',
+		markdown: '<table-caption>caption text</table-caption>',
+		prefix: '<table-caption>',
+		suffix: '</table-caption>',
+		placeholder: 'caption text',
+		group: 'structure',
+	},
+];
+
+export const headingLevels = [1, 2, 3, 4, 5, 6] as const;
+export type HeadingLevel = (typeof headingLevels)[number];
+
+export type ListOption = {
+	name: string;
+	value: string;
+	icon: string;
+	markdown: string;
+};
+
+export const listOptions: ListOption[] = [
+	{
+		name: 'Bulleted List',
+		value: 'bulleted',
+		icon: 'format_list_bulleted',
+		markdown: '- Item 1\n- Item 2\n- Item 3',
+	},
+	{
+		name: 'Numbered List',
+		value: 'numbered',
+		icon: 'format_list_numbered',
+		markdown: '1. First item\n2. Second item\n3. Third item',
+	},
+	{
+		name: 'Task List',
+		value: 'task',
+		icon: 'checklist',
+		markdown: '- [ ] Task 1\n- [ ] Task 2\n- [x] Completed task',
 	},
 ];
