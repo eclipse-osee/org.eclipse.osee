@@ -144,7 +144,9 @@
 										#defaultForm="ngForm"
 										[artifactId]="value.id"
 										oseeSubMessageImpactsValidator>
-										<osee-persisted-applicability-dropdown appearance="fill" [showLabel]="false"
+										<osee-persisted-applicability-dropdown
+											appearance="fill"
+											[showLabel]="false"
 											[artifactId]="value.id"
 											[(applicability)]="
 												value.applicability
@@ -159,7 +161,8 @@
 										[attr.data-testid]="
 											'form-' + value[header].typeId
 										">
-										<osee-persisted-string-attribute-input appearance="fill"
+										<osee-persisted-string-attribute-input
+											appearance="fill"
 											[artifactId]="value.id"
 											[artifactApplicability]="
 												value.applicability

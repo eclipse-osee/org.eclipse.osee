@@ -35,7 +35,8 @@
 					*matCellDef="let ciset">
 					@if (header === 'Name') {
 						<form #defaultForm="ngForm">
-							<osee-persisted-string-attribute-input appearance="fill"
+							<osee-persisted-string-attribute-input
+								appearance="fill"
 								[artifactId]="ciset.id"
 								[value]="ciset.name"
 								[artifactApplicability]="applic"

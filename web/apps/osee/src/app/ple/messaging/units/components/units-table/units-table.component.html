@@ -35,14 +35,16 @@
 					*matCellDef="let unit">
 					@if (header === 'Name') {
 						<form #defaultForm="ngForm">
-							<osee-persisted-string-attribute-input appearance="fill"
+							<osee-persisted-string-attribute-input
+								appearance="fill"
 								[artifactId]="unit.id"
 								[value]="unit.name"
 								[artifactApplicability]="unit.applicability" />
 						</form>
 					} @else if (header === 'Measurement') {
 						<form #defaultForm="ngForm">
-							<osee-persisted-string-attribute-input appearance="fill"
+							<osee-persisted-string-attribute-input
+								appearance="fill"
 								[artifactId]="unit.id"
 								[value]="unit.measurement"
 								[artifactApplicability]="unit.applicability" />

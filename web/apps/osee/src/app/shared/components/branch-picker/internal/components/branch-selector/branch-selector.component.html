@@ -67,16 +67,15 @@
 								[attr.data-cy]="'option-' + option.name"
 								[value]="option"
 								[id]="option.id">
-									<div
-										class="tw-flex tw-items-center tw-gap-2">
+								<div class="tw-flex tw-items-center tw-gap-2">
 									{{ option.name }}
-										@if (isProductLine(option)) {
-											<span
-												class="tw-bg-primary/20 tw-rounded tw-px-1.5 tw-py-0.5 tw-text-[10px] tw-text-primary"
-												>PL</span
-											>
-										}
-									</div>
+									@if (isProductLine(option)) {
+										<span
+											class="tw-bg-primary/20 tw-rounded tw-px-1.5 tw-py-0.5 tw-text-[10px] tw-text-primary"
+											>PL</span
+										>
+									}
+								</div>
 							</mat-option>
 						</ng-template>
 					</osee-mat-option-loading>
