@@ -309,7 +309,7 @@ public interface BranchEndpoint {
    @Path("{branch}")
    Response purgeBranch(@PathParam("branch") BranchId branch,
       @DefaultValue("false") @QueryParam("recurse") boolean recurse,
-      @QueryParam("createRecovery") boolean createRecovery);
+      @DefaultValue("true") @QueryParam("coldStorage") boolean coldStorage);
 
    @DELETE
    @Path("purgeDeletedBranches")
@@ -319,12 +319,6 @@ public interface BranchEndpoint {
    @DELETE
    @Path("purgeWorkingBranchesOfClosedPrograms")
    Response purgeWorkingBranchesOfClosedPrograms(@QueryParam("branchCount") @DefaultValue("25") int branchCount,
-      @QueryParam("archived") @DefaultValue("1") int archived);
-
-   @DELETE
-   @Path("purgeStaleWorkingBranches")
-   Response purgeStaleWorkingBranches(@QueryParam("expireTimeInDays") @DefaultValue("365") int expireTimeInDays,
-      @QueryParam("branchCount") @DefaultValue("25") int branchCount,
       @QueryParam("archived") @DefaultValue("1") int archived);
 
    @DELETE

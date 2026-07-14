@@ -30,10 +30,13 @@ import {
 	BehaviorSubject,
 	ReplaySubject,
 	combineLatest,
+	concat,
 	debounceTime,
 	distinctUntilChanged,
 	of,
+	skip,
 	switchMap,
+	take,
 } from 'rxjs';
 import { BranchListService } from '../../../../internal/services/branch-list.service';
 import { MatOptionLoadingComponent } from '../../../../mat-option-loading/mat-option-loading/mat-option-loading.component';
@@ -68,11 +71,17 @@ export class BranchSelectorComponent {
 	private _openAutoComplete = new ReplaySubject<void>();
 	protected _size = this.branchListingService.pageSize;
 	protected _branches = this._openAutoComplete.pipe(
-		debounceTime(500),
-		distinctUntilChanged(),
+		take(1),
 		switchMap((_) =>
 			combineLatest([
-				this._typeAhead.pipe(distinctUntilChanged(), debounceTime(500)),
+				concat(
+					this._typeAhead.pipe(take(1)),
+					this._typeAhead.pipe(
+						skip(1),
+						distinctUntilChanged(),
+						debounceTime(500)
+					)
+				),
 				this.selectedBranchType,
 			]).pipe(
 				switchMap(([filter, _type]) =>
@@ -88,11 +97,17 @@ export class BranchSelectorComponent {
 	);
 
 	_count = this._openAutoComplete.pipe(
-		debounceTime(500),
-		distinctUntilChanged(),
+		take(1),
 		switchMap((_) =>
 			combineLatest([
-				this._typeAhead.pipe(distinctUntilChanged(), debounceTime(500)),
+				concat(
+					this._typeAhead.pipe(take(1)),
+					this._typeAhead.pipe(
+						skip(1),
+						distinctUntilChanged(),
+						debounceTime(500)
+					)
+				),
 				this.selectedBranchType,
 			]).pipe(
 				switchMap(([filter, _type]) =>

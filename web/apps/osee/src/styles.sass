@@ -328,3 +328,70 @@ html
 
       .error-checkbox
         @include mat.checkbox-color(theme.$dark-theme, $color-variant:error)
+
+// Help popup app root override
+osee-root:has(osee-help-popup)
+  display: block
+  height: 100vh
+  overflow: hidden
+
+// Help highlight animation
+// Uses outline for elements with visible overflow, and a combined
+// approach with background for elements inside clipped containers.
+@keyframes osee-help-pulse
+  0%
+    outline-color: rgba(var(--osee-help-highlight-rgb), 0)
+    background-color: rgba(var(--osee-help-highlight-rgb), 0)
+  8%
+    outline-color: rgba(var(--osee-help-highlight-rgb), 0.9)
+    background-color: rgba(var(--osee-help-highlight-rgb), 0.15)
+  16%
+    outline-color: rgba(var(--osee-help-highlight-rgb), 0.15)
+    background-color: rgba(var(--osee-help-highlight-rgb), 0.03)
+  22%
+    outline-color: rgba(var(--osee-help-highlight-rgb), 0.9)
+    background-color: rgba(var(--osee-help-highlight-rgb), 0.15)
+  80%
+    outline-color: rgba(var(--osee-help-highlight-rgb), 0.9)
+    background-color: rgba(var(--osee-help-highlight-rgb), 0.15)
+  100%
+    outline-color: rgba(var(--osee-help-highlight-rgb), 0)
+    background-color: rgba(var(--osee-help-highlight-rgb), 0)
+
+.osee-help-highlight
+  animation: osee-help-pulse 3s ease-out 1 forwards !important
+  outline: 3px solid rgba(var(--osee-help-highlight-rgb), 0)
+  outline-offset: 0px
+  border-radius: 4px
+  position: relative
+  z-index: 9999
+
+// For buttons/icons: scale pulse + color flash
+button.osee-help-highlight, [mat-icon-button].osee-help-highlight
+  outline: none !important
+  animation: none !important
+  mat-icon, .mat-icon
+    animation: osee-help-icon-flash 3s ease-out 1 forwards
+
+@keyframes osee-help-icon-flash
+  0%
+    transform: scale(1)
+    color: inherit
+  8%
+    transform: scale(1.2)
+    color: var(--osee-help-highlight)
+  16%
+    transform: scale(1)
+    color: inherit
+  22%
+    transform: scale(1.2)
+    color: var(--osee-help-highlight)
+  30%
+    transform: scale(1)
+    color: var(--osee-help-highlight)
+  80%
+    transform: scale(1)
+    color: var(--osee-help-highlight)
+  100%
+    transform: scale(1)
+    color: inherit

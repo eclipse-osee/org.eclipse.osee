@@ -55,6 +55,13 @@ export const routes: Routes = [
 		loadChildren: () => import('./training/training.routes'),
 	},
 	{
+		path: 'help-popup',
+		loadComponent: () =>
+			import(
+				'./shared/components/help-drawer/help-popup/help-popup.component'
+			),
+	},
+	{
 		path: '404',
 		loadChildren: () => import('@osee/page-not-found'),
 	},

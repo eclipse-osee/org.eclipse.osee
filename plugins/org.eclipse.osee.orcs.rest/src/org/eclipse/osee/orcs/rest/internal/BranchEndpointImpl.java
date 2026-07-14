@@ -88,7 +88,6 @@ import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
-import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.data.CommitBranchUtil;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -822,28 +821,27 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response purgeBranch(BranchId branchId, boolean recurse, boolean createRecovery) {
+   public Response purgeBranch(BranchId branchId, boolean recurse, boolean coldStorage) {
       orcsApi.userService().requireRole(CoreUserGroups.AccountAdmin);
       boolean modified = false;
 
       String SELECT_IMPACTED_GAMMAS_ON_BRANCH_AFTER_BASELINE_TX =
          "select gamma_id from osee_txs where branch_id = ? and transaction_id > ? union select gamma_id from osee_txs_archived where branch_id = ? and transaction_id > ?";
 
-      List<String> insertTxStatements = new ArrayList<>();
       List<Long> impactedGammaIds = new ArrayList<>();
       List<Long> unusedGammas = new ArrayList<>();
 
       Branch branch = getBranchById(branchId);
       if (branch != null) {
-         if (createRecovery) {
-            orcsApi.getJdbcService().getClient().runQuery(
-               stmt -> insertTxStatements.add(stmt.getString("insertString")),
-               OseeDb.TX_DETAILS_TABLE.getSelectInsertString(" where branch_id = ?"), branchId);
-
-            orcsApi.getJdbcService().getClient().runQuery(
-               stmt -> insertTxStatements.add(stmt.getString("insertString")),
-               OseeDb.TXS_TABLE.getSelectInsertString(" where branch_id = ?"), branchId);
+         // Export to cold storage before purging if requested
+         if (coldStorage) {
+            TxsColdStorage cold = new TxsColdStorage(orcsApi.getJdbcService().getClient(), orcsApi);
+            XResultData archiveResult = cold.archiveSingleBranch(branchId);
+            if (archiveResult.isErrors()) {
+               return Response.serverError().entity(archiveResult).build();
+            }
          }
+
          orcsApi.getJdbcService().getClient().runQuery(stmt -> impactedGammaIds.add(stmt.getLong("gamma_id")),
             SELECT_IMPACTED_GAMMAS_ON_BRANCH_AFTER_BASELINE_TX, branchId, branch.getBaselineTx(), branchId,
             branch.getBaselineTx());
@@ -853,20 +851,12 @@ public class BranchEndpointImpl implements BranchEndpoint {
          modified = true;
       }
       if (modified) {
-         String recoveryFileNamePrefix = Strings.EMPTY_STRING;
-         if (createRecovery) {
-            recoveryFileNamePrefix =
-               orcsApi.getAdminOps().isDataStoreProduction() ? "delete_branch_" + branch.getIdString() + "_" : "";
-         }
-         //Purge unused gammas if job was successful
-         //recovery files are created and stored inside PurgeUnusedBackingDataAndTransactions
          try {
             for (Long gamma : impactedGammaIds) {
                orcsApi.getJdbcService().getClient().runQuery(stmt -> unusedGammas.add(stmt.getLong("gamma_id")),
                   OseeSql.UNUSED_IMPACTED_GAMMAS_AFTER_PURGE.getSql(), gamma, gamma, gamma, 0);
             }
-            orcsApi.getTransactionFactory().purgeUnusedBackingDataAndTransactions(unusedGammas, insertTxStatements,
-               recoveryFileNamePrefix);
+            orcsApi.getTransactionFactory().purgeUnusedBackingDataAndTransactions(unusedGammas);
          } catch (Exception ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -896,7 +886,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), query);
 
       for (BranchId branchId : setOfBranchIds.stream().collect(Collectors.toList())) {
-         try (Response purgeResponse = purgeBranch(branchId, false, true);) {
+         try (Response purgeResponse = purgeBranch(branchId, false, false);) {
             if (!(purgeResponse.getStatusInfo().getStatusCode() == Status.OK.getStatusCode())) {
                throw new OseeCoreException("Error purging deleted branch id: " + branchId);
             } else {
@@ -938,39 +928,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), query);
 
       for (BranchId branchId : setOfBranchIds.stream().collect(Collectors.toList())) {
-         try (Response purgeResponse = purgeBranch(branchId, false, true);) {
-            if (!(purgeResponse.getStatusInfo().getStatusCode() == Status.OK.getStatusCode())) {
-               throw new OseeCoreException("Error purging deleted branch id: " + branchId);
-            } else {
-               branchesPurged.add(branchId);
-            }
-         }
-      }
-      return Response.status(Status.OK.getStatusCode(), "Purged: " + branchesPurged.toString()).build();
-   }
-
-   @Override
-   public Response purgeStaleWorkingBranches(int expireTimeInDays, int branchCount, int archived) {
-      List<BranchId> branchesPurged = new ArrayList<>();
-
-      String query = "select branch_id from \n" + //
-         " ( \n" + //
-         "    select row_number() over (order by max_time) rn, branch_id \n" + //
-         "    from ( \n" + //
-         "        select b.branch_name, tx.branch_id, max(tx.time) max_time, b.branch_state \n" + //
-         "        from osee_branch b, osee_tx_details tx \n" + //
-         "        where branch_state in (2,3) and b.branch_id = tx.branch_id and tx.time < " + orcsApi.getJdbcService().getClient().getDbType().getSysDateMinusIntervalInDays(
-            expireTimeInDays) + " \n" + //
-         "              and archived = " + archived + " and branch_type = " + BranchType.WORKING.getIdString() + " and not exists  \n" + //
-         "             (select null from osee_branch b2 where b2.parent_transaction_id in (select transaction_id from osee_tx_details txd2 where txd2.branch_id = b.branch_id)) \n" + //
-         "        group by b.branch_name, tx.branch_id, b.branch_state) t1  \n" + //
-         " ) t2  \n" + //
-         "where rn < " + branchCount;
-
-      Set<BranchId> setOfBranchIds = new HashSet<>();
-      orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), query);
-      for (BranchId branchId : setOfBranchIds.stream().collect(Collectors.toList())) {
-         try (Response purgeResponse = purgeBranch(branchId, false, true);) {
+         try (Response purgeResponse = purgeBranch(branchId, false, false);) {
             if (!(purgeResponse.getStatusInfo().getStatusCode() == Status.OK.getStatusCode())) {
                throw new OseeCoreException("Error purging deleted branch id: " + branchId);
             } else {
