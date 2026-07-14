@@ -460,6 +460,18 @@ public class TxsColdStorage {
                   row.writeTo(dos);
                }
 
+               // Write empty backing data sections to maintain consistent file format
+               dos.writeUTF("ARTIFACTS_DATA");
+               dos.writeInt(0);
+               dos.writeUTF("ATTRIBUTES_DATA");
+               dos.writeInt(0);
+               dos.writeUTF("RELATIONS_DATA");
+               dos.writeInt(0);
+               dos.writeUTF("RELATIONS2_DATA");
+               dos.writeInt(0);
+               dos.writeUTF("SEARCH_TAGS_DATA");
+               dos.writeInt(0);
+
                dos.writeUTF("BRANCH_END");
 
                totalTxsRows += txsRows.size();
@@ -753,8 +765,14 @@ public class TxsColdStorage {
       writer.flush();
       zipOut.closeEntry();
 
-      // Handle backing data sections
-      dis.readUTF(); // "ARTIFACTS_DATA"
+      // Handle backing data sections — old batch-sweep archives go straight to BRANCH_END
+      // after TXS_ARCHIVED_DATA, so check the next marker before assuming backing data exists.
+      String marker = dis.readUTF();
+      if ("BRANCH_END".equals(marker)) {
+         return;
+      }
+
+      // marker should be "ARTIFACTS_DATA"
       int artCount = dis.readInt();
       zipOut.putNextEntry(new java.util.zip.ZipEntry("osee_artifact.sql"));
       for (int i = 0; i < artCount; i++) {
@@ -887,43 +905,48 @@ public class TxsColdStorage {
          txsRows.add(readTxsArchivedRow(dis));
       }
 
-      // Read backing data sections
-      dis.readUTF(); // "ARTIFACTS_DATA"
-      int artCount = dis.readInt();
+      // Read backing data sections — old batch-sweep archives go straight to BRANCH_END
+      // after TXS_ARCHIVED_DATA, so check the next marker before assuming backing data exists.
       List<Object[]> artRows = new ArrayList<>();
-      for (int i = 0; i < artCount; i++) {
-         artRows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF()});
-      }
-
-      dis.readUTF(); // "ATTRIBUTES_DATA"
-      int attrCount = dis.readInt();
       List<Object[]> attrRows = new ArrayList<>();
-      for (int i = 0; i < attrCount; i++) {
-         attrRows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF(), dis.readUTF()});
-      }
-
-      dis.readUTF(); // "RELATIONS_DATA"
-      int relCount = dis.readInt();
       List<Object[]> relRows = new ArrayList<>();
-      for (int i = 0; i < relCount; i++) {
-         relRows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF()});
-      }
-
-      dis.readUTF(); // "RELATIONS2_DATA"
-      int rel2Count = dis.readInt();
       List<Object[]> rel2Rows = new ArrayList<>();
-      for (int i = 0; i < rel2Count; i++) {
-         rel2Rows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readInt(), dis.readLong()});
-      }
-
-      dis.readUTF(); // "SEARCH_TAGS_DATA"
-      int tagCount = dis.readInt();
       List<long[]> tagRows = new ArrayList<>();
-      for (int i = 0; i < tagCount; i++) {
-         tagRows.add(new long[] {dis.readLong(), dis.readLong()});
-      }
 
-      dis.readUTF(); // "BRANCH_END"
+      String marker = dis.readUTF();
+      if (!"BRANCH_END".equals(marker)) {
+         // marker should be "ARTIFACTS_DATA"
+         int artCount = dis.readInt();
+         for (int i = 0; i < artCount; i++) {
+            artRows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF()});
+         }
+
+         dis.readUTF(); // "ATTRIBUTES_DATA"
+         int attrCount = dis.readInt();
+         for (int i = 0; i < attrCount; i++) {
+            attrRows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF(), dis.readUTF()});
+         }
+
+         dis.readUTF(); // "RELATIONS_DATA"
+         int relCount = dis.readInt();
+         for (int i = 0; i < relCount; i++) {
+            relRows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readUTF()});
+         }
+
+         dis.readUTF(); // "RELATIONS2_DATA"
+         int rel2Count = dis.readInt();
+         for (int i = 0; i < rel2Count; i++) {
+            rel2Rows.add(new Object[] {dis.readLong(), dis.readLong(), dis.readLong(), dis.readLong(), dis.readInt(), dis.readLong()});
+         }
+
+         dis.readUTF(); // "SEARCH_TAGS_DATA"
+         int tagCount = dis.readInt();
+         for (int i = 0; i < tagCount; i++) {
+            tagRows.add(new long[] {dis.readLong(), dis.readLong()});
+         }
+
+         dis.readUTF(); // "BRANCH_END"
+      }
 
       // Restore order: backing data first (so FKs are satisfied), then branch, tx_details, txs
       // 1. Insert backing data (artifacts, attributes, relations)
@@ -1005,8 +1028,14 @@ public class TxsColdStorage {
          readTxsArchivedRow(dis);
       }
 
-      // Skip ARTIFACTS_DATA
-      dis.readUTF(); // "ARTIFACTS_DATA"
+      // Read the next section marker — old batch-sweep files go straight to BRANCH_END,
+      // newer files (and single-branch archives) include backing data sections.
+      String marker = dis.readUTF();
+      if ("BRANCH_END".equals(marker)) {
+         return;
+      }
+
+      // marker should be "ARTIFACTS_DATA"
       int artCount = dis.readInt();
       for (int i = 0; i < artCount; i++) {
          dis.readLong(); dis.readLong(); dis.readLong(); dis.readUTF();

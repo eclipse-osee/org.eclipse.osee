@@ -82,8 +82,7 @@ The editor detects tables at the cursor position via `parseTableAtSelection()` a
 The editor uses a side-by-side layout: textarea on the left, live HTML preview on the right, separated by a draggable divider.
 
 - **Mouse drag** — `onDividerMouseDown` tracks horizontal position relative to container, updates `editorWidthPercent` (clamped between 20% and 80%)
-- **Keyboard** — Divider has `role="separator"`, `tabindex="0"`, and responds to ArrowLeft/ArrowRight (2% step per keypress)
-- **Accessibility** — `aria-orientation="vertical"`, `aria-valuemin="20"`, `aria-valuemax="80"`, `aria-valuenow` reflects current percentage
+- **Accessibility** — Divider has `role="separator"`, `tabindex="0"`, `aria-orientation="vertical"`, `aria-valuemin="20"`, `aria-valuemax="80"`, `aria-valuenow` reflects current percentage
 
 ### Preview Collapse
 

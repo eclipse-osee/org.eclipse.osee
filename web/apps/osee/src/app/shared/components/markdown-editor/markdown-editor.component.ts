@@ -65,6 +65,9 @@ import {
 import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
 import { MarkdownImageService } from './markdown-image.service';
+import { HelpTopicRegistryService } from '../help-drawer/help-topic-registry.service';
+import { HelpAnchorDirective } from '../help-drawer/help-anchor.directive';
+import { HelpButtonComponent } from '../help-drawer/help-button.component';
 
 @Component({
 	selector: 'osee-markdown-editor',
@@ -75,11 +78,13 @@ import { MarkdownImageService } from './markdown-image.service';
 		MatMenu,
 		MatMenuTrigger,
 		MatMenuItem,
+		HelpAnchorDirective,
+		HelpButtonComponent,
 	],
 	templateUrl: './markdown-editor.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	host: {
-		class: 'tw-block',
+		class: 'tw-flex tw-flex-row',
 	},
 })
 export class MarkdownEditorComponent {
@@ -106,6 +111,29 @@ export class MarkdownEditorComponent {
 	private readonly imageService = inject(MarkdownImageService);
 	private readonly artExpHttpService = inject(ArtifactExplorerHttpService);
 	private readonly domSanitizer = inject(DomSanitizer);
+	private readonly helpRegistry = inject(HelpTopicRegistryService);
+
+	private readonly _registerHelp = this.helpRegistry.register({
+		id: 'markdown-editor',
+		label: 'Markdown Editor',
+		markdownPath: 'assets/help/markdown-editor/overview.md',
+		sections: [
+			{ id: 'toolbar', label: 'Toolbar', anchorId: 'md-editor-toolbar' },
+			{
+				id: 'formatting',
+				label: 'Formatting',
+				anchorId: 'md-editor-textarea',
+			},
+			{ id: 'images', label: 'Images', anchorId: 'md-editor-image-btn' },
+			{ id: 'tables', label: 'Tables', anchorId: 'md-editor-table-btn' },
+			{ id: 'preview', label: 'Preview', anchorId: 'md-editor-preview' },
+			{
+				id: 'fullscreen',
+				label: 'Fullscreen',
+				anchorId: 'md-editor-fullscreen-btn',
+			},
+		],
+	});
 
 	private readonly branchId = toSignal(this.uiService.id, {
 		initialValue: '',
@@ -576,6 +604,7 @@ export class MarkdownEditorComponent {
 				minWidth: '50%',
 				maxWidth: '90vw',
 				disableClose: true,
+				autoFocus: false,
 			});
 
 			dialogRef
@@ -1270,17 +1299,6 @@ export class MarkdownEditorComponent {
 		this.isDragging = false;
 		document.body.style.cursor = '';
 		document.body.style.userSelect = '';
-	}
-
-	onDividerKeyDown(event: KeyboardEvent): void {
-		const step = 2;
-		if (event.key === 'ArrowLeft') {
-			event.preventDefault();
-			this.editorWidthPercent.update((v) => Math.max(20, v - step));
-		} else if (event.key === 'ArrowRight') {
-			event.preventDefault();
-			this.editorWidthPercent.update((v) => Math.min(80, v + step));
-		}
 	}
 
 	undo() {
