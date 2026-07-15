@@ -41,7 +41,11 @@ function getToolbarButton(page: Page, iconName: string): Locator {
 	const escaped = iconName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	return getEditor(page)
 		.getByRole('button')
-		.filter({ has: page.locator(`mat-icon`, { hasText: new RegExp(`^\\s*${escaped}\\s*$`) }) });
+		.filter({
+			has: page.locator(`mat-icon`, {
+				hasText: new RegExp(`^\\s*${escaped}\\s*$`),
+			}),
+		});
 }
 
 function getPreviewPanel(page: Page): Locator {
@@ -68,7 +72,11 @@ function getSplitButton(page: Page, iconName: string): Locator {
 	const escaped = iconName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	return getEditor(page)
 		.locator('osee-split-button')
-		.filter({ has: page.locator('mat-icon', { hasText: new RegExp(`^\\s*${escaped}\\s*$`) }) });
+		.filter({
+			has: page.locator('mat-icon', {
+				hasText: new RegExp(`^\\s*${escaped}\\s*$`),
+			}),
+		});
 }
 
 /**
@@ -201,16 +209,10 @@ test.describe('Markdown Editor', () => {
 
 		await test.step('Format section: Heading split button and inline formatting', async () => {
 			// Heading split button (main icon is "title")
-			await expect(
-				getSplitButton(page, 'title')
-			).toBeVisible();
+			await expect(getSplitButton(page, 'title')).toBeVisible();
 			// Inline formatting buttons
-			await expect(
-				getToolbarButton(page, 'format_bold')
-			).toBeVisible();
-			await expect(
-				getToolbarButton(page, 'format_italic')
-			).toBeVisible();
+			await expect(getToolbarButton(page, 'format_bold')).toBeVisible();
+			await expect(getToolbarButton(page, 'format_italic')).toBeVisible();
 			await expect(
 				getToolbarButton(page, 'strikethrough_s')
 			).toBeVisible();
@@ -224,12 +226,8 @@ test.describe('Markdown Editor', () => {
 			// Block formatting buttons
 			await expect(getToolbarButton(page, 'code')).toBeVisible();
 			await expect(getToolbarButton(page, 'link')).toBeVisible();
-			await expect(
-				getToolbarButton(page, 'format_quote')
-			).toBeVisible();
-			await expect(
-				getToolbarButton(page, 'data_object')
-			).toBeVisible();
+			await expect(getToolbarButton(page, 'format_quote')).toBeVisible();
+			await expect(getToolbarButton(page, 'data_object')).toBeVisible();
 			await expect(
 				getToolbarButton(page, 'horizontal_rule')
 			).toBeVisible();
@@ -237,27 +235,15 @@ test.describe('Markdown Editor', () => {
 
 		await test.step('Media section: Image, Table, Select Table, and Caption buttons', async () => {
 			await expect(getToolbarButton(page, 'image')).toBeVisible();
-			await expect(
-				getToolbarButton(page, 'table_chart')
-			).toBeVisible();
-			await expect(
-				getToolbarButton(page, 'select_all')
-			).toBeVisible();
-			await expect(
-				getToolbarButton(page, 'video_label')
-			).toBeVisible();
-			await expect(
-				getToolbarButton(page, 'legend_toggle')
-			).toBeVisible();
+			await expect(getToolbarButton(page, 'table_chart')).toBeVisible();
+			await expect(getToolbarButton(page, 'select_all')).toBeVisible();
+			await expect(getToolbarButton(page, 'video_label')).toBeVisible();
+			await expect(getToolbarButton(page, 'legend_toggle')).toBeVisible();
 		});
 
 		await test.step('View section: Preview, Panel toggle, Fullscreen, Help', async () => {
-			await expect(
-				getToolbarButton(page, 'visibility')
-			).toBeVisible();
-			await expect(
-				getToolbarButton(page, 'view_sidebar')
-			).toBeVisible();
+			await expect(getToolbarButton(page, 'visibility')).toBeVisible();
+			await expect(getToolbarButton(page, 'view_sidebar')).toBeVisible();
 			await expect(
 				getEditor(page)
 					.getByRole('button')
@@ -276,9 +262,7 @@ test.describe('Markdown Editor', () => {
 			await expect(getToolbarButton(page, 'table_chart')).toBeDisabled();
 			await expect(getToolbarButton(page, 'select_all')).toBeDisabled();
 			// Format buttons disabled in image preview
-			await expect(
-				getToolbarButton(page, 'format_bold')
-			).toBeDisabled();
+			await expect(getToolbarButton(page, 'format_bold')).toBeDisabled();
 			await getToolbarButton(page, 'edit').click();
 			await expect(textarea).toBeEnabled();
 		});
@@ -547,9 +531,9 @@ test.describe('Markdown Editor', () => {
 		await test.step('Restore viewport shows expanded sections', async () => {
 			await page.setViewportSize({ width: 1920, height: 900 });
 			// Wait for format_bold to reappear (proves Format section expanded)
-			await expect(
-				getToolbarButton(page, 'format_bold')
-			).toBeVisible({ timeout: 5000 });
+			await expect(getToolbarButton(page, 'format_bold')).toBeVisible({
+				timeout: 5000,
+			});
 			// At this width, all collapsible sections should be expanded.
 			const collapsedDropdowns = getEditor(page).locator(
 				'osee-toolbar-section-dropdown'
@@ -1162,9 +1146,7 @@ test.describe('Markdown Editor', () => {
 				ta.dispatchEvent(new Event('blur'));
 			});
 			await getToolbarButton(page, 'video_label').click();
-			expect(await textarea.inputValue()).toContain(
-				'<figure-caption>'
-			);
+			expect(await textarea.inputValue()).toContain('<figure-caption>');
 		});
 
 		await test.step('Table caption button inserts table-caption tag', async () => {
@@ -1179,9 +1161,7 @@ test.describe('Markdown Editor', () => {
 				ta.dispatchEvent(new Event('blur'));
 			});
 			await getToolbarButton(page, 'legend_toggle').click();
-			expect(await textarea.inputValue()).toContain(
-				'<table-caption>'
-			);
+			expect(await textarea.inputValue()).toContain('<table-caption>');
 		});
 
 		await test.step('Figure caption wraps selected text', async () => {

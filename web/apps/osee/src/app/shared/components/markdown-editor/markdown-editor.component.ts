@@ -211,46 +211,45 @@ export class MarkdownEditorComponent {
 	});
 
 	/** Actions for collapsed Media section dropdown */
-	protected readonly mediaDropdownActions = computed<
-		ToolbarDropdownAction[]
-	>(() => {
-		const uploadDisabled =
-			!this.canUploadImage() || this.isUploading();
-		const editDisabled = this.disabled() || this.showImages();
-		const formatDisabled = this.isEditorDisabled();
-		return [
-			{
-				id: 'upload-image',
-				name: 'Upload Image',
-				icon: 'image',
-				disabled: uploadDisabled,
-			},
-			{
-				id: 'insert-table',
-				name: 'Insert or Edit Table',
-				icon: 'table_chart',
-				disabled: editDisabled,
-			},
-			{
-				id: 'select-table',
-				name: 'Select Table at Cursor',
-				icon: 'select_all',
-				disabled: editDisabled,
-			},
-			{
-				id: 'figure-caption',
-				name: 'Figure Caption',
-				icon: 'video_label',
-				disabled: formatDisabled,
-			},
-			{
-				id: 'table-caption',
-				name: 'Table Caption',
-				icon: 'legend_toggle',
-				disabled: formatDisabled,
-			},
-		];
-	});
+	protected readonly mediaDropdownActions = computed<ToolbarDropdownAction[]>(
+		() => {
+			const uploadDisabled = !this.canUploadImage() || this.isUploading();
+			const editDisabled = this.disabled() || this.showImages();
+			const formatDisabled = this.isEditorDisabled();
+			return [
+				{
+					id: 'upload-image',
+					name: 'Upload Image',
+					icon: 'image',
+					disabled: uploadDisabled,
+				},
+				{
+					id: 'insert-table',
+					name: 'Insert or Edit Table',
+					icon: 'table_chart',
+					disabled: editDisabled,
+				},
+				{
+					id: 'select-table',
+					name: 'Select Table at Cursor',
+					icon: 'select_all',
+					disabled: editDisabled,
+				},
+				{
+					id: 'figure-caption',
+					name: 'Figure Caption',
+					icon: 'video_label',
+					disabled: formatDisabled,
+				},
+				{
+					id: 'table-caption',
+					name: 'Table Caption',
+					icon: 'legend_toggle',
+					disabled: formatDisabled,
+				},
+			];
+		}
+	);
 
 	/**
 	 * Toolbar layout constants — element pixel widths derived from CSS.
@@ -277,12 +276,48 @@ export class MarkdownEditorComponent {
 		extraWidth: number;
 		collapsePriority: number | null;
 	}[] = [
-		{ name: 'history', iconButtons: 2, splitButtons: 0, extraWidth: 0, collapsePriority: null },
-		{ name: 'media', iconButtons: 5, splitButtons: 0, extraWidth: 0, collapsePriority: 3 },
-		{ name: 'format', iconButtons: 3, splitButtons: 1, extraWidth: 0, collapsePriority: 2 },
-		{ name: 'insert', iconButtons: 5, splitButtons: 1, extraWidth: 0, collapsePriority: 1 },
-		{ name: 'view', iconButtons: 3, splitButtons: 0, extraWidth: 0, collapsePriority: null }, // preview, toggle-panel, fullscreen
-		{ name: 'help', iconButtons: 0, splitButtons: 0, extraWidth: 36, collapsePriority: null }, // help button (ml-auto, no separator before it)
+		{
+			name: 'history',
+			iconButtons: 2,
+			splitButtons: 0,
+			extraWidth: 0,
+			collapsePriority: null,
+		},
+		{
+			name: 'media',
+			iconButtons: 5,
+			splitButtons: 0,
+			extraWidth: 0,
+			collapsePriority: 3,
+		},
+		{
+			name: 'format',
+			iconButtons: 3,
+			splitButtons: 1,
+			extraWidth: 0,
+			collapsePriority: 2,
+		},
+		{
+			name: 'insert',
+			iconButtons: 5,
+			splitButtons: 1,
+			extraWidth: 0,
+			collapsePriority: 1,
+		},
+		{
+			name: 'view',
+			iconButtons: 3,
+			splitButtons: 0,
+			extraWidth: 0,
+			collapsePriority: null,
+		}, // preview, toggle-panel, fullscreen
+		{
+			name: 'help',
+			iconButtons: 0,
+			splitButtons: 0,
+			extraWidth: 36,
+			collapsePriority: null,
+		}, // help button (ml-auto, no separator before it)
 	];
 
 	/** Computed expanded width for a section given its item counts. */
@@ -302,9 +337,10 @@ export class MarkdownEditorComponent {
 	 * Sections sorted by collapse priority (lowest first = collapses first).
 	 * Only includes collapsible sections.
 	 */
-	private static readonly COLLAPSE_ORDER = MarkdownEditorComponent.TOOLBAR_SECTIONS
-		.filter((s) => s.collapsePriority !== null)
-		.sort((a, b) => a.collapsePriority! - b.collapsePriority!);
+	private static readonly COLLAPSE_ORDER =
+		MarkdownEditorComponent.TOOLBAR_SECTIONS.filter(
+			(s) => s.collapsePriority !== null
+		).sort((a, b) => a.collapsePriority! - b.collapsePriority!);
 
 	/** Total width with all sections expanded (computed from section definitions). */
 	private static readonly TOTAL_EXPANDED = (() => {
@@ -334,8 +370,12 @@ export class MarkdownEditorComponent {
 		const thresholds: number[] = [MarkdownEditorComponent.TOTAL_EXPANDED];
 		let current = MarkdownEditorComponent.TOTAL_EXPANDED;
 		for (const section of MarkdownEditorComponent.COLLAPSE_ORDER) {
-			const expanded = MarkdownEditorComponent.sectionExpandedWidth(section);
-			current = current - expanded + MarkdownEditorComponent.COLLAPSED_BTN_WIDTH;
+			const expanded =
+				MarkdownEditorComponent.sectionExpandedWidth(section);
+			current =
+				current -
+				expanded +
+				MarkdownEditorComponent.COLLAPSED_BTN_WIDTH;
 			thresholds.push(current);
 		}
 		return thresholds;
@@ -490,7 +530,10 @@ export class MarkdownEditorComponent {
 						if (this.isUndoRedoAction) {
 							return;
 						}
-						this.handleInputForUndoGrouping(e, textarea.nativeElement);
+						this.handleInputForUndoGrouping(
+							e,
+							textarea.nativeElement
+						);
 					});
 
 				// Record initial state so first undo has something to revert to.
@@ -738,7 +781,9 @@ export class MarkdownEditorComponent {
 
 	applyHeading(level: HeadingLevel | string): void {
 		const numLevel =
-			typeof level === 'string' ? (parseInt(level, 10) as HeadingLevel) : level;
+			typeof level === 'string'
+				? (parseInt(level, 10) as HeadingLevel)
+				: level;
 		if (numLevel < 1 || numLevel > 6) {
 			return;
 		}

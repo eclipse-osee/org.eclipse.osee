@@ -67,7 +67,7 @@ export type ToolbarDropdownAction = {
 			#trigger="cdkOverlayOrigin"
 			class="tw-inline-flex tw-items-stretch tw-rounded tw-border tw-border-transparent hover:tw-border-osee-neutral-80 dark:hover:tw-border-osee-neutral-40">
 			<button
-				class="tw-flex tw-cursor-pointer tw-items-center tw-justify-center tw-gap-0.5 tw-border-0 tw-bg-transparent tw-px-1 tw-py-1 tw-outline-none hover:tw-bg-osee-neutral-90 dark:hover:tw-bg-osee-neutral-30"
+				class="tw-flex tw-cursor-pointer tw-items-center tw-justify-center tw-gap-0.5 tw-border-0 tw-bg-transparent tw-p-1 tw-outline-none hover:tw-bg-osee-neutral-90 dark:hover:tw-bg-osee-neutral-30"
 				[matTooltip]="sectionName()"
 				(mousedown)="$event.preventDefault()"
 				(click)="toggleDropdown()">
