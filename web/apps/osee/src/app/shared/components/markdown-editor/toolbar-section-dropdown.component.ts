@@ -163,9 +163,11 @@ export class ToolbarSectionDropdownComponent {
 		}
 	}
 
-	private readonly _cleanup = this.destroyRef.onDestroy(() => {
-		this.removeScrollListener();
-	});
+	private readonly _cleanup = (() => {
+		this.destroyRef.onDestroy(() => {
+			this.removeScrollListener();
+		});
+	})();
 
 	protected readonly positions: ConnectedPosition[] = [
 		{

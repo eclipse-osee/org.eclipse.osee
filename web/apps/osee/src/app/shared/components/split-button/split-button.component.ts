@@ -18,7 +18,6 @@ import {
 	input,
 	output,
 	signal,
-	viewChild,
 } from '@angular/core';
 import {
 	CdkConnectedOverlay,
@@ -174,9 +173,11 @@ export class SplitButtonComponent {
 		this.removeScrollListener();
 	}
 
-	private readonly _cleanup = this.destroyRef.onDestroy(() => {
-		this.removeScrollListener();
-	});
+	private readonly _cleanup = (() => {
+		this.destroyRef.onDestroy(() => {
+			this.removeScrollListener();
+		});
+	})();
 
 	protected readonly positions: ConnectedPosition[] = [
 		{

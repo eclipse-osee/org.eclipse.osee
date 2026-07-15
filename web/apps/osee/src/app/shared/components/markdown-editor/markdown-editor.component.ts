@@ -1172,7 +1172,7 @@ export class MarkdownEditorComponent {
 		captionPosition: CaptionPosition;
 		hasDuplicateCaption: boolean;
 	} | null {
-		if (!content) {
+		if (!content || selStart < 0) {
 			return null;
 		}
 
@@ -1827,7 +1827,7 @@ export class MarkdownEditorComponent {
 				const rect = container.getBoundingClientRect();
 				const percent = ((e.clientX - rect.left) / rect.width) * 100;
 				this.editorWidthPercent.set(
-					Math.max(20, Math.min(80, percent))
+					Math.round(Math.max(20, Math.min(80, percent)))
 				);
 			});
 

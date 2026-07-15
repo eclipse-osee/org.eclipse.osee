@@ -161,25 +161,29 @@ export class HelpPopupComponent {
 
 		// Listen for section data from the parent
 		const onMessage = (event: MessageEvent) => {
-			if (event.data?.type === 'osee-help-sections-response') {
-				const parentSections: HelpSection[] = event.data.sections ?? [];
-				// Merge anchor IDs from parent into all discovered headings
-				const merged = discovered.map((d) => {
-					const match = parentSections.find(
-						(p) => p.label.toLowerCase() === d.label.toLowerCase()
-					);
-					return match ? { ...d, anchorId: match.anchorId } : d;
-				});
-				// Only h2 headings become navigation chips
-				const chips = merged.filter((d) => {
-					const el = container.querySelector(`[id="${d.id}"]`);
-					return el?.tagName === 'H2';
-				});
-				this.sections.set(chips);
-				this.injectShowMeButtons(container, merged);
-				this.setupScrollObserver(container, chips);
-				window.removeEventListener('message', onMessage);
+			if (
+				event.origin !== window.location.origin ||
+				event.data?.type !== 'osee-help-sections-response'
+			) {
+				return;
 			}
+			const parentSections: HelpSection[] = event.data.sections ?? [];
+			// Merge anchor IDs from parent into all discovered headings
+			const merged = discovered.map((d) => {
+				const match = parentSections.find(
+					(p) => p.label.toLowerCase() === d.label.toLowerCase()
+				);
+				return match ? { ...d, anchorId: match.anchorId } : d;
+			});
+			// Only h2 headings become navigation chips
+			const chips = merged.filter((d) => {
+				const el = container.querySelector(`[id="${d.id}"]`);
+				return el?.tagName === 'H2';
+			});
+			this.sections.set(chips);
+			this.injectShowMeButtons(container, merged);
+			this.setupScrollObserver(container, chips);
+			window.removeEventListener('message', onMessage);
 		};
 		window.addEventListener('message', onMessage);
 
@@ -218,6 +222,7 @@ export class HelpPopupComponent {
 	}
 
 	private observerCleanup: (() => void) | null = null;
+	private observerDestroyRegistered = false;
 
 	private setupScrollObserver(
 		container: HTMLElement,
@@ -272,11 +277,14 @@ export class HelpPopupComponent {
 
 		this.observerCleanup = () =>
 			container.removeEventListener('scroll', onScroll);
-		this.destroyRef.onDestroy(() => {
-			if (this.observerCleanup) {
-				this.observerCleanup();
-			}
-		});
+		if (!this.observerDestroyRegistered) {
+			this.observerDestroyRegistered = true;
+			this.destroyRef.onDestroy(() => {
+				if (this.observerCleanup) {
+					this.observerCleanup();
+				}
+			});
+		}
 	}
 }
 

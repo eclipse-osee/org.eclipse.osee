@@ -214,17 +214,19 @@ public class MarkdownHtmlUtil {
       List<String> changes = new ArrayList<String>();
 
       int index = 1;
+      StringBuffer sb = new StringBuffer();
       while (matcher.find()) {
          String match = matcher.group(2).replace("&lt;", "<");
          String captionStr = String.format(CAPTION_CONTENT_SYNTAX, label, index, match);
          String captionDivStr = String.format(CAPTION_DIV_SYNTAX, cssClass, defaultCaptionStyle, captionStr);
          String anchorStr = String.format("<a id=\"%s-%d\"></a>\n", cssClass, index);
-         content = content.replaceFirst(patternString, anchorStr + Matcher.quoteReplacement(captionDivStr));
+         matcher.appendReplacement(sb, Matcher.quoteReplacement(anchorStr + captionDivStr));
          changes.add(captionStr);
          index++;
       }
+      matcher.appendTail(sb);
 
-      return new StringModificationResult(content, changes);
+      return new StringModificationResult(sb.toString(), changes);
    }
 
 }

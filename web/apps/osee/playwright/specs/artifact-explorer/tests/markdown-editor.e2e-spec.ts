@@ -38,9 +38,10 @@ function getTextarea(page: Page): Locator {
 }
 
 function getToolbarButton(page: Page, iconName: string): Locator {
+	const escaped = iconName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	return getEditor(page)
 		.getByRole('button')
-		.filter({ has: page.locator(`mat-icon`, { hasText: new RegExp(`^\\s*${iconName}\\s*$`) }) });
+		.filter({ has: page.locator(`mat-icon`, { hasText: new RegExp(`^\\s*${escaped}\\s*$`) }) });
 }
 
 function getPreviewPanel(page: Page): Locator {
@@ -61,13 +62,13 @@ function getCellTextarea(page: Page, row: number, col: number): Locator {
 /**
  * Locates the split button by its main icon name.
  * Returns the root span containing both the main button and the arrow.
- * Uses hasText filter since Angular Material renders icon names as text
- * content inside mat-icon elements.
+ * Uses a mat-icon scoped regex to match the exact icon text content.
  */
 function getSplitButton(page: Page, iconName: string): Locator {
+	const escaped = iconName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	return getEditor(page)
 		.locator('osee-split-button')
-		.filter({ hasText: iconName });
+		.filter({ has: page.locator('mat-icon', { hasText: new RegExp(`^\\s*${escaped}\\s*$`) }) });
 }
 
 /**
@@ -530,8 +531,11 @@ test.describe('Markdown Editor', () => {
 			);
 			const dropdownBtn = collapsedDropdowns.first().locator('button');
 			await expect(dropdownBtn).toBeVisible();
-			// Use dispatchEvent instead of click() to avoid CDK's outsideClick
-			// dispatcher catching the pointer event that opened the overlay.
+			// Use dispatchEvent('click') instead of click() because Playwright's
+			// click() dispatches pointerdown → pointerup → click. CDK's outside-click
+			// detector listens on pointerdown; when the overlay opens synchronously
+			// during the click event, CDK sees the prior pointerdown as "outside"
+			// and immediately closes it. dispatchEvent fires only the click event.
 			await dropdownBtn.dispatchEvent('click');
 			const overlayItem = page.getByRole('button', {
 				name: 'Upload Image',

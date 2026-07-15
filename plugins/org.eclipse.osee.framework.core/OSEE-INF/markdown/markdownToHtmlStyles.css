@@ -129,4 +129,9 @@ hr {
 	table, th, td {
 		border-color: #4b5563;
 	}
+
+	.figure-caption,
+	.table-caption {
+		color: #d1d5db;
+	}
 }
