@@ -50,7 +50,6 @@ import {
 } from 'rxjs';
 import {
 	markdownFormattingActions,
-	headingLevels,
 	HeadingLevel,
 	listOptions,
 	headingOptions,
@@ -122,7 +121,6 @@ export class MarkdownEditorComponent {
 	protected readonly canUndo = signal(false);
 	protected readonly canRedo = signal(false);
 	protected readonly formattingActions = markdownFormattingActions;
-	protected readonly headingLevels = headingLevels;
 	protected readonly headingOptions = headingOptions;
 	protected readonly listOptions = listOptions;
 
