@@ -71,6 +71,16 @@ Place `oseeHelpAnchor` on elements you want the "Show Me" feature to highlight:
 </div>
 ```
 
+Multiple anchor IDs can be comma-separated so one element responds to several "Show Me" triggers:
+
+```html
+<div oseeHelpAnchor="my-section, my-button-1, my-button-2">
+  <!-- Highlights when any of those anchors are triggered -->
+</div>
+```
+
+This is useful for collapsed/responsive UI where a single dropdown represents multiple hidden buttons.
+
 **Anchor placement guidelines:**
 - Place on a visually bounded container, not on individual text elements
 - For toolbar buttons, place the anchor on the `<button>` directly — the button gets an icon flash instead of an outline

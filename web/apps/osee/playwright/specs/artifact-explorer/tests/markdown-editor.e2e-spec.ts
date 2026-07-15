@@ -540,6 +540,34 @@ test.describe('Markdown Editor', () => {
 			);
 			await expect(collapsedDropdowns).toHaveCount(0, { timeout: 5000 });
 		});
+
+		await test.step('Help anchor highlights collapsed dropdown for child anchors', async () => {
+			// Shrink viewport back so Media section collapses
+			await page.setViewportSize({ width: 600, height: 800 });
+			const collapsedDropdowns = getEditor(page).locator(
+				'osee-toolbar-section-dropdown'
+			);
+			await expect(collapsedDropdowns.first()).toBeVisible({
+				timeout: 3000,
+			});
+			// Simulate a help highlight for the image button anchor
+			// (which is inside the collapsed Media section)
+			await page.evaluate(() => {
+				window.postMessage(
+					{
+						type: 'osee-help-highlight',
+						anchorId: 'md-editor-image-btn',
+					},
+					window.location.origin
+				);
+			});
+			// The collapsed Media dropdown should receive the highlight class
+			await expect(
+				getEditor(page).locator(
+					'osee-toolbar-section-dropdown.osee-help-highlight'
+				)
+			).toBeVisible({ timeout: 3000 });
+		});
 	});
 
 	test('should create, edit, and select tables via the table dialog', async ({
