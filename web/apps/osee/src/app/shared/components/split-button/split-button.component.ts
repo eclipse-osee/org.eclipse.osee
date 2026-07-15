@@ -64,10 +64,10 @@ export type SplitButtonOption = {
 		<span
 			cdkOverlayOrigin
 			#trigger="cdkOverlayOrigin"
-			class="tw-group tw-relative tw-inline-flex tw-items-stretch tw-overflow-visible tw-rounded tw-border tw-border-transparent hover:tw-border-gray-300 dark:hover:tw-border-gray-600"
+			class="tw-group tw-relative tw-inline-flex tw-items-stretch tw-overflow-visible tw-rounded tw-border tw-border-transparent hover:tw-border-osee-neutral-80 dark:hover:tw-border-osee-neutral-40"
 			[class.tw-opacity-40]="disabled()">
 			<button
-				class="tw-flex tw-cursor-pointer tw-items-center tw-justify-center tw-border-0 tw-bg-transparent tw-p-1 tw-outline-none hover:tw-bg-gray-100 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-transparent dark:hover:tw-bg-gray-700"
+				class="tw-flex tw-cursor-pointer tw-items-center tw-justify-center tw-border-0 tw-bg-transparent tw-p-1 tw-outline-none hover:tw-bg-osee-neutral-90 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-transparent dark:hover:tw-bg-osee-neutral-30"
 				[disabled]="disabled()"
 				[matTooltip]="tooltip()"
 				(click)="defaultAction.emit()">
@@ -77,9 +77,9 @@ export type SplitButtonOption = {
 				</mat-icon>
 			</button>
 			<span
-				class="tw-w-px tw-self-stretch tw-bg-transparent group-hover:tw-bg-gray-300 dark:group-hover:tw-bg-gray-600"></span>
+				class="tw-w-px tw-self-stretch tw-bg-transparent group-hover:tw-bg-osee-neutral-80 dark:group-hover:tw-bg-osee-neutral-40"></span>
 			<button
-				class="tw-flex tw-w-4 tw-cursor-pointer tw-items-center tw-justify-center tw-border-0 tw-bg-transparent tw-p-0 tw-outline-none hover:tw-bg-gray-100 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-transparent dark:hover:tw-bg-gray-700"
+				class="tw-flex tw-w-4 tw-cursor-pointer tw-items-center tw-justify-center tw-border-0 tw-bg-transparent tw-p-0 tw-outline-none hover:tw-bg-osee-neutral-90 disabled:tw-cursor-not-allowed disabled:hover:tw-bg-transparent dark:hover:tw-bg-osee-neutral-30"
 				[disabled]="disabled()"
 				[matTooltip]="dropdownTooltip()"
 				(mousedown)="$event.preventDefault()"
@@ -103,10 +103,10 @@ export type SplitButtonOption = {
 			(detach)="closeDropdown()"
 			(window:resize)="closeDropdown()">
 			<div
-				class="tw-flex tw-flex-col tw-divide-y tw-divide-gray-200 tw-overflow-y-auto tw-rounded tw-border tw-border-gray-300 tw-bg-white tw-shadow-md dark:tw-divide-gray-600 dark:tw-border-gray-600 dark:tw-bg-osee-neutral-6">
+				class="tw-flex tw-flex-col tw-divide-y tw-divide-osee-neutral-90 tw-overflow-y-auto tw-rounded tw-border tw-border-osee-neutral-80 tw-bg-osee-neutral-100 tw-shadow-md dark:tw-divide-osee-neutral-40 dark:tw-border-osee-neutral-40 dark:tw-bg-osee-neutral-6">
 				@for (option of options(); track option.value) {
 					<button
-						class="tw-flex tw-cursor-pointer tw-items-center tw-gap-3 tw-whitespace-nowrap tw-border-0 tw-bg-transparent tw-px-3 tw-py-2 tw-text-left tw-text-sm hover:tw-bg-gray-100 dark:tw-text-gray-200 dark:hover:tw-bg-gray-700"
+						class="tw-flex tw-cursor-pointer tw-items-center tw-gap-3 tw-whitespace-nowrap tw-border-0 tw-bg-transparent tw-px-3 tw-py-2 tw-text-left tw-text-sm hover:tw-bg-osee-neutral-90 dark:tw-text-osee-neutral-80 dark:hover:tw-bg-osee-neutral-30"
 						(click)="selectOption(option)">
 						<mat-icon
 							class="!tw-h-5 !tw-w-5 !tw-shrink-0 !tw-text-[20px] !tw-leading-[20px]">

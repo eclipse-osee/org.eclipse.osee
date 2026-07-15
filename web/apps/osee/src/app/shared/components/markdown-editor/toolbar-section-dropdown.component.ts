@@ -65,9 +65,9 @@ export type ToolbarDropdownAction = {
 		<span
 			cdkOverlayOrigin
 			#trigger="cdkOverlayOrigin"
-			class="tw-inline-flex tw-items-stretch tw-rounded tw-border tw-border-transparent hover:tw-border-gray-300 dark:hover:tw-border-gray-600">
+			class="tw-inline-flex tw-items-stretch tw-rounded tw-border tw-border-transparent hover:tw-border-osee-neutral-80 dark:hover:tw-border-osee-neutral-40">
 			<button
-				class="tw-flex tw-cursor-pointer tw-items-center tw-justify-center tw-gap-0.5 tw-border-0 tw-bg-transparent tw-px-1 tw-py-1 tw-outline-none hover:tw-bg-gray-100 dark:hover:tw-bg-gray-700"
+				class="tw-flex tw-cursor-pointer tw-items-center tw-justify-center tw-gap-0.5 tw-border-0 tw-bg-transparent tw-px-1 tw-py-1 tw-outline-none hover:tw-bg-osee-neutral-90 dark:hover:tw-bg-osee-neutral-30"
 				[matTooltip]="sectionName()"
 				(mousedown)="$event.preventDefault()"
 				(click)="toggleDropdown()">
@@ -94,10 +94,10 @@ export type ToolbarDropdownAction = {
 			(detach)="closeDropdown()"
 			(window:resize)="closeDropdown()">
 			<div
-				class="tw-flex tw-flex-col tw-divide-y tw-divide-gray-200 tw-overflow-y-auto tw-rounded tw-border tw-border-gray-300 tw-bg-white tw-shadow-md dark:tw-divide-gray-600 dark:tw-border-gray-600 dark:tw-bg-osee-neutral-6">
+				class="tw-flex tw-flex-col tw-divide-y tw-divide-osee-neutral-90 tw-overflow-y-auto tw-rounded tw-border tw-border-osee-neutral-80 tw-bg-osee-neutral-100 tw-shadow-md dark:tw-divide-osee-neutral-40 dark:tw-border-osee-neutral-40 dark:tw-bg-osee-neutral-6">
 				@for (action of actions(); track action.id) {
 					<button
-						class="tw-flex tw-cursor-pointer tw-items-center tw-gap-3 tw-whitespace-nowrap tw-border-0 tw-bg-transparent tw-px-3 tw-py-2 tw-text-left tw-text-sm hover:tw-bg-gray-100 disabled:tw-cursor-not-allowed disabled:tw-opacity-40 disabled:hover:tw-bg-transparent dark:tw-text-gray-200 dark:hover:tw-bg-gray-700"
+						class="tw-flex tw-cursor-pointer tw-items-center tw-gap-3 tw-whitespace-nowrap tw-border-0 tw-bg-transparent tw-px-3 tw-py-2 tw-text-left tw-text-sm hover:tw-bg-osee-neutral-90 disabled:tw-cursor-not-allowed disabled:tw-opacity-40 disabled:hover:tw-bg-transparent dark:tw-text-osee-neutral-80 dark:hover:tw-bg-osee-neutral-30"
 						[disabled]="action.disabled ?? false"
 						(click)="selectAction(action)">
 						<mat-icon
