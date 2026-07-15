@@ -101,8 +101,7 @@ import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor
 						(focusin)="markdownFocused.set(true)"
 						(focusout)="onMarkdownFocusOut($event)" />
 				} @else {
-					<span
-						class="tw-block">
+					<span class="tw-block">
 						<osee-focus-lost-input
 							[disabled]="disabled()"
 							[value]="displayValue()"

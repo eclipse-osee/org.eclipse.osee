@@ -18,7 +18,7 @@ import { APP_BASE } from './playwright/shared/test-config';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const config: PlaywrightTestConfig = {
-	workers: process.env['CI'] ? 4 : undefined,
+	workers: process.env['CI'] ? 2 : undefined,
 	timeout: process.env['CI'] ? 45000 : 30000,
 	use: {
 		channel: 'chromium',
