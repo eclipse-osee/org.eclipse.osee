@@ -73,6 +73,10 @@ import { HelpTopicRegistryService } from '../help-drawer/help-topic-registry.ser
 import { HelpAnchorDirective } from '../help-drawer/help-anchor.directive';
 import { HelpButtonComponent } from '../help-drawer/help-button.component';
 import { SplitButtonComponent } from '../split-button/split-button.component';
+import {
+	ToolbarSectionDropdownComponent,
+	ToolbarDropdownAction,
+} from './toolbar-section-dropdown.component';
 
 @Component({
 	selector: 'osee-markdown-editor',
@@ -84,6 +88,7 @@ import { SplitButtonComponent } from '../split-button/split-button.component';
 		HelpAnchorDirective,
 		HelpButtonComponent,
 		SplitButtonComponent,
+		ToolbarSectionDropdownComponent,
 	],
 	templateUrl: './markdown-editor.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -123,6 +128,222 @@ export class MarkdownEditorComponent {
 	protected readonly formattingActions = markdownFormattingActions;
 	protected readonly headingOptions = headingOptions;
 	protected readonly listOptions = listOptions;
+
+	/**
+	 * Toolbar collapse state (0–3).
+	 * 0 = all expanded, 1 = Media collapsed, 2 = Media+Insert, 3 = Media+Insert+Format.
+	 *
+	 * Computed from container width using pre-measured section widths.
+	 * The toolbar uses flex-nowrap + overflow-hidden so collapsing sections
+	 * doesn't change the container width — avoiding oscillation.
+	 */
+	protected readonly collapseState = signal(0);
+
+	/** Whether the Format section is collapsed (priority 2 = collapses 2nd) */
+	protected readonly isFormatCollapsed = computed(
+		() => this.collapseState() >= 2
+	);
+	/** Whether the Insert section is collapsed (priority 1 = collapses 1st) */
+	protected readonly isInsertCollapsed = computed(
+		() => this.collapseState() >= 1
+	);
+	/** Whether the Media section is collapsed (priority 3 = collapses last) */
+	protected readonly isMediaCollapsed = computed(
+		() => this.collapseState() >= 3
+	);
+
+	/** Actions for collapsed Format section dropdown */
+	protected readonly formatDropdownActions = computed<
+		ToolbarDropdownAction[]
+	>(() => {
+		const disabled = this.isEditorDisabled();
+		return [
+			{ id: 'heading', name: 'Heading', icon: 'title', disabled },
+			{ id: 'bold', name: 'Bold', icon: 'format_bold', disabled },
+			{
+				id: 'italic',
+				name: 'Italic',
+				icon: 'format_italic',
+				disabled,
+			},
+			{
+				id: 'strikethrough',
+				name: 'Strikethrough',
+				icon: 'strikethrough_s',
+				disabled,
+			},
+		];
+	});
+
+	/** Actions for collapsed Insert section dropdown */
+	protected readonly insertDropdownActions = computed<
+		ToolbarDropdownAction[]
+	>(() => {
+		const disabled = this.isEditorDisabled();
+		return [
+			{
+				id: 'list',
+				name: 'Bulleted List',
+				icon: 'format_list_bulleted',
+				disabled,
+			},
+			{ id: 'inline-code', name: 'Inline Code', icon: 'code', disabled },
+			{ id: 'link', name: 'Link', icon: 'link', disabled },
+			{
+				id: 'blockquote',
+				name: 'Blockquote',
+				icon: 'format_quote',
+				disabled,
+			},
+			{
+				id: 'code-block',
+				name: 'Code Block',
+				icon: 'data_object',
+				disabled,
+			},
+			{
+				id: 'horizontal-rule',
+				name: 'Horizontal Rule',
+				icon: 'horizontal_rule',
+				disabled,
+			},
+		];
+	});
+
+	/** Actions for collapsed Media section dropdown */
+	protected readonly mediaDropdownActions = computed<
+		ToolbarDropdownAction[]
+	>(() => {
+		const uploadDisabled =
+			!this.canUploadImage() || this.isUploading();
+		const editDisabled = this.disabled() || this.showImages();
+		const formatDisabled = this.isEditorDisabled();
+		return [
+			{
+				id: 'upload-image',
+				name: 'Upload Image',
+				icon: 'image',
+				disabled: uploadDisabled,
+			},
+			{
+				id: 'insert-table',
+				name: 'Insert or Edit Table',
+				icon: 'table_chart',
+				disabled: editDisabled,
+			},
+			{
+				id: 'select-table',
+				name: 'Select Table at Cursor',
+				icon: 'select_all',
+				disabled: editDisabled,
+			},
+			{
+				id: 'figure-caption',
+				name: 'Figure Caption',
+				icon: 'video_label',
+				disabled: formatDisabled,
+			},
+			{
+				id: 'table-caption',
+				name: 'Table Caption',
+				icon: 'legend_toggle',
+				disabled: formatDisabled,
+			},
+		];
+	});
+
+	/**
+	 * Toolbar layout constants — element pixel widths derived from CSS.
+	 * Only these base sizes need updating if CSS changes.
+	 */
+	private static readonly ICON_BTN_WIDTH = 32; // mat-icon-button with !tw-w-8
+	private static readonly SPLIT_BTN_WIDTH = 47; // icon + divider + arrow + border
+	private static readonly SEPARATOR_WIDTH = 12; // │ char ~4px + tw-mx-1 (4px each side)
+	private static readonly COLLAPSED_BTN_WIDTH = 48; // collapsed dropdown button
+	private static readonly TOOLBAR_PADDING = 16; // tw-px-2 = 8px each side
+	private static readonly GAP = 2; // tw-gap-0.5
+
+	/**
+	 * Toolbar section definitions.
+	 * Each section declares its item composition so widths are computed
+	 * automatically. Adding/removing items here is all that's needed.
+	 *
+	 * `collapsePriority`: lower = collapses first. null = never collapses.
+	 */
+	private static readonly TOOLBAR_SECTIONS: {
+		name: string;
+		iconButtons: number;
+		splitButtons: number;
+		extraWidth: number;
+		collapsePriority: number | null;
+	}[] = [
+		{ name: 'history', iconButtons: 2, splitButtons: 0, extraWidth: 0, collapsePriority: null },
+		{ name: 'media', iconButtons: 5, splitButtons: 0, extraWidth: 0, collapsePriority: 3 },
+		{ name: 'format', iconButtons: 3, splitButtons: 1, extraWidth: 0, collapsePriority: 2 },
+		{ name: 'insert', iconButtons: 5, splitButtons: 1, extraWidth: 0, collapsePriority: 1 },
+		{ name: 'view', iconButtons: 3, splitButtons: 0, extraWidth: 0, collapsePriority: null }, // preview, toggle-panel, fullscreen
+		{ name: 'help', iconButtons: 0, splitButtons: 0, extraWidth: 36, collapsePriority: null }, // help button (ml-auto, no separator before it)
+	];
+
+	/** Computed expanded width for a section given its item counts. */
+	private static sectionExpandedWidth(section: {
+		iconButtons: number;
+		splitButtons: number;
+		extraWidth: number;
+	}): number {
+		return (
+			section.iconButtons * MarkdownEditorComponent.ICON_BTN_WIDTH +
+			section.splitButtons * MarkdownEditorComponent.SPLIT_BTN_WIDTH +
+			section.extraWidth
+		);
+	}
+
+	/**
+	 * Sections sorted by collapse priority (lowest first = collapses first).
+	 * Only includes collapsible sections.
+	 */
+	private static readonly COLLAPSE_ORDER = MarkdownEditorComponent.TOOLBAR_SECTIONS
+		.filter((s) => s.collapsePriority !== null)
+		.sort((a, b) => a.collapsePriority! - b.collapsePriority!);
+
+	/** Total width with all sections expanded (computed from section definitions). */
+	private static readonly TOTAL_EXPANDED = (() => {
+		const sections = MarkdownEditorComponent.TOOLBAR_SECTIONS;
+		const sectionWidths = sections.reduce(
+			(sum, s) => sum + MarkdownEditorComponent.sectionExpandedWidth(s),
+			0
+		);
+		// 4 separators between the first 5 sections (help has no separator)
+		const separatorCount = sections.length - 2;
+		const flexChildCount = sections.length + separatorCount;
+		const gapTotal = (flexChildCount - 1) * MarkdownEditorComponent.GAP;
+		return (
+			MarkdownEditorComponent.TOOLBAR_PADDING +
+			gapTotal +
+			sectionWidths +
+			separatorCount * MarkdownEditorComponent.SEPARATOR_WIDTH
+		);
+	})();
+
+	/**
+	 * Pre-computed collapse thresholds.
+	 * thresholds[i] = minimum container width to stay at collapse state i.
+	 * If containerWidth < thresholds[i], we move to state i+1.
+	 */
+	private static readonly COLLAPSE_THRESHOLDS = (() => {
+		const thresholds: number[] = [MarkdownEditorComponent.TOTAL_EXPANDED];
+		let current = MarkdownEditorComponent.TOTAL_EXPANDED;
+		for (const section of MarkdownEditorComponent.COLLAPSE_ORDER) {
+			const expanded = MarkdownEditorComponent.sectionExpandedWidth(section);
+			current = current - expanded + MarkdownEditorComponent.COLLAPSED_BTN_WIDTH;
+			thresholds.push(current);
+		}
+		return thresholds;
+	})();
+
+	private toolbarResizeObserver: ResizeObserver | null = null;
+	private readonly toolbarEl =
+		viewChild<ElementRef<HTMLDivElement>>('toolbarEl');
 
 	private readonly dialog = inject(MatDialog);
 	private readonly snackBar = inject(MatSnackBar);
@@ -246,6 +467,9 @@ export class MarkdownEditorComponent {
 				this.undoStack.push(this.mdContent());
 				this.canUndo.set(false);
 			}
+
+			// Toolbar collapse: measure sections and observe resize
+			this.initToolbarCollapse();
 		});
 
 		this.destroyRef.onDestroy(() => {
@@ -256,6 +480,9 @@ export class MarkdownEditorComponent {
 				this.clearDragStyles();
 			}
 			this.revokeImageObjectUrls();
+			if (this.toolbarResizeObserver) {
+				this.toolbarResizeObserver.disconnect();
+			}
 		});
 	})();
 
@@ -1353,6 +1580,133 @@ export class MarkdownEditorComponent {
 			URL.revokeObjectURL(url);
 		}
 		this.imageObjectUrls = [];
+	}
+
+	/**
+	 * Initializes toolbar collapse behavior.
+	 * Sets up a ResizeObserver to recompute collapse state on width changes.
+	 * No DOM measurement needed — thresholds are static constants.
+	 */
+	private initToolbarCollapse(): void {
+		const toolbar = this.toolbarEl()?.nativeElement;
+		if (!toolbar) {
+			return;
+		}
+
+		// Compute initial state
+		this.computeCollapseState(toolbar.clientWidth);
+
+		// Observe container width changes
+		this.toolbarResizeObserver = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				const width =
+					entry.contentBoxSize?.[0]?.inlineSize ??
+					entry.contentRect.width;
+				this.computeCollapseState(width);
+			}
+		});
+		this.toolbarResizeObserver.observe(toolbar);
+	}
+
+	/**
+	 * Computes which collapse state to use for the given container width.
+	 *
+	 * Walks the pre-computed thresholds array. The first threshold the
+	 * container width meets or exceeds determines the state.
+	 * Deterministic, no DOM measurement, no oscillation.
+	 */
+	private computeCollapseState(containerWidth: number): void {
+		const thresholds = MarkdownEditorComponent.COLLAPSE_THRESHOLDS;
+		let newState = thresholds.length - 1; // max collapsed state
+		for (let i = 0; i < thresholds.length; i++) {
+			if (containerWidth >= thresholds[i]) {
+				newState = i;
+				break;
+			}
+		}
+
+		if (newState !== this.collapseState()) {
+			this.collapseState.set(newState);
+		}
+	}
+
+	/**
+	 * Handles action selection from a collapsed Format section dropdown.
+	 */
+	protected handleFormatAction(actionId: string): void {
+		switch (actionId) {
+			case 'heading':
+				this.applyHeading('2');
+				break;
+			case 'bold':
+				this.applyFormattingById('Bold');
+				break;
+			case 'italic':
+				this.applyFormattingById('Italic');
+				break;
+			case 'strikethrough':
+				this.applyFormattingById('Strikethrough');
+				break;
+		}
+	}
+
+	/**
+	 * Handles action selection from a collapsed Insert section dropdown.
+	 */
+	protected handleInsertAction(actionId: string): void {
+		switch (actionId) {
+			case 'list':
+				this.applyList('bulleted');
+				break;
+			case 'inline-code':
+				this.applyFormattingById('Inline Code');
+				break;
+			case 'link':
+				this.applyFormattingById('Link');
+				break;
+			case 'blockquote':
+				this.applyFormattingById('Blockquote');
+				break;
+			case 'code-block':
+				this.applyFormattingById('Code Block');
+				break;
+			case 'horizontal-rule':
+				this.applyFormattingById('Horizontal Rule');
+				break;
+		}
+	}
+
+	/**
+	 * Handles action selection from a collapsed Media section dropdown.
+	 */
+	protected handleMediaAction(actionId: string): void {
+		switch (actionId) {
+			case 'upload-image':
+				this.openUploadImageDialog();
+				break;
+			case 'insert-table':
+				this.openTableDialog();
+				break;
+			case 'select-table':
+				this.selectTableAtCursor();
+				break;
+			case 'figure-caption':
+				this.applyFormattingById('Figure Caption');
+				break;
+			case 'table-caption':
+				this.applyFormattingById('Table Caption');
+				break;
+		}
+	}
+
+	/**
+	 * Applies a formatting action by its display name.
+	 */
+	private applyFormattingById(name: string): void {
+		const action = this.formattingActions.find((a) => a.name === name);
+		if (action) {
+			this.applyFormatting(action);
+		}
 	}
 
 	toggleFullscreen(): void {
