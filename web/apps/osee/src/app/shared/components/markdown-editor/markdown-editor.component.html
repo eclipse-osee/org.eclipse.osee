@@ -19,11 +19,17 @@
 	<!-- Toolbar -->
 	<div
 		#toolbarEl
-		class="tw-flex tw-shrink-0 tw-flex-nowrap tw-items-center tw-gap-0.5 tw-overflow-hidden tw-border-b tw-border-osee-neutral-25 tw-bg-gray-50 tw-px-2 tw-py-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6"
+		class="tw-flex tw-shrink-0 tw-items-start tw-border-b tw-border-osee-neutral-25 tw-bg-gray-50 tw-px-2 tw-py-1 dark:tw-border-osee-neutral-100 dark:tw-bg-osee-neutral-6"
 		role="toolbar"
 		aria-label="Markdown editor toolbar"
 		oseeHelpAnchor="md-editor-toolbar">
-		<!-- History (never collapses) -->
+		<!-- Editing sections wrapper: only wraps when fully collapsed -->
+		<div
+			class="tw-flex tw-min-w-0 tw-flex-1 tw-items-center tw-gap-0.5"
+			[class.tw-flex-wrap]="collapseState() >= 3"
+			[class.tw-flex-nowrap]="collapseState() < 3"
+			[class.tw-overflow-hidden]="collapseState() < 3">
+		<!-- History + separator (never collapses) -->
 		<span
 			class="tw-inline-flex tw-shrink-0 tw-items-center"
 			data-toolbar-section="history">
@@ -45,16 +51,14 @@
 				(click)="redo()">
 				<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> redo </mat-icon>
 			</button>
+			<span
+				class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
+				aria-hidden="true">
+				│
+			</span>
 		</span>
 
-		<span
-			class="tw-mx-1 tw-shrink-0 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
-			aria-hidden="true"
-			data-toolbar-separator>
-			│
-		</span>
-
-		<!-- Media section (collapses last) -->
+		<!-- Media section + separator (collapses last) -->
 		@if (!isMediaCollapsed()) {
 			<span
 				class="tw-inline-flex tw-shrink-0 tw-items-center"
@@ -118,25 +122,29 @@
 						</span>
 					}
 				}
+				<span
+					class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
+					aria-hidden="true">
+					│
+				</span>
 			</span>
 		} @else {
-			<osee-toolbar-section-dropdown
-				class="tw-shrink-0"
-				icon="perm_media"
-				sectionName="Media"
-				[actions]="mediaDropdownActions()"
-				(actionSelected)="handleMediaAction($event)">
-			</osee-toolbar-section-dropdown>
+			<span class="tw-inline-flex tw-shrink-0 tw-items-center">
+				<osee-toolbar-section-dropdown
+					icon="perm_media"
+					sectionName="Media"
+					[actions]="mediaDropdownActions()"
+					(actionSelected)="handleMediaAction($event)">
+				</osee-toolbar-section-dropdown>
+				<span
+					class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
+					aria-hidden="true">
+					│
+				</span>
+			</span>
 		}
 
-		<span
-			class="tw-mx-1 tw-shrink-0 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
-			aria-hidden="true"
-			data-toolbar-separator>
-			│
-		</span>
-
-		<!-- Format section (collapses 2nd) -->
+		<!-- Format section + separator (collapses 2nd) -->
 		@if (!isFormatCollapsed()) {
 			<span
 				class="tw-inline-flex tw-shrink-0 tw-items-center"
@@ -175,25 +183,29 @@
 						</span>
 					}
 				}
+				<span
+					class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
+					aria-hidden="true">
+					│
+				</span>
 			</span>
 		} @else {
-			<osee-toolbar-section-dropdown
-				class="tw-shrink-0"
-				icon="format_color_text"
-				sectionName="Format"
-				[actions]="formatDropdownActions()"
-				(actionSelected)="handleFormatAction($event)">
-			</osee-toolbar-section-dropdown>
+			<span class="tw-inline-flex tw-shrink-0 tw-items-center">
+				<osee-toolbar-section-dropdown
+					icon="format_color_text"
+					sectionName="Format"
+					[actions]="formatDropdownActions()"
+					(actionSelected)="handleFormatAction($event)">
+				</osee-toolbar-section-dropdown>
+				<span
+					class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
+					aria-hidden="true">
+					│
+				</span>
+			</span>
 		}
 
-		<span
-			class="tw-mx-1 tw-shrink-0 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
-			aria-hidden="true"
-			data-toolbar-separator>
-			│
-		</span>
-
-		<!-- Insert section (collapses 1st) -->
+		<!-- Insert section + trailing separator (collapses 1st) -->
 		@if (!isInsertCollapsed()) {
 			<span
 				class="tw-inline-flex tw-shrink-0 tw-items-center"
@@ -231,25 +243,30 @@
 						</span>
 					}
 				}
+				<span
+					class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
+					aria-hidden="true">
+					│
+				</span>
 			</span>
 		} @else {
-			<osee-toolbar-section-dropdown
-				class="tw-shrink-0"
-				icon="add_box"
-				sectionName="Insert"
-				[actions]="insertDropdownActions()"
-				(actionSelected)="handleInsertAction($event)">
-			</osee-toolbar-section-dropdown>
+			<span class="tw-inline-flex tw-shrink-0 tw-items-center">
+				<osee-toolbar-section-dropdown
+					icon="add_box"
+					sectionName="Insert"
+					[actions]="insertDropdownActions()"
+					(actionSelected)="handleInsertAction($event)">
+				</osee-toolbar-section-dropdown>
+				<span
+					class="tw-mx-1 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
+					aria-hidden="true">
+					│
+				</span>
+			</span>
 		}
+		</div>
 
-		<span
-			class="tw-mx-1 tw-shrink-0 tw-text-[18px] tw-text-gray-400 dark:tw-text-gray-500"
-			aria-hidden="true"
-			data-toolbar-separator>
-			│
-		</span>
-
-		<!-- View (never collapses) -->
+		<!-- View + Help (never collapses, never wraps) -->
 		<span
 			class="tw-inline-flex tw-shrink-0 tw-items-center"
 			data-toolbar-section="view">
@@ -298,11 +315,10 @@
 					<mat-icon class="!tw-h-5 !tw-w-5 !tw-text-[20px] !tw-leading-[20px]"> fullscreen </mat-icon>
 				}
 			</button>
+			<osee-help-button
+				topicId="markdown-editor"
+				class="tw-shrink-0 tw-self-center"></osee-help-button>
 		</span>
-
-		<osee-help-button
-			topicId="markdown-editor"
-			class="tw-ml-auto tw-shrink-0 tw-self-center"></osee-help-button>
 	</div>
 
 	<!-- Editor body -->
