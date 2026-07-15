@@ -98,12 +98,11 @@ import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor
 						(mdContentChange)="onMarkdownChange($event)"
 						[disabled]="!editable()"
 						[artifactId]="artifactId()"
-						(focusin)="onInput(); markdownFocused.set(true)"
+						(focusin)="markdownFocused.set(true)"
 						(focusout)="onMarkdownFocusOut($event)" />
 				} @else {
 					<span
-						class="tw-block"
-						(focusin)="onInput()">
+						class="tw-block">
 						<osee-focus-lost-input
 							[disabled]="disabled()"
 							[value]="displayValue()"
@@ -186,15 +185,9 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 
 	onValueChange(newValue: string) {
 		if (newValue !== this.previousValue()) {
+			this.dirtyService.markDirty(this.editorKey());
 			this.saveAttribute(newValue);
-		} else {
-			this.dirtyService.markClean(this.editorKey());
 		}
-	}
-
-	/** Called on keystrokes in text fields to mark as dirty before focus-lost save. */
-	onInput() {
-		this.dirtyService.markDirty(this.editorKey());
 	}
 
 	/** Stores pending markdown content without saving. */
@@ -203,7 +196,9 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	/** Called when markdown editor content changes (typing). */
 	onMarkdownChange(newValue: string) {
 		this.pendingMarkdown = newValue;
-		this.dirtyService.markDirty(this.editorKey());
+		if (newValue !== this.previousValue()) {
+			this.dirtyService.markDirty(this.editorKey());
+		}
 	}
 
 	/**
@@ -229,6 +224,9 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 		) {
 			this.saveAttribute(this.pendingMarkdown);
 			this.pendingMarkdown = null;
+		} else {
+			// No changes were made — clear dirty state
+			this.dirtyService.markClean(this.editorKey());
 		}
 	}
 

@@ -389,6 +389,7 @@ Page navigation is the primary time cost (~5s per test). Minimize it:
 - **Consolidate related assertions into fewer tests.** Group assertions that test the same feature area into one test with multiple steps. A single test that verifies "insert with caption, insert without caption, and edit existing caption" is faster than three separate tests each paying the navigation cost. Use `await test.step('step name', async () => { ... })` to label each phase — failure reports will show exactly which step failed.
 - **Reset state within a test instead of relying on fresh navigation.** Use `textarea.fill('')` or similar resets between sub-steps within a consolidated test rather than creating a new test.
 - **Keep `beforeEach` minimal.** Only include shared navigation. Dialog-specific setup (opening the table dialog) belongs in individual tests or a nested describe's own `beforeEach`.
+- **Never let one test mutate state that another test depends on.** If a test renames an artifact, edits data, or changes configuration, either undo the change at the end of that test or consolidate the dependent steps into a single test. Tests that rely on execution order or shared mutable state are fragile in parallel runs. When multiple sequential steps share state (e.g., rename → verify → close), combine them into one test with labeled steps rather than splitting across separate tests.
 
 ## After development checklist
 

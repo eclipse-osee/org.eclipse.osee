@@ -131,4 +131,80 @@ test.describe('Attribute Editing (Auto-Save)', () => {
 		await switchEditorSection(page, 'Attributes');
 		await expect(page.getByLabel('Name')).toBeVisible();
 	});
+
+	test('should not show dirty warning when focus enters and leaves editors without changes', async ({
+		page,
+	}) => {
+		await openBranch(page, BRANCH);
+		await searchAndOpenArtifact(page, 'AE Attr Test Art');
+		await switchEditorSection(page, 'Attributes');
+
+		// --- Step 1: Click into text field, click out, no change ---
+		const nameInput = page
+			.locator('osee-focus-lost-input')
+			.first()
+			.getByRole('textbox');
+		await nameInput.click();
+		await page.keyboard.press('Tab');
+		await page.waitForTimeout(600);
+
+		let dialogAppeared = false;
+		const dialogHandler = (dialog: import('@playwright/test').Dialog) => {
+			dialogAppeared = true;
+			dialog.dismiss();
+		};
+		page.on('dialog', dialogHandler);
+		await page.getByLabel('Close tab').first().click();
+		await page.waitForTimeout(300);
+		expect(dialogAppeared).toBe(false);
+		page.off('dialog', dialogHandler);
+
+		// --- Step 2: Re-open artifact, edit + save text field, then close ---
+		await searchAndOpenArtifact(page, 'AE Attr Test Art');
+		await switchEditorSection(page, 'Attributes');
+
+		const nameInput2 = page
+			.locator('osee-focus-lost-input')
+			.first()
+			.getByRole('textbox');
+		await nameInput2.click();
+		await nameInput2.fill('AE Attr Dirty Test');
+		await Promise.all([
+			page.waitForResponse(
+				(res) => res.url().includes('orcs/txs') && res.status() === 200
+			),
+			page.keyboard.press('Tab'),
+		]);
+
+		dialogAppeared = false;
+		page.on('dialog', dialogHandler);
+		await page.getByLabel('Close tab').first().click();
+		await page.waitForTimeout(300);
+		expect(dialogAppeared).toBe(false);
+		page.off('dialog', dialogHandler);
+
+		// --- Step 3: Re-open artifact, click into markdown, click out, close ---
+		await searchAndOpenArtifact(page, 'AE Attr Dirty Test');
+		await switchEditorSection(page, 'Attributes');
+
+		const markdownEditor = page.locator('osee-markdown-editor textarea');
+		await expect(markdownEditor).toBeVisible({ timeout: 10000 });
+		await markdownEditor.click();
+		await page.waitForTimeout(200);
+		// Click away from markdown editor
+		await page
+			.locator('osee-focus-lost-input')
+			.first()
+			.getByRole('textbox')
+			.click();
+		await page.keyboard.press('Tab');
+		await page.waitForTimeout(600);
+
+		dialogAppeared = false;
+		page.on('dialog', dialogHandler);
+		await page.getByLabel('Close tab').first().click();
+		await page.waitForTimeout(300);
+		expect(dialogAppeared).toBe(false);
+		page.off('dialog', dialogHandler);
+	});
 });
