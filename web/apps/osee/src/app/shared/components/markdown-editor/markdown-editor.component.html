@@ -31,7 +31,8 @@
 			[class.tw-overflow-hidden]="collapseState() < 3">
 		<!-- History + separator (never collapses) -->
 		<span
-			class="tw-inline-flex tw-shrink-0 tw-items-center"
+			class="tw-ml-0.5 tw-inline-flex tw-shrink-0 tw-items-center"
+			oseeHelpAnchor="md-editor-history"
 			data-toolbar-section="history">
 			<button
 				mat-icon-button
@@ -62,6 +63,7 @@
 		@if (!isMediaCollapsed()) {
 			<span
 				class="tw-inline-flex tw-shrink-0 tw-items-center"
+				oseeHelpAnchor="md-editor-media"
 				data-toolbar-section="media">
 				<span [matTooltip]="uploadImageTooltip()">
 					<button
@@ -112,6 +114,7 @@
 							<button
 								mat-icon-button
 								class="!tw-h-8 !tw-w-8"
+								oseeHelpAnchor="md-editor-captions"
 								[disabled]="isEditorDisabled()"
 								[class.tw-opacity-40]="isEditorDisabled()"
 								(click)="applyFormattingAndClose(action)">
@@ -131,6 +134,7 @@
 		} @else {
 			<span class="tw-inline-flex tw-shrink-0 tw-items-center">
 				<osee-toolbar-section-dropdown
+					oseeHelpAnchor="md-editor-media"
 					icon="perm_media"
 					sectionName="Media"
 					[actions]="mediaDropdownActions()"
@@ -148,6 +152,7 @@
 		@if (!isFormatCollapsed()) {
 			<span
 				class="tw-inline-flex tw-shrink-0 tw-items-center"
+				oseeHelpAnchor="md-editor-format"
 				data-toolbar-section="format">
 				<osee-split-button
 					icon="title"
@@ -192,6 +197,7 @@
 		} @else {
 			<span class="tw-inline-flex tw-shrink-0 tw-items-center">
 				<osee-toolbar-section-dropdown
+					oseeHelpAnchor="md-editor-format"
 					icon="format_color_text"
 					sectionName="Format"
 					[actions]="formatDropdownActions()"
@@ -209,6 +215,7 @@
 		@if (!isInsertCollapsed()) {
 			<span
 				class="tw-inline-flex tw-shrink-0 tw-items-center"
+				oseeHelpAnchor="md-editor-insert"
 				data-toolbar-section="insert">
 				<osee-split-button
 					icon="format_list_bulleted"
@@ -252,6 +259,7 @@
 		} @else {
 			<span class="tw-inline-flex tw-shrink-0 tw-items-center">
 				<osee-toolbar-section-dropdown
+					oseeHelpAnchor="md-editor-insert"
 					icon="add_box"
 					sectionName="Insert"
 					[actions]="insertDropdownActions()"
@@ -269,6 +277,7 @@
 		<!-- View + Help (never collapses, never wraps) -->
 		<span
 			class="tw-inline-flex tw-shrink-0 tw-items-center"
+			oseeHelpAnchor="md-editor-view"
 			data-toolbar-section="view">
 			<button
 				mat-icon-button

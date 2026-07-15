@@ -360,12 +360,42 @@ export class MarkdownEditorComponent {
 		sections: [
 			{ id: 'toolbar', label: 'Toolbar', anchorId: 'md-editor-toolbar' },
 			{
+				id: 'history',
+				label: 'History',
+				anchorId: 'md-editor-history',
+			},
+			{
+				id: 'format',
+				label: 'Format',
+				anchorId: 'md-editor-format',
+			},
+			{
+				id: 'insert',
+				label: 'Insert',
+				anchorId: 'md-editor-insert',
+			},
+			{
+				id: 'media',
+				label: 'Media',
+				anchorId: 'md-editor-media',
+			},
+			{
+				id: 'view',
+				label: 'View',
+				anchorId: 'md-editor-view',
+			},
+			{
 				id: 'formatting',
 				label: 'Formatting',
 				anchorId: 'md-editor-textarea',
 			},
 			{ id: 'images', label: 'Images', anchorId: 'md-editor-image-btn' },
 			{ id: 'tables', label: 'Tables', anchorId: 'md-editor-table-btn' },
+			{
+				id: 'captions',
+				label: 'Captions',
+				anchorId: 'md-editor-captions',
+			},
 			{ id: 'preview', label: 'Preview', anchorId: 'md-editor-preview' },
 			{
 				id: 'fullscreen',

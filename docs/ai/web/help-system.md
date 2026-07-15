@@ -57,9 +57,9 @@ private readonly _registerHelp = this.helpRegistry.register({
 
 **Rules:**
 - `id` must match the folder name under `assets/help/`
-- `sections[].id` must match the h2 heading text slugified (`toLowerCase().replace(/[^a-z0-9]+/g, '-')`)
-- `sections[].label` must match the h2 heading text exactly (case-insensitive match is used)
-- `sections[].anchorId` is the value used in `oseeHelpAnchor="..."` in the template
+- `sections[].id` must match any heading text (h2–h6) slugified (`toLowerCase().replace(/[^a-z0-9]+/g, '-')`)
+- `sections[].label` must match the heading text exactly (case-insensitive match is used)
+- Only h2 headings appear as navigation chips at the top of the popup; all heading levels (h2–h6) get "Show Me" buttons if they have a matching anchor
 
 ### Step 2: Add help anchors to the template
 
@@ -92,7 +92,7 @@ Create `web/apps/osee/src/assets/help/my-component/overview.md`.
 
 **Content rules:**
 - First line: `# Title` (renders as the popup header via title-casing the topic ID)
-- Sections: use `## Heading` for each section (these become the section chips)
+- Sections: use `## Heading` for top-level navigation chips; use `###` and deeper for sub-sections. All heading levels (h2–h6) can get "Show Me" buttons if registered with an `anchorId`.
 - Icons: use `<span class="material-icons" style="font-size:14px;vertical-align:middle">icon_name</span>` for inline Material Icons
 - Sentences end with periods (per tooltip conventions: explanatory text uses sentence case with period)
 - Tables use the standard markdown pipe syntax
