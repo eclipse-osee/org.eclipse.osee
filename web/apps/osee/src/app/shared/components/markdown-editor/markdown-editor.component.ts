@@ -53,7 +53,7 @@ import {
 	HeadingLevel,
 	listOptions,
 	headingOptions,
-} from './markdown-editor-examples';
+} from './markdown-editor-actions';
 import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
 import {
 	UploadImageDialogComponent,

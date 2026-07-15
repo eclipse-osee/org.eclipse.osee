@@ -40,7 +40,7 @@ function getTextarea(page: Page): Locator {
 function getToolbarButton(page: Page, iconName: string): Locator {
 	return getEditor(page)
 		.getByRole('button')
-		.filter({ hasText: iconName.toLowerCase() });
+		.filter({ has: page.locator(`mat-icon`, { hasText: new RegExp(`^\\s*${iconName}\\s*$`) }) });
 }
 
 function getPreviewPanel(page: Page): Locator {
@@ -58,11 +58,41 @@ function getCellTextarea(page: Page, row: number, col: number): Locator {
 	return page.locator(`textarea[aria-label="Row ${row}, Column ${col}"]`);
 }
 
+/**
+ * Locates the split button by its main icon name.
+ * Returns the root span containing both the main button and the arrow.
+ * Uses hasText filter since Angular Material renders icon names as text
+ * content inside mat-icon elements.
+ */
+function getSplitButton(page: Page, iconName: string): Locator {
+	return getEditor(page)
+		.locator('osee-split-button')
+		.filter({ hasText: iconName });
+}
+
+/**
+ * Clicks the dropdown arrow of a split button (opens the overlay).
+ */
+async function openSplitButtonDropdown(
+	page: Page,
+	iconName: string
+): Promise<void> {
+	const splitBtn = getSplitButton(page, iconName);
+	await splitBtn.locator('button').nth(1).click();
+}
+
 test.describe('Markdown Editor', () => {
 	test.describe.configure({ mode: 'parallel' });
 
 	test.beforeEach(async ({ page }) => {
-		await navigateToArtifactExplorer(page);
+		// Use a wide viewport so all toolbar sections remain expanded
+		await page.setViewportSize({ width: 1600, height: 900 });
+		// Retry navigation once if ERR_ABORTED (parallel worker contention)
+		try {
+			await navigateToArtifactExplorer(page);
+		} catch {
+			await navigateToArtifactExplorer(page);
+		}
 		await selectBranch(page, 'Working', branchName);
 		await searchForArtifact(page, artifactName);
 		await expect(getEditor(page)).toBeVisible({ timeout: 10000 });
@@ -124,7 +154,6 @@ test.describe('Markdown Editor', () => {
 	}) => {
 		const divider = getDivider(page);
 
-		// Accessibility attributes
 		await test.step('Verify accessibility attributes', async () => {
 			await expect(divider).toHaveAttribute('role', 'separator');
 			await expect(divider).toHaveAttribute(
@@ -161,29 +190,82 @@ test.describe('Markdown Editor', () => {
 		});
 	});
 
-	test('should display toolbar buttons and handle disabled states', async ({
+	test('should display toolbar buttons for all sections', async ({
 		page,
 	}) => {
-		await test.step('Core toolbar buttons are visible', async () => {
+		await test.step('History section: Undo and Redo buttons', async () => {
 			await expect(getToolbarButton(page, 'undo')).toBeVisible();
 			await expect(getToolbarButton(page, 'redo')).toBeVisible();
-			await expect(getToolbarButton(page, 'lightbulb')).toBeVisible();
-			await expect(getToolbarButton(page, 'image')).toBeVisible();
-			await expect(getToolbarButton(page, 'table_chart')).toBeVisible();
-			await expect(getToolbarButton(page, 'select_all')).toBeVisible();
-			await expect(getToolbarButton(page, 'visibility')).toBeVisible();
 		});
 
-		await test.step('Examples menu opens and inserts content', async () => {
-			const textarea = getTextarea(page);
-			const initialValue = await textarea.inputValue();
-			await getToolbarButton(page, 'lightbulb').click();
-			const menuItems = page.getByRole('menuitem');
-			await expect(menuItems.first()).toBeVisible();
-			await menuItems.first().click();
-			expect((await textarea.inputValue()).length).toBeGreaterThan(
-				initialValue.length
-			);
+		await test.step('Format section: Heading split button and inline formatting', async () => {
+			// Heading split button (main icon is "title")
+			await expect(
+				getSplitButton(page, 'title')
+			).toBeVisible();
+			// Inline formatting buttons
+			await expect(
+				getToolbarButton(page, 'format_bold')
+			).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'format_italic')
+			).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'strikethrough_s')
+			).toBeVisible();
+		});
+
+		await test.step('Insert section: List split button and block formatting', async () => {
+			// List split button (main icon is "format_list_bulleted")
+			await expect(
+				getSplitButton(page, 'format_list_bulleted')
+			).toBeVisible();
+			// Block formatting buttons
+			await expect(getToolbarButton(page, 'code')).toBeVisible();
+			await expect(getToolbarButton(page, 'link')).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'format_quote')
+			).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'data_object')
+			).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'horizontal_rule')
+			).toBeVisible();
+		});
+
+		await test.step('Media section: Image, Table, Select Table, and Caption buttons', async () => {
+			await expect(getToolbarButton(page, 'image')).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'table_chart')
+			).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'select_all')
+			).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'video_label')
+			).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'legend_toggle')
+			).toBeVisible();
+		});
+
+		await test.step('View section: Preview, Panel toggle, Fullscreen, Help', async () => {
+			await expect(
+				getToolbarButton(page, 'visibility')
+			).toBeVisible();
+			await expect(
+				getToolbarButton(page, 'view_sidebar')
+			).toBeVisible();
+			await expect(
+				getEditor(page)
+					.getByRole('button')
+					.filter({ hasText: /^\s*fullscreen\s*$/ })
+			).toBeVisible();
+			// Help button (osee-help-button)
+			await expect(
+				getEditor(page).locator('osee-help-button')
+			).toBeVisible();
 		});
 
 		await test.step('Image preview mode disables editing and table buttons', async () => {
@@ -192,8 +274,283 @@ test.describe('Markdown Editor', () => {
 			await expect(textarea).toBeDisabled();
 			await expect(getToolbarButton(page, 'table_chart')).toBeDisabled();
 			await expect(getToolbarButton(page, 'select_all')).toBeDisabled();
+			// Format buttons disabled in image preview
+			await expect(
+				getToolbarButton(page, 'format_bold')
+			).toBeDisabled();
 			await getToolbarButton(page, 'edit').click();
 			await expect(textarea).toBeEnabled();
+		});
+	});
+
+	test('should insert formatting at cursor via toolbar buttons', async ({
+		page,
+	}) => {
+		const textarea = getTextarea(page);
+
+		await test.step('Bold wraps selected text in **', async () => {
+			await textarea.click();
+			await textarea.fill('hello world');
+			// Select "world"
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 6;
+				ta.selectionEnd = 11;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'format_bold').click();
+			await expect(textarea).toHaveValue('hello **world**');
+		});
+
+		await test.step('Italic wraps selected text in *', async () => {
+			await textarea.click();
+			await textarea.fill('some text');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 5;
+				ta.selectionEnd = 9;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'format_italic').click();
+			await expect(textarea).toHaveValue('some *text*');
+		});
+
+		await test.step('Strikethrough wraps selected text in ~~', async () => {
+			await textarea.click();
+			await textarea.fill('remove this');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 7;
+				ta.selectionEnd = 11;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'strikethrough_s').click();
+			await expect(textarea).toHaveValue('remove ~~this~~');
+		});
+
+		await test.step('Bold with no selection inserts placeholder', async () => {
+			await textarea.click();
+			await textarea.fill('');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 0;
+				ta.selectionEnd = 0;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'format_bold').click();
+			await expect(textarea).toHaveValue('**bold text**');
+		});
+
+		await test.step('Link wraps selected text with [text](url)', async () => {
+			await textarea.click();
+			await textarea.fill('click here');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 6;
+				ta.selectionEnd = 10;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'link').click();
+			await expect(textarea).toHaveValue('click [here](url)');
+		});
+
+		await test.step('Blockquote prefixes selected text with > ', async () => {
+			await textarea.click();
+			await textarea.fill('a quote');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 2;
+				ta.selectionEnd = 7;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'format_quote').click();
+			await expect(textarea).toHaveValue('a > quote');
+		});
+	});
+
+	test('should support split button default action and dropdown', async ({
+		page,
+	}) => {
+		const textarea = getTextarea(page);
+
+		await test.step('Heading split button default action inserts H2', async () => {
+			await textarea.click();
+			await textarea.fill('');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 0;
+				ta.selectionEnd = 0;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			// Click the main icon button (first button in split button)
+			const headingSplit = getSplitButton(page, 'title');
+			await headingSplit.locator('button').first().click();
+			const value = await textarea.inputValue();
+			expect(value).toContain('## ');
+		});
+
+		await test.step('Heading split button dropdown shows H1-H6 options', async () => {
+			await openSplitButtonDropdown(page, 'title');
+			// CDK overlay should show heading options
+			const overlay = page.locator('.cdk-overlay-container');
+			await expect(overlay.getByText('Heading 1')).toBeVisible();
+			await expect(overlay.getByText('Heading 3')).toBeVisible();
+			await expect(overlay.getByText('Heading 6')).toBeVisible();
+			// Select H3
+			await textarea.fill('');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 0;
+				ta.selectionEnd = 0;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await overlay.getByText('Heading 3').click();
+			const value = await textarea.inputValue();
+			expect(value).toContain('### ');
+		});
+
+		await test.step('List split button default action inserts bulleted list', async () => {
+			await textarea.click();
+			await textarea.fill('');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 0;
+				ta.selectionEnd = 0;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			const listSplit = getSplitButton(page, 'format_list_bulleted');
+			await listSplit.locator('button').first().click();
+			const value = await textarea.inputValue();
+			expect(value).toContain('- ');
+		});
+
+		await test.step('List split button dropdown shows list type options', async () => {
+			await openSplitButtonDropdown(page, 'format_list_bulleted');
+			const overlay = page.locator('.cdk-overlay-container');
+			await expect(overlay.getByText('Bulleted List')).toBeVisible();
+			await expect(overlay.getByText('Numbered List')).toBeVisible();
+			await expect(overlay.getByText('Task List')).toBeVisible();
+			// Select task list
+			await textarea.fill('');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 0;
+				ta.selectionEnd = 0;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await overlay.getByText('Task List').click();
+			const value = await textarea.inputValue();
+			expect(value).toContain('- [ ]');
+		});
+	});
+
+	test('should group undo by word boundaries and treat toolbar actions as discrete steps', async ({
+		page,
+	}) => {
+		const textarea = getTextarea(page);
+
+		await test.step('Typing groups by word boundaries — undo reverts a word', async () => {
+			await textarea.click();
+			await textarea.fill('');
+			// Type two words with a space boundary
+			await textarea.pressSequentially('hello ', { delay: 50 });
+			await textarea.pressSequentially('world', { delay: 50 });
+			// Wait for debounce to commit the group
+			await page.waitForTimeout(1200);
+			// Undo should revert at least the second word
+			await getToolbarButton(page, 'undo').click();
+			const valueAfterUndo = await textarea.inputValue();
+			// After undo we should not have the full "hello world"
+			expect(valueAfterUndo.length).toBeLessThan('hello world'.length);
+		});
+
+		await test.step('Toolbar formatting is a discrete undo step', async () => {
+			await textarea.click();
+			await textarea.fill('before');
+			await page.waitForTimeout(100);
+			// Apply bold formatting (toolbar action)
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 6;
+				ta.selectionEnd = 6;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'format_bold').click();
+			// Content now has formatting appended
+			const afterFormat = await textarea.inputValue();
+			expect(afterFormat).toContain('**');
+			// Undo should revert exactly the toolbar action
+			await getToolbarButton(page, 'undo').click();
+			await expect(textarea).toHaveValue('before');
+		});
+	});
+
+	test('should collapse toolbar sections into dropdowns when narrow', async ({
+		page,
+	}) => {
+		await test.step('Resize viewport to trigger toolbar collapse', async () => {
+			// Shrink viewport to force sections to collapse
+			await page.setViewportSize({ width: 600, height: 800 });
+			// Wait for resize observer to fire
+			await page.waitForTimeout(300);
+			// At least one collapsed section dropdown should appear
+			const collapsedDropdowns = getEditor(page).locator(
+				'osee-toolbar-section-dropdown'
+			);
+			await expect(collapsedDropdowns.first()).toBeVisible({
+				timeout: 3000,
+			});
+		});
+
+		await test.step('Collapsed dropdown opens and shows actions', async () => {
+			const collapsedDropdowns = getEditor(page).locator(
+				'osee-toolbar-section-dropdown'
+			);
+			const dropdownBtn = collapsedDropdowns.first().locator('button');
+			await expect(dropdownBtn).toBeVisible();
+			// Use dispatchEvent instead of click() to avoid CDK's outsideClick
+			// dispatcher catching the pointer event that opened the overlay.
+			await dropdownBtn.dispatchEvent('click');
+			const overlayItem = page.getByRole('button', {
+				name: 'Upload Image',
+			});
+			await expect(overlayItem).toBeVisible({ timeout: 5000 });
+			await page.mouse.click(10, 10);
+		});
+
+		await test.step('Restore viewport shows expanded sections', async () => {
+			await page.setViewportSize({ width: 1920, height: 900 });
+			// Wait for format_bold to reappear (proves Format section expanded)
+			await expect(
+				getToolbarButton(page, 'format_bold')
+			).toBeVisible({ timeout: 5000 });
+			// At this width, all collapsible sections should be expanded.
+			const collapsedDropdowns = getEditor(page).locator(
+				'osee-toolbar-section-dropdown'
+			);
+			await expect(collapsedDropdowns).toHaveCount(0, { timeout: 5000 });
 		});
 	});
 
@@ -626,11 +983,9 @@ test.describe('Markdown Editor', () => {
 				.click();
 			await page.getByRole('button', { name: 'Insert Table' }).click();
 			const value = await textarea.inputValue();
-			// Caption should appear before the table with position attribute
 			expect(value).toContain(
 				'<table-caption position="above">Above Caption</table-caption>'
 			);
-			// Caption should be before the table content
 			const captionIdx = value.indexOf('<table-caption');
 			const tableIdx = value.indexOf('|');
 			expect(captionIdx).toBeLessThan(tableIdx);
@@ -645,7 +1000,6 @@ test.describe('Markdown Editor', () => {
 				const ta = document.querySelector(
 					'textarea[aria-label="Markdown content editor"]'
 				) as HTMLTextAreaElement;
-				// Place cursor in the table body
 				const pos = ta.value.indexOf('| H1');
 				ta.selectionStart = pos;
 				ta.selectionEnd = pos;
@@ -658,7 +1012,6 @@ test.describe('Markdown Editor', () => {
 			await expect(
 				page.getByRole('textbox', { name: 'Table caption' })
 			).toHaveValue('Above Cap');
-			// Position toggle should show "above" state (vertical_align_top icon)
 			await expect(
 				page.locator('button').filter({ hasText: 'vertical_align_top' })
 			).toBeVisible();
@@ -680,11 +1033,9 @@ test.describe('Markdown Editor', () => {
 				ta.dispatchEvent(new Event('blur'));
 			});
 			await getToolbarButton(page, 'table_chart').click();
-			// Should show duplicate caption warning
 			await expect(
 				page.getByText('This table has captions both above and below')
 			).toBeVisible({ timeout: 3000 });
-			// Should open in edit mode with the above caption
 			await expect(
 				page.getByRole('heading', { name: /Edit Table/i })
 			).toBeVisible({ timeout: 5000 });
@@ -707,12 +1058,10 @@ test.describe('Markdown Editor', () => {
 			await captionInput.click();
 			await captionInput.fill('Values < 100');
 			await page.getByRole('button', { name: 'Insert Table' }).click();
-			// Raw markdown should have escaped < as &lt;
 			const raw = await textarea.inputValue();
 			expect(raw).toContain(
 				'<table-caption>Values &lt; 100</table-caption>'
 			);
-			// Place cursor inside the table (on a pipe line) and edit
 			await page.evaluate(() => {
 				const ta = document.querySelector(
 					'textarea[aria-label="Markdown content editor"]'
@@ -740,23 +1089,18 @@ test.describe('Markdown Editor', () => {
 		await expect(
 			page.getByRole('heading', { name: /Insert Table/i })
 		).toBeVisible({ timeout: 5000 });
-		// Focus caption (triggers saveUndoState)
 		const captionInput = page.getByRole('textbox', {
 			name: 'Table caption',
 		});
 		await captionInput.click();
 		await captionInput.fill('First Caption');
-		// Focus a cell to save state
 		const cell = getCellTextarea(page, 1, 1);
 		await cell.click();
 		await cell.fill('data');
-		// Change caption again
 		await captionInput.click();
 		await captionInput.fill('Second Caption');
-		// Undo reverts caption
 		await page.keyboard.press('Control+z');
 		await expect(captionInput).toHaveValue('First Caption');
-		// Redo restores
 		await page.keyboard.press('Control+y');
 		await expect(captionInput).toHaveValue('Second Caption');
 		await page.getByRole('button', { name: 'Cancel' }).click();
@@ -770,13 +1114,11 @@ test.describe('Markdown Editor', () => {
 			page.getByRole('heading', { name: /Insert Table/i })
 		).toBeVisible({ timeout: 5000 });
 
-		// Row numbers 1, 2, 3 in the left gutter
 		const rowHeaders = page.getByRole('rowheader');
 		await expect(rowHeaders.nth(0)).toHaveAttribute('aria-label', 'Row 1');
 		await expect(rowHeaders.nth(1)).toHaveAttribute('aria-label', 'Row 2');
 		await expect(rowHeaders.nth(2)).toHaveAttribute('aria-label', 'Row 3');
 
-		// Add a row and verify number updates
 		await page
 			.locator('button')
 			.filter({ hasText: 'keyboard_arrow_down' })
@@ -784,7 +1126,6 @@ test.describe('Markdown Editor', () => {
 			.click();
 		await expect(rowHeaders.nth(3)).toHaveAttribute('aria-label', 'Row 4');
 
-		// Tooltip on up arrow button
 		const upButton = page
 			.locator('tbody button')
 			.filter({ hasText: 'keyboard_arrow_up' })
@@ -800,72 +1141,61 @@ test.describe('Markdown Editor', () => {
 		await page.getByRole('button', { name: 'Cancel' }).click();
 	});
 
-	test('should insert caption examples and edit table from caption position', async ({
+	test('should insert figure and table captions via toolbar buttons', async ({
 		page,
 	}) => {
 		const textarea = getTextarea(page);
 
-		// Insert table caption example
-		await textarea.click();
-		await textarea.fill('');
-		await getToolbarButton(page, 'lightbulb').click();
-		await page.getByRole('menuitem', { name: 'Table Caption' }).click();
-		expect(await textarea.inputValue()).toContain(
-			'<table-caption>Table caption text</table-caption>'
-		);
-
-		// Insert figure caption example
-		await textarea.click();
-		await textarea.fill('');
-		await getToolbarButton(page, 'lightbulb').click();
-		await page.getByRole('menuitem', { name: 'Figure Caption' }).click();
-		expect(await textarea.inputValue()).toContain(
-			'<figure-caption>Figure caption text</figure-caption>'
-		);
-
-		// Insert table + caption examples, then edit from caption position
-		await textarea.click();
-		await textarea.fill('');
-		await getToolbarButton(page, 'lightbulb').click();
-		await page
-			.getByRole('menuitem', { name: 'Table', exact: true })
-			.click();
-		const value = await textarea.inputValue();
-		expect(value).toContain('|col 1|col 2|col 3|');
-
-		await getToolbarButton(page, 'lightbulb').click();
-		await page.getByRole('menuitem', { name: 'Table Caption' }).click();
-
-		// Place cursor inside the <table-caption> tag text
-		await textarea.click();
-		const captionPos = await page.evaluate(() => {
-			const ta = document.querySelector(
-				'textarea[aria-label="Markdown content editor"]'
-			) as HTMLTextAreaElement;
-			return ta.value.indexOf('table-caption>') + 15;
+		await test.step('Figure caption button inserts figure-caption tag', async () => {
+			await textarea.click();
+			await textarea.fill('');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 0;
+				ta.selectionEnd = 0;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'video_label').click();
+			expect(await textarea.inputValue()).toContain(
+				'<figure-caption>'
+			);
 		});
-		await page.evaluate((pos) => {
-			const ta = document.querySelector(
-				'textarea[aria-label="Markdown content editor"]'
-			) as HTMLTextAreaElement;
-			ta.selectionStart = pos;
-			ta.selectionEnd = pos;
-			ta.focus();
-		}, captionPos);
-		await textarea.dispatchEvent('blur');
 
-		// Open table dialog — should be in Edit mode
-		await getToolbarButton(page, 'table_chart').click();
-		await expect(
-			page.getByRole('heading', { name: /Edit Table/i })
-		).toBeVisible({ timeout: 5000 });
-		await expect(
-			page.getByRole('textbox', { name: 'Header 1' })
-		).toHaveValue('col 1');
-		await expect(
-			page.getByRole('textbox', { name: 'Table caption' })
-		).toHaveValue('Table caption text');
-		await page.getByRole('button', { name: 'Cancel' }).click();
+		await test.step('Table caption button inserts table-caption tag', async () => {
+			await textarea.click();
+			await textarea.fill('');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 0;
+				ta.selectionEnd = 0;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'legend_toggle').click();
+			expect(await textarea.inputValue()).toContain(
+				'<table-caption>'
+			);
+		});
+
+		await test.step('Figure caption wraps selected text', async () => {
+			await textarea.click();
+			await textarea.fill('My Figure Title');
+			await page.evaluate(() => {
+				const ta = document.querySelector(
+					'textarea[aria-label="Markdown content editor"]'
+				) as HTMLTextAreaElement;
+				ta.selectionStart = 0;
+				ta.selectionEnd = 15;
+				ta.dispatchEvent(new Event('blur'));
+			});
+			await getToolbarButton(page, 'video_label').click();
+			await expect(textarea).toHaveValue(
+				'<figure-caption>My Figure Title</figure-caption>'
+			);
+		});
 	});
 
 	test('should not close image upload dialog on backdrop click', async ({
@@ -877,12 +1207,10 @@ test.describe('Markdown Editor', () => {
 		await expect(
 			page.getByRole('heading', { name: /Upload Image/i })
 		).toBeVisible({ timeout: 5000 });
-		// Backdrop click should not close
 		await page.mouse.click(10, 10);
 		await expect(
 			page.getByRole('heading', { name: /Upload Image/i })
 		).toBeVisible();
-		// Cancel closes
 		await page.getByRole('button', { name: 'Cancel' }).click();
 		await expect(
 			page.getByRole('heading', { name: /Upload Image/i })
@@ -899,7 +1227,6 @@ test.describe('Markdown Editor', () => {
 		).toBeVisible({ timeout: 5000 });
 
 		await test.step('Size selector is not visible before file selection', async () => {
-			// Before file is selected, only the drag-and-drop area is shown
 			await expect(
 				page.getByText('Drag & drop an image here')
 			).toBeVisible();
@@ -907,7 +1234,6 @@ test.describe('Markdown Editor', () => {
 		});
 
 		await test.step('Size selector visible after file selection with Auto default', async () => {
-			// Upload a test image file
 			const fileInput = page.locator('input[type="file"]');
 			await fileInput.setInputFiles({
 				name: 'test-image.png',
@@ -918,7 +1244,6 @@ test.describe('Markdown Editor', () => {
 				),
 			});
 			await expect(page.getByText('Publish Size')).toBeVisible();
-			// Auto should be the default (selected)
 			const autoToggle = page.locator('mat-button-toggle[value=""]');
 			await expect(autoToggle).toHaveClass(/mat-button-toggle-checked/);
 		});
@@ -931,10 +1256,8 @@ test.describe('Markdown Editor', () => {
 			const mToggle = page.locator('mat-button-toggle[value="m"]');
 			await mToggle.click();
 			await expect(mToggle).toHaveClass(/mat-button-toggle-checked/);
-			// XS should no longer be selected
 			await expect(xsToggle).not.toHaveClass(/mat-button-toggle-checked/);
 
-			// Tooltip on hover
 			await mToggle.hover();
 			await expect(
 				page
