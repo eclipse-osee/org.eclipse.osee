@@ -99,34 +99,74 @@
 				<osee-help-button topicId="attribute-editor" />
 			</div>
 		}
+		<div class="tw-flex tw-items-center tw-gap-1 tw-px-4 tw-py-1">
+			<button
+				mat-icon-button
+				(click)="activeSection.set('attributes')"
+				matTooltip="Attributes"
+				aria-label="Attributes"
+				[class]="
+					activeSection() === 'attributes' ? 'tw-text-primary' : ''
+				">
+				<mat-icon>edit_note</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				(click)="activeSection.set('relations')"
+				matTooltip="Relations"
+				aria-label="Relations"
+				[class]="
+					activeSection() === 'relations' ? 'tw-text-primary' : ''
+				">
+				<mat-icon>swap_horiz</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				(click)="activeSection.set('history')"
+				matTooltip="History"
+				aria-label="History"
+				[class]="
+					activeSection() === 'history' ? 'tw-text-primary' : ''
+				">
+				<mat-icon>history</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				(click)="activeSection.set('info')"
+				matTooltip="Artifact Info"
+				aria-label="Artifact Info"
+				[class]="activeSection() === 'info' ? 'tw-text-primary' : ''">
+				<mat-icon>info_outline</mat-icon>
+			</button>
+		</div>
 	</div>
-</div>
-<!-- Section content (hidden/shown to preserve state) -->
-<div>
-	<div
-		class="tw-p-2"
-		[class.tw-hidden]="activeSection() !== 'attributes'">
-		<osee-attributes-editor-panel
-			#attrPanel
-			[tab]="tab()"
-			[deleteMode]="deleteMode()"
-			oseeHelpAnchor="attr-panel" />
-	</div>
-	<div [class.tw-hidden]="activeSection() !== 'relations'">
-		<osee-relations-editor-panel
-			[editable]="tab().artifact.editable"
-			[artifactId]="tab().artifact.id"
-			[branchId]="tab().branchId"
-			[viewId]="tab().viewId" />
-	</div>
-	<div
-		class="tw-p-2"
-		[class.tw-hidden]="activeSection() !== 'history'">
-		<osee-artifact-history-panel [tab]="tab()" />
-	</div>
-	<div
-		class="tw-p-2"
-		[class.tw-hidden]="activeSection() !== 'info'">
-		<osee-artifact-info-panel [tab]="tab()" />
+	<!-- Section content (hidden/shown to preserve state) -->
+	<div>
+		<div
+			class="tw-p-2"
+			[class.tw-hidden]="activeSection() !== 'attributes'">
+			<osee-attributes-editor-panel
+				#attrPanel
+				[tab]="tab()"
+				[deleteMode]="deleteMode()"
+				oseeHelpAnchor="attr-panel" />
+		</div>
+		<div [class.tw-hidden]="activeSection() !== 'relations'">
+			<osee-relations-editor-panel
+				[editable]="tab().artifact.editable"
+				[artifactId]="tab().artifact.id"
+				[branchId]="tab().branchId"
+				[viewId]="tab().viewId" />
+		</div>
+		<div
+			class="tw-p-2"
+			[class.tw-hidden]="activeSection() !== 'history'">
+			<osee-artifact-history-panel [tab]="tab()" />
+		</div>
+		<div
+			class="tw-p-2"
+			[class.tw-hidden]="activeSection() !== 'info'">
+			<osee-artifact-info-panel [tab]="tab()" />
+		</div>
 	</div>
 </div>

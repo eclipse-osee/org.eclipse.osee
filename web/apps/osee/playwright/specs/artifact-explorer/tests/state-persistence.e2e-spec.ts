@@ -86,7 +86,7 @@ test.describe('State Persistence', () => {
 		page,
 	}) => {
 		await openBranch(page, BRANCH);
-		const panel = page.locator('osee-artifact-hierarchy-panel');
+		const panel = page.locator('osee-artifact-explorer-sidebar');
 		await expect(panel).toBeVisible();
 
 		await page.getByRole('button', { name: 'Artifact Hierarchy' }).click();
@@ -107,7 +107,7 @@ test.describe('State Persistence', () => {
 		await expect(handle).toBeVisible();
 
 		const panel = page
-			.locator('osee-artifact-hierarchy-panel')
+			.locator('osee-artifact-explorer-sidebar')
 			.locator('..');
 		const initialBox = await panel.boundingBox();
 		expect(initialBox).not.toBeNull();

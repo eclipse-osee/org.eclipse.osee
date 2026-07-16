@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -27,13 +27,12 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-create-branch-button',
-	imports: [MatButton, MatIcon, MatTooltip],
+	imports: [MatIconButton, MatIcon, MatTooltip],
 	template: `<button
-		mat-flat-button
+		mat-icon-button
 		(click)="createBranch()"
 		aria-label="Create Branch"
-		matTooltip="Create Branch"
-		class="tw-flex tw-justify-center tw-bg-primary tw-text-background-background [&_*]:tw-m-0">
+		matTooltip="Create Branch">
 		<mat-icon>alt_route</mat-icon>
 	</button>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,

@@ -392,6 +392,10 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken OseeApp = osee.add(osee.artifactType(89L, "OSEE App", false, Artifact)
       .zeroOrOne(OseeAppDefinition));
 
+   ArtifactTypeToken DispatchConfig = osee.add(osee.artifactType(7226028762153318337L, "Dispatch Config", false, new MaterialIcon("send"), Artifact)
+      .exactlyOne(Name, "unnamed")
+      .atLeastOne(DispatchConfigJson, "{}"));
+
    ArtifactTypeToken OseeTypeDefinition = osee.add(osee.artifactType(60L, "Osee Type Definition", false, new MaterialIcon("description"), Artifact)
       .exactlyOne(Active, Boolean.TRUE)
       .any(UriGeneralStringData));
