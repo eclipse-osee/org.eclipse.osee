@@ -33,6 +33,7 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -73,6 +74,7 @@ import { HelpButtonComponent } from '../help-drawer/help-button.component';
 	selector: 'osee-markdown-editor',
 	imports: [
 		MatIcon,
+		MatIconButton,
 		FormsModule,
 		MatTooltip,
 		MatMenu,
@@ -171,6 +173,7 @@ export class MarkdownEditorComponent {
 	private readonly destroyRef = inject(DestroyRef);
 
 	protected readonly keyboardFocused = signal(false);
+	protected readonly focused = signal(false);
 
 	private readonly _init: void = (() => {
 		this.initFullscreenListener();
@@ -181,6 +184,7 @@ export class MarkdownEditorComponent {
 					.monitor(textarea, false)
 					.subscribe((origin) => {
 						this.keyboardFocused.set(origin === 'keyboard');
+						this.focused.set(origin !== null);
 					});
 				this.destroyRef.onDestroy(() => {
 					this.focusMonitor.stopMonitoring(textarea);

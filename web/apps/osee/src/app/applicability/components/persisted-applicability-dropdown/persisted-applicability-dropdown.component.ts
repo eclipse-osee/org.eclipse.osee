@@ -44,6 +44,8 @@ import {
 	template: `<osee-applicability-dropdown
 		[required]="required()"
 		[disabled]="disabled()"
+		[showLabel]="showLabel()"
+		[appearance]="appearance()"
 		[(applicability)]="applicability" />`,
 	viewProviders: [provideOptionalControlContainerNgForm()],
 })
@@ -73,6 +75,8 @@ export class PersistedApplicabilityDropdownComponent {
 	applicability = model.required<applic>();
 	comment = input('Modifying applicability');
 	disabled = input(false);
+	showLabel = input(true);
+	appearance = input<'outline' | 'fill'>('outline');
 
 	required = input(false);
 	private _notValid = this.statusSignal().pipe(

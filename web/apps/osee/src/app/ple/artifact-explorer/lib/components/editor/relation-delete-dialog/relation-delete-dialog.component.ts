@@ -19,6 +19,7 @@ import {
 	MatDialogContent,
 	MatDialogTitle,
 } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-relation-delete-dialog',
@@ -28,6 +29,7 @@ import {
 		MatDialogActions,
 		MatButton,
 		MatDialogClose,
+		MatIcon,
 	],
 	templateUrl: './relation-delete-dialog.component.html',
 })

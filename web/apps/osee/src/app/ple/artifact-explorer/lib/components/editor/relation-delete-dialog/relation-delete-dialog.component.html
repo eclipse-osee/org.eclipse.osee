@@ -10,34 +10,38 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div
-	mat-dialog-title
-	class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-p-0 tw-text-background dark:tw-bg-osee-blue-10">
-	<div class="tw-mt-1">Remove Relation?</div>
-</div>
-<mat-dialog-content class="tw-mt-4 tw-flex">
-	Are you sure you want to remove the relation between
-	<div class="tw-mx-1 tw-font-bold tw-text-warning">
-		{{ data.sideAName }}
+<h1 mat-dialog-title>
+	<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+		<mat-icon class="tw-text-osee-red-8">delete</mat-icon>
+		Remove Relation?
 	</div>
-	and
-	<div class="tw-ml-1 tw-font-bold tw-text-warning">
-		{{ data.sideBName }}
-	</div>
-	?
+</h1>
+<mat-dialog-content>
+	<p class="tw-text-sm">
+		Are you sure you want to remove the relation between
+		<span class="tw-font-bold tw-text-osee-red-8">{{
+			data.sideAName
+		}}</span>
+		and
+		<span class="tw-font-bold tw-text-osee-red-8">{{ data.sideBName }}</span
+		>?
+	</p>
 </mat-dialog-content>
-<mat-dialog-actions class="tw-flex tw-justify-center">
+<div
+	mat-dialog-actions
+	align="end"
+	class="tw-gap-2">
 	<button
-		mat-button
+		mat-stroked-button
+		class="tw-text-osee-red-8"
 		mat-dialog-close="cancel"
 		data-cy="cancel-btn">
-		No
+		Cancel
 	</button>
 	<button
-		mat-flat-button
-		class="primary-button"
+		mat-stroked-button
 		mat-dialog-close="ok"
 		data-cy="submit-btn">
-		Yes
+		Remove
 	</button>
-</mat-dialog-actions>
+</div>

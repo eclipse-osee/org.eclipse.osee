@@ -153,4 +153,13 @@ export class BranchSelectorComponent {
 	displayFn(val: branch) {
 		return val?.name || '';
 	}
+
+	/** Whether a branch has the Product Line category. */
+	isProductLine(b: branch): boolean {
+		return (
+			b.categories?.some(
+				(c) => c.name === 'Product Line' || c.id === '2'
+			) ?? false
+		);
+	}
 }

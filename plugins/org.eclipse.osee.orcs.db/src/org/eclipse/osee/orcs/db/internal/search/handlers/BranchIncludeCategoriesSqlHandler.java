@@ -42,11 +42,11 @@ public class BranchIncludeCategoriesSqlHandler extends SqlHandler<CriteriaInclud
       branchAlias = writer.getMainTableAlias(OseeDb.BRANCH_TABLE);
       if (writer.getJdbcClient().getDbType().equals(DatabaseType.oracle)) {
          writer.write(
-            ", listagg(category,',') within group (order by category) over (partition by " + branchAlias + ".branch_Id) categories");
+            ", listagg(" + catAlias + ".category,',') within group (order by " + catAlias + ".category) over (partition by " + branchAlias + ".branch_Id) categories");
       } else if (writer.getJdbcClient().getDbType().equals(DatabaseType.postgresql)) {
-         writer.write(", string_agg(cast(category as varchar),', ' order by category) categories");
+         writer.write(", string_agg(cast(" + catAlias + ".category as varchar),', ' order by " + catAlias + ".category) categories");
       } else if (writer.getJdbcClient().getDbType().equals(DatabaseType.hsql)) {
-         writer.write(", GROUP_CONCAT(category ORDER BY category SEPARATOR ', ') AS categories");
+         writer.write(", GROUP_CONCAT(" + catAlias + ".category ORDER BY " + catAlias + ".category SEPARATOR ', ') AS categories");
       }
    }
 

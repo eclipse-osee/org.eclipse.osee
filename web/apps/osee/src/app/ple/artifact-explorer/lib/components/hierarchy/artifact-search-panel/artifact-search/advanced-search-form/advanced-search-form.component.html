@@ -11,7 +11,10 @@
  *     Boeing - initial API and implementation
  -->
 <form class="tw-w-full">
-	<mat-form-field class="tw-w-full">
+	<mat-form-field
+		appearance="outline"
+		class="tw-w-full tw-pt-4"
+		subscriptSizing="dynamic">
 		<mat-label>Artifact Types</mat-label>
 		<mat-chip-set class="tw-pt-4">
 			@for (item of data.artifactTypes; track $index) {
@@ -41,7 +44,10 @@
 			}
 		</mat-autocomplete>
 	</mat-form-field>
-	<mat-form-field class="tw-w-full">
+	<mat-form-field
+		appearance="outline"
+		class="tw-w-full tw-pt-4"
+		subscriptSizing="dynamic">
 		<mat-label>Attribute Types</mat-label>
 		<mat-chip-set class="tw-pt-4">
 			@for (item of data.attributeTypes; track $index) {
@@ -71,7 +77,7 @@
 			}
 		</mat-autocomplete>
 	</mat-form-field>
-	<div class="tw-flex tw-flex-col">
+	<div class="tw-flex tw-flex-col tw-pt-4">
 		<mat-checkbox
 			[(ngModel)]="data.exactMatch"
 			name="exactMatch"

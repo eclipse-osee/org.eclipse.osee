@@ -58,6 +58,7 @@ export class ArtifactHierarchyRelationSideComponent {
 	protected _relationSide = signal<artifactRelationSide>({
 		name: '',
 		artifacts: [],
+		gammaIds: [],
 		isSideA: false,
 		isSideB: false,
 	});

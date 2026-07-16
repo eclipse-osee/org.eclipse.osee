@@ -11,177 +11,158 @@
  *     Boeing - initial API and implementation
  -->
 @for (attribute of attributes(); track attribute) {
-	<div class="tw-flex tw-items-center tw-justify-between">
-		<div
-			class="tw-w-1/6 tw-pl-4 tw-font-bold"
-			[ngClass]="
-				isRequired(attribute) &&
-				attribute.value === '' &&
-				(attribute.name | attributeNameTrim | ifIdReturnFalse)
-					? 'tw-text-warning'
-					: ''
-			">
-			{{ attribute.name | attributeNameTrim }}:
-		</div>
-		<div class="tw-w-5/6 tw-pl-4">
-			@switch (attribute.storeType) {
-				@case ('Enumeration') {
-					@if (attribute.typeId) {
-						<osee-attribute-enums-dropdown
-							[disabled]="!editable()"
-							[attributeId]="attribute.typeId"
-							[(attributeValue)]="attribute.value"
-							(attributeValueChange)="emitUpdatedAttributes()"
-							[required]="
-								isRequired(attribute) &&
-								(attribute.name
-									| attributeNameTrim
-									| ifIdReturnFalse)
-							" />
-					}
-				}
-				@case ('String') {
-					@if (attribute.name === 'Markdown Content') {
-						<osee-markdown-editor
-							[(mdContent)]="attribute.value"
-							(mdContentChange)="emitUpdatedAttributes()"
-							[disabled]="!editable()"
-							[artifactId]="artifactId()" />
-					} @else {
-						<mat-form-field
-							class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
-							subscriptSizing="dynamic">
-							<textarea
-								[disabled]="
-									!editable() ||
-									!(
-										attribute.name
-										| attributeNameTrim
-										| ifIdReturnFalse
-									)
-								"
-								matInput
-								matInputAutosize
-								placeholder="value"
-								[name]="'attrString' + attribute.typeId"
-								[(ngModel)]="attribute.value"
-								(input)="emitUpdatedAttributes()"
-								[required]="
-									isRequired(attribute) &&
-									(attribute.name
-										| attributeNameTrim
-										| ifIdReturnFalse)
-								"></textarea>
-						</mat-form-field>
-					}
-				}
-				@case ('Boolean') {
-					<mat-form-field
-						class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
-						subscriptSizing="dynamic">
-						<mat-select
-							[disabled]="!editable()"
-							[name]="'attrBoolean' + attribute.typeId"
-							[(ngModel)]="attribute.value"
-							(selectionChange)="emitUpdatedAttributes()"
-							[required]="
-								isRequired(attribute) &&
-								(attribute.name
-									| attributeNameTrim
-									| ifIdReturnFalse)
-							"
-							[value]="attribute.value ? 'true' : 'false'">
-							<mat-option [value]="'true'"> true </mat-option>
-							<mat-option [value]="'false'"> false </mat-option>
-						</mat-select>
-					</mat-form-field>
-				}
-				@case ('Date') {
-					<mat-form-field
-						class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
-						subscriptSizing="dynamic">
-						<input
-							matInput
-							[matDatepicker]="picker"
-							placeholder="Select a date"
-							[name]="'attrDate' + attribute.typeId"
-							[ngModel]="attribute.value | stringToDate"
-							(ngModelChange)="
-								setAttribute($event, attribute);
-								emitUpdatedAttributes()
-							"
-							[required]="
-								isRequired(attribute) &&
-								(attribute.name
-									| attributeNameTrim
-									| ifIdReturnFalse)
-							"
-							readonly
-							[disabled]="!editable()" />
-						<mat-datepicker-toggle
-							matSuffix
-							[for]="picker"></mat-datepicker-toggle>
-						<mat-datepicker #picker></mat-datepicker>
-					</mat-form-field>
-				}
-				@case ('Integer') {
-					<mat-form-field
-						class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
-						subscriptSizing="dynamic">
-						<textarea
-							[disabled]="!editable()"
-							matInput
-							matInputAutosize
-							placeholder="value"
-							[name]="'attrInteger' + attribute.typeId"
-							[(ngModel)]="attribute.value"
-							(change)="emitUpdatedAttributes()"
-							[required]="
-								isRequired(attribute) &&
-								(attribute.name
-									| attributeNameTrim
-									| ifIdReturnFalse)
-							"></textarea>
-					</mat-form-field>
-				}
-				@case ('Long') {
-					<mat-form-field
-						class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit [&>.mdc-text-field--filled]:tw-text-inherit"
-						subscriptSizing="dynamic">
-						<textarea
-							[disabled]="!editable()"
-							matInput
-							matInputAutosize
-							placeholder="value"
-							[name]="'attrLong' + attribute.typeId"
-							[(ngModel)]="attribute.value"
-							(change)="emitUpdatedAttributes()"
-							[required]="
-								isRequired(attribute) &&
-								(attribute.name
-									| attributeNameTrim
-									| ifIdReturnFalse)
-							"></textarea>
-					</mat-form-field>
-				}
-				@case ('Input Stream') {
-					@if (nativeEditorAttrs(); as na) {
-						<osee-native-content-editor
-							[nativeEditorAttributes]="na"
-							[editable]="editable()"
-							[branchId]="branchId()"
-							[artifactId]="artifactId()"
-							[hasUnsavedChanges]="hasUnsavedNativeChanges()"
-							[pendingName]="pendingNativeName()"
-							[pendingExtension]="pendingNativeExtension()"
-							(updatedAttributes)="
-								handleNativeContentChanges($event)
-							">
-						</osee-native-content-editor>
-					}
-				}
+	@switch (attribute.storeType) {
+		@case ('Enumeration') {
+			@if (attribute.typeId) {
+				<osee-attribute-enums-dropdown
+					[disabled]="!editable()"
+					[attributeId]="attribute.typeId"
+					[(attributeValue)]="attribute.value"
+					(attributeValueChange)="emitUpdatedAttributes()"
+					[label]="attribute.name | attributeNameTrim"
+					[required]="
+						isRequired(attribute) &&
+						(attribute.name | attributeNameTrim | ifIdReturnFalse)
+					" />
 			}
-		</div>
-	</div>
-	<br />
+		}
+		@case ('String') {
+			@if (attribute.name === 'Markdown Content') {
+				<osee-markdown-editor
+					class="tw-mt-4 tw-block"
+					[(mdContent)]="attribute.value"
+					(mdContentChange)="emitUpdatedAttributes()"
+					[disabled]="!editable()"
+					[artifactId]="artifactId()" />
+			} @else {
+				<mat-form-field
+					appearance="outline"
+					class="tw-w-full tw-pt-4"
+					subscriptSizing="dynamic">
+					<mat-label>{{
+						attribute.name | attributeNameTrim
+					}}</mat-label>
+					<textarea
+						[disabled]="
+							!editable() ||
+							!(
+								attribute.name
+								| attributeNameTrim
+								| ifIdReturnFalse
+							)
+						"
+						matInput
+						matInputAutosize
+						[name]="'attrString' + attribute.typeId"
+						[(ngModel)]="attribute.value"
+						(input)="emitUpdatedAttributes()"
+						[required]="
+							isRequired(attribute) &&
+							(attribute.name
+								| attributeNameTrim
+								| ifIdReturnFalse)
+						"></textarea>
+				</mat-form-field>
+			}
+		}
+		@case ('Boolean') {
+			<mat-form-field
+				appearance="outline"
+				class="tw-w-full tw-pt-4"
+				subscriptSizing="dynamic">
+				<mat-label>{{ attribute.name | attributeNameTrim }}</mat-label>
+				<mat-select
+					[disabled]="!editable()"
+					[name]="'attrBoolean' + attribute.typeId"
+					[(ngModel)]="attribute.value"
+					(selectionChange)="emitUpdatedAttributes()"
+					[required]="
+						isRequired(attribute) &&
+						(attribute.name | attributeNameTrim | ifIdReturnFalse)
+					"
+					[value]="attribute.value ? 'true' : 'false'">
+					<mat-option [value]="'true'"> true </mat-option>
+					<mat-option [value]="'false'"> false </mat-option>
+				</mat-select>
+			</mat-form-field>
+		}
+		@case ('Date') {
+			<mat-form-field
+				appearance="outline"
+				class="tw-w-full tw-pt-4"
+				subscriptSizing="dynamic">
+				<mat-label>{{ attribute.name | attributeNameTrim }}</mat-label>
+				<input
+					matInput
+					[matDatepicker]="picker"
+					[name]="'attrDate' + attribute.typeId"
+					[ngModel]="attribute.value | stringToDate"
+					(ngModelChange)="
+						setAttribute($event, attribute); emitUpdatedAttributes()
+					"
+					[required]="
+						isRequired(attribute) &&
+						(attribute.name | attributeNameTrim | ifIdReturnFalse)
+					"
+					readonly
+					[disabled]="!editable()" />
+				<mat-datepicker-toggle
+					matSuffix
+					[for]="picker"></mat-datepicker-toggle>
+				<mat-datepicker #picker></mat-datepicker>
+			</mat-form-field>
+		}
+		@case ('Integer') {
+			<mat-form-field
+				appearance="outline"
+				class="tw-w-full tw-pt-4"
+				subscriptSizing="dynamic">
+				<mat-label>{{ attribute.name | attributeNameTrim }}</mat-label>
+				<textarea
+					[disabled]="!editable()"
+					matInput
+					matInputAutosize
+					[name]="'attrInteger' + attribute.typeId"
+					[(ngModel)]="attribute.value"
+					(change)="emitUpdatedAttributes()"
+					[required]="
+						isRequired(attribute) &&
+						(attribute.name | attributeNameTrim | ifIdReturnFalse)
+					"></textarea>
+			</mat-form-field>
+		}
+		@case ('Long') {
+			<mat-form-field
+				appearance="outline"
+				class="tw-w-full tw-pt-4"
+				subscriptSizing="dynamic">
+				<mat-label>{{ attribute.name | attributeNameTrim }}</mat-label>
+				<textarea
+					[disabled]="!editable()"
+					matInput
+					matInputAutosize
+					[name]="'attrLong' + attribute.typeId"
+					[(ngModel)]="attribute.value"
+					(change)="emitUpdatedAttributes()"
+					[required]="
+						isRequired(attribute) &&
+						(attribute.name | attributeNameTrim | ifIdReturnFalse)
+					"></textarea>
+			</mat-form-field>
+		}
+		@case ('Input Stream') {
+			@if (nativeEditorAttrs(); as na) {
+				<osee-native-content-editor
+					[nativeEditorAttributes]="na"
+					[editable]="editable()"
+					[branchId]="branchId()"
+					[artifactId]="artifactId()"
+					[hasUnsavedChanges]="hasUnsavedNativeChanges()"
+					[pendingName]="pendingNativeName()"
+					[pendingExtension]="pendingNativeExtension()"
+					(updatedAttributes)="handleNativeContentChanges($event)">
+				</osee-native-content-editor>
+			}
+		}
+	}
 }

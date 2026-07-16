@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect, type Page } from '@ngx-playwright/test';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 /**
  * Opens the top-level navigation side panel by clicking the menu button.
@@ -47,19 +48,6 @@ async function expectNotActive(page: Page, label: string) {
 	await expect(item).toHaveAttribute('data-active', 'false');
 }
 
-/**
- * Selects a branch using the branch picker UI.
- */
-async function selectBranch(
-	page: Page,
-	branchType: 'Working' | 'Product Line' | 'Baseline',
-	branchName: string
-) {
-	await page.getByLabel(branchType).check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText(branchName).click();
-}
-
 test.describe('Navigation highlighting', () => {
 	test('highlights PLE Home when on /ple', async ({ page }) => {
 		await page.goto('/ple');
@@ -92,7 +80,7 @@ test.describe('Navigation highlighting', () => {
 		page,
 	}) => {
 		await page.goto('/ple/artifact/explorer');
-		await selectBranch(page, 'Product Line', 'SAW Product Line');
+		await selectBranch(page, 'Baseline', 'SAW Product Line');
 
 		// URL now includes branch segments — verify nav still highlights correctly
 		await openNavigator(page);

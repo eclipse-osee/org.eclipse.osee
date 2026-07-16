@@ -37,7 +37,7 @@ describe('ArtifactHierarchyArtifactsOpenService', () => {
 			uiService.idValue = '8';
 			expect(service['artifactsExpandedStructArray']()).toEqual([]);
 		});
-		it('full expanded artifacts with id change', () => {
+		it('expanded artifacts persist across branch id change', () => {
 			service['artifactsExpandedStructArray'].set([
 				{
 					artifactId: '1',
@@ -51,7 +51,12 @@ describe('ArtifactHierarchyArtifactsOpenService', () => {
 				},
 			]);
 			uiService.idValue = '8';
-			expect(service['artifactsExpandedStructArray']()).toEqual([]);
+			expect(service['artifactsExpandedStructArray']()).toEqual([
+				{
+					artifactId: '1',
+					childArtifactIds: ['2'],
+				},
+			]);
 		});
 		it('full expanded artifacts with no id change', () => {
 			service['artifactsExpandedStructArray'].set([

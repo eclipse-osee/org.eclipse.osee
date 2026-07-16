@@ -11,12 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 test('test baseline branch', async ({ page }) => {
 	await page.goto('/ci/admin');
-	await page.getByLabel('Product Line').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('SAW Product Line').click();
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 
 	await expect(page.getByLabel('Number of results to keep')).toBeDisabled();
 
@@ -34,9 +33,7 @@ test('test baseline branch', async ({ page }) => {
 
 test('test working branch', async ({ page }) => {
 	await page.goto('/ci/admin');
-	await page.getByLabel('Product Line').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('SAW Product Line').click();
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 
 	await page.getByRole('button', { name: 'Create Action' }).click();
 	await page.getByLabel('Title').fill('CI Admin Test');
@@ -105,9 +102,7 @@ test('test working branch', async ({ page }) => {
 
 test('test import page', async ({ page }) => {
 	await page.goto('/ci/import');
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('CI Admin Test').click();
+	await selectBranch(page, 'Working', 'CI Admin Test');
 
 	// Select CI Set
 	await page.getByRole('combobox', { name: 'Select a set' }).click();

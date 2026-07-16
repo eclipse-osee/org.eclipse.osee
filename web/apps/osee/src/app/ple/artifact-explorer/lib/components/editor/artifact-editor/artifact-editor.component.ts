@@ -10,21 +10,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, input } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
 import { artifactTab } from '../../../types/artifact-explorer';
 import { ArtifactInfoPanelComponent } from '../artifact-info-panel/artifact-info-panel.component';
 import { AttributesEditorPanelComponent } from '../attributes-editor-panel/attributes-editor-panel.component';
 import { RelationsEditorPanelComponent } from '../relations-editor-panel/relations-editor-panel.component';
+import { ArtifactHistoryPanelComponent } from '../artifact-history-panel/artifact-history-panel.component';
+
+export type EditorSection = 'attributes' | 'relations' | 'history' | 'info';
 
 @Component({
 	selector: 'osee-artifact-editor',
 	imports: [
+		MatIcon,
+		MatIconButton,
+		MatTooltip,
 		RelationsEditorPanelComponent,
 		ArtifactInfoPanelComponent,
 		AttributesEditorPanelComponent,
+		ArtifactHistoryPanelComponent,
 	],
 	templateUrl: './artifact-editor.component.html',
 })
 export class ArtifactEditorComponent {
 	tab = input.required<artifactTab>();
+
+	/** Which editor section is currently visible. */
+	protected activeSection = signal<EditorSection>('attributes');
 }

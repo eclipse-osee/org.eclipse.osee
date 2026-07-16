@@ -14,6 +14,7 @@ import { ArtifactExplorerTabService } from '../services/artifact-explorer-tab.se
 import { signal } from '@angular/core';
 import { tab } from '../types/artifact-explorer';
 import { applicabilitySentinel } from '@osee/applicability/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 
 export const tabsMock: tab[] = [
 	{
@@ -23,6 +24,7 @@ export const tabsMock: tab[] = [
 		artifact: {
 			name: 'Mock Artifact',
 			id: '123',
+			gammaId: '-1',
 			typeId: '456',
 			typeName: 'Mock Type',
 			icon: {
@@ -36,10 +38,10 @@ export const tabsMock: tab[] = [
 				{
 					name: 'Attribute 1',
 					value: 'Value 1',
-					typeId: '789',
+					typeId: '789' as ATTRIBUTETYPEID,
 					id: '1',
+					gammaId: '-1',
 					storeType: 'String',
-					multiplicityId: '2',
 				},
 			],
 			relations: [],

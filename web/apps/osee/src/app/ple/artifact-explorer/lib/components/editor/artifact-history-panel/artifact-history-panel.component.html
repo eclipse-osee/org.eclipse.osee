@@ -1,0 +1,127 @@
+<!--
+ * Copyright (c) 2026 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+@if (groupedHistory().length > 0) {
+	<div class="tw-p-4">
+		<div
+			class="tw-overflow-hidden tw-rounded tw-border tw-transition-[border-color]"
+			style="border-color: rgba(255, 255, 255, 0.2)"
+			onmouseenter="this.style.borderColor='rgba(255, 255, 255, 0.87)'"
+			onmouseleave="this.style.borderColor='rgba(255, 255, 255, 0.2)'">
+			<table class="tw-w-full tw-text-sm">
+				<thead>
+					<tr class="tw-border-b tw-text-left tw-font-bold">
+						<th class="tw-px-3 tw-py-2">Tx</th>
+						<th class="tw-px-3 tw-py-2">Date</th>
+						<th class="tw-px-3 tw-py-2">Comment</th>
+						<th class="tw-px-3 tw-py-2">Change Type</th>
+						<th class="tw-px-3 tw-py-2">Before</th>
+						<th class="tw-px-3 tw-py-2">After</th>
+						<th class="tw-px-3 tw-py-2"></th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (group of groupedHistory(); track group.txId) {
+						<tr
+							class="tw-cursor-pointer tw-border-b last:tw-border-b-0 hover:tw-bg-background-hover"
+							(click)="openDiffDialog(group)"
+							matTooltip="Click to view full diff and restore options">
+							<td class="tw-px-3 tw-py-2 tw-font-mono">
+								{{ group.txId }}
+							</td>
+							<td
+								class="tw-whitespace-nowrap tw-px-3 tw-py-2 tw-text-xs">
+								{{ group.date }}
+							</td>
+							<td
+								class="tw-max-w-40 tw-truncate tw-px-3 tw-py-2 tw-text-xs"
+								[matTooltip]="group.comment">
+								{{ truncate(group.comment, 30) }}
+							</td>
+							<td class="tw-px-3 tw-py-2">
+								{{ getChangeTypeDisplay(group.changes[0]) }}
+								@if (group.changes.length > 1) {
+									<span class="tw-text-xs tw-opacity-60">
+										(+{{ group.changes.length - 1 }}
+										more)
+									</span>
+								}
+							</td>
+							<td
+								class="tw-max-w-36 tw-truncate tw-px-3 tw-py-2 tw-text-xs tw-opacity-70">
+								{{
+									truncate(
+										group.changes[0].baselineVersion.value,
+										30
+									)
+								}}
+							</td>
+							<td
+								class="tw-max-w-36 tw-truncate tw-px-3 tw-py-2 tw-text-xs">
+								{{
+									truncate(
+										group.changes[0].currentVersion.value,
+										30
+									)
+								}}
+							</td>
+							<td class="tw-px-3 tw-py-2">
+								<mat-icon class="tw-text-base tw-opacity-50">
+									chevron_right
+								</mat-icon>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+			<!--Pagination-->
+			<div
+				class="tw-border-current/20 tw-flex tw-items-center tw-justify-end tw-gap-3 tw-border-t tw-px-3 tw-py-2">
+				<span class="tw-text-xs tw-opacity-60">Rows per page:</span>
+				<mat-form-field
+					appearance="outline"
+					subscriptSizing="dynamic"
+					class="history-page-size-select">
+					<mat-select
+						[value]="pageSize().toString()"
+						panelWidth=""
+						(selectionChange)="setPageSize($event.value)">
+						<mat-option value="10">10</mat-option>
+						<mat-option value="25">25</mat-option>
+						<mat-option value="50">50</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<span class="tw-text-xs tw-opacity-60">
+					Page {{ currentPage() + 1 }}
+				</span>
+				<button
+					mat-icon-button
+					[disabled]="currentPage() === 0"
+					(click)="prevPage()"
+					matTooltip="Previous page">
+					<mat-icon>chevron_left</mat-icon>
+				</button>
+				<button
+					mat-icon-button
+					[disabled]="!hasNextPage()"
+					(click)="nextPage()"
+					matTooltip="Next page">
+					<mat-icon>chevron_right</mat-icon>
+				</button>
+			</div>
+		</div>
+	</div>
+} @else {
+	<div class="tw-p-4 tw-text-sm tw-italic tw-opacity-60">
+		No transaction history available for this artifact.
+	</div>
+}

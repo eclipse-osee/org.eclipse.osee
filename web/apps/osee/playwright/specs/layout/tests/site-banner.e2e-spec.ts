@@ -16,12 +16,14 @@ test.describe('Site Banner', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/ple');
 		await page.evaluate(() => localStorage.clear());
-		await page.reload();
-		await page.waitForResponse(
-			(resp) =>
-				resp.url().includes('/orcs/datastore/banner') &&
-				resp.status() === 200
-		);
+		await Promise.all([
+			page.waitForResponse(
+				(resp) =>
+					resp.url().includes('/orcs/datastore/banner') &&
+					resp.status() === 200
+			),
+			page.reload(),
+		]);
 	});
 
 	test('should display the banner when content is configured', async ({

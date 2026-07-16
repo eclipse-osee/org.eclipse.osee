@@ -31,72 +31,71 @@ export type messageRelations = {
 	subscriberNodes: nodeData[];
 };
 export type messageAttr = {
-	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
-	description: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	description: attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>;
+	interfaceMessageRate: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERATE
 	>;
-	interfaceMessageRate: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERATE>
+	interfaceMessagePeriodicity: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPERIODICITY
 	>;
-	interfaceMessagePeriodicity: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPERIODICITY
-		>
+	interfaceMessageWriteAccess: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEWRITEACCESS
 	>;
-	interfaceMessageWriteAccess: Required<
-		attribute<
-			boolean,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEWRITEACCESS
-		>
+	interfaceMessageType: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGETYPE
 	>;
-	interfaceMessageType: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGETYPE>
+	interfaceMessageNumber: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGENUMBER
 	>;
-	interfaceMessageNumber: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGENUMBER>
+	interfaceMessageExclude: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEEXCLUDE
 	>;
-	interfaceMessageExclude: Required<
-		attribute<boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEEXCLUDE>
+	interfaceMessageDoubleBuffer: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEDOUBLEBUFFER
 	>;
-	interfaceMessageDoubleBuffer: Required<
-		attribute<
-			boolean,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEDOUBLEBUFFER
-		>
+	interfaceMessageIoMode: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEIOCODE
 	>;
-	interfaceMessageIoMode: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEIOCODE>
+	interfaceMessageModeCode: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEMODECODE
 	>;
-	interfaceMessageModeCode: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEMODECODE>
+	interfaceMessageRateVer: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERATEVER
 	>;
-	interfaceMessageRateVer: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERATEVER>
+	interfaceMessagePriority: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPRIORITY
 	>;
-	interfaceMessagePriority: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPRIORITY>
+	interfaceMessageProtocol: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPROTOCOL
 	>;
-	interfaceMessageProtocol: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPROTOCOL>
+	interfaceMessageRptWordCount: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERPTWORDCOUNT
 	>;
-	interfaceMessageRptWordCount: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERPTWORDCOUNT
-		>
+	interfaceMessageRptCmdWord: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERPTCMDWORD
 	>;
-	interfaceMessageRptCmdWord: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERPTCMDWORD>
+	interfaceMessageRunBeforeProc: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERUNBEFOREPROC
 	>;
-	interfaceMessageRunBeforeProc: Required<
-		attribute<
-			boolean,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERUNBEFOREPROC
-		>
-	>;
-	interfaceMessageVer: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEVER>
+	interfaceMessageVer: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEVER
 	>;
 };
 
