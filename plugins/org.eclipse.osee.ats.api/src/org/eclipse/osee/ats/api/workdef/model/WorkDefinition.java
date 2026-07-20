@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,6 +66,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
    private final List<ReviewRequiredMinimum> reviewRequiredMinimums = new ArrayList<>();
    private List<IAtsTransitionHook> transitionHooks = new ArrayList<>();
    private List<ConditionalRule> conditions = new ArrayList<>();
+   private Comparator<String> pcrIdComparator = null;
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -272,5 +274,13 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    public boolean isProblemReport() {
       return this.options.contains(WorkDefOption.IsProblemReport);
+   }
+
+   public Comparator<String> getPcrIdComparator() {
+      return pcrIdComparator;
+   }
+
+   public void setPcrIdComparator(Comparator<String> pcrIdComparator) {
+      this.pcrIdComparator = pcrIdComparator;
    }
 }
