@@ -637,10 +637,16 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             }
             txData.addRelationSideA(relType, artA, relOrders);
          }
+         int relationCount = txData.getNewRelations().get(relType, artA).getRelOrders().size();
          if (insertType.equals("start")) {
+            if (relationCount > 0 && TxData.shouldReorderForMin(minOrder, relationCount)) {
+               TreeMap<Integer, Pair<ArtifactId, GammaId>> reorderedData = reOrderRelTypeArtA(relType, artA);
+               txData.addRelationSideA(relType, artA, reorderedData);
+               minOrder = reorderedData.firstKey();
+            }
             relOrder = txData.calculateHeadInsertionOrderIndex(minOrder);
             int i;
-            for (i = 0; i < 100 & txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
+            for (i = 0; i < 100 && txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
                relOrder); i++) {
                relOrder = txData.calculateHeadInsertionOrderIndex(relOrder);
             }
@@ -649,10 +655,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
                   "Error Calculating new RelOrder for relType:" + relType.toString() + " to the start");
             }
             txData.getNewRelations().get(relType, artA).addRelOrder(artB, relOrder);
-         } else if (insertType.equals("insert") & maxOrder > afterIndex) {
+         } else if (insertType.equals("insert") && maxOrder > afterIndex) {
             relOrder = txData.calculateInsertionOrderIndex(afterIndex, beforeIndex);
             int i;
-            for (i = 0; i < 100 & txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
+            for (i = 0; i < 100 && txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
                relOrder); i++) {
                if (relOrder == afterIndex) { // encountered collision...reorder
                   throw new OseeArgumentException(
@@ -672,9 +678,14 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             }
             txData.getNewRelations().get(relType, artA).addRelOrder(artB, relOrder);
          } else {
+            if (relationCount > 0 && TxData.shouldReorderForMax(maxOrder, relationCount)) {
+               TreeMap<Integer, Pair<ArtifactId, GammaId>> reorderedData = reOrderRelTypeArtA(relType, artA);
+               txData.addRelationSideA(relType, artA, reorderedData);
+               maxOrder = reorderedData.lastKey();
+            }
             relOrder = txData.calculateEndInsertionOrderIndex(maxOrder);
             int i;
-            for (i = 0; i < 100 & txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
+            for (i = 0; i < 100 && txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
                relOrder); i++) {
                relOrder = txData.calculateEndInsertionOrderIndex(relOrder);
             }
@@ -713,14 +724,24 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       }
    }
 
-   private int reOrderRelTypeArtA(RelationTypeToken relType, ArtifactId artA) {
+   private TreeMap<Integer, Pair<ArtifactId, GammaId>> reOrderRelTypeArtA(RelationTypeToken relType, ArtifactId artA) {
 
-      List<Object[]> reOrderData = reOrderRelations(relType, artA, getRelationSideAData(relType, artA));
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> currentData = getRelationSideAData(relType, artA);
+      List<Object[]> reOrderData = reOrderRelations(relType, artA, currentData);
 
-      int resultsCount = orcsApi.getJdbcService().getClient().runBatchUpdate(
+      orcsApi.getJdbcService().getClient().runBatchUpdate(
          OseeSql.UPDATE_REL_ORDER_FOR_TYPE_AND_ART_A.getSql(), reOrderData);
 
-      return resultsCount;
+      // Build the resulting order map from the computed update data to avoid a DB re-read.
+      // reOrderData is in the same iteration order as currentData (TreeMap ascending key order).
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> result = new TreeMap<>();
+      int i = 0;
+      for (Pair<ArtifactId, GammaId> value : currentData.values()) {
+         int order = (int) reOrderData.get(i)[0];
+         result.put(order, value);
+         i++;
+      }
+      return result;
    }
 
    private TreeMap<Integer, Pair<ArtifactId, GammaId>> getRelationSideAData(RelationTypeToken relType,
@@ -742,6 +763,18 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
       int min_value = relOrders.firstKey();
       int max_value = relOrders.lastKey();
+
+      // If orders have drifted near integer bounds, redistribute across the head-reserve range
+      if (TxData.shouldReorderForMin(min_value, relOrders.size()) || TxData.shouldReorderForMax(max_value, relOrders.size())) {
+         TreeMap<Integer, Pair<ArtifactId, GammaId>> redistributed = TxData.computeRedistributedOrders(relOrders);
+         List<Object[]> updateStatements = new ArrayList<>();
+         for (Entry<Integer, Pair<ArtifactId, GammaId>> entry : redistributed.entrySet()) {
+            updateStatements.add(
+               new Object[] {entry.getKey(), relType.getId(), artA.getId(), entry.getValue().getSecond().getId()});
+         }
+         return updateStatements;
+      }
+
       int range = max_value - min_value;
       int pad = range / relOrders.size();
       int rel_order = min_value;
