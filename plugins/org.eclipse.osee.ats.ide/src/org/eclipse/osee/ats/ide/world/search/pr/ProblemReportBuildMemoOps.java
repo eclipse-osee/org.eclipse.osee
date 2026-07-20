@@ -357,7 +357,7 @@ public class ProblemReportBuildMemoOps {
       } else if (col.equals(LegacyIdCol)) {
          return teamWf.getLegacyId();
       } else if (col.equals(PcrIdCol)) {
-         return Collections.toString(",", teamWf.getPcrIds());
+         return Collections.toString(", ", teamWf.getPcrIds());
       } else if (col.equals(SubsysCol)) {
          getAttrValue(CoreAttributeTypes.Subsystem, teamWf);
       } else if (col.equals(CogPriCol)) {
