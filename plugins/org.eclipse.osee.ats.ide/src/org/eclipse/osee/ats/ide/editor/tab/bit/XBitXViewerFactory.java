@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.editor.tab.bit;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -44,6 +45,13 @@ public class XBitXViewerFactory extends XViewerFactory {
 
    public XBitXViewerFactory(String namespace) {
       super(namespace);
+   }
+
+   @Override
+   public CustomizeData getDefaultTableCustomizeData() {
+      CustomizeData custData = super.getDefaultTableCustomizeData();
+      custData.getSortingData().setSortingNames(Build_Col.getId());
+      return custData;
    }
 
    @Override

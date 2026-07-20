@@ -14,8 +14,11 @@ package org.eclipse.osee.ats.ide.editor.tab.bit;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
@@ -112,7 +115,31 @@ public class XBitViewer extends TaskXViewer {
    public void loadTable() {
       try {
          if (getContentProvider() != null) {
-            setInput(bids);
+            List<String> buildOrder = (bids != null) ? bids.getBuildOrder() : Collections.emptyList();
+            if (!buildOrder.isEmpty()) {
+               XViewerColumn buildCol =
+                  getCustomizeMgr().getCurrentTableColumn(XBitXViewerFactory.Build_Col.getId());
+               if (buildCol != null) {
+                  buildCol.setSortOrder(buildOrder);
+               }
+            }
+            Collection<BuildImpactData> buildImpacts =
+               (bids != null) ? bids.getBuildImpacts() : Collections.emptyList();
+            if (!buildOrder.isEmpty() && !buildImpacts.isEmpty()) {
+               List<BuildImpactData> sorted = new ArrayList<>(buildImpacts);
+               Map<String, Integer> orderMap = new HashMap<>();
+               for (int i = 0; i < buildOrder.size(); i++) {
+                  orderMap.put(buildOrder.get(i), i);
+               }
+               sorted.sort((b1, b2) -> {
+                  int o1 = orderMap.getOrDefault(b1.getBuild().getName(), Integer.MAX_VALUE);
+                  int o2 = orderMap.getOrDefault(b2.getBuild().getName(), Integer.MAX_VALUE);
+                  return Integer.compare(o1, o2);
+               });
+               setInput(sorted);
+            } else {
+               setInput(buildImpacts);
+            }
             setLoading(false);
          }
       } catch (Exception ex) {
