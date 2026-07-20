@@ -10,7 +10,7 @@ The toolbar at the top of the editor provides quick access to all features. It i
 
 | Icon | Button | Action |
 | :-- | :-- | :-- |
-| <span class="material-icons">undo</span> | Undo | Revert your last edit (groups by word/pause, like VS Code). |
+| <span class="material-icons">undo</span> | Undo | Revert your last edit. |
 | <span class="material-icons">redo</span> | Redo | Re-apply a reverted edit. |
 
 ### Media
