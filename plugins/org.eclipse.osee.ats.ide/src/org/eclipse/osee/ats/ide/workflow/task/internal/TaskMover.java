@@ -41,6 +41,9 @@ public class TaskMover {
       for (IAtsTask task : tasks) {
          TaskArtifact taskArt = (TaskArtifact) task;
          taskArt.clearCaches();
+         if (newParent.equals(taskArt.getParentAWA())) {
+            continue;
+         }
          if (taskArt.getParentAWA() != null) {
             changes.unrelateAll(taskArt, AtsRelationTypes.TeamWfToTask_TeamWorkflow);
          }
