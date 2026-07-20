@@ -13,16 +13,45 @@
 import { BehaviorSubject, of } from 'rxjs';
 import { defReferenceMock, resultReferenceMock } from './tmo.response.mock';
 import { CiDetailsService } from '../services/ci-details.service';
-import { signal } from '@angular/core';
+import { signal, WritableSignal } from '@angular/core';
 
 const _currentDefFilter = signal('');
 const _ciDefId = signal('1');
 const _currentPage = signal(1);
 const _currentPageSize = signal(10);
 
+const _nameFilter = signal<string | undefined>(undefined);
+const _teamFilter = signal<string | undefined>(undefined);
+const _subsystemFilter = signal<string | undefined>(undefined);
+const _safetyFilter = signal<string | undefined>(undefined);
+const _statusByFilter = signal<string | undefined>(undefined);
+const _machineNameFilter = signal<string | undefined>(undefined);
+const _fullScriptNameFilter = signal<string | undefined>(undefined);
+const _notesFilter = signal<string | undefined>(undefined);
+
 export const ciDetailsServiceMock: Partial<CiDetailsService> = {
 	scriptDefs: of(defReferenceMock),
 	scriptDef: of(defReferenceMock[0]),
+
+	nameFilter: _nameFilter,
+	teamFilter: _teamFilter,
+	subsystemFilter: _subsystemFilter,
+	safetyFilter: _safetyFilter,
+	statusByFilter: _statusByFilter,
+	machineNameFilter: _machineNameFilter,
+	fullScriptNameFilter: _fullScriptNameFilter,
+	notesFilter: _notesFilter,
+
+	filterSignals: {
+		name: _nameFilter,
+		team: _teamFilter,
+		subsystem: _subsystemFilter,
+		safety: _safetyFilter,
+		statusBy: _statusByFilter,
+		machineName: _machineNameFilter,
+		fullScriptName: _fullScriptNameFilter,
+		notes: _notesFilter,
+	} as Record<string, WritableSignal<string | undefined>>,
 
 	get scriptResults() {
 		return of(resultReferenceMock);

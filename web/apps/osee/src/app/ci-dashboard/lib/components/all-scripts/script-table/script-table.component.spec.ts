@@ -20,6 +20,7 @@ import { userDataAccountServiceMock } from '../../../../../auth/user-data-accoun
 import {
 	SubsystemSelectorMockComponent,
 	TeamSelectorMockComponent,
+	TeamSelectorFilterMockComponent,
 	ciDetailsServiceMock,
 } from '@osee/ci-dashboard/testing';
 import { AsyncPipe } from '@angular/common';
@@ -57,6 +58,7 @@ describe('ScriptTableComponent', () => {
 				imports: [
 					SubsystemSelectorMockComponent,
 					TeamSelectorMockComponent,
+					TeamSelectorFilterMockComponent,
 					AsyncPipe,
 					FormsModule,
 					MatTable,
