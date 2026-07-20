@@ -12,24 +12,19 @@
  **********************************************************************/
 import { CdkDropList } from '@angular/cdk/drag-drop';
 import { AsyncPipe } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
 	BranchPickerComponent,
 	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
-import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
 import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
-import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-search-panel.component';
-import { ExpansionPanelComponent } from '@osee/shared/components';
-import {
-	ActionService,
-	CreateActionService,
-} from '@osee/configuration-management/services';
-import { BranchManagementComponent } from '../branch-management/branch-management.component';
+import { ArtifactSearchComponent } from '../artifact-search-panel/artifact-search/artifact-search.component';
+import { BranchManagementPanelComponent } from '../branch-management-panel/branch-management-panel.component';
+
+export type HierarchySection = 'hierarchy' | 'search' | 'branch';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',
@@ -37,21 +32,52 @@ import { BranchManagementComponent } from '../branch-management/branch-managemen
 		AsyncPipe,
 		BranchPickerComponent,
 		ArtifactHierarchyComponent,
-		ArtifactHierarchyOptionsComponent,
 		CurrentViewSelectorComponent,
-		ArtifactSearchPanelComponent,
-		ExpansionPanelComponent,
+		ArtifactSearchComponent,
 		CdkDropList,
-		BranchManagementComponent,
+		BranchManagementPanelComponent,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',
+	styles: [
+		`
+			:host {
+				--mat-form-field-container-color: transparent;
+				--mat-option-selected-state-label-text-color: var(
+					--osee-primary-default
+				);
+				--mat-minimal-pseudo-checkbox-selected-checkmark-color: var(
+					--osee-primary-default
+				);
+			}
+			/* Standard scrollbar styling (Firefox, Safari 16.4+) */
+			.hierarchy-scroll {
+				scrollbar-width: auto;
+				scrollbar-color: rgba(128, 128, 128, 0.4) transparent;
+			}
+			/* Webkit scrollbar for precise sizing (Chrome, Edge) */
+			.hierarchy-scroll::-webkit-scrollbar {
+				width: 10px;
+				height: 10px;
+			}
+			.hierarchy-scroll::-webkit-scrollbar-thumb {
+				background: rgba(128, 128, 128, 0.4);
+				border-radius: 5px;
+			}
+			.hierarchy-scroll::-webkit-scrollbar-track {
+				background: transparent;
+			}
+		`,
+	],
 })
 export class ArtifactHierarchyPanelComponent {
 	private artHierPathService = inject(ArtifactHierarchyPathService);
-	private createActionService = inject(CreateActionService);
-	private actionService = inject(ActionService);
 	private uiService = inject(UiService);
-	private tabService = inject(ArtifactExplorerTabService);
+
+	/** Active section driven by the parent activity bar. */
+	activeSection = input.required<HierarchySection>();
+
+	/** Emits when the search "Show in Hierarchy" action is used. */
+	navigateToHierarchy = output<void>();
 
 	protected branchType = toSignal(this.uiService.type, { initialValue: '' });
 	protected branchId = toSignal(this.uiService.id, { initialValue: '' });

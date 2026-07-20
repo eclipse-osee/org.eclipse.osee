@@ -10,12 +10,82 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="tw-flex tw-flex-col tw-gap-4">
-	<osee-attributes-editor-panel [tab]="tab()" />
-	<osee-relations-editor-panel
-		[editable]="tab().artifact.editable"
-		[artifactId]="tab().artifact.id"
-		[branchId]="tab().branchId"
-		[viewId]="tab().viewId" />
-	<osee-artifact-info-panel [tab]="tab()" />
+<!-- Section toolbar (sticky) -->
+<div
+	class="tw-sticky tw-top-0 tw-z-10 tw-border-b tw-border-solid tw-border-background-hover tw-bg-[var(--mat-sidenav-content-background-color)] tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2)] dark:tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.3)]"
+	role="toolbar"
+	aria-label="Editor section toolbar">
+	<div class="tw-flex tw-items-center tw-gap-1 tw-px-4 tw-py-1">
+		<button
+			mat-icon-button
+			(click)="activeSection.set('attributes')"
+			matTooltip="Attributes"
+			aria-label="Attributes"
+			[class]="
+				activeSection() === 'attributes'
+					? 'tw-text-primary'
+					: 'tw-opacity-60'
+			">
+			<mat-icon>edit_note</mat-icon>
+		</button>
+		<button
+			mat-icon-button
+			(click)="activeSection.set('relations')"
+			matTooltip="Relations"
+			aria-label="Relations"
+			[class]="
+				activeSection() === 'relations'
+					? 'tw-text-primary'
+					: 'tw-opacity-60'
+			">
+			<mat-icon>swap_horiz</mat-icon>
+		</button>
+		<button
+			mat-icon-button
+			(click)="activeSection.set('history')"
+			matTooltip="History"
+			aria-label="History"
+			[class]="
+				activeSection() === 'history'
+					? 'tw-text-primary'
+					: 'tw-opacity-60'
+			">
+			<mat-icon>history</mat-icon>
+		</button>
+		<button
+			mat-icon-button
+			(click)="activeSection.set('info')"
+			matTooltip="Artifact Info"
+			aria-label="Artifact Info"
+			[class]="
+				activeSection() === 'info' ? 'tw-text-primary' : 'tw-opacity-60'
+			">
+			<mat-icon>info_outline</mat-icon>
+		</button>
+	</div>
+</div>
+<!-- Section content (hidden/shown to preserve state) -->
+<div>
+	<div
+		class="tw-p-2"
+		[class.tw-hidden]="activeSection() !== 'attributes'">
+		<osee-attributes-editor-panel [tab]="tab()" />
+	</div>
+	<div [class.tw-hidden]="activeSection() !== 'relations'">
+		<osee-relations-editor-panel
+			[editable]="tab().artifact.editable"
+			[artifactId]="tab().artifact.id"
+			[branchId]="tab().branchId"
+			[viewId]="tab().viewId" />
+	</div>
+	<div
+		class="tw-p-2"
+		[class.tw-hidden]="activeSection() !== 'history'">
+		<osee-artifact-history-panel [tab]="tab()" />
+	</div>
+	<div
+		class="tw-p-2"
+		[class.tw-hidden]="activeSection() !== 'info'">
+		<osee-artifact-info-panel [tab]="tab()" />
+	</div>
 </div>

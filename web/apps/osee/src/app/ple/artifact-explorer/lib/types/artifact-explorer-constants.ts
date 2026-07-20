@@ -15,6 +15,7 @@ import { artifactWithRelations } from '@osee/artifact-with-relations/types';
 
 export const DEFAULT_HIERARCHY_ROOT_ARTIFACT: artifactWithRelations = {
 	id: '197818',
+	gammaId: '-1',
 	name: 'Default Hierarchy Root',
 	typeId: '10',
 	typeName: 'Root Artifact',

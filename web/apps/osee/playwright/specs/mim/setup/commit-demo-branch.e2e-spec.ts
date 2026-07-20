@@ -12,14 +12,13 @@
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL } from '../utils/helpers';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 test('test', async ({ page }) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('MIM Demo').click();
+	await selectBranch(page, 'Working', 'MIM Demo');
 	await page.getByRole('button', { name: 'In Work' }).click();
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
 	await page.getByRole('button', { name: 'Review', exact: true }).click();

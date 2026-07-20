@@ -13,7 +13,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { HttpParamsType, NamedId, attribute } from '@osee/shared/types';
+import { HttpParamsType, NamedId } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 
 @Injectable({
 	providedIn: 'root',
@@ -45,7 +47,7 @@ export class ArtifactService {
 	}
 
 	public getArtifactTypeAttributes(artifactTypeId: `${number}`) {
-		return this.http.get<attribute[]>(
+		return this.http.get<attribute<string, ATTRIBUTETYPEID>[]>(
 			apiURL + '/orcs/types/artifact/' + artifactTypeId + '/attributes'
 		);
 	}

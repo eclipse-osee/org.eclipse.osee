@@ -289,76 +289,45 @@ export class SubElementTableFieldComponent {
 			| PlatformType
 			| element[]
 			| `${number}`
-			| Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>
 			| Required<
 					attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
 			  >
-			| Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>>
-			| Required<
-					attribute<
-						number,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND
-					>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>
+			| attribute<number, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND>
+			| attribute<
+					number,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART
 			  >
-			| Required<
-					attribute<
-						number,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART
-					>
+			| attribute<
+					boolean,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE
 			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE
-					>
+			| attribute<
+					boolean,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA
 			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA
-					>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL>
+			| attribute<
+					boolean,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER
 			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL
-					>
+			| attribute<
+					boolean,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME
 			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL
-					>
+			| attribute<
+					arrayIndexOrder,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER
 			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER
-					>
+			| attribute<
+					string,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE
 			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME
-					>
-			  >
-			| Required<
-					attribute<
-						arrayIndexOrder,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO
-					>
+			| attribute<
+					string,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO
 			  >;
 	}>();
 
@@ -373,76 +342,45 @@ export class SubElementTableFieldComponent {
 			| PlatformType
 			| element[]
 			| `${number}`
-			| Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>
 			| Required<
 					attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
 			  >
-			| Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>>
-			| Required<
-					attribute<
-						number,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND
-					>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>
+			| attribute<number, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND>
+			| attribute<
+					number,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART
 			  >
-			| Required<
-					attribute<
-						number,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART
-					>
+			| attribute<
+					boolean,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE
 			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE
-					>
+			| attribute<
+					boolean,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA
 			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA
-					>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL>
+			| attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL>
+			| attribute<
+					boolean,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER
 			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL
-					>
+			| attribute<
+					boolean,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME
 			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL
-					>
+			| attribute<
+					arrayIndexOrder,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER
 			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER
-					>
+			| attribute<
+					string,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE
 			  >
-			| Required<
-					attribute<
-						boolean,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME
-					>
-			  >
-			| Required<
-					attribute<
-						arrayIndexOrder,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE
-					>
-			  >
-			| Required<
-					attribute<
-						string,
-						typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO
-					>
+			| attribute<
+					string,
+					typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO
 			  >
 	) {
 		this.menu.emit({ event, element, field });

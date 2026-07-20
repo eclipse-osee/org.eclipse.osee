@@ -11,21 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { artifactTab } from '../../../types/artifact-explorer';
-import { ExpansionPanelComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-info-panel',
-	imports: [ExpansionPanelComponent],
+	imports: [],
 	templateUrl: './artifact-info-panel.component.html',
 })
 export class ArtifactInfoPanelComponent {
 	@Input() tab!: artifactTab;
-
-	// panel open/close state handling
-	panelOpen = new BehaviorSubject<boolean>(false);
-	togglePanel() {
-		this.panelOpen.next(!this.panelOpen.value);
-	}
 }

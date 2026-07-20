@@ -30,7 +30,11 @@ import {
 	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { ArtifactUiService } from '@osee/shared/services';
@@ -55,6 +59,7 @@ let nextUniqueId = 0;
 		AsyncPipe,
 		FormsModule,
 		MatFormField,
+		MatLabel,
 		MatInput,
 		MatAutocomplete,
 		MatAutocompleteTrigger,
@@ -82,6 +87,7 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 
 	@Input() disabled = false;
 	@Input() hintHidden = false;
+	@Input() label = '';
 	@Input() attributeValue = '';
 
 	private _attributeValueChange = new Subject<string>();

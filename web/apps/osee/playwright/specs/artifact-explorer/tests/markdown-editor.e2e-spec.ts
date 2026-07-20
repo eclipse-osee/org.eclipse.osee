@@ -96,6 +96,20 @@ test.describe('Markdown Editor', () => {
 	test.beforeEach(async ({ page }) => {
 		// Use a wide viewport so all toolbar sections remain expanded
 		await page.setViewportSize({ width: 1600, height: 900 });
+
+		// Intercept transaction (save) requests to prevent auto-save-on-blur
+		// from persisting test content to the backend. These tests validate
+		// client-side editor behavior, not backend persistence.
+		await page.route('**/orcs/txs', (route) => {
+			if (route.request().method() === 'POST') {
+				// Intentionally not calling route.fulfill(), route.abort(), or
+				// route.continue(). The request hangs, which is harmless for
+				// these tests since we never assert on save behavior.
+				return;
+			}
+			route.continue();
+		});
+
 		// Retry navigation once if ERR_ABORTED (parallel worker contention)
 		try {
 			await navigateToArtifactExplorer(page);
@@ -576,6 +590,8 @@ test.describe('Markdown Editor', () => {
 		const textarea = getTextarea(page);
 
 		await test.step('Open dialog in create mode and insert table', async () => {
+			await textarea.click();
+			await textarea.fill('');
 			await getToolbarButton(page, 'table_chart').click();
 			await expect(
 				page.getByRole('heading', { name: /Insert Table/i })
@@ -666,11 +682,15 @@ test.describe('Markdown Editor', () => {
 	test('should add, remove rows and columns, and cycle alignment', async ({
 		page,
 	}) => {
+		const textarea = getTextarea(page);
+		await textarea.click();
+		await textarea.fill('');
 		await getToolbarButton(page, 'table_chart').click();
 		await expect(
 			page.getByRole('heading', { name: /Insert Table/i })
 		).toBeVisible({ timeout: 5000 });
 
+		const dialog = page.locator('mat-dialog-container');
 		const rowInput = page.getByRole('spinbutton', { name: 'Row count' });
 		const colInput = page.getByRole('spinbutton', { name: 'Column count' });
 
@@ -733,6 +753,11 @@ test.describe('Markdown Editor', () => {
 	test('should support undo/redo and header spans in the table dialog', async ({
 		page,
 	}) => {
+		const textarea = getTextarea(page);
+		const dialog = page.locator('mat-dialog-container');
+
+		await textarea.click();
+		await textarea.fill('');
 		await getToolbarButton(page, 'table_chart').click();
 		await expect(
 			page.getByRole('heading', { name: /Insert Table/i })
@@ -742,8 +767,17 @@ test.describe('Markdown Editor', () => {
 			const rowInput = page.getByRole('spinbutton', {
 				name: 'Row count',
 			});
-			await page
-				.locator('button')
+			// Wait for the table body to render
+			await expect(
+				dialog
+					.locator('tbody button')
+					.filter({ hasText: 'keyboard_arrow_down' })
+					.first()
+			).toBeVisible();
+			// Click the row count input to defocus any cell textarea
+			await rowInput.click();
+			await dialog
+				.locator('tbody button')
 				.filter({ hasText: 'keyboard_arrow_down' })
 				.first()
 				.click();
@@ -769,31 +803,32 @@ test.describe('Markdown Editor', () => {
 		});
 
 		await test.step('Merge, unmerge, and verify colspan output', async () => {
-			await page
-				.locator('button')
+			await dialog
+				.locator('thead button.tw-text-primary')
 				.filter({ hasText: 'merge_type' })
-				.nth(1)
+				.first()
 				.click();
 			await expect(
-				page.locator('mat-label').filter({ hasText: '2 cols' })
+				dialog.locator('mat-label').filter({ hasText: '2 cols' })
 			).toBeVisible();
-			await page
-				.locator('button')
+			await dialog
+				.getByRole('button')
 				.filter({ hasText: 'call_split' })
 				.first()
 				.click();
 			await expect(
-				page.locator('mat-label').filter({ hasText: '2 cols' })
+				dialog.locator('mat-label').filter({ hasText: '2 cols' })
 			).not.toBeVisible();
-			const headerInput = page.getByRole('textbox', { name: /Header 1/ });
+			const headerInput = dialog.getByRole('textbox', {
+				name: /Header 1/,
+			});
 			await headerInput.click();
 			await headerInput.fill('Merged');
-			await page
-				.locator('button')
+			await dialog
+				.locator('thead button.tw-text-primary')
 				.filter({ hasText: 'merge_type' })
-				.nth(1)
+				.first()
 				.click();
-			const textarea = getTextarea(page);
 			await page.getByRole('button', { name: 'Insert Table' }).click();
 			expect(await textarea.inputValue()).toMatch(/Merged\s*\|\|/);
 		});
@@ -1101,6 +1136,9 @@ test.describe('Markdown Editor', () => {
 	test('should include caption in undo/redo within the table dialog', async ({
 		page,
 	}) => {
+		const textarea = getTextarea(page);
+		await textarea.click();
+		await textarea.fill('');
 		await getToolbarButton(page, 'table_chart').click();
 		await expect(
 			page.getByRole('heading', { name: /Insert Table/i })
@@ -1125,24 +1163,31 @@ test.describe('Markdown Editor', () => {
 	test('should display row numbers, update on add, and show correct tooltips', async ({
 		page,
 	}) => {
+		const textarea = getTextarea(page);
+		await textarea.click();
+		await textarea.fill('');
 		await getToolbarButton(page, 'table_chart').click();
 		await expect(
 			page.getByRole('heading', { name: /Insert Table/i })
 		).toBeVisible({ timeout: 5000 });
 
-		const rowHeaders = page.getByRole('rowheader');
+		// Row numbers 1, 2, 3 in the left gutter
+		const dialog = page.locator('mat-dialog-container');
+		const rowHeaders = dialog.getByRole('rowheader');
 		await expect(rowHeaders.nth(0)).toHaveAttribute('aria-label', 'Row 1');
 		await expect(rowHeaders.nth(1)).toHaveAttribute('aria-label', 'Row 2');
 		await expect(rowHeaders.nth(2)).toHaveAttribute('aria-label', 'Row 3');
 
-		await page
+		// Add a row and verify number updates
+		await dialog
 			.locator('button')
 			.filter({ hasText: 'keyboard_arrow_down' })
 			.first()
 			.click();
 		await expect(rowHeaders.nth(3)).toHaveAttribute('aria-label', 'Row 4');
 
-		const upButton = page
+		// Tooltip on up arrow button
+		const upButton = dialog
 			.locator('tbody button')
 			.filter({ hasText: 'keyboard_arrow_up' })
 			.first();

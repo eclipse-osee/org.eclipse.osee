@@ -135,6 +135,25 @@ Both branch and transaction cold storage use the same approach:
   - Single branch: `txs_cold_branch_{id}_YYYYMMDD_HHmmss.gz`
   - Transaction purge: `tx_purge_{txId}_YYYYMMDD_HHmmss.gz`
 
+### Branch Section Structure
+
+Each branch section within a file follows this layout:
+
+```
+BRANCH_START, branchId (long)
+BRANCH_DATA, count (int), [branch rows...]
+TX_DETAILS_DATA, count (int), [tx detail rows...]
+TXS_ARCHIVED_DATA, count (int), [txs archived rows...]
+ARTIFACTS_DATA, count (int), [artifact rows...]      ← may be absent in legacy files
+ATTRIBUTES_DATA, count (int), [attribute rows...]    ← may be absent in legacy files
+RELATIONS_DATA, count (int), [relation rows...]      ← may be absent in legacy files
+RELATIONS2_DATA, count (int), [relation2 rows...]    ← may be absent in legacy files
+SEARCH_TAGS_DATA, count (int), [tag rows...]         ← may be absent in legacy files
+BRANCH_END
+```
+
+Early batch-sweep archives (from `archiveBranches`) omitted the backing data sections (ARTIFACTS through SEARCH_TAGS) and went straight from TXS_ARCHIVED_DATA to BRANCH_END. The reader code handles both formats by checking if the next marker after TXS_ARCHIVED_DATA is "BRANCH_END" or "ARTIFACTS_DATA". Newly written archives always include all sections (with count=0 if empty).
+
 Files are not human-readable (binary format for compactness). Use the preview endpoints to inspect contents as SQL INSERT statements.
 
 ## Preview

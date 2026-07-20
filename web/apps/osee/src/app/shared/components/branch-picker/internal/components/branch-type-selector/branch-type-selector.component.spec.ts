@@ -14,6 +14,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -59,11 +60,11 @@ describe('BranchTypeSelectorComponent', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('should change the branch type to hello', () => {
+	it('should change the branch type to baseline', () => {
 		const _spy = vi
 			.spyOn(router, 'navigate')
 			.mockReturnValue(new Promise(() => true));
-		component.changeBranchType('baseline');
+		component.selectType({ value: 'baseline' } as MatButtonToggleChange);
 		expect(component.branchType).toEqual('baseline');
 	});
 });

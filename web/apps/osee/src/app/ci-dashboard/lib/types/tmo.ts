@@ -16,8 +16,8 @@ import { attribute } from '@osee/attributes/types';
 export type CISet = {
 	id: `${number}`;
 	gammaId: `${number}`;
-	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
-	active: Required<attribute<boolean, typeof ATTRIBUTETYPEIDENUM.ACTIVE>>;
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	active: attribute<boolean, typeof ATTRIBUTETYPEIDENUM.ACTIVE>;
 };
 
 export const CISetSentinel: CISet = {
@@ -245,7 +245,7 @@ export type SetDiff = {
 export type ScriptTeam = {
 	id: `${number}`;
 	gammaId: `${number}`;
-	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
 };
 
 export const scriptTeamSentinel: ScriptTeam = {

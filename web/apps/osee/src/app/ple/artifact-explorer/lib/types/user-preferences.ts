@@ -13,5 +13,4 @@
 
 export type artifactExplorerUserPreferences = {
 	id: `${number}`;
-	artifactExplorerPanelLocation: boolean;
 };

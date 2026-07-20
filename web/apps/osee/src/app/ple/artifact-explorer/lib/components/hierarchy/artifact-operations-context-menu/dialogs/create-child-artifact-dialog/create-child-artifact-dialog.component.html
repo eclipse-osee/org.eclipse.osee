@@ -13,26 +13,25 @@
 <form
 	#createChildArtifactForm="ngForm"
 	oseeForm>
-	<h1
-		mat-dialog-title
-		class="before:tw-h-0">
-		<div class="tw-flex tw-flex-row tw-items-center">
+	<h1 mat-dialog-title>
+		<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
 			<mat-icon [class]="getIconClasses(data.operationType.materialIcon)">
 				{{ data.operationType.materialIcon.icon }}
 			</mat-icon>
-			<div class="tw-pl-4">
-				{{ data.operationType.name }}
-			</div>
+			{{ data.operationType.name }}
 		</div>
 	</h1>
 	<mat-dialog-content>
-		<div class="tw-flex tw-flex-col">
+		<div class="tw-flex tw-flex-col tw-gap-0">
 			@if (createChildArtifactForm.invalid) {
 				<div class="tw-pb-4 tw-italic tw-text-warning">
 					*Required fields not filled out
 				</div>
 			}
-			<mat-form-field class="tw-w-full">
+			<mat-form-field
+				appearance="outline"
+				class="tw-w-full tw-pt-4"
+				subscriptSizing="dynamic">
 				<mat-label> Enter a Name: </mat-label>
 				<input
 					matInput
@@ -49,9 +48,10 @@
 				as autoCompleteState
 			) {
 				<mat-form-field
+					appearance="outline"
 					subscriptSizing="dynamic"
 					id="artifactType-selector"
-					class="tw-w-full">
+					class="tw-w-full tw-pt-4">
 					<mat-label> Select a Type: </mat-label>
 					<input
 						type="text"
@@ -106,21 +106,23 @@
 				<osee-attributes-editor
 					[attributes]="attributes"
 					[editable]="true"
-					(updatedAttributes)="handleUpdatedAttributes($event)"
-					class="tw-pt-8" />
+					(updatedAttributes)="handleUpdatedAttributes($event)" />
 			}
 		</div>
 	</mat-dialog-content>
-	<div mat-dialog-actions>
+	<div
+		mat-dialog-actions
+		align="end"
+		class="tw-gap-2">
 		<button
-			mat-button
+			mat-stroked-button
+			class="tw-text-foreground-text"
 			(click)="onCancel()">
 			Cancel
 		</button>
 		<button
-			mat-flat-button
+			mat-stroked-button
 			[mat-dialog-close]="data"
-			class="primary-button"
 			[disabled]="createChildArtifactForm.invalid">
 			Ok
 		</button>

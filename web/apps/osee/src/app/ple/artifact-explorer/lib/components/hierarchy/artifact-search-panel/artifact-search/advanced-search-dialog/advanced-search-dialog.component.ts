@@ -19,6 +19,7 @@ import {
 	MatDialogContent,
 	MatDialogTitle,
 } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
 import { AdvancedSearchCriteria } from '../../../../../types/artifact-search';
 import { AdvancedSearchFormComponent } from '../advanced-search-form/advanced-search-form.component';
 
@@ -28,8 +29,9 @@ import { AdvancedSearchFormComponent } from '../advanced-search-form/advanced-se
 		MatDialogContent,
 		MatDialogTitle,
 		MatDialogActions,
-		MatButton,
 		MatDialogClose,
+		MatButton,
+		MatIcon,
 		AdvancedSearchFormComponent,
 	],
 	templateUrl: './advanced-search-dialog.component.html',

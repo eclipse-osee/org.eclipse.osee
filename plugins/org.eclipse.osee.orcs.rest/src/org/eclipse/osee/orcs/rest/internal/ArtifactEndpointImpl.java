@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -72,8 +73,11 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -89,6 +93,7 @@ import org.eclipse.osee.orcs.rest.internal.operations.ArtifactValidityReport;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.ArtifactHistoryResult;
 import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
 import org.eclipse.osee.orcs.rest.model.TxBuilderInput;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
@@ -526,7 +531,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public ArtifactWithRelations getRelatedDirect(BranchId branch, ArtifactId artifact, ArtifactId viewId,
-      boolean includeRelations) {
+      boolean includeRelations, boolean includeAttributes) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andId(artifact);
@@ -534,7 +539,110 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          query = query.followAll(FollowAllCriteria.OneLevel);
       }
       ArtifactReadable art = query.asArtifactOrSentinel();
-      return new ArtifactWithRelations(art, this.tokenService, includeRelations);
+      return new ArtifactWithRelations(art, this.tokenService, includeRelations, includeAttributes);
+   }
+
+   @Override
+   public List<ArtifactWithRelations> getHierarchicalChildren(BranchId branch, ArtifactId artifact, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andId(artifact).followAll(
+            FollowAllCriteria.OneLevel);
+      ArtifactReadable art = query.asArtifactOrSentinel();
+      List<ArtifactReadable> children = art.getChildren();
+      if (children == null) {
+         return java.util.Collections.emptyList();
+      }
+      return children.stream().map(
+         child -> new ArtifactWithRelations(child, this.tokenService, false, false)).collect(Collectors.toList());
+   }
+
+   @Override
+   public TransactionDetails getLatestArtifactTransaction(BranchId branch, ArtifactId artifact) {
+      List<ChangeItem> history = orcsApi.getTransactionFactory().getArtifactHistory(artifact, branch);
+      if (history.isEmpty()) {
+         return new TransactionDetails();
+      }
+      TransactionId latestTx = TransactionId.SENTINEL;
+      for (ChangeItem item : history) {
+         TransactionId itemTx = TransactionId.valueOf(item.getCurrentVersion().getTransactionToken().getId());
+         if (itemTx.isGreaterThan(latestTx)) {
+            latestTx = itemTx;
+         }
+      }
+      TransactionReadable txReadable = orcsApi.getTransactionFactory().getTx(latestTx);
+      TransactionDetails details = new TransactionDetails();
+      details.setTxId(latestTx);
+      details.setOseeComment(txReadable.getComment());
+      details.setAuthor(ArtifactId.valueOf(txReadable.getAuthor().getId()));
+      details.setTime(txReadable.getDate());
+      return details;
+   }
+
+   @Override
+   public ArtifactHistoryResult getArtifactHistoryPaginated(BranchId branch, ArtifactId artifact, int pageNum, int count) {
+      List<ChangeItem> history = orcsApi.getTransactionFactory().getArtifactHistory(artifact, branch);
+      // Group by transaction ID
+      java.util.Map<Long, List<ChangeItem>> grouped = new java.util.LinkedHashMap<>();
+      // Sort by tx ID descending first
+      history.sort((a, b) -> Long.compare(
+         b.getCurrentVersion().getTransactionToken().getId(),
+         a.getCurrentVersion().getTransactionToken().getId()));
+      for (ChangeItem item : history) {
+         Long txId = item.getCurrentVersion().getTransactionToken().getId();
+         grouped.computeIfAbsent(txId, k -> new java.util.ArrayList<>()).add(item);
+      }
+      // Paginate by transaction count (not change item count)
+      List<List<ChangeItem>> txGroups = new java.util.ArrayList<>(grouped.values());
+      int start = pageNum * count;
+      if (start >= txGroups.size()) {
+         return new ArtifactHistoryResult();
+      }
+      int end = Math.min(start + count, txGroups.size());
+      // Flatten the selected page's transaction groups back into a list
+      List<ChangeItem> result = new java.util.ArrayList<>();
+      for (int i = start; i < end; i++) {
+         result.addAll(txGroups.get(i));
+      }
+      // Look up transaction metadata (date, comment) for each unique txId in this page
+      java.util.Map<String, ArtifactHistoryResult.TransactionInfo> txInfoMap = new java.util.LinkedHashMap<>();
+      for (int i = start; i < end; i++) {
+         Long txIdLong = txGroups.get(i).get(0).getCurrentVersion().getTransactionToken().getId();
+         String txIdStr = txIdLong.toString();
+         if (!txInfoMap.containsKey(txIdStr)) {
+            try {
+               TransactionReadable txReadable = orcsApi.getTransactionFactory().getTx(TransactionId.valueOf(txIdLong));
+               long timestamp = txReadable.getDate() != null ? txReadable.getDate().getTime() : 0L;
+               String comment = txReadable.getComment() != null ? txReadable.getComment() : "";
+               txInfoMap.put(txIdStr, new ArtifactHistoryResult.TransactionInfo(txIdStr, comment, timestamp));
+            } catch (Exception ex) {
+               txInfoMap.put(txIdStr, new ArtifactHistoryResult.TransactionInfo(txIdStr, "", 0L));
+            }
+         }
+      }
+      return new ArtifactHistoryResult(result, txInfoMap);
+   }
+
+   @Override
+   public TransactionDetails restoreArtifact(BranchId branch, ArtifactId artifact, String txId) {
+      if (txId == null || txId.isEmpty()) {
+         throw new OseeCoreException("txId query parameter is required to specify which transaction to restore to.");
+      }
+      TransactionId transactionId = TransactionId.valueOf(Long.parseLong(txId));
+
+      // Get details of the transaction being restored to
+      TransactionReadable txReadable = orcsApi.getTransactionFactory().getTx(transactionId);
+      TransactionDetails details = new TransactionDetails();
+      details.setTxId(transactionId);
+      details.setOseeComment(txReadable.getComment());
+      details.setAuthor(ArtifactId.valueOf(txReadable.getAuthor().getId()));
+      details.setTime(txReadable.getDate());
+
+      // Restore the artifact to its state at the specified transaction
+      orcsApi.getTransactionFactory().replaceWithBaselineTxVersion(branch, transactionId, artifact,
+         "Restoring artifact " + artifact.getIdString() + " to state at tx " + transactionId.getIdString());
+
+      return details;
    }
 
    @Override
@@ -545,71 +653,30 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public List<List<ArtifactId>> getPathToArtifact(BranchId branch, ArtifactId artifactId, ArtifactId viewId) {
-
-      // List of artIds to return from the query
-      List<Pair<ArtifactId, ArtifactId>> pairings = new ArrayList<>();
-      List<ArtifactId> childArtIds = new ArrayList<>();
-      Consumer<JdbcStatement> consumer = stmt -> {
-         pairings.add(new Pair<ArtifactId, ArtifactId>(ArtifactId.valueOf(stmt.getLong("b_art_id")),
-            ArtifactId.valueOf(stmt.getLong("a_art_id"))));
-         childArtIds.add(ArtifactId.valueOf(stmt.getLong("b_art_id")));
-      };
-
-      String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() //
-         + " allRels (a_art_id, b_art_id, gamma_id, rel_type) as (select a_art_id, b_art_id, txs.gamma_id, rel_type " //
-         + "from osee_txs txs, osee_relation rel " //
-         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " //
-         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
-         + " select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
-         + "from osee_txs txs, osee_relation_link rel " //
-         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " //
-         + "cte_query (b_art_id, a_art_id, rel_type) as ( " //
-         + "select b_art_id, a_art_id, rel_type " //
-         + "from allRels " //
-         + "where b_art_id = ? " //
-         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
-         + " select e.b_art_id, e.a_art_id, e.rel_type " //
-         + "from allRels e " //
-         + "inner join cte_query c on c.a_art_id = e.b_art_id) " //
-         + "select * " //
-         + "from cte_query";
-
-      // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
-      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifactId);
-
-      // organize the mixed list of pairs into a list of lists of artIds (list of paths)
-      List<List<ArtifactId>> paths = new ArrayList<>();
-      while (childArtIds.contains(artifactId)) {
-         paths.add(findPath(artifactId, childArtIds, pairings));
-         // increment while condition (i.e. one path has been found)
-         childArtIds.remove(artifactId);
-         // remove the pair matching the first two artIds of the path that has just been found to avoid retracing the same path
-         pairings.remove(
-            new Pair<ArtifactId, ArtifactId>(paths.get(paths.size() - 1).get(0), paths.get(paths.size() - 1).get(1)));
-      }
-
-      return paths;
-   }
-
-   private static List<ArtifactId> findPath(ArtifactId artId, List<ArtifactId> childArtIds,
-      List<Pair<ArtifactId, ArtifactId>> pairings) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       List<ArtifactId> path = new ArrayList<>();
-      // loop through the pairs to find a pair that includes the input artId
-      for (Pair<ArtifactId, ArtifactId> pair : pairings) {
-         if (pair.getFirst().equals(artId)) {
-            path.add(pair.getFirst());
-            // if we are not at the end of the path (i.e. the current parent has a parent)
-            if (childArtIds.contains(pair.getSecond())) {
-               path.addAll(findPath(pair.getSecond(), childArtIds, pairings));
-            }
-            // we are at the top of the hierarchy
-            else {
-               path.add(pair.getSecond());
-            }
-            return path;
+      ArtifactId currentId = artifactId;
+      // Walk up the Default Hierarchical parent chain until we reach root or a cycle
+      int maxDepth = 50; // safety limit
+      while (maxDepth-- > 0) {
+         path.add(currentId);
+         ArtifactReadable current =
+            orcsApi.getQueryFactory().fromBranch(branch, viewId).andId(currentId).asArtifactOrSentinel();
+         if (!current.isValid()) {
+            break;
          }
+         ArtifactReadable parent = current.getParentOrNull();
+         if (parent == null) {
+            // Reached the root (no parent)
+            break;
+         }
+         currentId = ArtifactId.valueOf(parent.getId());
       }
-      return path;
+      // Path is [target, ..., root]. The frontend expects this order.
+      if (path.size() > 1) {
+         return java.util.Collections.singletonList(path);
+      }
+      return java.util.Collections.emptyList();
    }
 
    @Override

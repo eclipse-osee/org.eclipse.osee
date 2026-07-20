@@ -152,13 +152,15 @@ export class AttachmentService {
 						gammaId: attachment.nameGamma,
 					};
 
-					const fileExtAttr: validAttribute<string, ATTRIBUTETYPEID> =
-						{
-							id: attachment.extensionAtId,
-							value: getFileExtension(file.name),
-							typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
-							gammaId: attachment.extensionGamma,
-						};
+					const fileExtAttr: validAttribute<
+						string,
+						typeof ATTRIBUTETYPEIDENUM.EXTENSION
+					> = {
+						id: attachment.extensionAtId,
+						value: getFileExtension(file.name),
+						typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
+						gammaId: attachment.extensionGamma,
+					};
 
 					const fileNativeContentAttr: validAttribute<
 						string,

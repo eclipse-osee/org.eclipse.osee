@@ -36,6 +36,7 @@
 					@if (header === 'Name') {
 						<form #defaultForm="ngForm">
 							<osee-persisted-string-attribute-input
+								appearance="fill"
 								[artifactId]="team.id"
 								[value]="team.name"
 								[artifactApplicability]="applic"
