@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -28,8 +29,11 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XBitLabelProvider extends XViewerLabelProvider {
 
+   private final XBitViewer xBitViewer;
+
    public XBitLabelProvider(XBitViewer xBitViewer) {
       super(xBitViewer);
+      this.xBitViewer = xBitViewer;
    }
 
    @Override
@@ -72,6 +76,21 @@ public class XBitLabelProvider extends XViewerLabelProvider {
       if (element instanceof JaxTeamWorkflow) {
          if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_Type_Col.getName())) {
             return ImageManager.getImage(AtsImage.WORKFLOW);
+         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_Version_Col.getName())) {
+            JaxTeamWorkflow teamWf = (JaxTeamWorkflow) element;
+            if (teamWf.getTargetVersion().isValid()) {
+               BuildImpactDatas bids = xBitViewer.getBids();
+               if (bids != null) {
+                  for (BuildImpactData bid : bids.getBuildImpacts()) {
+                     if (bid.getTeamWfs().contains(teamWf)) {
+                        if (!teamWf.getTargetVersion().getName().equals(bid.getBuild().getName())) {
+                           return ImageManager.getImage(AtsImage.WARNING);
+                        }
+                        break;
+                     }
+                  }
+               }
+            }
          }
       }
       if (element instanceof BuildImpactData) {
@@ -132,6 +151,8 @@ public class XBitLabelProvider extends XViewerLabelProvider {
             return teamWf.getName();
          } else if (xCol.getName().equals(XBitXViewerFactory.Cr_Type_Col.getName())) {
             return teamWf.getTeamName();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_Version_Col.getName())) {
+            return teamWf.getTargetVersion().isValid() ? teamWf.getTargetVersion().getName() : "";
          }
       }
       return "";
