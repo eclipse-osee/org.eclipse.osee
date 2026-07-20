@@ -25,7 +25,7 @@ The markdown editor (`MarkdownEditorComponent`) is an Angular component providin
 | :-- | :-- |
 | `markdown-editor.component.ts` | Main component logic |
 | `markdown-editor.component.html` | Template with toolbar, textarea, preview pane |
-| `markdown-editor-examples.ts` | Formatting actions, list options, heading options |
+| `markdown-editor-actions.ts` | Formatting actions, list options, heading options |
 | `markdown-image.service.ts` | HTTP service for uploading and fetching images |
 | `toolbar-section-dropdown.component.ts` | Collapsed section dropdown (used by ribbon collapse) |
 | `split-button/split-button.component.ts` | Reusable split button (icon + dropdown arrow) |
@@ -35,9 +35,9 @@ The markdown editor (`MarkdownEditorComponent`) is an Angular component providin
 The toolbar is organized into sections separated by pipe dividers:
 
 1. **History** — Undo, Redo (never collapses)
-2. **Media** — Upload Image, Insert Table, Select Table, Figure Caption, Table Caption (collapses first)
+2. **Media** — Upload Image, Insert Table, Select Table, Figure Caption, Table Caption (collapses last)
 3. **Format** — Heading (split button), Bold, Italic, Strikethrough (collapses second)
-4. **Insert** — List (split button), Inline Code, Link, Blockquote, Code Block, HR (collapses third)
+4. **Insert** — List (split button), Inline Code, Link, Blockquote, Code Block, HR (collapses first)
 5. **View** — Preview, Panel toggle, Fullscreen, Help (never collapses)
 
 ### Split Buttons
@@ -46,7 +46,7 @@ Heading and List use `osee-split-button`: clicking the icon performs the default
 
 ### Responsive Collapse
 
-When the toolbar container becomes too narrow, sections collapse progressively into compact `osee-toolbar-section-dropdown` buttons (icon + arrow → dropdown with all section actions). Collapse order: Media → Format → Insert. History and View never collapse.
+When the toolbar container becomes too narrow, sections collapse progressively into compact `osee-toolbar-section-dropdown` buttons (icon + arrow → dropdown with all section actions). Collapse order: Insert → Format → Media. History and View never collapse.
 
 ### Formatting Actions
 
