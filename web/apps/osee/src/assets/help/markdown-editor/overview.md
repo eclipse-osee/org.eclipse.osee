@@ -150,7 +150,7 @@ Press **Escape** or click the <span class="material-icons" style="font-size:14px
 
 | Shortcut | Action |
 | :-- | :-- |
-| Ctrl+Z | Undo (reverts by word/action, not by character). |
+| Ctrl+Z | Undo. |
 | Ctrl+Y | Redo. |
 | Ctrl+Shift+Z | Redo (alternative). |
 | Escape | Exit fullscreen. |
