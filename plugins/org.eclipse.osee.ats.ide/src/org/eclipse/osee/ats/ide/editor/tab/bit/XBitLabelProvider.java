@@ -50,37 +50,7 @@ public class XBitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, int columnIndex) {
-      super.getColumnText(element, columnIndex);
-      XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
-      if (element instanceof BuildImpactData) {
-         BuildImpactData bid = (BuildImpactData) element;
-         if (xViewerColumn.getName().equals(XBitXViewerFactory.Program_Col.getName())) {
-            return bid.getProgram().getName();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Build_Col.getName())) {
-            return bid.getBuild().getName();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.State_Col.getName())) {
-            return bid.getState();
-         }
-         if (xViewerColumn.getName().equals(XBitXViewerFactory.Id_Col.getName())) {
-            return bid.getBidArt().getIdString();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_State_Col.getName())) {
-            return getBitStatusString(bid);
-         }
-      }
-      if (element instanceof JaxTeamWorkflow) {
-         JaxTeamWorkflow teamWf = (JaxTeamWorkflow) element;
-         if (xViewerColumn.getName().equals(XBitXViewerFactory.Id_Col.getName())) {
-            return teamWf.getAtsId();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_State_Col.getName())) {
-            return teamWf.getCurrentState();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_Title_Col.getName())) {
-            return teamWf.getName();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_Type_Col.getName())) {
-            return teamWf.getTeamName();
-         }
-
-      }
-      return "";
+      return super.getColumnText(element, columnIndex);
    }
 
    public static String getBitStatusString(BuildImpactData bid) {
@@ -138,6 +108,32 @@ public class XBitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (element instanceof BuildImpactData) {
+         BuildImpactData bid = (BuildImpactData) element;
+         if (xCol.getName().equals(XBitXViewerFactory.Program_Col.getName())) {
+            return bid.getProgram().getName();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Build_Col.getName())) {
+            return bid.getBuild().getName();
+         } else if (xCol.getName().equals(XBitXViewerFactory.State_Col.getName())) {
+            return bid.getState();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Id_Col.getName())) {
+            return bid.getBidArt().getIdString();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_State_Col.getName())) {
+            return getBitStatusString(bid);
+         }
+      }
+      if (element instanceof JaxTeamWorkflow) {
+         JaxTeamWorkflow teamWf = (JaxTeamWorkflow) element;
+         if (xCol.getName().equals(XBitXViewerFactory.Id_Col.getName())) {
+            return teamWf.getAtsId();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_State_Col.getName())) {
+            return teamWf.getCurrentState();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_Title_Col.getName())) {
+            return teamWf.getName();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_Type_Col.getName())) {
+            return teamWf.getTeamName();
+         }
+      }
       return "";
    }
 
