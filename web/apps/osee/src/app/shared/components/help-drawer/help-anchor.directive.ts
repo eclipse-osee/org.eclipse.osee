@@ -49,9 +49,11 @@ export class HelpAnchorDirective {
 	constructor() {
 		effect(() => {
 			const highlighted = this.helpDrawerService.highlightedAnchor();
-			const myAnchor = this.oseeHelpAnchor();
+			const myAnchors = this.oseeHelpAnchor()
+				.split(',')
+				.map((s) => s.trim());
 
-			if (highlighted === myAnchor && highlighted !== '') {
+			if (highlighted !== '' && myAnchors.includes(highlighted)) {
 				this.applyHighlight();
 			} else {
 				this.removeHighlight();

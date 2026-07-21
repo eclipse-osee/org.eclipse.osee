@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.editor.tab.bit;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -33,17 +34,25 @@ public class XBitXViewerFactory extends XViewerFactory {
    public static XViewerColumn Id_Col = new XViewerColumn("ats.bibit.cr.id", "Id", 65, XViewerAlign.Left, true, SortDataType.String, false, "");
    public static XViewerColumn Cr_State_Col = new XViewerColumn("ats.bibit.cr.state", "CR State", 140, XViewerAlign.Left, true, SortDataType.String, false, "Show related Team Workflows, if created");
    public static XViewerColumn Cr_Type_Col = new XViewerColumn("ats.bibit.cr.type", "CR Type", 130, XViewerAlign.Left, true, SortDataType.String, false, "Show related Team Workflows, if created");
+   public static XViewerColumn Cr_Version_Col = new XViewerColumn("ats.bibit.cr.version", "CR Version", 120, XViewerAlign.Left, true, SortDataType.String, false, "CR's currently Targeted Version");
    public static XViewerColumn Cr_Title_Col = new XViewerColumn("ats.bibit.cr.title", "CR Title", 480, XViewerAlign.Left, true, SortDataType.String, false, "Show related Team Workflows, if created");
 
    // @formatter:on
 
    public XBitXViewerFactory() {
       this(NAMESPACE);
-      registerColumns(Program_Col, Build_Col, Config_Col, State_Col, Id_Col, Cr_State_Col, Cr_Type_Col, Cr_Title_Col);
+      registerColumns(Program_Col, Build_Col, Config_Col, State_Col, Id_Col, Cr_State_Col, Cr_Type_Col, Cr_Version_Col, Cr_Title_Col);
    }
 
    public XBitXViewerFactory(String namespace) {
       super(namespace);
+   }
+
+   @Override
+   public CustomizeData getDefaultTableCustomizeData() {
+      CustomizeData custData = super.getDefaultTableCustomizeData();
+      custData.getSortingData().setSortingNames(Build_Col.getId());
+      return custData;
    }
 
    @Override

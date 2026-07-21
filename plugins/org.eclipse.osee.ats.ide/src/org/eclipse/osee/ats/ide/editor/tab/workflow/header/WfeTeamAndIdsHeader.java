@@ -13,6 +13,10 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -49,7 +53,7 @@ public class WfeTeamAndIdsHeader extends Composite {
       super(parent, style);
       this.workItem = workItem;
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      setLayout(ALayout.getZeroMarginLayout(4, true));
+      setLayout(ALayout.getZeroMarginLayout(4, false));
       editor.getToolkit().adapt(this);
 
       try {
@@ -89,19 +93,19 @@ public class WfeTeamAndIdsHeader extends Composite {
       }
 
       try {
-         if (!workItem.getPcrIdsAll().isEmpty()) {
-            pcrIdsValue = FormsUtil.createLabelText(editor.getToolkit(), this, "PCR Id(s): ", "").getSecond();
-            pcrIdsValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         IAtsAction action = workItem.getParentAction();
+         if (action != null) {
+            actionIdValue = FormsUtil.createLabelText(editor.getToolkit(), this, "Action Id: ", "").getSecond();
+            actionIdValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       try {
-         IAtsAction action = workItem.getParentAction();
-         if (action != null) {
-            actionIdValue = FormsUtil.createLabelText(editor.getToolkit(), this, "Action Id: ", "").getSecond();
-            actionIdValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         if (!workItem.getPcrIdsAll().isEmpty()) {
+            pcrIdsValue = FormsUtil.createLabelText(editor.getToolkit(), this, "PCR Id(s): ", "").getSecond();
+            pcrIdsValue.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -112,12 +116,23 @@ public class WfeTeamAndIdsHeader extends Composite {
 
    public void refresh() {
       if (Widgets.isAccessible(atsIdValue)) {
+         final Composite fComp = this;
          Thread refreshThread = new Thread("Refresh Workflow Editor") {
 
             @Override
             public void run() {
                super.run();
-               String pcrIdsValueStr = Collections.toString(", ", workItem.getPcrIdsAll());
+               Collection<String> pcrIdsAll = workItem.getPcrIdsAll();
+               if (pcrIdsAll.size() > 1) {
+                  Comparator<String> pcrIdComparator = workItem.getWorkDefinition().getPcrIdComparator();
+                  if (pcrIdComparator != null) {
+                     List<String> ids = new ArrayList<>();
+                     ids.addAll(pcrIdsAll);
+                     ids.sort(pcrIdComparator);
+                     pcrIdsAll = ids;
+                  }
+               }
+               String pcrIdsValueStr = Collections.toString(", ", pcrIdsAll);
                String teamWfIdValueStr = "";
                String parentIdValueStr = "";
                if (workItem.isTeamWorkflow()) {
@@ -145,6 +160,7 @@ public class WfeTeamAndIdsHeader extends Composite {
                      }
                      if (Widgets.isAccessible(pcrIdsValue)) {
                         pcrIdsValue.setText(fPcrIdsValueStr);
+                        pcrIdsValue.setToolTipText(fPcrIdsValueStr);
                      }
                      if (Widgets.isAccessible(teamWfIdValue)) {
                         teamWfIdValue.setText(fTeamWfIdValueStr);
@@ -155,6 +171,7 @@ public class WfeTeamAndIdsHeader extends Composite {
                      if (Widgets.isAccessible(actionIdValue)) {
                         actionIdValue.setText(fActionIdValueStrr);
                      }
+                     fComp.redraw();
                   }
                });
             }

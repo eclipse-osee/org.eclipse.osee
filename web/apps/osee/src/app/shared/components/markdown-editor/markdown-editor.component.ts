@@ -34,7 +34,6 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -44,13 +43,17 @@ import {
 	filter,
 	fromEvent,
 	map,
-	scan,
 	startWith,
 	switchMap,
 	take,
 	takeUntil,
 } from 'rxjs';
-import { mdExamples } from './markdown-editor-examples';
+import {
+	markdownFormattingActions,
+	HeadingLevel,
+	listOptions,
+	headingOptions,
+} from './markdown-editor-actions';
 import { ArtifactExplorerHttpService } from '../../../ple/artifact-explorer/lib/services/artifact-explorer-http.service';
 import {
 	UploadImageDialogComponent,
@@ -69,6 +72,11 @@ import { MarkdownImageService } from './markdown-image.service';
 import { HelpTopicRegistryService } from '../help-drawer/help-topic-registry.service';
 import { HelpAnchorDirective } from '../help-drawer/help-anchor.directive';
 import { HelpButtonComponent } from '../help-drawer/help-button.component';
+import { SplitButtonComponent } from '../split-button/split-button.component';
+import {
+	ToolbarSectionDropdownComponent,
+	ToolbarDropdownAction,
+} from './toolbar-section-dropdown.component';
 
 @Component({
 	selector: 'osee-markdown-editor',
@@ -77,11 +85,10 @@ import { HelpButtonComponent } from '../help-drawer/help-button.component';
 		MatIconButton,
 		FormsModule,
 		MatTooltip,
-		MatMenu,
-		MatMenuTrigger,
-		MatMenuItem,
 		HelpAnchorDirective,
 		HelpButtonComponent,
+		SplitButtonComponent,
+		ToolbarSectionDropdownComponent,
 	],
 	templateUrl: './markdown-editor.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -94,18 +101,289 @@ export class MarkdownEditorComponent {
 	artifactId = input<string>('');
 	mdContent = model.required<string>();
 
-	private readonly _history = toObservable(this.mdContent).pipe(
-		scan((acc, curr) => {
-			if (acc.length === this.maxHistory()) {
-				acc = acc.splice(1);
-			}
-			return [...acc, curr];
-		}, [] as string[])
+	/**
+	 * VS Code-style undo/redo with intelligent grouping.
+	 *
+	 * Typing groups are coalesced into a single undo entry until a boundary:
+	 * - Pause in typing (debounce timeout)
+	 * - Cursor position jump (click elsewhere)
+	 * - Whitespace after non-whitespace (word boundary)
+	 * - Explicit programmatic action (toolbar button, paste)
+	 *
+	 * `undoStack` stores committed states (oldest first).
+	 * `redoStack` stores states undone (newest redo-able first).
+	 */
+	private readonly undoStack: string[] = [];
+	private readonly redoStack: string[] = [];
+	private isUndoRedoAction = false;
+	private readonly maxHistory = 200;
+	private undoGroupTimer: ReturnType<typeof setTimeout> | null = null;
+	private lastEditCursorPos = -1;
+	private lastCharWasWhitespace = false;
+	private pendingGroupStart: string | null = null;
+	/** Pause duration (ms) before typing commits as a group. */
+	private readonly undoGroupDelay = 1000;
+	protected readonly canUndo = signal(false);
+	protected readonly canRedo = signal(false);
+	protected readonly formattingActions = markdownFormattingActions;
+	protected readonly headingOptions = headingOptions;
+	protected readonly listOptions = listOptions;
+
+	/**
+	 * Toolbar collapse state (0–3).
+	 * 0 = all expanded, 1 = Media collapsed, 2 = Media+Insert, 3 = Media+Insert+Format.
+	 *
+	 * Computed from container width using pre-measured section widths.
+	 * The toolbar uses flex-nowrap + overflow-hidden so collapsing sections
+	 * doesn't change the container width — avoiding oscillation.
+	 */
+	protected readonly collapseState = signal(0);
+
+	/** Whether the Format section is collapsed (priority 2 = collapses 2nd) */
+	protected readonly isFormatCollapsed = computed(
+		() => this.collapseState() >= 2
 	);
-	private readonly history = toSignal(this._history);
-	protected readonly redoHistory = signal([] as string[]);
-	private readonly maxHistory = signal(100);
-	protected readonly mdExamples = mdExamples;
+	/** Whether the Insert section is collapsed (priority 1 = collapses 1st) */
+	protected readonly isInsertCollapsed = computed(
+		() => this.collapseState() >= 1
+	);
+	/** Whether the Media section is collapsed (priority 3 = collapses last) */
+	protected readonly isMediaCollapsed = computed(
+		() => this.collapseState() >= 3
+	);
+
+	/** Actions for collapsed Format section dropdown */
+	protected readonly formatDropdownActions = computed<
+		ToolbarDropdownAction[]
+	>(() => {
+		const disabled = this.isEditorDisabled();
+		return [
+			{ id: 'heading', name: 'Heading', icon: 'title', disabled },
+			{ id: 'bold', name: 'Bold', icon: 'format_bold', disabled },
+			{
+				id: 'italic',
+				name: 'Italic',
+				icon: 'format_italic',
+				disabled,
+			},
+			{
+				id: 'strikethrough',
+				name: 'Strikethrough',
+				icon: 'strikethrough_s',
+				disabled,
+			},
+		];
+	});
+
+	/** Actions for collapsed Insert section dropdown */
+	protected readonly insertDropdownActions = computed<
+		ToolbarDropdownAction[]
+	>(() => {
+		const disabled = this.isEditorDisabled();
+		return [
+			{
+				id: 'list',
+				name: 'Bulleted List',
+				icon: 'format_list_bulleted',
+				disabled,
+			},
+			{ id: 'inline-code', name: 'Inline Code', icon: 'code', disabled },
+			{ id: 'link', name: 'Link', icon: 'link', disabled },
+			{
+				id: 'blockquote',
+				name: 'Blockquote',
+				icon: 'format_quote',
+				disabled,
+			},
+			{
+				id: 'code-block',
+				name: 'Code Block',
+				icon: 'data_object',
+				disabled,
+			},
+			{
+				id: 'horizontal-rule',
+				name: 'Horizontal Rule',
+				icon: 'horizontal_rule',
+				disabled,
+			},
+		];
+	});
+
+	/** Actions for collapsed Media section dropdown */
+	protected readonly mediaDropdownActions = computed<ToolbarDropdownAction[]>(
+		() => {
+			const uploadDisabled = !this.canUploadImage() || this.isUploading();
+			const editDisabled = this.disabled() || this.showImages();
+			const formatDisabled = this.isEditorDisabled();
+			return [
+				{
+					id: 'upload-image',
+					name: 'Upload Image',
+					icon: 'image',
+					disabled: uploadDisabled,
+				},
+				{
+					id: 'insert-table',
+					name: 'Insert or Edit Table',
+					icon: 'table_chart',
+					disabled: editDisabled,
+				},
+				{
+					id: 'select-table',
+					name: 'Select Table at Cursor',
+					icon: 'select_all',
+					disabled: editDisabled,
+				},
+				{
+					id: 'figure-caption',
+					name: 'Figure Caption',
+					icon: 'video_label',
+					disabled: formatDisabled,
+				},
+				{
+					id: 'table-caption',
+					name: 'Table Caption',
+					icon: 'legend_toggle',
+					disabled: formatDisabled,
+				},
+			];
+		}
+	);
+
+	/**
+	 * Toolbar layout constants — element pixel widths derived from CSS.
+	 * Only these base sizes need updating if CSS changes.
+	 */
+	private static readonly ICON_BTN_WIDTH = 32; // mat-icon-button with !tw-w-8
+	private static readonly SPLIT_BTN_WIDTH = 47; // icon + divider + arrow + border
+	private static readonly SEPARATOR_WIDTH = 12; // │ char ~4px + tw-mx-1 (4px each side)
+	private static readonly COLLAPSED_BTN_WIDTH = 48; // collapsed dropdown button
+	private static readonly TOOLBAR_PADDING = 16; // tw-px-2 = 8px each side
+	private static readonly GAP = 2; // tw-gap-0.5
+
+	/**
+	 * Toolbar section definitions.
+	 * Each section declares its item composition so widths are computed
+	 * automatically. Adding/removing items here is all that's needed.
+	 *
+	 * `collapsePriority`: lower = collapses first. null = never collapses.
+	 */
+	private static readonly TOOLBAR_SECTIONS: {
+		name: string;
+		iconButtons: number;
+		splitButtons: number;
+		extraWidth: number;
+		collapsePriority: number | null;
+	}[] = [
+		{
+			name: 'history',
+			iconButtons: 2,
+			splitButtons: 0,
+			extraWidth: 0,
+			collapsePriority: null,
+		},
+		{
+			name: 'media',
+			iconButtons: 5,
+			splitButtons: 0,
+			extraWidth: 0,
+			collapsePriority: 3,
+		},
+		{
+			name: 'format',
+			iconButtons: 3,
+			splitButtons: 1,
+			extraWidth: 0,
+			collapsePriority: 2,
+		},
+		{
+			name: 'insert',
+			iconButtons: 5,
+			splitButtons: 1,
+			extraWidth: 0,
+			collapsePriority: 1,
+		},
+		{
+			name: 'view',
+			iconButtons: 3,
+			splitButtons: 0,
+			extraWidth: 0,
+			collapsePriority: null,
+		}, // preview, toggle-panel, fullscreen
+		{
+			name: 'help',
+			iconButtons: 0,
+			splitButtons: 0,
+			extraWidth: 36,
+			collapsePriority: null,
+		}, // help button (ml-auto, no separator before it)
+	];
+
+	/** Computed expanded width for a section given its item counts. */
+	private static sectionExpandedWidth(section: {
+		iconButtons: number;
+		splitButtons: number;
+		extraWidth: number;
+	}): number {
+		return (
+			section.iconButtons * MarkdownEditorComponent.ICON_BTN_WIDTH +
+			section.splitButtons * MarkdownEditorComponent.SPLIT_BTN_WIDTH +
+			section.extraWidth
+		);
+	}
+
+	/**
+	 * Sections sorted by collapse priority (lowest first = collapses first).
+	 * Only includes collapsible sections.
+	 */
+	private static readonly COLLAPSE_ORDER =
+		MarkdownEditorComponent.TOOLBAR_SECTIONS.filter(
+			(s) => s.collapsePriority !== null
+		).sort((a, b) => a.collapsePriority! - b.collapsePriority!);
+
+	/** Total width with all sections expanded (computed from section definitions). */
+	private static readonly TOTAL_EXPANDED = (() => {
+		const sections = MarkdownEditorComponent.TOOLBAR_SECTIONS;
+		const sectionWidths = sections.reduce(
+			(sum, s) => sum + MarkdownEditorComponent.sectionExpandedWidth(s),
+			0
+		);
+		// 4 separators between the first 5 sections (help has no separator)
+		const separatorCount = sections.length - 2;
+		const flexChildCount = sections.length + separatorCount;
+		const gapTotal = (flexChildCount - 1) * MarkdownEditorComponent.GAP;
+		return (
+			MarkdownEditorComponent.TOOLBAR_PADDING +
+			gapTotal +
+			sectionWidths +
+			separatorCount * MarkdownEditorComponent.SEPARATOR_WIDTH
+		);
+	})();
+
+	/**
+	 * Pre-computed collapse thresholds.
+	 * thresholds[i] = minimum container width to stay at collapse state i.
+	 * If containerWidth < thresholds[i], we move to state i+1.
+	 */
+	private static readonly COLLAPSE_THRESHOLDS = (() => {
+		const thresholds: number[] = [MarkdownEditorComponent.TOTAL_EXPANDED];
+		let current = MarkdownEditorComponent.TOTAL_EXPANDED;
+		for (const section of MarkdownEditorComponent.COLLAPSE_ORDER) {
+			const expanded =
+				MarkdownEditorComponent.sectionExpandedWidth(section);
+			current =
+				current -
+				expanded +
+				MarkdownEditorComponent.COLLAPSED_BTN_WIDTH;
+			thresholds.push(current);
+		}
+		return thresholds;
+	})();
+
+	private toolbarResizeObserver: ResizeObserver | null = null;
+	private readonly toolbarEl =
+		viewChild<ElementRef<HTMLDivElement>>('toolbarEl');
 
 	private readonly dialog = inject(MatDialog);
 	private readonly snackBar = inject(MatSnackBar);
@@ -122,12 +400,42 @@ export class MarkdownEditorComponent {
 		sections: [
 			{ id: 'toolbar', label: 'Toolbar', anchorId: 'md-editor-toolbar' },
 			{
+				id: 'history',
+				label: 'History',
+				anchorId: 'md-editor-history',
+			},
+			{
+				id: 'format',
+				label: 'Format',
+				anchorId: 'md-editor-format',
+			},
+			{
+				id: 'insert',
+				label: 'Insert',
+				anchorId: 'md-editor-insert',
+			},
+			{
+				id: 'media',
+				label: 'Media',
+				anchorId: 'md-editor-media',
+			},
+			{
+				id: 'view',
+				label: 'View',
+				anchorId: 'md-editor-view',
+			},
+			{
 				id: 'formatting',
 				label: 'Formatting',
 				anchorId: 'md-editor-textarea',
 			},
 			{ id: 'images', label: 'Images', anchorId: 'md-editor-image-btn' },
 			{ id: 'tables', label: 'Tables', anchorId: 'md-editor-table-btn' },
+			{
+				id: 'captions',
+				label: 'Captions',
+				anchorId: 'md-editor-captions',
+			},
 			{ id: 'preview', label: 'Preview', anchorId: 'md-editor-preview' },
 			{
 				id: 'fullscreen',
@@ -173,7 +481,6 @@ export class MarkdownEditorComponent {
 	private readonly destroyRef = inject(DestroyRef);
 
 	protected readonly keyboardFocused = signal(false);
-	protected readonly focused = signal(false);
 
 	private readonly _init: void = (() => {
 		this.initFullscreenListener();
@@ -184,7 +491,6 @@ export class MarkdownEditorComponent {
 					.monitor(textarea, false)
 					.subscribe((origin) => {
 						this.keyboardFocused.set(origin === 'keyboard');
-						this.focused.set(origin !== null);
 					});
 				this.destroyRef.onDestroy(() => {
 					this.focusMonitor.stopMonitoring(textarea);
@@ -200,13 +506,56 @@ export class MarkdownEditorComponent {
 						this.savedSelectionEnd =
 							textarea.nativeElement.selectionEnd;
 					});
+
+				// Intercept Ctrl+Z / Ctrl+Y for custom undo/redo.
+				fromEvent<KeyboardEvent>(textarea.nativeElement, 'keydown')
+					.pipe(takeUntilDestroyed(this.destroyRef))
+					.subscribe((e) => {
+						if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
+							e.preventDefault();
+							this.undo();
+						} else if (
+							(e.ctrlKey && e.key === 'y') ||
+							(e.ctrlKey && e.shiftKey && e.key === 'Z')
+						) {
+							e.preventDefault();
+							this.redo();
+						}
+					});
+
+				// Listen to input events to detect typing boundaries for undo grouping.
+				fromEvent<InputEvent>(textarea.nativeElement, 'input')
+					.pipe(takeUntilDestroyed(this.destroyRef))
+					.subscribe((e) => {
+						if (this.isUndoRedoAction) {
+							return;
+						}
+						this.handleInputForUndoGrouping(
+							e,
+							textarea.nativeElement
+						);
+					});
+
+				// Record initial state so first undo has something to revert to.
+				this.undoStack.push(this.mdContent());
+				this.canUndo.set(false);
 			}
+
+			// Toolbar collapse: measure sections and observe resize
+			this.initToolbarCollapse();
 		});
+
 		this.destroyRef.onDestroy(() => {
+			if (this.undoGroupTimer) {
+				clearTimeout(this.undoGroupTimer);
+			}
 			if (this.isDragging) {
 				this.clearDragStyles();
 			}
 			this.revokeImageObjectUrls();
+			if (this.toolbarResizeObserver) {
+				this.toolbarResizeObserver.disconnect();
+			}
 		});
 	})();
 
@@ -362,8 +711,105 @@ export class MarkdownEditorComponent {
 		}
 	}
 
-	addExampleToMdContent(markdownExample: string) {
-		this.mdContent.set(this.mdContent() + '\n\n' + markdownExample);
+	/**
+	 * Applies a formatting action at the cursor position.
+	 * If text is selected and the action has a prefix/suffix,
+	 * wraps the selection. Otherwise inserts the template text.
+	 */
+	applyFormatting(action: (typeof markdownFormattingActions)[number]): void {
+		// Commit any pending typing as its own undo group first.
+		this.commitExplicitUndoState();
+
+		const content = this.mdContent();
+		const cursorPos =
+			this.savedSelectionStart >= 0
+				? this.savedSelectionStart
+				: content.length;
+		const selEnd =
+			this.savedSelectionEnd >= 0
+				? this.savedSelectionEnd
+				: content.length;
+
+		const selectedText = content.substring(cursorPos, selEnd);
+		const before = content.substring(0, cursorPos);
+		const after = content.substring(selEnd);
+
+		let insertedText: string;
+		let newCursorPos: number;
+
+		if (selectedText && action.prefix !== undefined) {
+			// Wrap selected text with prefix/suffix
+			const suffix = action.suffix ?? action.prefix;
+			insertedText = action.prefix + selectedText + suffix;
+			newCursorPos = cursorPos + insertedText.length;
+		} else if (!selectedText && action.prefix !== undefined) {
+			// No selection — insert prefix + placeholder + suffix and select placeholder
+			const suffix = action.suffix ?? action.prefix;
+			const placeholder = action.placeholder ?? 'text';
+			insertedText = action.prefix + placeholder + suffix;
+			// Position cursor to select the placeholder
+			newCursorPos = cursorPos + action.prefix.length;
+			this.savedSelectionStart = newCursorPos;
+			this.savedSelectionEnd = newCursorPos + placeholder.length;
+			this.isUndoRedoAction = true;
+			this.mdContent.set(before + insertedText + after);
+			this.isUndoRedoAction = false;
+			this.commitCurrentState(before + insertedText + after);
+			this.restoreTextareaSelection();
+			return;
+		} else {
+			// Block-level insertion (no prefix/suffix)
+			insertedText = action.markdown;
+			newCursorPos = cursorPos + insertedText.length;
+		}
+
+		this.isUndoRedoAction = true;
+		this.mdContent.set(before + insertedText + after);
+		this.isUndoRedoAction = false;
+		this.commitCurrentState(before + insertedText + after);
+
+		this.savedSelectionStart = newCursorPos;
+		this.savedSelectionEnd = newCursorPos;
+		this.restoreTextareaSelection();
+	}
+
+	applyFormattingAndClose(
+		action: (typeof markdownFormattingActions)[number]
+	): void {
+		this.applyFormatting(action);
+	}
+
+	applyHeading(level: HeadingLevel | string): void {
+		const numLevel =
+			typeof level === 'string'
+				? (parseInt(level, 10) as HeadingLevel)
+				: level;
+		if (numLevel < 1 || numLevel > 6) {
+			return;
+		}
+		const prefix = '#'.repeat(numLevel) + ' ';
+		this.applyFormatting({
+			name: `Heading ${numLevel}`,
+			icon: 'title',
+			markdown: `${prefix}Heading ${numLevel}`,
+			prefix,
+			suffix: '',
+			placeholder: `Heading ${numLevel}`,
+			group: 'block',
+		});
+	}
+
+	applyList(value: string): void {
+		const option = this.listOptions.find((o) => o.value === value);
+		if (!option) {
+			return;
+		}
+		this.applyFormatting({
+			name: option.name,
+			icon: option.icon,
+			markdown: option.markdown,
+			group: 'block',
+		});
 	}
 
 	openUploadImageDialog(): void {
@@ -521,6 +967,8 @@ export class MarkdownEditorComponent {
 		captionPosition: CaptionPosition = 'below',
 		size: ImageSize | null = null
 	): void {
+		this.commitExplicitUndoState();
+
 		const sizeAttr = size ? ` size="${size}"` : '';
 		const imageTag = `<image-link${sizeAttr}>${artifactId}</image-link>`;
 		const positionAttr =
@@ -537,13 +985,18 @@ export class MarkdownEditorComponent {
 
 		const before = currentContent.substring(0, cursorPos);
 		const after = currentContent.substring(cursorPos);
+		let newContent: string;
 		if (captionTag && captionPosition === 'above') {
-			this.mdContent.set(before + captionTag + '\n\n' + imageTag + after);
+			newContent = before + captionTag + '\n\n' + imageTag + after;
 		} else if (captionTag) {
-			this.mdContent.set(before + imageTag + '\n\n' + captionTag + after);
+			newContent = before + imageTag + '\n\n' + captionTag + after;
 		} else {
-			this.mdContent.set(before + imageTag + after);
+			newContent = before + imageTag + after;
 		}
+		this.isUndoRedoAction = true;
+		this.mdContent.set(newContent);
+		this.isUndoRedoAction = false;
+		this.commitCurrentState(newContent);
 	}
 
 	openTableDialog(): void {
@@ -626,6 +1079,8 @@ export class MarkdownEditorComponent {
 					})
 				)
 				.subscribe((result) => {
+					this.commitExplicitUndoState();
+
 					const positionAttr =
 						result.captionPosition === 'above'
 							? ' position="above"'
@@ -634,6 +1089,7 @@ export class MarkdownEditorComponent {
 					const captionTag = escapedCaption
 						? `<table-caption${positionAttr}>${escapedCaption}</table-caption>`
 						: '';
+					let newContent: string;
 					if (parsedTable) {
 						// Replace existing table
 						const before = content.substring(
@@ -642,25 +1098,21 @@ export class MarkdownEditorComponent {
 						);
 						const after = content.substring(parsedTable.endIndex);
 						if (captionTag && result.captionPosition === 'above') {
-							this.mdContent.set(
+							newContent =
 								before +
-									captionTag +
-									'\n\n' +
-									result.markdown +
-									after
-							);
+								captionTag +
+								'\n\n' +
+								result.markdown +
+								after;
 						} else if (captionTag) {
-							this.mdContent.set(
+							newContent =
 								before +
-									result.markdown +
-									'\n\n' +
-									captionTag +
-									after
-							);
+								result.markdown +
+								'\n\n' +
+								captionTag +
+								after;
 						} else {
-							this.mdContent.set(
-								before + result.markdown + after
-							);
+							newContent = before + result.markdown + after;
 						}
 					} else {
 						// Insert new table at cursor or end
@@ -688,14 +1140,18 @@ export class MarkdownEditorComponent {
 								: captionTag
 									? result.markdown + '\n\n' + captionTag
 									: result.markdown;
-						this.mdContent.set(
+						newContent =
 							before +
-								prefixNewlines +
-								tableWithCaption +
-								suffixNewlines +
-								after
-						);
+							prefixNewlines +
+							tableWithCaption +
+							suffixNewlines +
+							after;
 					}
+					this.isUndoRedoAction = true;
+					this.mdContent.set(newContent);
+					this.isUndoRedoAction = false;
+					this.commitCurrentState(newContent);
+
 					if (wasFullscreen) {
 						this.enterFullscreen();
 					}
@@ -761,7 +1217,7 @@ export class MarkdownEditorComponent {
 		captionPosition: CaptionPosition;
 		hasDuplicateCaption: boolean;
 	} | null {
-		if (!content) {
+		if (!content || selStart < 0) {
 			return null;
 		}
 
@@ -1201,6 +1657,133 @@ export class MarkdownEditorComponent {
 		this.imageObjectUrls = [];
 	}
 
+	/**
+	 * Initializes toolbar collapse behavior.
+	 * Sets up a ResizeObserver to recompute collapse state on width changes.
+	 * No DOM measurement needed — thresholds are static constants.
+	 */
+	private initToolbarCollapse(): void {
+		const toolbar = this.toolbarEl()?.nativeElement;
+		if (!toolbar) {
+			return;
+		}
+
+		// Compute initial state
+		this.computeCollapseState(toolbar.clientWidth);
+
+		// Observe container width changes
+		this.toolbarResizeObserver = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				const width =
+					entry.contentBoxSize?.[0]?.inlineSize ??
+					entry.contentRect.width;
+				this.computeCollapseState(width);
+			}
+		});
+		this.toolbarResizeObserver.observe(toolbar);
+	}
+
+	/**
+	 * Computes which collapse state to use for the given container width.
+	 *
+	 * Walks the pre-computed thresholds array. The first threshold the
+	 * container width meets or exceeds determines the state.
+	 * Deterministic, no DOM measurement, no oscillation.
+	 */
+	private computeCollapseState(containerWidth: number): void {
+		const thresholds = MarkdownEditorComponent.COLLAPSE_THRESHOLDS;
+		let newState = thresholds.length - 1; // max collapsed state
+		for (let i = 0; i < thresholds.length; i++) {
+			if (containerWidth >= thresholds[i]) {
+				newState = i;
+				break;
+			}
+		}
+
+		if (newState !== this.collapseState()) {
+			this.collapseState.set(newState);
+		}
+	}
+
+	/**
+	 * Handles action selection from a collapsed Format section dropdown.
+	 */
+	protected handleFormatAction(actionId: string): void {
+		switch (actionId) {
+			case 'heading':
+				this.applyHeading('2');
+				break;
+			case 'bold':
+				this.applyFormattingById('Bold');
+				break;
+			case 'italic':
+				this.applyFormattingById('Italic');
+				break;
+			case 'strikethrough':
+				this.applyFormattingById('Strikethrough');
+				break;
+		}
+	}
+
+	/**
+	 * Handles action selection from a collapsed Insert section dropdown.
+	 */
+	protected handleInsertAction(actionId: string): void {
+		switch (actionId) {
+			case 'list':
+				this.applyList('bulleted');
+				break;
+			case 'inline-code':
+				this.applyFormattingById('Inline Code');
+				break;
+			case 'link':
+				this.applyFormattingById('Link');
+				break;
+			case 'blockquote':
+				this.applyFormattingById('Blockquote');
+				break;
+			case 'code-block':
+				this.applyFormattingById('Code Block');
+				break;
+			case 'horizontal-rule':
+				this.applyFormattingById('Horizontal Rule');
+				break;
+		}
+	}
+
+	/**
+	 * Handles action selection from a collapsed Media section dropdown.
+	 */
+	protected handleMediaAction(actionId: string): void {
+		switch (actionId) {
+			case 'upload-image':
+				this.openUploadImageDialog();
+				break;
+			case 'insert-table':
+				this.openTableDialog();
+				break;
+			case 'select-table':
+				this.selectTableAtCursor();
+				break;
+			case 'figure-caption':
+				this.applyFormattingById('Figure Caption');
+				break;
+			case 'table-caption':
+				this.applyFormattingById('Table Caption');
+				break;
+		}
+	}
+
+	/**
+	 * Applies a formatting action by its display name.
+	 */
+	private applyFormattingById(name: string): void {
+		const action = this.formattingActions.find((a) => a.name === name);
+		if (action) {
+			this.applyFormatting(action);
+		}
+	}
+
 	toggleFullscreen(): void {
 		const wrapper = this.fullscreenWrapper()?.nativeElement;
 		if (!wrapper) {
@@ -1251,17 +1834,16 @@ export class MarkdownEditorComponent {
 	}
 
 	private restoreTextareaSelection(): void {
-		afterNextRender(
-			() => {
-				const textarea = this.editorTextarea()?.nativeElement;
-				if (textarea && this.savedSelectionStart >= 0) {
-					textarea.selectionStart = this.savedSelectionStart;
-					textarea.selectionEnd = this.savedSelectionEnd;
-					textarea.focus();
-				}
-			},
-			{ injector: this.injector }
-		);
+		const start = this.savedSelectionStart;
+		const end = this.savedSelectionEnd;
+		setTimeout(() => {
+			const textarea = this.editorTextarea()?.nativeElement;
+			if (textarea && start >= 0) {
+				textarea.focus();
+				textarea.selectionStart = start;
+				textarea.selectionEnd = end;
+			}
+		});
 	}
 
 	togglePreviewCollapsed(): void {
@@ -1290,7 +1872,7 @@ export class MarkdownEditorComponent {
 				const rect = container.getBoundingClientRect();
 				const percent = ((e.clientX - rect.left) / rect.width) * 100;
 				this.editorWidthPercent.set(
-					Math.max(20, Math.min(80, percent))
+					Math.round(Math.max(20, Math.min(80, percent)))
 				);
 			});
 
@@ -1305,46 +1887,158 @@ export class MarkdownEditorComponent {
 		document.body.style.userSelect = '';
 	}
 
-	undo() {
-		const latestHistoryValue = this.history()?.pop();
+	/**
+	 * Handles input events to implement VS Code-style undo grouping.
+	 *
+	 * Groups consecutive typing at the same cursor position into one undo entry.
+	 * Starts a new group on:
+	 * - Word boundaries (whitespace typed after non-whitespace)
+	 * - Cursor jumps (selection-based edits like paste, or delete-selection)
+	 * - Non-insertText input types (paste, cut, delete, etc.)
+	 * - Idle timeout (user pauses typing)
+	 */
+	private handleInputForUndoGrouping(
+		event: InputEvent,
+		textarea: HTMLTextAreaElement
+	): void {
+		const currentValue = this.mdContent();
+		const cursorPos = textarea.selectionStart;
 
-		if (latestHistoryValue) {
-			if (latestHistoryValue === this.mdContent()) {
-				const nextValue = computed(() => this.history()?.pop())();
+		const isTyping = event.inputType === 'insertText';
+		const isNewline =
+			event.inputType === 'insertLineBreak' ||
+			event.inputType === 'insertParagraph';
+		const typedChar = event.data ?? '';
+		const isWhitespace = /\s/.test(typedChar);
 
-				if (nextValue) {
-					this.updateRedoHistory(this.mdContent());
-					this.mdContent.set(nextValue);
-				}
-			} else {
-				this.updateRedoHistory(this.mdContent());
-				this.mdContent.set(latestHistoryValue);
-			}
-		}
-	}
+		// Determine if we need to break the group
+		let shouldBreakGroup = false;
 
-	private updateRedoHistory(latestHistoryValue: string) {
-		if (
-			this.redoHistory()[this.redoHistory().length - 1] !==
-			latestHistoryValue
+		if (!isTyping && !isNewline) {
+			// Non-typing input (paste, cut, drop, delete, etc.) — always a new group
+			shouldBreakGroup = true;
+		} else if (isNewline) {
+			// Newline always starts a new group
+			shouldBreakGroup = true;
+		} else if (
+			this.lastEditCursorPos >= 0 &&
+			cursorPos !== this.lastEditCursorPos + 1
 		) {
-			this.redoHistory.update((curr) => [...curr, latestHistoryValue]);
+			// Cursor jumped (user clicked elsewhere then typed)
+			shouldBreakGroup = true;
+		} else if (isWhitespace && !this.lastCharWasWhitespace) {
+			// Word boundary: transition from non-whitespace to whitespace
+			shouldBreakGroup = true;
+		}
+
+		if (shouldBreakGroup) {
+			this.commitPendingUndoGroup();
+		}
+
+		// If no pending group, record the state before this edit
+		if (this.pendingGroupStart === null) {
+			this.pendingGroupStart =
+				this.undoStack[this.undoStack.length - 1] ?? '';
+		}
+
+		this.lastEditCursorPos = cursorPos;
+		this.lastCharWasWhitespace = isWhitespace || isNewline;
+
+		// Reset the debounce timer
+		if (this.undoGroupTimer) {
+			clearTimeout(this.undoGroupTimer);
+		}
+		this.undoGroupTimer = setTimeout(() => {
+			this.commitCurrentState(currentValue);
+		}, this.undoGroupDelay);
+
+		// Clear redo on new input
+		if (this.redoStack.length > 0) {
+			this.redoStack.length = 0;
+			this.canRedo.set(false);
 		}
 	}
 
-	redo() {
-		const latestRedoHistoryValue = this.redoHistory().pop();
-
-		if (latestRedoHistoryValue) {
-			if (latestRedoHistoryValue === this.mdContent()) {
-				const nextValue = computed(() => this.history()?.pop())();
-
-				if (nextValue) {
-					this.mdContent.set(nextValue);
-				}
-			} else {
-				this.mdContent.set(latestRedoHistoryValue);
-			}
+	/**
+	 * Commits the pending typing group to the undo stack.
+	 * Called when a group boundary is detected or after idle timeout.
+	 */
+	private commitPendingUndoGroup(): void {
+		if (this.undoGroupTimer) {
+			clearTimeout(this.undoGroupTimer);
+			this.undoGroupTimer = null;
 		}
+		// Commit the current content as the latest undo state
+		const current = this.mdContent();
+		const top = this.undoStack[this.undoStack.length - 1];
+		if (current !== top) {
+			if (this.undoStack.length >= this.maxHistory) {
+				this.undoStack.shift();
+			}
+			this.undoStack.push(current);
+			this.canUndo.set(this.undoStack.length > 1);
+		}
+		this.pendingGroupStart = null;
+	}
+
+	/**
+	 * Commits a specific value as the latest undo state (used by idle timeout).
+	 */
+	private commitCurrentState(value: string): void {
+		this.undoGroupTimer = null;
+		const top = this.undoStack[this.undoStack.length - 1];
+		if (value !== top) {
+			if (this.undoStack.length >= this.maxHistory) {
+				this.undoStack.shift();
+			}
+			this.undoStack.push(value);
+			this.canUndo.set(this.undoStack.length > 1);
+		}
+		this.pendingGroupStart = null;
+	}
+
+	/**
+	 * Commits the current state immediately as its own undo group.
+	 * Used for programmatic changes (toolbar actions, dialog results)
+	 * that should each be a single undo step.
+	 */
+	private commitExplicitUndoState(): void {
+		this.commitPendingUndoGroup();
+	}
+
+	undo(): void {
+		// First commit any pending typing group
+		this.commitPendingUndoGroup();
+
+		if (this.undoStack.length <= 1) {
+			return;
+		}
+		const current = this.undoStack.pop()!;
+		this.redoStack.push(current);
+		const previous = this.undoStack[this.undoStack.length - 1];
+
+		this.isUndoRedoAction = true;
+		this.mdContent.set(previous);
+		this.isUndoRedoAction = false;
+
+		this.lastEditCursorPos = -1;
+		this.canUndo.set(this.undoStack.length > 1);
+		this.canRedo.set(this.redoStack.length > 0);
+	}
+
+	redo(): void {
+		if (this.redoStack.length === 0) {
+			return;
+		}
+		const next = this.redoStack.pop()!;
+		this.undoStack.push(next);
+
+		this.isUndoRedoAction = true;
+		this.mdContent.set(next);
+		this.isUndoRedoAction = false;
+
+		this.lastEditCursorPos = -1;
+		this.canUndo.set(this.undoStack.length > 1);
+		this.canRedo.set(this.redoStack.length > 0);
 	}
 }

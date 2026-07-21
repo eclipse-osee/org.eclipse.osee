@@ -65,7 +65,7 @@ export class HelpPopupComponent {
 			.join(' ');
 	});
 
-	/** Sections discovered from rendered markdown h2 headings. */
+	/** Sections discovered from rendered markdown h2 headings (used for navigation chips). */
 	protected readonly sections = signal<HelpSection[]>([]);
 
 	protected readonly activeSection = signal<string>('');
@@ -121,8 +121,9 @@ export class HelpPopupComponent {
 
 	/**
 	 * Called when markdown finishes rendering.
-	 * Discovers sections from h2 headings, injects "Show Me" buttons,
-	 * and requests anchor IDs from the opener window.
+	 * Discovers sections from all headings (h2–h6) for "Show Me" buttons,
+	 * uses h2 headings for navigation chips, and requests anchor IDs
+	 * from the opener window.
 	 */
 	protected onMarkdownReady(): void {
 		const container = this.contentEl()?.nativeElement;
@@ -130,17 +131,24 @@ export class HelpPopupComponent {
 			return;
 		}
 
-		const headings = container.querySelectorAll('h2');
+		// Discover all headings for "Show Me" button injection
+		const allHeadings = container.querySelectorAll('h2, h3, h4, h5, h6');
 		const discovered: HelpSection[] = [];
 
-		headings.forEach((h2) => {
-			const text = h2.textContent?.trim() ?? '';
+		allHeadings.forEach((heading) => {
+			const text = heading.textContent?.trim() ?? '';
 			const id = text
 				.toLowerCase()
 				.replace(/[^a-z0-9]+/g, '-')
 				.replace(/^-|-$/g, '');
-			h2.id = id;
+			heading.id = id;
 			discovered.push({ id, label: text, anchorId: '' });
+		});
+
+		// Only h2 headings become navigation chips
+		const chipSections = discovered.filter((d) => {
+			const el = container.querySelector(`[id="${d.id}"]`);
+			return el?.tagName === 'H2';
 		});
 
 		// Request anchor IDs from the opener (parent) window
@@ -153,28 +161,37 @@ export class HelpPopupComponent {
 
 		// Listen for section data from the parent
 		const onMessage = (event: MessageEvent) => {
-			if (event.data?.type === 'osee-help-sections-response') {
-				const parentSections: HelpSection[] = event.data.sections ?? [];
-				// Merge anchor IDs from parent into our discovered headings
-				const merged = discovered.map((d) => {
-					const match = parentSections.find(
-						(p) => p.label.toLowerCase() === d.label.toLowerCase()
-					);
-					return match ? { ...d, anchorId: match.anchorId } : d;
-				});
-				this.sections.set(merged);
-				this.injectShowMeButtons(container, merged);
-				this.setupScrollObserver(container, merged);
-				window.removeEventListener('message', onMessage);
+			if (
+				event.origin !== window.location.origin ||
+				event.data?.type !== 'osee-help-sections-response'
+			) {
+				return;
 			}
+			const parentSections: HelpSection[] = event.data.sections ?? [];
+			// Merge anchor IDs from parent into all discovered headings
+			const merged = discovered.map((d) => {
+				const match = parentSections.find(
+					(p) => p.label.toLowerCase() === d.label.toLowerCase()
+				);
+				return match ? { ...d, anchorId: match.anchorId } : d;
+			});
+			// Only h2 headings become navigation chips
+			const chips = merged.filter((d) => {
+				const el = container.querySelector(`[id="${d.id}"]`);
+				return el?.tagName === 'H2';
+			});
+			this.sections.set(chips);
+			this.injectShowMeButtons(container, merged);
+			this.setupScrollObserver(container, chips);
+			window.removeEventListener('message', onMessage);
 		};
 		window.addEventListener('message', onMessage);
 
 		// Fallback: if no response in 500ms, use sections without anchor IDs
 		setTimeout(() => {
 			if (this.sections().length === 0) {
-				this.sections.set(discovered);
-				this.setupScrollObserver(container, discovered);
+				this.sections.set(chipSections);
+				this.setupScrollObserver(container, chipSections);
 				window.removeEventListener('message', onMessage);
 			}
 		}, 500);
@@ -188,8 +205,8 @@ export class HelpPopupComponent {
 			if (!section.anchorId) {
 				return;
 			}
-			const h2 = container.querySelector(`[id="${section.id}"]`);
-			if (!h2) {
+			const heading = container.querySelector(`[id="${section.id}"]`);
+			if (!heading) {
 				return;
 			}
 			const showMeBtn = document.createElement('button');
@@ -200,11 +217,12 @@ export class HelpPopupComponent {
 			showMeBtn.addEventListener('click', () => {
 				this.highlightInParent(section);
 			});
-			h2.appendChild(showMeBtn);
+			heading.appendChild(showMeBtn);
 		});
 	}
 
 	private observerCleanup: (() => void) | null = null;
+	private observerDestroyRegistered = false;
 
 	private setupScrollObserver(
 		container: HTMLElement,
@@ -259,11 +277,14 @@ export class HelpPopupComponent {
 
 		this.observerCleanup = () =>
 			container.removeEventListener('scroll', onScroll);
-		this.destroyRef.onDestroy(() => {
-			if (this.observerCleanup) {
-				this.observerCleanup();
-			}
-		});
+		if (!this.observerDestroyRegistered) {
+			this.observerDestroyRegistered = true;
+			this.destroyRef.onDestroy(() => {
+				if (this.observerCleanup) {
+					this.observerCleanup();
+				}
+			});
+		}
 	}
 }
 

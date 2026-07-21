@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -34,6 +35,7 @@ public class BuildImpactDatas {
    private final XResultData results = new XResultData();
    TransactionId transaction;
    private ArtifactTypeToken bidArtType = ArtifactTypeToken.SENTINEL;
+   private List<String> buildOrder = new ArrayList<>();
 
    public BuildImpactDatas() {
       // for jax-rs
@@ -87,6 +89,14 @@ public class BuildImpactDatas {
 
    public void setBidArtType(ArtifactTypeToken bidArtType) {
       this.bidArtType = bidArtType;
+   }
+
+   public List<String> getBuildOrder() {
+      return buildOrder;
+   }
+
+   public void setBuildOrder(List<String> buildOrder) {
+      this.buildOrder = buildOrder;
    }
 
 }
