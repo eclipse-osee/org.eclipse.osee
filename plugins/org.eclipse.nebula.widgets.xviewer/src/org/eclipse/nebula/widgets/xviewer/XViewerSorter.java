@@ -72,6 +72,8 @@ public class XViewerSorter extends ViewerSorter {
             compareInt = -1;
          } else if (o2Str == null) {
             compareInt = 1;
+         } else if (!sortXCol.getSortOrder().isEmpty()) {
+            compareInt = getCompareForSortOrder(o1Str, o2Str, sortXCol.getSortOrder());
          } else if (sortXCol.getSortDataType() == SortDataType.Date) {
             compareInt = getCompareForDate(o1Str, obj1, o2Str, obj2);
          } else if (sortXCol.getSortDataType() == SortDataType.Percent) {
@@ -132,6 +134,21 @@ public class XViewerSorter extends ViewerSorter {
          returnInt = compare(viewer, o1, o2, (sortXColIndex + 1));
       }
       return returnInt;
+   }
+
+   protected int getCompareForSortOrder(String o1Str, String o2Str, List<String> sortOrder) {
+      int idx1 = sortOrder.indexOf(o1Str);
+      int idx2 = sortOrder.indexOf(o2Str);
+      if (idx1 < 0 && idx2 < 0) {
+         return getComparator().compare(o1Str, o2Str);
+      }
+      if (idx1 < 0) {
+         idx1 = Integer.MAX_VALUE;
+      }
+      if (idx2 < 0) {
+         idx2 = Integer.MAX_VALUE;
+      }
+      return Integer.compare(idx1, idx2);
    }
 
    public int getCompareForFloat(String float1, String float2) {

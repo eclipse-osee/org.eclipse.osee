@@ -259,6 +259,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andMembers(DemoUsers.Joe_Smith) //
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Problem_Report) //
          .andTeamWorkflowArtifactType(AtsArtifactTypes.DemoProblemReportTeamWorkflow) //
+         .andBitBuildOrder(DemoArtifactToken.SAW_PL_SBVT1.getName(), DemoArtifactToken.SAW_PL_SBVT2.getName(),
+            DemoArtifactToken.SAW_PL_SBVT3.getName()) //
          .andRelation(AtsRelationTypes.TeamDefinitionToBitProgram_BitProgram,
             confixTxProgram.getProgram().getStoreObject());
 

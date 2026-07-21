@@ -110,6 +110,7 @@ public class AtsImage extends OseeImage {
    public static AtsImage VERSION = new AtsImage("version.gif");
    public static AtsImage VERSION_LOCKED = new AtsImage("yellowV_8_8.gif");
    public static AtsImage VERSION_NEXT = new AtsImage("versionNext.gif");
+   public static AtsImage WARNING = new AtsImage("warn.gif");
    public static AtsImage WORK_PACKAGE = new AtsImage("workPackage.gif");
    public static AtsImage TOOL = new AtsImage("T.gif");
    public static AtsImage ZOOM_IN = new AtsImage("zoom_in.gif");

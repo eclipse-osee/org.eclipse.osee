@@ -13,11 +13,11 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.bit;
 
+import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
-import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -52,9 +52,8 @@ public class XBitContentProvider implements ITreeContentProvider {
 
    @Override
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof BuildImpactDatas) {
-         BuildImpactDatas bids = (BuildImpactDatas) parentElement;
-         return bids.getBuildImpacts().toArray();
+      if (parentElement instanceof Collection<?>) {
+         return ((Collection<?>) parentElement).toArray();
       }
       if (parentElement instanceof BuildImpactData) {
          BuildImpactData bid = (BuildImpactData) parentElement;

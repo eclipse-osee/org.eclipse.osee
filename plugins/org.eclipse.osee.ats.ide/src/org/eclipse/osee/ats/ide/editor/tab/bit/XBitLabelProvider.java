@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.cr.TaskEstDefinition;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -28,8 +29,11 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XBitLabelProvider extends XViewerLabelProvider {
 
+   private final XBitViewer xBitViewer;
+
    public XBitLabelProvider(XBitViewer xBitViewer) {
       super(xBitViewer);
+      this.xBitViewer = xBitViewer;
    }
 
    @Override
@@ -50,37 +54,7 @@ public class XBitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, int columnIndex) {
-      super.getColumnText(element, columnIndex);
-      XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
-      if (element instanceof BuildImpactData) {
-         BuildImpactData bid = (BuildImpactData) element;
-         if (xViewerColumn.getName().equals(XBitXViewerFactory.Program_Col.getName())) {
-            return bid.getProgram().getName();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Build_Col.getName())) {
-            return bid.getBuild().getName();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.State_Col.getName())) {
-            return bid.getState();
-         }
-         if (xViewerColumn.getName().equals(XBitXViewerFactory.Id_Col.getName())) {
-            return bid.getBidArt().getIdString();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_State_Col.getName())) {
-            return getBitStatusString(bid);
-         }
-      }
-      if (element instanceof JaxTeamWorkflow) {
-         JaxTeamWorkflow teamWf = (JaxTeamWorkflow) element;
-         if (xViewerColumn.getName().equals(XBitXViewerFactory.Id_Col.getName())) {
-            return teamWf.getAtsId();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_State_Col.getName())) {
-            return teamWf.getCurrentState();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_Title_Col.getName())) {
-            return teamWf.getName();
-         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_Type_Col.getName())) {
-            return teamWf.getTeamName();
-         }
-
-      }
-      return "";
+      return super.getColumnText(element, columnIndex);
    }
 
    public static String getBitStatusString(BuildImpactData bid) {
@@ -102,6 +76,21 @@ public class XBitLabelProvider extends XViewerLabelProvider {
       if (element instanceof JaxTeamWorkflow) {
          if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_Type_Col.getName())) {
             return ImageManager.getImage(AtsImage.WORKFLOW);
+         } else if (xViewerColumn.getName().equals(XBitXViewerFactory.Cr_Version_Col.getName())) {
+            JaxTeamWorkflow teamWf = (JaxTeamWorkflow) element;
+            if (teamWf.getTargetVersion().isValid()) {
+               BuildImpactDatas bids = xBitViewer.getBids();
+               if (bids != null) {
+                  for (BuildImpactData bid : bids.getBuildImpacts()) {
+                     if (bid.getTeamWfs().contains(teamWf)) {
+                        if (!teamWf.getTargetVersion().getName().equals(bid.getBuild().getName())) {
+                           return ImageManager.getImage(AtsImage.WARNING);
+                        }
+                        break;
+                     }
+                  }
+               }
+            }
          }
       }
       if (element instanceof BuildImpactData) {
@@ -138,6 +127,34 @@ public class XBitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (element instanceof BuildImpactData) {
+         BuildImpactData bid = (BuildImpactData) element;
+         if (xCol.getName().equals(XBitXViewerFactory.Program_Col.getName())) {
+            return bid.getProgram().getName();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Build_Col.getName())) {
+            return bid.getBuild().getName();
+         } else if (xCol.getName().equals(XBitXViewerFactory.State_Col.getName())) {
+            return bid.getState();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Id_Col.getName())) {
+            return bid.getBidArt().getIdString();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_State_Col.getName())) {
+            return getBitStatusString(bid);
+         }
+      }
+      if (element instanceof JaxTeamWorkflow) {
+         JaxTeamWorkflow teamWf = (JaxTeamWorkflow) element;
+         if (xCol.getName().equals(XBitXViewerFactory.Id_Col.getName())) {
+            return teamWf.getAtsId();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_State_Col.getName())) {
+            return teamWf.getCurrentState();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_Title_Col.getName())) {
+            return teamWf.getName();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_Type_Col.getName())) {
+            return teamWf.getTeamName();
+         } else if (xCol.getName().equals(XBitXViewerFactory.Cr_Version_Col.getName())) {
+            return teamWf.getTargetVersion().isValid() ? teamWf.getTargetVersion().getName() : "";
+         }
+      }
       return "";
    }
 
