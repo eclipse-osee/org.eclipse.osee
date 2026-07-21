@@ -794,6 +794,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       return null;
    }
 
+   public WfeReloadTab getReloadTab() {
+      return reloadTab;
+   }
+
    @Override
    public String getEditorName() {
       return "Workflow Editor";
