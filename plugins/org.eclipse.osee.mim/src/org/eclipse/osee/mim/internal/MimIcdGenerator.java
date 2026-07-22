@@ -645,15 +645,17 @@ public class MimIcdGenerator {
          "WHERE  txs.branch_id IN (?,?) " + //branch,queryBranch
          " AND txs.tx_current = 1 AND txs.gamma_id = art.gamma_id AND art.art_id = ?" + //connectionId
          " AND txd.branch_id = txs.branch_id AND txd.transaction_id = txs.transaction_id), " + //
-         " allRels (a_art_id,b_art_id,gamma_id,rel_type) as ( select a_art_id, b_art_id, txs.gamma_id, rel_type from osee_txs txs, osee_relation rel " + //
+         " allRels (a_art_id,b_art_id,gamma_id,rel_type,rel_time) as ( select a_art_id, b_art_id, txs.gamma_id, rel_type, txd.time from osee_txs txs, osee_relation rel, osee_tx_details txd " + //
          "where txs.branch_id in (?,?) " + //branch,queryBranch
          "and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " + //
-         "union select a_art_id,   b_art_id,   txs.gamma_id,  rel_link_type_id rel_type from osee_txs txs, osee_relation_link rel " + //
+         "and txd.branch_id = txs.branch_id and txd.transaction_id = txs.transaction_id " + //
+         "union select a_art_id,   b_art_id,   txs.gamma_id,  rel_link_type_id rel_type, txd.time from osee_txs txs, osee_relation_link rel, osee_tx_details txd " + //
          "where txs.branch_id in (?,?) " + //branch,queryBranch
-         "and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " + //
-         "cte_query(a_art_id,b_art_id,rel_type,gamma_id) as ( " + //
-         "   select a_art_id,  b_art_id,   rel_type, gamma_id from allRels where a_art_id = ? " + //connectionId
-         "union all select e.a_art_id, e.b_art_id, e.rel_type, e.gamma_id from allRels e " + //
+         "and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " + //
+         "and txd.branch_id = txs.branch_id and txd.transaction_id = txs.transaction_id), " + //
+         "cte_query(a_art_id,b_art_id,rel_type,gamma_id,rel_time) as ( " + //
+         "   select a_art_id,  b_art_id,   rel_type, gamma_id, rel_time from allRels where a_art_id = ? " + //connectionId
+         "union all select e.a_art_id, e.b_art_id, e.rel_type, e.gamma_id, GREATEST(c.rel_time, e.rel_time) from allRels e " + //
          "inner join cte_query c on c.b_art_id = e.a_art_id), " + //
          "gammas (transaction_id,txBranch, gamma_id,commit_art_id,time) as ( select txd1.transaction_id, txd1.branch_id txBranch, changedTxs.gamma_id,txd1.commit_art_id,txd1.time " + //
          "from rootArtTime rat, osee_tx_details txd1, osee_txs attrTxs,osee_attribute attr,osee_txs changedTxs " + //
@@ -681,7 +683,7 @@ public class MimIcdGenerator {
          "select name, commit_art_id, atsid, time, row_number() over (order by time desc) rn, relTw, transaction_id, txBranch " + //
          "from (select distinct attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id, arts.transaction_id, arts.txBranch from " + //
          "cte_query, arts, osee_txs attrTxs, osee_attribute attr, osee_txs attrTxs2, osee_attribute attr2 " + //
-         "where b_art_id = arts.art_id and attrTxs.branch_id = ? " + //commonBranch
+         "where b_art_id = arts.art_id and arts.time >= cte_query.rel_time and attrTxs.branch_id = ? " + //commonBranch
          "and attrTxs.tx_current = 1 and attrTxs.gamma_id = attr.gamma_id and attr.art_id = arts.commit_art_id and attr.attr_type_id = ? " + //CoreAttributeTypes.Name
          "and attrTxs2.branch_id = ? " + //CoreBranches.COMMON.getId()
          "and attrTxs2.tx_current = 1 and attrTxs2.gamma_id = attr2.gamma_id and attr2.art_id = arts.commit_art_id " + //

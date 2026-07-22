@@ -25,7 +25,6 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -43,24 +42,28 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  * @author David W. Miller
  */
 public final class TemplateParser {
-   private final OrcsApi orcsApi;
    private final QueryFactory queryApi;
-   private final BranchToken branch;
-   private final ArtifactId view;
    private final ArtifactId reportTemplateArt;
    private final XResultData results;
+   private ArtifactReadable cachedTemplateArtifact;
 
+   /**
+    * Constructs a TemplateParser for the given report template artifact. The {@code branch} and {@code view} parameters
+    * are accepted for API compatibility and future extensibility but are not currently used — the template is always
+    * loaded from COMMON branch. If future changes need access to the report's target branch or view, restore fields
+    * for these parameters here.
+    */
    public TemplateParser(OrcsApi orcsApi, BranchId branch, ArtifactId view, ArtifactId templateArt, XResultData results) {
-      this.orcsApi = orcsApi;
       this.queryApi = orcsApi.getQueryFactory();
-      this.branch = orcsApi.getQueryFactory().branchQuery().andId(branch).getResultsAsId().getExactlyOne();
-      this.view = view;
       this.reportTemplateArt = templateArt;
       this.results = results;
    }
 
    public ArtifactReadable getTemplateArtifact() {
-      return queryApi.fromBranch(CoreBranches.COMMON).andId(reportTemplateArt).getArtifact();
+      if (cachedTemplateArtifact == null) {
+         cachedTemplateArtifact = queryApi.fromBranch(CoreBranches.COMMON).andId(reportTemplateArt).getArtifact();
+      }
+      return cachedTemplateArtifact;
    }
 
    public void parseTemplateData(GenericReport report) {
@@ -138,17 +141,19 @@ public final class TemplateParser {
    private void setPathsForParser(ASTParserUtil parser) {
       // add known paths
       try {
+         String[] classNames = {
+            "org.eclipse.osee.orcs.rest.model.GenericReport",
+            "org.eclipse.osee.orcs.rest.internal.writers.GenericReportBuilder",
+            "org.eclipse.osee.orcs.search.QueryBuilder",
+            "org.eclipse.osee.framework.jdk.core.type.ResultSet",
+            "org.eclipse.osee.framework.core.data.ArtifactId"};
          List<String> paths = new ArrayList<>();
-         paths.add(new File(Class.forName(
-            "org.eclipse.osee.orcs.rest.model.GenericReport").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
-         paths.add(new File(Class.forName(
-            "org.eclipse.osee.orcs.rest.internal.writers.GenericReportBuilder").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
-         paths.add(new File(Class.forName(
-            "org.eclipse.osee.orcs.search.QueryBuilder").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
-         paths.add(new File(Class.forName(
-            "org.eclipse.osee.framework.jdk.core.type.ResultSet").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
-         paths.add(new File(Class.forName(
-            "org.eclipse.osee.framework.core.data.ArtifactId").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+         for (String className : classNames) {
+            String path = getClasspathEntry(className);
+            if (path != null) {
+               paths.add(path);
+            }
+         }
          results.log("Adding base paths");
          for (String path : paths) {
             parser.addClassPath(path);
@@ -157,13 +162,15 @@ public final class TemplateParser {
 
          ArtifactReadable templateArt = getTemplateArtifact();
          if (templateArt.getAttributeCount(CoreAttributeTypes.Annotation) > 0) {
-            List<String> attrPaths = getTemplateArtifact().getAttributeValues(CoreAttributeTypes.Annotation);
-            results.logf("Adding paths from template artifact %d", templateArt.getIdString());
+            List<String> attrPaths = templateArt.getAttributeValues(CoreAttributeTypes.Annotation);
+            results.logf("Adding paths from template artifact %s", templateArt.getIdString());
             for (String path : attrPaths) {
                if (path.startsWith("relative/")) {
                   String[] relativePath = path.split("/");
-                  parser.addClassPath(new File(Class.forName(
-                     relativePath[1]).getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+                  String relClassPath = getClasspathEntry(relativePath[1]);
+                  if (relClassPath != null) {
+                     parser.addClassPath(relClassPath);
+                  }
                } else if (isSourceDirectory(path)) {
                   parser.addSourcePath(path);
                } else {
@@ -181,9 +188,31 @@ public final class TemplateParser {
    }
 
    /**
+    * Resolves the classpath entry (jar or directory) for the given fully-qualified class name. Returns null if the
+    * class cannot be found or its code source is unavailable (e.g. OSGi bundle classloaders).
+    */
+   private String getClasspathEntry(String className) {
+      try {
+         Class<?> clazz = Class.forName(className);
+         java.security.CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+         if (codeSource == null) {
+            results.logf("CodeSource unavailable for %s, skipping", className);
+            return null;
+         }
+         return new File(codeSource.getLocation().toURI()).getPath();
+      } catch (ClassNotFoundException ex) {
+         results.logf("Class not found: %s", className);
+         return null;
+      } catch (Exception ex) {
+         results.logf("Failed to resolve classpath for %s: %s", className, ex.toString());
+         return null;
+      }
+   }
+
+   /**
     * Determines if the given path is a source directory (contains .java files) rather than a classpath entry (jar or
-    * compiled class directory). A path is considered a source directory if it is a directory that does not end with .jar
-    * and contains a "src" segment or has .java files.
+    * compiled class directory). A path is considered a source directory if it is a directory that does not end with
+    * .jar and contains a "src" segment or has .java files.
     */
    private boolean isSourceDirectory(String path) {
       if (path.endsWith(".jar")) {
