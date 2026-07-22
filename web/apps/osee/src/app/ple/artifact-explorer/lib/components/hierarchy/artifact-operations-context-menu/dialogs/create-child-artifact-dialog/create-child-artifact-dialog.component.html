@@ -110,7 +110,9 @@
 			[matTooltip]="
 				!isArtifactTypeValid
 					? 'Select a valid artifact type from the list.'
-					: ''
+					: createChildArtifactForm.invalid
+						? 'Required fields not filled out.'
+						: ''
 			">
 			<button
 				mat-stroked-button

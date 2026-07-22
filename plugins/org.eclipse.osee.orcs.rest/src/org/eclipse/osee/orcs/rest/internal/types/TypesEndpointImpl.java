@@ -89,9 +89,9 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
    @Override
    public Collection<NamedIdBase> getArtifactTypes(String filter, boolean excludeAbstract) {
-      String lowerFilter = (filter != null ? filter : "").toLowerCase();
+      String lowerFilter = (filter != null ? filter : "").toLowerCase(java.util.Locale.ROOT);
       return this.orcsApi.tokenService().getArtifactTypes().stream()
-         .filter(art -> art.getName().toLowerCase().contains(lowerFilter))
+         .filter(art -> art.getName().toLowerCase(java.util.Locale.ROOT).contains(lowerFilter))
          .filter(a -> a.getId() != -1)
          .filter(a -> !excludeAbstract || !a.isAbstract())
          .map(a -> new NamedIdBase(a.getId(), a.getName()))

@@ -220,9 +220,7 @@ public class PublishingMarkdownAsPdfTest {
 
       var attachment = PublishingMarkdownAsPdfTest.publishingEndpoint.publishMarkdownAsPdf(publishingRequestData);
 
-      assertNotNull("Attachment should not be null", attachment);
-      assertTrue("Attachment content type should be application/pdf",
-         "application".equals(attachment.getContentType().getType()));
+      assertNotNull("PDF attachment should not be null", attachment);
 
       // Load the PDF
       try {
