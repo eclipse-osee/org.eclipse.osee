@@ -73,6 +73,8 @@ import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactTxComment;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywordsChained;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywordsChained.AttributeConstraint;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeTypeExists;
@@ -111,6 +113,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final QueryEngine queryEngine;
    private final OrcsTokenService tokenService;
    private final HashMap<SqlTable, String> mainAliases = new HashMap<>(4);
+   private final List<AttributeConstraint> pendingAttributeConstraints = new ArrayList<>();
    private QueryType queryType;
    private boolean followCausesChild = true;
    private ApplicabilityId appId;
@@ -605,8 +608,16 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public QueryBuilder and(Collection<AttributeTypeToken> attributeTypes, Collection<String> values,
       QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
-      return addAndCheck(
-         new CriteriaAttributeKeywords(isIncludeAllTypes, attributeTypes, tokenService, values, options));
+      if (isIncludeAllTypes || attributeTypes.size() > 1) {
+         // Multi-type or ANY_ATTRIBUTE_TYPE searches can't be chained — flush pending and add directly
+         flushPendingAttributeChain();
+         return addAndCheck(
+            new CriteriaAttributeKeywords(isIncludeAllTypes, attributeTypes, tokenService, values, options));
+      }
+      // Single attribute type: buffer for chaining
+      AttributeTypeToken attrType = attributeTypes.iterator().next();
+      pendingAttributeConstraints.add(new AttributeConstraint(attrType, values, options));
+      return this;
    }
 
    @Override
@@ -651,6 +662,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public QueryBuilder followRelation(RelationTypeSide relationTypeSide) {
+      flushPendingAttributeChain();
       addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide, ArtifactTypeToken.SENTINEL, true, true));
       newCriteriaSet();
       return this;
@@ -660,6 +672,27 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       criteria.checkValid(getOptions());
       addCriteria(criteria);
       return this;
+   }
+
+   /**
+    * Flushes any buffered attribute constraints. If there's only one, it goes through as a standard
+    * CriteriaAttributeKeywords. If there are two or more, they are combined into a single
+    * CriteriaAttributeKeywordsChained for a more efficient chained CTE query.
+    */
+   private void flushPendingAttributeChain() {
+      if (pendingAttributeConstraints.isEmpty()) {
+         return;
+      }
+      if (pendingAttributeConstraints.size() == 1) {
+         AttributeConstraint c = pendingAttributeConstraints.get(0);
+         addAndCheck(new CriteriaAttributeKeywords(false, Collections.singleton(c.getAttributeType()), tokenService,
+            c.getValues(), c.getOptions()));
+      } else {
+         CriteriaAttributeKeywordsChained criteria = new CriteriaAttributeKeywordsChained(
+            new ArrayList<>(pendingAttributeConstraints));
+         addAndCheck(criteria);
+      }
+      pendingAttributeConstraints.clear();
    }
 
    @Override
@@ -731,6 +764,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    private QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
       boolean terminalFollow) {
+      flushPendingAttributeChain();
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;
       followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow, true));
@@ -995,6 +1029,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() {
+      flushPendingAttributeChain();
       return artQueryFactory.createSearchWithMatches(null, this);
    }
 
@@ -1022,6 +1057,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    public void setQueryType(QueryType queryType) {
+      flushPendingAttributeChain();
       this.queryType = queryType;
       if (parentQueryData != null) {
          parentQueryData.setQueryType(queryType);

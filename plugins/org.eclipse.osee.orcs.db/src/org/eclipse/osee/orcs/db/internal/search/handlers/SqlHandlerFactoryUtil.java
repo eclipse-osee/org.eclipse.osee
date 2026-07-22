@@ -30,6 +30,7 @@ import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAssociatedArtId;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAssociatedArtIds;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywordsChained;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeTypeExists;
@@ -118,6 +119,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaAttributeRaw.class, AttributeRawSqlHandler.class);
       handleMap.put(CriteriaAttributeValueRange.class, AttributeValueRangeSqlHandler.class);
       handleMap.put(CriteriaAttributeKeywords.class, AttributeTokenSqlHandler.class);
+      handleMap.put(CriteriaAttributeKeywordsChained.class, AttributeTokenChainedSqlHandler.class);
       handleMap.put(CriteriaRelationTypeFollow.class, RelationTypeFollowSqlHandler.class);
       handleMap.put(CriteriaAttributeSort.class, AttributeSortSqlHandler.class);
       handleMap.put(CriteriaPagination.class, PaginationSqlHandler.class);
