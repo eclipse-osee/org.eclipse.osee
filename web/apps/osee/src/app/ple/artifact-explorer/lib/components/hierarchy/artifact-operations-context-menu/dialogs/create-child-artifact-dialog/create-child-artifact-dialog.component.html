@@ -63,10 +63,7 @@
 					@if (!autoCompleteState.openedState) {
 						<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
 					}
-					@if (
-						autoCompleteState.openedState &&
-						input.value !== ''
-					) {
+					@if (autoCompleteState.openedState && input.value !== '') {
 						<button
 							mat-icon-button
 							matIconSuffix
