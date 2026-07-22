@@ -126,10 +126,6 @@ export class CreateChildArtifactDialogComponent {
 		)
 	);
 
-	get filter() {
-		return this._typeAhead;
-	}
-
 	displayArtifactType(value: NamedId | string): string {
 		if (typeof value === 'string') {
 			return value;
@@ -137,13 +133,9 @@ export class CreateChildArtifactDialogComponent {
 		return value?.name ?? '';
 	}
 
-	updateTypeAhead(value: string | NamedId) {
-		if (typeof value === 'string') {
-			this.data.artifactTypeId = '0';
-			this._typeAhead.next(value);
-		} else {
-			this._typeAhead.next(value.name);
-		}
+	updateTypeAhead(value: string) {
+		this.data.artifactTypeId = '0';
+		this._typeAhead.next(value);
 	}
 	autoCompleteOpened() {
 		this._openAutoComplete.next();
@@ -159,8 +151,10 @@ export class CreateChildArtifactDialogComponent {
 	get isOpen() {
 		return this._isOpen;
 	}
-	clear() {
-		this.updateTypeAhead('');
+	clear(input: HTMLInputElement) {
+		input.value = '';
+		this._typeAhead.next('');
+		this.data.artifactTypeId = '0';
 	}
 
 	// Attribute fetching to pass into attribute editor - Requires artifact type to be selected

@@ -40,13 +40,7 @@
 					[(ngModel)]="data.name" />
 			</mat-form-field>
 
-			@if (
-				{
-					openedState: isOpen | async,
-					filter: filter | async,
-				};
-				as autoCompleteState
-			) {
+			@if ({ openedState: isOpen | async }; as autoCompleteState) {
 				<mat-form-field
 					appearance="outline"
 					subscriptSizing="dynamic"
@@ -58,13 +52,12 @@
 						matInput
 						#input
 						required
-						[ngModel]="autoCompleteState.filter"
 						placeholder="Unspecified"
 						id="artifactTypes"
 						name="artifactTypes"
+						ngModel
 						(focusin)="autoCompleteOpened()"
-						(focusout)="close()"
-						(ngModelChange)="updateTypeAhead($event)"
+						(input)="updateTypeAhead(input.value)"
 						#artifactTypes="ngModel"
 						[matAutocomplete]="autoArtifactTypes" />
 					@if (!autoCompleteState.openedState) {
@@ -72,20 +65,21 @@
 					}
 					@if (
 						autoCompleteState.openedState &&
-						autoCompleteState.filter !== ''
+						input.value !== ''
 					) {
 						<button
 							mat-icon-button
 							matIconSuffix
-							(mousedown)="clear()">
+							(mousedown)="clear(input)">
 							<mat-icon>close</mat-icon>
 						</button>
 					}
 					<mat-autocomplete
 						autoActiveFirstOption="true"
-						autoSelectActiveOption="true"
+						requireSelection="true"
 						#autoArtifactTypes="matAutocomplete"
 						[displayWith]="displayArtifactType"
+						(closed)="close()"
 						(optionSelected)="updateValue($event.option.value)">
 						@for (type of _artifactTypes | async; track type) {
 							<mat-option [value]="type">
