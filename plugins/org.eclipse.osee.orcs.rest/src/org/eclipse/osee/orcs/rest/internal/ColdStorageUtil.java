@@ -32,6 +32,7 @@ public final class ColdStorageUtil {
 
    private static final Logger LOGGER = Logger.getLogger(ColdStorageUtil.class.getName());
    private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+   private static String coldStoragePath = null;
 
    private ColdStorageUtil() {
       // utility class
@@ -44,27 +45,30 @@ public final class ColdStorageUtil {
     * @return the absolute path to the cold_storage directory, or null if the server data path cannot be determined
     */
    public static String getColdStoragePath() {
-      String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      if (serverPath == null || serverPath.isBlank() || "null".equals(serverPath)) {
-         String fallback = System.getProperty("user.home");
-         if (fallback == null || fallback.isBlank() || "null".equals(fallback)) {
-            return null;
+      if (coldStoragePath == null) {
+         String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+         if (serverPath == null || serverPath.isBlank() || "null".equals(serverPath)) {
+            String fallback = System.getProperty("user.home");
+            if (fallback == null || fallback.isBlank() || "null".equals(fallback)) {
+               return null;
+            }
+            LOGGER.log(Level.WARNING, "OSEE server data path not configured; cold storage will use fallback: {0}",
+               fallback);
+            serverPath = fallback;
          }
-         LOGGER.log(Level.WARNING,
-            "OSEE server data path not configured; cold storage will use fallback: {0}", fallback);
-         serverPath = fallback;
+         Path purgeFolder = Paths.get(serverPath + File.separator + "purge");
+         if (Files.exists(purgeFolder)) {
+            serverPath = purgeFolder.toString();
+         }
+         Path coldFolder = Paths.get(serverPath + File.separator + "cold_storage");
+         try {
+            Files.createDirectories(coldFolder);
+         } catch (IOException ex) {
+            throw OseeCoreException.wrap(ex);
+         }
+         coldStoragePath = coldFolder.toString();
       }
-      Path purgeFolder = Paths.get(serverPath + File.separator + "purge");
-      if (Files.exists(purgeFolder)) {
-         serverPath = purgeFolder.toString();
-      }
-      Path coldFolder = Paths.get(serverPath + File.separator + "cold_storage");
-      try {
-         Files.createDirectories(coldFolder);
-      } catch (IOException ex) {
-         throw OseeCoreException.wrap(ex);
-      }
-      return coldFolder.toString();
+      return coldStoragePath;
    }
 
    /**
