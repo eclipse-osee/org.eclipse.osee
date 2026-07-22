@@ -40,59 +40,58 @@
 					[(ngModel)]="data.name" />
 			</mat-form-field>
 
-			@if ({ openedState: isOpen | async }; as autoCompleteState) {
-				<mat-form-field
-					appearance="outline"
-					subscriptSizing="dynamic"
-					id="artifactType-selector"
-					class="tw-w-full tw-pt-4">
-					<mat-label> Select a Type: </mat-label>
-					<input
-						type="text"
-						matInput
-						#input
-						required
-						placeholder="Unspecified"
-						id="artifactTypes"
-						name="artifactTypes"
-						ngModel
-						(focusin)="autoCompleteOpened()"
-						(input)="updateTypeAhead(input.value)"
-						#artifactTypes="ngModel"
-						[matAutocomplete]="autoArtifactTypes" />
-					@if (!autoCompleteState.openedState) {
-						<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
+			<mat-form-field
+				appearance="outline"
+				subscriptSizing="dynamic"
+				id="artifactType-selector"
+				class="tw-w-full tw-pt-4">
+				<mat-label> Select a Type: </mat-label>
+				<input
+					type="text"
+					matInput
+					#input
+					required
+					placeholder="Unspecified"
+					id="artifactTypes"
+					name="artifactTypes"
+					ngModel
+					(focusin)="autoCompleteOpened()"
+					(focusout)="inputFocused.set(false)"
+					(input)="updateTypeAhead(input.value)"
+					#artifactTypes="ngModel"
+					[matAutocomplete]="autoArtifactTypes" />
+				@if (!inputFocused()) {
+					<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
+				}
+				@if (inputFocused() && input.value !== '') {
+					<button
+						mat-icon-button
+						matIconSuffix
+						(mousedown)="$event.preventDefault(); clear(input)">
+						<mat-icon>close</mat-icon>
+					</button>
+				}
+				<mat-autocomplete
+					autoActiveFirstOption="true"
+					requireSelection="true"
+					#autoArtifactTypes="matAutocomplete"
+					[displayWith]="displayArtifactType"
+					(closed)="close()"
+					(optionSelected)="updateValue($event.option.value)">
+					@for (type of _artifactTypes | async; track type) {
+						<mat-option [value]="type">
+							{{ type.name }}
+						</mat-option>
 					}
-					@if (autoCompleteState.openedState && input.value !== '') {
-						<button
-							mat-icon-button
-							matIconSuffix
-							(mousedown)="clear(input)">
-							<mat-icon>close</mat-icon>
-						</button>
-					}
-					<mat-autocomplete
-						autoActiveFirstOption="true"
-						requireSelection="true"
-						#autoArtifactTypes="matAutocomplete"
-						[displayWith]="displayArtifactType"
-						(closed)="close()"
-						(optionSelected)="updateValue($event.option.value)">
-						@for (type of _artifactTypes | async; track type) {
-							<mat-option [value]="type">
-								{{ type.name }}
-							</mat-option>
-						}
-						<ng-template #loading>
-							<mat-option
-								id="-1"
-								[value]="{ id: '-1', name: 'invalid' }">
-								Loading...
-							</mat-option>
-						</ng-template>
-					</mat-autocomplete>
-				</mat-form-field>
-			}
+					<ng-template #loading>
+						<mat-option
+							id="-1"
+							[value]="{ id: '-1', name: 'invalid' }">
+							Loading...
+						</mat-option>
+					</ng-template>
+				</mat-autocomplete>
+			</mat-form-field>
 
 			@if (_attributes | async; as attributes) {
 				<osee-attributes-editor
@@ -112,16 +111,20 @@
 			(click)="onCancel()">
 			Cancel
 		</button>
-		<button
-			mat-stroked-button
-			[mat-dialog-close]="data"
-			[disabled]="createChildArtifactForm.invalid || !isArtifactTypeValid"
+		<span
 			[matTooltip]="
 				!isArtifactTypeValid
 					? 'Select a valid artifact type from the list.'
 					: ''
 			">
-			Ok
-		</button>
+			<button
+				mat-stroked-button
+				[mat-dialog-close]="data"
+				[disabled]="
+					createChildArtifactForm.invalid || !isArtifactTypeValid
+				">
+				Ok
+			</button>
+		</span>
 	</div>
 </form>

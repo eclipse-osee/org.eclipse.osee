@@ -11,8 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, viewChild } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	signal,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
 	MatAutocompleteTrigger,
@@ -64,7 +69,6 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 	imports: [
 		AsyncPipe,
 		FormsModule,
-		AsyncPipe,
 		AttributesEditorComponent,
 		FormDirective,
 		MatDialogTitle,
@@ -84,6 +88,7 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 		MatTooltip,
 	],
 	templateUrl: './create-child-artifact-dialog.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class CreateChildArtifactDialogComponent {
@@ -100,9 +105,9 @@ export class CreateChildArtifactDialogComponent {
 
 	private _typeAhead = new BehaviorSubject<string>('');
 	private _openAutoComplete = new ReplaySubject<void>();
-	private _isOpen = new BehaviorSubject<boolean>(false);
 	private _artExpHttpService = inject(ArtifactExplorerHttpService);
 	private _artUiService = inject(ArtifactUiService);
+	protected readonly inputFocused = signal(false);
 
 	protected _artifactTypes = this._openAutoComplete.pipe(
 		take(1),
@@ -139,22 +144,22 @@ export class CreateChildArtifactDialogComponent {
 	}
 	autoCompleteOpened() {
 		this._openAutoComplete.next();
-		this._isOpen.next(true);
+		this.inputFocused.set(true);
 	}
 	close() {
-		this._isOpen.next(false);
+		// Panel closed — no action needed for UI state.
+		// inputFocused is managed by focusin/focusout on the input.
 	}
 	updateValue(value: NamedId): void {
 		this.data.artifactTypeId = value.id;
 		this._artifactTypeIdSubject.next(value.id);
 	}
-	get isOpen() {
-		return this._isOpen;
-	}
 	clear(input: HTMLInputElement) {
 		input.value = '';
 		this._typeAhead.next('');
 		this.data.artifactTypeId = '0';
+		// Refocus so the user can immediately type a new search
+		input.focus();
 	}
 
 	// Attribute fetching to pass into attribute editor - Requires artifact type to be selected
@@ -196,11 +201,6 @@ export class CreateChildArtifactDialogComponent {
 	}
 
 	// Handle form status change
-
-	protected _createChildArtifactForm = viewChild.required(
-		'createChildArtifactForm',
-		{ read: NgForm }
-	);
 
 	getIconClasses(icon: artifactTypeIcon) {
 		return (
