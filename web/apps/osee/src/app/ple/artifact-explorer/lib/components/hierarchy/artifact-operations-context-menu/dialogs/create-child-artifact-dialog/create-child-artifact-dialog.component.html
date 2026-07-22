@@ -85,6 +85,7 @@
 						autoActiveFirstOption="true"
 						autoSelectActiveOption="true"
 						#autoArtifactTypes="matAutocomplete"
+						[displayWith]="displayArtifactType"
 						(optionSelected)="updateValue($event.option.value)">
 						@for (type of _artifactTypes | async; track type) {
 							<mat-option [value]="type">
@@ -123,7 +124,12 @@
 		<button
 			mat-stroked-button
 			[mat-dialog-close]="data"
-			[disabled]="createChildArtifactForm.invalid">
+			[disabled]="createChildArtifactForm.invalid || !isArtifactTypeValid"
+			[matTooltip]="
+				!isArtifactTypeValid
+					? 'Select a valid artifact type from the list.'
+					: ''
+			">
 			Ok
 		</button>
 	</div>

@@ -23,10 +23,13 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 export class ArtifactService {
 	private http = inject(HttpClient);
 
-	getArtifactTypes(filter: string) {
+	getArtifactTypes(filter: string, excludeAbstract?: boolean) {
 		let params: HttpParamsType = {};
 		if (filter && filter !== '') {
 			params = { ...params, filter: filter };
+		}
+		if (excludeAbstract) {
+			params = { ...params, excludeAbstract: 'true' };
 		}
 		return this.http.get<NamedId[]>(apiURL + '/orcs/types/artifact', {
 			params: params,

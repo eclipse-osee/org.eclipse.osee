@@ -104,10 +104,10 @@ public class PublishingMarkdownAsPdfTest {
     * Configuration/Document Templates" folder.
     */
 
-   private static String PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A = "PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A";
+   private static final String PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A = "PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A";
 
    //@formatter:off
-   private static Supplier<List<PublishingTemplate>> publishingTemplatesSupplier = new Supplier<> () {
+   private static final Supplier<List<PublishingTemplate>> publishingTemplatesSupplier = new Supplier<> () {
 
       @Override
       public List<PublishingTemplate> get() {
@@ -208,7 +208,7 @@ public class PublishingMarkdownAsPdfTest {
          Arrays.asList(ArtifactId.valueOf(CoreArtifactTokens.SystemRequirementsFolderMarkdown.getToken().getId()));
 
       PublishingTemplateRequest pubTemReq =
-         new PublishingTemplateRequest(template_A.getIdentifier().toString(), FormatIndicator.MARKDOWN);
+         new PublishingTemplateRequest(template_A.getIdentifier(), FormatIndicator.MARKDOWN);
 
       PublishingRequestData publishingRequestData = new PublishingRequestData(pubTemReq, pubRenOpt, art);
 
@@ -228,7 +228,7 @@ public class PublishingMarkdownAsPdfTest {
          pdfDoc = PDDocument.load(attachment.getDataHandler().getInputStream());
          numPages = pdfDoc.getNumberOfPages();
       } catch (IOException e) {
-         throw new RuntimeException("Error loading PDF document", e);
+         fail("Error loading PDF document: " + e.getMessage());
       }
    }
 
@@ -266,7 +266,7 @@ public class PublishingMarkdownAsPdfTest {
          }
 
          List<String> lines = Arrays.asList(pageText.split("\\r?\\n"));
-         String normalizedText = pageText.replaceAll("\\s+", " ").toUpperCase();
+         String normalizedText = pageText.replaceAll("\\s+", " ").toUpperCase(java.util.Locale.ENGLISH);
 
          boolean hasProprietary =
             normalizedText.contains("PROPRIETARY") && normalizedText.contains("EXPORT CONTROLLED INFORMATION");
@@ -360,7 +360,7 @@ public class PublishingMarkdownAsPdfTest {
 
       EnumRendererMap pubRenOpt = new EnumRendererMap(PublishingMarkdownAsPdfTest.rendererOptions);
       PublishingTemplateRequest pubTemReq =
-         new PublishingTemplateRequest(template_A.getIdentifier().toString(), FormatIndicator.MARKDOWN);
+         new PublishingTemplateRequest(template_A.getIdentifier(), FormatIndicator.MARKDOWN);
       PublishingRequestData requestData =
          new PublishingRequestData(pubTemReq, pubRenOpt, List.of(ArtifactId.valueOf(tableArt.getId())));
 

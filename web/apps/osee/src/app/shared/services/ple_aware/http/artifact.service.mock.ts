@@ -27,7 +27,7 @@ export const artifactServiceMock: Partial<ArtifactService> = {
 			},
 		]);
 	},
-	getArtifactTypes(filter: string) {
+	getArtifactTypes(filter: string, excludeAbstract?: boolean) {
 		return of([
 			{
 				id: '1',

@@ -16,7 +16,7 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { of } from 'rxjs';
 
 export const artifactUiServiceMock: Partial<ArtifactUiService> = {
-	getArtifactTypes(filter: string) {
+	getArtifactTypes(filter: string, excludeAbstract?: boolean) {
 		return of([
 			{
 				id: '1',

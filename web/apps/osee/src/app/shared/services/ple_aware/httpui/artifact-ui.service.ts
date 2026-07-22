@@ -20,8 +20,8 @@ import { NamedId } from '@osee/shared/types';
 export class ArtifactUiService {
 	private artifactService = inject(ArtifactService);
 
-	getArtifactTypes(filter: string) {
-		return this.artifactService.getArtifactTypes(filter);
+	getArtifactTypes(filter: string, excludeAbstract?: boolean) {
+		return this.artifactService.getArtifactTypes(filter, excludeAbstract);
 	}
 
 	getAttributeTypes(artifactTypes: NamedId[]) {

@@ -88,16 +88,15 @@ public class TypesEndpointImpl implements TypesEndpoint {
    }
 
    @Override
-   public Collection<NamedIdBase> getArtifactTypes(String filter) {
-      return this.orcsApi.tokenService().getArtifactTypes().stream().filter(
-         art -> art.getName().toLowerCase().contains((filter != null ? filter : "").toLowerCase())).filter(
-            a -> a.getId() != -1).map(a -> new NamedIdBase(a.getId(), a.getName())).sorted(
-               new Comparator<NamedIdBase>() {
-                  @Override
-                  public int compare(NamedIdBase o1, NamedIdBase o2) {
-                     return o1.getName().compareTo(o2.getName());
-                  }
-               }).collect(Collectors.toList());
+   public Collection<NamedIdBase> getArtifactTypes(String filter, boolean excludeAbstract) {
+      String lowerFilter = (filter != null ? filter : "").toLowerCase();
+      return this.orcsApi.tokenService().getArtifactTypes().stream()
+         .filter(art -> art.getName().toLowerCase().contains(lowerFilter))
+         .filter(a -> a.getId() != -1)
+         .filter(a -> !excludeAbstract || !a.isAbstract())
+         .map(a -> new NamedIdBase(a.getId(), a.getName()))
+         .sorted(Comparator.comparing(NamedIdBase::getName))
+         .collect(Collectors.toList());
    }
 
    @Override

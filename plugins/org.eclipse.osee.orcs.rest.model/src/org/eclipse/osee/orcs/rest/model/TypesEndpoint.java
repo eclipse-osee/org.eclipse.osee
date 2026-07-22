@@ -45,7 +45,8 @@ public interface TypesEndpoint {
    @GET
    @Path("artifact")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<NamedIdBase> getArtifactTypes(@QueryParam("filter") String filter);
+   Collection<NamedIdBase> getArtifactTypes(@QueryParam("filter") String filter,
+      @QueryParam("excludeAbstract") boolean excludeAbstract);
 
    @GET
    @Path("artifact/{artifactId}/attributes")

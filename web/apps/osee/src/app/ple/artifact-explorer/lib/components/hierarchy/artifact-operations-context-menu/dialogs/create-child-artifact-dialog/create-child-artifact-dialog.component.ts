@@ -34,6 +34,7 @@ import {
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { MatTooltip } from '@angular/material/tooltip';
 import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
@@ -45,11 +46,14 @@ import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
 	ReplaySubject,
+	concat,
 	debounceTime,
 	distinctUntilChanged,
 	filter,
 	map,
+	skip,
 	switchMap,
+	take,
 } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
 import { ArtifactIconService } from '../../../../../services/artifact-icon.service';
@@ -77,6 +81,7 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 		MatDialogActions,
 		MatButton,
 		MatDialogClose,
+		MatTooltip,
 	],
 	templateUrl: './create-child-artifact-dialog.component.html',
 	viewProviders: [provideOptionalControlContainerNgForm()],
@@ -100,14 +105,22 @@ export class CreateChildArtifactDialogComponent {
 	private _artUiService = inject(ArtifactUiService);
 
 	protected _artifactTypes = this._openAutoComplete.pipe(
-		debounceTime(500),
-		distinctUntilChanged(),
+		take(1),
 		switchMap((_) =>
-			this._typeAhead.pipe(
-				distinctUntilChanged(),
-				debounceTime(500),
-				switchMap((filter) =>
-					this._artUiService.getArtifactTypes(filter)
+			concat(
+				this._typeAhead.pipe(
+					take(1),
+					switchMap((filter) =>
+						this._artUiService.getArtifactTypes(filter, true)
+					)
+				),
+				this._typeAhead.pipe(
+					skip(1),
+					distinctUntilChanged(),
+					debounceTime(500),
+					switchMap((filter) =>
+						this._artUiService.getArtifactTypes(filter, true)
+					)
 				)
 			)
 		)
@@ -116,9 +129,17 @@ export class CreateChildArtifactDialogComponent {
 	get filter() {
 		return this._typeAhead;
 	}
-	updateTypeAhead(value: string | NamedId) {
-		this.data.artifactTypeId = '0';
+
+	displayArtifactType(value: NamedId | string): string {
 		if (typeof value === 'string') {
+			return value;
+		}
+		return value?.name ?? '';
+	}
+
+	updateTypeAhead(value: string | NamedId) {
+		if (typeof value === 'string') {
+			this.data.artifactTypeId = '0';
 			this._typeAhead.next(value);
 		} else {
 			this._typeAhead.next(value.name);
@@ -176,18 +197,8 @@ export class CreateChildArtifactDialogComponent {
 
 	// Make sure required data is filled out
 
-	get isDataComplete(): string {
-		return `${
-			!!this.data.name &&
-			!!this.data.artifactTypeId &&
-			this.data.attributes.length > 0 &&
-			this.data.attributes.every((attribute) =>
-				attribute.multiplicity?.id === '2' ||
-				attribute.multiplicity?.id === '4'
-					? attribute.value !== ''
-					: true
-			)
-		}`;
+	get isArtifactTypeValid(): boolean {
+		return !!this.data.artifactTypeId && this.data.artifactTypeId !== '0';
 	}
 
 	// Handle form status change
