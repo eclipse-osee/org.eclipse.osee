@@ -58,7 +58,7 @@
 					(focusin)="autoCompleteOpened()"
 					(focusout)="inputFocused.set(false)"
 					(input)="updateTypeAhead(input.value)"
-					#artifactTypes="ngModel"
+					#artifactTypeModel="ngModel"
 					[matAutocomplete]="autoArtifactTypes" />
 				@if (!inputFocused()) {
 					<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
@@ -76,20 +76,15 @@
 					requireSelection="true"
 					#autoArtifactTypes="matAutocomplete"
 					[displayWith]="displayArtifactType"
-					(closed)="close()"
 					(optionSelected)="updateValue($event.option.value)">
-					@for (type of _artifactTypes | async; track type) {
+					@if (isLoadingTypes()) {
+						<mat-option disabled> Loading... </mat-option>
+					}
+					@for (type of artifactTypes(); track type.id) {
 						<mat-option [value]="type">
 							{{ type.name }}
 						</mat-option>
 					}
-					<ng-template #loading>
-						<mat-option
-							id="-1"
-							[value]="{ id: '-1', name: 'invalid' }">
-							Loading...
-						</mat-option>
-					</ng-template>
 				</mat-autocomplete>
 			</mat-form-field>
 

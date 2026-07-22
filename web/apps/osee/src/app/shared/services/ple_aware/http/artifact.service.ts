@@ -10,8 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import {
+	HttpClient,
+	httpResource,
+	HttpResourceRef,
+} from '@angular/common/http';
+import { Injectable, Signal, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, NamedId } from '@osee/shared/types';
 import { attribute } from '@osee/attributes/types';
@@ -33,6 +37,26 @@ export class ArtifactService {
 		}
 		return this.http.get<NamedId[]>(apiURL + '/orcs/types/artifact', {
 			params: params,
+		});
+	}
+
+	getArtifactTypesResource(
+		filter: Signal<string>,
+		excludeAbstract = false
+	): HttpResourceRef<NamedId[] | undefined> {
+		return httpResource<NamedId[]>(() => {
+			const filterValue = filter();
+			const params: Record<string, string> = {};
+			if (filterValue !== '') {
+				params['filter'] = filterValue;
+			}
+			if (excludeAbstract) {
+				params['excludeAbstract'] = 'true';
+			}
+			return {
+				url: apiURL + '/orcs/types/artifact',
+				params,
+			};
 		});
 	}
 

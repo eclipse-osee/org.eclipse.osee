@@ -14,9 +14,11 @@ import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
+	computed,
 	inject,
 	signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -50,15 +52,11 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
-	ReplaySubject,
-	concat,
 	debounceTime,
 	distinctUntilChanged,
 	filter,
 	map,
-	skip,
 	switchMap,
-	take,
 } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
 import { ArtifactIconService } from '../../../../../services/artifact-icon.service';
@@ -104,32 +102,24 @@ export class CreateChildArtifactDialogComponent {
 	// Artifact type single select
 
 	private _typeAhead = new BehaviorSubject<string>('');
-	private _openAutoComplete = new ReplaySubject<void>();
 	private _artExpHttpService = inject(ArtifactExplorerHttpService);
 	private _artUiService = inject(ArtifactUiService);
 	protected readonly inputFocused = signal(false);
 
-	protected _artifactTypes = this._openAutoComplete.pipe(
-		take(1),
-		switchMap((_) =>
-			concat(
-				this._typeAhead.pipe(
-					take(1),
-					switchMap((filter) =>
-						this._artUiService.getArtifactTypes(filter, true)
-					)
-				),
-				this._typeAhead.pipe(
-					skip(1),
-					distinctUntilChanged(),
-					debounceTime(500),
-					switchMap((filter) =>
-						this._artUiService.getArtifactTypes(filter, true)
-					)
-				)
-			)
-		)
+	/** Debounced filter signal that drives the httpResource. */
+	private readonly debouncedFilter = toSignal(
+		this._typeAhead.pipe(distinctUntilChanged(), debounceTime(500)),
+		{ initialValue: '' }
 	);
+
+	/** Resource that fetches concrete artifact types based on the debounced filter. */
+	private readonly _typesResource =
+		this._artUiService.getArtifactTypesResource(this.debouncedFilter, true);
+
+	protected readonly artifactTypes = computed(
+		() => this._typesResource.value() ?? []
+	);
+	protected readonly isLoadingTypes = this._typesResource.isLoading;
 
 	displayArtifactType(value: NamedId | string): string {
 		if (typeof value === 'string') {
@@ -143,12 +133,7 @@ export class CreateChildArtifactDialogComponent {
 		this._typeAhead.next(value);
 	}
 	autoCompleteOpened() {
-		this._openAutoComplete.next();
 		this.inputFocused.set(true);
-	}
-	close() {
-		// Panel closed — no action needed for UI state.
-		// inputFocused is managed by focusin/focusout on the input.
 	}
 	updateValue(value: NamedId): void {
 		this.data.artifactTypeId = value.id;

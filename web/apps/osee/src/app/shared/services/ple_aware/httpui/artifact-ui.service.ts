@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
+import { HttpResourceRef } from '@angular/common/http';
 import { ArtifactService } from '../http/artifact.service';
 import { NamedId } from '@osee/shared/types';
 
@@ -22,6 +23,16 @@ export class ArtifactUiService {
 
 	getArtifactTypes(filter: string, excludeAbstract?: boolean) {
 		return this.artifactService.getArtifactTypes(filter, excludeAbstract);
+	}
+
+	getArtifactTypesResource(
+		filter: Signal<string>,
+		excludeAbstract = false
+	): HttpResourceRef<NamedId[] | undefined> {
+		return this.artifactService.getArtifactTypesResource(
+			filter,
+			excludeAbstract
+		);
 	}
 
 	getAttributeTypes(artifactTypes: NamedId[]) {
