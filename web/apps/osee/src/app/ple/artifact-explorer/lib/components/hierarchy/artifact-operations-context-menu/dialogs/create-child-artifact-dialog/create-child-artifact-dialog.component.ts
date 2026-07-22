@@ -93,7 +93,7 @@ export class CreateChildArtifactDialogComponent {
 	dialogRef =
 		inject<MatDialogRef<CreateChildArtifactDialogComponent>>(MatDialogRef);
 	data = inject<createChildArtifactDialogData>(MAT_DIALOG_DATA);
-	private artifactIconService = inject(ArtifactIconService);
+	private readonly artifactIconService = inject(ArtifactIconService);
 
 	onCancel() {
 		this.dialogRef.close();
@@ -101,9 +101,9 @@ export class CreateChildArtifactDialogComponent {
 
 	// Artifact type single select
 
-	private _typeAhead = new BehaviorSubject<string>('');
-	private _artExpHttpService = inject(ArtifactExplorerHttpService);
-	private _artUiService = inject(ArtifactUiService);
+	private readonly _typeAhead = new BehaviorSubject<string>('');
+	private readonly _artExpHttpService = inject(ArtifactExplorerHttpService);
+	private readonly _artUiService = inject(ArtifactUiService);
 	protected readonly inputFocused = signal(false);
 
 	/** Debounced filter signal that drives the httpResource. */
@@ -149,7 +149,7 @@ export class CreateChildArtifactDialogComponent {
 
 	// Attribute fetching to pass into attribute editor - Requires artifact type to be selected
 
-	private _artifactTypeIdSubject = new BehaviorSubject<string>('0');
+	private readonly _artifactTypeIdSubject = new BehaviorSubject<string>('0');
 	protected _attributes = this._artifactTypeIdSubject.asObservable().pipe(
 		filter((val) => val != '0'),
 		debounceTime(500),

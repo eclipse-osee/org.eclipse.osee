@@ -220,8 +220,9 @@ public class PublishingMarkdownAsPdfTest {
 
       var attachment = PublishingMarkdownAsPdfTest.publishingEndpoint.publishMarkdownAsPdf(publishingRequestData);
 
-      assertNotNull("HTML attachment should be present",
-         attachment.getContentType().getType().equals("application/pdf"));
+      assertNotNull("Attachment should not be null", attachment);
+      assertTrue("Attachment content type should be application/pdf",
+         "application".equals(attachment.getContentType().getType()));
 
       // Load the PDF
       try {
@@ -265,7 +266,6 @@ public class PublishingMarkdownAsPdfTest {
             continue;
          }
 
-         List<String> lines = Arrays.asList(pageText.split("\\r?\\n"));
          String normalizedText = pageText.replaceAll("\\s+", " ").toUpperCase(java.util.Locale.ENGLISH);
 
          boolean hasProprietary =

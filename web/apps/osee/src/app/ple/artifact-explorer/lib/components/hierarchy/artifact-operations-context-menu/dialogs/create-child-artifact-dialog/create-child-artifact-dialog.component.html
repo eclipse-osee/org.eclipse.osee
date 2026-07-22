@@ -58,7 +58,6 @@
 					(focusin)="autoCompleteOpened()"
 					(focusout)="inputFocused.set(false)"
 					(input)="updateTypeAhead(input.value)"
-					#artifactTypeModel="ngModel"
 					[matAutocomplete]="autoArtifactTypes" />
 				@if (!inputFocused()) {
 					<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
