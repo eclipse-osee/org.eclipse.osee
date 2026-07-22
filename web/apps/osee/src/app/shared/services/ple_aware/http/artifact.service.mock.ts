@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { httpResource } from '@angular/common/http';
 import { ArtifactService } from './artifact.service';
 import { NamedId } from '@osee/shared/types';
 import { of } from 'rxjs';
@@ -38,5 +39,8 @@ export const artifactServiceMock: Partial<ArtifactService> = {
 				name: 'Artifact Type 2',
 			},
 		]);
+	},
+	getArtifactTypesResource() {
+		return httpResource(() => '');
 	},
 };
