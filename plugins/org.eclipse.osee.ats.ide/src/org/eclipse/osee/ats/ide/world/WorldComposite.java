@@ -134,7 +134,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
                if (newFont != null) {
                   newFont.dispose();
                }
-               newFont = new Font(Displays.getActiveShell().getDisplay(), fontData);
+               newFont = new Font(worldXViewer.getTree().getDisplay(), fontData);
                worldXViewer.getTree().setFont(newFont);
             }
          };
