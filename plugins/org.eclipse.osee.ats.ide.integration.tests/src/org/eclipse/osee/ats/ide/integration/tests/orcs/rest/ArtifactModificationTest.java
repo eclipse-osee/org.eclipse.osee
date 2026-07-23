@@ -58,7 +58,7 @@ public class ArtifactModificationTest {
    private static String TEST_BRANCH = "Test_Write_Branch";
 
    @ClassRule
-   public static TestRule classRuleChain =
+   public static final TestRule classRuleChain =
       RuleChain.outerRule(new NotProductionDataStoreRule()).around(new ExitDatabaseInitializationRule()).around(
          TestUserRules.createInPublishingGroupTestRule()).around(new NoPopUpsRule());
 

@@ -81,6 +81,36 @@ test.describe('Artifact Create & Delete', () => {
 		});
 	});
 
+	test('should disable Ok when artifact type is not selected from dropdown', async ({
+		page,
+	}) => {
+		await openBranch(page, BRANCH);
+		await expandArtifact(page, 'System Requirements - Markdown');
+		await expect(page.getByText('AE CD Parent')).toBeVisible({
+			timeout: 10000,
+		});
+
+		await page.getByText('AE CD Parent').click({ button: 'right' });
+		await page
+			.getByRole('menuitem', { name: 'Create Child Artifact' })
+			.click();
+
+		await page
+			.getByRole('textbox', { name: 'Enter a Name' })
+			.fill('Invalid Test');
+		const typeInput = page.getByRole('combobox', {
+			name: 'Select a Type',
+		});
+		await typeInput.click();
+		await typeInput.fill('NonExistentType123');
+		// Click away to blur without selecting from dropdown
+		await page.getByRole('textbox', { name: 'Enter a Name' }).click();
+
+		await expect(page.getByRole('button', { name: 'Ok' })).toBeDisabled();
+
+		await page.getByRole('button', { name: 'Cancel' }).click();
+	});
+
 	test('should delete an artifact via context menu', async ({ page }) => {
 		await openBranch(page, BRANCH);
 		await expandArtifact(page, 'System Requirements - Markdown');

@@ -49,6 +49,11 @@ import org.jsoup.nodes.Entities;
 public class MarkdownConverter {
 
    /**
+    * Represents the width and height of an image in pixels.
+    */
+   private record ImageSize(int width, int height) {}
+
+   /**
     * Maximum image width (in pixels) when rendered inside a table cell.
     */
    private static final int MAX_IMAGE_WIDTH_IN_TABLE = 150;
@@ -89,14 +94,14 @@ public class MarkdownConverter {
 
          // Add images to the zip
          Map<String, String> imageContentMap = mdZip.getImageContentMap();
-         for (String imageName : imageContentMap.keySet()) {
-            ZipEntry imageEntry = new ZipEntry(imageName);
+         for (Map.Entry<String, String> entry : imageContentMap.entrySet()) {
+            ZipEntry imageEntry = new ZipEntry(entry.getKey());
             zipOutputStream.putNextEntry(imageEntry);
             // Decode Base64 to get the original image bytes
-            zipOutputStream.write(Base64.getDecoder().decode(imageContentMap.get(imageName)));
+            zipOutputStream.write(Base64.getDecoder().decode(entry.getValue()));
             zipOutputStream.closeEntry();
          }
-      } catch (Exception e) {
+      } catch (IOException e) {
          OseeCoreException.wrapAndThrow(e);
       }
 
@@ -265,8 +270,8 @@ public class MarkdownConverter {
          Double sizePercent = extractMaxWidthPercent(img);
 
          // Set explicit dimensions scaled to context
-         int[] dimensions = getImageDimensions(imageBytes);
-         if (dimensions != null && dimensions[0] > 0 && dimensions[1] > 0) {
+         ImageSize dimensions = getImageDimensions(imageBytes);
+         if (dimensions != null && dimensions.width() > 0 && dimensions.height() > 0) {
             boolean insideTableCell = img.closest("td") != null || img.closest("th") != null;
             int maxWidth = insideTableCell ? MAX_IMAGE_WIDTH_IN_TABLE : MAX_IMAGE_WIDTH_STANDALONE;
 
@@ -274,8 +279,8 @@ public class MarkdownConverter {
                maxWidth = (int) Math.round(maxWidth * sizePercent);
             }
 
-            int renderWidth = Math.min(dimensions[0], maxWidth);
-            int renderHeight = (int) Math.round((double) dimensions[1] * renderWidth / dimensions[0]);
+            int renderWidth = Math.min(dimensions.width(), maxWidth);
+            int renderHeight = (int) Math.round((double) dimensions.height() * renderWidth / dimensions.width());
             img.attr("width", String.valueOf(renderWidth));
             img.attr("height", String.valueOf(renderHeight));
          }
@@ -312,7 +317,7 @@ public class MarkdownConverter {
     * Only parses file headers — does not fully decode the image into memory.
     * Returns null if dimensions cannot be determined.
     */
-   private int[] getImageDimensions(byte[] imageBytes) {
+   private ImageSize getImageDimensions(byte[] imageBytes) {
       if (imageBytes == null || imageBytes.length == 0) {
          return null;
       }
@@ -327,9 +332,7 @@ public class MarkdownConverter {
             ImageReader reader = readers.next();
             try {
                reader.setInput(iis);
-               int width = reader.getWidth(0);
-               int height = reader.getHeight(0);
-               return new int[]{width, height};
+               return new ImageSize(reader.getWidth(0), reader.getHeight(0));
             } finally {
                reader.dispose();
             }
@@ -345,7 +348,7 @@ public class MarkdownConverter {
    private String guessMediaType(String filename) {
       int dotIndex = filename.lastIndexOf('.');
       if (dotIndex != -1 && dotIndex < filename.length() - 1) {
-         String ext = filename.substring(dotIndex + 1).toLowerCase();
+         String ext = filename.substring(dotIndex + 1).toLowerCase(java.util.Locale.ROOT);
          return MarkdownHtmlUtil.EXTENSION_TO_MEDIA_TYPE.getOrDefault(ext, "application/octet-stream");
       }
       return "application/octet-stream";
