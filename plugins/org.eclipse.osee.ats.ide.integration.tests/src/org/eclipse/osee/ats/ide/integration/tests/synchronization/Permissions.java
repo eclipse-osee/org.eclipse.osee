@@ -53,7 +53,7 @@ public class Permissions {
 
    //@formatter:off
    @ClassRule
-   public static TestRule classRuleChain =
+   public static final TestRule classRuleChain =
       RuleChain
          .outerRule( TestUserRules.createInPublishingGroupTestRule() )
          .around( new NotProductionDataStoreRule() );
