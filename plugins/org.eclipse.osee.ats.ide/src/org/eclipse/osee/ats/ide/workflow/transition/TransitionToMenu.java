@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
+import org.eclipse.osee.framework.ui.plugin.util.MessageType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**

@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.MessageType;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
@@ -249,7 +250,7 @@ public final class RenderingUtil {
                //@formatter:off
                AWorkbench.popup
                   (
-                     AWorkbench.MessageType.Error,
+                     MessageType.Error,
                      "Publishing Failure",
                      message,
                      errorMessage,
@@ -552,23 +553,6 @@ public final class RenderingUtil {
    //@formatter:on
 
       final var safeFilenameFormat = Conditions.requireNonNull(filenameFormat, "filenameFormat");
-
-      //@formatter:off
-      final var safeArtifacts =
-         Conditions.require
-            (
-               artifacts,
-               Conditions.ValueType.PARAMETER,
-               "artifacts",
-               "cannot be null or contain null entries",
-               Conditions.or
-                  (
-                     Objects::isNull,
-                     Conditions::collectionContainsNull
-                  ),
-               IllegalArgumentException::new
-            );
-      //@formatter:on
 
       switch (safeFilenameFormat) {
 

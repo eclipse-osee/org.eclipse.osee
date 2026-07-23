@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -139,6 +140,18 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
             }
          };
       });
+
+      // Reapply custom zoom font when CSS theme resets it (dark mode resets on focus changes)
+      if (AWorkbench.isDarkMode()) {
+         worldXViewer.getTree().addListener(SWT.Paint, e -> {
+            if (newFont != null && !newFont.isDisposed()) {
+               Font currentFont = worldXViewer.getTree().getFont();
+               if (currentFont != newFont) {
+                  worldXViewer.getTree().setFont(newFont);
+               }
+            }
+         });
+      }
    }
 
    protected void setupDragAndDropSupport(boolean createDragAndDrop) {

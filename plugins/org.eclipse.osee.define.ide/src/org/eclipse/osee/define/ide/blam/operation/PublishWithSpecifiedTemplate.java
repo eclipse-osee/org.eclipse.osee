@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHand
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.MessageType;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -508,7 +509,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
             AWorkbench.popup
                (
-                  AWorkbench.MessageType.Error,
+                  MessageType.Error,
                   "Publish With Specified Template Error",
                   message,
                   longMessage,
@@ -528,7 +529,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
             AWorkbench.popup
                (
-                  AWorkbench.MessageType.Error,
+                  MessageType.Error,
                   "Publish With Specified Template Error",
                   "Publish Failed",
                   message,
@@ -548,8 +549,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(RendererOption.WAS_BRANCH.getKey())) {
          branchWidget = (XBranchSelectWidget) xWidget;
