@@ -82,7 +82,7 @@ public abstract class AbstractEditTest {
 
    //@formatter:off
    @ClassRule
-   public static TestRule classRuleChain =
+   public static final TestRule classRuleChain =
       RuleChain
          .outerRule( new NotProductionDataStoreRule() )
          .around( new ExitDatabaseInitializationRule() )

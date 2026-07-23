@@ -42,10 +42,17 @@ public interface TypesEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    XResultData getTypes();
 
+   /**
+    * Returns artifact types, optionally filtered by name and abstractness.
+    *
+    * @param filter case-insensitive substring to match against artifact type names; null or empty returns all
+    * @param excludeAbstract when true, excludes abstract artifact types from results
+    */
    @GET
    @Path("artifact")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<NamedIdBase> getArtifactTypes(@QueryParam("filter") String filter);
+   Collection<NamedIdBase> getArtifactTypes(@QueryParam("filter") String filter,
+      @QueryParam("excludeAbstract") boolean excludeAbstract);
 
    @GET
    @Path("artifact/{artifactId}/attributes")

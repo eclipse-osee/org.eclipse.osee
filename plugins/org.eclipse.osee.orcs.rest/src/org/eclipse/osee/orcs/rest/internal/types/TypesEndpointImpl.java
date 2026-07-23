@@ -87,17 +87,25 @@ public class TypesEndpointImpl implements TypesEndpoint {
       return rd;
    }
 
+   /**
+    * Returns a sorted collection of artifact types, optionally filtered by name and abstractness.
+    *
+    * @param filter case-insensitive substring to match against artifact type names; pass {@code null} or empty string to
+    * return all types
+    * @param excludeAbstract when {@code true}, abstract artifact types (those that cannot be directly instantiated) are
+    * excluded from the results
+    * @return collection of matching artifact types sorted alphabetically by name
+    */
    @Override
-   public Collection<NamedIdBase> getArtifactTypes(String filter) {
-      return this.orcsApi.tokenService().getArtifactTypes().stream().filter(
-         art -> art.getName().toLowerCase().contains((filter != null ? filter : "").toLowerCase())).filter(
-            a -> a.getId() != -1).map(a -> new NamedIdBase(a.getId(), a.getName())).sorted(
-               new Comparator<NamedIdBase>() {
-                  @Override
-                  public int compare(NamedIdBase o1, NamedIdBase o2) {
-                     return o1.getName().compareTo(o2.getName());
-                  }
-               }).collect(Collectors.toList());
+   public Collection<NamedIdBase> getArtifactTypes(String filter, boolean excludeAbstract) {
+      String lowerFilter = (filter != null ? filter : "").toLowerCase(java.util.Locale.ROOT);
+      return this.orcsApi.tokenService().getArtifactTypes().stream()
+         .filter(art -> art.getName().toLowerCase(java.util.Locale.ROOT).contains(lowerFilter))
+         .filter(a -> a.getId() != -1)
+         .filter(a -> !excludeAbstract || !a.isAbstract())
+         .map(a -> new NamedIdBase(a.getId(), a.getName()))
+         .sorted(Comparator.comparing(NamedIdBase::getName))
+         .collect(Collectors.toList());
    }
 
    @Override
@@ -119,12 +127,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
          attrTypes.addAll(orcsApi.tokenService().getArtifactType(artType.getId()).getValidAttributeTypes());
       }
       return attrTypes.stream().filter(a -> a.getId() != -1).map(a -> new NamedIdBase(a.getId(), a.getName())).sorted(
-         new Comparator<NamedIdBase>() {
-            @Override
-            public int compare(NamedIdBase o1, NamedIdBase o2) {
-               return o1.getName().compareTo(o2.getName());
-            }
-         }).collect(Collectors.toList());
+         Comparator.comparing(NamedIdBase::getName)).collect(Collectors.toList());
    }
 
    @Override
