@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -98,6 +99,9 @@ public class WfeOperationsSection extends SectionPart {
 
       final Section section = getSection();
       section.setText("Operations");
+      section.setTitleBarBackground(new Color(section.getDisplay(), 220, 235, 252));
+      section.setTitleBarBorderColor(null);
+      section.setTitleBarGradientBackground(null);
 
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
