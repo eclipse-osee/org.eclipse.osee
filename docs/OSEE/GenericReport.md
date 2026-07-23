@@ -154,6 +154,22 @@ If any attribute column of the given type produces a value matching the regex, t
 .filter(CoreAttributeTypes.Name, ".*DELETED.*")
 ```
 
+## Sorting
+
+Sorting allows the artifacts at a given level to be ordered by the value of a single attribute type before they are processed into report rows.
+
+### `sort(AttributeTypeToken type)`
+
+Sorts the artifacts at the current level by the specified attribute type using case-insensitive string ordering. Artifacts with no value for the sort attribute are placed at the end. The sort applies to both the top-level query results (depth 0) and child-level artifacts retrieved via relations.
+
+```java
+report.level("Requirements",
+   report.query().andIsOfType(CoreArtifactTypes.SubsystemRequirementMsWord))
+   .sort(CoreAttributeTypes.Name)
+   .column("Artifact Id")
+   .column("Requirement Name", CoreAttributeTypes.Name);
+```
+
 ## Running the Report
 
 ### Synchronous Endpoint
