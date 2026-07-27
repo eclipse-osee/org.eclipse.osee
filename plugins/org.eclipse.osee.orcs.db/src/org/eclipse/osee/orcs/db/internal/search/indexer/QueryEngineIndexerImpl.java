@@ -170,7 +170,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
 
    private void indexSingleAttrTypeMissing(OrcsTokenService tokenService, Long attrTypeId) {
       String MISSING_GAMMAS_BY_TYPE =
-         "SELECT DISTINCT att.gamma_id FROM osee_attribute att, osee_txs txs WHERE att.attr_type_id = ? AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND NOT EXISTS (SELECT 1 FROM osee_search_tags tag WHERE tag.gamma_id = att.gamma_id) AND length(att.value) > 0";
+         "SELECT DISTINCT att.gamma_id FROM osee_attribute att, osee_txs txs WHERE att.attr_type_id = ? AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND NOT EXISTS (SELECT 1 FROM osee_search_tags_hash tag WHERE tag.gamma_id = att.gamma_id) AND length(att.value) > 0";
       List<Long> gammaIds = new LinkedList<>();
       try (JdbcStatement chStmt = jdbcClient.getStatement()) {
          chStmt.runPreparedQueryWithMaxFetchSize(MISSING_GAMMAS_BY_TYPE, attrTypeId);
@@ -199,7 +199,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    @Override
    public void indexDirectByAttrType(OrcsTokenService tokenService, Long attrTypeId) {
       String QUERY_ATTRS =
-         "SELECT DISTINCT att.gamma_id, att.value, att.uri FROM osee_attribute att, osee_txs txs WHERE att.attr_type_id = ? AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND NOT EXISTS (SELECT 1 FROM osee_search_tags tag WHERE tag.gamma_id = att.gamma_id)";
+         "SELECT DISTINCT att.gamma_id, att.value, att.uri FROM osee_attribute att, osee_txs txs WHERE att.attr_type_id = ? AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND NOT EXISTS (SELECT 1 FROM osee_search_tags_hash tag WHERE tag.gamma_id = att.gamma_id)";
 
       TaggerTypeToken taggerType =
          tokenService.getAttributeTypeOrSentinel(attrTypeId).getTaggerType();
@@ -241,14 +241,14 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
             totalGammas++;
 
             if (batchData.size() >= 10000) {
-               jdbcClient.runBatchUpdate(OseeDb.OSEE_SEARCH_TAGS_TABLE.getInsertSql(), batchData);
+               jdbcClient.runBatchUpdate(OseeDb.OSEE_SEARCH_TAGS_HASH_TABLE.getInsertSql(), batchData);
                batchData.clear();
             }
          }
       }
 
       if (!batchData.isEmpty()) {
-         jdbcClient.runBatchUpdate(OseeDb.OSEE_SEARCH_TAGS_TABLE.getInsertSql(), batchData);
+         jdbcClient.runBatchUpdate(OseeDb.OSEE_SEARCH_TAGS_HASH_TABLE.getInsertSql(), batchData);
          batchData.clear();
       }
 
