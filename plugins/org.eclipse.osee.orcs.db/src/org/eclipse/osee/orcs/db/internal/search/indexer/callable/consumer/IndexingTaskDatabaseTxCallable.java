@@ -47,6 +47,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
 public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCallable<Long> {
 
    private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where gamma_id = ?";
+   private static final String DELETE_SEARCH_TAGS_HASH = "delete from osee_search_tags_hash where gamma_id = ?";
 
    private final IndexedResourceLoader loader;
    private final TaggingEngine taggingEngine;
@@ -205,6 +206,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
             datas.add(new Object[] {source.getGammaId()});
          }
          numberDeleted = getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
+         getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS_HASH, datas);
       }
       return numberDeleted;
    }
@@ -223,6 +225,10 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
          toStore.clear();
          if (!data.isEmpty()) {
             updated += getJdbcClient().runBatchUpdate(connection, OseeDb.OSEE_SEARCH_TAGS_TABLE.getInsertSql(), data);
+            // Dual-write to hash table during transition period while legacy release
+            // still uses the old bit-packed osee_search_tags table.
+            // Remove this line once all release tracks are on the new encoding.
+            getJdbcClient().runBatchUpdate(connection, OseeDb.OSEE_SEARCH_TAGS_HASH_TABLE.getInsertSql(), data);
          }
       }
       return updated;

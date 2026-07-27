@@ -237,6 +237,23 @@ public class OseeDb {
       OSEE_SEARCH_TAGS_TABLE.createIndex("OSEE_SEARCH_TAGS_G_IDX", true, OSEE_SEARCH_TAGS_GAMMA_ID);
    }
 
+   /**
+    * Hash-based search tags table used by the new FNV-1a encoding. Exists alongside {@link #OSEE_SEARCH_TAGS_TABLE}
+    * during the transition period while the legacy release is still writing bit-packed tags to the old table.
+    * Once all release tracks are on the new encoding, the old table and this dual-write can be removed.
+    */
+   public static final SqlTable OSEE_SEARCH_TAGS_HASH_TABLE = new SqlTable("osee_search_tags_hash", "srch_tgs_h");
+   public static final SqlColumn OSEE_SEARCH_TAGS_HASH_CODED_TAG_ID =
+      OSEE_SEARCH_TAGS_HASH_TABLE.addColumn("CODED_TAG_ID", JDBCType.BIGINT);
+   public static final SqlColumn OSEE_SEARCH_TAGS_HASH_GAMMA_ID =
+      OSEE_SEARCH_TAGS_HASH_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
+   static {
+      OSEE_SEARCH_TAGS_HASH_TABLE.setPrimaryKeyConstraint(OSEE_SEARCH_TAGS_HASH_CODED_TAG_ID,
+         OSEE_SEARCH_TAGS_HASH_GAMMA_ID);
+      OSEE_SEARCH_TAGS_HASH_TABLE.createIndex("OSEE_SRCH_TAGS_HASH_C_IDX", true, OSEE_SEARCH_TAGS_HASH_CODED_TAG_ID);
+      OSEE_SEARCH_TAGS_HASH_TABLE.createIndex("OSEE_SRCH_TAGS_HASH_G_IDX", true, OSEE_SEARCH_TAGS_HASH_GAMMA_ID);
+   }
+
    public static final SqlTable OSEE_TAG_GAMMA_QUEUE_TABLE = new SqlTable("osee_tag_gamma_queue", "tg_gm_que");
    public static final SqlColumn OSEE_TAG_GAMMA_QUEUE_QUERY_ID =
       OSEE_TAG_GAMMA_QUEUE_TABLE.addColumn("QUERY_ID", JDBCType.BIGINT);
