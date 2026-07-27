@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.Response;
@@ -151,9 +153,18 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
          }
       }
 
-      orcsApi.getQueryIndexer().indexMissingByAttrTypeIds(attrTypeIds);
+      int typeCount = attrTypeIds.size();
+      ExecutorService executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> {
+         try {
+            orcsApi.getQueryIndexer().indexMissingByAttrTypeIds(attrTypeIds);
+         } finally {
+            executor.shutdown();
+         }
+      });
 
-      return Response.ok("Reindex completed for " + attrTypeIds.size() + " attribute type(s)").build();
+      return Response.accepted(
+         "Reindex started for " + typeCount + " attribute type(s). Running in background.").build();
    }
 
    @Override
@@ -169,11 +180,20 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
          }
       }
 
-      for (Long typeId : attrTypeIds) {
-         orcsApi.getQueryIndexer().indexDirectByAttrType(typeId);
-      }
+      int typeCount = attrTypeIds.size();
+      ExecutorService executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> {
+         try {
+            for (Long typeId : attrTypeIds) {
+               orcsApi.getQueryIndexer().indexDirectByAttrType(typeId);
+            }
+         } finally {
+            executor.shutdown();
+         }
+      });
 
-      return Response.ok("Direct reindex completed for " + attrTypeIds.size() + " attribute type(s)").build();
+      return Response.accepted(
+         "Direct reindex started for " + typeCount + " attribute type(s). Running in background.").build();
    }
 
 }
