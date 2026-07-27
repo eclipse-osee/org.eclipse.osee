@@ -83,7 +83,6 @@ export type modifyArtifact = {
 	applicabilityId?: string;
 	setAttributes?: createAttributeType[];
 	addAttributes?: createAttributeType[];
-	deleteAttributes?: [{ typeName: string }];
 };
 
 export type modifyRelation = (relationById | relationByName) &

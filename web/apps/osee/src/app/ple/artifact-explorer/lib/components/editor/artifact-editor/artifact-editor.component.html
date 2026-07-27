@@ -15,53 +15,76 @@
 	class="tw-sticky tw-top-0 tw-z-10 tw-border-b tw-border-solid tw-border-background-hover tw-bg-[var(--mat-sidenav-content-background-color)] tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2)] dark:tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.3)]"
 	role="toolbar"
 	aria-label="Editor section toolbar">
-	<div class="tw-flex tw-items-center tw-gap-1 tw-px-4 tw-py-1">
-		<button
-			mat-icon-button
-			(click)="activeSection.set('attributes')"
-			matTooltip="Attributes"
-			aria-label="Attributes"
-			[class]="
-				activeSection() === 'attributes'
-					? 'tw-text-primary'
-					: 'tw-opacity-60'
-			">
-			<mat-icon>edit_note</mat-icon>
-		</button>
-		<button
-			mat-icon-button
-			(click)="activeSection.set('relations')"
-			matTooltip="Relations"
-			aria-label="Relations"
-			[class]="
-				activeSection() === 'relations'
-					? 'tw-text-primary'
-					: 'tw-opacity-60'
-			">
-			<mat-icon>swap_horiz</mat-icon>
-		</button>
-		<button
-			mat-icon-button
-			(click)="activeSection.set('history')"
-			matTooltip="History"
-			aria-label="History"
-			[class]="
-				activeSection() === 'history'
-					? 'tw-text-primary'
-					: 'tw-opacity-60'
-			">
-			<mat-icon>history</mat-icon>
-		</button>
-		<button
-			mat-icon-button
-			(click)="activeSection.set('info')"
-			matTooltip="Artifact Info"
-			aria-label="Artifact Info"
-			[class]="
-				activeSection() === 'info' ? 'tw-text-primary' : 'tw-opacity-60'
-			">
-			<mat-icon>info_outline</mat-icon>
-		</button>
+	<div class="tw-flex tw-items-center tw-px-4 tw-py-1">
+		<div class="tw-flex tw-items-center tw-gap-1">
+			<button
+				mat-icon-button
+				(click)="activeSection.set('attributes')"
+				matTooltip="Attributes"
+				aria-label="Attributes"
+				[class]="
+					activeSection() === 'attributes'
+						? 'tw-text-primary'
+						: 'tw-opacity-60'
+				">
+				<mat-icon>edit_note</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				(click)="activeSection.set('relations')"
+				matTooltip="Relations"
+				aria-label="Relations"
+				[class]="
+					activeSection() === 'relations'
+						? 'tw-text-primary'
+						: 'tw-opacity-60'
+				">
+				<mat-icon>swap_horiz</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				(click)="activeSection.set('history')"
+				matTooltip="History"
+				aria-label="History"
+				[class]="
+					activeSection() === 'history'
+						? 'tw-text-primary'
+						: 'tw-opacity-60'
+				">
+				<mat-icon>history</mat-icon>
+			</button>
+			<button
+				mat-icon-button
+				(click)="activeSection.set('info')"
+				matTooltip="Artifact Info"
+				aria-label="Artifact Info"
+				[class]="
+					activeSection() === 'info'
+						? 'tw-text-primary'
+						: 'tw-opacity-60'
+				">
+				<mat-icon>info_outline</mat-icon>
+			</button>
+		</div>
+		<div class="tw-flex-1"></div>
+		@if (activeSection() === 'attributes' && tab().artifact.editable) {
+			<div class="tw-flex tw-items-center tw-gap-1">
+				<button
+					mat-icon-button
+					(click)="openAddAttributeDialog()"
+					matTooltip="Add Attribute"
+					aria-label="Add Attribute">
+					<mat-icon class="tw-text-primary">add_circle</mat-icon>
+				</button>
+				<button
+					mat-icon-button
+					(click)="openDeleteAttributeDialog()"
+					matTooltip="Delete Attribute"
+					aria-label="Delete Attribute">
+					<mat-icon class="tw-text-warning">delete</mat-icon>
+				</button>
+			</div>
+		}
 	</div>
 </div>
 <!-- Section content (hidden/shown to preserve state) -->
@@ -69,7 +92,9 @@
 	<div
 		class="tw-p-2"
 		[class.tw-hidden]="activeSection() !== 'attributes'">
-		<osee-attributes-editor-panel [tab]="tab()" />
+		<osee-attributes-editor-panel
+			#attrPanel
+			[tab]="tab()" />
 	</div>
 	<div [class.tw-hidden]="activeSection() !== 'relations'">
 		<osee-relations-editor-panel

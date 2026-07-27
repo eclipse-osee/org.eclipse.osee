@@ -52,7 +52,7 @@
 		</form>
 	}
 	<!--Remaining attributes (auto-save on change)-->
-	@for (attr of otherAttrs(); track attr.typeId) {
+	@for (attr of otherAttrs(); track attr.gammaId) {
 		<osee-persisted-artifact-attribute-editor
 			[attr]="attr"
 			[artifactId]="artifactId()"

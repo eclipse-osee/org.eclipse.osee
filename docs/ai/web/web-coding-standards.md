@@ -89,7 +89,23 @@ When a panel or section has no content to display (e.g., no branch selected, no 
 - **Prefer `appearance="outline"`** for all `mat-form-field` elements and shared input components. Outline is the standard style across the app — it provides clear field boundaries and consistent visuals. Use `appearance="fill"` only in legacy table cells (e.g., MIM messaging tables) where the compact fill style is still in use.
 - **All form fields use transparent backgrounds** — set globally via `--mdc-filled-text-field-container-color: transparent` in `styles.sass`. This ensures fields inherit the container's background rather than adding their own fill color. Do not override this per-component.
 - **`appearance="outline"` is the standard default** for all shared input components (`applicability-dropdown`, `persisted-string-attribute-input`, `persisted-number-attribute-input`, `focus-lost-input`). Outline gives clear field boundaries and works well in standalone editors, dialogs, and panels.
-- **Form field components must not define their own padding.** The parent page or container is responsible for spacing around editors. This keeps components reusable across contexts (dialogs, tables, panels) without fighting built-in spacing.
+- **Form field components must not define their own padding.** The parent container is responsible for spacing. Outline floating labels need top clearance to avoid clipping:
+  - **Multiple outline fields**: `tw-flex tw-flex-col tw-gap-4` on the container, plus `tw-pt-2` (dialog) or `tw-pt-4` (page/panel) for the first field's label.
+  - **Single outline input at the top of a dialog**: `tw-pt-2` is sufficient — the dialog title provides separation.
+
+  ```html
+  <!-- Dialog with multiple outline fields -->
+  <mat-dialog-content class="tw-flex tw-flex-col tw-gap-4 tw-pt-2">
+    <mat-form-field appearance="outline" class="tw-w-full" subscriptSizing="dynamic">
+      <mat-label>Name</mat-label>
+      <input matInput />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="tw-w-full" subscriptSizing="dynamic">
+      <mat-label>Description</mat-label>
+      <input matInput />
+    </mat-form-field>
+  </mat-dialog-content>
+  ```
 - Always include `subscriptSizing="dynamic"` unless the field needs a fixed-height hint/error area.
 - Prefer Tailwind utility classes for spacing and layout around form fields over custom component styles.
 

@@ -113,8 +113,9 @@ public class TypesEndpointImpl implements TypesEndpoint {
       return orcsApi.tokenService().getArtifactTypes().stream().filter(
          art -> art.getId().equals(artifactId.getId())).flatMap(
             art -> art.getValidAttributeTypes().stream().map(
-               attr -> AttributePojo.valueOf(Id.SENTINEL, attr, GammaId.SENTINEL, "", ""))).collect(
-                  Collectors.toList());
+               attr -> AttributePojo.valueOf(Id.SENTINEL, attr, GammaId.SENTINEL, "", "",
+                  art.getMultiplicity(attr)))).collect(
+                     Collectors.toList());
    }
 
    @Override

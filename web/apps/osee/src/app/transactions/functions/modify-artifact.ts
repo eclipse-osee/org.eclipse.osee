@@ -74,6 +74,17 @@ export const modifyArtifact = (
 			> => isNewAttr(attr)
 		),
 	};
+	if (attrConfig.delete && attrConfig.delete.length > 0) {
+		(_modify as Record<string, unknown>)['deleteAttributes'] =
+			attrConfig.delete
+				.filter((attr) => isValidAttr(attr))
+				.map((attr) => ({
+					typeId: attr.typeId,
+					gamma: (
+						attr as validAttribute<unknown, ATTRIBUTETYPEID>
+					).gammaId,
+				}));
+	}
 	tx.modifyArtifacts.push(_modify);
 	return tx;
 };
