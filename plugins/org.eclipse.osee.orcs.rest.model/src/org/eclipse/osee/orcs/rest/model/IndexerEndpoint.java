@@ -60,8 +60,8 @@ public interface IndexerEndpoint {
 
    /**
     * Fast re-index of all current attributes. Queries osee_attribute directly (no branch traversal) for all taggable
-    * attributes with tx_current = 1. Much faster than the branch-based reindex for full migration after truncating
-    * osee_search_tags. Returns the number of gammas processed. Optionally pass an attrTypeId to index only one type.
+    * attributes with tx_current = 1 that do not already have entries in osee_search_tags. Returns 202 immediately;
+    * indexing runs in the background. Optionally pass an attrTypeId to index only one type.
     */
    @POST
    @Path("reindex/all")
@@ -69,8 +69,8 @@ public interface IndexerEndpoint {
 
    /**
     * Direct batch re-index that bypasses the async pipeline. Streams attribute data, tokenizes in Java, and batch
-    * inserts tags directly into osee_search_tags. Designed for bulk migration performance. Processes one attr type at a
-    * time synchronously; parallelize by calling multiple types concurrently from client side.
+    * inserts tags directly into osee_search_tags. Skips gammas that already have tags (safe to call on a
+    * partially-indexed database). Returns 202 immediately; indexing runs in the background.
     */
    @POST
    @Path("reindex/direct")

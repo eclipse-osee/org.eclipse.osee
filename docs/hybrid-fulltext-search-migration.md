@@ -67,6 +67,8 @@ Call the new REST endpoint to regenerate hash-based tags for all current attribu
 POST /index/reindex/all
 ```
 
+Returns `202 Accepted` immediately. Indexing runs in the background on the server.
+
 Or to re-index a specific attribute type:
 
 ```
@@ -84,6 +86,9 @@ Or with working branches included:
 ```
 POST /index/reindex/baseline?includeWorking=true
 ```
+
+The `/reindex/all` and `/reindex/direct` endpoints skip gammas that are already present in `osee_search_tags`,
+so they are safe to call on a partially-indexed database without causing duplicate-key errors.
 
 ## Test Considerations
 

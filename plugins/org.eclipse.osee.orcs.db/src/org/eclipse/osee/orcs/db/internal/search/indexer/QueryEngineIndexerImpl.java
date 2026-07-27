@@ -199,7 +199,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    @Override
    public void indexDirectByAttrType(OrcsTokenService tokenService, Long attrTypeId) {
       String QUERY_ATTRS =
-         "SELECT DISTINCT att.gamma_id, att.value, att.uri FROM osee_attribute att, osee_txs txs WHERE att.attr_type_id = ? AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1";
+         "SELECT DISTINCT att.gamma_id, att.value, att.uri FROM osee_attribute att, osee_txs txs WHERE att.attr_type_id = ? AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND NOT EXISTS (SELECT 1 FROM osee_search_tags tag WHERE tag.gamma_id = att.gamma_id)";
 
       TaggerTypeToken taggerType =
          tokenService.getAttributeTypeOrSentinel(attrTypeId).getTaggerType();
