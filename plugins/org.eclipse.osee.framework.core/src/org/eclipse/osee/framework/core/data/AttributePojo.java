@@ -31,6 +31,11 @@ public class AttributePojo<T> extends BaseId {
       return new AttributePojo<T>(id, type, gamma, value, displayableString);
    }
 
+   public static <T> AttributePojo<T> valueOf(Long id, AttributeTypeToken type, GammaId gamma, T value,
+      String displayableString, Multiplicity multiplicity) {
+      return new AttributePojo<T>(id, type, gamma, value, displayableString, multiplicity);
+   }
+
    public static <T> AttributePojo<T> valueOf(IAttribute<T> attribute) {
       return new AttributePojo<T>(attribute);
    }

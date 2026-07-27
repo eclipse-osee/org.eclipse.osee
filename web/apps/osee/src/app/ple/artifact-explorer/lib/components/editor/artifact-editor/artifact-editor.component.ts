@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, viewChild } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -40,4 +40,16 @@ export class ArtifactEditorComponent {
 
 	/** Which editor section is currently visible. */
 	protected activeSection = signal<EditorSection>('attributes');
+
+	/** Reference to the attributes panel for triggering add/delete dialogs. */
+	private readonly attrPanel =
+		viewChild<AttributesEditorPanelComponent>('attrPanel');
+
+	protected openAddAttributeDialog() {
+		this.attrPanel()?.openAddAttributeDialog();
+	}
+
+	protected openDeleteAttributeDialog() {
+		this.attrPanel()?.openDeleteAttributeDialog();
+	}
 }

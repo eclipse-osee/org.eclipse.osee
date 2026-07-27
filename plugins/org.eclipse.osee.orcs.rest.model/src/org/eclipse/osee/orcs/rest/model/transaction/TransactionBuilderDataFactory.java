@@ -730,6 +730,7 @@ public class TransactionBuilderDataFactory {
             }
 
             boolean hasGamma = attribute.has("gamma");
+            boolean hasAttrId = attribute.has("id");
             if (value.isArray()) {
                ArrayList<String> values = new ArrayList<>();
                ArrayList<InputStream> streams = new ArrayList<>();
@@ -762,6 +763,17 @@ public class TransactionBuilderDataFactory {
                if (!streams.isEmpty() && hasGamma && !gammas.isEmpty()) {
                   tx.setAttributesFromValues(artifact, attributeType, streams, gammas);
                }
+            } else if (hasAttrId && hasGamma && attributeType.isInputStream()) {
+               tx.setAttributeById(artifact, AttributeId.valueOf(attribute.get("id").asText()),
+                  decodeInputStream(value), getGamma(attribute));
+            } else if (hasAttrId && hasGamma) {
+               tx.setAttributeById(artifact, AttributeId.valueOf(attribute.get("id").asText()), value.asText(),
+                  getGamma(attribute));
+            } else if (hasAttrId && attributeType.isInputStream()) {
+               tx.setAttributeById(artifact, AttributeId.valueOf(attribute.get("id").asText()),
+                  decodeInputStream(value));
+            } else if (hasAttrId) {
+               tx.setAttributeById(artifact, AttributeId.valueOf(attribute.get("id").asText()), value.asText());
             } else if (hasGamma && attributeType.isInputStream()) {
                tx.setSoleAttributeFromStream(artifact, attributeType, decodeInputStream(value), getGamma(attribute));
             } else if (hasGamma) {
