@@ -62,7 +62,7 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
 
       boolean found = false;
       for (WorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
-         if (workDef.getId().equals(DemoWorkDefinitions.WorkDef_Team_Demo_Req.getId())) {
+         if (workDef.getId().equals(DemoWorkDefinitions.WorkDefTeamDemoReq.getId())) {
             found = true;
          }
       }
@@ -86,16 +86,16 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
       for (IAtsTeamWorkflow teamWf : newData.getActResult().getAtsTeamWfs()) {
 
          if (teamWf.getTeamDefinition().getName().contains(
-            "Req") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_Req")) {
-            throw new OseeCoreException("Req workflow expected work def [WorkDef_Team_Demo_Req] actual [%s]",
+            "Req") && !teamWf.getWorkDefinition().getName().equals("WorkDefTeamDemoReq")) {
+            throw new OseeCoreException("Req workflow expected work def [WorkDefTeamDemoReq] actual [%s]",
                teamWf.getWorkDefinition().getName());
          } else if (teamWf.getTeamDefinition().getName().contains(
-            "Code") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_Code")) {
-            throw new OseeCoreException("Code workflow expected work def [WorkDef_Team_Demo_Code] actual [%s]",
+            "Code") && !teamWf.getWorkDefinition().getName().equals("WorkDefTeamDemoCode")) {
+            throw new OseeCoreException("Code workflow expected work def [WorkDefTeamDemoCode] actual [%s]",
                teamWf.getWorkDefinition().getName());
          } else if (teamWf.getTeamDefinition().getName().contains(
-            "Test") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_Test")) {
-            throw new OseeCoreException("Test workflow expected work def [WorkDef_Team_Demo_Test] actual [%s]",
+            "Test") && !teamWf.getWorkDefinition().getName().equals("WorkDefTeamDemoTest")) {
+            throw new OseeCoreException("Test workflow expected work def [WorkDefTeamDemoTest] actual [%s]",
                teamWf.getWorkDefinition().getName());
          }
 

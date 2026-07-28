@@ -32,7 +32,7 @@ public class CreateNewDemoProblemReportBlam extends CreateNewProblemReportBlam {
    @Override
    public void createActionData(NewActionData data) {
       super.createActionData(data);
-      data.andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Problem_Report) //
+      data.andWorkDef(DemoWorkDefinitions.WorkDefTeamDemoProblemReport) //
          .andArtType(AtsArtifactTypes.DemoProblemReportTeamWorkflow);
    }
 

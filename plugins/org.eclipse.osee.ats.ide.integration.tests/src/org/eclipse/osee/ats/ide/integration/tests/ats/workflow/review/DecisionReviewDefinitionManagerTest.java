@@ -56,7 +56,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf,
-         DemoWorkDefinitionTokens.WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision, changes);
+         DemoWorkDefinitionTokens.WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision, changes);
       changes.execute();
 
       Assert.assertEquals("Implement State should have a single decision review definition", 1,
@@ -94,7 +94,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
       IAtsTeamWorkflow teamWf = AtsTestUtil.getTeamWf();
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf,
-         DemoWorkDefinitionTokens.WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare, changes);
+         DemoWorkDefinitionTokens.WorkDefTeamDecisionReviewDefinitionManagerTestPrepare, changes);
       changes.execute();
 
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamWf).size());

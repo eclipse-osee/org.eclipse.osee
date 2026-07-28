@@ -41,14 +41,14 @@ public class AtsTaskSetDefinitionProvider implements IAtsTaskSetDefinitionProvid
          .andEventType(RuleEventType.Manual) //
          .andStaticTask("1. Run unit tests", "desc", null) //
          .andStaticTask("2. Run integration testsk", "desc2", StateToken.Implement) //
-         .andStaticTask("3. Run manual tests", DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign) //
+         .andStaticTask("3. Run manual tests", DemoWorkDefinitions.WorkDefTaskDemoSwDesign) //
          .andStaticTask("4. Complete testing action")); //
 
       taskSets.add(new CreateTasksDefinitionBuilder(TaskSetDefinitionTokensDemo.SawSwDesignProcessChecklist) //
          .andEventType(RuleEventType.Manual) //
          .andStaticTask("1. Review processes", "desc", null) //
          .andStaticTask("2. Review work instruction", "desc2", StateToken.Implement) //
-         .andStaticTask("3. Consult Mentor", DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign) //
+         .andStaticTask("3. Consult Mentor", DemoWorkDefinitions.WorkDefTaskDemoSwDesign) //
          .andStaticTask("4. Complete process action")); //
 
       taskSets.add(

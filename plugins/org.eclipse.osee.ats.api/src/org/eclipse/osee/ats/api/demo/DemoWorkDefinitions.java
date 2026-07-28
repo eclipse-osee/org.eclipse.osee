@@ -21,18 +21,18 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 public class DemoWorkDefinitions {
 
    // @formatter:off
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Problem_Report = new AtsWorkDefinitionToken(235235123L, "WorkDef_Team_Demo_Problem_Report");
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Change_Request = new AtsWorkDefinitionToken(458293458L, "WorkDef_Team_Demo_Change_Request");
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Code = new AtsWorkDefinitionToken(48427403L, "WorkDef_Team_Demo_Code");
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_SwDesign = new AtsWorkDefinitionToken(3625963L, "WorkDef_Team_Demo_SwDesign");
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Test = new AtsWorkDefinitionToken(2892554L, "WorkDef_Team_Demo_Test");
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Req = new AtsWorkDefinitionToken(46891154L, "WorkDef_Team_Demo_Req");
-   public static AtsWorkDefinitionToken WorkDef_Team_Demo_Req_Simple = new AtsWorkDefinitionToken(25391621L, "WorkDef_Team_Demo_Req_Simple");
+   public static AtsWorkDefinitionToken WorkDefTeamDemoProblemReport = new AtsWorkDefinitionToken(235235123L, "WorkDefTeamDemoProblemReport");
+   public static AtsWorkDefinitionToken WorkDefTeamDemoChangeRequest = new AtsWorkDefinitionToken(458293458L, "WorkDefTeamDemoChangeRequest");
+   public static AtsWorkDefinitionToken WorkDefTeamDemoCode = new AtsWorkDefinitionToken(48427403L, "WorkDefTeamDemoCode");
+   public static AtsWorkDefinitionToken WorkDefTeamDemoSwDesign = new AtsWorkDefinitionToken(3625963L, "WorkDefTeamDemoSwDesign");
+   public static AtsWorkDefinitionToken WorkDefTeamDemoTest = new AtsWorkDefinitionToken(2892554L, "WorkDefTeamDemoTest");
+   public static AtsWorkDefinitionToken WorkDefTeamDemoReq = new AtsWorkDefinitionToken(46891154L, "WorkDefTeamDemoReq");
+   public static AtsWorkDefinitionToken WorkDefTeamDemoReqSimple = new AtsWorkDefinitionToken(25391621L, "WorkDefTeamDemoReqSimple");
 
-   public static AtsWorkDefinitionToken WorkDef_Review_Demo_Peer_SwDesign = new AtsWorkDefinitionToken(2342662L, "WorkDef_Review_Demo_Peer_SwDesign");
+   public static AtsWorkDefinitionToken WorkDefReviewPeerDemoSwDesign = new AtsWorkDefinitionToken(2342662L, "WorkDefReviewPeerDemoSwDesign");
 
-   public static AtsWorkDefinitionToken WorkDef_Task_Demo_SwDesign = new AtsWorkDefinitionToken(2234432L, "WorkDef_Task_Demo_SwDesign");
-   public static AtsWorkDefinitionToken WorkDef_Task_Demo_For_CR_Estimating = new AtsWorkDefinitionToken(32922123L, "WorkDef_Task_Demo_For_CR_Estimating");
+   public static AtsWorkDefinitionToken WorkDefTaskDemoSwDesign = new AtsWorkDefinitionToken(2234432L, "WorkDefTaskDemoSwDesign");
+   public static AtsWorkDefinitionToken WorkDefTaskDemoForCrEstimating = new AtsWorkDefinitionToken(32922123L, "WorkDefTaskDemoForCrEstimating");
    // @formatter:on
 
 }

@@ -106,7 +106,7 @@ public class AtsDbConfigBase {
          atsApi.getActionableItemService().getActionableItemById(AtsArtifactToken.TopActionableItem);
 
       IAtsChangeSet changes = atsApi.createChangeSet("Set Top Team Work Definition");
-      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(topTeam, AtsWorkDefinitionTokens.WorkDef_Team_Default,
+      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(topTeam, AtsWorkDefinitionTokens.WorkDefTeamDefault,
          changes);
       changes.setSoleAttributeValue(topAi, AtsAttributeTypes.Actionable, false);
       changes.execute();

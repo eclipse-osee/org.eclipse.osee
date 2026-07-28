@@ -29,12 +29,13 @@ import org.junit.Test;
  */
 public class WorkDefBuilderTest {
 
-   public static AtsWorkDefinitionToken WorkDef_Team_Test = new AtsWorkDefinitionToken(4352354L, "WorkDef_Team_Test");
+   public static AtsWorkDefinitionToken WorkDefBuilderTest =
+      new AtsWorkDefinitionToken(4352354L, "WorkDefBuilderTest");
    private WorkDefBuilder bld;
 
    @Before
    public void setup() {
-      bld = new WorkDefBuilder(WorkDef_Team_Test);
+      bld = new WorkDefBuilder(WorkDefBuilderTest);
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Completed);
       bld.andState(2, "Completed", StateType.Completed);
@@ -134,7 +135,7 @@ public class WorkDefBuilderTest {
 
    @Test
    public void testStateTokenAny() {
-      WorkDefBuilder anyBld = new WorkDefBuilder(WorkDef_Team_Test);
+      WorkDefBuilder anyBld = new WorkDefBuilder(WorkDefBuilderTest);
       anyBld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.ANY);
       anyBld.andState(2, "Completed", StateType.Completed);

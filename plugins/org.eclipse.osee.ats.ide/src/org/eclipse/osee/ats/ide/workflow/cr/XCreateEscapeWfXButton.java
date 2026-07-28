@@ -135,7 +135,7 @@ public abstract class XCreateEscapeWfXButton extends XButton implements Artifact
                   .createTeamWfData(getName(), teamWf.getParentAction(), teamDef) //
                   .andTitle(getTitle()) //
                   .andCreateOption(CreateOption.Duplicate_If_Exists) //
-                  .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Simple_InWork) //
+                  .andWorkDef(AtsWorkDefinitionTokens.WorkDefTeamSimpleInWork) //
                   .andArtType(AtsArtifactTypes.TeamWorkflow);
 
                createActionData(data);

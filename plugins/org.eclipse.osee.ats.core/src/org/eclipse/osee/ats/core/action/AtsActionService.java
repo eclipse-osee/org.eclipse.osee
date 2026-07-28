@@ -234,7 +234,7 @@ public abstract class AtsActionService implements IAtsActionService {
    @Override
    public IAtsGoal createGoal(String title, IAtsChangeSet changes) {
       WorkDefinition workDef =
-         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefGoal);
       return createGoal(title, AtsArtifactTypes.Goal, workDef, atsApi.getTeamDefinitionService().getTopTeamDefinition(),
          changes, null);
    }
@@ -242,7 +242,7 @@ public abstract class AtsActionService implements IAtsActionService {
    @Override
    public IAtsGoal createGoal(ArtifactToken token, IAtsTeamDefinition teamDef, AtsApi atsApi, IAtsChangeSet changes) {
       return createGoal(token.getName(), token, token.getArtifactType(),
-         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal), teamDef, changes,
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefGoal), teamDef, changes,
          workItemListener);
    }
 
@@ -273,7 +273,7 @@ public abstract class AtsActionService implements IAtsActionService {
 
       WorkDefinition useWorkDefinition = workDefinition;
       if (useWorkDefinition == null) {
-         useWorkDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
+         useWorkDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefGoal);
       }
       Conditions.assertNotNull(workDefinition, "Work Definition can not be null for %s", goal.toStringWithId());
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(goal, workDefinition, changes);

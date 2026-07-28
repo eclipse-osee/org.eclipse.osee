@@ -37,14 +37,14 @@ public class AtsWorkDefinitionEndpointTest extends AbstractRestTest {
    public void testWorkDefByWorkflow() {
       String url = "ats/workdef/" + DemoUtil.getSawCodeCommittedWf().getIdString();
       JsonNode jsonNode = getJsonNode(url);
-      Assert.assertEquals(jsonNode.get("name").asText(), DemoWorkDefinitions.WorkDef_Team_Demo_Code.getName());
+      Assert.assertEquals(jsonNode.get("name").asText(), DemoWorkDefinitions.WorkDefTeamDemoCode.getName());
    }
 
    @Test
    public void testWorkDefByTeamDef() {
       String url = "ats/workdef/teamdef/" + DemoArtifactToken.SAW_Code.getIdString();
       JsonNode workDefNode = getJsonNode(url);
-      Assert.assertEquals(workDefNode.get("name").asText(), DemoWorkDefinitions.WorkDef_Team_Demo_Code.getName());
+      Assert.assertEquals(workDefNode.get("name").asText(), DemoWorkDefinitions.WorkDefTeamDemoCode.getName());
    }
 
 }

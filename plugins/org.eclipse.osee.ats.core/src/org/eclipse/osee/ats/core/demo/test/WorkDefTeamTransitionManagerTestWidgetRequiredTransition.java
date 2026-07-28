@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefTeamTransitionManagerTestWidgetRequiredTransition extends AbstractWorkDef {
 
    public WorkDefTeamTransitionManagerTestWidgetRequiredTransition() {
-      super(DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition);
+      super(DemoWorkDefinitionTokens.WorkDefTeamTransitionManagerTestWidgetRequiredTransition);
    }
 
    @Override
