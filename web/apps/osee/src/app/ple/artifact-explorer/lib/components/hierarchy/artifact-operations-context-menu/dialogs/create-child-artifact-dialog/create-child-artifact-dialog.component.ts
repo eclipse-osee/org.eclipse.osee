@@ -11,8 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, viewChild } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	inject,
+	signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
 	MatAutocompleteTrigger,
@@ -34,6 +41,7 @@ import {
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { MatTooltip } from '@angular/material/tooltip';
 import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
@@ -44,7 +52,6 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
-	ReplaySubject,
 	debounceTime,
 	distinctUntilChanged,
 	filter,
@@ -60,7 +67,6 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 	imports: [
 		AsyncPipe,
 		FormsModule,
-		AsyncPipe,
 		AttributesEditorComponent,
 		FormDirective,
 		MatDialogTitle,
@@ -77,15 +83,17 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 		MatDialogActions,
 		MatButton,
 		MatDialogClose,
+		MatTooltip,
 	],
 	templateUrl: './create-child-artifact-dialog.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class CreateChildArtifactDialogComponent {
 	dialogRef =
 		inject<MatDialogRef<CreateChildArtifactDialogComponent>>(MatDialogRef);
 	data = inject<createChildArtifactDialogData>(MAT_DIALOG_DATA);
-	private artifactIconService = inject(ArtifactIconService);
+	private readonly artifactIconService = inject(ArtifactIconService);
 
 	onCancel() {
 		this.dialogRef.close();
@@ -93,58 +101,55 @@ export class CreateChildArtifactDialogComponent {
 
 	// Artifact type single select
 
-	private _typeAhead = new BehaviorSubject<string>('');
-	private _openAutoComplete = new ReplaySubject<void>();
-	private _isOpen = new BehaviorSubject<boolean>(false);
-	private _artExpHttpService = inject(ArtifactExplorerHttpService);
-	private _artUiService = inject(ArtifactUiService);
+	private readonly _typeAhead = new BehaviorSubject<string>('');
+	private readonly _artExpHttpService = inject(ArtifactExplorerHttpService);
+	private readonly _artUiService = inject(ArtifactUiService);
+	protected readonly inputFocused = signal(false);
 
-	protected _artifactTypes = this._openAutoComplete.pipe(
-		debounceTime(500),
-		distinctUntilChanged(),
-		switchMap((_) =>
-			this._typeAhead.pipe(
-				distinctUntilChanged(),
-				debounceTime(500),
-				switchMap((filter) =>
-					this._artUiService.getArtifactTypes(filter)
-				)
-			)
-		)
+	/** Debounced filter signal that drives the httpResource. */
+	private readonly debouncedFilter = toSignal(
+		this._typeAhead.pipe(distinctUntilChanged(), debounceTime(500)),
+		{ initialValue: '' }
 	);
 
-	get filter() {
-		return this._typeAhead;
-	}
-	updateTypeAhead(value: string | NamedId) {
-		this.data.artifactTypeId = '0';
+	/** Resource that fetches concrete artifact types based on the debounced filter. */
+	private readonly _typesResource =
+		this._artUiService.getArtifactTypesResource(this.debouncedFilter, true);
+
+	protected readonly artifactTypes = computed(
+		() => this._typesResource.value() ?? []
+	);
+	protected readonly isLoadingTypes = this._typesResource.isLoading;
+
+	displayArtifactType(value: NamedId | string): string {
 		if (typeof value === 'string') {
-			this._typeAhead.next(value);
-		} else {
-			this._typeAhead.next(value.name);
+			return value;
 		}
+		return value?.name ?? '';
+	}
+
+	updateTypeAhead(value: string) {
+		this.data.artifactTypeId = '0';
+		this._typeAhead.next(value);
 	}
 	autoCompleteOpened() {
-		this._openAutoComplete.next();
-		this._isOpen.next(true);
-	}
-	close() {
-		this._isOpen.next(false);
+		this.inputFocused.set(true);
 	}
 	updateValue(value: NamedId): void {
 		this.data.artifactTypeId = value.id;
 		this._artifactTypeIdSubject.next(value.id);
 	}
-	get isOpen() {
-		return this._isOpen;
-	}
-	clear() {
-		this.updateTypeAhead('');
+	clear(input: HTMLInputElement) {
+		input.value = '';
+		this._typeAhead.next('');
+		this.data.artifactTypeId = '0';
+		// Refocus so the user can immediately type a new search
+		input.focus();
 	}
 
 	// Attribute fetching to pass into attribute editor - Requires artifact type to be selected
 
-	private _artifactTypeIdSubject = new BehaviorSubject<string>('0');
+	private readonly _artifactTypeIdSubject = new BehaviorSubject<string>('0');
 	protected _attributes = this._artifactTypeIdSubject.asObservable().pipe(
 		filter((val) => val != '0'),
 		debounceTime(500),
@@ -176,26 +181,11 @@ export class CreateChildArtifactDialogComponent {
 
 	// Make sure required data is filled out
 
-	get isDataComplete(): string {
-		return `${
-			!!this.data.name &&
-			!!this.data.artifactTypeId &&
-			this.data.attributes.length > 0 &&
-			this.data.attributes.every((attribute) =>
-				attribute.multiplicity?.id === '2' ||
-				attribute.multiplicity?.id === '4'
-					? attribute.value !== ''
-					: true
-			)
-		}`;
+	get isArtifactTypeValid(): boolean {
+		return !!this.data.artifactTypeId && this.data.artifactTypeId !== '0';
 	}
 
 	// Handle form status change
-
-	protected _createChildArtifactForm = viewChild.required(
-		'createChildArtifactForm',
-		{ read: NgForm }
-	);
 
 	getIconClasses(icon: artifactTypeIcon) {
 		return (

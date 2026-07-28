@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
+import org.eclipse.osee.framework.ui.plugin.util.MessageType;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -118,7 +118,7 @@ public class PublishingTemplateBlam extends AbstractBlam {
        * Save the selection string displayed in the "Get As" pull down selector.
        */
 
-      private @NonNull String selectionString;
+      private @NonNull final String selectionString;
 
       /**
        * Creates a new {@link GetAs} enumeration member.
@@ -545,8 +545,8 @@ public class PublishingTemplateBlam extends AbstractBlam {
     */
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+      XModifiedListener modListener, boolean isEditable) {
 
       super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
 

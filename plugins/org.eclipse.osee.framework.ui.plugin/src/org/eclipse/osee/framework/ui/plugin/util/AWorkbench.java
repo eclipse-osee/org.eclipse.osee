@@ -48,92 +48,29 @@ import org.eclipse.ui.WorkbenchException;
 
 public final class AWorkbench {
 
-   /**
-    * Enumeration of the dialog box content types that can be created.
-    * <ul>
-    * <li>{@link #Confirm}</li>
-    * <li>{@link #Error}</li>
-    * <li>{@link #Informational}</li>
-    * </ul>
-    */
-
-   public static enum MessageType {
-
-      /**
-       * Creates a confirmation dialog with an "OK" and "CANCEL" buttons.
-       *
-       * @see MessageDialog#CONFIRM
-       */
-
-      Confirm {
-
-         @Override
-         protected int getKind() {
-            return MessageDialog.CONFIRM;
+   public static boolean isDarkMode() {
+      boolean darkMode = false;
+      try {
+         darkMode = Display.isSystemDarkTheme();
+         if (!darkMode) {
+            try {
+               Object engine = Display.getDefault().getData("org.eclipse.e4.ui.css.swt.theme");
+               if (engine != null) {
+                  // Use reflection to call engine.getActiveTheme().getId()
+                  Object activeTheme = engine.getClass().getMethod("getActiveTheme").invoke(engine);
+                  if (activeTheme != null) {
+                     String themeId = (String) activeTheme.getClass().getMethod("getId").invoke(activeTheme);
+                     darkMode = themeId != null && themeId.toLowerCase().contains("dark");
+                  }
+               }
+            } catch (Exception e) {
+               // Fallback silently if the reflection structure changes
+            }
          }
-
-         @Override
-         protected String[] getButtonLabels(int options) {
-            return MessageType.OK_CANCEL_BUTTON_SET;
-         }
-
-      },
-
-      /**
-       * Creates an error dialog with an "OK" button. A "CANCEL" button will only be included when the option
-       * {@link AWorkbench#INCLUDE_CANCEL_BUTTON} was specified.
-       *
-       * @see MessageDialog#ERROR
-       */
-
-      Error {
-
-         @Override
-         protected int getKind() {
-            return MessageDialog.ERROR;
-         }
-
-         @Override
-         protected String[] getButtonLabels(int options) {
-
-      //@formatter:off
-            return
-               ( ( options & AWorkbench.INCLUDE_CANCEL_BUTTON ) > 0 )
-                  ? MessageType.OK_CANCEL_BUTTON_SET
-                  : MessageType.OK_BUTTON_SET;
-            //@formatter:on
-         }
-
-      },
-
-      /**
-       * Creates an information dialog with an "OK" button. A "CANCEL" button is not provided.
-       *
-       * @see MessageDialog#INFORMATION
-       */
-
-      Informational {
-
-         @Override
-         protected int getKind() {
-            return MessageDialog.INFORMATION;
-         }
-
-         @Override
-         protected String[] getButtonLabels(int options) {
-            return MessageType.OK_BUTTON_SET;
-         }
-
-      };
-
-      private static final String[] OK_BUTTON_SET = new String[] {IDialogConstants.OK_LABEL};
-
-      public static final String[] OK_CANCEL_BUTTON_SET =
-         new String[] {IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL};
-
-      abstract protected int getKind();
-
-      abstract protected String[] getButtonLabels(int options);
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return darkMode;
    }
 
    /**
