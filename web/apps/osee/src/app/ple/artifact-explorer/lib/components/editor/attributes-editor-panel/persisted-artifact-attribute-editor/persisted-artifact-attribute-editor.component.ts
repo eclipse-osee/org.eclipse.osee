@@ -70,7 +70,9 @@ import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor
 					class="tw-w-full"
 					appearance="outline"
 					subscriptSizing="dynamic">
-					<mat-label>{{ attr().name ?? '' }}</mat-label>
+					@if (showLabel()) {
+						<mat-label>{{ attr().name ?? '' }}</mat-label>
+					}
 					<mat-select
 						[disabled]="disabled()"
 						[ngModel]="displayValue()"
@@ -106,7 +108,8 @@ import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor
 							[disabled]="disabled()"
 							[value]="displayValue()"
 							(valueChange)="onValueChange($event)"
-							[label]="attr().name ?? ''"
+							[label]="showLabel() ? (attr().name ?? '') : ''"
+							[placeholder]="showLabel() ? '' : 'Enter value...'"
 							[tooltip]="attr().name ?? ''">
 						</osee-focus-lost-input>
 					</span>
@@ -128,6 +131,8 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	artifactApplicability = input.required<applic>();
 	/** Whether the field is disabled. */
 	disabled = input(false);
+	/** Whether to show the field label. Set false when inside a grouped multi-instance section. */
+	showLabel = input(true);
 
 	/** Inverse of disabled for components that use editable. */
 	protected editable = computed(() => !this.disabled());
@@ -137,7 +142,7 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 
 	/** Unique key for dirty tracking. */
 	private editorKey = computed(
-		() => `${this.artifactId()}-${this.attr().typeId}`
+		() => `${this.artifactId()}-${this.attr().id}-${this.attr().gammaId}`
 	);
 
 	/**

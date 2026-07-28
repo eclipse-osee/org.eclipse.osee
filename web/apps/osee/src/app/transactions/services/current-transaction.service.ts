@@ -28,6 +28,7 @@ import {
 } from '@osee/transactions/operators';
 import { createArtifact as _createArtifact } from '@osee/transactions/functions';
 import {
+	attrConfig,
 	relation,
 	modifyRelation,
 	transaction,
@@ -148,20 +149,7 @@ export class CurrentTransactionService {
 		comment: string,
 		artId: `${number}`,
 		applicability: applic,
-		attrConfig: {
-			set?: attribute<
-				string | number | boolean | unknown[] | unknown,
-				ATTRIBUTETYPEID
-			>[];
-			add?: attribute<
-				string | number | boolean | unknown[] | unknown,
-				ATTRIBUTETYPEID
-			>[];
-			delete?: attribute<
-				string | number | boolean | unknown[] | unknown,
-				ATTRIBUTETYPEID
-			>[];
-		},
+		attrConfig: attrConfig,
 		branchIdOverride?: string
 	) => {
 		return this.createTx(comment, branchIdOverride).pipe(
@@ -173,20 +161,7 @@ export class CurrentTransactionService {
 		comment: string,
 		artId: `${number}`,
 		applicability: applic,
-		attrConfig: {
-			set?: attribute<
-				string | number | boolean | unknown[] | unknown,
-				ATTRIBUTETYPEID
-			>[];
-			add?: attribute<
-				string | number | boolean | unknown[] | unknown,
-				ATTRIBUTETYPEID
-			>[];
-			delete?: attribute<
-				string | number | boolean | unknown[] | unknown,
-				ATTRIBUTETYPEID
-			>[];
-		},
+		attrConfig: attrConfig,
 		branchIdOverride?: string
 	) => {
 		return this.modifyArt(

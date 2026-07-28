@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	ChangeDetectionStrategy,
 	Component,
 	computed,
 	effect,
@@ -31,12 +32,14 @@ import {
 	ATTRIBUTETYPEID,
 	BASEATTRIBUTETYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
+	MULTIPLICITY_ID,
 } from '@osee/attributes/constants';
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { FormDirective } from '@osee/shared/directives';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { PersistedArtifactAttributeEditorComponent } from './persisted-artifact-attribute-editor/persisted-artifact-attribute-editor.component';
+import { AttributeGroupComponent } from './attribute-group/attribute-group.component';
 import {
 	NativeContentEditorComponent,
 	NativeEditorAttributes,
@@ -51,11 +54,6 @@ import {
 	addAttributeDialogData,
 	addAttributeDialogResult,
 } from './add-attribute-dialog/add-attribute-dialog.component';
-import {
-	DeleteAttributeDialogComponent,
-	deleteAttributeDialogData,
-	deleteAttributeDialogResult,
-} from './delete-attribute-dialog/delete-attribute-dialog.component';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -68,9 +66,11 @@ import {
 		FormDirective,
 		PersistedArtifactAttributeEditorComponent,
 		NativeContentEditorComponent,
+		AttributeGroupComponent,
 	],
 	viewProviders: [provideOptionalControlContainerNgForm()],
 	templateUrl: './attributes-editor-panel.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	styles: [
 		`
 			:host {
@@ -88,6 +88,7 @@ export class AttributesEditorPanelComponent {
 	private dialog = inject(MatDialog);
 
 	tab = input.required<artifactTab>();
+	deleteMode = input(false);
 
 	branchHasPleCategory = this.currBranchInfoService.branchHasPleCategory;
 
@@ -121,15 +122,19 @@ export class AttributesEditorPanelComponent {
 		() => {
 			const resourceAttrs = this.artifactResource.value()?.attributes;
 			if (resourceAttrs) {
-				this._lastAttributes = [...resourceAttrs].sort((a, b) =>
-					a.typeId.localeCompare(b.typeId)
-				);
+				this._lastAttributes = [...resourceAttrs].sort((a, b) => {
+					const typeCompare = a.typeId.localeCompare(b.typeId);
+					if (typeCompare !== 0) return typeCompare;
+					return a.id.localeCompare(b.id);
+				});
 			}
 			return (
 				this._lastAttributes ??
-				[...this.tab().artifact.attributes].sort((a, b) =>
-					a.typeId.localeCompare(b.typeId)
-				)
+				[...this.tab().artifact.attributes].sort((a, b) => {
+					const typeCompare = a.typeId.localeCompare(b.typeId);
+					if (typeCompare !== 0) return typeCompare;
+					return a.id.localeCompare(b.id);
+				})
 			);
 		}
 	);
@@ -150,6 +155,25 @@ export class AttributesEditorPanelComponent {
 				a.typeId !== ATTRIBUTETYPEIDENUM.EXTENSION
 		)
 	);
+
+	/** Attributes grouped by typeId for rendering. Single-instance types are solo, multi-instance are grouped. */
+	protected groupedAttrs = computed(() => {
+		const attrs = this.otherAttrs();
+		const groups = new Map<
+			string,
+			{ name: string; attrs: attribute<string, ATTRIBUTETYPEID>[] }
+		>();
+
+		for (const attr of attrs) {
+			const key = attr.typeId;
+			if (!groups.has(key)) {
+				groups.set(key, { name: attr.name ?? key, attrs: [] });
+			}
+			groups.get(key)!.attrs.push(attr);
+		}
+
+		return [...groups.values()];
+	});
 
 	/** Detect if this artifact has native content (Name + Extension + Native Content). */
 	protected nativeEditorAttrs = computed<NativeEditorAttributes | null>(
@@ -273,31 +297,13 @@ export class AttributesEditorPanelComponent {
 				dialogRef
 					.afterClosed()
 					.pipe(take(1))
-					.subscribe((result: addAttributeDialogResult | undefined) => {
-						if (result && result.selectedTypes.length > 0) {
-							this.addAttributes(result.selectedTypes);
+					.subscribe(
+						(result: addAttributeDialogResult | undefined) => {
+							if (result && result.selectedTypes.length > 0) {
+								this.addAttributes(result.selectedTypes);
+							}
 						}
-					});
-			});
-	}
-
-	/** Opens the Delete Attribute dialog. */
-	openDeleteAttributeDialog() {
-		const dialogData: deleteAttributeDialogData = {
-			existingAttributes: this.attributes(),
-		};
-		const dialogRef = this.dialog.open(DeleteAttributeDialogComponent, {
-			data: dialogData,
-			width: '480px',
-			restoreFocus: false,
-		});
-		dialogRef
-			.afterClosed()
-			.pipe(take(1))
-			.subscribe((result: deleteAttributeDialogResult | undefined) => {
-				if (result && result.selectedAttributes.length > 0) {
-					this.deleteAttributes(result.selectedAttributes);
-				}
+					);
 			});
 	}
 
@@ -334,6 +340,57 @@ export class AttributesEditorPanelComponent {
 	}
 
 	/**
+	 * Checks whether a specific attribute instance can be deleted
+	 * based on multiplicity minimums.
+	 */
+	protected isDeletable(attr: attribute<string, ATTRIBUTETYPEID>): boolean {
+		// Never allow deleting Name
+		if (attr.name?.toLowerCase() === 'name') {
+			return false;
+		}
+
+		const multiplicityId = attr.multiplicity?.id;
+		const allOfType = this.attributes().filter(
+			(a) => a.typeId === attr.typeId
+		);
+
+		// EXACTLY_ONE or AT_LEAST_ONE: need at least 1
+		if (
+			multiplicityId === MULTIPLICITY_ID.EXACTLY_ONE ||
+			multiplicityId === MULTIPLICITY_ID.AT_LEAST_ONE
+		) {
+			return allOfType.length > 1;
+		}
+
+		// ANY or ZERO_OR_ONE: can always delete
+		return true;
+	}
+
+	/**
+	 * Deletes a single attribute instance inline from the editor.
+	 * Checks multiplicity minimum before allowing deletion.
+	 */
+	protected deleteInlineAttribute(attr: attribute<string, ATTRIBUTETYPEID>) {
+		const allOfType = this.attributes().filter(
+			(a) => a.typeId === attr.typeId
+		);
+		const multiplicityId = attr.multiplicity?.id;
+
+		// EXACTLY_ONE or AT_LEAST_ONE: need at least 1
+		if (
+			(multiplicityId === MULTIPLICITY_ID.EXACTLY_ONE ||
+				multiplicityId === MULTIPLICITY_ID.AT_LEAST_ONE) &&
+			allOfType.length <= 1
+		) {
+			this.uiService.ErrorText =
+				'Cannot delete: at least one instance of this attribute is required.';
+			return;
+		}
+
+		this.deleteAttributes([attr]);
+	}
+
+	/**
 	 * Deletes attribute instances via the transaction service using gammas.
 	 */
 	private deleteAttributes(attrs: attribute<string, ATTRIBUTETYPEID>[]) {
@@ -353,9 +410,7 @@ export class AttributesEditorPanelComponent {
 	}
 
 	/** Returns an appropriate default value for a new attribute based on store type. */
-	private getDefaultValue(
-		type: attribute<string, ATTRIBUTETYPEID>
-	): string {
+	private getDefaultValue(type: attribute<string, ATTRIBUTETYPEID>): string {
 		switch (type.storeType) {
 			case 'Boolean':
 				return 'false';

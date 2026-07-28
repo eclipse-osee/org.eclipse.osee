@@ -53,6 +53,7 @@ let nextUniqueId = 0;
 			(ngModelChange)="value.set($event)"
 			[disabled]="disabled()"
 			[maxlength]="maxlength()"
+			[placeholder]="placeholder()"
 			[matTooltip]="tooltip()" />
 		<ng-content />
 	</mat-form-field>`,
@@ -70,6 +71,7 @@ export class FocusLostInputComponent<T> {
 	focus = signal(false);
 	type = input('text');
 	tooltip = input<string>('');
+	placeholder = input<string>('');
 	maxlength = input<string | number | null>(null);
 	private _focus$ = toObservable(this.focus);
 	private _focus = this._focus$.pipe(

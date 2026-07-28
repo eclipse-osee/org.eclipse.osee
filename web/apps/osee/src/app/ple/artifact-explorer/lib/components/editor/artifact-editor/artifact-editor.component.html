@@ -12,7 +12,7 @@
  -->
 <!-- Section toolbar (sticky) -->
 <div
-	class="tw-sticky tw-top-0 tw-z-10 tw-border-b tw-border-solid tw-border-background-hover tw-bg-[var(--mat-sidenav-content-background-color)] tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2)] dark:tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.3)]"
+	class="tw-sticky tw-top-0 tw-z-[10000] tw-border-b tw-border-solid tw-border-background-hover tw-bg-[var(--mat-sidenav-content-background-color)] tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2)] dark:tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.3)]"
 	role="toolbar"
 	aria-label="Editor section toolbar">
 	<div class="tw-flex tw-items-center tw-px-4 tw-py-1">
@@ -22,67 +22,81 @@
 				(click)="activeSection.set('attributes')"
 				matTooltip="Attributes"
 				aria-label="Attributes"
-				[class]="
-					activeSection() === 'attributes'
-						? 'tw-text-primary'
-						: 'tw-opacity-60'
-				">
+				[class.tw-text-primary]="activeSection() === 'attributes'"
+				class="tw-relative">
 				<mat-icon>edit_note</mat-icon>
+				@if (activeSection() === 'attributes') {
+					<span
+						class="tw-absolute tw-inset-x-2 tw-bottom-0 tw-h-0.5 tw-rounded tw-bg-primary"></span>
+				}
 			</button>
 			<button
 				mat-icon-button
 				(click)="activeSection.set('relations')"
 				matTooltip="Relations"
 				aria-label="Relations"
-				[class]="
-					activeSection() === 'relations'
-						? 'tw-text-primary'
-						: 'tw-opacity-60'
-				">
+				[class.tw-text-primary]="activeSection() === 'relations'"
+				class="tw-relative">
 				<mat-icon>swap_horiz</mat-icon>
+				@if (activeSection() === 'relations') {
+					<span
+						class="tw-absolute tw-inset-x-2 tw-bottom-0 tw-h-0.5 tw-rounded tw-bg-primary"></span>
+				}
 			</button>
 			<button
 				mat-icon-button
 				(click)="activeSection.set('history')"
 				matTooltip="History"
 				aria-label="History"
-				[class]="
-					activeSection() === 'history'
-						? 'tw-text-primary'
-						: 'tw-opacity-60'
-				">
+				[class.tw-text-primary]="activeSection() === 'history'"
+				class="tw-relative">
 				<mat-icon>history</mat-icon>
+				@if (activeSection() === 'history') {
+					<span
+						class="tw-absolute tw-inset-x-2 tw-bottom-0 tw-h-0.5 tw-rounded tw-bg-primary"></span>
+				}
 			</button>
 			<button
 				mat-icon-button
 				(click)="activeSection.set('info')"
 				matTooltip="Artifact Info"
 				aria-label="Artifact Info"
-				[class]="
-					activeSection() === 'info'
-						? 'tw-text-primary'
-						: 'tw-opacity-60'
-				">
+				[class.tw-text-primary]="activeSection() === 'info'"
+				class="tw-relative">
 				<mat-icon>info_outline</mat-icon>
+				@if (activeSection() === 'info') {
+					<span
+						class="tw-absolute tw-inset-x-2 tw-bottom-0 tw-h-0.5 tw-rounded tw-bg-primary"></span>
+				}
 			</button>
 		</div>
 		<div class="tw-flex-1"></div>
 		@if (activeSection() === 'attributes' && tab().artifact.editable) {
-			<div class="tw-flex tw-items-center tw-gap-1">
+			<div
+				class="tw-flex tw-items-center tw-gap-1"
+				oseeHelpAnchor="attr-toolbar">
 				<button
 					mat-icon-button
 					(click)="openAddAttributeDialog()"
 					matTooltip="Add Attribute"
-					aria-label="Add Attribute">
-					<mat-icon class="tw-text-primary">add_circle</mat-icon>
+					aria-label="Add Attribute"
+					oseeHelpAnchor="attr-add-btn">
+					<mat-icon>add_circle_outline</mat-icon>
 				</button>
 				<button
 					mat-icon-button
-					(click)="openDeleteAttributeDialog()"
-					matTooltip="Delete Attribute"
-					aria-label="Delete Attribute">
-					<mat-icon class="tw-text-warning">delete</mat-icon>
+					(click)="toggleDeleteMode()"
+					[matTooltip]="
+						deleteMode() ? 'Exit delete mode' : 'Delete attributes'
+					"
+					aria-label="Toggle Delete Mode"
+					[class]="deleteMode() ? 'tw-text-warning' : ''"
+					oseeHelpAnchor="attr-delete-btn">
+					<mat-icon>{{
+						deleteMode() ? 'delete_sweep' : 'delete_outline'
+					}}</mat-icon>
 				</button>
+				<osee-help-button topicId="attribute-editor" />
 			</div>
 		}
 	</div>
@@ -94,7 +108,9 @@
 		[class.tw-hidden]="activeSection() !== 'attributes'">
 		<osee-attributes-editor-panel
 			#attrPanel
-			[tab]="tab()" />
+			[tab]="tab()"
+			[deleteMode]="deleteMode()"
+			oseeHelpAnchor="attr-panel" />
 	</div>
 	<div [class.tw-hidden]="activeSection() !== 'relations'">
 		<osee-relations-editor-panel

@@ -59,6 +59,7 @@ private readonly _registerHelp = this.helpRegistry.register({
 - `id` must match the folder name under `assets/help/`
 - `sections[].id` must match any heading text (h2–h6) slugified (`toLowerCase().replace(/[^a-z0-9]+/g, '-')`)
 - `sections[].label` must match the heading text exactly (case-insensitive match is used)
+- `sections[].anchorId` can be empty string (`''`) for sections that should appear as navigation chips but should NOT get a "Show Me" button (e.g., conceptual sections with no specific UI element to highlight)
 - Only h2 headings appear as navigation chips at the top of the popup; all heading levels (h2–h6) get "Show Me" buttons if they have a matching anchor
 
 ### Step 2: Add help anchors to the template
