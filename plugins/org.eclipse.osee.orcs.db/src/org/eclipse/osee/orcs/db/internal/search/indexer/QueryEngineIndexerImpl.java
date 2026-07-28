@@ -130,7 +130,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
          } catch (Exception ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
-         System.out.println(String.format("Processed %d gammas for type %d", gammaIds.size(), attributeType));
+         logger.info("Processed %d gammas for type %d", gammaIds.size(), attributeType);
          gammaIds.clear();
       }
    }
@@ -178,7 +178,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
             gammaIds.add(chStmt.getLong("gamma_id"));
          }
       }
-      System.out.println(String.format("Found %d gammas to tag for attr type %d", gammaIds.size(), attrTypeId));
+      logger.info("Found %d gammas to tag for attr type %d", gammaIds.size(), attrTypeId);
       if (gammaIds.isEmpty()) {
          return;
       }
@@ -193,7 +193,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
-      System.out.println(String.format("Completed tagging for attr type %d", attrTypeId));
+      logger.info("Completed tagging for attr type %d", attrTypeId);
    }
 
    @Override
@@ -204,7 +204,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
       TaggerTypeToken taggerType =
          tokenService.getAttributeTypeOrSentinel(attrTypeId).getTaggerType();
       if (!taggerType.isValid()) {
-         System.out.println(String.format("Attr type %d has no valid tagger, skipping", attrTypeId));
+         logger.info("Attr type %d has no valid tagger, skipping", attrTypeId);
          return;
       }
 
@@ -252,9 +252,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
          batchData.clear();
       }
 
-      System.out.println(
-         String.format("Direct index complete for attr type %d: %d gammas, %d tags", attrTypeId, totalGammas,
-            totalTags));
+      logger.info("Direct index complete for attr type %d: %d gammas, %d tags", attrTypeId, totalGammas, totalTags);
    }
 
    private InputStream getInputStream(String value, String uri) throws Exception {

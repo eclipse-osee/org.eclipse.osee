@@ -80,6 +80,7 @@ public final class DatabaseCreation {
       jdbcClient.createTable(ATTRIBUTE_BINARY_TABLE);
       jdbcClient.createTable(API_KEY_TABLE);
       jdbcClient.createTable(TXS_COLD_STORAGE_TABLE);
+      jdbcClient.createTable(OSEE_SEARCH_TAGS_HASH_TABLE);
    }
 
    private void dropTables() {
@@ -143,5 +144,6 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(ATTRIBUTE_BINARY_TABLE);
       jdbcClient.dropTable(API_KEY_TABLE);
       jdbcClient.dropTable(TXS_COLD_STORAGE_TABLE);
+      jdbcClient.dropTable(OSEE_SEARCH_TAGS_HASH_TABLE);
    }
 }

@@ -59,9 +59,12 @@ public interface IndexerEndpoint {
    Response reindexBaselineBranches(@DefaultValue("false") @QueryParam("includeWorking") boolean includeWorking);
 
    /**
-    * Fast re-index of all current attributes. Queries osee_attribute directly (no branch traversal) for all taggable
-    * attributes with tx_current = 1 that do not already have entries in osee_search_tags. Returns 202 immediately;
-    * indexing runs in the background. Optionally pass an attrTypeId to index only one type.
+    * Fast re-index of all current attributes using the queue-based async pipeline. Queries osee_attribute directly
+    * (no branch traversal) for all taggable attributes with tx_current = 1 that do not already have entries in
+    * osee_search_tags_hash. Returns 202 immediately; indexing runs in the background.
+    * <p>
+    * Best for incremental top-ups: picks up newly-created attributes that haven't been indexed yet.
+    * For bulk migration after a full table truncate, prefer {@code /reindex/direct} which is significantly faster.
     */
    @POST
    @Path("reindex/all")
@@ -69,8 +72,11 @@ public interface IndexerEndpoint {
 
    /**
     * Direct batch re-index that bypasses the async pipeline. Streams attribute data, tokenizes in Java, and batch
-    * inserts tags directly into osee_search_tags. Skips gammas that already have tags (safe to call on a
+    * inserts tags directly into osee_search_tags_hash. Skips gammas that already have tags (safe to call on a
     * partially-indexed database). Returns 202 immediately; indexing runs in the background.
+    * <p>
+    * Preferred for bulk migration after truncating osee_search_tags_hash, as it avoids the overhead of the
+    * queue/join-table pipeline. For incremental re-indexing of a few missing gammas, {@code /reindex/all} is simpler.
     */
    @POST
    @Path("reindex/direct")
