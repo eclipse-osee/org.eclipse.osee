@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchQueryData;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchUniqueArtifacts;
 import org.eclipse.osee.framework.core.data.ConflictData;
 import org.eclipse.osee.framework.core.data.ConflictUpdateData;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
@@ -1153,6 +1154,28 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       return BranchId.valueOf(modifiedOnBranchId);
 
+   }
+
+   @Override
+   public List<BranchUniqueArtifacts> compareArtifactIds(BranchId branch1, BranchId branch2) {
+      // Map from branch id -> list of unique art_ids on that branch
+      Map<Long, List<ArtifactId>> resultMap = new HashMap<>();
+      resultMap.put(branch1.getId(), new ArrayList<>());
+      resultMap.put(branch2.getId(), new ArrayList<>());
+
+      String complementSql = orcsApi.getJdbcService().getClient().getDbType().getComplementSql();
+      String sql = String.format(OseeSql.BRANCH_ARTIFACT_DIFF.getSql(), complementSql, complementSql);
+
+      orcsApi.getJdbcService().getClient().runQuery(chStmt -> {
+         long branchId = chStmt.getLong("branch_id");
+         ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
+         resultMap.get(branchId).add(artId);
+      }, sql, branch1.getId(), branch1.getId(), branch2.getId(), branch2.getId(), branch2.getId(), branch1.getId());
+
+      List<BranchUniqueArtifacts> result = new ArrayList<>();
+      result.add(new BranchUniqueArtifacts(branch1, resultMap.get(branch1.getId())));
+      result.add(new BranchUniqueArtifacts(branch2, resultMap.get(branch2.getId())));
+      return result;
    }
 
    @Override
