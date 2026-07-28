@@ -105,7 +105,7 @@ public enum OseeSql {
    UNUSED_IMPACTED_GAMMAS_AFTER_PURGE("SELECT gamma_id FROM ( SELECT ? as gamma_id, count(*) cnt FROM (select gamma_id from osee_txs where gamma_id = ? union all select gamma_id from osee_txs_archived where gamma_id = ? ) t1 ) t2 WHERE cnt = ? "),
    GET_MAX_TRANSACTION_ID("SELECT max(transaction_id) FROM osee_tx_details WHERE branch_id = ?"),
 
-   BRANCH_ARTIFACT_DIFF("SELECT art_id, ? as branch_id FROM (SELECT art.art_id FROM osee_txs b1, osee_artifact art WHERE b1.branch_id = ? AND b1.gamma_id = art.gamma_id AND b1.tx_current = 1 MINUS SELECT art.art_id FROM osee_txs b2, osee_artifact art WHERE b2.branch_id = ? AND b2.gamma_id = art.gamma_id AND b2.tx_current = 1) UNION ALL SELECT art_id, ? as branch_id FROM (SELECT art.art_id FROM osee_txs b2, osee_artifact art WHERE b2.branch_id = ? AND b2.gamma_id = art.gamma_id AND b2.tx_current = 1 MINUS SELECT art.art_id FROM osee_txs b1, osee_artifact art WHERE b1.branch_id = ? AND b1.gamma_id = art.gamma_id AND b1.tx_current = 1) ORDER BY 2");
+   BRANCH_ARTIFACT_DIFF("SELECT art_id, ? as branch_id FROM (SELECT art.art_id FROM osee_txs b1, osee_artifact art WHERE b1.branch_id = ? AND b1.gamma_id = art.gamma_id AND b1.tx_current = 1 %s SELECT art.art_id FROM osee_txs b2, osee_artifact art WHERE b2.branch_id = ? AND b2.gamma_id = art.gamma_id AND b2.tx_current = 1) t1 UNION ALL SELECT art_id, ? as branch_id FROM (SELECT art.art_id FROM osee_txs b2, osee_artifact art WHERE b2.branch_id = ? AND b2.gamma_id = art.gamma_id AND b2.tx_current = 1 %s SELECT art.art_id FROM osee_txs b1, osee_artifact art WHERE b1.branch_id = ? AND b1.gamma_id = art.gamma_id AND b1.tx_current = 1) t2 ORDER BY 2");
 
    private final String sql;
    private final String hints;

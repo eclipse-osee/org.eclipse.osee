@@ -115,7 +115,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
    private static final String OTHER_EDIT_SQL =
       "select txs.mod_type, br.branch_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and txs.tx_current <> 0 and  br.branch_id <> ? and br.branch_type = ? and br.branch_state = ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = br.branch_id AND txs1.transaction_id = br.baseline_transaction_id AND txs1.gamma_id = txs.gamma_id AND txs1.mod_type = txs.mod_type)";
 
-
    @Context
    private UriInfo uriInfo;
 
@@ -1164,13 +1163,14 @@ public class BranchEndpointImpl implements BranchEndpoint {
       resultMap.put(branch1.getId(), new ArrayList<>());
       resultMap.put(branch2.getId(), new ArrayList<>());
 
+      String complementSql = orcsApi.getJdbcService().getClient().getDbType().getComplementSql();
+      String sql = String.format(OseeSql.BRANCH_ARTIFACT_DIFF.getSql(), complementSql, complementSql);
+
       orcsApi.getJdbcService().getClient().runQuery(chStmt -> {
          long branchId = chStmt.getLong("branch_id");
          ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
          resultMap.get(branchId).add(artId);
-      }, OseeSql.BRANCH_ARTIFACT_DIFF.getSql(),
-         branch1.getId(), branch1.getId(), branch2.getId(),
-         branch2.getId(), branch2.getId(), branch1.getId());
+      }, sql, branch1.getId(), branch1.getId(), branch2.getId(), branch2.getId(), branch2.getId(), branch1.getId());
 
       List<BranchUniqueArtifacts> result = new ArrayList<>();
       result.add(new BranchUniqueArtifacts(branch1, resultMap.get(branch1.getId())));
