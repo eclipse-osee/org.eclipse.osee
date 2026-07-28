@@ -19,25 +19,25 @@ package org.eclipse.osee.ats.api.workdef;
 public class AtsWorkDefinitionTokens {
 
    // @formatter:off
-   public static AtsWorkDefinitionToken WorkDef_Goal = new AtsWorkDefinitionToken(142177L, "WorkDef_Goal");
+   public static AtsWorkDefinitionToken WorkDefGoal = new AtsWorkDefinitionToken(142177L, "WorkDefGoal");
 
-   public static AtsWorkDefinitionToken WorkDef_Review_Decision = new AtsWorkDefinitionToken(25335L, "WorkDef_Review_Decision");
-   public static AtsWorkDefinitionToken WorkDef_Review_PeerToPeer = new AtsWorkDefinitionToken(25334L, "WorkDef_Review_PeerToPeer");
-   public static AtsWorkDefinitionToken WorkDef_Review_PeerToPeer_Demo = new AtsWorkDefinitionToken(3324222L, "WorkDef_Review_PeerToPeer_Demo");
+   public static AtsWorkDefinitionToken WorkDefReviewDecision = new AtsWorkDefinitionToken(25335L, "WorkDefReviewDecision");
+   public static AtsWorkDefinitionToken WorkDefReviewPeerToPeer = new AtsWorkDefinitionToken(25334L, "WorkDefReviewPeerToPeer");
+   public static AtsWorkDefinitionToken WorkDefReviewPeerToPeerDemo = new AtsWorkDefinitionToken(3324222L, "WorkDefReviewPeerToPeerDemo");
 
-   public static AtsWorkDefinitionToken WorkDef_Sprint = new AtsWorkDefinitionToken(6915497L, "WorkDef_Sprint");
+   public static AtsWorkDefinitionToken WorkDefSprint = new AtsWorkDefinitionToken(6915497L, "WorkDefSprint");
 
-   public static AtsWorkDefinitionToken WorkDef_Task_Default = new AtsWorkDefinitionToken(105373L, "WorkDef_Task_Default");
-   public static AtsWorkDefinitionToken WorkDef_Task_AtsConfig2Example = new AtsWorkDefinitionToken(824992064L, "WorkDef_Task_AtsConfig2Example");
+   public static AtsWorkDefinitionToken WorkDefTaskDefault = new AtsWorkDefinitionToken(105373L, "WorkDefTaskDefault");
+   public static AtsWorkDefinitionToken WorkDefTaskAtsConfig2Example = new AtsWorkDefinitionToken(824992064L, "WorkDefTaskAtsConfig2Example");
 
-   public static AtsWorkDefinitionToken WorkDef_Team_Simple = new AtsWorkDefinitionToken(72302L, "WorkDef_Team_Simple");
-   public static AtsWorkDefinitionToken WorkDef_Team_Default = new AtsWorkDefinitionToken(72301L, "WorkDef_Team_Default");
+   public static AtsWorkDefinitionToken WorkDefTeamSimple = new AtsWorkDefinitionToken(72302L, "WorkDefTeamSimple");
+   public static AtsWorkDefinitionToken WorkDefTeamDefault = new AtsWorkDefinitionToken(72301L, "WorkDefTeamDefault");
 
-   public static AtsWorkDefinitionToken WorkDef_Team_AtsConfig2Example = new AtsWorkDefinitionToken(282846363L, "WorkDef_Team_AtsConfig2Example");
-   public static AtsWorkDefinitionToken WorkDef_Team_Simple_InWork = new AtsWorkDefinitionToken(7285608L, "WorkDef_Team_Simple_InWork");
-   public static AtsWorkDefinitionToken WorkDef_Team_Simple_Analyze = new AtsWorkDefinitionToken(946555776L, "WorkDef_Team_Simple_Analyze");
-   public static AtsWorkDefinitionToken WorkDef_Team_ProductLine = new AtsWorkDefinitionToken(10837868L, "WorkDef_Team_ProductLine");
-   public static AtsWorkDefinitionToken WorkDef_Team_MIM = new AtsWorkDefinitionToken(10837869L, "WorkDef_Team_MIM");
+   public static AtsWorkDefinitionToken WorkDefTeamAtsConfig2Example = new AtsWorkDefinitionToken(282846363L, "WorkDefTeamAtsConfig2Example");
+   public static AtsWorkDefinitionToken WorkDefTeamSimpleInWork = new AtsWorkDefinitionToken(7285608L, "WorkDefTeamSimpleInWork");
+   public static AtsWorkDefinitionToken WorkDefTeamSimpleAnalyze = new AtsWorkDefinitionToken(946555776L, "WorkDefTeamSimpleAnalyze");
+   public static AtsWorkDefinitionToken WorkDefTeamProductLine = new AtsWorkDefinitionToken(10837868L, "WorkDefTeamProductLine");
+   public static AtsWorkDefinitionToken WorkDefTeamMIM = new AtsWorkDefinitionToken(10837869L, "WorkDefTeamMIM");
 
    // @formatter:on
 

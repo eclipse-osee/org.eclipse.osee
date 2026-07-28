@@ -178,7 +178,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       }
       if (workDefinition == null) {
          workDefinition =
-            atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Task_Default);
+            atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefTaskDefault);
       }
       return workDefinition;
    }
@@ -226,17 +226,17 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
                      workItem.toStringWithId());
                   workDef = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
                } else if (workItem instanceof IAtsGoal) {
-                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
+                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefGoal);
                } else if (workItem instanceof IAgileBacklog) {
-                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
+                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefGoal);
                } else if (workItem instanceof IAgileSprint) {
-                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Sprint);
+                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefSprint);
                } else if (workItem instanceof IAtsPeerToPeerReview) {
                   workDef = atsApi.getWorkDefinitionService().getWorkDefinition(
-                     AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer);
+                     AtsWorkDefinitionTokens.WorkDefReviewPeerToPeer);
                } else if (workItem instanceof IAtsDecisionReview) {
                   workDef = atsApi.getWorkDefinitionService().getWorkDefinition(
-                     AtsWorkDefinitionTokens.WorkDef_Review_Decision);
+                     AtsWorkDefinitionTokens.WorkDefReviewDecision);
                }
             }
          }
@@ -259,7 +259,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public WorkDefinition getDefaultPeerToPeerWorkflowDefinition() {
-      return getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer);
+      return getWorkDefinition(AtsWorkDefinitionTokens.WorkDefReviewPeerToPeer);
    }
 
    /**
@@ -483,7 +483,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
       IAtsTeamDefinition parentTeamDef = atsApi.getTeamDefinitionService().getParentTeamDef(teamDef);
       if (parentTeamDef == null) {
-         return atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Team_Default);
+         return atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefTeamDefault);
       }
       return getWorkDefinitionForTeamWfFromTeamDef(parentTeamDef);
    }

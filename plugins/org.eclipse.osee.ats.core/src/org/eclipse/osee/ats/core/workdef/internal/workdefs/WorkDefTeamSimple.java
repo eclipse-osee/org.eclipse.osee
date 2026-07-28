@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefTeamSimple extends AbstractWorkDef {
 
    public WorkDefTeamSimple() {
-      super(AtsWorkDefinitionTokens.WorkDef_Team_Simple);
+      super(AtsWorkDefinitionTokens.WorkDefTeamSimple);
    }
 
    @Override

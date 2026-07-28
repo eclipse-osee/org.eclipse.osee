@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerToPe
 public class WorkDefReviewPeerDemoSwDesign extends WorkDefReviewPeerToPeer {
 
    public WorkDefReviewPeerDemoSwDesign() {
-      super(DemoWorkDefinitions.WorkDef_Review_Demo_Peer_SwDesign);
+      super(DemoWorkDefinitions.WorkDefReviewPeerDemoSwDesign);
    }
 
 }

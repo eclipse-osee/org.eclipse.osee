@@ -73,7 +73,7 @@ public class AtsWorkDefinitionServiceImplTest {
 
       changes.execute();
 
-      Assert.assertEquals(DemoWorkDefinitions.WorkDef_Review_Demo_Peer_SwDesign.getId(),
+      Assert.assertEquals(DemoWorkDefinitions.WorkDefReviewPeerDemoSwDesign.getId(),
          peerReview.getWorkDefinition().getId());
 
       // Test Task Work Def
@@ -86,7 +86,7 @@ public class AtsWorkDefinitionServiceImplTest {
       jTask.setDescription("description");
       jTask.setCreatedByUserId(AtsApiService.get().getUserService().getCurrentUserId());
       jTask.setCreatedDate(new Date());
-      jTask.setWorkDef(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign.getIdString());
+      jTask.setWorkDef(DemoWorkDefinitions.WorkDefTaskDemoSwDesign.getIdString());
       taskData.getTasks().add(jTask);
 
       newTaskSet = AtsApiService.get().getServerEndpoints().getTaskEp().create(newTaskSet);
@@ -94,7 +94,7 @@ public class AtsWorkDefinitionServiceImplTest {
       IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(task.getId());
 
       Assert.assertTrue(workItem.isTask());
-      Assert.assertEquals(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign.getId(), workItem.getWorkDefinition().getId());
+      Assert.assertEquals(DemoWorkDefinitions.WorkDefTaskDemoSwDesign.getId(), workItem.getWorkDefinition().getId());
    }
 
 }

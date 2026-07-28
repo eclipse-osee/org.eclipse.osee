@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefTeamProductLine extends AbstractWorkDef {
 
    public WorkDefTeamProductLine() {
-      super(AtsWorkDefinitionTokens.WorkDef_Team_ProductLine);
+      super(AtsWorkDefinitionTokens.WorkDefTeamProductLine);
    }
 
    @Override

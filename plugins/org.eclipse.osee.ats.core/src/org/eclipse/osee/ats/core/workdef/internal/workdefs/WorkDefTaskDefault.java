@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefTaskDefault extends AbstractWorkDef {
 
    public WorkDefTaskDefault() {
-      super(AtsWorkDefinitionTokens.WorkDef_Task_Default);
+      super(AtsWorkDefinitionTokens.WorkDefTaskDefault);
    }
 
    public WorkDefTaskDefault(AtsWorkDefinitionToken workDefToken) {

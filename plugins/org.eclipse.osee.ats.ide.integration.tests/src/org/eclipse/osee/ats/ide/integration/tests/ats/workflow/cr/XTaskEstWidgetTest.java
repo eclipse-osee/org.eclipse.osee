@@ -68,7 +68,7 @@ public class XTaskEstWidgetTest implements TaskEstNameProvider {
          ted.setChecked(true);
       }
       TaskEstOperations ops =
-         new TaskEstOperations(atsApi, DemoWorkDefinitions.WorkDef_Task_Demo_For_CR_Estimating, this);
+         new TaskEstOperations(atsApi, DemoWorkDefinitions.WorkDefTaskDemoForCrEstimating, this);
       NewTaskSet newTaskSet = ops.createCannedTasks(teamWf, taskDefs);
 
       Assert.assertFalse(newTaskSet.isErrors());

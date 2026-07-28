@@ -41,7 +41,7 @@ import org.junit.BeforeClass;
 public class PeerReviewDefinitionManagerTest extends PeerReviewOnTransitionToHook {
 
    public static AtsWorkDefinitionToken PeerWorkDefId =
-      AtsWorkDefinitionToken.valueOf(162205335L, "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition");
+      AtsWorkDefinitionToken.valueOf(162205335L, "WorkDefTeamPeerReviewDefinitionManagerTestTransition");
 
    @BeforeClass
    @AfterClass

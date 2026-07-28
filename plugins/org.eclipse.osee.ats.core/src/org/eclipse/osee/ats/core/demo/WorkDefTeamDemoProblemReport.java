@@ -59,7 +59,7 @@ import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
 
    public WorkDefTeamDemoProblemReport() {
-      super(DemoWorkDefinitions.WorkDef_Team_Demo_Problem_Report);
+      super(DemoWorkDefinitions.WorkDefTeamDemoProblemReport);
    }
 
    @Override

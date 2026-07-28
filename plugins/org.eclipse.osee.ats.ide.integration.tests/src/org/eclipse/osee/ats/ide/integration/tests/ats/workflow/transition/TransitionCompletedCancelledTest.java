@@ -69,7 +69,7 @@ public class TransitionCompletedCancelledTest {
       // Validate Completed
       validateAttrValue(CoreAttributeTypes.Name, title);
       validateAttrValue(AtsAttributeTypes.WorkflowDefinitionReference,
-         AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
+         AtsWorkDefinitionTokens.WorkDefTaskDefault.getIdString());
       validateAttrValue(AtsAttributeTypes.CurrentStateType, StateType.Completed.name());
       validateAttrValue(AtsAttributeTypes.CreatedDate,
          String.valueOf(DateUtil.get(createdDate, DateUtil.YYYY_MM_DD_WITH_DASHES)));
@@ -88,7 +88,7 @@ public class TransitionCompletedCancelledTest {
       // Validate InWork
       validateAttrValue(CoreAttributeTypes.Name, title);
       validateAttrValue(AtsAttributeTypes.WorkflowDefinitionReference,
-         AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
+         AtsWorkDefinitionTokens.WorkDefTaskDefault.getIdString());
       validateAttrValue(AtsAttributeTypes.CurrentStateType, StateType.Working.name());
       validateAttrValue(AtsAttributeTypes.CreatedDate,
          String.valueOf(DateUtil.get(createdDate, DateUtil.YYYY_MM_DD_WITH_DASHES)));
@@ -112,7 +112,7 @@ public class TransitionCompletedCancelledTest {
       // Validate Completed
       validateAttrValue(CoreAttributeTypes.Name, title);
       validateAttrValue(AtsAttributeTypes.WorkflowDefinitionReference,
-         AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
+         AtsWorkDefinitionTokens.WorkDefTaskDefault.getIdString());
       validateAttrValue(AtsAttributeTypes.CurrentStateType, StateType.Cancelled.name());
       validateAttrValue(AtsAttributeTypes.CreatedDate,
          String.valueOf(DateUtil.get(createdDate, DateUtil.YYYY_MM_DD_WITH_DASHES)));
@@ -132,7 +132,7 @@ public class TransitionCompletedCancelledTest {
       // Validate InWork
       validateAttrValue(CoreAttributeTypes.Name, title);
       validateAttrValue(AtsAttributeTypes.WorkflowDefinitionReference,
-         AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString());
+         AtsWorkDefinitionTokens.WorkDefTaskDefault.getIdString());
       validateAttrValue(AtsAttributeTypes.CurrentStateType, StateType.Working.name());
       validateAttrValue(AtsAttributeTypes.CreatedDate,
          String.valueOf(DateUtil.get(createdDate, DateUtil.YYYY_MM_DD_WITH_DASHES)));

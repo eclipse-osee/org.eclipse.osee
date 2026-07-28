@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefSprint extends AbstractWorkDef {
 
    public WorkDefSprint() {
-      super(AtsWorkDefinitionTokens.WorkDef_Sprint);
+      super(AtsWorkDefinitionTokens.WorkDefSprint);
    }
 
    @Override

@@ -70,7 +70,7 @@ public class DemoProblemReportWorkItemHook implements IAtsWorkItemHookIde {
       boolean isEditable) {
       if (art.isOfType(
          AtsArtifactTypes.DemoProblemReportTeamWorkflow) && ((IAtsTeamWorkflow) art).getWorkDefinition().getName().equals(
-            DemoWorkDefinitions.WorkDef_Team_Demo_Problem_Report.getName())) {
+            DemoWorkDefinitions.WorkDefTeamDemoProblemReport.getName())) {
          if (xWidget.getLabel().equals(AtsAttributeTypes.Description.getUnqualifiedName())) {
             XTextDam descptionWidget = (XTextDam) xWidget;
             if (isHandleDebug()) {

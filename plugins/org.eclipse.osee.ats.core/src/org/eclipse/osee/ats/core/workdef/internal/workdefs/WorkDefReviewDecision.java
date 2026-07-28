@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 public class WorkDefReviewDecision extends AbstractWorkDef {
 
    public WorkDefReviewDecision() {
-      super(AtsWorkDefinitionTokens.WorkDef_Review_Decision);
+      super(AtsWorkDefinitionTokens.WorkDefReviewDecision);
    }
 
    @Override

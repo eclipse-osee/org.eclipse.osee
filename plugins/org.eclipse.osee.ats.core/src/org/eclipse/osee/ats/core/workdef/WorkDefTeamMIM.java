@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefTeamMIM extends AbstractWorkDef {
 
    public WorkDefTeamMIM() {
-      super(AtsWorkDefinitionTokens.WorkDef_Team_MIM);
+      super(AtsWorkDefinitionTokens.WorkDefTeamMIM);
    }
 
    @Override

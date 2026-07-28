@@ -278,7 +278,7 @@ public class AtsTestUtilCore {
 
       // All tests use the same Work Definition so it doesn't have to be re-created and imported each time
       AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef,
-         AtsWorkDefinitionTokens.WorkDef_Team_Simple_Analyze, changes);
+         AtsWorkDefinitionTokens.WorkDefTeamSimpleAnalyze, changes);
 
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.Active, true);
       changes.relate(teamDef, AtsRelationTypes.TeamLead_Lead, getUser());

@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefGoal extends AbstractWorkDef {
 
    public WorkDefGoal() {
-      super(AtsWorkDefinitionTokens.WorkDef_Goal);
+      super(AtsWorkDefinitionTokens.WorkDefGoal);
    }
 
    @Override

@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
-import static org.eclipse.osee.ats.api.demo.DemoWorkDefinitions.WorkDef_Team_Demo_Req;
+import static org.eclipse.osee.ats.api.demo.DemoWorkDefinitions.WorkDefTeamDemoReq;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.io.InputStream;
@@ -123,7 +123,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertEquals(TeamState.Implement.getName(), wData.getCurrentStateName().getValue());
       Assert.assertTrue(wData.getAssigneeNames().stream().map(
          (x) -> x.getAttributePojo().getValue().equals(DemoUsers.Joe_Smith.getName())) != null);
-      Assert.assertEquals(WorkDef_Team_Demo_Req.getName(), wData.getWorkDefName());
+      Assert.assertEquals(WorkDefTeamDemoReq.getName(), wData.getWorkDefName());
       Assert.assertEquals(6, wData.getWorkDefStates().size());
    }
 

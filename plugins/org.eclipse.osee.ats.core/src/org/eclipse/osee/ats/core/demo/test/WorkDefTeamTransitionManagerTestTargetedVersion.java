@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefTeamTransitionManagerTestTargetedVersion extends AbstractWorkDef {
 
    public WorkDefTeamTransitionManagerTestTargetedVersion() {
-      super(DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_TargetedVersion);
+      super(DemoWorkDefinitionTokens.WorkDefTeamTransitionManagerTestTargetedVersion);
    }
 
    @Override

@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
    public WorkDefTeamDemoChangeRequest() {
-      super(DemoWorkDefinitions.WorkDef_Team_Demo_Change_Request);
+      super(DemoWorkDefinitions.WorkDefTeamDemoChangeRequest);
    }
 
    @Override

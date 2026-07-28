@@ -55,7 +55,7 @@ public class XTaskEstDemoWidget extends XTaskEstWidget {
 
    @Override
    public AtsWorkDefinitionToken getTaskWorkDefTok() {
-      return DemoWorkDefinitions.WorkDef_Task_Demo_For_CR_Estimating;
+      return DemoWorkDefinitions.WorkDefTaskDemoForCrEstimating;
    }
 
    @Override

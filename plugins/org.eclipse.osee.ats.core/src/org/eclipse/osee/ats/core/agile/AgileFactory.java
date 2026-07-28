@@ -211,7 +211,7 @@ public class AgileFactory {
          null, changes);
 
       WorkDefinition workDefinition =
-         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Sprint);
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefSprint);
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(sprint, workDefinition, changes);
 
       // Initialize state machine
@@ -245,7 +245,7 @@ public class AgileFactory {
          null, changes);
 
       WorkDefinition workDefinition =
-         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefGoal);
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(backlog, workDefinition, changes);
 
       // Initialize state machine
