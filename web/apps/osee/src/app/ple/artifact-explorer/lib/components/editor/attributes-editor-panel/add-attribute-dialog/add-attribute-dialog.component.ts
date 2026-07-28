@@ -31,7 +31,7 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { attribute } from '@osee/attributes/types';
-import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+import { ATTRIBUTETYPEID, MULTIPLICITY_ID } from '@osee/attributes/constants';
 
 export type addAttributeDialogData = {
 	/** All attribute types valid for this artifact type. */
@@ -87,8 +87,7 @@ export type addAttributeDialogResult = {
 				<div
 					class="tw-mt-2 tw-flex tw-max-h-[300px] tw-flex-col tw-gap-1 tw-overflow-y-auto tw-pr-2">
 					@for (type of filteredTypes(); track type.typeId) {
-						<div
-							class="tw-flex tw-items-center tw-gap-2">
+						<div class="tw-flex tw-items-center tw-gap-2">
 							<mat-checkbox
 								[checked]="isSelected(type)"
 								(change)="toggleSelection(type)">
@@ -111,7 +110,7 @@ export type addAttributeDialogResult = {
 									(ngModelChange)="setCount(type, $event)"
 									[name]="'count-' + type.typeId"
 									(keydown)="limitDigits($event)"
-									class="tw-w-12 tw-rounded tw-border tw-border-solid tw-border-background-hover tw-bg-transparent tw-px-1 tw-py-0.5 tw-text-center tw-text-sm" />
+									class="tw-w-12 tw-rounded tw-border tw-border-solid tw-border-foreground-divider tw-bg-transparent tw-px-1 tw-py-0.5 tw-text-center tw-text-sm" />
 							}
 						</div>
 					}
@@ -178,7 +177,10 @@ export class AddAttributeDialogComponent {
 			const multiplicityId = type.multiplicity?.id;
 
 			// EXACTLY_ONE (id=2) or ZERO_OR_ONE (id=3): max is 1
-			if (multiplicityId === '2' || multiplicityId === '3') {
+			if (
+				multiplicityId === MULTIPLICITY_ID.EXACTLY_ONE ||
+				multiplicityId === MULTIPLICITY_ID.ZERO_OR_ONE
+			) {
 				return instanceCount < 1;
 			}
 			// ANY (id=1) or AT_LEAST_ONE (id=4): unlimited
@@ -204,7 +206,9 @@ export class AddAttributeDialogComponent {
 
 	protected isUnlimited(type: attribute<string, ATTRIBUTETYPEID>): boolean {
 		const id = type.multiplicity?.id;
-		return id === '1' || id === '4';
+		return (
+			id === MULTIPLICITY_ID.ANY || id === MULTIPLICITY_ID.AT_LEAST_ONE
+		);
 	}
 
 	protected toggleSelection(type: attribute<string, ATTRIBUTETYPEID>) {
@@ -266,13 +270,13 @@ export class AddAttributeDialogComponent {
 		type: attribute<string, ATTRIBUTETYPEID>
 	): string {
 		switch (type.multiplicity?.id) {
-			case '1':
+			case MULTIPLICITY_ID.ANY:
 				return 'Optional, Unlimited';
-			case '2':
+			case MULTIPLICITY_ID.EXACTLY_ONE:
 				return 'Required, Exactly One';
-			case '3':
+			case MULTIPLICITY_ID.ZERO_OR_ONE:
 				return 'Optional, Max 1';
-			case '4':
+			case MULTIPLICITY_ID.AT_LEAST_ONE:
 				return 'Required, Unlimited';
 			default:
 				return '';

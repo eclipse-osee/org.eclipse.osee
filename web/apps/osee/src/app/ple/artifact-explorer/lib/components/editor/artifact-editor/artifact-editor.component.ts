@@ -10,7 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, input, signal, viewChild } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	input,
+	signal,
+	viewChild,
+} from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -19,6 +26,9 @@ import { ArtifactInfoPanelComponent } from '../artifact-info-panel/artifact-info
 import { AttributesEditorPanelComponent } from '../attributes-editor-panel/attributes-editor-panel.component';
 import { RelationsEditorPanelComponent } from '../relations-editor-panel/relations-editor-panel.component';
 import { ArtifactHistoryPanelComponent } from '../artifact-history-panel/artifact-history-panel.component';
+import { HelpTopicRegistryService } from '@osee/shared/components';
+import { HelpButtonComponent } from '@osee/shared/components';
+import { HelpAnchorDirective } from '@osee/shared/components';
 
 export type EditorSection = 'attributes' | 'relations' | 'history' | 'info';
 
@@ -32,24 +42,61 @@ export type EditorSection = 'attributes' | 'relations' | 'history' | 'info';
 		ArtifactInfoPanelComponent,
 		AttributesEditorPanelComponent,
 		ArtifactHistoryPanelComponent,
+		HelpButtonComponent,
+		HelpAnchorDirective,
 	],
 	templateUrl: './artifact-editor.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArtifactEditorComponent {
+	private readonly helpRegistry = inject(HelpTopicRegistryService);
+
 	tab = input.required<artifactTab>();
 
 	/** Which editor section is currently visible. */
 	protected activeSection = signal<EditorSection>('attributes');
 
-	/** Reference to the attributes panel for triggering add/delete dialogs. */
+	/** Whether delete mode is active (shows × on deletable attributes). */
+	protected deleteMode = signal(false);
+
+	/** Reference to the attributes panel for triggering add dialog. */
 	private readonly attrPanel =
 		viewChild<AttributesEditorPanelComponent>('attrPanel');
+
+	private readonly _registerHelp = this.helpRegistry.register({
+		id: 'attribute-editor',
+		label: 'Attribute Editor',
+		markdownPath: 'assets/help/attribute-editor/overview.md',
+		sections: [
+			{ id: 'editing', label: 'Editing', anchorId: 'attr-panel' },
+			{
+				id: 'toolbar-actions',
+				label: 'Toolbar Actions',
+				anchorId: 'attr-toolbar',
+			},
+			{
+				id: 'adding-attributes',
+				label: 'Adding Attributes',
+				anchorId: 'attr-add-btn',
+			},
+			{
+				id: 'deleting-attributes',
+				label: 'Deleting Attributes',
+				anchorId: 'attr-delete-btn',
+			},
+			{
+				id: 'grouped-attributes',
+				label: 'Grouped Attributes',
+				anchorId: '',
+			},
+		],
+	});
 
 	protected openAddAttributeDialog() {
 		this.attrPanel()?.openAddAttributeDialog();
 	}
 
-	protected openDeleteAttributeDialog() {
-		this.attrPanel()?.openDeleteAttributeDialog();
+	protected toggleDeleteMode() {
+		this.deleteMode.update((v) => !v);
 	}
 }

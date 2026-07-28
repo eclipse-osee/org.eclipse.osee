@@ -42,15 +42,13 @@ export const selectBranch = async (
 	// Wait for combobox to be enabled (disabled while no type selected)
 	await expect(branchCombobox).toBeEnabled({ timeout: 5000 });
 	await branchCombobox.click({ force: true });
-	await branchCombobox.fill('');
-	await branchCombobox.type(branchName);
-	// Wait for and click the matching option
-	await expect(
-		page.locator('mat-option').filter({ hasText: branchName }).first()
-	).toBeVisible({ timeout: 15000 });
+	await branchCombobox.fill(branchName);
+	// Wait for the matching option to appear and click it.
+	// Using a single locator.click() which retries internally if the element
+	// detaches (e.g., autocomplete re-renders between debounced searches).
 	await page
 		.locator('mat-option')
 		.filter({ hasText: branchName })
 		.first()
-		.click();
+		.click({ timeout: 15000 });
 };

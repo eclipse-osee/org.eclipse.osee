@@ -28,7 +28,12 @@ The web app uses `CurrentTransactionService` (from `@osee/transactions/services`
 
 ### `attrConfig` shape
 
+The `attrConfig` type is exported from `@osee/transactions/types` and used by both the service methods and the `modifyArtifact` function/operator:
+
 ```typescript
+import { attrConfig } from '@osee/transactions/types';
+
+// Shape:
 {
   set?: attribute[];   // Modify existing attributes (requires id + gammaId)
   add?: attribute[];   // Add new attribute instances (id='-1', gammaId='-1')
@@ -127,7 +132,7 @@ const attr: newAttribute = {
 
 ### Delete (remove instance)
 
-Pass the existing attribute with its real `id` and `gammaId`. The operator maps this to `deleteAttributes: [{typeId, gamma}]` in the JSON payload:
+Pass the existing attribute with its real `id` and `gammaId`. The operator maps this to `deleteAttributes: [{id}]` in the JSON payload, targeting the specific attribute instance by its ID:
 
 ```typescript
 // { delete: [existingAttr] }
@@ -153,4 +158,6 @@ this.currentTxService.modifyArtifactAndMutate(...)
 
 - `performMutation()` sets `uiService.updated = true` which triggers global resource refreshes via `httpResource` factories that read `uiService.updateCount()`.
 - Do **not** call `TransactionService.performMutation()` directly from components — always use `CurrentTransactionService` which handles branch resolution and UI refresh.
+- `TransactionService.performMutation()` accepts both the modern `transaction` type and `legacyTransaction` for backward compatibility with older MIM services.
 - The `transaction-legacy.ts` types exist for backward compatibility with older MIM services. New code should use `CurrentTransactionService` exclusively.
+- The `modifyArtifact` type includes a typed `deleteAttributes?: deleteAttributeRef[]` field (where `deleteAttributeRef = { id: string }`). The functions/operators populate this from the `delete` array in `attrConfig`, filtering to valid attributes and mapping to `{id}`.

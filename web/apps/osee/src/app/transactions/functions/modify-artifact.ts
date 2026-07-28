@@ -13,36 +13,22 @@
 import { applic } from '@osee/applicability/types';
 import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import {
-	attribute,
 	isNewAttr,
 	isValidAttr,
 	newAttribute,
 	validAttribute,
 } from '@osee/attributes/types';
 import {
+	attrConfig,
 	modifyArtifact as _modifyArtifact,
 	transaction,
 } from '@osee/transactions/types';
 
-type _attrConfig = {
-	set?: attribute<
-		string | number | boolean | unknown[] | unknown,
-		ATTRIBUTETYPEID
-	>[];
-	add?: attribute<
-		string | number | boolean | unknown[] | unknown,
-		ATTRIBUTETYPEID
-	>[];
-	delete?: attribute<
-		string | number | boolean | unknown[] | unknown,
-		ATTRIBUTETYPEID
-	>[];
-};
 export const modifyArtifact = (
 	tx: Required<transaction>,
 	artId: `${number}`,
 	applicability: applic,
-	attrConfig: _attrConfig
+	attrConfig: attrConfig
 ) => {
 	const _modify: _modifyArtifact = {
 		id: artId,
@@ -65,26 +51,25 @@ export const modifyArtifact = (
 					value: attr.value,
 				};
 			}),
-		addAttributes: attrConfig.add?.filter(
-			(
-				attr
-			): attr is newAttribute<
-				string | number | boolean | unknown[] | unknown,
-				ATTRIBUTETYPEID
-			> => isNewAttr(attr)
-		),
+		addAttributes: attrConfig.add
+			?.filter(
+				(
+					attr
+				): attr is newAttribute<
+					string | number | boolean | unknown[] | unknown,
+					ATTRIBUTETYPEID
+				> => isNewAttr(attr)
+			)
+			.map((attr) => ({
+				typeId: attr.typeId,
+				value: attr.value,
+			})),
+		deleteAttributes: attrConfig.delete
+			?.filter((attr) => isValidAttr(attr))
+			.map((attr) => ({
+				id: (attr as validAttribute<unknown, ATTRIBUTETYPEID>).id,
+			})),
 	};
-	if (attrConfig.delete && attrConfig.delete.length > 0) {
-		(_modify as Record<string, unknown>)['deleteAttributes'] =
-			attrConfig.delete
-				.filter((attr) => isValidAttr(attr))
-				.map((attr) => ({
-					typeId: attr.typeId,
-					gamma: (
-						attr as validAttribute<unknown, ATTRIBUTETYPEID>
-					).gammaId,
-				}));
-	}
 	tx.modifyArtifacts.push(_modify);
 	return tx;
 };

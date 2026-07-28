@@ -11,3 +11,4 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './attribute';
+export * from './multiplicity-id';
