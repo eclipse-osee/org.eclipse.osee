@@ -139,6 +139,22 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    private void createTreeArea(Composite parent) {
       treeViewer = new TreeViewer(parent, SWT.FULL_SELECTION | SWT.MULTI | SWT.NO_SCROLL);
       tree = treeViewer.getTree();
+
+      // Propagate mouse wheel events to parent ScrolledForm for page scrolling
+      tree.addListener(SWT.MouseVerticalWheel, event -> {
+         Composite comp = tree.getParent();
+         while (comp != null) {
+            if (comp instanceof org.eclipse.ui.forms.widgets.ScrolledForm) {
+               org.eclipse.ui.forms.widgets.ScrolledForm scrolledForm = (org.eclipse.ui.forms.widgets.ScrolledForm) comp;
+               org.eclipse.swt.graphics.Point origin = scrolledForm.getOrigin();
+               int scrollAmount = event.count * tree.getItemHeight();
+               scrolledForm.setOrigin(origin.x, origin.y - scrollAmount);
+               event.doit = false;
+               break;
+            }
+            comp = comp.getParent();
+         }
+      });
       tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       tree.setHeaderVisible(true);
 
