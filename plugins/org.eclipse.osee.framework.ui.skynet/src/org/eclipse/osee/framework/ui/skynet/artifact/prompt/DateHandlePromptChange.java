@@ -47,7 +47,7 @@ public class DateHandlePromptChange implements IHandlePromptChange {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      this.diag = new DateSelectionDialog(diagTitle, diagTitle, currentDate);
+      this.diag = new DateSelectionDialog(diagTitle, currentDate);
    }
 
    @Override
