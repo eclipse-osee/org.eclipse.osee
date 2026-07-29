@@ -13,7 +13,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { legacyTransaction, transactionResult } from '@osee/transactions/types';
+import {
+	legacyTransaction,
+	transaction,
+	transactionResult,
+} from '@osee/transactions/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -21,7 +25,7 @@ import { legacyTransaction, transactionResult } from '@osee/transactions/types';
 export class TransactionService {
 	private http = inject(HttpClient);
 
-	performMutation(body: legacyTransaction) {
+	performMutation(body: transaction | legacyTransaction) {
 		return this.http.post<transactionResult>(apiURL + '/orcs/txs', body);
 	}
 }

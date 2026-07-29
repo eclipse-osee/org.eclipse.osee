@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	ChangeDetectionStrategy,
 	Component,
 	computed,
 	effect,
@@ -20,6 +21,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { artifactTab } from '../../../types/artifact-explorer';
@@ -30,12 +32,14 @@ import {
 	ATTRIBUTETYPEID,
 	BASEATTRIBUTETYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
+	MULTIPLICITY_ID,
 } from '@osee/attributes/constants';
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
-import { CurrentBranchInfoService } from '@osee/shared/services';
+import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { FormDirective } from '@osee/shared/directives';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { PersistedArtifactAttributeEditorComponent } from './persisted-artifact-attribute-editor/persisted-artifact-attribute-editor.component';
+import { AttributeGroupComponent } from './attribute-group/attribute-group.component';
 import {
 	NativeContentEditorComponent,
 	NativeEditorAttributes,
@@ -45,6 +49,11 @@ import {
 } from '../../../../../../shared/components/attributes-editor/native-content-editor/native-content-editor.component';
 import { CurrentTransactionService } from '@osee/transactions/services';
 import { take } from 'rxjs';
+import {
+	AddAttributeDialogComponent,
+	addAttributeDialogData,
+	addAttributeDialogResult,
+} from './add-attribute-dialog/add-attribute-dialog.component';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -57,9 +66,11 @@ import { take } from 'rxjs';
 		FormDirective,
 		PersistedArtifactAttributeEditorComponent,
 		NativeContentEditorComponent,
+		AttributeGroupComponent,
 	],
 	viewProviders: [provideOptionalControlContainerNgForm()],
 	templateUrl: './attributes-editor-panel.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	styles: [
 		`
 			:host {
@@ -73,8 +84,11 @@ export class AttributesEditorPanelComponent {
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
 	private tabService = inject(ArtifactExplorerTabService);
 	private currentTxService = inject(CurrentTransactionService);
+	private uiService = inject(UiService);
+	private dialog = inject(MatDialog);
 
 	tab = input.required<artifactTab>();
+	deleteMode = input(false);
 
 	branchHasPleCategory = this.currBranchInfoService.branchHasPleCategory;
 
@@ -108,15 +122,19 @@ export class AttributesEditorPanelComponent {
 		() => {
 			const resourceAttrs = this.artifactResource.value()?.attributes;
 			if (resourceAttrs) {
-				this._lastAttributes = [...resourceAttrs].sort((a, b) =>
-					a.typeId.localeCompare(b.typeId)
-				);
+				this._lastAttributes = [...resourceAttrs].sort((a, b) => {
+					const typeCompare = a.typeId.localeCompare(b.typeId);
+					if (typeCompare !== 0) return typeCompare;
+					return a.id.localeCompare(b.id);
+				});
 			}
 			return (
 				this._lastAttributes ??
-				[...this.tab().artifact.attributes].sort((a, b) =>
-					a.typeId.localeCompare(b.typeId)
-				)
+				[...this.tab().artifact.attributes].sort((a, b) => {
+					const typeCompare = a.typeId.localeCompare(b.typeId);
+					if (typeCompare !== 0) return typeCompare;
+					return a.id.localeCompare(b.id);
+				})
 			);
 		}
 	);
@@ -137,6 +155,25 @@ export class AttributesEditorPanelComponent {
 				a.typeId !== ATTRIBUTETYPEIDENUM.EXTENSION
 		)
 	);
+
+	/** Attributes grouped by typeId for rendering. Single-instance types are solo, multi-instance are grouped. */
+	protected groupedAttrs = computed(() => {
+		const attrs = this.otherAttrs();
+		const groups = new Map<
+			string,
+			{ name: string; attrs: attribute<string, ATTRIBUTETYPEID>[] }
+		>();
+
+		for (const attr of attrs) {
+			const key = attr.typeId;
+			if (!groups.has(key)) {
+				groups.set(key, { name: attr.name ?? key, attrs: [] });
+			}
+			groups.get(key)!.attrs.push(attr);
+		}
+
+		return [...groups.values()];
+	});
 
 	/** Detect if this artifact has native content (Name + Extension + Native Content). */
 	protected nativeEditorAttrs = computed<NativeEditorAttributes | null>(
@@ -231,4 +268,157 @@ export class AttributesEditorPanelComponent {
 			this.artifactResource.value()?.applicability ??
 			this.tab().artifact.applicability
 	);
+
+	/** The artifact type ID (used to fetch valid attribute types). */
+	private artifactTypeId = computed<`${number}`>(
+		() =>
+			(this.artifactResource.value()?.typeId ??
+				this.tab().artifact.typeId) as `${number}`
+	);
+
+	/** Opens the Add Attribute dialog. */
+	openAddAttributeDialog() {
+		this.artExpHttpService
+			.getArtifactTypeAttributes(this.artifactTypeId())
+			.pipe(take(1))
+			.subscribe((allTypes) => {
+				const dialogData: addAttributeDialogData = {
+					allAttributeTypes: allTypes,
+					existingAttributes: this.attributes(),
+				};
+				const dialogRef = this.dialog.open(
+					AddAttributeDialogComponent,
+					{
+						data: dialogData,
+						width: '480px',
+						restoreFocus: false,
+					}
+				);
+				dialogRef
+					.afterClosed()
+					.pipe(take(1))
+					.subscribe(
+						(result: addAttributeDialogResult | undefined) => {
+							if (result && result.selectedTypes.length > 0) {
+								this.addAttributes(result.selectedTypes);
+							}
+						}
+					);
+			});
+	}
+
+	/**
+	 * Adds new attribute instances via the transaction service.
+	 * Creates new attributes with default empty values for the selected types.
+	 */
+	private addAttributes(types: attribute<string, ATTRIBUTETYPEID>[]) {
+		const newAttrs: attribute<string, ATTRIBUTETYPEID>[] = types.map(
+			(type) => ({
+				id: '-1' as const,
+				typeId: type.typeId,
+				gammaId: '-1' as const,
+				value: this.getDefaultValue(type),
+				name: type.name,
+				storeType: type.storeType,
+				multiplicity: type.multiplicity,
+			})
+		);
+
+		this.currentTxService
+			.modifyArtifactAndMutate(
+				`Adding attribute${newAttrs.length > 1 ? 's' : ''} to artifact`,
+				this.artifactId(),
+				this.applicability(),
+				{ add: newAttrs }
+			)
+			.pipe(take(1))
+			.subscribe({
+				error: (err) => {
+					this.uiService.ErrorText = `Failed to add attribute: ${err?.message ?? 'Unknown error'}`;
+				},
+			});
+	}
+
+	/**
+	 * Checks whether a specific attribute instance can be deleted
+	 * based on multiplicity minimums.
+	 */
+	protected isDeletable(attr: attribute<string, ATTRIBUTETYPEID>): boolean {
+		// Never allow deleting Name
+		if (attr.name?.toLowerCase() === 'name') {
+			return false;
+		}
+
+		const multiplicityId = attr.multiplicity?.id;
+		const allOfType = this.attributes().filter(
+			(a) => a.typeId === attr.typeId
+		);
+
+		// EXACTLY_ONE or AT_LEAST_ONE: need at least 1
+		if (
+			multiplicityId === MULTIPLICITY_ID.EXACTLY_ONE ||
+			multiplicityId === MULTIPLICITY_ID.AT_LEAST_ONE
+		) {
+			return allOfType.length > 1;
+		}
+
+		// ANY or ZERO_OR_ONE: can always delete
+		return true;
+	}
+
+	/**
+	 * Deletes a single attribute instance inline from the editor.
+	 * Checks multiplicity minimum before allowing deletion.
+	 */
+	protected deleteInlineAttribute(attr: attribute<string, ATTRIBUTETYPEID>) {
+		const allOfType = this.attributes().filter(
+			(a) => a.typeId === attr.typeId
+		);
+		const multiplicityId = attr.multiplicity?.id;
+
+		// EXACTLY_ONE or AT_LEAST_ONE: need at least 1
+		if (
+			(multiplicityId === MULTIPLICITY_ID.EXACTLY_ONE ||
+				multiplicityId === MULTIPLICITY_ID.AT_LEAST_ONE) &&
+			allOfType.length <= 1
+		) {
+			this.uiService.ErrorText =
+				'Cannot delete: at least one instance of this attribute is required.';
+			return;
+		}
+
+		this.deleteAttributes([attr]);
+	}
+
+	/**
+	 * Deletes attribute instances via the transaction service using gammas.
+	 */
+	private deleteAttributes(attrs: attribute<string, ATTRIBUTETYPEID>[]) {
+		this.currentTxService
+			.modifyArtifactAndMutate(
+				`Deleting attribute${attrs.length > 1 ? 's' : ''} from artifact`,
+				this.artifactId(),
+				this.applicability(),
+				{ delete: attrs }
+			)
+			.pipe(take(1))
+			.subscribe({
+				error: (err) => {
+					this.uiService.ErrorText = `Failed to delete attribute: ${err?.message ?? 'Unknown error'}`;
+				},
+			});
+	}
+
+	/** Returns an appropriate default value for a new attribute based on store type. */
+	private getDefaultValue(type: attribute<string, ATTRIBUTETYPEID>): string {
+		switch (type.storeType) {
+			case 'Boolean':
+				return 'false';
+			case 'Integer':
+			case 'Long':
+				return '0';
+			default:
+				return '';
+		}
+	}
 }
