@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider;
 import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
@@ -54,7 +54,7 @@ public class AtsXWidgetValidateManager {
    }
 
    public static List<WidgetResult> validateTransition(IAtsWorkItem workItem, List<WidgetResult> results,
-      IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef,
+      IValueProvider valueProvider, WidgetDef widgetDef, StateDefinition fromStateDef,
       StateDefinition toStateDef, AtsApi atsApi) {
       List<IAtsXWidgetValidatorProvider> providers = getProviders();
       for (IAtsXWidgetValidatorProvider provider : providers) {
@@ -86,16 +86,16 @@ public class AtsXWidgetValidateManager {
    public static Collection<WidgetResult> validateTransition(IAtsWorkItem workItem, StateDefinition toStateDef,
       AtsApi atsApi) {
       List<WidgetResult> results = new ArrayList<>();
-      List<WidgetDefinition> widgetItems =
+      List<WidgetDef> widgetItems =
          atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition());
-      List<WidgetDefinition> headerWidgetItems = atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(
+      List<WidgetDef> headerWidgetItems = atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(
          workItem.getStateDefinition(), workItem.getWorkDefinition().getHeaderDef().getLayoutItems());
       if (!headerWidgetItems.isEmpty()) {
-         for (WidgetDefinition item : headerWidgetItems) {
+         for (WidgetDef item : headerWidgetItems) {
             widgetItems.add(item);
          }
       }
-      for (WidgetDefinition widgetDef : widgetItems) {
+      for (WidgetDef widgetDef : widgetItems) {
          ArtifactValueProvider provider = new ArtifactValueProvider(workItem.getStoreObject(), widgetDef, atsApi);
          AtsXWidgetValidateManager.validateTransition(workItem, results, provider, widgetDef,
             workItem.getStateDefinition(), toStateDef, atsApi);

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 /**
  * @author Donald G. Dunne
  */
-public class EnumeratedArtifactWidgetDefinition extends WidgetDefinition {
+public class EnumeratedArtifactWidgetDefinition extends WidgetDef {
 
    public EnumeratedArtifactWidgetDefinition(String name, ArtifactToken enumArtifact, WidgetOption... widgetOptions) {
       this(false, AttributeTypeToken.SENTINEL, enumArtifact, widgetOptions);

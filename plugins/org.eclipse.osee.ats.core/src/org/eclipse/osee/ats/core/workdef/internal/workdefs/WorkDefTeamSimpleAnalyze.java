@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
@@ -44,10 +44,10 @@ public class WorkDefTeamSimpleAnalyze extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
+               new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
+               new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam") //
             ));
 
       bld.andState(2, "Implement", StateType.Working) //
@@ -55,13 +55,13 @@ public class WorkDefTeamSimpleAnalyze extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
                getWorkingBranchWidgetComposite(), //
-               new WidgetDefinition("Validate Requirement Changes", "XValidateReqChangesButton"), //
-               new WidgetDefinition("Commit Manager", "XCommitManager"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam") //
+               new WidgetDef("Validate Requirement Changes", "XValidateReqChangesButton"), //
+               new WidgetDef("Commit Manager", "XCommitManager"), //
+               new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
+               new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam") //
             ));
 
       bld.andState(3, "Completed", StateType.Completed) //

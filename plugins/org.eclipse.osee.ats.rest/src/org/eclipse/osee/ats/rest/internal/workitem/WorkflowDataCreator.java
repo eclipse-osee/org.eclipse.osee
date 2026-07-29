@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workdef.model.web.WfdState;
@@ -436,7 +436,7 @@ public class WorkflowDataCreator {
    private void handleLayoutItems(WfdWidgetComposite wComp, List<LayoutItem> layoutItems) {
       for (LayoutItem layoutItem : layoutItems) {
          if (layoutItem.isWidget()) {
-            WidgetDefinition widgetDef = (WidgetDefinition) layoutItem;
+            WidgetDef widgetDef = (WidgetDef) layoutItem;
             WfdWidgetDef wWidget = createWfdWidget(widgetDef);
             wComp.getWidgets().add(wWidget);
          } else if (layoutItem.isComposite()) {
@@ -450,7 +450,7 @@ public class WorkflowDataCreator {
       }
    }
 
-   private WfdWidgetDef createWfdWidget(WidgetDefinition widgetDef) {
+   private WfdWidgetDef createWfdWidget(WidgetDef widgetDef) {
       WfdWidgetDef wWidget = new WfdWidgetDef();
       wWidget.setName(widgetDef.getName());
       wWidget.setWidgetName(widgetDef.getXWidgetName());

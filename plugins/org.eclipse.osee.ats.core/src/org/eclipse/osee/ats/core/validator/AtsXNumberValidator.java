@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 
 /**
  * @author Donald G. Dunne
@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 public class AtsXNumberValidator extends AtsXWidgetValidator {
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDef widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
       String name = widgetDef.getXWidgetName();

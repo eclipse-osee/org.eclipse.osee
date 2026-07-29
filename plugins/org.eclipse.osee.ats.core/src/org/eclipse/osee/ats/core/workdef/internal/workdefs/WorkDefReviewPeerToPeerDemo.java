@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.StateDefBuilder;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -38,7 +38,7 @@ public class WorkDefReviewPeerToPeerDemo extends WorkDefReviewPeerToPeer {
       if (stateBld != null) {
          stateBld.insertLayoutAfter(AtsAttributeTypes.Description, //
             new CompositeLayoutItem(5, //
-               new WidgetDefinition("Select Peer Review Checklist to Attach", "XAttachmentExampleWidget")) //
+               new WidgetDef("Select Peer Review Checklist to Attach", "XAttachmentExampleWidget")) //
          );
       }
 

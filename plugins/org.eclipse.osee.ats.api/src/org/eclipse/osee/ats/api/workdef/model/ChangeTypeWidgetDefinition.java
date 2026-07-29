@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeWidgetDefinition extends WidgetDefinition {
+public class ChangeTypeWidgetDefinition extends WidgetDef {
 
    public ChangeTypeWidgetDefinition(ChangeTypes... changeTypes) {
       this(false, changeTypes);

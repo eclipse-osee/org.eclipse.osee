@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 /**
  * @author Donald G. Dunne
  */
-public class WidgetDefinition extends LayoutItem {
+public class WidgetDef extends LayoutItem {
 
    private final AttributeTypeToken attributeType;
    private AttributeTypeToken attributeType2;
@@ -60,26 +60,26 @@ public class WidgetDefinition extends LayoutItem {
    private ArtifactToken enumeratedArt = ArtifactToken.SENTINEL;
    private OseeImage oseeImage;
 
-   public WidgetDefinition(String name) {
+   public WidgetDef(String name) {
       this(name, "");
    }
 
-   public WidgetDefinition(String name, AttributeTypeToken attributeType, String xWidgetName, WidgetOption... widgetOptions) {
+   public WidgetDef(String name, AttributeTypeToken attributeType, String xWidgetName, WidgetOption... widgetOptions) {
       this(name, RelationTypeSide.SENTINEL, attributeType, ComputedCharacteristicToken.SENTINEL, xWidgetName,
          widgetOptions);
    }
 
-   public WidgetDefinition(String name, String xWidgetName, WidgetOption... widgetOptions) {
+   public WidgetDef(String name, String xWidgetName, WidgetOption... widgetOptions) {
       this(name, RelationTypeSide.SENTINEL, AttributeTypeToken.SENTINEL, ComputedCharacteristicToken.SENTINEL,
          xWidgetName, widgetOptions);
    }
 
-   public WidgetDefinition(String name, RelationTypeSide relationTypeSide, String xWidgetName, WidgetOption... widgetOptions) {
+   public WidgetDef(String name, RelationTypeSide relationTypeSide, String xWidgetName, WidgetOption... widgetOptions) {
       this(name, relationTypeSide, AttributeTypeToken.SENTINEL, ComputedCharacteristicToken.SENTINEL, xWidgetName,
          widgetOptions);
    }
 
-   public WidgetDefinition(String name, RelationTypeSide relationTypeSide, AttributeTypeToken attributeType, ComputedCharacteristic<?> computedCharacteristic, String xWidgetName, WidgetOption... widgetOptions) {
+   public WidgetDef(String name, RelationTypeSide relationTypeSide, AttributeTypeToken attributeType, ComputedCharacteristic<?> computedCharacteristic, String xWidgetName, WidgetOption... widgetOptions) {
       super(name);
       this.relationTypeSide = relationTypeSide;
       Conditions.assertNotNull(attributeType, "attribute type can not be null for WidgetDefinition [%s]", name);
@@ -91,22 +91,22 @@ public class WidgetDefinition extends LayoutItem {
       }
    }
 
-   public WidgetDefinition(AttributeTypeToken attrType, String xWidgetName, List<ConditionalRule> conditions, WidgetOption... widgetOptions) {
+   public WidgetDef(AttributeTypeToken attrType, String xWidgetName, List<ConditionalRule> conditions, WidgetOption... widgetOptions) {
       this(attrType, xWidgetName, widgetOptions);
       this.conditions = conditions;
    }
 
-   public WidgetDefinition(AttributeTypeToken attrType, String xWidgetName, WidgetOption... widgetOptions) {
+   public WidgetDef(AttributeTypeToken attrType, String xWidgetName, WidgetOption... widgetOptions) {
       this(attrType.getUnqualifiedName(), RelationTypeSide.SENTINEL, attrType, ComputedCharacteristicToken.SENTINEL,
          xWidgetName, widgetOptions);
    }
 
-   public WidgetDefinition(ComputedCharacteristic<?> computedCharacteristic, String xWidgetName, WidgetOption... widgetOptions) {
+   public WidgetDef(ComputedCharacteristic<?> computedCharacteristic, String xWidgetName, WidgetOption... widgetOptions) {
       this(computedCharacteristic.getName(), RelationTypeSide.SENTINEL, AttributeTypeToken.SENTINEL,
          computedCharacteristic, xWidgetName, widgetOptions);
    }
 
-   public WidgetDefinition(String name, AttributeTypeToken attrType, String xWidgetName, List<ConditionalRule> conditions, WidgetOption... widgetOptions) {
+   public WidgetDef(String name, AttributeTypeToken attrType, String xWidgetName, List<ConditionalRule> conditions, WidgetOption... widgetOptions) {
       this(name, attrType, xWidgetName, widgetOptions);
       this.conditions = conditions;
    }
@@ -216,7 +216,7 @@ public class WidgetDefinition extends LayoutItem {
       this.conditions = conditions;
    }
 
-   public WidgetDefinition andEnumeratedArt(ArtifactToken enumeratedArt) {
+   public WidgetDef andEnumeratedArt(ArtifactToken enumeratedArt) {
       Conditions.requireNonNull(enumeratedArt, "Enumerated Art");
       this.enumeratedArt = enumeratedArt;
       return this;

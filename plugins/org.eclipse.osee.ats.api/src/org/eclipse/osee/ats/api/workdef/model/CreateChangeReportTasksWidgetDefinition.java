@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 /**
  * @author Donald G. Dunne
  */
-public class CreateChangeReportTasksWidgetDefinition extends WidgetDefinition {
+public class CreateChangeReportTasksWidgetDefinition extends WidgetDef {
 
    private final AtsTaskDefToken atsTaskDefToken;
 

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
@@ -42,7 +42,7 @@ public class WorkDefGoal extends AbstractWorkDef {
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT));
+            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT));
 
       bld.andState(3, "Cancelled", StateType.Cancelled) //
          .andColor(StateColor.DARK_GREEN);
