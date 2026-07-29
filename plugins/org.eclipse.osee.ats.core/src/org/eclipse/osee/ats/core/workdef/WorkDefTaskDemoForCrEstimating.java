@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
@@ -53,12 +53,12 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(Description, "XTextDam", FILL_VERT, SAVE), //
-            new WidgetDefinition(Assumptions, "XTextDam", FILL_VERT, SAVE), //
-            new WidgetDefinition(AtsAttributeTypes.RiskFactor, "XHyperlinkLabelValueSelectionDam", SAVE), //
+            new WidgetDef(Description, "XTextDam", FILL_VERT, SAVE), //
+            new WidgetDef(Assumptions, "XTextDam", FILL_VERT, SAVE), //
+            new WidgetDef(AtsAttributeTypes.RiskFactor, "XHyperlinkLabelValueSelectionDam", SAVE), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition("Estimated Points", "XEstimatedPointsWidget", RFT, SAVE), //
-               new WidgetDefinition(EstimatedCompletionDate, "XDateDam", SAVE) //
+               new WidgetDef("Estimated Points", "XEstimatedPointsWidget", RFT, SAVE), //
+               new WidgetDef(EstimatedCompletionDate, "XDateDam", SAVE) //
             ), //
             new SignByAndDateWidgetDefinition("Reviewed By", AtsAttributeTypes.ReviewedBy,
                AtsAttributeTypes.ReviewedByDate));

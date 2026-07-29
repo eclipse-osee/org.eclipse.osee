@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.core.util.StringValueProvider;
 import org.junit.Assert;
 import org.mockito.Mock;
@@ -39,7 +39,7 @@ public class AtsXListValidatorTest {
    public void testValidateTransition() {
       AtsXListValidator validator = new AtsXListValidator();
 
-      WidgetDefinition widgetDef = new WidgetDefinition("test");
+      WidgetDef widgetDef = new WidgetDef("test");
       widgetDef.setXWidgetName("xLabel");
 
       StateDefinition fromStateDef = new StateDefinition("from");
@@ -70,7 +70,7 @@ public class AtsXListValidatorTest {
    public void testValidateTransition_MinMaxConstraint() {
       AtsXListValidator validator = new AtsXListValidator();
 
-      WidgetDefinition widgetDef = new WidgetDefinition("test");
+      WidgetDef widgetDef = new WidgetDef("test");
       widgetDef.setXWidgetName("XListDam");
       widgetDef.setConstraint(0, 0);
 

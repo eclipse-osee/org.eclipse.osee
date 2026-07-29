@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 /**
  * @author Donald G. Dunne
  */
-public class PriorityWidgetDefinition extends WidgetDefinition {
+public class PriorityWidgetDefinition extends WidgetDef {
 
    public PriorityWidgetDefinition(Priorities... priorities) {
       this(false, priorities);

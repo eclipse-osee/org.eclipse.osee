@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workdef.model.ChangeTypeWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.PriorityWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -56,12 +56,12 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
    public CompositeLayoutItem getChangeTypeComposite(AttributeTypeToken pointsAttrType) {
       return new CompositeLayoutItem(11, //
          new ChangeTypeWidgetDefinition(true).andRequired(), //
-         new WidgetDefinition("   ", "XLabel"), //
+         new WidgetDef("   ", "XLabel"), //
          new PriorityWidgetDefinition(true), //
-         new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition("Points", pointsAttrType, "XHyperlinkLabelValueSelectionDam", SAVE), //
-         new WidgetDefinition("   ", "XLabel"), //
-         new WidgetDefinition(AtsAttributeTypes.NeedBy, "XDateDam", WidgetOption.COMPOSITE_END) //
+         new WidgetDef("   ", "XLabel"), //
+         new WidgetDef("Points", pointsAttrType, "XHyperlinkLabelValueSelectionDam", SAVE), //
+         new WidgetDef("   ", "XLabel"), //
+         new WidgetDef(AtsAttributeTypes.NeedBy, "XDateDam", WidgetOption.COMPOSITE_END) //
       );
    }
 
@@ -75,18 +75,18 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
 
    protected CompositeLayoutItem getWorkingBranchWidgetComposite() {
       return new CompositeLayoutItem(2, //
-         new WidgetDefinition("XWorkingBranchLabel", "XWorkingBranchLabel"), //
+         new WidgetDef("XWorkingBranchLabel", "XWorkingBranchLabel"), //
          new CompositeLayoutItem(16, //
-            new WidgetDefinition("XWorkingBranchButtonCreate", "XWorkingBranchButtonCreate"), //
-            new WidgetDefinition("XWorkingBranchButtonArtifactExplorer", "XWorkingBranchButtonArtifactExplorer"), //
-            new WidgetDefinition("XWorkingBranchButtonChangeReport", "XWorkingBranchButtonChangeReport"), //
-            new WidgetDefinition("XWorkingBranchButtonWordChangeReport", "XWorkingBranchButtonWordChangeReport"),
-            new WidgetDefinition("XWorkingBranchButtonContextChangeReport", "XWorkingBranchButtonContextChangeReport"), //
-            new WidgetDefinition("XWorkingBranchButtonDelete", "XWorkingBranchButtonDelete"), //
-            new WidgetDefinition("XWorkingBranchButtonFavorites", "XWorkingBranchButtonFavorites"), //
-            new WidgetDefinition("XWorkingBranchButtonLock", "XWorkingBranchButtonLock"), //
-            new WidgetDefinition("XWorkingBranchUpdate", "XWorkingBranchUpdate"), //
-            new WidgetDefinition("XWorkingBranchButtonDeleteMergeBranches", "XWorkingBranchButtonDeleteMergeBranches") //
+            new WidgetDef("XWorkingBranchButtonCreate", "XWorkingBranchButtonCreate"), //
+            new WidgetDef("XWorkingBranchButtonArtifactExplorer", "XWorkingBranchButtonArtifactExplorer"), //
+            new WidgetDef("XWorkingBranchButtonChangeReport", "XWorkingBranchButtonChangeReport"), //
+            new WidgetDef("XWorkingBranchButtonWordChangeReport", "XWorkingBranchButtonWordChangeReport"),
+            new WidgetDef("XWorkingBranchButtonContextChangeReport", "XWorkingBranchButtonContextChangeReport"), //
+            new WidgetDef("XWorkingBranchButtonDelete", "XWorkingBranchButtonDelete"), //
+            new WidgetDef("XWorkingBranchButtonFavorites", "XWorkingBranchButtonFavorites"), //
+            new WidgetDef("XWorkingBranchButtonLock", "XWorkingBranchButtonLock"), //
+            new WidgetDef("XWorkingBranchUpdate", "XWorkingBranchUpdate"), //
+            new WidgetDef("XWorkingBranchButtonDeleteMergeBranches", "XWorkingBranchButtonDeleteMergeBranches") //
          ) //
       );
    }

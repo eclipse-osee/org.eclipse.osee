@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 /**
  * @author Donald G. Dunne
  */
-public class SignByAndDateWidgetDefinition extends WidgetDefinition {
+public class SignByAndDateWidgetDefinition extends WidgetDef {
 
    public SignByAndDateWidgetDefinition(String name, AttributeTypeToken signbyAttrType, AttributeTypeToken signbyDateAttrType) {
       super(name, signbyAttrType, "XSignByAndDateWidget");

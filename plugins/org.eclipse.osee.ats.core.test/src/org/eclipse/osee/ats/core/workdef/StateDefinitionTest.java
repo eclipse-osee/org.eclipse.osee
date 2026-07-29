@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.PeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.junit.Assert;
@@ -151,14 +151,14 @@ public class StateDefinitionTest {
       StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, new AtsWorkDefinitionServiceImpl(null, null).getWidgetsFromLayoutItems(def).size());
 
-      WidgetDefinition widget1 = new WidgetDefinition("item 1");
+      WidgetDef widget1 = new WidgetDef("item 1");
       def.getLayoutItems().add(widget1);
 
       CompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
       def.getLayoutItems().add(stateItem2);
-      WidgetDefinition widget2 = new WidgetDefinition("item 2");
+      WidgetDef widget2 = new WidgetDef("item 2");
       stateItem2.getLayoutItems().add(widget2);
-      WidgetDefinition widget3 = new WidgetDefinition("item 3");
+      WidgetDef widget3 = new WidgetDef("item 3");
       stateItem2.getLayoutItems().add(widget3);
 
       CompositeLayoutItem stateItem3 = new CompositeLayoutItem(2);

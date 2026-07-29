@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
@@ -69,7 +69,7 @@ public class AtsMockitoTest {
    @Mock protected IAtsAction action;
    @Mock protected StateDefinition analyze, implement, completed, cancelled;
    @Mock protected WorkDefinition workDef;
-   @Mock protected WidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
+   @Mock protected WidgetDef estHoursWidgetDef, workPackageWidgetDef;
    @Mock protected IAttributeResolver attrResolver;
    @Mock protected IAtsVersionService versionService;
    @Mock protected IAtsBranchService branchService;
@@ -215,11 +215,11 @@ public class AtsMockitoTest {
       return analyze;
    }
 
-   public WidgetDefinition getEstHoursWidgetDef() {
+   public WidgetDef getEstHoursWidgetDef() {
       return estHoursWidgetDef;
    }
 
-   public WidgetDefinition getWorkPackageWidgetDef() {
+   public WidgetDef getWorkPackageWidgetDef() {
       return workPackageWidgetDef;
    }
 

@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -71,8 +71,8 @@ public class ValidateWorkDefinitionsOperation {
    }
 
    private void validateLayoutItem(LayoutItem layoutItem, XResultData rd) {
-      if (layoutItem instanceof WidgetDefinition) {
-         WidgetDefinition widgetDef = (WidgetDefinition) layoutItem;
+      if (layoutItem instanceof WidgetDef) {
+         WidgetDef widgetDef = (WidgetDef) layoutItem;
          AttributeTypeToken attrTypeTok = widgetDef.getAttributeType();
          if (attrTypeTok != null) {
             AttributeTypeToken attrType = atsApi.tokenService().getAttributeType(attrTypeTok.getId());

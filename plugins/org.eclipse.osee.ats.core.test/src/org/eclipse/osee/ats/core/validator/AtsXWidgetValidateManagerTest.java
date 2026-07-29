@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -85,7 +85,7 @@ public class AtsXWidgetValidateManagerTest {
 
       AtsXWidgetValidatorProviderTest provider = new AtsXWidgetValidatorProviderTest(new AtsExceptionValidator());
       manager.addWidgetValidatorProvider(provider);
-      WidgetDefinition widgetDef = new WidgetDefinition("Widget Name");
+      WidgetDef widgetDef = new WidgetDef("Widget Name");
       widgetDef.setXWidgetName("XTestWidget");
       AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, widgetDef,
          null, null, atsServices);
@@ -101,7 +101,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDef widgetDef,
          StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
          return new WidgetResult(WidgetStatus.Success, "Here it is");
       }
@@ -110,7 +110,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsErrorValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDef widgetDef,
          StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Here it is");
       }
@@ -119,7 +119,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsExceptionValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDef widgetDef,
          StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
          throw new OseeStateException("problem");
       }
