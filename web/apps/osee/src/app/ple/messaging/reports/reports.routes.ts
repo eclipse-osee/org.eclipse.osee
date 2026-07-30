@@ -19,26 +19,21 @@ const routes: Routes = [
 		outlet: 'toolbar',
 	},
 	{ path: '', loadComponent: () => import('./reports.component') },
-	{ path: ':branchType', loadComponent: () => import('./reports.component') },
 	{
-		path: ':branchType/:branchId',
-		loadComponent: () => import('./reports.component'),
-	},
-	{
-		path: ':branchType/:branchId/differences',
+		path: 'differences',
 		loadChildren: () => import('@osee/messaging/reports/diff-report'),
 	},
 	{
-		path: ':branchType/:branchId/traceReport',
+		path: 'traceReport',
 		loadChildren: () => import('@osee/messaging/reports/trace-report'),
 	},
 	{
-		path: ':branchType/:branchId/unreferenced',
+		path: 'unreferenced',
 		loadChildren: () =>
 			import('@osee/messaging/reports/unreferenced-report'),
 	},
 	{
-		path: ':branchType/:branchId/impactedConnections',
+		path: 'impactedConnections',
 		loadChildren: () =>
 			import('@osee/messaging/reports/impacted-connections-report'),
 	},

@@ -112,12 +112,12 @@ export class StructureNamesComponent implements OnInit {
 	}
 
 	basePath = combineLatest([this.uiService.id, this.uiService.type]).pipe(
-		switchMap(([id, type]) => of(`../../../connections/${type}/${id}`))
+		switchMap(([_id, _type]) => of(`../../../connections`))
 	);
 	loading = this.loadingService.isLoading;
 
 	ngOnInit(): void {
-		this.route.paramMap
+		this.route.queryParamMap
 			.pipe(
 				map((params) => {
 					this.uiService.typeValue =

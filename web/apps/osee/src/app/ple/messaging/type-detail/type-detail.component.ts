@@ -36,7 +36,7 @@ export class TypeDetailComponent implements OnInit {
 	);
 
 	ngOnInit(): void {
-		this.route.paramMap
+		this.route.queryParamMap
 			.pipe(
 				map((params) => {
 					this._typeDetail.idValue = params.get('branchId') || '';
@@ -45,6 +45,12 @@ export class TypeDetailComponent implements OnInit {
 							| 'working'
 							| 'baseline'
 							| '') || '';
+				})
+			)
+			.subscribe();
+		this.route.paramMap
+			.pipe(
+				map((params) => {
 					this._typeDetail.type = params.get('typeId') || '';
 				})
 			)

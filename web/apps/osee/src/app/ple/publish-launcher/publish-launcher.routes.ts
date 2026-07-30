@@ -23,16 +23,6 @@ const routes: Routes = [
 		title: 'Publish Launcher',
 		loadComponent: () => import('./publish-launcher.component'),
 	},
-	{
-		path: ':branchType',
-		title: 'Publish Launcher',
-		loadComponent: () => import('./publish-launcher.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		title: 'Publish Launcher',
-		loadComponent: () => import('./publish-launcher.component'),
-	},
 ];
 
 export default routes;

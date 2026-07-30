@@ -104,6 +104,12 @@ describe('TransportsComponent', () => {
 									branchId: '10',
 								})
 							),
+							queryParamMap: of(
+								convertToParamMap({
+									branchType: 'working',
+									branchId: '10',
+								})
+							),
 						},
 					},
 					{

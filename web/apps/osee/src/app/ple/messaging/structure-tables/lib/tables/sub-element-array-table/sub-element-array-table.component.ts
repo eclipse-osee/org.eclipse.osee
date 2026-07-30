@@ -144,7 +144,7 @@ export class SubElementArrayTableComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.route.paramMap.subscribe((values) => {
+		this.route.queryParamMap.subscribe((values) => {
 			this._branchId = values.get('branchId') || '';
 			this._branchType = values.get('branchType') || '';
 		});

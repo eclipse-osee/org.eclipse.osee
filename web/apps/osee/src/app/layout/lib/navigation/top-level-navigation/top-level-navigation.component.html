@@ -105,11 +105,7 @@
 						} @else {
 							<a
 								class="tw-flex tw-flex-row tw-items-center"
-								[routerLink]="
-									element.usesBranch
-										? element.routerLink + branchPath()
-										: element.routerLink
-								"
+								[routerLink]="element.routerLink"
 								queryParamsHandling="merge">
 								<div class="tw-pr-2">
 									@if (element.icon !== '') {

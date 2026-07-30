@@ -45,19 +45,20 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		combineLatest([
 			this.route.paramMap,
+			this.route.queryParamMap,
 			this.route.data,
 			iif(() => this.router.url.includes('diff'), of(true), of(false)),
 		])
 			.pipe(takeUntil(this.structureService.done))
-			.subscribe(([paramMap, data, mode]) => {
+			.subscribe(([paramMap, queryParamMap, data, mode]) => {
 				if (mode) {
 					this.structureService.BranchType =
-						(paramMap.get('branchType') as
+						(queryParamMap.get('branchType') as
 							| 'working'
 							| 'baseline'
 							| '') || '';
 					this.structureService.branchId =
-						paramMap.get('branchId') || '';
+						queryParamMap.get('branchId') || '';
 					this.structureService.messageId =
 						paramMap.get('messageId') || '';
 					this.structureService.subMessageId =
@@ -70,12 +71,12 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 					this.structureService.DiffMode = true;
 				} else {
 					this.structureService.BranchType =
-						(paramMap.get('branchType') as
+						(queryParamMap.get('branchType') as
 							| 'working'
 							| 'baseline'
 							| '') || '';
 					this.structureService.branchId =
-						paramMap.get('branchId') || '';
+						queryParamMap.get('branchId') || '';
 					this.structureService.messageId =
 						paramMap.get('messageId') || '';
 					this.structureService.subMessageId =

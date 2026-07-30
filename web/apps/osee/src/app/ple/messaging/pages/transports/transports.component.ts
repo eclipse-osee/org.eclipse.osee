@@ -104,7 +104,7 @@ export class TransportsComponent implements OnInit {
 		return this.headerService.getHeaderByName(value, 'transportType');
 	}
 	ngOnInit(): void {
-		this.route.paramMap
+		this.route.queryParamMap
 			.pipe(
 				tap((params) => {
 					this.ui.typeValue =
