@@ -1869,17 +1869,8 @@ export class CurrentMessagesService {
 			this.BranchId,
 			this.connectionId,
 		]).pipe(
-			switchMap(([type, id, connection]) =>
-				of(
-					'/ple/messaging/' +
-						'connections/' +
-						type +
-						'/' +
-						id +
-						'/' +
-						connection +
-						'/messages/'
-				)
+			switchMap(([_type, _id, connection]) =>
+				of('/ple/messaging/connections/' + connection + '/messages/')
 			)
 		);
 	}
@@ -1891,11 +1882,7 @@ export class CurrentMessagesService {
 	}
 
 	get connectionsRoute() {
-		return combineLatest([this.ui.type, this.BranchId]).pipe(
-			switchMap(([type, BranchId]) =>
-				of('/ple/messaging/connections/' + type + '/' + BranchId)
-			)
-		);
+		return of('/ple/messaging/connections');
 	}
 
 	validateMessage(art: `${number}`) {

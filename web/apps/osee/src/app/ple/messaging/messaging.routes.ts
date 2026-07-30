@@ -64,30 +64,18 @@ const routes: Routes = [
 		loadChildren: () => import('./connection-view/connection-view.routes'),
 	},
 	{
-		path: 'connections/:branchType/:branchId/:connection/messages',
+		path: 'connections/:connection/messages',
 		title: connections?.pageTitle || 'OSEE',
 		loadChildren: () => import('./message-tables/message-page.routes'),
 	},
 	{
-		path: 'connections/:branchType/:branchId/:connection/messages/:messageId/:subMessageId/elements',
+		path: 'connections/:connection/messages/:messageId/:subMessageId/elements',
 		title: connections?.pageTitle || 'OSEE',
 		loadChildren: () =>
 			import('./structure-tables/structure-tables.routes'),
 	},
 	{
 		path: 'typeSearch',
-		title: typeSearch?.pageTitle || 'OSEE',
-		loadChildren: () =>
-			import('./type-element-search/type-element-search.routes'),
-	},
-	{
-		path: ':branchType/typeSearch',
-		title: typeSearch?.pageTitle || 'OSEE',
-		loadChildren: () =>
-			import('./type-element-search/type-element-search.routes'),
-	},
-	{
-		path: ':branchType/:branchId/typeSearch',
 		title: typeSearch?.pageTitle || 'OSEE',
 		loadChildren: () =>
 			import('./type-element-search/type-element-search.routes'),
@@ -103,7 +91,7 @@ const routes: Routes = [
 		loadChildren: () => import('./structure-names/structure-names.routes'),
 	},
 	{
-		path: ':branchType/:branchId/type/:typeId',
+		path: 'type/:typeId',
 		title: 'OSEE - MIM - Type Detail View',
 		loadChildren: () => import('./type-detail/type-detail.routes'),
 	},

@@ -20,15 +20,7 @@ const routes: Routes = [
 	},
 	{ path: '', loadComponent: () => import('./cross-reference.component') },
 	{
-		path: ':branchType',
-		loadComponent: () => import('./cross-reference.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		loadComponent: () => import('./cross-reference.component'),
-	},
-	{
-		path: ':branchType/:branchId/:connectionId',
+		path: ':connectionId',
 		loadComponent: () => import('./cross-reference.component'),
 	},
 ];

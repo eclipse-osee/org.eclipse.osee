@@ -28,10 +28,9 @@ import {
 } from '@osee/transactions/functions';
 import { CurrentTransactionService } from '@osee/transactions/services';
 import { transaction, transactionResult } from '@osee/transactions/types';
-import { Observable, combineLatest, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import {
 	filter,
-	map,
 	repeatWhen,
 	share,
 	shareReplay,
@@ -72,17 +71,9 @@ export class TypesUIService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	private _typeDetailLocation = combineLatest([
-		this._ui.type,
-		this._ui.id,
-	]).pipe(
-		map(([type, id]) => '/ple/messaging/' + type + '/' + id + '/type/')
-	);
+	private _typeDetailLocation = of('/ple/messaging/type/');
 
-	private _typeSearchLocation = combineLatest([
-		this._ui.type,
-		this._ui.id,
-	]).pipe(map(([type, id]) => '/ple/messaging/types/' + type + '/' + id));
+	private _typeSearchLocation = of('/ple/messaging/types');
 
 	private _currentTx = inject(CurrentTransactionService);
 	get types() {

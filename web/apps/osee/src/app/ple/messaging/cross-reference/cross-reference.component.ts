@@ -53,10 +53,12 @@ export class CrossReferenceComponent implements OnInit, OnDestroy {
 	dialog = inject(MatDialog);
 
 	ngOnInit(): void {
-		this.route.paramMap.subscribe((params) => {
+		this.route.queryParamMap.subscribe((params) => {
 			this.ui.idValue = params.get('branchId') || '';
 			this.ui.typeValue =
 				(params.get('branchType') as 'working' | 'baseline' | '') || '';
+		});
+		this.route.paramMap.subscribe((params) => {
 			this.SelectedConnectionId =
 				(params.get('connectionId') as `${number}`) || '-1';
 		});

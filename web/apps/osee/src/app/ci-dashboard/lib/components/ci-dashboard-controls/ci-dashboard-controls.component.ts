@@ -75,9 +75,9 @@ export class CiDashboardControlsComponent {
 	private route = inject(ActivatedRoute);
 	private uiService = inject(CiDashboardUiService);
 
-	private _paramMap = toSignal(this.route.paramMap);
+	private _queryParamMap = toSignal(this.route.queryParamMap);
 	private _paramEffect = effect(() => {
-		const params = this._paramMap();
+		const params = this._queryParamMap();
 		if (!params) {
 			return;
 		}

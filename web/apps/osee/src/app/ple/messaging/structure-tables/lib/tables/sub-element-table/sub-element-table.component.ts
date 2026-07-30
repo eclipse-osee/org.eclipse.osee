@@ -226,10 +226,10 @@ export class SubElementTableComponent {
 
 	expandedRows = signal<element[]>([]);
 
-	private _paramMap = toSignal(this.route.paramMap);
+	private _queryParamMap = toSignal(this.route.queryParamMap);
 
-	branchId = computed(() => this._paramMap()?.get('branchId') || '');
-	branchType = computed(() => this._paramMap()?.get('branchType') || '');
+	branchId = computed(() => this._queryParamMap()?.get('branchId') || '');
+	branchType = computed(() => this._queryParamMap()?.get('branchType') || '');
 
 	private _filterEffect = effect(() => {
 		if (this.filter() !== '') {
