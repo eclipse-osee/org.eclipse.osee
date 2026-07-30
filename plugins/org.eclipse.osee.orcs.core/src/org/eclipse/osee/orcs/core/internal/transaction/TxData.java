@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.SqlTable;
@@ -259,6 +260,12 @@ public class TxData implements HasSession, HasBranchId {
       TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
       long headReserve = (long) (TOTAL_ORDER_RANGE * HEAD_RESERVE_RATIO);
       long itemRange = (long) (TOTAL_ORDER_RANGE * ITEM_RANGE_RATIO);
+      long maxItems = itemRange / SPACING;
+      if (relOrders.size() > maxItems) {
+         throw new OseeArgumentException(
+            "Too many relations (%d) to redistribute within available order range (max %d)", relOrders.size(),
+            maxItems);
+      }
       long pad = itemRange / (relOrders.size() + 1);
       long orderValue = Integer.MIN_VALUE + headReserve + pad;
       TreeMap<Integer, Pair<ArtifactId, GammaId>> result = new TreeMap<>();

@@ -18,18 +18,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,6 +44,8 @@ import org.junit.Test;
 /**
  * Integration test for relation order boundary handling. Verifies that when relation orders approach Integer.MAX_VALUE
  * or Integer.MIN_VALUE, the reorder logic redistributes them correctly and subsequent insertions succeed without error.
+ * <p>
+ * Creates a dedicated working branch for the test and purges it on completion to avoid polluting existing branches.
  *
  * @author OSEE Developers
  */
@@ -45,13 +54,39 @@ public class RelationOrderBoundaryTest {
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
 
+   private static BranchEndpoint branchEndpoint;
    private static RelationEndpoint relationEndpoint;
    private static ArtifactEndpoint artifactEndpoint;
+   private static BranchId testBranch;
 
    @BeforeClass
    public static void testSetup() {
-      relationEndpoint = ServiceUtil.getOseeClient().getRelationEndpoint(DemoBranches.SAW_PL_Working_Branch);
-      artifactEndpoint = ServiceUtil.getOseeClient().getArtifactEndpoint(DemoBranches.SAW_PL_Working_Branch);
+      branchEndpoint = ServiceUtil.getOseeClient().getBranchEndpoint();
+
+      // Create a dedicated working branch for this test
+      NewBranch data = new NewBranch();
+      data.setAssociatedArtifact(ArtifactId.SENTINEL);
+      data.setBranchName("RelationOrderBoundaryTest_Branch");
+      data.setBranchType(BranchType.WORKING);
+      data.setCreationComment("Working branch for RelationOrderBoundaryTest");
+      data.setMergeAddressingQueryId(0L);
+      data.setMergeDestinationBranchId(null);
+      data.setParentBranchId(DemoBranches.SAW_PL);
+      data.setSourceTransactionId(TransactionManager.getHeadTransaction(DemoBranches.SAW_PL));
+      data.setTxCopyBranchType(false);
+      testBranch = branchEndpoint.createBranch(data);
+
+      relationEndpoint = ServiceUtil.getOseeClient().getRelationEndpoint(testBranch);
+      artifactEndpoint = ServiceUtil.getOseeClient().getArtifactEndpoint(testBranch);
+   }
+
+   @AfterClass
+   public static void tearDown() {
+      if (testBranch != null) {
+         try (Response res = branchEndpoint.purgeBranch(testBranch, false, false)) {
+            // Branch purged
+         }
+      }
    }
 
    // Use a new-table relation type (MANY_TO_MANY, USER_DEFINED ordering)
@@ -75,13 +110,13 @@ public class RelationOrderBoundaryTest {
       ArtifactToken parentArtifact = DefaultHierarchyRoot;
 
       // Create side-A artifact
-      ArtifactToken sideA = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+      ArtifactToken sideA = artifactEndpoint.createArtifact(testBranch,
          CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "RelOrderBoundaryTest_EndSideA");
 
       // Create initial side-B artifacts and relate them
       int initialCount = 5;
       for (int i = 0; i < initialCount; i++) {
-         ArtifactToken sideB = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         ArtifactToken sideB = artifactEndpoint.createArtifact(testBranch,
             CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "InitialSideB_" + i);
          relationEndpoint.createRelationByType(sideA, sideB, TEST_REL_TYPE);
       }
@@ -92,7 +127,7 @@ public class RelationOrderBoundaryTest {
       // Now add more relations — this exercises the boundary detection and reorder path
       int additionalCount = 20;
       for (int i = 0; i < additionalCount; i++) {
-         ArtifactToken sideB = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         ArtifactToken sideB = artifactEndpoint.createArtifact(testBranch,
             CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "BoundarySideB_" + i);
          relationEndpoint.createRelationByType(sideA, sideB, TEST_REL_TYPE);
       }
@@ -119,13 +154,13 @@ public class RelationOrderBoundaryTest {
       ArtifactToken parentArtifact = DefaultHierarchyRoot;
 
       // Create side-A artifact
-      ArtifactToken sideA = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+      ArtifactToken sideA = artifactEndpoint.createArtifact(testBranch,
          CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "RelOrderBoundaryTest_MinSideA");
 
       // Create initial side-B artifacts and relate them
       int initialCount = 5;
       for (int i = 0; i < initialCount; i++) {
-         ArtifactToken sideB = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         ArtifactToken sideB = artifactEndpoint.createArtifact(testBranch,
             CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "InitialMinSideB_" + i);
          relationEndpoint.createRelationByType(sideA, sideB, TEST_REL_TYPE);
       }
@@ -141,7 +176,7 @@ public class RelationOrderBoundaryTest {
       // Now add more relations — this exercises the boundary detection and reorder path
       int additionalCount = 20;
       for (int i = 0; i < additionalCount; i++) {
-         ArtifactToken sideB = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         ArtifactToken sideB = artifactEndpoint.createArtifact(testBranch,
             CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "BoundaryMinSideB_" + i);
          relationEndpoint.createRelationByType(sideA, sideB, TEST_REL_TYPE);
       }
@@ -199,7 +234,7 @@ public class RelationOrderBoundaryTest {
       };
       AtsApiService.get().getJdbcService().getClient().runQuery(consumer,
          "SELECT rel_order, b_art_id, rel.gamma_id FROM osee_relation rel, osee_txs txs " + "WHERE txs.branch_id = ? AND txs.tx_current = 1 AND txs.gamma_id = rel.gamma_id " + "AND rel.rel_type = ? AND rel.a_art_id = ? ORDER BY rel_order",
-         DemoBranches.SAW_PL_Working_Branch.getId(), relType.getId(), parent.getId());
+         testBranch.getId(), relType.getId(), parent.getId());
       return orders;
    }
 
@@ -213,7 +248,7 @@ public class RelationOrderBoundaryTest {
       };
       AtsApiService.get().getJdbcService().getClient().runQuery(consumer,
          "SELECT rel_order, b_art_id FROM osee_relation rel, osee_txs txs " + "WHERE txs.branch_id = ? AND txs.tx_current = 1 AND txs.gamma_id = rel.gamma_id " + "AND rel.rel_type = ? AND rel.a_art_id = ? ORDER BY rel_order",
-         DemoBranches.SAW_PL_Working_Branch.getId(), relType.getId(), parent.getId());
+         testBranch.getId(), relType.getId(), parent.getId());
       return orders;
    }
 
