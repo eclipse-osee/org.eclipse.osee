@@ -12,7 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.internal.writers;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -180,6 +182,15 @@ public class GenericReportBuilder implements GenericReport {
       return this;
    }
 
+   @Override
+   public GenericReport sort(AttributeTypeToken type) {
+      if (currentLevel == null) {
+         throw new OseeArgumentException("sort cannot be called before creating a level");
+      }
+      currentLevel.setSortByAttribute(type);
+      return this;
+   }
+
    /**
     * Returns the current query builder. Calling this finalizes the current relation level (if any) so that follow/fork
     * calls are emitted before the caller chains additional operations. This is critical for template code like
@@ -241,6 +252,9 @@ public class GenericReportBuilder implements GenericReport {
       rows.add(getTopRow());
       rows.add(getHeaderRow());
       String[] row = new String[getColumnCount()];
+
+      ReportLevel firstLevel = this.getLevels().get(0);
+      arts = sortArtsForLevel(arts, firstLevel);
 
       for (ArtifactReadable art : arts) {
          fillReportDataFromQuery(art, rows, row, 0, 0);
@@ -340,6 +354,21 @@ public class GenericReportBuilder implements GenericReport {
          }
          arts.addAll(art.getRelated(level.getRelation(), DeletionFlag.EXCLUDE_DELETED));
       }
-      return arts;
+      return sortArtsForLevel(arts, level);
+   }
+
+   /**
+    * Sorts the given artifact list by the level's sortByAttribute, if one is configured. Uses natural string ordering
+    * of the attribute value. Artifacts with no value for the sort attribute are placed at the end.
+    */
+   private List<ArtifactReadable> sortArtsForLevel(List<ArtifactReadable> arts, ReportLevel level) {
+      AttributeTypeToken sortAttr = level.getSortByAttribute();
+      if (sortAttr == null || arts.size() <= 1) {
+         return arts;
+      }
+      List<ArtifactReadable> sorted = new ArrayList<>(arts);
+      sorted.sort(Comparator.comparing(a -> a.getAttributeValuesAsString(sortAttr),
+         Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
+      return sorted;
    }
 }

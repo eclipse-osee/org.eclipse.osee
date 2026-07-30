@@ -706,4 +706,131 @@ public class ReportEndpointTest {
          response.close();
       }
    }
+
+   /**
+    * Tests the applyHierarchyNumbers endpoint using query parameters for attributeType and padding.
+    * Verifies that a valid allowed attribute type (ParagraphNumber) succeeds.
+    */
+   @Test
+   public void testApplyHierarchyNumbersWithQueryParams() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String artifactId = subsystemReqArt.getIdString();
+      long paragraphNumberTypeId = CoreAttributeTypes.ParagraphNumber.getId();
+
+      String url = String.format("orcs/report/%s/hierarchyNumber/%s?attributeType=%d&padding=3", branchId, artifactId,
+         paragraphNumberTypeId);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).put(null);
+      try {
+         assertEquals("Hierarchy numbering with query params should return successful response", Family.SUCCESSFUL,
+            response.getStatusInfo().getFamily());
+
+         String responseBody = readResponseBody(response);
+         assertTrue("Response should contain success log",
+            responseBody.contains("Hierarchy numbering committed successfully"));
+      } finally {
+         response.close();
+      }
+   }
+
+   /**
+    * Tests that the applyHierarchyNumbers endpoint uses the default padding value (2) when the padding query parameter
+    * is omitted.
+    */
+   @Test
+   public void testApplyHierarchyNumbersDefaultPadding() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String artifactId = subsystemReqArt.getIdString();
+      long paragraphNumberTypeId = CoreAttributeTypes.ParagraphNumber.getId();
+
+      String url =
+         String.format("orcs/report/%s/hierarchyNumber/%s?attributeType=%d", branchId, artifactId, paragraphNumberTypeId);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).put(null);
+      try {
+         assertEquals("Hierarchy numbering with default padding should return successful response", Family.SUCCESSFUL,
+            response.getStatusInfo().getFamily());
+
+         String responseBody = readResponseBody(response);
+         assertTrue("Response should indicate padding 2 (default)",
+            responseBody.contains("padding 2"));
+      } finally {
+         response.close();
+      }
+   }
+
+   /**
+    * Tests that the applyHierarchyNumbers endpoint rejects an attribute type that is not in the allowlist.
+    */
+   @Test
+   public void testApplyHierarchyNumbersDisallowedAttributeType() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String artifactId = subsystemReqArt.getIdString();
+      // Use Name attribute type which is not in the allowed list
+      long nameTypeId = CoreAttributeTypes.Name.getId();
+
+      String url = String.format("orcs/report/%s/hierarchyNumber/%s?attributeType=%d&padding=2", branchId, artifactId,
+         nameTypeId);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).put(null);
+      try {
+         assertEquals("Disallowed attribute type should still return successful HTTP status", Family.SUCCESSFUL,
+            response.getStatusInfo().getFamily());
+
+         String responseBody = readResponseBody(response);
+         assertTrue("Response should contain error about disallowed attribute type",
+            responseBody.contains("is not allowed for hierarchy numbering"));
+      } finally {
+         response.close();
+      }
+   }
+
+   /**
+    * Tests that the applyHierarchyNumbers endpoint rejects invalid padding values via query params.
+    */
+   @Test
+   public void testApplyHierarchyNumbersInvalidPadding() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String artifactId = subsystemReqArt.getIdString();
+      long paragraphNumberTypeId = CoreAttributeTypes.ParagraphNumber.getId();
+
+      String url = String.format("orcs/report/%s/hierarchyNumber/%s?attributeType=%d&padding=10", branchId, artifactId,
+         paragraphNumberTypeId);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).put(null);
+      try {
+         assertEquals("Invalid padding should still return successful HTTP status", Family.SUCCESSFUL,
+            response.getStatusInfo().getFamily());
+
+         String responseBody = readResponseBody(response);
+         assertTrue("Response should contain error about padding range",
+            responseBody.contains("Padding must be between 1 and"));
+      } finally {
+         response.close();
+      }
+   }
+
+   /**
+    * Tests that the applyHierarchyNumbers endpoint returns a clear error when the attributeType query parameter is
+    * omitted.
+    */
+   @Test
+   public void testApplyHierarchyNumbersMissingAttributeType() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String artifactId = subsystemReqArt.getIdString();
+
+      String url = String.format("orcs/report/%s/hierarchyNumber/%s?padding=2", branchId, artifactId);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).put(null);
+      try {
+         assertEquals("Missing attributeType should still return successful HTTP status", Family.SUCCESSFUL,
+            response.getStatusInfo().getFamily());
+
+         String responseBody = readResponseBody(response);
+         assertTrue("Response should contain error about missing attributeType",
+            responseBody.contains("attributeType query parameter is required"));
+      } finally {
+         response.close();
+      }
+   }
 }

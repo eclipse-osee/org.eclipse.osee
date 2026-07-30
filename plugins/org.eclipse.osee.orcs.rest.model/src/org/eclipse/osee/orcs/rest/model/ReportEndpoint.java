@@ -15,15 +15,18 @@ package org.eclipse.osee.orcs.rest.model;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author David W. Miller
@@ -46,5 +49,12 @@ public interface ReportEndpoint {
       @DefaultValue("-1") @PathParam("view") ArtifactId view,
       @DefaultValue("-1") @PathParam("template") ArtifactId templateArt,
       @PathParam("email") String emailRecipient);
+
+   @PUT
+   @Path("{branch}/hierarchyNumber/{artifact}")
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData applyHierarchyNumbers(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId startArtifact, @QueryParam("attributeType") long attributeTypeId,
+      @DefaultValue("2") @QueryParam("padding") int padding);
 
 }
