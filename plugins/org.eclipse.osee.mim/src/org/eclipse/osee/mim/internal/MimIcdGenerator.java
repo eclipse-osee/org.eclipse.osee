@@ -296,7 +296,7 @@ public class MimIcdGenerator {
             try {
                msgRate = Integer.parseInt(msgRateText);
             } catch (NumberFormatException nfe) {
-               //do nothing
+               // Expected for non-numeric rates (e.g. "Aperiodic"); msgRate remains -1
             }
          } else {
             msgRateText = msgPeriodicity;
@@ -307,7 +307,7 @@ public class MimIcdGenerator {
                try {
                   msgRate = Integer.parseInt(msgRateText);
                } catch (NumberFormatException nfe) {
-                  //do nothing
+                  // Expected for non-numeric rates (e.g. "Aperiodic"); msgRate remains -1
                }
             }
             if (msgPeriodicity.equals("Aperiodic") && !msgRateText.equals("Aperiodic")) {
@@ -342,7 +342,7 @@ public class MimIcdGenerator {
                         String currentList = currentSubMsgPair.get().getSecond();
                         String subMsgLevelICDCN = getRelatedWorkFlow(subMsgDiffItem.getItemTxIds(), branch);
                         if (!currentList.contains(subMsgLevelICDCN)) {
-                           currentList = currentList + "," + subMsgLevelICDCN;
+                           currentSubMsgPair.get().setSecond(currentList + "," + subMsgLevelICDCN);
                         }
 
                      } else {
@@ -373,7 +373,7 @@ public class MimIcdGenerator {
                if (structDiffItem != null) {
                   if (structDiffItem.isAdded() || structDiffItem.isAddedDueToApplicChange() || structDiffItem.hasAttributeChanges(
                      CoreAttributeTypes.InterfaceMinSimultaneity.getId()) || structDiffItem.hasAttributeChanges(
-                        CoreAttributeTypes.InterfaceMinSimultaneity.getId())) {
+                        CoreAttributeTypes.InterfaceMaxSimultaneity.getId())) {
                      if (msgHeaderICDCNs.containsKey(message.getArtifactId())) {
                         List<Pair<ArtifactId, String>> list = msgHeaderICDCNs.get(message.getArtifactId());
                         Optional<Pair<ArtifactId, String>> currentSubMsgPair =
@@ -400,11 +400,12 @@ public class MimIcdGenerator {
                               }
                               if (simTxIds.size() > 0) {
                                  String simICDCNs = getRelatedWorkFlow(simTxIds, branch);
-                                 if (!currentList.contains(structLevelICDCN)) {
+                                 if (!currentList.contains(simICDCNs)) {
                                     currentList = currentList + "," + simICDCNs;
                                  }
                               }
                            }
+                           currentSubMsgPair.get().setSecond(currentList);
 
                         } else {
 
@@ -644,15 +645,17 @@ public class MimIcdGenerator {
          "WHERE  txs.branch_id IN (?,?) " + //branch,queryBranch
          " AND txs.tx_current = 1 AND txs.gamma_id = art.gamma_id AND art.art_id = ?" + //connectionId
          " AND txd.branch_id = txs.branch_id AND txd.transaction_id = txs.transaction_id), " + //
-         " allRels (a_art_id,b_art_id,gamma_id,rel_type) as ( select a_art_id, b_art_id, txs.gamma_id, rel_type from osee_txs txs, osee_relation rel " + //
+         " allRels (a_art_id,b_art_id,gamma_id,rel_type,rel_time) as ( select a_art_id, b_art_id, txs.gamma_id, rel_type, txd.time from osee_txs txs, osee_relation rel, osee_tx_details txd " + //
          "where txs.branch_id in (?,?) " + //branch,queryBranch
          "and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " + //
-         "union select a_art_id,   b_art_id,   txs.gamma_id,  rel_link_type_id rel_type from osee_txs txs, osee_relation_link rel " + //
+         "and txd.branch_id = txs.branch_id and txd.transaction_id = txs.transaction_id " + //
+         "union select a_art_id,   b_art_id,   txs.gamma_id,  rel_link_type_id rel_type, txd.time from osee_txs txs, osee_relation_link rel, osee_tx_details txd " + //
          "where txs.branch_id in (?,?) " + //branch,queryBranch
-         "and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " + //
-         "cte_query(a_art_id,b_art_id,rel_type,gamma_id) as ( " + //
-         "   select a_art_id,  b_art_id,   rel_type, gamma_id from allRels where a_art_id = ? " + //connectionId
-         "union all select e.a_art_id, e.b_art_id, e.rel_type, e.gamma_id from allRels e " + //
+         "and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " + //
+         "and txd.branch_id = txs.branch_id and txd.transaction_id = txs.transaction_id), " + //
+         "cte_query(a_art_id,b_art_id,rel_type,gamma_id,rel_time) as ( " + //
+         "   select a_art_id,  b_art_id,   rel_type, gamma_id, rel_time from allRels where a_art_id = ? " + //connectionId
+         "union all select e.a_art_id, e.b_art_id, e.rel_type, e.gamma_id, GREATEST(c.rel_time, e.rel_time) from allRels e " + //
          "inner join cte_query c on c.b_art_id = e.a_art_id), " + //
          "gammas (transaction_id,txBranch, gamma_id,commit_art_id,time) as ( select txd1.transaction_id, txd1.branch_id txBranch, changedTxs.gamma_id,txd1.commit_art_id,txd1.time " + //
          "from rootArtTime rat, osee_tx_details txd1, osee_txs attrTxs,osee_attribute attr,osee_txs changedTxs " + //
@@ -680,7 +683,7 @@ public class MimIcdGenerator {
          "select name, commit_art_id, atsid, time, row_number() over (order by time desc) rn, relTw, transaction_id, txBranch " + //
          "from (select distinct attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id, arts.transaction_id, arts.txBranch from " + //
          "cte_query, arts, osee_txs attrTxs, osee_attribute attr, osee_txs attrTxs2, osee_attribute attr2 " + //
-         "where b_art_id = arts.art_id and attrTxs.branch_id = ? " + //commonBranch
+         "where b_art_id = arts.art_id and arts.time >= cte_query.rel_time and attrTxs.branch_id = ? " + //commonBranch
          "and attrTxs.tx_current = 1 and attrTxs.gamma_id = attr.gamma_id and attr.art_id = arts.commit_art_id and attr.attr_type_id = ? " + //CoreAttributeTypes.Name
          "and attrTxs2.branch_id = ? " + //CoreBranches.COMMON.getId()
          "and attrTxs2.tx_current = 1 and attrTxs2.gamma_id = attr2.gamma_id and attr2.art_id = arts.commit_art_id " + //
@@ -1549,12 +1552,13 @@ public class MimIcdGenerator {
       Branch b = orcsApi.getQueryFactory().branchQuery().andId(branch).includeCategories().getResults().getExactlyOne();
       boolean isWorking = b.getBranchType().isWorkingBranch();
       boolean isPeer = b.getCategories().contains(CoreBranchCategoryTokens.PR);
-      String rtn = Strings.EMPTY_STRING;
+      StringBuilder rtn = new StringBuilder();
       if (isWorking && !isPeer) {
          if (txIds.stream().anyMatch(a -> a.getId() > b.getBaselineTx().getId())) {
-            rtn = releaseArtifacts.get(b.getAssociatedArtifact()).getSecond() != null && !releaseArtifacts.get(
+            String value = releaseArtifacts.get(b.getAssociatedArtifact()).getSecond() != null && !releaseArtifacts.get(
                b.getAssociatedArtifact()).getSecond().isBlank() ? releaseArtifacts.get(
                   b.getAssociatedArtifact()).getSecond() : releaseArtifacts.get(b.getAssociatedArtifact()).getFirst();
+            rtn.append(value);
          }
       } else {
          if (!releaseArtifacts.isEmpty() && !txIds.isEmpty()) {
@@ -1571,13 +1575,13 @@ public class MimIcdGenerator {
                   String tw = (releaseArtifacts.get(artifactId).getSecond() != null && !releaseArtifacts.get(
                      artifactId).getSecond().isBlank()) ? releaseArtifacts.get(
                         artifactId).getSecond() : releaseArtifacts.get(artifactId).getFirst();
-                  rtn = rtn + "," + tw;
+                  rtn.append(",").append(tw);
                }
 
             }
          }
       }
-      return rtn.replaceAll("^,+", "");
+      return rtn.toString().replaceAll("^,+", "");
    }
 
    private int[] printHeaderStructureElementRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex,
@@ -1596,7 +1600,7 @@ public class MimIcdGenerator {
       String validRange = getValidRangeString(element, platformType, dataType);
       String alterable = element.getInterfaceElementAlterable().getValue() ? "Yes" : "No";
       String preProcessedDescription =
-         element.getDescription().getValue() == Strings.EMPTY_STRING ? "n/a" : element.getDescription().getValue();
+         element.getDescription().getValue().equals(Strings.EMPTY_STRING) ? "n/a" : element.getDescription().getValue();
       String description =
          view.isValid() ? this.orcsApi.getApplicabilityOps().processApplicability(preProcessedDescription, "", "md",
             configurationFiles.get(0)).getSanitizedContent() : preProcessedDescription;
@@ -1842,14 +1846,54 @@ public class MimIcdGenerator {
          defaultValue}; // 14
 
       if (startIndex < endIndex) {
+         // Compute the parent's starting byte location for array position comparison.
+         // parentElement positions correspond to index 0, so offset by (i - startIndex) * byteSize per iteration.
+         int parentByteLocation =
+            parentElement.isValid() ? (parentElement.getBeginWord().intValue() * 4) + parentElement.getBeginByte().intValue() : 0;
+         int parentStartIndex =
+            parentElement.isValid() ? parentElement.getInterfaceElementIndexStart().getValue() : startIndex;
+
          for (int i = startIndex; i < endIndex + 1; i++) {
             boolean arrayElementAdded =
                elementAdded || (elementDiff.isPresent() && isNewArrayElement(elementDiff.get(), i));
-            CELLSTYLE arrByteSizeStyle = arrayElementAdded ? CELLSTYLE.GREEN : byteSizeStyle;
-            CELLSTYLE arrBeginWordStyle = arrayElementAdded ? CELLSTYLE.GREEN : beginWordStyle;
-            CELLSTYLE arrEndWordStyle = arrayElementAdded ? CELLSTYLE.GREEN : endWordStyle;
-            CELLSTYLE arrBeginByteStyle = arrayElementAdded ? CELLSTYLE.GREEN : beginByteStyle;
-            CELLSTYLE arrEndByteStyle = arrayElementAdded ? CELLSTYLE.GREEN : endByteStyle;
+
+            // Recompute byte position styles per iteration using the parent's corresponding positions for this array index
+            CELLSTYLE arrBeginWordStyle;
+            CELLSTYLE arrEndWordStyle;
+            CELLSTYLE arrBeginByteStyle;
+            CELLSTYLE arrEndByteStyle;
+            CELLSTYLE arrByteSizeStyle;
+            if (arrayElementAdded || elementStyle.equals(CELLSTYLE.GREEN)) {
+               arrBeginWordStyle = CELLSTYLE.GREEN;
+               arrEndWordStyle = CELLSTYLE.GREEN;
+               arrBeginByteStyle = CELLSTYLE.GREEN;
+               arrEndByteStyle = CELLSTYLE.GREEN;
+               arrByteSizeStyle = CELLSTYLE.GREEN;
+            } else if (parentElement.isValid()) {
+               int parentOffsetByteLocation = parentByteLocation + (i - parentStartIndex) * byteSize;
+               Integer parentBeginWord = Math.floorDiv(parentOffsetByteLocation, 4);
+               Integer parentBeginByte = Math.floorMod(parentOffsetByteLocation, 4);
+               Integer parentEndWord = Math.max(0, Math.floorDiv(parentOffsetByteLocation + byteSize - 1, 4));
+               Integer parentEndByte = Math.max(0, Math.floorMod(parentOffsetByteLocation + byteSize - 1, 4));
+
+               arrBeginWordStyle =
+                  beginWord.intValue() != parentBeginWord.intValue() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrEndWordStyle =
+                  endWord.intValue() != parentEndWord.intValue() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrBeginByteStyle =
+                  beginByte.intValue() != parentBeginByte.intValue() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrEndByteStyle =
+                  endByte.intValue() != parentEndByte.intValue() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrByteSizeStyle =
+                  elementToken.getElementSizeInBytes() != parentElement.getElementSizeInBytes() ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
+            } else {
+               arrBeginWordStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrEndWordStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrBeginByteStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrEndByteStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+               arrByteSizeStyle = CELLSTYLE.LIGHT_BLUE_XLSX;
+            }
+
             CELLSTYLE arrPTypeStyle = arrayElementAdded ? CELLSTYLE.GREEN : pTypeStyle;
             CELLSTYLE arrEnumStyle = arrayElementAdded ? CELLSTYLE.GREEN : enumStyle;
             CELLSTYLE arrLogicalTypeStyle = arrayElementAdded ? CELLSTYLE.GREEN : logicalTypeStyle;
@@ -2109,8 +2153,9 @@ public class MimIcdGenerator {
       int previousIndex = 0;
       int lastIndex = 0;
       boolean first = true;
-      for (Integer superscript : messageNotes.keySet()) {
-         MessageNote note = messageNotes.get(superscript);
+      for (Map.Entry<Integer, MessageNote> entry : messageNotes.entrySet()) {
+         Integer superscript = entry.getKey();
+         MessageNote note = entry.getValue();
          if (first) {
             first = false;
             previousValue = note.getText();
@@ -2473,7 +2518,7 @@ public class MimIcdGenerator {
          "sShort").replace("unsigned integer", "uInteger").replace("integer", "sInteger");
    }
 
-   private class MessageNote {
+   private static class MessageNote {
       final String text;
       final CELLSTYLE color;
 
@@ -2491,7 +2536,7 @@ public class MimIcdGenerator {
       }
    }
 
-   private class StructureInfo {
+   private static class StructureInfo {
       final Long id;
       final String name;
       final String nameAbbrev;

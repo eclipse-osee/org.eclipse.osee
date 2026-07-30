@@ -1,0 +1,81 @@
+<!--
+ * Copyright (c) 2026 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div
+	class="tw-flex tw-h-full tw-flex-col tw-overflow-hidden tw-bg-white tw-text-[var(--osee-help-text)] dark:tw-bg-[var(--osee-help-surface-dark)] dark:tw-text-[var(--osee-help-text-dark)]">
+	<!-- Header -->
+	<div
+		class="tw-flex tw-items-center tw-justify-between tw-border-b tw-border-[var(--osee-help-border)] tw-bg-[var(--osee-help-surface)] tw-px-4 tw-py-2 dark:tw-border-[var(--osee-help-border-dark)] dark:tw-bg-[var(--osee-neutral-19)]">
+		<div class="tw-flex tw-items-center tw-gap-2">
+			<mat-icon>help_outline</mat-icon>
+			<h1 class="tw-m-0 tw-text-base tw-font-medium">
+				{{ topicLabel() }}
+			</h1>
+		</div>
+	</div>
+
+	<!-- Section navigation -->
+	@if (sections().length > 0) {
+		<nav
+			class="tw-border-b tw-border-[var(--osee-help-border)] tw-px-3 tw-py-2 dark:tw-border-[var(--osee-help-border-dark)]"
+			aria-label="Help sections">
+			<ul
+				class="tw-m-0 tw-flex tw-list-none tw-flex-wrap tw-gap-1 tw-p-0">
+				@for (section of sections(); track section.id) {
+					<li class="tw-flex tw-items-center">
+						<button
+							class="osee-help-section-chip tw-flex tw-cursor-pointer tw-items-center tw-gap-1 tw-rounded-full tw-border tw-border-[var(--osee-help-border)] tw-bg-transparent tw-px-2.5 tw-py-1 tw-text-xs tw-font-medium tw-text-[var(--osee-help-text)] tw-transition-colors hover:tw-border-[var(--osee-blue-23)] hover:tw-bg-[var(--osee-blue-23)] hover:tw-text-white dark:tw-border-[var(--osee-help-border-dark)] dark:tw-text-[var(--osee-help-text-dark)]"
+							[class.active]="activeSection() === section.id"
+							(click)="
+								section.anchorId
+									? highlightInParent(section)
+									: scrollToSection(section)
+							"
+							[matTooltip]="
+								section.anchorId
+									? 'Highlight in UI and scroll to docs.'
+									: 'Scroll to section.'
+							">
+							@if (section.anchorId) {
+								<mat-icon
+									class="!tw-size-4 !tw-text-[14px] !tw-leading-4"
+									>visibility</mat-icon
+								>
+							}
+							{{ section.label }}
+						</button>
+					</li>
+				}
+			</ul>
+		</nav>
+	}
+
+	<!-- Markdown content area -->
+	<!-- Content is loaded from local assets/help/ — safe to disable sanitizer for icon HTML -->
+	<div
+		#contentArea
+		role="region"
+		aria-label="Help content"
+		class="tw-flex-1 tw-overflow-y-auto tw-px-4 tw-py-3">
+		@if (markdownPath()) {
+			<markdown
+				[src]="markdownPath()"
+				[disableSanitizer]="true"
+				(ready)="onMarkdownReady()"
+				class="osee-help-markdown"></markdown>
+		} @else {
+			<p class="tw-text-sm tw-opacity-60">
+				No help content available for this topic.
+			</p>
+		}
+	</div>
+</div>

@@ -78,12 +78,16 @@ export type fullRelation = Extract<
 	{ sideA: string | string[]; sideB: string | string[] }
 >;
 
+export type deleteAttributeRef = {
+	id: string;
+};
+
 export type modifyArtifact = {
 	id: string;
 	applicabilityId?: string;
 	setAttributes?: createAttributeType[];
 	addAttributes?: createAttributeType[];
-	deleteAttributes?: [{ typeName: string }];
+	deleteAttributes?: deleteAttributeRef[];
 };
 
 export type modifyRelation = (relationById | relationByName) &

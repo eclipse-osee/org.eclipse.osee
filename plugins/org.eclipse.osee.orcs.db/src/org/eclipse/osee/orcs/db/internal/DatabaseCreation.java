@@ -83,6 +83,7 @@ public final class DatabaseCreation {
       jdbcClient.createTable(ATTRIBUTE_SOURCE_TABLE);
       jdbcClient.createTable(ATTRIBUTE_BINARY_TABLE);
       jdbcClient.createTable(API_KEY_TABLE);
+      jdbcClient.createTable(TXS_COLD_STORAGE_TABLE);
    }
 
    private void dropTables() {
@@ -145,5 +146,6 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(ATTRIBUTE_SOURCE_TABLE);
       jdbcClient.dropTable(ATTRIBUTE_BINARY_TABLE);
       jdbcClient.dropTable(API_KEY_TABLE);
+      jdbcClient.dropTable(TXS_COLD_STORAGE_TABLE);
    }
 }

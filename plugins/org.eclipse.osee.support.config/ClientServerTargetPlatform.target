@@ -691,6 +691,7 @@
 	<plugin id="io.swagger.core.v3.swagger-jaxrs2"/>
 	<plugin id="io.swagger.core.v3.swagger-models"/>
 	<plugin id="com.vladsch.flexmark.ext-autolink"/>
+	<plugin id="com.vladsch.flexmark.ext-gfm-strikethrough"/>
 	<plugin id="com.vladsch.flexmark.ext-gfm-tasklist"/>
 	<plugin id="com.vladsch.flexmark.ext-gitlab"/>
 	<plugin id="com.vladsch.flexmark.ext-tables"/>

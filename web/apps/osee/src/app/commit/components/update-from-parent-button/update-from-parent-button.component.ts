@@ -38,7 +38,7 @@ import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 		[matTooltipDisabled]="!disabledOrLoading()">
 		<button
 			mat-flat-button
-			class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background disabled:tw-bg-background-selected-disabled-button dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
+			class="tw-flex tw-justify-center tw-bg-primary tw-text-background disabled:tw-bg-background-selected-disabled-button [&_*]:tw-m-0"
 			(click)="updateFromParent()"
 			[disabled]="disabledOrLoading()"
 			matTooltip="Update Branch From Parent">

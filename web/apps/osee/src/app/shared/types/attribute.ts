@@ -11,38 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-export type attribute = {
-	name: string;
-	value: string;
-	typeId: `${number}`;
-	id: `${number}`;
-	storeType: storeType;
-	multiplicityId: string;
-};
+/**
+ * @deprecated Import directly from `@osee/attributes/types` and `@osee/attributes/constants` instead.
+ */
+export { type storeType, type multiplicity } from '@osee/attributes/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
-export type storeType =
-	| 'Boolean'
-	| 'Date'
-	| 'Enumeration'
-	| 'Integer'
-	| 'Long'
-	| 'String'
-	| 'Input Stream';
-
-export const mockAttribute: attribute = {
-	name: 'name',
-	value: 'requirement',
-	typeId: '1234',
-	id: '7777',
-	storeType: 'String',
-	multiplicityId: '1',
-};
-
-export const nameAttribute: attribute = {
-	name: 'Name',
-	value: '',
-	typeId: '1152921504606847088',
-	id: '8888',
-	storeType: 'String',
-	multiplicityId: '1',
-};
+export const mockAttribute: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME> =
+	{
+		name: 'name',
+		value: 'requirement',
+		typeId: ATTRIBUTETYPEIDENUM.NAME,
+		id: '7777',
+		gammaId: '-1',
+		storeType: 'String',
+	};

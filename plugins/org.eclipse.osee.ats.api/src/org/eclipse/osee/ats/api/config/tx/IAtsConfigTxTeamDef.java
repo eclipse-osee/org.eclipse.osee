@@ -98,6 +98,8 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andWorkPackages(String artName, String... workPackageNames);
 
+   IAtsConfigTxTeamDef andBitBuildOrder(String... buildNames);
+
    IAtsConfigTxTeamDef andTags(String... tags);
 
    IAtsConfigTxTeamDef andRelation(RelationTypeSide relAtype, ArtifactToken artifact);

@@ -13,7 +13,9 @@
 package org.eclipse.osee.framework.core.publishing.markdown;
 
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.gitlab.GitLabExtension;
 import com.vladsch.flexmark.ext.superscript.SuperscriptExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
@@ -46,7 +48,8 @@ public class MarkdownHtmlUtil {
 
    public static final MutableDataSet markdownParserOptions =
       new MutableDataSet().set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create(),
-         TocExtension.create(), AutolinkExtension.create(), SuperscriptExtension.create())).set(TocExtension.LIST_CLASS,
+         TocExtension.create(), AutolinkExtension.create(), SuperscriptExtension.create(),
+         StrikethroughExtension.create(), GitLabExtension.create())).set(TocExtension.LIST_CLASS,
             "toc");
    public static final String TOC_PATTERN_STRING = "\\[TOC[^\\]]*\\]";
    public static final String FIGURE_TOC_STRING = "[FIGURE-TOC]";
@@ -211,17 +214,19 @@ public class MarkdownHtmlUtil {
       List<String> changes = new ArrayList<String>();
 
       int index = 1;
+      StringBuffer sb = new StringBuffer();
       while (matcher.find()) {
          String match = matcher.group(2).replace("&lt;", "<");
          String captionStr = String.format(CAPTION_CONTENT_SYNTAX, label, index, match);
          String captionDivStr = String.format(CAPTION_DIV_SYNTAX, cssClass, defaultCaptionStyle, captionStr);
          String anchorStr = String.format("<a id=\"%s-%d\"></a>\n", cssClass, index);
-         content = content.replaceFirst(patternString, anchorStr + Matcher.quoteReplacement(captionDivStr));
+         matcher.appendReplacement(sb, Matcher.quoteReplacement(anchorStr + captionDivStr));
          changes.add(captionStr);
          index++;
       }
+      matcher.appendTail(sb);
 
-      return new StringModificationResult(content, changes);
+      return new StringModificationResult(sb.toString(), changes);
    }
 
 }

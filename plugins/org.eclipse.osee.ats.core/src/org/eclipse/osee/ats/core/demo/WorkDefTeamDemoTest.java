@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefTeamDemoTest extends AbstractWorkDef {
 
    public WorkDefTeamDemoTest() {
-      super(DemoWorkDefinitions.WorkDef_Team_Demo_Test);
+      super(DemoWorkDefinitions.WorkDefTeamDemoTest);
    }
 
    @Override

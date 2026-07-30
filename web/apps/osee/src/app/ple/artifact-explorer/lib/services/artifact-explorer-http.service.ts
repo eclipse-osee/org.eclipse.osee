@@ -19,7 +19,9 @@ import {
 import { Injectable, Signal, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { Observable } from 'rxjs';
-import { HttpParamsType, attribute } from '@osee/shared/types';
+import { HttpParamsType } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { UiService } from '@osee/shared/services';
 import { AdvancedSearchCriteria } from '../types/artifact-search';
 import {
@@ -31,6 +33,7 @@ import {
 	publishMarkdownAsHtmlRequestData,
 	publishingRequestFormData,
 } from '../types/artifact-explorer';
+import { artifactHistoryResult } from '../types/artifact-history';
 
 @Injectable({
 	providedIn: 'root',
@@ -69,6 +72,24 @@ export class ArtifactExplorerHttpService {
 				'/related/direct',
 			{
 				params: { viewId: viewId, includeRelations: includeRelations },
+			}
+		);
+	}
+
+	public getHierarchicalChildren(
+		branchId: string,
+		artifactId: string,
+		viewId: string
+	) {
+		return this.http.get<artifactWithRelations[]>(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/artifact/' +
+				artifactId +
+				'/children',
+			{
+				params: { viewId: viewId },
 			}
 		);
 	}
@@ -192,9 +213,37 @@ export class ArtifactExplorerHttpService {
 	}
 
 	public getArtifactTypeAttributes(artifactId: string) {
-		return this.http.get<attribute[]>(
+		return this.http.get<attribute<string, ATTRIBUTETYPEID>[]>(
 			apiURL + '/orcs/types/artifact/' + artifactId + '/attributes'
 		);
+	}
+
+	public getArtifactHistory(branchId: string, artifactId: string) {
+		return this.http.get<artifactHistoryResult>(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/artifact/' +
+				artifactId +
+				'/history'
+		);
+	}
+
+	public getArtifactHistoryResource(
+		branchId: Signal<string>,
+		artifactId: Signal<string>,
+		pageNum: Signal<number>,
+		count: Signal<number>
+	): HttpResourceRef<artifactHistoryResult | undefined> {
+		return httpResource<artifactHistoryResult>(() => {
+			const branch = branchId();
+			const artifact = artifactId();
+			const page = pageNum();
+			const size = count();
+			if (!branch || !artifact || artifact === '-1') return undefined;
+			this.uiService.updateCount();
+			return `${apiURL}/orcs/branch/${branch}/artifact/${artifact}/history?pageNum=${page}&count=${size}`;
+		});
 	}
 
 	// Publishing

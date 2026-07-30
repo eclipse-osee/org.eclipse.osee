@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchUniqueArtifacts;
 import org.eclipse.osee.framework.core.data.ConflictData;
 import org.eclipse.osee.framework.core.data.ConflictUpdateData;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -941,6 +942,46 @@ public class BranchEndpointTest {
       res.close();
       res = branchEndpoint.purgeBranch(newBranchId, false, false);
       res.close();
+   }
+
+   @Test
+   public void compareArtifactIds() {
+      OseeClient oseeclient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
+
+      // Create two working branches from the same parent
+      BranchId branch1 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      BranchId branch2 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+
+      // Create one unique artifact on each branch
+      ArtifactToken artOnBranch1 = oseeclient.getArtifactEndpoint(branch1).createArtifact(branch1,
+         CoreArtifactTypes.SoftwareRequirementMarkdown, CoreArtifactTokens.SoftwareRequirementsFolder,
+         "Unique Art Branch1");
+      ArtifactToken artOnBranch2 = oseeclient.getArtifactEndpoint(branch2).createArtifact(branch2,
+         CoreArtifactTypes.SoftwareRequirementMarkdown, CoreArtifactTokens.SoftwareRequirementsFolder,
+         "Unique Art Branch2");
+
+      List<BranchUniqueArtifacts> result = branchEndpoint.compareArtifactIds(branch1, branch2);
+
+      Assert.assertEquals(2, result.size());
+
+      BranchUniqueArtifacts b1Result =
+         result.stream().filter(r -> r.getBranch().equals(branch1)).findFirst().orElse(null);
+      BranchUniqueArtifacts b2Result =
+         result.stream().filter(r -> r.getBranch().equals(branch2)).findFirst().orElse(null);
+
+      Assert.assertNotNull(b1Result);
+      Assert.assertNotNull(b2Result);
+
+      List<Long> b1Ids = b1Result.getUniqueArtifacts().stream().map(ArtifactId::getId).collect(Collectors.toList());
+      List<Long> b2Ids = b2Result.getUniqueArtifacts().stream().map(ArtifactId::getId).collect(Collectors.toList());
+
+      Assert.assertTrue("branch1 unique list should contain artOnBranch1", b1Ids.contains(artOnBranch1.getId()));
+      Assert.assertFalse("branch1 unique list should not contain artOnBranch2", b1Ids.contains(artOnBranch2.getId()));
+      Assert.assertTrue("branch2 unique list should contain artOnBranch2", b2Ids.contains(artOnBranch2.getId()));
+      Assert.assertFalse("branch2 unique list should not contain artOnBranch1", b2Ids.contains(artOnBranch1.getId()));
+
+      try (Response res = branchEndpoint.purgeBranch(branch1, false, false)) { /* close */ }
+      try (Response res = branchEndpoint.purgeBranch(branch2, false, false)) { /* close */ }
    }
 
    private void setArtifactEndpoint(BranchId branch) {

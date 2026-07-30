@@ -95,11 +95,10 @@ public class TxModule {
          }
 
          @Override
-         public int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge, List<String> additionalStatements,
-            String prefixRecoveryFile) {
+         public int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge) {
             PurgeUnusedBackingDataAndTransactions op;
             op = new PurgeUnusedBackingDataAndTransactions(jdbcClient);
-            return op.purgeListOfGammas(gammasToPurge, additionalStatements, prefixRecoveryFile);
+            return op.purgeListOfGammas(gammasToPurge);
          }
 
          @Override

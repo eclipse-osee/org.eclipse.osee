@@ -18,11 +18,10 @@ import { ArtifactExplorerPreferencesHttpService } from './lib/services/artifact-
 import { artifactExplorerPreferencesHttpServiceMock } from './lib/testing/artifact-explorer-preferences-http.service.mock';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CurrentBranchInfoService } from '@osee/shared/services';
 import { testBranchInfo } from '@osee/shared/testing';
+import { of } from 'rxjs';
 
 describe('ArtifactExplorerComponent', () => {
 	let component: ArtifactExplorerComponent;
@@ -46,10 +45,6 @@ describe('ArtifactExplorerComponent', () => {
 				{
 					provide: UserDataAccountService,
 					useValue: userDataAccountServiceMock,
-				},
-				{
-					provide: ActivatedRoute,
-					useValue: { queryParamMap: of(new Map<string, string>()) },
 				},
 				{
 					provide: CurrentBranchInfoService,

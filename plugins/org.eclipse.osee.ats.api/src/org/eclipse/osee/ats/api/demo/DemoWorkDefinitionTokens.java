@@ -21,12 +21,12 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 public class DemoWorkDefinitionTokens {
 
    // @formatter:off
-   public static AtsWorkDefinitionToken WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare = new AtsWorkDefinitionToken(916526903L, "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare");
-   public static AtsWorkDefinitionToken WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision = new AtsWorkDefinitionToken(913396704L, "WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision");
-   public static AtsWorkDefinitionToken WorkDef_Team_PeerReviewDefinitionManagerTest_Transition = new AtsWorkDefinitionToken(162205335L, "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition");
-   public static AtsWorkDefinitionToken WorkDef_Team_TransitionManagerTest_TargetedVersion = new AtsWorkDefinitionToken(340096461L, "WorkDef_Team_TransitionManagerTest_TargetedVersion");
-   public static AtsWorkDefinitionToken WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion = new AtsWorkDefinitionToken(7661159L, "WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion");
-   public static AtsWorkDefinitionToken WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition = new AtsWorkDefinitionToken(16919464L, "WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition");
+   public static AtsWorkDefinitionToken WorkDefTeamDecisionReviewDefinitionManagerTestPrepare = new AtsWorkDefinitionToken(916526903L, "WorkDefTeamDecisionReviewDefinitionManagerTestPrepare");
+   public static AtsWorkDefinitionToken WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision = new AtsWorkDefinitionToken(913396704L, "WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision");
+   public static AtsWorkDefinitionToken WorkDefTeamPeerReviewDefinitionManagerTestTransition = new AtsWorkDefinitionToken(162205335L, "WorkDefTeamPeerReviewDefinitionManagerTestTransition");
+   public static AtsWorkDefinitionToken WorkDefTeamTransitionManagerTestTargetedVersion = new AtsWorkDefinitionToken(340096461L, "WorkDefTeamTransitionManagerTestTargetedVersion");
+   public static AtsWorkDefinitionToken WorkDefTeamTransitionManagerTestWidgetRequiredCompletion = new AtsWorkDefinitionToken(7661159L, "WorkDefTeamTransitionManagerTestWidgetRequiredCompletion");
+   public static AtsWorkDefinitionToken WorkDefTeamTransitionManagerTestWidgetRequiredTransition = new AtsWorkDefinitionToken(16919464L, "WorkDefTeamTransitionManagerTestWidgetRequiredTransition");
    // @formatter:on
 
 }

@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgClass } from '@angular/common';
 import {
 	Component,
 	ChangeDetectionStrategy,
@@ -32,7 +31,6 @@ import { MatInput } from '@angular/material/input';
 @Component({
 	selector: 'osee-create-branch-dialog',
 	imports: [
-		NgClass,
 		MatFormField,
 		MatLabel,
 		FormsModule,
@@ -43,35 +41,31 @@ import { MatInput } from '@angular/material/input';
 		MatButton,
 	],
 	template: `
-		<div class="tw-flex tw-items-center">
-			<h1
-				mat-dialog-title
-				class="tw-my-0 tw-flex tw-w-full tw-items-center tw-gap-4 tw-pt-4">
-				Enter Branch Name
-			</h1>
-		</div>
-		<div mat-dialog-content>
+		<h1 mat-dialog-title>
+			<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+				Create Branch
+			</div>
+		</h1>
+		<mat-dialog-content>
 			<mat-form-field class="tw-w-full">
 				<mat-label>Branch Name</mat-label>
 				<input
 					matInput
 					[(ngModel)]="branchName" />
 			</mat-form-field>
-		</div>
+		</mat-dialog-content>
 		<div
 			mat-dialog-actions
-			align="end">
+			align="end"
+			class="tw-gap-2">
 			<button
-				mat-button
+				mat-stroked-button
+				class="tw-text-osee-red-8"
 				(click)="onCancel()">
 				Cancel
 			</button>
 			<button
-				mat-button
-				[ngClass]="{
-					'tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10':
-						branchNameNotEmpty(),
-				}"
+				mat-stroked-button
 				[disabled]="!branchNameNotEmpty()"
 				(click)="onSubmit()">
 				Submit

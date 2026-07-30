@@ -33,6 +33,7 @@ describe('ArtifactExplorerTabService', () => {
 		tabType: 'Artifact',
 		artifact: {
 			id: '1',
+			gammaId: '-1',
 			name: '',
 			typeId: '1',
 			typeName: '',
@@ -62,6 +63,7 @@ describe('ArtifactExplorerTabService', () => {
 		tabType: 'Artifact',
 		artifact: {
 			id: '1',
+			gammaId: '-1',
 			name: '',
 			typeId: '1',
 			typeName: '',

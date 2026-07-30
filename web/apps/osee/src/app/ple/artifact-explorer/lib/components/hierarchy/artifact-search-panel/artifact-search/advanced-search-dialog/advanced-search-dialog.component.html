@@ -10,16 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div mat-dialog-content>
-	<h1 mat-dialog-title>Advanced Artifact Search Options</h1>
+<h1 mat-dialog-title>
+	<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+		<mat-icon>tune</mat-icon>
+		Advanced Artifact Search Options
+	</div>
+</h1>
+<mat-dialog-content>
 	<osee-advanced-search-form [data]="data"></osee-advanced-search-form>
-</div>
-<mat-dialog-actions align="end">
+</mat-dialog-content>
+<div
+	mat-dialog-actions
+	align="end"
+	class="tw-gap-2">
 	<button
-		mat-flat-button
-		cdkFocusInitial
-		class="primary-button"
-		[mat-dialog-close]="data">
+		mat-stroked-button
+		class="tw-text-foreground-text"
+		mat-dialog-close>
+		Cancel
+	</button>
+	<button
+		mat-stroked-button
+		[mat-dialog-close]="data"
+		cdkFocusInitial>
 		Ok
 	</button>
-</mat-dialog-actions>
+</div>

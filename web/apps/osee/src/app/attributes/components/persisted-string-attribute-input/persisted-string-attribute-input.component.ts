@@ -48,6 +48,7 @@ import {
 	template: ` <osee-focus-lost-input
 		name="persisted-string-attribute-input"
 		[disabled]="disabled()"
+		[appearance]="appearance()"
 		[(value)]="attrValue"
 		[maxlength]="maxlength()"
 		[tooltip]="tooltip()">
@@ -72,6 +73,7 @@ export class PersistedStringAttributeInputComponent<U extends ATTRIBUTETYPEID> {
 	value = model.required<attribute<string, U>>();
 	protected attrValue = writableSlice(this.value, 'value');
 	disabled = input(false);
+	appearance = input<'outline' | 'fill'>('outline');
 
 	maxlength = input<string | number | null>(null);
 	tooltip = input<string>('');

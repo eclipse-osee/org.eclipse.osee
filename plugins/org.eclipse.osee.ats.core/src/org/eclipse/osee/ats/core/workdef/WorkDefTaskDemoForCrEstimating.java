@@ -41,7 +41,7 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
    }
 
    public WorkDefTaskDemoForCrEstimating() {
-      this(DemoWorkDefinitions.WorkDef_Task_Demo_For_CR_Estimating);
+      this(DemoWorkDefinitions.WorkDefTaskDemoForCrEstimating);
    }
 
    @Override

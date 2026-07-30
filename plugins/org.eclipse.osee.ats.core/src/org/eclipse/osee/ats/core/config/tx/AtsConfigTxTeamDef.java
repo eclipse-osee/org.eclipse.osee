@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BitUtil;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -242,6 +243,17 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
             changes.addAttribute(enumArt, CoreAttributeTypes.IdValue, workPackage);
          }
       }
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andBitBuildOrder(String... buildNames) {
+      Conditions.assertTrue(buildNames.length > 0, "Build names can not be empty");
+      ArtifactToken bitOrderArt =
+         changes.createArtifact(CoreArtifactTypes.GeneralData, BitUtil.BIT_BUILD_ORDER_ART_NAME);
+      changes.relate(teamDef, CoreRelationTypes.DefaultHierarchical_Child, bitOrderArt);
+      String value = String.join("\n", buildNames);
+      changes.addAttribute(bitOrderArt, CoreAttributeTypes.GeneralStringData, value);
       return this;
    }
 

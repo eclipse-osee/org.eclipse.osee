@@ -12,7 +12,6 @@
  **********************************************************************/
 import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import {
-	attribute,
 	isNewAttr,
 	isValidAttr,
 	newAttribute,
@@ -20,29 +19,16 @@ import {
 } from '@osee/attributes/types';
 import { applic } from '@osee/applicability/types';
 import {
+	attrConfig,
 	transaction,
 	modifyArtifact as _modifyArtifact,
 } from '@osee/transactions/types';
 import { pipe, Observable, map } from 'rxjs';
 
-type _attrConfig = {
-	set?: attribute<
-		string | number | boolean | unknown[] | unknown,
-		ATTRIBUTETYPEID
-	>[];
-	add?: attribute<
-		string | number | boolean | unknown[] | unknown,
-		ATTRIBUTETYPEID
-	>[];
-	delete?: attribute<
-		string | number | boolean | unknown[] | unknown,
-		ATTRIBUTETYPEID
-	>[];
-};
 export const modifyArtifact = (
 	artId: `${number}`,
 	applicability: applic,
-	attrConfig: _attrConfig
+	attrConfig: attrConfig
 ) => {
 	return pipe<
 		Observable<Required<transaction>>,
@@ -82,6 +68,12 @@ export const modifyArtifact = (
 					.map((attr) => ({
 						typeId: attr.typeId,
 						value: attr.value,
+					})),
+				deleteAttributes: attrConfig.delete
+					?.filter((attr) => isValidAttr(attr))
+					.map((attr) => ({
+						id: (attr as validAttribute<unknown, ATTRIBUTETYPEID>)
+							.id,
 					})),
 			};
 			tx.modifyArtifacts.push(_modify);

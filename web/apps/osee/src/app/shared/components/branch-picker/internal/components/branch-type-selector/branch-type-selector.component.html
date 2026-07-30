@@ -10,24 +10,22 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<mat-radio-group
+<mat-button-toggle-group
+	[value]="branchType"
 	(change)="selectType($event)"
-	class="tw-min-w-fit"
-	[(ngModel)]="branchType">
-	<div class="tw-flex tw-flex-row">
-		@for (type of branchTypes; track type) {
-			<mat-radio-button
-				[attr.data-cy]="normalizeType(type | lowercase)"
-				[value]="normalizeType(type | lowercase)"
-				[id]="normalizeType(type | lowercase)"
-				[name]="type | lowercase"
-				[ngClass]="
-					branchType === (type | lowercase)
-						? 'tw-pr-3 tw-text-foreground-base tw-drop-shadow'
-						: 'tw-pr-3 tw-text-foreground-base'
-				">
-				{{ type }}
-			</mat-radio-button>
-		}
-	</div>
-</mat-radio-group>
+	hideSingleSelectionIndicator
+	class="tw-w-full"
+	aria-label="Branch type">
+	<mat-button-toggle
+		value="baseline"
+		data-cy="baseline"
+		class="tw-flex-1">
+		Baseline
+	</mat-button-toggle>
+	<mat-button-toggle
+		value="working"
+		data-cy="working"
+		class="tw-flex-1">
+		Working
+	</mat-button-toggle>
+</mat-button-toggle-group>

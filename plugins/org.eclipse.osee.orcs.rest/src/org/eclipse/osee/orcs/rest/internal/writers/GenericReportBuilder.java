@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.GenericReport;
@@ -55,6 +56,7 @@ public class GenericReportBuilder implements GenericReport {
    @Override
    public GenericReport level(String levelName, QueryBuilder addedQuery) {
       int nextDepth = nextDepth();
+      finalizeCurrentLevel();
       currentLevel = new ReportLevel(levelName);
       currentLevel.setDepth(nextDepth);
       reportLevels.add(currentLevel);
@@ -65,6 +67,7 @@ public class GenericReportBuilder implements GenericReport {
    @Override
    public GenericReport level(String levelName, String typeName) {
       int nextDepth = nextDepth();
+      finalizeCurrentLevel();
       currentLevel = new ReportLevel(levelName);
       currentLevel.setDepth(nextDepth);
       reportLevels.add(currentLevel);
@@ -75,13 +78,65 @@ public class GenericReportBuilder implements GenericReport {
    @Override
    public GenericReport relationLevel(String levelName, String relationName, String relationSide) {
       int nextDepth = nextDepth();
+      finalizeCurrentLevel();
       currentLevel = new ReportLevel(levelName);
       currentLevel.setDepth(nextDepth);
       reportLevels.add(currentLevel);
       RelationTypeSide relation =
          new RelationTypeSide(orcsApi.tokenService().getRelationType(relationName), RelationSide.valueOf(relationSide));
-      query = query.follow(relation);
+      currentLevel.setRelation(relation);
+      // Do NOT call query.follow here — defer until we know all forks for this level.
+      // followFork calls are emitted eagerly (they don't change the query reference),
+      // but the final follow must wait until forks are done.
       return this;
+   }
+
+   @Override
+   public GenericReport followFork(String relationName, String relationSide) {
+      if (currentLevel == null) {
+         throw new OseeArgumentException("followFork cannot be called before creating a level");
+      }
+      if (!currentLevel.isRelationLevel()) {
+         throw new OseeArgumentException(
+            "followFork can only be used on a level created by relationLevel, not a query-based level");
+      }
+      if (currentLevel.isFinalized()) {
+         throw new OseeArgumentException(
+            "followFork cannot be called after the level has been finalized (query() was already accessed or next level started).");
+      }
+      if (!currentLevel.getColumns().isEmpty()) {
+         throw new OseeArgumentException(
+            "followFork must be called before adding columns. Add all followFork calls immediately after relationLevel.");
+      }
+      if (currentLevel.hasForkRelationName(relationName)) {
+         throw new OseeArgumentException(
+            "followFork relation '%s' is already used in this level. Each followFork must specify a different relation.",
+            relationName);
+      }
+      RelationTypeSide relation =
+         new RelationTypeSide(orcsApi.tokenService().getRelationType(relationName), RelationSide.valueOf(relationSide));
+      currentLevel.addForkRelation(relation, relationName);
+      // Emit followFork immediately — it returns 'this' on the QueryBuilder so the query field stays
+      // pointing to the same builder. This is safe regardless of when it's called.
+      query = query.followFork(relation);
+      return this;
+   }
+
+   /**
+    * Finalizes the current relation level by emitting the deferred follow call. Per the QueryBuilder contract,
+    * followFork must be called BEFORE follow at the same level. Since followFork is emitted eagerly (it returns 'this',
+    * keeping the query reference stable), we only need to defer the final follow call — which descends into a child
+    * builder. This method emits that follow on the current query field, which already has all forks attached.
+    */
+   private void finalizeCurrentLevel() {
+      if (currentLevel == null || !currentLevel.isRelationLevel()) {
+         return;
+      }
+      if (!currentLevel.isFinalized()) {
+         // All followFork calls were already emitted eagerly. Now emit the main follow last.
+         query = query.follow(currentLevel.getRelation());
+         currentLevel.markFinalized();
+      }
    }
 
    private int nextDepth() {
@@ -126,11 +181,14 @@ public class GenericReportBuilder implements GenericReport {
    }
 
    /**
-    * Returns the current query builder. Intentionally exposes the mutable reference as part of the builder pattern —
-    * callers chain query operations (e.g. andIsOfType, follow).
+    * Returns the current query builder. Calling this finalizes the current relation level (if any) so that follow/fork
+    * calls are emitted before the caller chains additional operations. This is critical for template code like
+    * {@code report.level("X", report.query().follow(...))} where the query reference must reflect all prior level
+    * follows before the next follow is chained.
     */
    @Override
    public QueryBuilder query() {
+      finalizeCurrentLevel();
       return query;
    }
 
@@ -174,6 +232,7 @@ public class GenericReportBuilder implements GenericReport {
    }
 
    public void getDataRowsFromQuery(List<Object[]> rows) {
+      finalizeCurrentLevel();
       List<ArtifactReadable> arts = query.asArtifacts();
       if (arts.isEmpty()) {
          throw new OseeCoreException("Invalid Query in GenericReportBuilder");
@@ -192,6 +251,13 @@ public class GenericReportBuilder implements GenericReport {
       return depth == (this.getLevels().size() - 1);
    }
 
+   /**
+    * Recursively fills report data rows for the given artifact at the specified depth. The {@code row} array is shared
+    * across recursive calls for efficiency — each level overwrites its own column positions ({@code pos} through
+    * {@code pos + columns.size() - 1}), and {@link #finishRow} copies the filled portion into a new array before
+    * appending to results. Callers must not read positions beyond {@code pos} as they may contain stale data from
+    * previous iterations.
+    */
    private void fillReportDataFromQuery(ArtifactReadable art, List<Object[]> rows, String[] row, int pos, int depth) {
       ReportLevel level = this.getLevels().get(depth);
       for (ReportColumn column : level.getColumns()) {
@@ -226,8 +292,11 @@ public class GenericReportBuilder implements GenericReport {
       }
    }
 
+   /**
+    * Copies filled columns into a new row array and appends it to the result set. Columns beyond {@code pos} remain
+    * null, representing empty cells for deeper levels that had no related artifacts.
+    */
    private void finishRow(List<Object[]> rows, String row[], int pos) {
-      //copy the row and add it into the row data
       String[] setrow = new String[getColumnCount()];
       for (int i = 0; i < pos; ++i) {
          setrow[i] = row[i];
@@ -239,15 +308,28 @@ public class GenericReportBuilder implements GenericReport {
       List<ArtifactReadable> arts = new LinkedList<>();
       int depth = level.getDepth();
       if (depth == 0) {
-         arts.addAll(query.asArtifacts());
-      } else {
+         throw new OseeCoreException("This a level guard exception, this method should not be called for level 0 (depth=%d)",
+            depth);
+      } else if (level.isRelationLevel()) {
+         // Relation levels have their relations explicitly set via relationLevel() and followFork()
          if (level.getRelation() == null) {
-            List<RelationTypeSide> relations = query.getRelationTypesForLevel(depth); // query depth doesn't count the artifact query level
+            throw new OseeCoreException("Relation not found for level %d - unexpected behavior, check parsed code.",
+               depth);
+         }
+         for (RelationTypeSide relation : level.getAllRelations()) {
+            arts.addAll(art.getRelated(relation, DeletionFlag.EXCLUDE_DELETED));
+         }
+      } else {
+         // Query-based levels (created by level(name, query) with follow in the query):
+         // Resolve the relation from the query tree structure at the matching depth.
+         if (level.getRelation() == null) {
+            List<RelationTypeSide> relations = query.getRelationTypesForLevel(depth);
             if (relations.isEmpty()) {
                throw new OseeCoreException("Relation not found for level %d", depth);
             }
             if (relations.size() > 1) {
-               throw new OseeCoreException("Multiple relations in one level not implemented for Generic Report");
+               // Multiple relations returned for a query-based level — only the first is used.
+               // If this is unexpected, consider using relationLevel with followFork instead.
             }
             RelationTypeSide relation = relations.get(0);
             if (relation.isValid()) {

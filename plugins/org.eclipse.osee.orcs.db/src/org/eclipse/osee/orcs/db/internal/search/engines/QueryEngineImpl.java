@@ -385,7 +385,8 @@ public class QueryEngineImpl implements QueryEngine {
 
             RelationTypeSide relTypeSide = new RelationTypeSide(tokenService.getRelationTypeOrCreate(typeId), side);
             if (!artifact.areRelated(relTypeSide, otherArtifact)) {
-               artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact);
+               GammaId relGamma = GammaId.valueOf(stmt.getLong("gamma_id"));
+               artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact, relGamma);
             }
             if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
 
@@ -550,7 +551,8 @@ public class QueryEngineImpl implements QueryEngine {
 
             RelationTypeSide relTypeSide = new RelationTypeSide(tokenService.getRelationTypeOrCreate(typeId), side);
             if (!artifact.areRelated(relTypeSide, otherArtifact)) {
-               artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact);
+               GammaId relGamma = GammaId.valueOf(stmt.getLong("gamma_id"));
+               artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact, relGamma);
             }
             if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
 

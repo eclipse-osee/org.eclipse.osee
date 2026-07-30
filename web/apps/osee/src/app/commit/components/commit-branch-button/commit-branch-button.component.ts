@@ -29,7 +29,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 		[matTooltipDisabled]="!disabled()">
 		<button
 			mat-flat-button
-			class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background disabled:tw-bg-background-selected-disabled-button dark:tw-bg-osee-blue-10 [&_*]:tw-m-0"
+			class="tw-flex tw-justify-center tw-bg-primary tw-text-background disabled:tw-bg-background-selected-disabled-button [&_*]:tw-m-0"
 			[disabled]="disabled()"
 			(click)="commitBranch()"
 			aria-label="Commit Branch"

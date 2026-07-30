@@ -10,11 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',
 	template: '<div>Dummy</div>',
 	standalone: true,
 })
-export class ArtifactHierarchyMockComponent {}
+export class ArtifactHierarchyMockComponent {
+	activeSection = input('hierarchy');
+}

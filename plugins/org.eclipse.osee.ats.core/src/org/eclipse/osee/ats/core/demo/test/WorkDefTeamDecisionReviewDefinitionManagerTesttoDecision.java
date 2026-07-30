@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 public class WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision extends AbstractWorkDef {
 
    public WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision() {
-      super(DemoWorkDefinitionTokens.WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision);
+      super(DemoWorkDefinitionTokens.WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision);
    }
 
    @Override

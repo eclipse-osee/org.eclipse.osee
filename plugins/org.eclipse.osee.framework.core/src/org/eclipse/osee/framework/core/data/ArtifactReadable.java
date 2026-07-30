@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -230,6 +231,14 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    ApplicabilityToken getApplicabilityToken();
 
    GammaId getGamma();
+
+   /**
+    * Returns the gamma ID for a specific relation link between this artifact and the given related artifact. Default
+    * returns SENTINEL; implementations that store relation gammas should override.
+    */
+   default GammaId getRelationGamma(RelationTypeToken relationType, RelationSide side, ArtifactReadable related) {
+      return GammaId.SENTINEL;
+   }
 
    String getSafeName();
 

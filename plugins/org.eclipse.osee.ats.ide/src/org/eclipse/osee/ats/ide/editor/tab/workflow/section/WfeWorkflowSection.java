@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -148,6 +149,9 @@ public class WfeWorkflowSection extends SectionPart {
       String currentStateTitle =
          getCurrentStateTitle(sma, statePage.getName(), isCurrentState(), statePage.isCancelled());
       section.setText(currentStateTitle);
+      section.setTitleBarBackground(new Color(section.getDisplay(), 220, 235, 252));
+      section.setTitleBarBorderColor(null);
+      section.setTitleBarGradientBackground(null);
       if (sma.isInState(statePage)) {
          section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_GREEN));
       } else {

@@ -686,6 +686,25 @@ public class OseeDb {
       API_KEY_TABLE.createIndex("OSEE_API_KEY__ARTIFACT_ID_IDX", true, API_KEY_USER_ARTIFACT_ID);
    }
 
+   public static final SqlTable TXS_COLD_STORAGE_TABLE = new SqlTable("osee_txs_cold_storage", "txs_cold");
+   public static final SqlColumn TXS_COLD_BRANCH_ID = TXS_COLD_STORAGE_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
+   public static final SqlColumn TXS_COLD_BRANCH_NAME =
+      TXS_COLD_STORAGE_TABLE.addVarCharColumn("BRANCH_NAME", 200, false);
+   public static final SqlColumn TXS_COLD_EXPORT_FILE =
+      TXS_COLD_STORAGE_TABLE.addVarCharColumn("EXPORT_FILE", 200, false);
+   public static final SqlColumn TXS_COLD_EXPORT_DATE =
+      TXS_COLD_STORAGE_TABLE.addColumn("EXPORT_DATE", JDBCType.TIMESTAMP);
+   public static final SqlColumn TXS_COLD_TXS_ROW_COUNT =
+      TXS_COLD_STORAGE_TABLE.addColumn("TXS_ROW_COUNT", JDBCType.BIGINT);
+   public static final SqlColumn TXS_COLD_TX_DETAILS_ROW_COUNT =
+      TXS_COLD_STORAGE_TABLE.addColumn("TX_DETAILS_ROW_COUNT", JDBCType.BIGINT);
+   public static final SqlColumn TXS_COLD_BRANCH_STATE =
+      TXS_COLD_STORAGE_TABLE.addColumn("BRANCH_STATE", JDBCType.SMALLINT);
+   static {
+      TXS_COLD_STORAGE_TABLE.setPrimaryKeyConstraint(TXS_COLD_BRANCH_ID);
+      TXS_COLD_STORAGE_TABLE.createIndex("TXS_COLD__FILE_IDX", false, TXS_COLD_EXPORT_FILE);
+   }
+
    public static SqlTable getTxsTable(boolean isArchived) {
       return isArchived ? TXS_ARCHIVED_TABLE : TXS_TABLE;
    }

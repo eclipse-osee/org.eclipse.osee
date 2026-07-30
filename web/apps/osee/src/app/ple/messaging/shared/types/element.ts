@@ -44,64 +44,62 @@ export const diffableElementHeaders: (keyof DiffableElementProps)[] = [
 ];
 
 type __elementAttr = {
-	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
-	description: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	description: attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>;
+	notes: attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>;
+	interfaceElementIndexEnd: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND
 	>;
-	notes: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>>;
-	interfaceElementIndexEnd: Required<
-		attribute<number, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTEND>
+	interfaceElementIndexStart: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART
 	>;
-	interfaceElementIndexStart: Required<
-		attribute<number, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTSTART>
+	interfaceElementAlterable: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE
 	>;
-	interfaceElementAlterable: Required<
-		attribute<boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTALTERABLE>
+	interfaceElementBlockData: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA
 	>;
-	interfaceElementBlockData: Required<
-		attribute<boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTBLOCKDATA>
+	interfaceDefaultValue: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL
 	>;
-	interfaceDefaultValue: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL>
+	enumLiteral: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL
 	>;
-	enumLiteral: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMLITERAL>
+	interfaceElementWriteArrayHeaderName: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME
 	>;
-	interfaceElementWriteArrayHeaderName: Required<
-		attribute<
-			boolean,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTWRITEARRAYHEADERNAME
-		>
+	interfaceElementArrayIndexOrder: attribute<
+		arrayIndexOrder,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER
 	>;
-	interfaceElementArrayIndexOrder: Required<
-		attribute<
-			arrayIndexOrder,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACELEMENTARRAYINDEXORDER
-		>
+	interfaceElementArrayIndexDelimiterOne: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE
 	>;
-	interfaceElementArrayIndexDelimiterOne: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERONE
-		>
-	>;
-	interfaceElementArrayIndexDelimiterTwo: Required<
-		attribute<
-			string,
-			typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO
-		>
+	interfaceElementArrayIndexDelimiterTwo: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYINDEXDELIMITERTWO
 	>;
 };
 
 type _nonHeaderElementAttr = {
-	interfaceElementArrayHeader: Required<
-		attribute<false, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER>
+	interfaceElementArrayHeader: attribute<
+		false,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER
 	>;
 };
 
 type _headerElementAttr = {
-	interfaceElementArrayHeader: Required<
-		attribute<true, typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER>
+	interfaceElementArrayHeader: attribute<
+		true,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEELEMENTARRAYHEADER
 	>;
 };
 

@@ -31,16 +31,20 @@ test('branch picker is visible and functional', async ({ page }) => {
 	// Verify branch picker is present
 	await expect(page.getByText('Select a Branch')).toBeVisible();
 
-	// Verify branch type radio buttons are available
-	await expect(page.getByLabel('Working')).toBeVisible();
-	await expect(page.getByLabel('Product Line')).toBeVisible();
+	// Verify branch type toggle buttons are available
+	await expect(
+		page.locator('mat-button-toggle[data-cy="working"]')
+	).toBeVisible();
+	await expect(
+		page.locator('mat-button-toggle[data-cy="baseline"]')
+	).toBeVisible();
 });
 
 test('loading indicator appears when branch is selected', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
 	await navigateToPublishLauncher(page);
 
-	await selectBranch(page, 'Product Line', 'SAW Product Line');
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 
 	// Either the loading indicator or the config content should appear
 	const loadingOrContent = page
@@ -53,7 +57,7 @@ test('configuration loads and displays tabs', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
 	await navigateToPublishLauncher(page);
 
-	await selectBranch(page, 'Product Line', 'SAW Product Line');
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 	await waitForConfigLoad(page);
 
 	// Verify that a tab group is rendered from the config
@@ -70,7 +74,7 @@ test('tab content displays form fields', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
 	await navigateToPublishLauncher(page);
 
-	await selectBranch(page, 'Product Line', 'SAW Product Line');
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 	await waitForConfigLoad(page);
 
 	// Verify the email field is present (shown when targetApi URL contains {email})
@@ -92,7 +96,7 @@ test('publish button is disabled when form is invalid', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
 	await navigateToPublishLauncher(page);
 
-	await selectBranch(page, 'Product Line', 'SAW Product Line');
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 	await waitForConfigLoad(page);
 
 	// If there are required fields, the publish button should be disabled initially
@@ -113,7 +117,7 @@ test('switching tabs displays different content', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
 	await navigateToPublishLauncher(page);
 
-	await selectBranch(page, 'Product Line', 'SAW Product Line');
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 	await waitForConfigLoad(page);
 
 	const tabLabels = page.locator('.mat-mdc-tab-labels .mdc-tab');
@@ -136,7 +140,7 @@ test('email validation shows error for invalid input', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
 	await navigateToPublishLauncher(page);
 
-	await selectBranch(page, 'Product Line', 'SAW Product Line');
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 	await waitForConfigLoad(page);
 
 	const emailField = page.getByLabel('Email Addresses');
@@ -159,7 +163,7 @@ test('email validation accepts valid input', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
 	await navigateToPublishLauncher(page);
 
-	await selectBranch(page, 'Product Line', 'SAW Product Line');
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 	await waitForConfigLoad(page);
 
 	const emailField = page.getByLabel('Email Addresses');
@@ -181,7 +185,7 @@ test('page title is displayed from configuration', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
 	await navigateToPublishLauncher(page);
 
-	await selectBranch(page, 'Product Line', 'SAW Product Line');
+	await selectBranch(page, 'Baseline', 'SAW Product Line');
 	await waitForConfigLoad(page);
 
 	// The config should provide a title (e.g., "Publish Launcher")

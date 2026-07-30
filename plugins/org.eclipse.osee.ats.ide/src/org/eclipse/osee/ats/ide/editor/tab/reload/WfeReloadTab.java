@@ -44,7 +44,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -86,10 +89,14 @@ public class WfeReloadTab extends FormPage {
             imageLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, true));
             Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
             imageLabel.setImage(image);
-            imageLabel.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
             imageLabel.setText("Saved item not on currently configured ATS Branch.  Unable to reload.");
          } else {
-            reloadButton = new Button(bodyComp, SWT.PUSH);
+            Composite buttonComp = new Composite(bodyComp, SWT.NONE);
+            buttonComp.setLayout(new GridLayout(2, false));
+            buttonComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
+            managedForm.getToolkit().adapt(buttonComp);
+
+            reloadButton = new Button(buttonComp, SWT.PUSH);
             reloadButton.setText("Reload");
             reloadButton.setImage(ImageManager.getImage(CoreImage.REFRESH));
             reloadButton.addSelectionListener(new SelectionAdapter() {
@@ -102,6 +109,18 @@ public class WfeReloadTab extends FormPage {
                      reloading = true;
                      reloadEditor();
                   }
+               }
+            });
+
+            Button reloadAllButton = new Button(buttonComp, SWT.PUSH);
+            reloadAllButton.setText("Reload All");
+            reloadAllButton.setImage(ImageManager.getImage(CoreImage.REFRESH));
+            reloadAllButton.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+            reloadAllButton.addSelectionListener(new SelectionAdapter() {
+
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  reloadAllEditors();
                }
             });
          }
@@ -146,6 +165,27 @@ public class WfeReloadTab extends FormPage {
    public void reloadEditor(String title) {
       LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(title);
       Jobs.startJob(loadAndRefresh, true);
+   }
+
+   private void reloadAllEditors() {
+      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IEditorReference[] editorRefs = page.getEditorReferences();
+      for (IEditorReference editorRef : editorRefs) {
+         try {
+            if (WorkflowEditor.EDITOR_ID.equals(editorRef.getId())) {
+               IEditorPart part = editorRef.getEditor(true);
+               if (part instanceof WorkflowEditor) {
+                  WorkflowEditor wfEditor = (WorkflowEditor) part;
+                  WfeReloadTab wfeReloadTab = wfEditor.getReloadTab();
+                  if (wfeReloadTab != null) {
+                     wfeReloadTab.reloadEditor();
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, ex);
+         }
+      }
    }
 
    private class LoadAndRefreshJob extends Job {

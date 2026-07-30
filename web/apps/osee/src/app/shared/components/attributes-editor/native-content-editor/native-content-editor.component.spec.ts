@@ -33,24 +33,24 @@ describe('NativeContentEditorComponent', () => {
 			name: 'Name',
 			value: 'test-file',
 			typeId: BASEATTRIBUTETYPEIDENUM.NAME,
+			gammaId: '-1',
 			storeType: 'String',
-			multiplicityId: '1',
 		},
 		nativeContent: {
 			id: '2',
 			name: 'Native Content',
 			value: '',
 			typeId: ATTRIBUTETYPEIDENUM.NATIVE_CONTENT,
+			gammaId: '-1',
 			storeType: 'Input Stream',
-			multiplicityId: '1',
 		},
 		extension: {
 			id: '3',
 			name: 'Extension',
 			value: 'txt',
 			typeId: ATTRIBUTETYPEIDENUM.EXTENSION,
+			gammaId: '-1',
 			storeType: 'String',
-			multiplicityId: '3',
 		},
 	};
 

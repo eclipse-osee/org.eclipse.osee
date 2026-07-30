@@ -220,7 +220,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       atsApi.getActionService().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), null, changes);
 
       WorkDefinition workDefinition =
-         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Review_Decision);
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefReviewDecision);
       atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(decRev, workDefinition, changes);
 
       // Initialize state machine

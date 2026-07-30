@@ -48,80 +48,58 @@ export type PlatformType = Required<{
 	_platformTypeRelations &
 	Partial<platformTypeChanges>;
 
-export type PlatformTypeAttr = Required<
-	{
-		name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
-		description: Required<
-			attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
-		>;
-		interfaceLogicalType: Required<
-			attribute<string, typeof ATTRIBUTETYPEIDENUM.LOGICALTYPE>
-		>;
-		interfacePlatformType2sComplement: Required<
-			attribute<
-				boolean,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPE2SCOMPLEMENT
-			>
-		>;
-		interfacePlatformTypeAnalogAccuracy: Required<
-			attribute<
-				string,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY
-			>
-		>;
-		interfacePlatformTypeBitsResolution: Required<
-			attribute<
-				string,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION
-			>
-		>;
-		interfacePlatformTypeBitSize: Required<
-			attribute<
-				string,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE
-			>
-		>;
-		interfacePlatformTypeCompRate: Required<
-			attribute<
-				string,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE
-			>
-		>;
-		interfaceDefaultValue: Required<
-			attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL>
-		>;
-		interfacePlatformTypeMaxval: Required<
-			attribute<
-				string,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL
-			>
-		>;
-		interfacePlatformTypeMinval: Required<
-			attribute<
-				string,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL
-			>
-		>;
-		interfacePlatformTypeMsbValue: Required<
-			attribute<
-				string,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL
-			>
-		>;
-		interfacePlatformTypeUnits: Required<
-			attribute<
-				string,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS
-			>
-		>;
-		interfacePlatformTypeValidRangeDescription: Required<
-			attribute<
-				string,
-				typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEVALIDRANGEDESCRIPTION
-			>
-		>;
-	} & { interfacePlatformTypeBitSize: bitSize }
->;
+export type PlatformTypeAttr = {
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	description: attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>;
+	interfaceLogicalType: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.LOGICALTYPE
+	>;
+	interfacePlatformType2sComplement: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPE2SCOMPLEMENT
+	>;
+	interfacePlatformTypeAnalogAccuracy: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY
+	>;
+	interfacePlatformTypeBitsResolution: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION
+	>;
+	interfacePlatformTypeBitSize: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE
+	>;
+	interfacePlatformTypeCompRate: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE
+	>;
+	interfaceDefaultValue: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL
+	>;
+	interfacePlatformTypeMaxval: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL
+	>;
+	interfacePlatformTypeMinval: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL
+	>;
+	interfacePlatformTypeMsbValue: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL
+	>;
+	interfacePlatformTypeUnits: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS
+	>;
+	interfacePlatformTypeValidRangeDescription: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEVALIDRANGEDESCRIPTION
+	>;
+} & { interfacePlatformTypeBitSize: bitSize };
 
 type _platformTypeRelations = Required<{
 	enumSet: enumerationSet;
@@ -134,8 +112,9 @@ export type DisplayablePlatformTypeProps = DiffablePlatformTypeProps &
 
 export type EditablePlatformTypeProps = DiffablePlatformTypeProps;
 
-export type bitSize = Required<
-	attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE>
+export type bitSize = attribute<
+	string,
+	typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE
 >;
 
 type _platformTypeChanges = hasChanges<DiffablePlatformTypeProps>;

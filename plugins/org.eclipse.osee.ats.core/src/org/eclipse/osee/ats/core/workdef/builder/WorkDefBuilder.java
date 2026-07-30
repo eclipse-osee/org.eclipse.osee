@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.workdef.builder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -280,6 +281,10 @@ public class WorkDefBuilder {
 
    public void andCondition(ConditionalRule conditionalRule) {
       workDef.addCondition(conditionalRule);
+   }
+
+   public void andPcrIdComparator(Comparator<String> prComparator) {
+      workDef.setPcrIdComparator(prComparator);
    }
 
 }

@@ -42,9 +42,11 @@ import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
@@ -298,7 +300,46 @@ public interface ArtifactEndpoint {
    @Tag(name = "hierarchy")
    ArtifactWithRelations getRelatedDirect(@PathParam("branch") BranchId branch,
       @PathParam("artifact") ArtifactId artifact, @QueryParam("viewId") ArtifactId viewId,
-      @QueryParam("includeRelations") boolean includeRelations);
+      @QueryParam("includeRelations") boolean includeRelations,
+      @DefaultValue("true") @QueryParam("includeAttributes") boolean includeAttributes);
+
+   @GET
+   @Path("{artifact}/children")
+   @Produces(MediaType.APPLICATION_JSON)
+   @SwaggerCommonOrcsAnnotations
+   @Operation(summary = "Gets the hierarchical children as lightweight tokens (id, name, icon)")
+   @Tag(name = "hierarchy")
+   List<ArtifactWithRelations> getHierarchicalChildren(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact, @QueryParam("viewId") ArtifactId viewId);
+
+   @GET
+   @Path("{artifact}/latestTransaction")
+   @Produces(MediaType.APPLICATION_JSON)
+   @SwaggerCommonOrcsAnnotations
+   @Operation(summary = "Gets the latest transaction that modified the given artifact")
+   @Tag(name = "transactions")
+   TransactionDetails getLatestArtifactTransaction(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact);
+
+   @GET
+   @Path("{artifact}/history")
+   @Produces(MediaType.APPLICATION_JSON)
+   @SwaggerCommonOrcsAnnotations
+   @Operation(summary = "Gets paginated transaction history for an artifact")
+   @Tag(name = "transactions")
+   ArtifactHistoryResult getArtifactHistoryPaginated(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact,
+      @DefaultValue("0") @QueryParam("pageNum") int pageNum,
+      @DefaultValue("10") @QueryParam("count") int count);
+
+   @PUT
+   @Path("{artifact}/restore")
+   @Produces(MediaType.APPLICATION_JSON)
+   @SwaggerCommonOrcsAnnotations
+   @Operation(summary = "Restores an artifact to its state at the given transaction")
+   @Tag(name = "transactions")
+   TransactionDetails restoreArtifact(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact, @QueryParam("txId") String txId);
 
    @GET
    @Path("createTxBuilder/{artifactTypeId}")

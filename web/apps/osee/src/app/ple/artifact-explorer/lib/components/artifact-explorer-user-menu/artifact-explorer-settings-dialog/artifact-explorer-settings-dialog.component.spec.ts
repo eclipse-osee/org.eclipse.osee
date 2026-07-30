@@ -28,7 +28,7 @@ describe('ArtifactExplorerSettingsDialogComponent', () => {
 			providers: [
 				{
 					provide: MAT_DIALOG_DATA,
-					useValue: { artifactExplorerPanelLocation: false },
+					useValue: {},
 				},
 				{
 					provide: ArtifactExplorerPreferencesHttpService,

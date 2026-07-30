@@ -179,7 +179,7 @@ public class AtsConfigOperation extends AbstractOperation {
 
    private WorkDefinition createOrGetWorkflowDefinition(XResultData resultData) {
       return AtsApiService.get().getWorkDefinitionService().getWorkDefinition(
-         AtsWorkDefinitionTokens.WorkDef_Team_Default);
+         AtsWorkDefinitionTokens.WorkDefTeamDefault);
    }
 
    public static final class OpenAtsConfigEditors implements Display {

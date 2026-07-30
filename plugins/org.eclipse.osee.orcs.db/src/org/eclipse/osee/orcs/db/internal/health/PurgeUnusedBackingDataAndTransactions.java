@@ -13,27 +13,11 @@
 
 package org.eclipse.osee.orcs.db.internal.health;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import org.eclipse.osee.framework.core.data.OseeClient;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -88,9 +72,6 @@ public class PurgeUnusedBackingDataAndTransactions {
 
    private final JdbcClient jdbcClient;
 
-   List<String> insertStatements = new ArrayList<>();
-   List<String> uriResourcesToDelete = new ArrayList<>();
-
    public PurgeUnusedBackingDataAndTransactions(JdbcClient jdbcClient) {
       this.jdbcClient = jdbcClient;
    }
@@ -105,16 +86,8 @@ public class PurgeUnusedBackingDataAndTransactions {
 
    private int purgeGammasByList(JdbcConnection connection, SqlTable table, List<Long> gammasToDelete) {
       String purgeSQL = String.format(DELETE_GAMMAS, table);
-      String insertSelectSql = table.getSelectInsertString(" where gamma_id = ?");
-
       List<Object[]> data = gammasToDelete.stream().map(a -> new Object[] {a}).collect(Collectors.toList());
-
-      for (Object[] gamma : data) {
-         jdbcClient.runQuery(stmt -> insertStatements.add(stmt.getString("insertString")), insertSelectSql, gamma);
-      }
-
       jdbcClient.runBatchUpdate(purgeSQL, data);
-
       return 0;
    }
 
@@ -152,13 +125,8 @@ public class PurgeUnusedBackingDataAndTransactions {
    private int purgeData(JdbcConnection connection, String selectSql, String purgeSQL,
       BiConsumer<OseePreparedStatement, JdbcStatement> consumer, SqlTable table) {
 
-      String insertSelectSql = table.getSelectInsertString(" where gamma_id = ?");
       List<Object[]> data = new LinkedList<>();
-
       jdbcClient.runQuery(stmt -> data.add(new Object[] {stmt.getLong("gamma_id")}), selectSql);
-      for (Object[] gamma : data) {
-         jdbcClient.runQuery(stmt -> insertStatements.add(stmt.getString("insertString")), insertSelectSql, gamma);
-      }
 
       int purgedRows = jdbcClient.runBatchUpdate(purgeSQL, data);
       return purgedRows;
@@ -182,17 +150,6 @@ public class PurgeUnusedBackingDataAndTransactions {
 
    public int[] purgeUnused(int rowCount) {
 
-      String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      if (serverPath == null) {
-         serverPath = System.getProperty("user.home");
-      }
-      if (serverPath.equals("null")) {
-         return null;
-      }
-      Path purgeFolder = Paths.get(serverPath + File.separator + "purge");
-      if (Files.exists(purgeFolder)) {
-         serverPath = serverPath + File.separator + "purge";
-      }
       int i = 0;
       int[] counts = new int[11];
       try (JdbcConnection connection = jdbcClient.getConnection()) {
@@ -207,59 +164,11 @@ public class PurgeUnusedBackingDataAndTransactions {
          counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.ATTRIBUTE_TABLE, "art_id", rowCount);
          counts[i++] = purgeInvalidArtfactReferencesAcl(connection);
          counts[i++] = deleteObsoleteTags(connection, rowCount);
-         /**
-          * TODO:Need to come up with efficient scheme to purge rows in osee_txs and txs_archived
-          */
-         //counts[i++] = purgeAddressedButNonexistentGammas(connection, "osee_txs");
-         //counts[i++] = purgeAddressedButNonexistentGammas(connection, "osee_txs_archived");
-         //counts[i++] = purgeEmptyTransactions(connection);
-      }
-      if (jdbcClient.getConfig().isProduction()) {
-         Date date = new Date();
-         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_hhmmss");
-         String fileName = serverPath + File.separator + "insertStatements_" + dateFormat.format(date) + ".zip";
-         File file = new File(fileName);
-         try {
-            file.createNewFile();
-
-            FileOutputStream fop = new FileOutputStream(file);
-            ZipOutputStream zipOut = new ZipOutputStream(fop);
-
-            try (Writer writer = new OutputStreamWriter(zipOut)) {
-               PrintWriter textWriter = new PrintWriter(writer);
-               addFileToZip(zipOut, OseeDb.ARTIFACT_TABLE.getName(), insertStatements, textWriter);
-               addFileToZip(zipOut, OseeDb.ATTRIBUTE_TABLE.getName(), insertStatements, textWriter);
-               addFileToZip(zipOut, OseeDb.RELATION_TABLE.getName(), insertStatements, textWriter);
-               addFileToZip(zipOut, OseeDb.RELATION_TABLE2.getName(), insertStatements, textWriter);
-               addFileToZip(zipOut, OseeDb.OSEE_SEARCH_TAGS_TABLE.getName(), insertStatements, textWriter);
-               zipOut.putNextEntry(new ZipEntry("ServerResourcesToDelete.txt"));
-               for (String string : uriResourcesToDelete) {
-                  textWriter.println(string);
-               }
-               textWriter.flush();
-               zipOut.closeEntry();
-            }
-            fop.flush();
-            fop.close();
-         } catch (IOException ex) {
-            throw OseeCoreException.wrap(ex);
-         }
       }
       return counts;
    }
 
-   public int[] purgeListOfGammas(List<Long> gammasToPurge, List<String> additionalStatements, String filePrefix) {
-      String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      if (serverPath == null) {
-         serverPath = System.getProperty("user.home");
-      }
-      if (serverPath.equals("null")) {
-         return null;
-      }
-      Path purgeFolder = Paths.get(serverPath + File.separator + "purge");
-      if (Files.exists(purgeFolder)) {
-         serverPath = serverPath + File.separator + "purge";
-      }
+   public int[] purgeListOfGammas(List<Long> gammasToPurge) {
       int i = 0;
       int[] counts = new int[5];
       if (gammasToPurge.size() > 0) {
@@ -271,63 +180,6 @@ public class PurgeUnusedBackingDataAndTransactions {
             counts[i++] = purgeGammasByList(connection, OseeDb.OSEE_SEARCH_TAGS_TABLE, gammasToPurge);
          }
       }
-      insertStatements.addAll(additionalStatements);
-      if (Strings.isValid(filePrefix)) {
-         Date date = new Date();
-         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_hhmmss");
-         String fileName = serverPath + File.separator + "" + filePrefix + "_" + dateFormat.format(date) + ".zip";
-         File file = new File(fileName);
-         try {
-            file.createNewFile();
-            FileOutputStream fop = new FileOutputStream(file);
-            ZipOutputStream zipOut = new ZipOutputStream(fop);
-
-            try (Writer writer = new OutputStreamWriter(zipOut)) {
-               PrintWriter textWriter = new PrintWriter(writer);
-               addFileToZip(zipOut, OseeDb.ARTIFACT_TABLE.getName(), insertStatements, textWriter);
-               addFileToZip(zipOut, OseeDb.ATTRIBUTE_TABLE.getName(), insertStatements, textWriter);
-               addFileToZip(zipOut, OseeDb.RELATION_TABLE.getName(), insertStatements, textWriter);
-               addFileToZip(zipOut, OseeDb.RELATION_TABLE2.getName(), insertStatements, textWriter);
-               if (additionalStatements.size() > 0) {
-                  zipOut.putNextEntry(new ZipEntry("additionalInsertStatements.sql"));
-                  for (String string : additionalStatements) {
-                     textWriter.println(string);
-                  }
-                  textWriter.flush();
-                  zipOut.closeEntry();
-               }
-
-               zipOut.putNextEntry(new ZipEntry("ServerResourcesToDelete.txt"));
-               for (String string : uriResourcesToDelete) {
-                  textWriter.println(string);
-               }
-               textWriter.flush();
-               zipOut.closeEntry();
-            }
-            fop.flush();
-            fop.close();
-         } catch (IOException ex) {
-            throw OseeCoreException.wrap(ex);
-         }
-      }
       return counts;
-   }
-
-   private void addFileToZip(ZipOutputStream zipOut, String tableName, List<String> purge, PrintWriter textWriter)
-      throws IOException {
-      zipOut.putNextEntry(new ZipEntry("insert_" + tableName + ".sql"));
-      for (String string : purge.stream().filter(a -> a.contains("INSERT INTO " + tableName + " (")).collect(
-         Collectors.toList())) {
-         if (string.contains("osee_attribute")) {
-            String uri = string.substring(string.lastIndexOf(",") + 2, string.lastIndexOf("'"));
-            if (!uri.isBlank()) {
-               uriResourcesToDelete.add(uri);
-            }
-         }
-         textWriter.println(string);
-      }
-      textWriter.flush();
-      zipOut.closeEntry();
-
    }
 }

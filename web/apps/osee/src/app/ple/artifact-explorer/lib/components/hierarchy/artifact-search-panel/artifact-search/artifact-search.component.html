@@ -10,131 +10,152 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="tw-flex tw-flex-col">
-	<form class="tw-flex-grow">
-		@if (advancedSearchCriteria | async; as _criteria) {
-			@if (
-				_criteria.artifactTypes.length > 0 ||
-				_criteria.attributeTypes.length > 0 ||
-				_criteria.exactMatch ||
-				_criteria.searchById
-			) {
-				<div class="tw-flex tw-items-center tw-gap-2 tw-py-1 tw-pl-2">
-					<span>Filters:</span>
-					<mat-chip-set>
-						@if (_criteria.artifactTypes.length > 0) {
-							<mat-chip
-								[matTooltip]="
-									getToolTip(_criteria.artifactTypes)
-								"
-								matTooltipClass="tw-whitespace-pre"
-								>Artifact Types<button
-									matChipRemove
-									[attr.aria-label]="
-										'remove artifact type filter'
+<div class="tw-flex tw-h-full tw-flex-col">
+	@if (
+		branchId() && branchId() !== '-1' && branchId() !== '0' && branchType()
+	) {
+		<form class="tw-shrink-0">
+			@if (advancedSearchCriteria | async; as _criteria) {
+				@if (
+					_criteria.artifactTypes.length > 0 ||
+					_criteria.attributeTypes.length > 0 ||
+					_criteria.exactMatch ||
+					_criteria.searchById
+				) {
+					<div
+						class="tw-flex tw-items-center tw-gap-2 tw-py-1 tw-pl-2">
+						<span>Filters:</span>
+						<mat-chip-set>
+							@if (_criteria.artifactTypes.length > 0) {
+								<mat-chip
+									[matTooltip]="
+										getToolTip(_criteria.artifactTypes)
 									"
-									(click)="removeArtTypeFilter(_criteria)">
-									<mat-icon>cancel</mat-icon>
-								</button></mat-chip
-							>
-						}
-						@if (_criteria.attributeTypes.length > 0) {
-							<mat-chip
-								[matTooltip]="
-									getToolTip(_criteria.attributeTypes)
-								"
-								matTooltipClass="tw-whitespace-pre"
-								>Attribute Types<button
-									matChipRemove
-									[attr.aria-label]="
-										'remove attribute type filter'
+									matTooltipClass="tw-whitespace-pre"
+									>Artifact Types<button
+										matChipRemove
+										[attr.aria-label]="
+											'remove artifact type filter'
+										"
+										(click)="
+											removeArtTypeFilter(_criteria)
+										">
+										<mat-icon>cancel</mat-icon>
+									</button></mat-chip
+								>
+							}
+							@if (_criteria.attributeTypes.length > 0) {
+								<mat-chip
+									[matTooltip]="
+										getToolTip(_criteria.attributeTypes)
 									"
-									(click)="removeAttrTypeFilter(_criteria)">
-									<mat-icon>cancel</mat-icon>
-								</button></mat-chip
-							>
-						}
-						@if (_criteria.exactMatch) {
-							<mat-chip
-								>Exact Match<button
-									matChipRemove
-									[attr.aria-label]="
-										'remove exact match filter'
-									"
-									(click)="removeExactMatchFilter(_criteria)">
-									<mat-icon>cancel</mat-icon>
-								</button></mat-chip
-							>
-						}
-						@if (_criteria.searchById) {
-							<mat-chip
-								>Search by ID<button
-									matChipRemove
-									[attr.aria-label]="
-										'remove search by ID criteria'
-									"
-									(click)="removeSearchByIdFilter(_criteria)">
-									<mat-icon>cancel</mat-icon>
-								</button></mat-chip
-							>
-						}
-					</mat-chip-set>
+									matTooltipClass="tw-whitespace-pre"
+									>Attribute Types<button
+										matChipRemove
+										[attr.aria-label]="
+											'remove attribute type filter'
+										"
+										(click)="
+											removeAttrTypeFilter(_criteria)
+										">
+										<mat-icon>cancel</mat-icon>
+									</button></mat-chip
+								>
+							}
+							@if (_criteria.exactMatch) {
+								<mat-chip
+									>Exact Match<button
+										matChipRemove
+										[attr.aria-label]="
+											'remove exact match filter'
+										"
+										(click)="
+											removeExactMatchFilter(_criteria)
+										">
+										<mat-icon>cancel</mat-icon>
+									</button></mat-chip
+								>
+							}
+							@if (_criteria.searchById) {
+								<mat-chip
+									>Search by ID<button
+										matChipRemove
+										[attr.aria-label]="
+											'remove search by ID criteria'
+										"
+										(click)="
+											removeSearchByIdFilter(_criteria)
+										">
+										<mat-icon>cancel</mat-icon>
+									</button></mat-chip
+								>
+							}
+						</mat-chip-set>
+					</div>
+				}
+			}
+			<mat-form-field
+				appearance="outline"
+				class="tw-w-full tw-px-2 tw-pt-4"
+				subscriptSizing="dynamic">
+				<mat-label> Search for Artifact </mat-label>
+				<input
+					matInput
+					type="text"
+					[ngModel]="searchText | async"
+					name="artifactSearch"
+					(keyup)="updateFilter($event)"
+					(keydown.enter)="performSearch($event)" />
+				<div
+					matSuffix
+					class="tw-flex">
+					<button
+						mat-icon-button
+						[disabled]="searchDisabled | async"
+						(click)="performSearch($event)">
+						<mat-icon>search</mat-icon>
+					</button>
+					<button
+						mat-icon-button
+						(click)="openAdvancedSearchDialog($event)">
+						<mat-icon>more_horiz</mat-icon>
+					</button>
 				</div>
+			</mat-form-field>
+		</form>
+		@if ({ count: searchResultsCount | async }; as _count) {
+			@if (paginatedSearchResults | async; as _currentResults) {
+				@if (!useCount() || _count.count !== null) {
+					<div class="tw-min-h-0 tw-flex-1 tw-overflow-auto">
+						<osee-paginated-mat-list
+							[allItems]="allSearchResults()"
+							[currentPageItems]="_currentResults"
+							[count]="_count.count || -1"
+							[pageSize]="pageSize"
+							(paginate)="nextPage()">
+							<ng-template let-item>
+								<button
+									class="tw-flex tw-size-full tw-items-center tw-gap-2 tw-text-left"
+									(click)="selectSearchResult(item)"
+									(contextmenu)="
+										openContextMenu($event, item)
+									">
+									<mat-icon
+										[class]="getIconClasses(item.icon)"
+										>{{ item.icon.icon }}</mat-icon
+									>
+									{{ item.name }}
+								</button>
+							</ng-template>
+						</osee-paginated-mat-list>
+					</div>
+				}
 			}
 		}
-		<mat-form-field
-			class="tw-w-full"
-			subscriptSizing="dynamic">
-			<mat-label> Search for Artifact </mat-label>
-			<input
-				matInput
-				type="text"
-				[ngModel]="searchText | async"
-				name="artifactSearch"
-				(keyup)="updateFilter($event)"
-				(keydown.enter)="performSearch($event)" />
-			<div
-				matSuffix
-				class="tw-flex">
-				<button
-					mat-icon-button
-					[disabled]="searchDisabled | async"
-					(click)="performSearch($event)">
-					<mat-icon>search</mat-icon>
-				</button>
-				<button
-					mat-icon-button
-					(click)="openAdvancedSearchDialog($event)">
-					<mat-icon>more_horiz</mat-icon>
-				</button>
-			</div>
-		</mat-form-field>
-	</form>
-	@if ({ count: searchResultsCount | async }; as _count) {
-		@if (paginatedSearchResults | async; as _currentResults) {
-			@if (!useCount() || _count.count !== null) {
-				<div class="tw-max-h-80 tw-overflow-auto">
-					<osee-paginated-mat-list
-						[allItems]="allSearchResults()"
-						[currentPageItems]="_currentResults"
-						[count]="_count.count || -1"
-						[pageSize]="pageSize"
-						(paginate)="nextPage()">
-						<ng-template let-item>
-							<button
-								class="tw-flex tw-size-full tw-items-center tw-gap-2 tw-text-left"
-								(click)="selectSearchResult(item)"
-								(contextmenu)="openContextMenu($event, item)">
-								<mat-icon [class]="getIconClasses(item.icon)">{{
-									item.icon.icon
-								}}</mat-icon>
-								{{ item.name }}
-							</button>
-						</ng-template>
-					</osee-paginated-mat-list>
-				</div>
-			}
-		}
+	} @else {
+		<div class="tw-p-4 tw-text-sm tw-opacity-50">
+			Select a branch to search for artifacts.
+		</div>
 	}
 </div>
 <mat-menu #searchResultMenu="matMenu">

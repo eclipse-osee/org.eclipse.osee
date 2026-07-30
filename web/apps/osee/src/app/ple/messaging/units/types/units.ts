@@ -21,8 +21,9 @@ export type unit = {
 	hasApplic;
 
 type UnitAttr = {
-	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
-	measurement: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEUNITMEASUREMENT>
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	measurement: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEUNITMEASUREMENT
 	>;
 };

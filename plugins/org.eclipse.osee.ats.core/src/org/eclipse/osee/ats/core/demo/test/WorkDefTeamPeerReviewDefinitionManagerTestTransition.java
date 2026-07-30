@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 public class WorkDefTeamPeerReviewDefinitionManagerTestTransition extends AbstractWorkDef {
 
    public WorkDefTeamPeerReviewDefinitionManagerTestTransition() {
-      super(DemoWorkDefinitionTokens.WorkDef_Team_PeerReviewDefinitionManagerTest_Transition);
+      super(DemoWorkDefinitionTokens.WorkDefTeamPeerReviewDefinitionManagerTestTransition);
    }
 
    @Override

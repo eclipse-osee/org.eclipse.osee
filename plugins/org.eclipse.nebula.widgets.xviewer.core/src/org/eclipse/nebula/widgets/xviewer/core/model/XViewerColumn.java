@@ -13,11 +13,14 @@
  *******************************************************************************/
 package org.eclipse.nebula.widgets.xviewer.core.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.nebula.widgets.xviewer.core.util.CollectionsUtil;
 import org.eclipse.nebula.widgets.xviewer.core.util.XViewerUtil;
 import org.eclipse.nebula.widgets.xviewer.core.util.XmlUtil;
@@ -40,6 +43,7 @@ public class XViewerColumn {
    protected Map<Long, String> preComputedValueMap = new HashMap<>();
    private Object xViewer;
    private Long elapsedTime = 0L;
+   private List<String> sortOrder = new ArrayList<>();
 
    protected XViewerColumn() {
       super();
@@ -82,6 +86,7 @@ public class XViewerColumn {
       toXCol.setWidth(fromXCol.width);
       toXCol.setShow(fromXCol.show);
       toXCol.setId(fromXCol.id);
+      toXCol.setSortOrder(new ArrayList<>(fromXCol.sortOrder));
    }
 
    public XViewerColumn(Object xViewer, String xml) {
@@ -375,6 +380,14 @@ public class XViewerColumn {
 
    public void setPreComputedValueMap(Map<Long, String> preComputedValueMap) {
       this.preComputedValueMap = preComputedValueMap;
+   }
+
+   public List<String> getSortOrder() {
+      return sortOrder;
+   }
+
+   public void setSortOrder(List<String> sortOrder) {
+      this.sortOrder = sortOrder;
    }
 
    @Override

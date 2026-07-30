@@ -32,12 +32,12 @@ import org.junit.runners.Suite.SuiteClasses;
    EmbedImagesTest.class})
 public class PublishingMarkdownTestSuite {
    @BeforeClass
-   public static void setUp() throws Exception {
+   public static void setUp() {
       System.out.println("Begin Markdown Test Suite");
    }
 
    @AfterClass
-   public static void cleanup() throws Exception {
+   public static void cleanup() {
       System.out.println("End Markdown Test Suite\n");
    }
 }

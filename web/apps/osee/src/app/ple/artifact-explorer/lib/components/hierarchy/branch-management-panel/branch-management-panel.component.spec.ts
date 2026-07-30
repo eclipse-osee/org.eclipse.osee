@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BranchManagementComponent } from './branch-management.component';
+import { BranchManagementPanelComponent } from './branch-management-panel.component';
 import {
 	BranchInfoService,
 	BranchRoutedUIService,
@@ -41,13 +41,13 @@ import { CommitBranchService } from '@osee/commit/services';
 import { commitBranchServiceMock } from '@osee/commit/testing';
 import { ActivatedRoute } from '@angular/router';
 
-describe('BranchManagementComponent', () => {
-	let component: BranchManagementComponent;
-	let fixture: ComponentFixture<BranchManagementComponent>;
+describe('BranchManagementPanelComponent', () => {
+	let component: BranchManagementPanelComponent;
+	let fixture: ComponentFixture<BranchManagementPanelComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [BranchManagementComponent, NoopAnimationsModule],
+			imports: [BranchManagementPanelComponent, NoopAnimationsModule],
 			providers: [
 				{
 					provide: ActivatedRoute,
@@ -94,7 +94,7 @@ describe('BranchManagementComponent', () => {
 			],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(BranchManagementComponent);
+		fixture = TestBed.createComponent(BranchManagementPanelComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

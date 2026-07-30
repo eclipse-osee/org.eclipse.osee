@@ -259,6 +259,10 @@ public class BidsOperations {
                }
             }
             atsApi.getWorkItemService().populateJaxTeamWf(jTeamWf, bidTeamWf);
+            IAtsVersion version = atsApi.getVersionService().getTargetedVersion(bidTeamWf);
+            if (version != null) {
+               jTeamWf.setTargetVersion(version.getArtifactToken());
+            }
          }
       }
       time.end(Units.MSEC);

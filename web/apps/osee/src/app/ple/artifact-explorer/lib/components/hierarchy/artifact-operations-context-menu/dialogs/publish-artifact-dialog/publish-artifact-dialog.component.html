@@ -21,9 +21,10 @@
 			as autoCompleteState
 		) {
 			<mat-form-field
+				appearance="outline"
 				subscriptSizing="dynamic"
 				id="artifactType-selector"
-				class="tw-w-full">
+				class="tw-w-full tw-pt-4">
 				<mat-label> Select a Template: </mat-label>
 				<input
 					type="text"
@@ -70,7 +71,9 @@
 				</mat-autocomplete>
 			</mat-form-field>
 		}
-		<mat-form-field class="tw-w-full">
+		<mat-form-field
+			appearance="outline"
+			class="tw-w-full tw-pt-4">
 			<mat-label> Select Output Type: </mat-label>
 			<mat-select
 				(selectionChange)="updateOutputType($event.value)"
@@ -84,16 +87,19 @@
 			</mat-select>
 		</mat-form-field>
 	</mat-dialog-content>
-	<div mat-dialog-actions>
+	<div
+		mat-dialog-actions
+		align="end"
+		class="tw-gap-2">
 		<button
-			mat-button
+			mat-stroked-button
+			class="tw-text-foreground-text"
 			(click)="onCancel()">
 			Cancel
 		</button>
 		<button
-			mat-flat-button
+			mat-stroked-button
 			[mat-dialog-close]="data"
-			class="primary-button"
 			[disabled]="publishMarkdownForm.invalid || data.templateId === '0'">
 			Ok
 		</button>

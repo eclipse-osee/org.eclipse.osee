@@ -10,12 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { httpResource } from '@angular/common/http';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { of } from 'rxjs';
 
 export const artifactUiServiceMock: Partial<ArtifactUiService> = {
-	getArtifactTypes(filter: string) {
+	getArtifactTypes(filter: string, excludeAbstract?: boolean) {
 		return of([
 			{
 				id: '1',
@@ -26,6 +28,9 @@ export const artifactUiServiceMock: Partial<ArtifactUiService> = {
 				name: 'Artifact Type 2',
 			},
 		]);
+	},
+	getArtifactTypesResource() {
+		return httpResource(() => '');
 	},
 	getAttributeTypes(artifactTypes: NamedId[]) {
 		return of([
@@ -71,10 +76,10 @@ export const artifactUiServiceMock: Partial<ArtifactUiService> = {
 		return of([
 			{
 				id: '1',
-				multiplicityId: '1',
+				gammaId: '-1',
 				name: 'Test Attribute',
 				storeType: 'String',
-				typeId: '123',
+				typeId: '123' as ATTRIBUTETYPEID,
 				value: 'Test value',
 			},
 		]);

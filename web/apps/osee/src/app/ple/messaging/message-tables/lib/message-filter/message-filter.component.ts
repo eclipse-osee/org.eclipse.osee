@@ -44,7 +44,7 @@ import { MessageUiService } from '@osee/messaging/shared/services';
 	],
 	template: `<mat-form-field
 		subscriptSizing="dynamic"
-		class="tw-w-[80vw] tw-min-w-[52vw] tw-max-w-[85vw] tw-flex-shrink tw-flex-grow tw-px-0 [&>*>*>.mat-mdc-form-field-infix]:tw-pt-4 [&>.mat-mdc-text-field-wrapper]:tw-rounded-3xl">
+		class="tw-w-[80vw] tw-min-w-[52vw] tw-max-w-[85vw] tw-flex-shrink tw-flex-grow tw-bg-inherit tw-px-0 [&>*>*>.mat-mdc-form-field-infix]:tw-pt-4 [&>.mat-mdc-text-field-wrapper]:tw-rounded-3xl [&>.mdc-text-field--filled]:tw-bg-inherit">
 		<!-- this css is ugly and likely to break at some point... -->
 		<mat-label class="tw-px-4">Filter Message Information</mat-label>
 		<input

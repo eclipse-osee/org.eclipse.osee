@@ -262,7 +262,7 @@ public class TransitionManagerTest {
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
-         DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition, changes);
+         DemoWorkDefinitionTokens.WorkDefTeamTransitionManagerTestWidgetRequiredTransition, changes);
       changes.execute();
 
       transMgr.handleTransitionValidation(results);
@@ -304,7 +304,7 @@ public class TransitionManagerTest {
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
-         DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion, changes);
+         DemoWorkDefinitionTokens.WorkDefTeamTransitionManagerTestWidgetRequiredCompletion, changes);
       changes.execute();
 
       transMgr.handleTransitionValidation(results);
@@ -418,7 +418,7 @@ public class TransitionManagerTest {
 
       changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
-         DemoWorkDefinitionTokens.WorkDef_Team_TransitionManagerTest_TargetedVersion, changes);
+         DemoWorkDefinitionTokens.WorkDefTeamTransitionManagerTestTargetedVersion, changes);
       changes.execute();
 
       results.clear();

@@ -10,10 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import {
+	HttpClient,
+	httpResource,
+	HttpResourceRef,
+} from '@angular/common/http';
+import { Injectable, Signal, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { HttpParamsType, NamedId, attribute } from '@osee/shared/types';
+import { HttpParamsType, NamedId } from '@osee/shared/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 
 @Injectable({
 	providedIn: 'root',
@@ -21,13 +27,36 @@ import { HttpParamsType, NamedId, attribute } from '@osee/shared/types';
 export class ArtifactService {
 	private http = inject(HttpClient);
 
-	getArtifactTypes(filter: string) {
+	getArtifactTypes(filter: string, excludeAbstract?: boolean) {
 		let params: HttpParamsType = {};
 		if (filter && filter !== '') {
 			params = { ...params, filter: filter };
 		}
+		if (excludeAbstract) {
+			params = { ...params, excludeAbstract: 'true' };
+		}
 		return this.http.get<NamedId[]>(apiURL + '/orcs/types/artifact', {
 			params: params,
+		});
+	}
+
+	getArtifactTypesResource(
+		filter: Signal<string>,
+		excludeAbstract = false
+	): HttpResourceRef<NamedId[] | undefined> {
+		return httpResource<NamedId[]>(() => {
+			const filterValue = filter();
+			const params: Record<string, string> = {};
+			if (filterValue !== '') {
+				params['filter'] = filterValue;
+			}
+			if (excludeAbstract) {
+				params['excludeAbstract'] = 'true';
+			}
+			return {
+				url: apiURL + '/orcs/types/artifact',
+				params,
+			};
 		});
 	}
 
@@ -45,7 +74,7 @@ export class ArtifactService {
 	}
 
 	public getArtifactTypeAttributes(artifactTypeId: `${number}`) {
-		return this.http.get<attribute[]>(
+		return this.http.get<attribute<string, ATTRIBUTETYPEID>[]>(
 			apiURL + '/orcs/types/artifact/' + artifactTypeId + '/attributes'
 		);
 	}

@@ -22,8 +22,10 @@ import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
@@ -35,12 +37,20 @@ import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelIntroducedInVersionSelec
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkWfdForProgramAi;
 import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.OrcsQueryService;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -48,6 +58,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -186,6 +197,38 @@ public abstract class CreateNewProblemReportBlam extends CreateNewChangeRequestB
          rd.error("Must select Build");
       }
 
+      // Check for duplicate Problem Report with same title
+      ElapsedTime time = new ElapsedTime(getName());
+      String title = variableMap.getString(TITLE);
+      if (Strings.isValid(title)) {
+         IAtsTeamDefinition teamDef = getSelectedProgramTeamDefOrSentinel();
+         if (teamDef.isValid()) {
+            String artTypeName = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef,
+               AtsAttributeTypes.TeamWorkflowArtifactType, null);
+            ArtifactTypeToken artType = AtsArtifactTypes.TeamWorkflow;
+            if (Strings.isValid(artTypeName)) {
+               for (ArtifactTypeToken type : atsApi.tokenService().getArtifactTypes()) {
+                  if (type.getName().equals(artTypeName)) {
+                     artType = type;
+                     break;
+                  }
+               }
+            }
+            QueryBuilder restQuery = OrcsQueryService.fromBranch(atsApi.getAtsBranch()).and(CoreAttributeTypes.Name,
+               title, QueryOption.EXACT_MATCH_OPTIONS) //
+               .andIsOfType(artType);
+            List<ArtifactId> ideRestSearch = atsApi.getServerEndpoints().getQueryEp().queryIds(restQuery);
+            if (!ideRestSearch.isEmpty()) {
+               String msg = String.format("Problem Report with title [%s] already exists\n\nDuplicate name ids %s",
+                  title, ideRestSearch);
+               rd.error(msg);
+               AWorkbench.popup("Duplicate Problem Report", msg);
+            }
+         }
+      }
+      time.endSec();
+
+      System.err.println("here");
    }
 
    @Override

@@ -17,12 +17,11 @@ import type { applic } from '@osee/applicability/types';
 export type enumeration = {
 	id: `${number}`;
 	gammaId: `${number}`;
-	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
-	ordinal: Required<
-		attribute<number, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINAL>
-	>;
-	ordinalType: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINALTYPE>
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	ordinal: attribute<number, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINAL>;
+	ordinalType: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINALTYPE
 	>;
 	applicability: applic;
 };
@@ -30,10 +29,8 @@ export type enumeration = {
 export type enumerationSet = {
 	id: `${number}`;
 	gammaId: `${number}`;
-	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
-	description: Required<
-		attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
-	>;
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	description: attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>;
 	applicability: applic;
 	enumerations: enumeration[];
 };

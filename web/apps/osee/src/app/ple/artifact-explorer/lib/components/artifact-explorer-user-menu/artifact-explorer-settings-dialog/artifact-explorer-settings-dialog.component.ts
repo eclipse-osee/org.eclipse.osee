@@ -11,12 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
-import {
-	MatButtonToggle,
-	MatButtonToggleGroup,
-} from '@angular/material/button-toggle';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -24,7 +19,6 @@ import {
 	MatDialogContent,
 	MatDialogTitle,
 } from '@angular/material/dialog';
-import { ArtifactExplorerPreferencesService } from '../../../services/artifact-explorer-preferences.service';
 import { artifactExplorerUserPreferences } from '../../../types/user-preferences';
 
 @Component({
@@ -35,16 +29,9 @@ import { artifactExplorerUserPreferences } from '../../../types/user-preferences
 		MatDialogActions,
 		MatDialogClose,
 		MatButton,
-		MatButtonToggleGroup,
-		MatButtonToggle,
-		FormsModule,
 	],
 	templateUrl: './artifact-explorer-settings-dialog.component.html',
 })
 export class ArtifactExplorerSettingsDialogComponent {
 	data = inject<artifactExplorerUserPreferences>(MAT_DIALOG_DATA);
-
-	private preferencesService = inject(ArtifactExplorerPreferencesService);
-
-	preferences = this.preferencesService.artifactExplorerPreferences;
 }

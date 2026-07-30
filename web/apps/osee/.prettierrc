@@ -8,6 +8,7 @@
 	"bracketSameLine": true,
 	"arrowParens": "always",
 	"singleAttributePerLine": true,
+	"endOfLine": "lf",
 	"plugins": ["prettier-plugin-tailwindcss"],
 	"trailingComma": "es5"
 }

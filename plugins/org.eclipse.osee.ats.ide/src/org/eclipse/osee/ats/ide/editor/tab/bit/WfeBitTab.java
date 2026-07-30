@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.bit;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BitUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -38,6 +40,7 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -78,6 +81,7 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
    protected BuildImpactDatas bids;
    protected AtsApi atsApi;
    private XBitXViewerFactory xBitXViewerFactory;
+   private List<String> cachedBuildOrder;
 
    public WfeBitTab(WorkflowEditor editor, IAtsTeamWorkflow teamWf) {
       super(editor, ID, teamWf, "Build Impact Table");
@@ -160,6 +164,14 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             bids = atsApi.getServerEndpoints().getActionEndpoint().getBidsById(teamWf.getArtifactId());
+
+            // Load build order from Team Def's "BIT Order" child GeneralData artifact (cached)
+            if (cachedBuildOrder == null) {
+               cachedBuildOrder = loadBitBuildOrder();
+            }
+            if (!cachedBuildOrder.isEmpty()) {
+               bids.setBuildOrder(cachedBuildOrder);
+            }
 
             Displays.ensureInDisplayThread(new Runnable() {
 
@@ -316,5 +328,30 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
 
    public boolean isValidBidWorkflow(Artifact art) {
       return art.isOfType(AtsArtifactTypes.TeamWorkflow);
+   }
+
+   private List<String> loadBitBuildOrder() {
+      List<String> buildOrder = new ArrayList<>();
+      try {
+         ArtifactToken teamDefArt = teamWf.getTeamDefinition().getStoreObject();
+         for (ArtifactToken child : atsApi.getRelationResolver().getChildren(teamDefArt)) {
+            if (child.getName().equals(BitUtil.BIT_BUILD_ORDER_ART_NAME)) {
+               String value =
+                  atsApi.getAttributeResolver().getSoleAttributeValue(child, CoreAttributeTypes.GeneralStringData, "");
+               if (!value.isEmpty()) {
+                  for (String line : value.split("\n")) {
+                     String trimmed = line.trim();
+                     if (!trimmed.isEmpty()) {
+                        buildOrder.add(trimmed);
+                     }
+                  }
+               }
+               break;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.WARNING, "Error loading BIT Build Order", ex);
+      }
+      return buildOrder;
    }
 }

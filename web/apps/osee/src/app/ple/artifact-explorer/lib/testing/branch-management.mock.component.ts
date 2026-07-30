@@ -13,7 +13,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'osee-branch-management',
+	selector: 'osee-branch-management-panel',
 	template: '<div>Dummy</div>',
 	standalone: true,
 })

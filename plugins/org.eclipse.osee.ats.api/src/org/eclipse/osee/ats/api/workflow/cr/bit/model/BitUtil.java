@@ -18,5 +18,6 @@ package org.eclipse.osee.ats.api.workflow.cr.bit.model;
 public class BitUtil {
 
    public static String BIT_AI = "BitAi";
+   public static final String BIT_BUILD_ORDER_ART_NAME = "Build Impact Table - Build Order";
 
 }

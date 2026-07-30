@@ -45,7 +45,7 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
    private WorkDefBuilder bld;
 
    public WorkDefReviewPeerToPeer() {
-      super(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer);
+      super(AtsWorkDefinitionTokens.WorkDefReviewPeerToPeer);
    }
 
    public WorkDefReviewPeerToPeer(AtsWorkDefinitionToken workDefToken) {

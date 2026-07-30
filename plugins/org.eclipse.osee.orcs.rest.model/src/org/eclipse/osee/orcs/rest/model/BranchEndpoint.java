@@ -29,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchUniqueArtifacts;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchQueryData;
@@ -211,6 +212,16 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    List<ChangeItem> compareBranches(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
 
+   /**
+    * Returns the artifact ids that are unique to each branch — those in branch1 but not branch2, and those in branch2
+    * but not branch1.
+    */
+   @GET
+   @Path("{branch1}/artifact-diff/{branch2}")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<BranchUniqueArtifacts> compareArtifactIds(@PathParam("branch1") BranchId branch1,
+      @PathParam("branch2") BranchId branch2);
+
    @GET
    @Path("{branch1}/changes/{branch2}")
    @Produces({MediaType.APPLICATION_JSON})
@@ -309,7 +320,7 @@ public interface BranchEndpoint {
    @Path("{branch}")
    Response purgeBranch(@PathParam("branch") BranchId branch,
       @DefaultValue("false") @QueryParam("recurse") boolean recurse,
-      @QueryParam("createRecovery") boolean createRecovery);
+      @DefaultValue("true") @QueryParam("coldStorage") boolean coldStorage);
 
    @DELETE
    @Path("purgeDeletedBranches")
@@ -319,12 +330,6 @@ public interface BranchEndpoint {
    @DELETE
    @Path("purgeWorkingBranchesOfClosedPrograms")
    Response purgeWorkingBranchesOfClosedPrograms(@QueryParam("branchCount") @DefaultValue("25") int branchCount,
-      @QueryParam("archived") @DefaultValue("1") int archived);
-
-   @DELETE
-   @Path("purgeStaleWorkingBranches")
-   Response purgeStaleWorkingBranches(@QueryParam("expireTimeInDays") @DefaultValue("365") int expireTimeInDays,
-      @QueryParam("branchCount") @DefaultValue("25") int branchCount,
       @QueryParam("archived") @DefaultValue("1") int archived);
 
    @DELETE

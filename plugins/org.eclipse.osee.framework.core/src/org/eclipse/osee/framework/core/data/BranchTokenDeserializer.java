@@ -20,6 +20,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -45,8 +48,18 @@ public class BranchTokenDeserializer extends StdDeserializer<@NonNull BranchToke
       }
 
       if (readTree != null) {
+         List<BranchCategoryToken> categories = Collections.emptyList();
+         JsonNode categoriesNode = readTree.get("categories");
+         if (categoriesNode != null && categoriesNode.isArray()) {
+            categories = new ArrayList<>();
+            for (JsonNode catNode : categoriesNode) {
+               long catId = catNode.get("id").asLong();
+               String catName = catNode.has("name") ? catNode.get("name").asText() : "";
+               categories.add(BranchCategoryToken.valueOf(catId, catName));
+            }
+         }
          return BranchToken.create(readTree.get("id").asLong(), readTree.get("name").asText(),
-            ArtifactId.valueOf(readTree.get("viewId").asLong()));
+            ArtifactId.valueOf(readTree.get("viewId").asLong()), categories);
       } else {
          return null;
       }

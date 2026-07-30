@@ -25,13 +25,7 @@ test('test', async ({ page }) => {
 		.locator('button')
 		.filter({ hasText: /^expand_more$/ })
 		.click();
-	await page
-		.getByRole('row', {
-			name: 'Submessage 1 1 Go To Message Details Base',
-			exact: true,
-		})
-		.getByRole('link')
-		.click();
+	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0' })
 		.getByRole('button')

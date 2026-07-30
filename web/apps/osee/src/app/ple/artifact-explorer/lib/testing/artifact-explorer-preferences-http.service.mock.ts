@@ -16,7 +16,6 @@ import { of } from 'rxjs';
 
 const artifactExplorerUserPreferencesMock: artifactExplorerUserPreferences = {
 	id: '1',
-	artifactExplorerPanelLocation: false,
 };
 
 export const artifactExplorerPreferencesHttpServiceMock: Partial<ArtifactExplorerPreferencesHttpService> =

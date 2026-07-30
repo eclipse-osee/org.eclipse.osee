@@ -11,22 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Page, expect } from '@ngx-playwright/test';
+export { selectBranch, selectBranchType } from '../../../shared/branch-helpers';
 
 /** Navigate to the Publish Launcher page via the PLE menu. */
 export const navigateToPublishLauncher = async (page: Page) => {
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'Publishing' }).click();
-};
-
-/** Select a branch by type and name using the branch picker. */
-export const selectBranch = async (
-	page: Page,
-	branchType: 'Working' | 'Product Line' | 'Baseline',
-	branchName: string
-) => {
-	await page.getByLabel(branchType).check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText(branchName).click();
 };
 
 /** Wait for the publish launcher configuration to load. */

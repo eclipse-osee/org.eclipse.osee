@@ -189,27 +189,16 @@ public class TransactionFactoryImpl implements TransactionFactory {
    public boolean purgeTxs(String txIds) {
 
       boolean modified = false;
-      List<String> insertTxStatements = new ArrayList<>();
       List<Long> impactedGammaIds = new ArrayList<>();
       List<Long> unusedGammas = new ArrayList<>();
       List<TransactionId> txsToDelete = Collections.fromString(txIds, TransactionId::valueOf);
-      String recoveryFileNamePrefix = "purgeTxs_";
-      //set up to create recovery files
+
       for (TransactionId txIdToDelete : txsToDelete) {
          BranchId branchId = orcsApi.getTransactionFactory().getTx(txIdToDelete).getBranch();
-         orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
-            OseeDb.TX_DETAILS_TABLE.getSelectInsertString(" where branch_id = ? and transaction_id = ?"), branchId,
-            txIdToDelete);
-         orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
-            OseeDb.TXS_TABLE.getSelectInsertString(" where branch_id = ? and transaction_id = ?"), branchId,
-            txIdToDelete);
          orcsApi.getJdbcService().getClient().runQuery(stmt -> impactedGammaIds.add(stmt.getLong("gamma_id")),
             OseeSql.SELECT_IMPACTED_GAMMAS_BY_BRANCH_TX.getSql(), branchId, txIdToDelete);
       }
       if (!txsToDelete.isEmpty()) {
-         recoveryFileNamePrefix =
-            orcsApi.getAdminOps().isDataStoreProduction() ? recoveryFileNamePrefix + txsToDelete.get(
-               0) + "_" + txsToDelete.get(txsToDelete.size() - 1) : "";
          ResultSet<? extends TransactionId> results = transactionQuery.andTxIds(txsToDelete).getResults();
 
          if (!results.isEmpty()) {
@@ -221,14 +210,11 @@ public class TransactionFactoryImpl implements TransactionFactory {
                throw OseeCoreException.wrap(ex);
             }
             modified = true;
-            //Purge unused gammas if job was successful
-            //recovery files are created and stored inside PurgeUnusedBackingDataAndTransactions
             for (Long gamma : impactedGammaIds) {
                orcsApi.getJdbcService().getClient().runQuery(stmt -> unusedGammas.add(stmt.getLong("gamma_id")),
                   OseeSql.UNUSED_IMPACTED_GAMMAS_AFTER_PURGE.getSql(), gamma, gamma, gamma, 0);
-
             }
-            txDataStore.purgeUnusedBackingDataAndTransactions(unusedGammas, insertTxStatements, recoveryFileNamePrefix);
+            txDataStore.purgeUnusedBackingDataAndTransactions(unusedGammas);
          }
       }
       return modified;
@@ -275,9 +261,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge, List<String> additionalStatements,
-      String prefixRecoveryFile) {
-      return txDataStore.purgeUnusedBackingDataAndTransactions(gammasToPurge, additionalStatements, prefixRecoveryFile);
+   public int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge) {
+      return txDataStore.purgeUnusedBackingDataAndTransactions(gammasToPurge);
    }
 
    @Override

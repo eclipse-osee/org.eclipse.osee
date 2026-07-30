@@ -70,6 +70,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final HashCollection<AttributeTypeToken, IAttribute<?>> attributes = new HashCollection<>();
    private final HashCollection<RelationTypeToken, ArtifactReadable> relationsSideA = new HashCollection<>();
    private final HashCollection<RelationTypeToken, ArtifactReadable> relationsSideB = new HashCollection<>();
+   private final java.util.Map<String, GammaId> relationGammas = new java.util.HashMap<>();
    private final ArtifactTypeToken artifactType;
    private final BranchToken branch;
    private final ArtifactId view;
@@ -325,6 +326,18 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact) {
       (side.isSideA() ? relationsSideA : relationsSideB).put(relationType, artifact);
+   }
+
+   public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact, GammaId gamma) {
+      (side.isSideA() ? relationsSideA : relationsSideB).put(relationType, artifact);
+      String key = relationType.getIdString() + ":" + side.name() + ":" + artifact.getIdString();
+      relationGammas.put(key, gamma);
+   }
+
+   @Override
+   public GammaId getRelationGamma(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact) {
+      String key = relationType.getIdString() + ":" + side.name() + ":" + artifact.getIdString();
+      return relationGammas.getOrDefault(key, GammaId.SENTINEL);
    }
 
    public void putReferenceArtifact(AttributeId attrId, ArtifactReadable artifact) {

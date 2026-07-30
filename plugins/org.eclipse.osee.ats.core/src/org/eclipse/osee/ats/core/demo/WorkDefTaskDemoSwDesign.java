@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
 public class WorkDefTaskDemoSwDesign extends WorkDefTaskDefault {
 
    public WorkDefTaskDemoSwDesign() {
-      super(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign);
+      super(DemoWorkDefinitions.WorkDefTaskDemoSwDesign);
    }
 
 }

@@ -135,7 +135,8 @@ test('test', async ({ page }) => {
 		.nth(2)
 		.click();
 	await page.getByLabel('Enter a name').nth(2).fill('Maybe');
-	await page.getByText('Back Next').click();
+	// Blur the input to commit the value
+	await page.getByLabel('Enter a name').nth(2).press('Tab');
 
 	await page.screenshot({
 		path: 'screenshots/platform-types-page/added-enums.png',

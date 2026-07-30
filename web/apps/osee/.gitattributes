@@ -1,0 +1,9 @@
+# Force LF line endings for web source files so prettier --check
+# passes consistently on all platforms (Windows, Linux, macOS).
+*.ts text eol=lf
+*.html text eol=lf
+*.scss text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.md text eol=lf

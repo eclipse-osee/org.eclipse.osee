@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDrag } from '@angular/cdk/drag-drop';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input, input, viewChild, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -24,17 +24,17 @@ import { UiService } from '@osee/shared/services';
 import {
 	BehaviorSubject,
 	combineLatest,
+	debounceTime,
 	filter,
 	map,
-	repeat,
 	shareReplay,
+	startWith,
 	switchMap,
 } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relations/artifact-hierarchy-relations.component';
 import {
 	artifactWithRelations,
 	artifactTypeIcon,
@@ -45,9 +45,7 @@ import { ArtifactOperationsContextMenuComponent } from '../artifact-operations-c
 @Component({
 	selector: 'osee-artifact-hierarchy',
 	imports: [
-		NgClass,
 		AsyncPipe,
-		ArtifactHierarchyRelationsComponent,
 		ArtifactOperationsContextMenuComponent,
 		MatIcon,
 		CdkDrag,
@@ -102,19 +100,30 @@ export class ArtifactHierarchyComponent {
 		);
 	}
 
+	/** Whether this artifact has an open tab in the editor. */
+	isOpenInTab(artifactId: string): boolean {
+		return this.tabService
+			.Tabs()
+			.some(
+				(t) => t.tabType === 'Artifact' && t.artifact.id === artifactId
+			);
+	}
+
 	toggleExpandButton(artifactId: string) {
 		return this.artifactIsExpanded(artifactId)
 			? this.collapseArtifact(artifactId)
 			: this.expandArtifact(artifactId);
 	}
 
-	// Artifact with its direct relations
+	// Hierarchical children (lightweight - only name, id, icon)
 
-	artifactWithDirRelations = combineLatest([
+	children$ = combineLatest([
 		this._paths,
 		this.branchId$,
 		this.viewId$,
+		this.uiService.update.pipe(startWith(true)),
 	]).pipe(
+		debounceTime(100),
 		filter(
 			([_, branch, view]) =>
 				branch !== '-1' &&
@@ -124,75 +133,35 @@ export class ArtifactHierarchyComponent {
 				view !== ''
 		),
 		switchMap(([_, branch, view]) =>
-			this.artExpHttpService
-				.getartifactWithRelations(branch, this.artifactId(), view, true)
-				.pipe(repeat({ delay: () => this.uiService.update }))
+			this.artExpHttpService.getHierarchicalChildren(
+				branch,
+				this.artifactId(),
+				view
+			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	// Relations (only ones that are populated)
+	// Child artifacts with branchType-aware editable flag
 
-	relation$ = this.artifactWithDirRelations.pipe(
-		map((response) =>
-			response.relations.filter(
-				(relation) =>
-					relation.relationSides.some(
-						(side) => side.artifacts.length > 0
-					) &&
-					relation.relationTypeToken.name !== 'Default Hierarchical'
-			)
-		)
-	);
-
-	// Child artifacts (children of the component's main artifact)
-
-	artifacts = combineLatest([
-		this.artifactWithDirRelations,
-		this.uiService.type,
-	]).pipe(
-		map(([response, branchType]) => {
-			// capture only artifacts that belong within the child side of the default hierarchical relation
-			const childArtifacts =
-				response.relations
-					.find(
-						(relation) =>
-							relation.relationTypeToken.name ===
-							'Default Hierarchical'
-					)
-					?.relationSides.find((side) => side.name === 'child')
-					?.artifacts || [];
-
-			// check if branchType is baseline and set editable accordingly (likely not needed anymore with branchType checking)
-			const artifacts = childArtifacts.map((artifact) => ({
+	artifacts = combineLatest([this.children$, this.uiService.type]).pipe(
+		map(([children, branchType]) =>
+			children.map((artifact) => ({
 				...artifact,
 				editable: branchType !== 'baseline',
-			}));
-
-			return artifacts;
-		}),
+			}))
+		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	// Paths (initially from the paths service) that are updated and passed down to children artifact hierarchy components
+	// Paths filtered for this level and passed down to children hierarchy components
 
 	latestPaths = combineLatest([this._paths, this.artifacts]).pipe(
-		map(([paths, arts]) => {
-			// Remove path from path array if we are no longer on that path
-			const childPaths = paths
+		map(([paths, _arts]) => {
+			// Filter to paths that pass through this artifact and trim this level
+			return paths
 				.filter((path) => path[path.length - 1] === this.artifactId())
 				.map((path) => path.slice(0, -1));
-
-			// If a child artifact is next on path, open it
-			childPaths.forEach((path) => {
-				arts.find((art) => {
-					if (art.id === path[path.length - 1]) {
-						this.expandArtifact(art.id);
-					}
-				});
-			});
-			// Update the paths array that we are passing down the hierarchy
-			return childPaths;
 		}),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
@@ -222,7 +191,7 @@ export class ArtifactHierarchyComponent {
 		this.menuPosition.y = event.clientY + 'px';
 		this.matMenuTrigger().menuData = {
 			artifactId: artifact.id,
-			parentArtifactId: this.artifactId,
+			parentArtifactId: this.artifactId(),
 			operationTypes: artifact.operationTypes,
 		};
 		this.matMenuTrigger().openMenu();

@@ -33,7 +33,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 		(click)="createBranch()"
 		aria-label="Create Branch"
 		matTooltip="Create Branch"
-		class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0">
+		class="tw-flex tw-justify-center tw-bg-primary tw-text-background-background [&_*]:tw-m-0">
 		<mat-icon>alt_route</mat-icon>
 	</button>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,

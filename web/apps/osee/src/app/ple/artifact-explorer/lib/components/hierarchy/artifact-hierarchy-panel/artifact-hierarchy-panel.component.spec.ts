@@ -91,6 +91,7 @@ describe('ArtifactHierarchyPanelComponent', () => {
 		});
 		fixture = TestBed.createComponent(ArtifactHierarchyPanelComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('activeSection', 'hierarchy');
 		fixture.detectChanges();
 	});
 

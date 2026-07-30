@@ -103,8 +103,12 @@ test.describe('Native Content Editor', () => {
 	test('should save uploaded file and re-enable download', async ({
 		page,
 	}) => {
+		// Wait for native content editor to be ready
+		const updateButton = page.getByRole('button', { name: 'Update' });
+		await expect(updateButton).toBeVisible({ timeout: 10000 });
+
 		// Upload a new file
-		await page.getByRole('button', { name: 'Update' }).click();
+		await updateButton.click();
 		const fileInput = page.locator('input[type="file"]');
 		await fileInput.setInputFiles(
 			path.resolve(__dirname, '../fixtures/test-upload.txt')

@@ -35,10 +35,11 @@ let nextUniqueId = 0;
 	imports: [MatFormField, MatInput, MatTooltip, FormsModule, MatLabel],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <mat-form-field
+		[appearance]="appearance()"
 		(focusin)="focus.set(true)"
 		(focusout)="focus.set(false)"
 		[subscriptSizing]="subscriptSizing()"
-		class="tw-w-full tw-bg-inherit tw-px-2 tw-text-inherit [&>.mat-mdc-form-field-input-control]:tw-text-inherit [&>.mdc-text-field--filled]:tw-bg-inherit">
+		class="tw-w-full tw-bg-inherit [&>.mdc-text-field--filled]:tw-bg-inherit">
 		@if (label() !== '') {
 			<mat-label>{{ label() }}</mat-label>
 		}
@@ -52,6 +53,7 @@ let nextUniqueId = 0;
 			(ngModelChange)="value.set($event)"
 			[disabled]="disabled()"
 			[maxlength]="maxlength()"
+			[placeholder]="placeholder()"
 			[matTooltip]="tooltip()" />
 		<ng-content />
 	</mat-form-field>`,
@@ -63,11 +65,13 @@ export class FocusLostInputComponent<T> {
 	disabled = input(false);
 	value = model.required<T>();
 	label = input('');
+	appearance = input<'outline' | 'fill'>('outline');
 
 	subscriptSizing = input<SubscriptSizing>('dynamic');
 	focus = signal(false);
 	type = input('text');
 	tooltip = input<string>('');
+	placeholder = input<string>('');
 	maxlength = input<string | number | null>(null);
 	private _focus$ = toObservable(this.focus);
 	private _focus = this._focus$.pipe(

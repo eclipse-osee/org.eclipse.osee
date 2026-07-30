@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 public class WorkDefReviewPeerToPeerDemo extends WorkDefReviewPeerToPeer {
 
    public WorkDefReviewPeerToPeerDemo() {
-      super(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer_Demo);
+      super(AtsWorkDefinitionTokens.WorkDefReviewPeerToPeerDemo);
    }
 
    @Override

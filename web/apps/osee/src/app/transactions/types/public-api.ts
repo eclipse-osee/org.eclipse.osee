@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+export * from './attr-config';
 export * from './transaction';
 export * from './transaction-legacy';
 export * from './transaction-token';

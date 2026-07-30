@@ -13,10 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.internal;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
@@ -33,7 +30,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.writers.GenericReportBuilder;
@@ -63,6 +60,7 @@ public class GenericReportBuilderTest {
    @Mock private AttributeTypeGeneric<?> nameAttrType;
    @Mock private AttributeTypeGeneric<?> descAttrType;
    @Mock private RelationTypeToken relationType;
+   @Mock private RelationTypeToken relationType2;
    // @formatter:on
 
    private GenericReportBuilder report;
@@ -270,9 +268,6 @@ public class GenericReportBuilderTest {
       when(tokenService.getRelationType("Default Hierarchy")).thenReturn(relationType);
       when(relationType.getId()).thenReturn(123L);
       when(relationType.getName()).thenReturn("Default Hierarchy");
-      RelationTypeSide relSide = new RelationTypeSide(relationType, RelationSide.SIDE_B);
-      when(queryBuilder.getRelationTypesForLevel(1)).thenReturn(Arrays.asList(relSide));
-      when(relationType.isValid()).thenReturn(true);
       when(queryBuilder.follow(any(RelationTypeSide.class))).thenReturn(queryBuilder);
       when(artifact1.getRelated(any(RelationTypeSide.class), any(DeletionFlag.class))).thenReturn(
          Arrays.asList(childArtifact1));
@@ -343,5 +338,119 @@ public class GenericReportBuilderTest {
    @Test
    public void testOrcsApiAccessor() {
       assertEquals(orcsApi, report.getOrcsApi());
+   }
+
+   @Test
+   public void testFollowForkAfterRelationLevel() {
+      when(tokenService.getRelationType("Default Hierarchy")).thenReturn(relationType);
+      when(tokenService.getRelationType("Dependency")).thenReturn(relationType2);
+      when(relationType.getId()).thenReturn(123L);
+      when(relationType.getName()).thenReturn("Default Hierarchy");
+      when(relationType2.getId()).thenReturn(456L);
+      when(relationType2.getName()).thenReturn("Dependency");
+      when(queryBuilder.follow(any(RelationTypeSide.class))).thenReturn(queryBuilder);
+      when(queryBuilder.followFork(any(RelationTypeSide.class))).thenReturn(queryBuilder);
+
+      report.relationLevel("Children", "Default Hierarchy", "SIDE_B").followFork("Dependency", "SIDE_A");
+
+      assertEquals(1, report.getLevels().size());
+      assertEquals("Children", report.getLevels().get(0).getLevelName());
+   }
+
+   @Test
+   public void testFollowForkChainedMultipleTimes() {
+      RelationTypeToken relationType3 = org.mockito.Mockito.mock(RelationTypeToken.class);
+      when(tokenService.getRelationType("Default Hierarchy")).thenReturn(relationType);
+      when(tokenService.getRelationType("Dependency")).thenReturn(relationType2);
+      when(tokenService.getRelationType("Allocation")).thenReturn(relationType3);
+      when(relationType.getId()).thenReturn(123L);
+      when(relationType.getName()).thenReturn("Default Hierarchy");
+      when(relationType2.getId()).thenReturn(456L);
+      when(relationType2.getName()).thenReturn("Dependency");
+      when(relationType3.getId()).thenReturn(789L);
+      when(relationType3.getName()).thenReturn("Allocation");
+      when(queryBuilder.follow(any(RelationTypeSide.class))).thenReturn(queryBuilder);
+      when(queryBuilder.followFork(any(RelationTypeSide.class))).thenReturn(queryBuilder);
+
+      report.relationLevel("Children", "Default Hierarchy", "SIDE_B") //
+         .followFork("Dependency", "SIDE_A") //
+         .followFork("Allocation", "SIDE_B");
+
+      assertEquals(1, report.getLevels().size());
+   }
+
+   @Test
+   public void testFollowForkAfterColumnThrowsException() {
+      when(tokenService.getRelationType("Default Hierarchy")).thenReturn(relationType);
+      when(tokenService.getRelationType("Dependency")).thenReturn(relationType2);
+      when(relationType.getId()).thenReturn(123L);
+      when(relationType.getName()).thenReturn("Default Hierarchy");
+      when(relationType2.getId()).thenReturn(456L);
+      when(relationType2.getName()).thenReturn("Dependency");
+      when(queryBuilder.follow(any(RelationTypeSide.class))).thenReturn(queryBuilder);
+      when(queryBuilder.followFork(any(RelationTypeSide.class))).thenReturn(queryBuilder);
+
+      report.relationLevel("Children", "Default Hierarchy", "SIDE_B").column("Id");
+
+      try {
+         report.followFork("Dependency", "SIDE_A");
+         fail("Expected OseeArgumentException");
+      } catch (OseeArgumentException ex) {
+         assertTrue("Error message should indicate followFork must come before columns",
+            ex.getMessage().contains("followFork must be called before adding columns"));
+      }
+   }
+
+   @Test
+   public void testFollowForkWithDuplicateRelationThrowsException() {
+      when(tokenService.getRelationType("Default Hierarchy")).thenReturn(relationType);
+      when(relationType.getId()).thenReturn(123L);
+      when(relationType.getName()).thenReturn("Default Hierarchy");
+      when(queryBuilder.follow(any(RelationTypeSide.class))).thenReturn(queryBuilder);
+      when(queryBuilder.followFork(any(RelationTypeSide.class))).thenReturn(queryBuilder);
+
+      report.relationLevel("Children", "Default Hierarchy", "SIDE_B");
+
+      try {
+         report.followFork("Default Hierarchy", "SIDE_A");
+         fail("Expected OseeArgumentException for duplicate relation");
+      } catch (OseeArgumentException ex) {
+         assertTrue("Error message should indicate duplicate relation",
+            ex.getMessage().contains("already used in this level"));
+      }
+   }
+
+   @Test
+   public void testFollowForkAfterLevelThrowsException() {
+      when(tokenService.getArtifactType("Folder")).thenReturn(artifactType);
+      when(tokenService.getRelationType("Dependency")).thenReturn(relationType2);
+      when(relationType2.getId()).thenReturn(456L);
+      when(relationType2.getName()).thenReturn("Dependency");
+      when(queryBuilder.andIsOfType(artifactType)).thenReturn(queryBuilder);
+
+      report.level("Folders", "Folder");
+
+      try {
+         report.followFork("Dependency", "SIDE_A");
+         fail("Expected OseeArgumentException");
+      } catch (OseeArgumentException ex) {
+         assertTrue("Error message should indicate followFork requires a relationLevel",
+            ex.getMessage().contains("followFork can only be used on a level created by relationLevel"));
+      }
+   }
+
+   @Test
+   public void testFollowForkBeforeAnyLevelThrowsException() {
+      when(tokenService.getRelationType("Dependency")).thenReturn(relationType2);
+      when(relationType2.getId()).thenReturn(456L);
+      when(relationType2.getName()).thenReturn("Dependency");
+
+      try {
+         report.followFork("Dependency", "SIDE_A");
+         fail("Expected OseeArgumentException");
+      } catch (OseeArgumentException ex) {
+         assertTrue("Error message should indicate no level created yet",
+            ex.getMessage().contains("followFork cannot be called before creating a level"));
+      }
    }
 }

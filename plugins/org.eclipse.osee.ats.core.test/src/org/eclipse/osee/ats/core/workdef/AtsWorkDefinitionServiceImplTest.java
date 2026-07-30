@@ -91,7 +91,7 @@ public class AtsWorkDefinitionServiceImplTest {
       when(atsApi.getActionableItemService()).thenReturn(actionableItemService);
       // always return default when requested
       when(workDefinitionService.getWorkDefinitionByName(
-         eq(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer.getName()))).thenReturn(defaultPeerToPeerWorkDef);
+         eq(AtsWorkDefinitionTokens.WorkDefReviewPeerToPeer.getName()))).thenReturn(defaultPeerToPeerWorkDef);
 
       workDefService = new AtsWorkDefinitionServiceImpl(atsApi, teamWorkflowProviders);
       when(atsApi.getAttributeResolver()).thenReturn(attributeResolver);
@@ -100,9 +100,9 @@ public class AtsWorkDefinitionServiceImplTest {
       // always return myPeerToPeerWorkDef when requested
       workDefService = Mockito.spy(workDefService);
       Mockito.doReturn(defaultPeerToPeerWorkDef).when(workDefService).getWorkDefinitionByName(
-         eq(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer.getName()));
+         eq(AtsWorkDefinitionTokens.WorkDefReviewPeerToPeer.getName()));
       Mockito.doReturn(defaultPeerToPeerWorkDef).when(workDefService).getWorkDefinition(
-         eq(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer.getId()));
+         eq(AtsWorkDefinitionTokens.WorkDefReviewPeerToPeer.getId()));
    }
 
    @Test

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactState;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.widget.button.BuildMemoType;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
@@ -215,6 +216,24 @@ public class ProblemReportBuildMemoOps {
             }
          }
 
+         // Validate CR targeted version matches BID build
+         for (ArtifactToken bidArt : atsApi.getRelationResolver().getRelated(teamWf,
+            AtsRelationTypes.ProblemReportToBid_Bid)) {
+            ArtifactToken bidVersion = atsApi.getRelationResolver().getRelatedOrSentinel(bidArt,
+               AtsRelationTypes.BuildImpactDataToVer_Version);
+            if (bidVersion.isValid()) {
+               for (ArtifactToken crTeamWfArt : atsApi.getRelationResolver().getRelated(bidArt,
+                  AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf)) {
+                  IAtsTeamWorkflow crTeamWf = atsApi.getWorkItemService().getTeamWf(crTeamWfArt);
+                  IAtsVersion targetedVersion = atsApi.getVersionService().getTargetedVersion(crTeamWf);
+                  if (targetedVersion != null && !targetedVersion.getName().equals(bidVersion.getName())) {
+                     rd.warningf("PR %s CR %s targeted version [%s] does not match BID build [%s]\n",
+                        teamWf.getAtsId(), crTeamWf.getAtsId(), targetedVersion.getName(), bidVersion.getName());
+                  }
+               }
+            }
+         }
+
          validateLoaded(teamWf, rd);
 
       }
@@ -357,7 +376,7 @@ public class ProblemReportBuildMemoOps {
       } else if (col.equals(LegacyIdCol)) {
          return teamWf.getLegacyId();
       } else if (col.equals(PcrIdCol)) {
-         return Collections.toString(",", teamWf.getPcrIds());
+         return Collections.toString(", ", teamWf.getPcrIds());
       } else if (col.equals(SubsysCol)) {
          getAttrValue(CoreAttributeTypes.Subsystem, teamWf);
       } else if (col.equals(CogPriCol)) {

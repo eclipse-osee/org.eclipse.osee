@@ -59,7 +59,7 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
 
    public CreateTasksDefinitionBuilder andStaticTask(String title, String desc, StateToken relatedToState,
       Long... assigneeAccountId) {
-      return andStaticTask(title, desc, relatedToState, AtsWorkDefinitionTokens.WorkDef_Team_Default,
+      return andStaticTask(title, desc, relatedToState, AtsWorkDefinitionTokens.WorkDefTeamDefault,
          assigneeAccountId);
    }
 
@@ -83,11 +83,11 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
    }
 
    public CreateTasksDefinitionBuilder andStaticTask(String name, String desc) {
-      return andStaticTask(name, desc, null, AtsWorkDefinitionTokens.WorkDef_Task_Default);
+      return andStaticTask(name, desc, null, AtsWorkDefinitionTokens.WorkDefTaskDefault);
    }
 
    public CreateTasksDefinitionBuilder andStaticTask(String name) {
-      return andStaticTask(name, null, null, AtsWorkDefinitionTokens.WorkDef_Task_Default);
+      return andStaticTask(name, null, null, AtsWorkDefinitionTokens.WorkDefTaskDefault);
    }
 
    public CreateTasksDefinitionBuilder andStaticTask(String title, AtsWorkDefinitionToken taskWorkDef) {

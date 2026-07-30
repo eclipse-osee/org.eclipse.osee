@@ -37,6 +37,16 @@ public class BranchTokenSerializer extends StdScalarSerializer<@NonNull BranchTo
       jgen.writeStringField("id", branch.getIdString());
       jgen.writeStringField("name", branch.getName());
       jgen.writeStringField("viewId", branch.getViewId().getIdString());
+      if (branch.getCategories() != null && !branch.getCategories().isEmpty()) {
+         jgen.writeArrayFieldStart("categories");
+         for (BranchCategoryToken category : branch.getCategories()) {
+            jgen.writeStartObject();
+            jgen.writeStringField("id", category.getIdString());
+            jgen.writeStringField("name", category.getName());
+            jgen.writeEndObject();
+         }
+         jgen.writeEndArray();
+      }
       jgen.writeEndObject();
    }
 }
