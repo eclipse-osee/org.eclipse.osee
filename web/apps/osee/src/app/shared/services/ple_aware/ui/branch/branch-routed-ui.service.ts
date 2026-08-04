@@ -60,14 +60,17 @@ export class BranchRoutedUIService {
 	set branchType(value: 'working' | 'baseline' | '') {
 		this.branchService.typeValue = value;
 		this.branchService.idValue = '';
-		this.router.navigate([], {
-			queryParams: {
-				branchType: value || undefined,
-				branchId: undefined,
-				view: undefined,
-			},
-			queryParamsHandling: 'merge',
-		});
+		const tree = this.router.parseUrl(this.router.url);
+		const params = { ...tree.queryParams };
+		if (value) {
+			params['branchType'] = value;
+		} else {
+			delete params['branchType'];
+		}
+		delete params['branchId'];
+		delete params['view'];
+		tree.queryParams = params;
+		this.router.navigateByUrl(tree);
 	}
 
 	get type() {
@@ -80,10 +83,16 @@ export class BranchRoutedUIService {
 
 	set branchId(value: string) {
 		this.branchService.idValue = value;
-		this.router.navigate([], {
-			queryParams: { branchId: value || undefined, view: undefined },
-			queryParamsHandling: 'merge',
-		});
+		const tree = this.router.parseUrl(this.router.url);
+		const params = { ...tree.queryParams };
+		if (value) {
+			params['branchId'] = value;
+		} else {
+			delete params['branchId'];
+		}
+		delete params['view'];
+		tree.queryParams = params;
+		this.router.navigateByUrl(tree);
 	}
 
 	/**
@@ -92,12 +101,19 @@ export class BranchRoutedUIService {
 	set position(value: { type: 'working' | 'baseline' | ''; id: string }) {
 		this.branchService.typeValue = value.type;
 		this.branchService.idValue = value.id;
-		this.router.navigate([], {
-			queryParams: {
-				branchType: value.type || undefined,
-				branchId: value.id || undefined,
-			},
-			queryParamsHandling: 'merge',
-		});
+		const tree = this.router.parseUrl(this.router.url);
+		const params = { ...tree.queryParams };
+		if (value.type) {
+			params['branchType'] = value.type;
+		} else {
+			delete params['branchType'];
+		}
+		if (value.id) {
+			params['branchId'] = value.id;
+		} else {
+			delete params['branchId'];
+		}
+		tree.queryParams = params;
+		this.router.navigateByUrl(tree);
 	}
 }
