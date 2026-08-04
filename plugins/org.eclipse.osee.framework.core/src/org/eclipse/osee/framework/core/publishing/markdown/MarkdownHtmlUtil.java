@@ -88,6 +88,11 @@ public class MarkdownHtmlUtil {
 
    public static final Pattern IMAGE_LINK_PATTERN = Pattern.compile(IMAGE_LINK_PATTERN_STRING);
 
+   /**
+    * Pre-compiled pattern for detecting markdown table separators (e.g. |---|---|).
+    */
+   public static final Pattern TABLE_SEPARATOR_PATTERN = Pattern.compile("(?s).*\\|[\\s:]*-+[\\s:]*\\|.*");
+
    //@formatter:off
    public static final Map<String, String> EXTENSION_TO_MEDIA_TYPE = Map.of(
       "png", "image/png",
@@ -189,6 +194,11 @@ public class MarkdownHtmlUtil {
       }
    }
 
+   /**
+    * Returns the shared markdown parser options. Callers must NOT mutate the returned instance. FlexMark's
+    * {@code Parser.builder()} and {@code HtmlRenderer.builder()} read but do not write to these options, so sharing a
+    * single instance is safe for concurrent read-only usage.
+    */
    public static MutableDataSet getMarkdownParserOptions() {
       return MarkdownHtmlUtil.markdownParserOptions;
    }
@@ -227,6 +237,29 @@ public class MarkdownHtmlUtil {
       matcher.appendTail(sb);
 
       return new StringModificationResult(sb.toString(), changes);
+   }
+
+   /**
+    * Determines whether a string contains markdown content that benefits from rich rendering (tables, images, or
+    * formatted text). Shared heuristic used by both Excel and HTML report writers.
+    *
+    * @param value the cell/content value to check
+    * @return true if the value contains renderable markdown constructs
+    */
+   public static boolean containsMarkdownContent(String value) {
+      if (value == null || value.isEmpty()) {
+         return false;
+      }
+      if (IMAGE_LINK_PATTERN.matcher(value).find()) {
+         return true;
+      }
+      if (value.contains("|") && value.contains("\n")) {
+         if (TABLE_SEPARATOR_PATTERN.matcher(value).matches()) {
+            return true;
+         }
+      }
+      return value.contains("**") || value.contains("__") || value.contains("~~") || //
+         value.contains("```") || value.startsWith("#");
    }
 
 }

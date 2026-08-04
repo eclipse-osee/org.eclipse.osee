@@ -472,7 +472,8 @@ public class ReportEndpointTest {
       assertFalse("viewId should not be empty", viewId.isEmpty());
       assertFalse("templateId should not be empty", templateId.isEmpty());
 
-      String url = String.format("orcs/report/%s/view/%s/template/%s/async/%s", branchId, viewId, templateId, email);
+      String url =
+         String.format("orcs/report/%s/view/%s/template/%s?format=xml&email=%s", branchId, viewId, templateId, email);
 
       Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).get();
       try {
@@ -486,6 +487,103 @@ public class ReportEndpointTest {
          assertTrue("Response should contain the branch", responseBody.contains(branchId));
          assertTrue("Response should contain the template", responseBody.contains(templateId));
          assertTrue("Response should contain the email recipient", responseBody.contains(email));
+      } finally {
+         response.close();
+      }
+   }
+
+   @Test
+   public void testReportEndpointXlsxFormat() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String viewId = ArtifactId.SENTINEL.getIdString();
+      String templateId = templateArt.getIdString();
+
+      String url = String.format("orcs/report/%s/view/%s/template/%s?format=xlsx", branchId, viewId, templateId);
+
+      Response response = jaxRsApi.newTarget(url).request(
+         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet").get();
+      try {
+         assertEquals("XLSX format should return successful response", Family.SUCCESSFUL,
+            response.getStatusInfo().getFamily());
+
+         // XLSX is binary; verify Content-Disposition header has .xlsx extension
+         String contentDisposition = response.getHeaderString("Content-Disposition");
+         assertNotNull("Response should have Content-Disposition header", contentDisposition);
+         assertTrue("Content-Disposition should contain .xlsx filename",
+            contentDisposition.contains(".xlsx"));
+      } finally {
+         response.close();
+      }
+   }
+
+   @Test
+   public void testReportEndpointHtmlFormat() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String viewId = ArtifactId.SENTINEL.getIdString();
+      String templateId = templateArt.getIdString();
+
+      String url = String.format("orcs/report/%s/view/%s/template/%s?format=html", branchId, viewId, templateId);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.TEXT_HTML).get();
+      try {
+         assertEquals("HTML format should return successful response", Family.SUCCESSFUL,
+            response.getStatusInfo().getFamily());
+
+         String responseBody = readResponseBody(response);
+
+         assertTrue("Response should contain HTML doctype or html tag",
+            responseBody.contains("<html") || responseBody.contains("<!DOCTYPE"));
+         assertTrue("Response should contain the subsystem requirement name",
+            responseBody.contains("ReportEndpointTest Subsystem Req"));
+      } finally {
+         response.close();
+      }
+   }
+
+   @Test
+   public void testReportEndpointXlsxAsync() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String viewId = ArtifactId.SENTINEL.getIdString();
+      String templateId = templateArt.getIdString();
+      String email = "test@example.com";
+
+      String url =
+         String.format("orcs/report/%s/view/%s/template/%s?format=xlsx&email=%s", branchId, viewId, templateId, email);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).get();
+      try {
+         assertEquals("Async XLSX should return successful response", Family.SUCCESSFUL,
+            response.getStatusInfo().getFamily());
+
+         String responseBody = readResponseBody(response);
+
+         assertTrue("Response should indicate report generation started",
+            responseBody.contains("Report generation started"));
+         assertTrue("Response should reference .xlsx file name",
+            responseBody.contains(".xlsx"));
+      } finally {
+         response.close();
+      }
+   }
+
+   @Test
+   public void testReportEndpointDefaultFormatIsXml() {
+      String branchId = DemoBranches.SAW_PL_Working_Branch.getIdString();
+      String viewId = ArtifactId.SENTINEL.getIdString();
+      String templateId = templateArt.getIdString();
+
+      // No format parameter — should default to xml
+      String url = String.format("orcs/report/%s/view/%s/template/%s", branchId, viewId, templateId);
+
+      Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_XML).get();
+      try {
+         assertEquals("Default format should return successful response", Family.SUCCESSFUL,
+            response.getStatusInfo().getFamily());
+
+         String responseBody = readResponseBody(response);
+
+         assertTrue("Default format should produce Excel XML",
+            responseBody.contains("<Worksheet"));
       } finally {
          response.close();
       }
