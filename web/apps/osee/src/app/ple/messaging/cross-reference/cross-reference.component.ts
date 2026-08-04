@@ -27,7 +27,7 @@ import { MessagingControlsComponent } from '@osee/messaging/shared/main-content'
 import { CrossReferenceService } from '@osee/messaging/shared/services';
 import { CrossReference, connection } from '@osee/messaging/shared/types';
 import { UiService } from '@osee/shared/services';
-import { combineLatest, filter, iif, of, switchMap, take, tap } from 'rxjs';
+import { filter, iif, of, switchMap, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-cross-reference',
@@ -106,17 +106,7 @@ export class CrossReferenceComponent implements OnInit, OnDestroy {
 		)
 	);
 
-	connectionRoute = combineLatest([this.branchId, this.branchType]).pipe(
-		switchMap(([branchId, branchType]) =>
-			of(
-				'/ple/messaging/crossreference/' +
-					branchType +
-					'/' +
-					branchId +
-					'/'
-			)
-		)
-	);
+	connectionRoute = of('/ple/messaging/crossreference/');
 
 	inEditMode = this.crossRefService.inEditMode;
 
