@@ -82,7 +82,7 @@ test.describe('Attribute Editing (Auto-Save)', () => {
 			page.waitForResponse(
 				(res) => res.url().includes('orcs/txs') && res.status() === 200
 			),
-			page.keyboard.press('Tab'),
+			nameInput.evaluate((el) => el.blur()),
 		]);
 
 		await expect(
@@ -103,7 +103,7 @@ test.describe('Attribute Editing (Auto-Save)', () => {
 			page.waitForResponse(
 				(res) => res.url().includes('orcs/txs') && res.status() === 200
 			),
-			page.keyboard.press('Tab'),
+			nameInputAgain.evaluate((el) => el.blur()),
 		]);
 		await expect(
 			page
@@ -145,7 +145,7 @@ test.describe('Attribute Editing (Auto-Save)', () => {
 			.first()
 			.getByRole('textbox');
 		await nameInput.click();
-		await page.keyboard.press('Tab');
+		await nameInput.evaluate((el) => el.blur());
 		await page.waitForTimeout(600);
 
 		let dialogAppeared = false;
@@ -173,7 +173,7 @@ test.describe('Attribute Editing (Auto-Save)', () => {
 			page.waitForResponse(
 				(res) => res.url().includes('orcs/txs') && res.status() === 200
 			),
-			page.keyboard.press('Tab'),
+			nameInput2.evaluate((el) => el.blur()),
 		]);
 
 		dialogAppeared = false;
@@ -197,7 +197,11 @@ test.describe('Attribute Editing (Auto-Save)', () => {
 			.first()
 			.getByRole('textbox')
 			.click();
-		await page.keyboard.press('Tab');
+		await page
+			.locator('osee-focus-lost-input')
+			.first()
+			.getByRole('textbox')
+			.evaluate((el) => el.blur());
 		await page.waitForTimeout(600);
 
 		dialogAppeared = false;
