@@ -54,19 +54,8 @@ describe('ValueMenuComponent', () => {
 							component: ValueMenuComponent,
 							children: [
 								{
-									path: ':branchType',
-									children: [
-										{
-											path: ':branchId',
-											children: [
-												{
-													path: 'diff',
-													component:
-														ValueMenuComponent,
-												},
-											],
-										},
-									],
+									path: 'diff',
+									component: ValueMenuComponent,
 								},
 							],
 						},

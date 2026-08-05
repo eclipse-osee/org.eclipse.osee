@@ -388,11 +388,7 @@ export abstract class CurrentStructureService {
 	}
 
 	get connectionsRoute() {
-		return combineLatest([this.branchType, this.BranchId]).pipe(
-			switchMap(([branchType, BranchId]) =>
-				of('/ple/messaging/connections/' + branchType + '/' + BranchId)
-			)
-		);
+		return of('/ple/messaging/connections');
 	}
 
 	createStructure(body: structure, afterStructure?: string) {

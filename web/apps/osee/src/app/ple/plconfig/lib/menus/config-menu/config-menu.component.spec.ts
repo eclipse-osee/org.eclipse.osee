@@ -59,19 +59,8 @@ describe('ConfigMenuComponent', () => {
 							component: ConfigMenuComponent,
 							children: [
 								{
-									path: ':branchType',
-									children: [
-										{
-											path: ':branchId',
-											children: [
-												{
-													path: 'diff',
-													component:
-														ConfigMenuComponent,
-												},
-											],
-										},
-									],
+									path: 'diff',
+									component: ConfigMenuComponent,
 								},
 							],
 						},

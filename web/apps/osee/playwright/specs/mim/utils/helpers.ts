@@ -55,7 +55,11 @@ export const createWorkingBranchFromPL = async (
 
 export const enableEditMode = async (page: Page) => {
 	await page.getByText('account_circle').click();
-	await page.getByRole('menuitem', { name: 'Settings' }).click();
+	// Wait for the Settings menu item — it only appears once
+	// a valid branch is selected (settingsCapable signal).
+	const settingsItem = page.getByRole('menuitem', { name: 'Settings' });
+	await settingsItem.waitFor({ state: 'visible', timeout: 10000 });
+	await settingsItem.click();
 
 	const editCheckbox = page.getByLabel('Edit Mode');
 	await editCheckbox.waitFor({ state: 'visible' });

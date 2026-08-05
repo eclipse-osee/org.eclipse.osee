@@ -562,7 +562,7 @@ test('create elements', async ({ page }) => {
 
 test('add array element', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 900 });
-	await page.goto('/ple/messaging/connections/working');
+	await page.goto('/ple/messaging/connections?branchType=working');
 	await selectBranch(page, 'Working', branchName);
 	await page.getByText('Connection A-B', { exact: true }).click();
 	await page

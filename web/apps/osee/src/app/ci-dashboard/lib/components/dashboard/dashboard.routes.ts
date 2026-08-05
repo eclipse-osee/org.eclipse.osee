@@ -18,16 +18,6 @@ export const routes: Routes = [
 		title: 'Zenith - Dashboard',
 		loadComponent: () => import('./dashboard.component'),
 	},
-	{
-		path: ':branchType',
-		title: 'Zenith - Dashboard',
-		loadComponent: () => import('./dashboard.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		title: 'Zenith - Dashboard',
-		loadComponent: () => import('./dashboard.component'),
-	},
 ];
 
 export default routes;

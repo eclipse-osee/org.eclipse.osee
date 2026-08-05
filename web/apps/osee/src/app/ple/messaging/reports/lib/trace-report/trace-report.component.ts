@@ -48,11 +48,11 @@ export class NodeTraceReportRequirementsComponent {
 	private ui = inject(UiService);
 	private reportsService = inject(ReportsService);
 	private branchService = inject(CurrentBranchInfoService);
-	private paramMap = toSignal(this.route.paramMap, {
+	private queryParamMap = toSignal(this.route.queryParamMap, {
 		initialValue: convertToParamMap({}),
 	});
 	private _updateParams = effect(() => {
-		const params = this.paramMap();
+		const params = this.queryParamMap();
 		this.ui.idValue = params.get('branchId') || '';
 		this.ui.typeValue =
 			(params.get('branchType') as 'working' | 'baseline' | '') || '';

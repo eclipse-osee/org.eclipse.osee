@@ -68,6 +68,12 @@ describe('SubElementArrayTableComponent', () => {
 								branchType: 'working',
 							})
 						),
+						queryParamMap: of(
+							convertToParamMap({
+								branchType: 'working',
+								branchId: '10',
+							})
+						),
 						fragment: of(null),
 					},
 				},

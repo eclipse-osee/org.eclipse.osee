@@ -64,7 +64,7 @@ export class ListConfigurationComponent implements OnDestroy {
 	);
 	branchType = toSignal(this._uiService.type);
 	private _destroyed = new Subject<void>();
-	routeSetup = this._route.paramMap.pipe(
+	routeSetup = this._route.queryParamMap.pipe(
 		tap((params) => {
 			this._uiService.idValue = params.get('branchId') || '';
 			this._uiService.typeValue =

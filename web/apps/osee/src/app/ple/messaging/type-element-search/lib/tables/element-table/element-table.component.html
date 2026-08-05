@@ -53,23 +53,15 @@
 							}
 						} @else {
 							@if (element.paths.length === 1) {
-								@if (branchType | async; as _type) {
-									@if (branchId | async; as _id) {
-										<a
-											mat-button
-											[routerLink]="
-												'/ple/messaging/connections/' +
-												_type +
-												'/' +
-												_id +
-												'/' +
-												element.paths[0]
-											"
-											queryParamsHandling="merge"
-											>Go to</a
-										>
-									}
-								}
+								<a
+									mat-button
+									[routerLink]="
+										'/ple/messaging/connections/' +
+										element.paths[0]
+									"
+									queryParamsHandling="merge"
+									>Go to</a
+								>
 							}
 							@if (element.paths.length > 1) {
 								<button
@@ -101,25 +93,14 @@
 		matMenuContent
 		let-paths="paths"
 		let-names="names">
-		@if (branchType | async; as _type) {
-			@if (branchId | async; as _id) {
-				@for (path of paths; track path; let i = $index) {
-					<a
-						mat-button
-						[routerLink]="
-							'/ple/messaging/connections/' +
-							_type +
-							'/' +
-							_id +
-							'/' +
-							path
-						"
-						queryParamsHandling="merge"
-						class="tw-h-auto"
-						>{{ names[i] }}</a
-					>
-				}
-			}
+		@for (path of paths; track path; let i = $index) {
+			<a
+				mat-button
+				[routerLink]="'/ple/messaging/connections/' + path"
+				queryParamsHandling="merge"
+				class="tw-h-auto"
+				>{{ names[i] }}</a
+			>
 		}
 	</ng-template>
 </mat-menu>
