@@ -682,6 +682,7 @@
 	<plugin id="org.eclipse.jetty.server"/>
 	<plugin id="org.eclipse.jetty.servlet-api"/>
 	<plugin id="org.eclipse.jetty.util"/>
+	<plugin id="org.apache.cxf.cxf-rt-rs-sse"/>
 	<plugin id="com.sun.jna.platform"/>
 	<plugin id="com.sun.jna"/>
 	<plugin id="com.google.protobuf"/>
