@@ -111,9 +111,7 @@ export class StructureNamesComponent implements OnInit {
 		return paths.map((x) => x.name + ':' + x.path).join(',');
 	}
 
-	basePath = combineLatest([this.uiService.id, this.uiService.type]).pipe(
-		switchMap(([_id, _type]) => of(`../../../connections`))
-	);
+	basePath = of('/ple/messaging/connections');
 	loading = this.loadingService.isLoading;
 
 	ngOnInit(): void {
