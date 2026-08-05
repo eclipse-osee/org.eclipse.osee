@@ -22,9 +22,7 @@ test.describe('Structure Names Navigation', () => {
 		// Select branch
 		await page.getByRole('radio', { name: 'Working' }).click();
 		await page.getByRole('combobox', { name: 'Select a Branch' }).click();
-		await page
-			.getByRole('option', { name: 'TW2 - MIM Demo PL' })
-			.click();
+		await page.getByRole('option', { name: 'TW2 - MIM Demo PL' }).click();
 
 		// Expand the "Structure" panel
 		await page.getByRole('button', { name: 'Structure' }).click();
