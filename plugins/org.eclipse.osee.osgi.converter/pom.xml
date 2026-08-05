@@ -496,6 +496,11 @@
 									<source>true</source>
 								</artifact>
 
+								<artifact>
+									<id>org.apache.cxf:cxf-rt-rs-sse:jar:3.6.6</id>
+									<source>true</source>
+								</artifact>
+
 							</artifacts>
 						</configuration>
 						<goals>
