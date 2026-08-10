@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use nom::{
+    IResult,
     character::complete::{line_ending, multispace1, space1},
     combinator::{map, not, opt},
-    multi::{many0, many_till},
+    multi::{many_till, many0},
     sequence::terminated,
-    IResult,
 };
 
 ///
