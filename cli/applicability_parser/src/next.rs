@@ -31,12 +31,12 @@ use super::{
 };
 use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag;
 use nom::{
+    IResult,
     branch::alt,
     character::complete::anychar,
     combinator::{map, not, peek},
     multi::many_till,
     sequence::{preceded, tuple},
-    IResult,
 };
 
 ///
@@ -206,8 +206,8 @@ mod tests {
             },
         };
         use nom::{
-            error::{Error, ErrorKind, ParseError},
             Err,
+            error::{Error, ErrorKind, ParseError},
         };
 
         use crate::next::next_inner;
@@ -224,7 +224,7 @@ mod tests {
                                 tag: "SOMETHING".to_string(),
                                 value: "Included".to_string()
                             },
-                            0
+                            Some(0)
                         ))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
@@ -254,7 +254,7 @@ mod tests {
                                 tag: "SOMETHING".to_string(),
                                 value: "Included".to_string()
                             },
-                            0
+                            Some(0)
                         ))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
@@ -294,7 +294,7 @@ mod tests {
                                 tag: "SOMETHING".to_string(),
                                 value: "Included".to_string()
                             },
-                            0
+                            Some(0)
                         ))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
@@ -333,7 +333,7 @@ mod tests {
                                 tag: "SOMETHING".to_string(),
                                 value: "Included".to_string()
                             },
-                            0
+                            Some(0)
                         ))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
@@ -350,11 +350,11 @@ mod tests {
     }
     mod error_parser_tests {
         use nom::{
-            error::{Error, ErrorKind, ParseError},
             Err,
+            error::{Error, ErrorKind, ParseError},
         };
 
-        use crate::{next::error_parser, ApplicabilityParserSyntaxTag};
+        use crate::{ApplicabilityParserSyntaxTag, next::error_parser};
 
         #[test]
         fn bail_out_end_feature() {

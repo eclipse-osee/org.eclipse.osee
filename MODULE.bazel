@@ -1,46 +1,61 @@
-###############################################################################
-# Bazel now uses Bzlmod by default to manage external dependencies.
-# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
+#####################################################################
+# Copyright (c) 2025 Boeing
 #
-# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
-###############################################################################
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     Boeing - initial API and implementation
+######################################################################
+"""This module provides product lining tools including the OSEE Server, OSEE IDE, BAT Tool, PAT Tool and the PLE Tool.
+Some elements of the OSEE Server include:
+MIM - Message Interface Modeler, an Interface Control Document(ICD) editing tool suite.
+PLConfig - Product Line Configuration Matrix, a tool for managing feature variation between configurations.
+Zenith - Dashboard for managing test results in relation to a product line.
+The capabilities for the IDE, BAT, PAT, and PLE Tools are documented in their respective releases.
+"""
 module(
-    name="osee",
-    version = "1.0"
+    name = "osee",
+    version = "1.0",
 )
-bazel_dep(name = "aspect_bazel_lib", version = "2.9.4")
+bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "aspect_bazel_lib", version = "2.20.0")
 
 # Used for rules_osee
 
 # Used for packaging
 # Feature[INTERNAL_RELEASE_ONLY]
-bazel_dep(name = "rules_pkg", version = "0.10.1")
-bazel_dep(name = "stardoc", version = "0.6.2")
+bazel_dep(name = "rules_pkg", version = "1.1.0")
+bazel_dep(name = "stardoc", version = "0.8.0")
 # End Feature
 
-bazel_dep(name="rules_osee", version="0.2.10")
+bazel_dep(name = "rules_osee", version = "0.2.10")
 
-local_path_override(module_name="rules_osee",path="rules_osee")
+local_path_override(module_name = "rules_osee", path = "rules_osee")
 
-bat = use_extension("@rules_osee//bat:extensions.bzl","bat")
+bat = use_extension("@rules_osee//bat:extensions.bzl", "bat")
 bat.toolchain()
 
-plconfig = use_extension("@rules_osee//plconfig:extensions.bzl","plconfig")
+plconfig = use_extension("@rules_osee//plconfig:extensions.bzl", "plconfig")
 plconfig.config(
-    name="my_product_line",
-    osee_url="http://localhost:8089",
-    branch_id="8",
-    sha256="30e77eeea6b35d7308567c30b774bb7fc571efd5511065ded283df76bb7958ea")
+    name = "my_product_line",
+    osee_url = "http://localhost:8089",
+    branch_id = "8",
+    sha256 = "30e77eeea6b35d7308567c30b774bb7fc571efd5511065ded283df76bb7958ea",
+)
 use_repo(
     plconfig,
-    "my_product_line"
+    "my_product_line",
 )
 
 # End rules_osee
 
-bazel_dep(name="rules_rust" , version = "0.51.0")
+bazel_dep(name = "rules_rust", version = "0.65.0")
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
-rust.toolchain(edition = "2021")
+rust.toolchain(edition = "2024", versions = ["1.88.0"])
 use_repo(
     rust,
     "rust_toolchains",
@@ -54,20 +69,8 @@ crate.from_cargo(
     name = "crates",
     cargo_lockfile = ":Cargo.lock",
     manifests = [
-    ":Cargo.toml",
-    "//cli/bat:Cargo.toml",
-    "//cli/pat:Cargo.toml",
-    "//cli/applicability:Cargo.toml",
-    "//cli/applicability_parser:Cargo.toml",
-    "//cli/applicability_parser_config:Cargo.toml",
-    "//cli/applicability_match:Cargo.toml",
-    "//cli/applicability_parser_types:Cargo.toml",
-    "//cli/applicability_path:Cargo.toml",
-    "//cli/applicability_sanitization:Cargo.toml",
-    "//cli/applicability_substitution:Cargo.toml",
-    "//cli/java_rust_ffi_core:Cargo.toml",
-    "//cli/jni_wrapper:Cargo.toml",
-    "//cli/applicability_sanitization_preserve_line_numbers:Cargo.toml"],
+        ":Cargo.toml",
+    ],
 )
 use_repo(crate, "crates")
 register_toolchains("//:local_bat_toolchain")
