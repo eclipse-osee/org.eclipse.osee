@@ -14,7 +14,7 @@
 # Feature[INTERNAL_RELEASE_ONLY]
 load("@rules_pkg//:mappings.bzl", "pkg_files", "strip_prefix")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
-load(":version.bzl", "rules_osee_version", "bat_version", "pat_version")
+load(":version.bzl", "rules_osee_version", "bat_version", "pat_version", "ple_version")
 
 package(
     default_visibility = ["//visibility:private"],
@@ -64,6 +64,18 @@ pkg_tar(
         "//cli:LICENSE.md"
     ],
     out = "pat-%s.tar.gz" %pat_version,
+    extension = "tar.gz",
+    mode = "0644",
+    owner = "0.0",
+    strip_prefix = strip_prefix.from_root("cli")
+)
+pkg_tar(
+    name="ple",
+    srcs = [
+        "//cli/ple:ple",
+        "//cli:LICENSE.md"
+    ],
+    out = "ple-%s.tar.gz" %ple_version,
     extension = "tar.gz",
     mode = "0644",
     owner = "0.0",

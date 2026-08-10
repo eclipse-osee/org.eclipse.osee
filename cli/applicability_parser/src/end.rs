@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use nom::{bytes::complete::tag, IResult};
+use nom::{IResult, bytes::complete::tag};
 
 pub fn end_tag_parser<'a>(
     custom_comment_syntax: &'a str,

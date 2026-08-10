@@ -1,0 +1,154 @@
+/*********************************************************************
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+use memchr::memmem;
+use nom::{
+    AsBytes, AsChar, Compare, FindSubstring, Input, Parser,
+    bytes::{tag, take_till, take_until},
+    error::ParseError,
+};
+
+pub trait StartCommentMultiLine {
+    fn is_start_comment_multi_line<I>(&self, input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar;
+    fn is_start_comment_multi_line_predicate<I>(&self, input: I::Item, index: usize) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self.start_comment_multi_line_tag().chars().nth(index) {
+            Some(character) => input.as_char() == character,
+            None => false,
+        }
+    }
+    fn start_comment_multi_line_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + AsBytes,
+    {
+        let finder = memmem::Finder::new(self.start_comment_multi_line_tag());
+        finder.find(input.as_bytes())
+    }
+    fn has_start_comment_multi_line_support(&self) -> bool;
+    fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        tag(self.start_comment_multi_line_tag())
+    }
+    fn take_till_start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        take_till(|x| self.is_start_comment_multi_line::<I>(x))
+    }
+    fn start_comment_multi_line_tag<'x>(&self) -> &'x str;
+    fn take_until_start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str> + FindSubstring<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        take_until(self.start_comment_multi_line_tag())
+    }
+}
+
+pub trait MultiLineCommentCharacter {
+    fn is_multi_line_comment_character<I>(&self, input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar;
+    fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        tag(self.multi_line_comment_character_tag())
+    }
+    fn take_till_multi_line_comment_character<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        take_till(|x| self.is_multi_line_comment_character::<I>(x))
+    }
+    fn multi_line_comment_character_tag<'x>(&self) -> &'x str;
+    fn take_until_multi_line_comment_character<'x, I, E>(
+        &self,
+    ) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str> + FindSubstring<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        take_until(self.multi_line_comment_character_tag())
+    }
+}
+
+pub trait EndCommentMultiLine {
+    fn is_end_comment_multi_line<I>(&self, input: I::Item) -> bool
+    where
+        I: Input,
+        I::Item: AsChar;
+    fn is_end_comment_multi_line_predicate<I>(&self, input: I::Item, index: usize) -> bool
+    where
+        I: Input,
+        I::Item: AsChar,
+    {
+        match self.end_comment_multi_line_tag().chars().nth(index) {
+            Some(character) => input.as_char() == character,
+            None => false,
+        }
+    }
+    fn end_comment_multi_line_position<I>(&self, input: &I) -> Option<usize>
+    where
+        I: Input + AsBytes,
+    {
+        let finder = memmem::Finder::new(self.end_comment_multi_line_tag());
+        finder.find(input.as_bytes())
+    }
+    fn has_end_comment_multi_line_support(&self) -> bool;
+    fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        tag(self.end_comment_multi_line_tag())
+    }
+    fn take_till_end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        take_till(|x| self.is_end_comment_multi_line::<I>(x))
+    }
+    fn end_comment_multi_line_tag<'x>(&self) -> &'x str;
+    fn take_until_end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+    where
+        I: Input + Compare<&'x str> + FindSubstring<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        take_until(self.end_comment_multi_line_tag())
+    }
+}

@@ -1,0 +1,21 @@
+name: "Generate tag_type from tag"
+description: Generate a tag_type number from a github tag.
+
+outputs:
+    tag_type:
+        description: The tag_type contained in the tag.
+        value: ${{steps.get_tag_type.outputs.tag_type}}
+
+runs:
+    using: composite
+
+    steps:
+        - name: Get tag_type from tag
+          id: get_tag_type
+          shell: bash
+          run: |
+              TAG_REF="${{ github.ref }}"
+              TAG_NAME="${TAG_REF##*/}"
+              tag_type=$(echo "$TAG_NAME" | sed -E 's/v[0-9].*//')
+              echo "${tag_type}"
+              echo "tag_type=${tag_type}" >> "$GITHUB_OUTPUT"

@@ -1,0 +1,7 @@
+---
+// src/components/ple-current-release.astro
+const buildVersion = import.meta.env.PUBLIC_PLE_BUILD_VERSION;
+const url = "https://github.com/lucianovaglienti/org_eclipse_osee_github_actions_init_tests/releases/tag/"+buildVersion;
+---
+
+<a href={url}>our github</a>

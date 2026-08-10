@@ -33,7 +33,7 @@ fn jstring_to_cstring(env: &mut JNIEnv, jstr: JString, field_name: &str) -> Opti
                 throw_java_exception(
                     env,
                     "java/lang/IllegalArgumentException",
-                    &format!("{} string contains null byte", field_name),
+                    &format!("{field_name} string contains null byte"),
                 );
                 None
             }
@@ -42,7 +42,7 @@ fn jstring_to_cstring(env: &mut JNIEnv, jstr: JString, field_name: &str) -> Opti
             throw_java_exception(
                 env,
                 "java/lang/IllegalArgumentException",
-                &format!("Failed to read {} string: {}", field_name, e),
+                &format!("Failed to read {field_name} string: {e}"),
             );
             None
         }
@@ -67,7 +67,7 @@ fn jstring_to_cstring(env: &mut JNIEnv, jstr: JString, field_name: &str) -> Opti
 /// This function checks for null before dereferencing and converts the result safely
 /// into a Java `String`. After use, the memory allocated by Rust is explicitly freed
 /// using `rust_free_string`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_ApplicabilityParseSubstituteAndSanitize_parseSubstituteAndSanitizeApplicability(
     mut env: JNIEnv,           // JNI environment to interact with Java
     _class: JClass,            // Class reference; unused in this function
@@ -96,12 +96,14 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     };
 
     // Call the core FFI logic
-    let result_cstr = java_rust_ffi_core::rust_parse_substitute(
-        input_cstr.as_ptr(),
-        file_name_cstr.as_ptr(),
-        file_extension_cstr.as_ptr(),
-        config_json_cstr.as_ptr(),
-    );
+    let result_cstr = unsafe {
+        java_rust_ffi_core::rust_parse_substitute(
+            input_cstr.as_ptr(),
+            file_name_cstr.as_ptr(),
+            file_extension_cstr.as_ptr(),
+            config_json_cstr.as_ptr(),
+        )
+    };
 
     if result_cstr.is_null() {
         throw_java_exception(
@@ -113,15 +115,15 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     }
 
     // Convert returned C string to Rust &str
-    let result_str = CStr::from_ptr(result_cstr);
+    let result_str = unsafe { CStr::from_ptr(result_cstr) };
     let result_java_str = match result_str.to_str() {
         Ok(s) => s,
         Err(e) => {
-            java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
+            unsafe { java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char) };
             throw_java_exception(
                 &mut env,
                 "java/lang/RuntimeException",
-                &format!("Invalid UTF-8 result: {}", e),
+                &format!("Invalid UTF-8 result: {e}"),
             );
             return ptr::null_mut();
         }
@@ -131,18 +133,18 @@ pub unsafe extern "system" fn Java_org_eclipse_osee_java_rust_ffi_applicability_
     let output = match env.new_string(result_java_str) {
         Ok(s) => s,
         Err(e) => {
-            java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
+            unsafe { java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char) };
             throw_java_exception(
                 &mut env,
                 "java/lang/RuntimeException",
-                &format!("Failed to create Java String: {}", e),
+                &format!("Failed to create Java String: {e}"),
             );
             return ptr::null_mut();
         }
     };
 
     // Free the Rust-allocated C string
-    java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char);
+    unsafe { java_rust_ffi_core::rust_free_string(result_cstr as *mut c_char) };
 
     output.into_raw()
 }
