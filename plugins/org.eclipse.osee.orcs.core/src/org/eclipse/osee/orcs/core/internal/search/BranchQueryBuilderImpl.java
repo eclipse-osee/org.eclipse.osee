@@ -37,6 +37,7 @@ import org.eclipse.osee.orcs.search.ds.Criteria;
 import org.eclipse.osee.orcs.search.ds.Options;
 import org.eclipse.osee.orcs.search.ds.OptionsUtil;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaBranchIds;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaBranchState;
 
 /**
  * @author Roberto E. Escobar
@@ -216,8 +217,7 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
          Collection<BranchArchivedState> states = Arrays.asList(UNARCHIVED);
          addAndCheck(queryData, criteriaFactory.createBranchArchivedCriteria(states));
       }
-      if (!areDeletedIncluded() && !queryData.getAllCriteria().stream().anyMatch(
-         a -> a.getName().equals("CriteriaBranchState"))) {
+      if (!areDeletedIncluded() && !queryData.hasCriteriaType(CriteriaBranchState.class)) {
          Collection<BranchState> states = new ArrayList<>();
          for (BranchState state : BranchState.values()) {
             if (state != DELETE_IN_PROGRESS && state != DELETED && state != PURGE_IN_PROGRESS && state != PURGED) {
