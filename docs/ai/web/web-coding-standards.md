@@ -390,6 +390,7 @@ test.describe('Feature Name', () => {
 ### What to avoid
 
 - **Hardcoded URLs** — use relative paths for `page.goto()` and `APP_BASE` only for `waitForResponse` or API request matching.
+- **Local-only data** — never hardcode branch names, artifact names, or IDs that only exist in your local database. Tests run against CI's demo database which is initialized by Setup projects. Use branch/artifact names created by the Setup scripts (e.g., `'MIM Demo'`, `'SAW Product Line'`, `'SAW PL Hardening Branch'`). When writing tests with `playwright codegen`, replace any local-specific names with the CI equivalents before committing.
 - **Chained `waitForTimeout`** — replace with proper waitFor conditions.
 - **Overly specific selectors** — `page.locator('div > span:nth-child(3)')` will break on any layout change.
 - **Tests that depend on execution order** — use `test.describe.configure({ mode: 'serial' })` only when tests genuinely share state (e.g., multi-step workflows like branch creation then commit).
