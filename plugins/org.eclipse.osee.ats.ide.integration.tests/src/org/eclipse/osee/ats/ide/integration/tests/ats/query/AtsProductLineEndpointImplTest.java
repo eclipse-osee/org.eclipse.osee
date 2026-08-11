@@ -17,7 +17,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -85,6 +87,51 @@ public class AtsProductLineEndpointImplTest extends AbstractRestTest {
          if (DemoBranches.SAW_PL.getName().equals(branch.getName())) {
             // Everyone has READ Access
             Assert.assertEquals(branch.getCurrentUserPermission(), PermissionEnum.READ);
+         }
+      }
+   }
+
+   /**
+    * Verifies that paginated branch queries with includeCategories produce no duplicate branches. The bug was that the
+    * category LEFT JOIN produced duplicate rows, and row_number() was applied before DISTINCT, causing pagination to
+    * operate on the duplicated set — returning fewer unique branches than expected per page.
+    */
+   @Test
+   public void testPaginatedBranchesWithCategoriesNoDuplicates() {
+      // Request page 1 with a small page size — this exercises the pagination + categories path
+      int pageSize = 3;
+      String path = "ats/ple/branches";
+      WebTarget target = jaxRsApi.newTargetQuery(path, "type", BranchType.BASELINE.getIdString(), "pageNum", "1",
+         "count", String.valueOf(pageSize));
+      String json = getJson(target);
+      JsonNode arrayNode = jaxRsApi.readTree(json);
+      ObjectMapper mapper = new ObjectMapper();
+      mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      List<Branch> page1 = mapper.convertValue(arrayNode, new TypeReference<List<Branch>>() { //
+      });
+
+      // Verify no duplicates within the page
+      Set<Long> branchIds = new HashSet<>();
+      for (Branch branch : page1) {
+         Assert.assertTrue("Duplicate branch in paginated result: " + branch.getName(),
+            branchIds.add(branch.getId()));
+      }
+
+      // Verify page size is respected (should return at most pageSize branches)
+      Assert.assertTrue("Page should have at most " + pageSize + " branches", page1.size() <= pageSize);
+
+      // If there are more branches, get page 2 and confirm no overlap with page 1
+      if (page1.size() == pageSize) {
+         WebTarget target2 = jaxRsApi.newTargetQuery(path, "type", BranchType.BASELINE.getIdString(), "pageNum", "2",
+            "count", String.valueOf(pageSize));
+         String json2 = getJson(target2);
+         JsonNode arrayNode2 = jaxRsApi.readTree(json2);
+         List<Branch> page2 = mapper.convertValue(arrayNode2, new TypeReference<List<Branch>>() { //
+         });
+
+         for (Branch branch : page2) {
+            Assert.assertFalse("Branch from page 2 already appeared in page 1: " + branch.getName(),
+               branchIds.contains(branch.getId()));
          }
       }
    }
