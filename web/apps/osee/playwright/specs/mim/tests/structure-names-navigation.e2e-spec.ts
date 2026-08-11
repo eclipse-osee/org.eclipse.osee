@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
+import { selectBranch } from '../../../shared/branch-helpers';
 
 test.describe('Structure Names Navigation', () => {
 	test('should navigate from structure names to structure detail without 404', async ({
@@ -19,17 +20,16 @@ test.describe('Structure Names Navigation', () => {
 		await page.setViewportSize({ width: 1200, height: 900 });
 		await page.goto('/ple/messaging/structureNames');
 
-		// Select branch
-		await page.getByRole('radio', { name: 'Working' }).click();
-		await page.getByRole('combobox', { name: 'Select a Branch' }).click();
-		await page.getByRole('option', { name: 'TW2 - MIM Demo PL' }).click();
+		// Select branch using the shared helper (uses 'MIM Demo' which CI creates)
+		await selectBranch(page, 'Working', 'MIM Demo');
 
-		// Expand the "Structure" panel
-		await page.getByRole('button', { name: 'Structure' }).click();
+		// Expand the "Structure 1" panel
+		await page.getByRole('button', { name: 'Structure 1' }).click();
 
 		// Click the submessage link
 		await page
-			.getByRole('link', { name: 'Message 1 > Submessage' })
+			.getByRole('link', { name: /Message 1.*Submessage/i })
+			.first()
 			.click();
 
 		// Verify we did NOT navigate to a 404 page
