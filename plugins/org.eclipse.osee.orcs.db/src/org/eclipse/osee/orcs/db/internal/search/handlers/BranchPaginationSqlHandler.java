@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.search.ds.OptionsUtil;
@@ -44,27 +43,19 @@ public class BranchPaginationSqlHandler extends SqlHandler<CriteriaPagination> {
    @Override
    public void startWithPreSelect(AbstractSqlWriter writer) {
       if (criteria.isValid()) {
+         // Outer wrapper: applies row_number() AFTER deduplication
          writer.write("SELECT * FROM (\n");
-      }
-   }
-
-   @Override
-   public void writeSelectFields(AbstractSqlWriter writer) {
-      String brAlias = writer.getMainTableAlias(OseeDb.BRANCH_TABLE);
-      if (criteria.isValid()) {
-         writer.write(",\n row_number() over (");
+         writer.write("SELECT t1.*");
          if (writer.getJdbcClient().getDbType().isPaginationOrderingSupported()) {
-            writer.write("ORDER BY ");
+            writer.write(", row_number() over (ORDER BY ");
             if (OptionsUtil.getBranchOrder(writer.getOptions()).equals("name")) {
-               writer.write(brAlias + ".branch_name,");
+               writer.write("t1.branch_name,");
             }
-            writer.write(brAlias + ".branch_id");
-            writer.write(") rn");
+            writer.write("t1.branch_id) rn");
          } else {
-            writer.write(") rn");
+            writer.write(", row_number() over () rn");
          }
-      } else {
-         writer.write(",0 as rn");
+         writer.write(" FROM (\n");
       }
    }
 
@@ -80,7 +71,8 @@ public class BranchPaginationSqlHandler extends SqlHandler<CriteriaPagination> {
             tempLowerBound == 0 ? lowerBound + criteria.getPageSize() : lowerBound + criteria.getPageSize() - 1L;
          writer.addParameter(lowerBound);
          writer.addParameter(upperBound);
-         writer.write(") t1 WHERE rn BETWEEN ? AND ?");
+         // Close inner subquery (t1), then close outer subquery with pagination filter
+         writer.write(") t1\n) t2 WHERE rn BETWEEN ? AND ?");
       }
    }
 }
