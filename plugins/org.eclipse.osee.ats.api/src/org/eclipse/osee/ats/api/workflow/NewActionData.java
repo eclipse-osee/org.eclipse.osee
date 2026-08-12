@@ -63,7 +63,7 @@ public class NewActionData {
    String opName;
    String points;
    String sprint;
-   String transactionComment;
+   String commitComment;
    String workPackage;
    ArtifactId parentAction = ArtifactId.SENTINEL;
    ArtifactId teamDef = ArtifactId.SENTINEL;
@@ -130,12 +130,12 @@ public class NewActionData {
       this.validationRequired = validationRequired;
    }
 
-   public String getTransactionComment() {
-      return transactionComment;
+   public String getCommitComment() {
+      return commitComment;
    }
 
-   public void setTransactionComment(String transactionComment) {
-      this.transactionComment = transactionComment;
+   public void setCommitComment(String commitComment) {
+      this.commitComment = commitComment;
    }
 
    public String getNeedByDateLong() {

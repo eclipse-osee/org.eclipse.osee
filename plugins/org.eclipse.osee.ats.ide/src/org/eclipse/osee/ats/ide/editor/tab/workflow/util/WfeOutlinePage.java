@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -201,7 +201,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             items.addAll(((WrappedPeerReviews) element).getPeerReviews());
          } else if (element instanceof WrappedRules) {
             items.addAll(((WrappedRules) element).getRuleAndLocations());
-         } else if (element instanceof WidgetDefinition) {
+         } else if (element instanceof WidgetDef) {
             getChildrenFromWidgetDefinition(element, items);
          } else if (element instanceof String) {
             items.add(element);
@@ -247,7 +247,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof IAtsWorkItemHook) {
             return true;
-         } else if (element instanceof WidgetDefinition) {
+         } else if (element instanceof WidgetDef) {
             return true;
          } else if (element instanceof IAtsPeerReviewDefinition) {
             return true;
@@ -286,7 +286,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWidgetDefinition(Object element1, List<Object> items) {
-         WidgetDefinition element = (WidgetDefinition) element1;
+         WidgetDef element = (WidgetDef) element1;
          items.add("XWidget: " + element.getXWidgetName());
          if (element.getAttributeType() != null) {
             items.add("Attribute Name: " + element.getAttributeType().getName());
@@ -713,7 +713,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(AtsImage.STATE_ITEM);
          } else if (element instanceof WorkDefinition) {
             return ImageManager.getImage(AtsImage.WORKFLOW);
-         } else if (element instanceof WidgetDefinition) {
+         } else if (element instanceof WidgetDef) {
             return ImageManager.getImage(CoreImage.GEAR);
          } else if (element instanceof CompositeLayoutItem || element instanceof WrappedLayout) {
             return ImageManager.getImage(AtsImage.COMPOSITE_STATE_ITEM);

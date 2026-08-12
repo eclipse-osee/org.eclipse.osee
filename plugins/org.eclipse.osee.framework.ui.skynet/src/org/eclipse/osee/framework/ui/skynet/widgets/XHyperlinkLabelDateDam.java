@@ -60,8 +60,7 @@ public class XHyperlinkLabelDateDam extends XHyperlinkLabelValueSelection implem
    @Override
    public boolean handleSelection() {
       try {
-         DateSelectionDialog diag = new DateSelectionDialog("Select " + attributeTypeToken.getName(),
-            "Select " + attributeTypeToken.getName(), dateValue);
+         DateSelectionDialog diag = new DateSelectionDialog("Select " + attributeTypeToken.getName(), dateValue);
          if (diag.open() == Window.OK) {
             dateValue = diag.getSelectedDate();
             if (artifact != null && artifact.isValid()) {
