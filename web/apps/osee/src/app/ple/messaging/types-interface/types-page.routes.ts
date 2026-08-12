@@ -20,15 +20,7 @@ const routes: Routes = [
 	},
 	{ path: '', loadComponent: () => import('./types-page.component') },
 	{
-		path: ':branchType',
-		loadComponent: () => import('./types-page.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		loadComponent: () => import('./types-page.component'),
-	},
-	{
-		path: ':branchType/:branchId/:type',
+		path: ':type',
 		loadComponent: () => import('./types-page.component'),
 	},
 ];

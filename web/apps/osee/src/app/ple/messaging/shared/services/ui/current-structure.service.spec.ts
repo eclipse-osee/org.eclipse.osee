@@ -415,8 +415,8 @@ servicesUnderTest.forEach((testCase) => {
 			scheduler.run(({ expectObservable }) => {
 				service.branchId = '10';
 				service.BranchType = 'working';
-				expectObservable(service.connectionsRoute).toBe('a', {
-					a: '/ple/messaging/connections/working/10',
+				expectObservable(service.connectionsRoute).toBe('(a|)', {
+					a: '/ple/messaging/connections',
 				});
 			});
 		});

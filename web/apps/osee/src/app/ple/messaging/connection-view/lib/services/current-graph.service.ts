@@ -1305,10 +1305,9 @@ export class CurrentGraphService {
 			this.routeStateService.type,
 			this.InDiff,
 		]).pipe(
-			switchMap(([id, type, diff]) =>
+			switchMap(([_id, _type, diff]) =>
 				of({
-					beginning:
-						'/ple/messaging/connections/' + type + '/' + id + '/',
+					beginning: '/ple/messaging/connections/',
 					end: diff ? '/diff' : '',
 				})
 			)

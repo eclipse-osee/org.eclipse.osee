@@ -20,14 +20,6 @@ const routes: Routes = [
 	},
 	{ path: '', loadComponent: () => import('./list-configuration.component') },
 	{
-		path: ':branchType',
-		loadComponent: () => import('./list-configuration.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		loadComponent: () => import('./list-configuration.component'),
-	},
-	{
 		path: '',
 		loadComponent: () => import('@osee/diff/views'),
 		outlet: 'rightSideNav',

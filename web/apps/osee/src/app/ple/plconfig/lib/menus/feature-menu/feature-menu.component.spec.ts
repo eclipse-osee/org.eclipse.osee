@@ -52,19 +52,8 @@ describe('FeatureMenuComponent', () => {
 							component: FeatureMenuComponent,
 							children: [
 								{
-									path: ':branchType',
-									children: [
-										{
-											path: ':branchId',
-											children: [
-												{
-													path: 'diff',
-													component:
-														FeatureMenuComponent,
-												},
-											],
-										},
-									],
+									path: 'diff',
+									component: FeatureMenuComponent,
 								},
 							],
 						},

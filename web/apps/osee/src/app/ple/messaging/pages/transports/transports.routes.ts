@@ -19,14 +19,6 @@ const routes: Routes = [
 		outlet: 'toolbar',
 	},
 	{ path: '', loadComponent: () => import('./transports.component') },
-	{
-		path: ':branchType',
-		loadComponent: () => import('./transports.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		loadComponent: () => import('./transports.component'),
-	},
 ];
 
 export default routes;

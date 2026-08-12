@@ -18,16 +18,6 @@ export const routes: Routes = [
 		title: 'Zenith - Import',
 		loadComponent: () => import('./ci-dashboard-import.component'),
 	},
-	{
-		path: ':branchType',
-		title: 'Zenith - Import',
-		loadComponent: () => import('./ci-dashboard-import.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		title: 'Zenith - Import',
-		loadComponent: () => import('./ci-dashboard-import.component'),
-	},
 ];
 
 export default routes;

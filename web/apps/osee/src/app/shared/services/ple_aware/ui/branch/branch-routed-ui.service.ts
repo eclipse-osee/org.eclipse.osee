@@ -11,7 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 import { UiService, ViewsRoutedUiService } from '@osee/shared/services';
 
 @Injectable({
@@ -22,24 +24,55 @@ export class BranchRoutedUIService {
 	private router = inject(Router);
 	private viewRouteState = inject(ViewsRoutedUiService);
 
-	set branchType(value: 'working' | 'baseline' | '') {
-		const tree = this.router.parseUrl(this.router.url);
-		let baseUrl =
-			tree.root.children?.primary?.segments
-				.map((s) => s.path)
-				.join('/') || this.router.url;
-		if (this.branchService.type.getValue() != '') {
-			baseUrl = baseUrl.split(
-				this.branchService.type.getValue().replace(/ /g, '%20')
-			)[0];
-		}
+	constructor() {
+		// Sync state from query params on initial load
+		this.syncFromUrl(this.router.url);
 
+		// Re-sync whenever navigation completes (e.g., sidebar navigation)
+		this.router.events
+			.pipe(
+				filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+				takeUntilDestroyed()
+			)
+			.subscribe((e) => this.syncFromUrl(e.urlAfterRedirects));
+	}
+
+	/**
+	 * Reads branchType and branchId from the URL query params and updates
+	 * the service state if the URL values differ from current state.
+	 * This is intentionally one-way (URL → state) and only fires on navigation events,
+	 * not on programmatic state changes (which go state → URL via the setters).
+	 */
+	private syncFromUrl(url: string): void {
+		const params = this.router.parseUrl(url).queryParams;
+		const urlType =
+			(params['branchType'] as 'working' | 'baseline' | '') || '';
+		const urlId = params['branchId'] || '';
+
+		if (urlType !== this.branchService.type.getValue()) {
+			this.branchService.typeValue = urlType;
+		}
+		if (urlId !== this.branchService.id.getValue()) {
+			this.branchService.idValue = urlId;
+		}
+	}
+
+	set branchType(value: 'working' | 'baseline' | '') {
 		this.branchService.typeValue = value;
 		this.branchService.idValue = '';
-		this.router.navigate([baseUrl, value], {
-			queryParams: tree.queryParams,
-		});
+		const tree = this.router.parseUrl(this.router.url);
+		const params = { ...tree.queryParams };
+		if (value) {
+			params['branchType'] = value;
+		} else {
+			delete params['branchType'];
+		}
+		delete params['branchId'];
+		delete params['view'];
+		tree.queryParams = params;
+		this.router.navigateByUrl(tree);
 	}
+
 	get type() {
 		return this.branchService.type;
 	}
@@ -49,57 +82,38 @@ export class BranchRoutedUIService {
 	}
 
 	set branchId(value: string) {
-		// view must be set to SENTINEL when the branch changes
-		this.viewRouteState.ViewId = '-1';
-		const tree = this.router.parseUrl(this.router.url);
-		let baseUrl =
-			tree.root.children?.primary?.segments
-				.map((s) => s.path)
-				.join('/') || this.router.url;
-		if (this.branchService.type.getValue() != '') {
-			baseUrl = baseUrl.split(
-				this.branchService.type.getValue().replace(/ /g, '%20')
-			)[0];
-		}
 		this.branchService.idValue = value;
-		const queryParams = tree.queryParams;
-		// remove the view from queryParams if it exists in the tree.queryParams
-		delete queryParams['view'];
-		this.router.navigate(
-			[baseUrl, this.branchService.type.getValue(), value],
-			{ queryParams: queryParams }
-		);
+		const tree = this.router.parseUrl(this.router.url);
+		const params = { ...tree.queryParams };
+		if (value) {
+			params['branchId'] = value;
+		} else {
+			delete params['branchId'];
+		}
+		delete params['view'];
+		tree.queryParams = params;
+		this.router.navigateByUrl(tree);
 	}
 
 	/**
-	 *  this function is used to change position from baseline/working & the branch id, however it has the catch of doing in-line position replacement instead of replacing the whole URL
+	 * Sets both branchType and branchId at once.
 	 */
 	set position(value: { type: 'working' | 'baseline' | ''; id: string }) {
-		let baseUrl;
-		if (this.branchService.type.getValue() != '') {
-			baseUrl = this.router.url.split(
-				this.branchService.type.getValue().replace(/ /g, '%20')
-			);
-		} else {
-			baseUrl = this.router.url;
-		}
-		const [initialURL, idURL] = baseUrl;
-		let remainingURL = idURL?.includes(
-			'/' + this.branchService.id.getValue() + '/'
-		)
-			? idURL
-					.split('/' + this.branchService.id.getValue() + '/')[1]
-					.replace(/ /g, '%20')
-					.split('/')
-			: [];
-		remainingURL = remainingURL.map((u) => u.replace('%2D', '-'));
 		this.branchService.typeValue = value.type;
 		this.branchService.idValue = value.id;
-		this.router.navigate([
-			initialURL,
-			value.type,
-			value.id,
-			...remainingURL,
-		]);
+		const tree = this.router.parseUrl(this.router.url);
+		const params = { ...tree.queryParams };
+		if (value.type) {
+			params['branchType'] = value.type;
+		} else {
+			delete params['branchType'];
+		}
+		if (value.id) {
+			params['branchId'] = value.id;
+		} else {
+			delete params['branchId'];
+		}
+		tree.queryParams = params;
+		this.router.navigateByUrl(tree);
 	}
 }
