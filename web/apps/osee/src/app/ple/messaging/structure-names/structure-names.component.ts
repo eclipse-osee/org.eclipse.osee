@@ -36,7 +36,7 @@ import { CurrentStructureNamesService } from '@osee/messaging/shared/services';
 import { connection, connectionSentinel } from '@osee/messaging/shared/types';
 import { UiService } from '@osee/shared/services';
 import { HttpLoadingService } from '@osee/shared/services/network';
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -111,13 +111,11 @@ export class StructureNamesComponent implements OnInit {
 		return paths.map((x) => x.name + ':' + x.path).join(',');
 	}
 
-	basePath = combineLatest([this.uiService.id, this.uiService.type]).pipe(
-		switchMap(([id, type]) => of(`../../../connections/${type}/${id}`))
-	);
+	basePath = of('/ple/messaging/connections');
 	loading = this.loadingService.isLoading;
 
 	ngOnInit(): void {
-		this.route.paramMap
+		this.route.queryParamMap
 			.pipe(
 				map((params) => {
 					this.uiService.typeValue =

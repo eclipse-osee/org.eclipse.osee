@@ -17,7 +17,6 @@ import {
 	ElementRef,
 	HostListener,
 	inject,
-	Input,
 	signal,
 	viewChild,
 } from '@angular/core';
@@ -26,7 +25,6 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { fromEvent, take, takeUntil } from 'rxjs';
-import { UiService } from '@osee/shared/services';
 import { ArtifactTabGroupComponent } from './lib/components/artifact-tab-group/artifact-tab-group.component';
 import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
 import { HierarchySection } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
@@ -46,7 +44,6 @@ import { ArtifactEditorDirtyService } from './lib/services/artifact-editor-dirty
 	templateUrl: './artifact-explorer.component.html',
 })
 export class ArtifactExplorerComponent {
-	private uiService = inject(UiService);
 	private dirtyService = inject(ArtifactEditorDirtyService);
 	private tabService = inject(ArtifactExplorerTabService);
 	private destroyRef = inject(DestroyRef);
@@ -67,22 +64,6 @@ export class ArtifactExplorerComponent {
 	onBeforeUnload(event: BeforeUnloadEvent) {
 		if (this.dirtyService.hasDirtyEditors()) {
 			event.preventDefault();
-		}
-	}
-
-	@Input() set branchType(branchType: 'working' | 'baseline' | '') {
-		if (branchType != undefined) {
-			this.uiService.typeValue = branchType;
-		} else {
-			this.uiService.typeValue = '';
-		}
-	}
-
-	@Input() set branchId(branchId: string) {
-		if (branchId != undefined) {
-			this.uiService.idValue = branchId;
-		} else {
-			this.uiService.idValue = '';
 		}
 	}
 

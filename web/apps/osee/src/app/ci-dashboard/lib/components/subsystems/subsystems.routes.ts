@@ -18,16 +18,6 @@ export const routes: Routes = [
 		title: 'Zenith - Subsystems',
 		loadComponent: () => import('./subsystems.component'),
 	},
-	{
-		path: ':branchType',
-		title: 'Zenith - Subsystems',
-		loadComponent: () => import('./subsystems.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		title: 'Zenith - Subsystems',
-		loadComponent: () => import('./subsystems.component'),
-	},
 ];
 
 export default routes;

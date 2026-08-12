@@ -82,7 +82,7 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		combineLatest([
-			this.route.paramMap,
+			this.route.queryParamMap,
 			of(this.route).pipe(
 				switchMap((route) => {
 					while (route.firstChild) {

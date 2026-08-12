@@ -18,7 +18,7 @@ test('test', async ({ page }) => {
 	await page
 		.getByRole('link', { name: 'Product Line Configuration' })
 		.click();
-	await page.goto('/ple/plconfig/baseline');
+	await page.goto('/ple/plconfig?branchType=baseline');
 	await selectBranch(page, 'Baseline', 'SAW PL Hardening Branch');
 	await page.getByRole('button', { name: 'Create Action' }).click();
 	await page.getByTestId('action-title').click();

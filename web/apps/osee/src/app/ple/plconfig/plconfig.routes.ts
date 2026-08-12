@@ -21,23 +21,9 @@ const routes: Routes = [
 	},
 	{ path: '', loadComponent: () => import('./plconfig.component') },
 	{
-		path: ':branchType',
+		path: 'diff',
 		loadComponent: () => import('./plconfig.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		children: [
-			{
-				path: '',
-				loadComponent: () => import('./plconfig.component'),
-			},
-
-			{
-				path: 'diff',
-				loadComponent: () => import('./plconfig.component'),
-				resolve: { diff: diffReportResolverFn },
-			},
-		],
+		resolve: { diff: diffReportResolverFn },
 	},
 	{
 		path: '',
