@@ -11,6 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { BranchRoutedUIService } from '@osee/shared/services';
+import { branchRoutedUiServiceMock } from '@osee/shared/testing';
 
 import { ChangeReportComponent } from './change-report.component';
 
@@ -20,7 +29,16 @@ describe('ChangeReportComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [ChangeReportComponent],
+			imports: [ChangeReportComponent, NoopAnimationsModule],
+			providers: [
+				provideRouter([]),
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+				{
+					provide: BranchRoutedUIService,
+					useValue: branchRoutedUiServiceMock,
+				},
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ChangeReportComponent);
