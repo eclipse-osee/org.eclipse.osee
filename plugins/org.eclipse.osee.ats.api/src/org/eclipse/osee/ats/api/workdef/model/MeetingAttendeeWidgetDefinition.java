@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 /**
  * @author Donald G. Dunne
  */
-public class MeetingAttendeeWidgetDefinition extends WidgetDefinition {
+public class MeetingAttendeeWidgetDefinition extends WidgetDef {
 
    public MeetingAttendeeWidgetDefinition() {
       super("Meeting Attendee(s)", "XHyperlinkMeetingAttendeesSelectionDam");

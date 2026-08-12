@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -90,11 +90,11 @@ public class AtsTestUtil {
       return AtsTestUtilCore.getAnalyzeStateDef();
    }
 
-   public static WidgetDefinition getEstHoursWidgetDef() {
+   public static WidgetDef getEstHoursWidgetDef() {
       return AtsTestUtilCore.getEstHoursWidgetDef();
    }
 
-   public static WidgetDefinition getWorkPackageWidgetDef() {
+   public static WidgetDef getWorkPackageWidgetDef() {
       return AtsTestUtilCore.getWorkPackageWidgetDef();
    }
 

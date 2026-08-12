@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -61,9 +61,9 @@ public interface IAtsWorkDefinitionService {
     * <br>
     * Note: Modifing this list will not affect the state widgets. Use addStateItem().
     */
-   List<WidgetDefinition> getWidgetsFromLayoutItems(StateDefinition stateDef);
+   List<WidgetDef> getWidgetsFromLayoutItems(StateDefinition stateDef);
 
-   List<WidgetDefinition> getWidgetsFromLayoutItems(StateDefinition stateDef, List<LayoutItem> layoutItems);
+   List<WidgetDef> getWidgetsFromLayoutItems(StateDefinition stateDef, List<LayoutItem> layoutItems);
 
    WorkDefinition getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review);
 
@@ -113,10 +113,10 @@ public interface IAtsWorkDefinitionService {
    /**
     * @return widget definitions from header and all states
     */
-   Collection<WidgetDefinition> getWidgets(WorkDefinition workDef);
+   Collection<WidgetDef> getWidgets(WorkDefinition workDef);
 
-   default WidgetDefinition getWidgetFromLayoutItems(StateDefinition stateDef, String label) {
-      for (WidgetDefinition widgetDef : getWidgetsFromLayoutItems(stateDef)) {
+   default WidgetDef getWidgetFromLayoutItems(StateDefinition stateDef, String label) {
+      for (WidgetDef widgetDef : getWidgetsFromLayoutItems(stateDef)) {
          if (widgetDef.getName().equals(label)) {
             return widgetDef;
          }

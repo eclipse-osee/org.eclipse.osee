@@ -48,7 +48,7 @@ public class XHyperlinkLabelDate extends XHyperlinkLabelValueSelection {
    @Override
    public boolean handleSelection() {
       try {
-         DateSelectionDialog diag = new DateSelectionDialog("Select " + label, "Select " + label, dateValue);
+         DateSelectionDialog diag = new DateSelectionDialog("Select " + label, dateValue);
          if (diag.open() == Window.OK) {
             dateValue = diag.getSelectedDate();
             refresh();

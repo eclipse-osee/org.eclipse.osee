@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.review.UserRoleError;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 
 /**
  * @author Donald G. Dunne
@@ -31,7 +31,7 @@ public class AtsXUserRoleValidator extends AtsXWidgetValidator {
    public static String WIDGET_NAME = "XUserRoleViewer";
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDef widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {

@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 
 /**
  * Provider to validate XWidget/IAttributeWidget entry against workitem store model without use of XWidget UI
@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
  */
 public interface IAtsXWidgetValidator {
 
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDef widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices);
 
 }

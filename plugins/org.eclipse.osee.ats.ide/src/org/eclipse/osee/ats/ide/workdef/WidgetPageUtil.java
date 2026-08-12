@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -118,8 +118,8 @@ public class WidgetPageUtil {
       SwtXWidgetRenderer swtXWidgetRenderer) {
       // Add static XWidgetDatas to statePage
       for (LayoutItem stateItem : layoutItems) {
-         if (stateItem instanceof WidgetDefinition) {
-            processWidgetDefinition((WidgetDefinition) stateItem, sma, swtXWidgetRenderer);
+         if (stateItem instanceof WidgetDef) {
+            processWidgetDefinition((WidgetDef) stateItem, sma, swtXWidgetRenderer);
          } else if (stateItem instanceof CompositeLayoutItem) {
             processComposite((CompositeLayoutItem) stateItem, sma, swtXWidgetRenderer);
          }
@@ -148,8 +148,8 @@ public class WidgetPageUtil {
       for (int x = 0; x < stateItems.size(); x++) {
          boolean lastWidget = x == stateItems.size() - 1;
          LayoutItem stateItem = stateItems.get(x);
-         if (stateItem instanceof WidgetDefinition) {
-            XWidgetData widData = processWidgetDefinition((WidgetDefinition) stateItem, sma, swtXWidgetRenderer);
+         if (stateItem instanceof WidgetDef) {
+            XWidgetData widData = processWidgetDefinition((WidgetDef) stateItem, sma, swtXWidgetRenderer);
             if (firstWidget) {
                if (compositeLayoutItem.getNumColumns() > 0) {
                   if (!compositeLayoutItem.isGroupComposite()) {
@@ -178,7 +178,7 @@ public class WidgetPageUtil {
    /**
     * TODO This will eventually go away and ATS pages will be generated straight from WidgetDefinitions.
     */
-   public static XWidgetData processWidgetDefinition(WidgetDefinition widgetDef, AbstractWorkflowArtifact sma,
+   public static XWidgetData processWidgetDefinition(WidgetDef widgetDef, AbstractWorkflowArtifact sma,
       SwtXWidgetRenderer swtXWidgetRenderer) {
       XWidgetData widData = null;
       try {

@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -180,9 +180,9 @@ public class AtsWorkDefinitionServiceImplTest {
 
       CompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
       def.getLayoutItems().add(stateItem2);
-      WidgetDefinition widget2 = new WidgetDefinition("item 2");
+      WidgetDef widget2 = new WidgetDef("item 2");
       stateItem2.getLayoutItems().add(widget2);
-      WidgetDefinition widget3 = new WidgetDefinition("item 3");
+      WidgetDef widget3 = new WidgetDef("item 3");
       stateItem2.getLayoutItems().add(widget3);
 
       Assert.assertFalse(new AtsWorkDefinitionServiceImpl(atsApi, null).hasWidgetNamed(def, "item 45"));

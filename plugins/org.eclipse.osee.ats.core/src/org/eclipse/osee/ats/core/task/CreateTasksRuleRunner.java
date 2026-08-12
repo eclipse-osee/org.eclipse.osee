@@ -57,7 +57,7 @@ public class CreateTasksRuleRunner {
             results.error("StaticTaskDefs can not be empty");
             return results;
          }
-         if (Strings.isInValid(tasksDef.getComment())) {
+         if (Strings.isInValid(tasksDef.getCommitComment())) {
             results.error("Comment can not be null or empty");
             return results;
          }

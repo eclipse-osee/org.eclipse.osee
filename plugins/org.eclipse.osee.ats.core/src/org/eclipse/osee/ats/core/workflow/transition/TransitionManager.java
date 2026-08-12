@@ -53,7 +53,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -587,7 +587,7 @@ public class TransitionManager implements IAtsChangeSetListener {
       if (workItem.isPeerReview()) {
          IAtsPeerToPeerReview review = (IAtsPeerToPeerReview) workItem;
          StateDefinition stateDef = review.getWorkDefinition().getStateByName(fromState.getName());
-         WidgetDefinition widgetDef =
+         WidgetDef widgetDef =
             atsApi.getWorkDefinitionService().getWidgetFromLayoutItems(stateDef, ReviewUtil.MEETING_ATTENDEES_LABEL);
          if (widgetDef != null) {
             if (widgetDef.is(WidgetOption.RFT) || (widgetDef.is(
