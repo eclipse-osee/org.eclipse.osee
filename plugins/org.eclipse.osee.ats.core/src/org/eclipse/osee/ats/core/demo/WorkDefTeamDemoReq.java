@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CreateChangeReportTasksWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -47,7 +47,7 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
       bld.andHeader() //
          .andLayout( //
             getChangeTypeComposite(), //
-            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam") //
+            new WidgetDef("Work Package", "XHyperlinkWorkPackageDam") //
          ) //
          .isShowMetricsHeader(false) //
          .andLayout( //
@@ -58,10 +58,10 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"),
+            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
+            new WidgetDef(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
+            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"),
             new SignByAndDateWidgetDefinition("Lead Sign Off", AtsAttributeTypes.SignedOffBy,
                AtsAttributeTypes.SignedOffByDate), //
             new SignByAndDateWidgetDefinition("Manager Signoff", AtsAttributeTypes.ManagerSignedOffBy,
@@ -75,19 +75,19 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
+            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDef(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
+            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
+            new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"));
+            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
+            new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
@@ -96,13 +96,13 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
          .andTransitionListener(TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges) //
          .andLayout( //
             getWorkingBranchWidgetComposite(), //
-            new WidgetDefinition("Validate Requirement Changes", "XValidateReqChangesButton"), //
-            new WidgetDefinition("Commit Manager", "XCommitManager"), //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
+            new WidgetDef("Validate Requirement Changes", "XValidateReqChangesButton"), //
+            new WidgetDef("Commit Manager", "XCommitManager"), //
+            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
+            new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
             new CreateChangeReportTasksWidgetDefinition("Create Tasks from Requirement Changes",
                TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDef(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

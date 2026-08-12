@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
@@ -38,7 +38,7 @@ public class WorkDefTeamMIM extends AbstractWorkDef {
       bld.andHeader() //
          .andLayout( //
             getChangeTypeComposite(), //
-            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam" //
+            new WidgetDef("Work Package", "XHyperlinkWorkPackageDam" //
             ) //
          ).isShowMetricsHeader(false); //
 
@@ -46,9 +46,9 @@ public class WorkDefTeamMIM extends AbstractWorkDef {
          .andToStates(StateToken.Review, StateToken.Cancelled) //
          .andColor(StateColor.DARK_BLUE) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDef("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
             getWorkingBranchWidgetComposite(), //
-            new WidgetDefinition("Commit Manager", "XCommitManager"));
+            new WidgetDef("Commit Manager", "XCommitManager"));
 
       bld.andState(2, "Review", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
@@ -56,16 +56,16 @@ public class WorkDefTeamMIM extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_YELLOW) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDef("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
             getWorkingBranchWidgetComposite(), //
-            new WidgetDefinition("Commit Manager", "XCommitManager") //
+            new WidgetDef("Commit Manager", "XCommitManager") //
          );
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT) //
+            new WidgetDef("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERT) //
          );
 
       bld.andState(4, "Cancelled", StateType.Cancelled) //

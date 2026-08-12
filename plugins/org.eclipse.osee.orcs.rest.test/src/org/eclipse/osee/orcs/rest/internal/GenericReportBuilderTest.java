@@ -453,4 +453,106 @@ public class GenericReportBuilderTest {
             ex.getMessage().contains("followFork cannot be called before creating a level"));
       }
    }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testSortBeforeLevelThrowsException() {
+      report.sort(nameAttrType);
+   }
+
+   @Test
+   public void testSortSetsAttributeOnCurrentLevel() {
+      when(tokenService.getArtifactType("Folder")).thenReturn(artifactType);
+      when(queryBuilder.andIsOfType(artifactType)).thenReturn(queryBuilder);
+
+      report.level("Folders", "Folder").sort(nameAttrType);
+
+      assertEquals(nameAttrType, report.getLevels().get(0).getSortByAttribute());
+   }
+
+   @Test
+   public void testSortOrdersResultsAscendingCaseInsensitive() {
+      when(tokenService.getArtifactType("Folder")).thenReturn(artifactType);
+      when(queryBuilder.andIsOfType(artifactType)).thenReturn(queryBuilder);
+
+      ArtifactReadable artifact3 = org.mockito.Mockito.mock(ArtifactReadable.class);
+
+      when(queryBuilder.asArtifacts()).thenReturn(Arrays.asList(artifact1, artifact2, artifact3));
+
+      when(artifact1.getIdString()).thenReturn("100");
+      when(artifact1.getAttributeValuesAsString(nameAttrType)).thenReturn("Charlie");
+      when(artifact2.getIdString()).thenReturn("200");
+      when(artifact2.getAttributeValuesAsString(nameAttrType)).thenReturn("alpha");
+      when(artifact3.getIdString()).thenReturn("300");
+      when(artifact3.getAttributeValuesAsString(nameAttrType)).thenReturn("Bravo");
+
+      report.level("Folders", "Folder").column("Id").column("Name", nameAttrType).sort(nameAttrType);
+
+      List<Object[]> rows = new ArrayList<>();
+      report.getDataRowsFromQuery(rows);
+
+      // rows[0] = top, rows[1] = header, rows[2..4] = data sorted by name (case-insensitive)
+      assertEquals(5, rows.size());
+      assertEquals("alpha", ((String[]) rows.get(2))[1]);
+      assertEquals("Bravo", ((String[]) rows.get(3))[1]);
+      assertEquals("Charlie", ((String[]) rows.get(4))[1]);
+   }
+
+   @Test
+   public void testSortPlacesNullValuesAtEnd() {
+      when(tokenService.getArtifactType("Folder")).thenReturn(artifactType);
+      when(queryBuilder.andIsOfType(artifactType)).thenReturn(queryBuilder);
+
+      ArtifactReadable artifact3 = org.mockito.Mockito.mock(ArtifactReadable.class);
+
+      when(queryBuilder.asArtifacts()).thenReturn(Arrays.asList(artifact1, artifact2, artifact3));
+
+      when(artifact1.getIdString()).thenReturn("100");
+      when(artifact1.getAttributeValuesAsString(nameAttrType)).thenReturn(null);
+      when(artifact2.getIdString()).thenReturn("200");
+      when(artifact2.getAttributeValuesAsString(nameAttrType)).thenReturn("Zebra");
+      when(artifact3.getIdString()).thenReturn("300");
+      when(artifact3.getAttributeValuesAsString(nameAttrType)).thenReturn("Apple");
+
+      report.level("Folders", "Folder").column("Id").column("Name", nameAttrType).sort(nameAttrType);
+
+      List<Object[]> rows = new ArrayList<>();
+      report.getDataRowsFromQuery(rows);
+
+      // Sorted: Apple, Zebra, null-at-end
+      assertEquals(5, rows.size());
+      assertEquals("Apple", ((String[]) rows.get(2))[1]);
+      assertEquals("Zebra", ((String[]) rows.get(3))[1]);
+      assertEquals(null, ((String[]) rows.get(4))[1]);
+   }
+
+   @Test
+   public void testSortWithSingleElementDoesNotChangeOrder() {
+      when(tokenService.getArtifactType("Folder")).thenReturn(artifactType);
+      when(queryBuilder.andIsOfType(artifactType)).thenReturn(queryBuilder);
+      when(queryBuilder.asArtifacts()).thenReturn(Arrays.asList(artifact1));
+
+      when(artifact1.getIdString()).thenReturn("100");
+      when(artifact1.getAttributeValuesAsString(nameAttrType)).thenReturn("Only One");
+
+      report.level("Folders", "Folder").column("Id").column("Name", nameAttrType).sort(nameAttrType);
+
+      List<Object[]> rows = new ArrayList<>();
+      report.getDataRowsFromQuery(rows);
+
+      assertEquals(3, rows.size());
+      assertEquals("Only One", ((String[]) rows.get(2))[1]);
+   }
+
+   @Test
+   public void testSortAppliedPerLevel() {
+      when(tokenService.getArtifactType("Folder")).thenReturn(artifactType);
+      when(tokenService.getArtifactType("File")).thenReturn(artifactType);
+      when(queryBuilder.andIsOfType(artifactType)).thenReturn(queryBuilder);
+
+      report.level("Folders", "Folder").column("Id").sort(nameAttrType);
+      report.level("Files", "File").column("Id").sort(descAttrType);
+
+      assertEquals(nameAttrType, report.getLevels().get(0).getSortByAttribute());
+      assertEquals(descAttrType, report.getLevels().get(1).getSortByAttribute());
+   }
 }

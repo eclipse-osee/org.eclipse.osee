@@ -23,7 +23,7 @@ public class LayoutItem extends AbstractWorkDefItem {
    }
 
    public boolean isWidget() {
-      return this instanceof WidgetDefinition;
+      return this instanceof WidgetDef;
    }
 
    public boolean isComposite() {

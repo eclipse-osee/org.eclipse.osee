@@ -16,14 +16,23 @@ package org.eclipse.osee.orcs.rest.internal;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeClient;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.IOseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
@@ -31,6 +40,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.writers.PublishTemplateReport;
 import org.eclipse.osee.orcs.rest.model.ReportEndpoint;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author David W. Miller
@@ -103,6 +113,105 @@ public final class ReportEndpointImpl implements ReportEndpoint {
       }
 
       return Response.ok(jsonResponse).build();
+   }
+
+   private static final int MAX_HIERARCHY_DEPTH = 100;
+   private static final int MAX_PADDING = 5;
+   private static final Set<Long> ALLOWED_NUMBERING_ATTRIBUTE_TYPES = Set.of( //
+      CoreAttributeTypes.Annotation.getId(), //
+      CoreAttributeTypes.Description.getId(), //
+      CoreAttributeTypes.DoorsHierarchy.getId(), //
+      CoreAttributeTypes.ParagraphNumber.getId());
+
+   @Override
+   public XResultData applyHierarchyNumbers(BranchId branch, ArtifactId startArtifact, long attributeTypeId,
+      int padding) {
+         
+      XResultData results = new XResultData();
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      
+      if (padding < 1 || padding > MAX_PADDING) {
+         results.errorf("Padding must be between 1 and %d, got %d", MAX_PADDING, padding);
+         return results;
+      }
+
+      if (attributeTypeId == 0L) {
+         results.errorf("attributeType query parameter is required");
+         return results;
+      }
+
+      if (!ALLOWED_NUMBERING_ATTRIBUTE_TYPES.contains(attributeTypeId)) {
+         results.errorf("Attribute type %d is not allowed for hierarchy numbering. Allowed types: Annotation, Description, DoorsHierarchy, ParagraphNumber",
+            attributeTypeId);
+         return results;
+      }
+
+      AttributeTypeToken attributeType = orcsApi.tokenService().getAttributeType(attributeTypeId);
+      ArtifactReadable rootArt = orcsApi.getQueryFactory().fromBranch(branch).andId(startArtifact).getArtifact();
+
+      if (rootArt == null) {
+         results.errorf("Artifact %s not found on branch %s", startArtifact, branch);
+         return results;
+      }
+
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Apply hierarchy numbers");
+
+      int maxNumber = intPow(10, padding) - 1;
+      results.logf("Applying hierarchy numbers starting at artifact %s with padding %d (max per level: %d)",
+         rootArt.getIdString(), padding, maxNumber);
+
+      try {
+         int count = applyHierarchyNumbersRecursive(rootArt, "", attributeType, padding, maxNumber, tx, results, 0);
+         tx.commit();
+         results.logf("Hierarchy numbering committed successfully. %d artifacts numbered.", count);
+      } catch (Exception ex) {
+         results.errorf("Error during hierarchy numbering, transaction discarded: %s", ex.getMessage());
+      }
+      return results;
+   }
+
+   private static int intPow(int base, int exponent) {
+      int result = 1;
+      for (int i = 0; i < exponent; i++) {
+         result *= base;
+      }
+      return result;
+   }
+
+   private int applyHierarchyNumbersRecursive(ArtifactReadable artifact, String prefix,
+      AttributeTypeToken attributeType, int padding, int maxNumber, TransactionBuilder tx, XResultData results,
+      int depth) {
+      if (depth >= MAX_HIERARCHY_DEPTH) {
+         results.warningf("Maximum hierarchy depth (%d) reached at artifact %s — skipping deeper levels.",
+            MAX_HIERARCHY_DEPTH, artifact.getIdString());
+         return 0;
+      }
+
+      List<ArtifactReadable> children =
+         artifact.getRelated(CoreRelationTypes.DefaultHierarchical_Child, DeletionFlag.EXCLUDE_DELETED);
+
+      int count = 0;
+      int index = 0;
+      for (ArtifactReadable child : children) {
+         index++;
+         int number = Math.min(index, maxNumber);
+         String segment = String.format("%0" + padding + "d", number);
+         String hierarchyNumber = prefix.isEmpty() ? segment : prefix + "." + segment;
+
+         try {
+            tx.setSoleAttributeFromString(child, attributeType, hierarchyNumber);
+            results.logf("Set %s = %s on artifact %s", attributeType.getName(), hierarchyNumber,
+               child.getIdString());
+            count++;
+         } catch (OseeArgumentException ex) {
+            results.warningf("Skipping artifact %s: attribute type %s not valid for artifact type - %s",
+               child.getIdString(), attributeType.getName(), ex.getMessage());
+         }
+
+         count += applyHierarchyNumbersRecursive(child, hierarchyNumber, attributeType, padding, maxNumber, tx,
+            results, depth + 1);
+      }
+      return count;
    }
 
 }

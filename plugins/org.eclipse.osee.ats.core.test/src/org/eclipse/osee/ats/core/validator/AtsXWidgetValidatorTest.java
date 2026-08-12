@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.core.util.StringValueProvider;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
@@ -39,7 +39,7 @@ public class AtsXWidgetValidatorTest {
 
       @Override
       public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider,
-         WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+         WidgetDef widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
          return null;
       }
    };
@@ -57,7 +57,7 @@ public class AtsXWidgetValidatorTest {
 
    @org.junit.Test
    public void testIsRequiredForTransition() {
-      WidgetDefinition widgetDef = new WidgetDefinition("test widget");
+      WidgetDef widgetDef = new WidgetDef("test widget");
       Assert.assertFalse(validator.isRequiredForTransition(widgetDef));
 
       widgetDef.getOptions().add(WidgetOption.RFT);
@@ -66,7 +66,7 @@ public class AtsXWidgetValidatorTest {
 
    @org.junit.Test
    public void testIsRequiredForCompleted() {
-      WidgetDefinition widgetDef = new WidgetDefinition("test widget");
+      WidgetDef widgetDef = new WidgetDef("test widget");
       Assert.assertFalse(validator.isRequiredForCompletion(widgetDef));
 
       widgetDef.getOptions().add(WidgetOption.RFC);
@@ -82,7 +82,7 @@ public class AtsXWidgetValidatorTest {
 
    @org.junit.Test
    public void testValidateWidgetIsRequired() {
-      WidgetDefinition widgetDef = new WidgetDefinition("test");
+      WidgetDef widgetDef = new WidgetDef("test");
       widgetDef.getOptions().add(WidgetOption.RFT);
 
       StateDefinition fromStateDef = new StateDefinition("from");
@@ -129,7 +129,7 @@ public class AtsXWidgetValidatorTest {
 
    @org.junit.Test
    public void testIsValidDate() {
-      WidgetDefinition widgetDef = new WidgetDefinition("test");
+      WidgetDef widgetDef = new WidgetDef("test");
 
       WidgetResult result = validator.isValidDate(new MockDateValueProvider(Arrays.asList(new Date())), widgetDef);
       Assert.assertEquals(WidgetStatus.Success, result.getStatus());

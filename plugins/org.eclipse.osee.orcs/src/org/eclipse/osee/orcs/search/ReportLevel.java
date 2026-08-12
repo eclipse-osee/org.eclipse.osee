@@ -35,6 +35,7 @@ public class ReportLevel {
    private final List<RelationTypeSide> forkRelations = new LinkedList<>();
    /** Tracks all relation names used in this level (main + forks) to prevent duplicates */
    private final Set<String> forkRelationNames = new HashSet<>();
+   private AttributeTypeToken sortByAttribute;
 
    public ReportLevel(String levelName) {
       this.levelName = levelName;
@@ -127,6 +128,14 @@ public class ReportLevel {
       }
       all.addAll(forkRelations);
       return all;
+   }
+
+   public void setSortByAttribute(AttributeTypeToken sortByAttribute) {
+      this.sortByAttribute = sortByAttribute;
+   }
+
+   public AttributeTypeToken getSortByAttribute() {
+      return sortByAttribute;
    }
 
    private List<ReportColumn> getColumnsOfType(AttributeTypeToken type) {

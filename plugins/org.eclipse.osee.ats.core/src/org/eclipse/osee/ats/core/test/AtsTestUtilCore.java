@@ -47,7 +47,7 @@ import org.eclipse.osee.ats.api.workdef.StateTypeAdapter;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -86,7 +86,7 @@ public class AtsTestUtilCore {
    private static ActionableItem testAi, testAi2, testAi3, testAi4;
    private static IAtsAction actionArt, actionArt2, actionArt3, actionArt4;
    private static StateDefinition analyze, implement, completed, cancelled;
-   private static WidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
+   private static WidgetDef estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
    private static Boolean productionDatastore;
    private static AtsUser asUser;
@@ -135,12 +135,12 @@ public class AtsTestUtilCore {
       return analyze;
    }
 
-   public static WidgetDefinition getEstHoursWidgetDef() {
+   public static WidgetDef getEstHoursWidgetDef() {
       ensureLoaded();
       if (estHoursWidgetDef == null) {
          for (LayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
             if (item.getName().equals("ats.Estimated Hours")) {
-               estHoursWidgetDef = (WidgetDefinition) item;
+               estHoursWidgetDef = (WidgetDef) item;
                break;
             }
          }
@@ -148,12 +148,12 @@ public class AtsTestUtilCore {
       return estHoursWidgetDef;
    }
 
-   public static WidgetDefinition getWorkPackageWidgetDef() {
+   public static WidgetDef getWorkPackageWidgetDef() {
       ensureLoaded();
       if (workPackageWidgetDef == null) {
          for (LayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
             if (item.getName().equals("ats.Work Package")) {
-               workPackageWidgetDef = (WidgetDefinition) item;
+               workPackageWidgetDef = (WidgetDef) item;
                break;
             }
          }

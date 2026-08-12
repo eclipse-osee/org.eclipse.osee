@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -36,11 +36,11 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return toStateDef.isCompleted();
    }
 
-   public boolean isRequiredForTransition(WidgetDefinition widgetDef) {
+   public boolean isRequiredForTransition(WidgetDef widgetDef) {
       return widgetDef.getOptions().contains(WidgetOption.RFT);
    }
 
-   public boolean isRequiredForCompletion(WidgetDefinition widgetDef) {
+   public boolean isRequiredForCompletion(WidgetDef widgetDef) {
       return widgetDef.getOptions().contains(WidgetOption.RFC);
    }
 
@@ -48,7 +48,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return provider.isEmpty();
    }
 
-   public WidgetResult validateWidgetIsRequired(IValueProvider provider, WidgetDefinition widgetDef,
+   public WidgetResult validateWidgetIsRequired(IValueProvider provider, WidgetDef widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef) {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition",
@@ -62,9 +62,9 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
 
    @Override
    public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider,
-      WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi);
+      WidgetDef widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi);
 
-   public WidgetResult isValidDate(IValueProvider valueProvider, WidgetDefinition widgetDef) {
+   public WidgetResult isValidDate(IValueProvider valueProvider, WidgetDef widgetDef) {
       if (valueProvider.getDateValues() == null) {
          return new WidgetResult(WidgetStatus.Exception, "Date Values is null");
 
@@ -80,7 +80,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Success;
    }
 
-   public WidgetResult isValidFloat(IValueProvider valueProvider, WidgetDefinition widgetDef) {
+   public WidgetResult isValidFloat(IValueProvider valueProvider, WidgetDef widgetDef) {
       for (Object obj : valueProvider.getValues()) {
          if (obj instanceof Double) {
             return WidgetResult.Success;
@@ -101,7 +101,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Success;
    }
 
-   public WidgetResult isValidInteger(IValueProvider valueProvider, WidgetDefinition widgetDef) {
+   public WidgetResult isValidInteger(IValueProvider valueProvider, WidgetDef widgetDef) {
       for (Object obj : valueProvider.getValues()) {
          if (obj instanceof Integer) {
             return WidgetResult.Success;
@@ -122,7 +122,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Success;
    }
 
-   private WidgetResult checkValid(WidgetDefinition widgetDef, double value, String valueProviderName) {
+   private WidgetResult checkValid(WidgetDef widgetDef, double value, String valueProviderName) {
       Double minValue = widgetDef.getMin();
       Double maxValue = widgetDef.getMax();
 
@@ -137,7 +137,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Success;
    }
 
-   public WidgetResult isValidList(IValueProvider valueProvider, WidgetDefinition widgetDef) {
+   public WidgetResult isValidList(IValueProvider valueProvider, WidgetDef widgetDef) {
       return checkValid(widgetDef, valueProvider.getValues().size(), valueProvider.getName());
    }
 

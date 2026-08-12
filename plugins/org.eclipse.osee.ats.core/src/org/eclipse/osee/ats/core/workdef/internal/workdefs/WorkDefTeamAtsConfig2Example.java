@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
@@ -48,18 +48,18 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
+            new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
 
       bld.andState(2, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new WidgetDefinition(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
+            new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
+            new WidgetDef(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

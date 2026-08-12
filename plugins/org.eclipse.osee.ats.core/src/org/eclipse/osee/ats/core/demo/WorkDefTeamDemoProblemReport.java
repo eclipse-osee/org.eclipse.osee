@@ -45,7 +45,7 @@ import org.eclipse.osee.ats.api.workdef.model.GroupCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.PriorityWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.SpaceWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -89,43 +89,43 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andLayout( //
 
-            new GroupCompositeLayoutItem(1, "Problem", new WidgetDefinition(Description, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(HowFound, "XTextDam", FILL_VERT, SAVE) //
+            new GroupCompositeLayoutItem(1, "Problem", new WidgetDef(Description, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDef(HowFound, "XTextDam", FILL_VERT, SAVE) //
             ),
 
             new GroupCompositeLayoutItem(1, "Build Impact(s)",
 
                new CompositeLayoutItem(6, //
-                  new WidgetDefinition(Ship, "XTextDam", SAVE), new WidgetDefinition(TestNumber, "XTextDam", SAVE),
-                  new WidgetDefinition(FlightNumber, "XTextDam", SAVE)), //
+                  new WidgetDef(Ship, "XTextDam", SAVE), new WidgetDef(TestNumber, "XTextDam", SAVE),
+                  new WidgetDef(FlightNumber, "XTextDam", SAVE)), //
 
                new CompositeLayoutItem(4, //
-                  new WidgetDefinition(TestDate, "XHyperlinkLabelDateDam"),
-                  new WidgetDefinition(CrashOrBlankDisplay, "XHyperlinkTriStateBoolean")),
+                  new WidgetDef(TestDate, "XHyperlinkLabelDateDam"),
+                  new WidgetDef(CrashOrBlankDisplay, "XHyperlinkTriStateBoolean")),
 
                new CompositeLayoutItem(4,
-                  new WidgetDefinition("Found-In Version", AtsRelationTypes.TeamWorkflowToFoundInVersion_Version,
+                  new WidgetDef("Found-In Version", AtsRelationTypes.TeamWorkflowToFoundInVersion_Version,
                      "XFoundInVersionWithPersistWidget").andWidgetHint(WidgetHint.SortAscending),
-                  new WidgetDefinition("Introduced-In Version",
+                  new WidgetDef("Introduced-In Version",
                      AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version,
                      "XIntroducedInVersionWithPersistWidget").andWidgetHint(WidgetHint.SortAscending)), //
 
-               new WidgetDefinition("Open Build Impacts", "XHyperlinkOpenBitTab") //
+               new WidgetDef("Open Build Impacts", "XHyperlinkOpenBitTab") //
 
             ), //
 
             new GroupCompositeLayoutItem(1, "Analysis",
                new CompositeLayoutItem(4,
-                  new WidgetDefinition("Applicability", "XHyperlinkApplicabilityWidgetDam", SAVE), //
-                  new WidgetDefinition("Feature(s) Impacted", FeatureImpactReference, "XHyperlinkFeatureDam", SAVE) //
-               ), new WidgetDefinition(SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(ProposedResolution, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDefinition(ProposedResolutionDate, "XHyperlinkLabelValueSelectionDam") //
+                  new WidgetDef("Applicability", "XHyperlinkApplicabilityWidgetDam", SAVE), //
+                  new WidgetDef("Feature(s) Impacted", FeatureImpactReference, "XHyperlinkFeatureDam", SAVE) //
+               ), new WidgetDef(SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDef(SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDef(ProposedResolution, "XTextDam", FILL_VERT, SAVE), //
+               new WidgetDef(ProposedResolutionDate, "XHyperlinkLabelValueSelectionDam") //
             ),
 
-            new WidgetDefinition(CustomerDescriptionLock, "XCheckBoxDam", LABEL_AFTER, SAVE), //
-            new WidgetDefinition(CustomerDescription, "XTextDam", FILL_VERT, SAVE).andCondition(
+            new WidgetDef(CustomerDescriptionLock, "XCheckBoxDam", LABEL_AFTER, SAVE), //
+            new WidgetDef(CustomerDescription, "XTextDam", FILL_VERT, SAVE).andCondition(
                new EnableCustomerDescriptionIfNotLock()), //
 
             new SignByAndDateWidgetDefinition("Manager Signoff", ManagerSignedOffBy,

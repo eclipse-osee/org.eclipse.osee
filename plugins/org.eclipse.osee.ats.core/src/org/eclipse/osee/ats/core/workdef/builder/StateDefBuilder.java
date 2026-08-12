@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskCommitHook;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
@@ -157,8 +157,8 @@ public class StateDefBuilder {
       List<LayoutItem> currItems, AtomicBoolean found, LayoutItem... insertLayoutItems) {
       for (LayoutItem currItem : currItems) {
          newItems.add(currItem);
-         if (currItem instanceof WidgetDefinition) {
-            WidgetDefinition widgetDef = (WidgetDefinition) currItem;
+         if (currItem instanceof WidgetDef) {
+            WidgetDef widgetDef = (WidgetDef) currItem;
             if (attrTypeLocation.equals(widgetDef.getAttributeType())) {
                found.set(true);
                for (LayoutItem newItem : insertLayoutItems) {

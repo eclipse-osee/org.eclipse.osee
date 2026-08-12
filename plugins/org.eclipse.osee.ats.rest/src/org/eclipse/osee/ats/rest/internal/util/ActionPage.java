@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -279,7 +279,7 @@ public class ActionPage {
             sb.append("</tr></table></td></tr>");
             inComposite = false;
          } else {
-            WidgetDefinition widget = (WidgetDefinition) layout;
+            WidgetDef widget = (WidgetDef) layout;
             if (!getIgnoreWidgetNames().contains(widget.getName())) {
                if (!inComposite) {
                   sb.append("<tr><td>");
@@ -297,7 +297,7 @@ public class ActionPage {
       }
    }
 
-   private void addWidget(StringBuilder sb, IAtsWorkItem workItem, WidgetDefinition widget) {
+   private void addWidget(StringBuilder sb, IAtsWorkItem workItem, WidgetDef widget) {
       if (widget.getName().equals(ROLE_WIDGET_NAME)) {
          addRoleWidget(sb, workItem, widget);
       } else if (widget.getName().equals(REVIEW_DEFECT_WIDGET_NAME)) {
@@ -309,7 +309,7 @@ public class ActionPage {
       }
    }
 
-   private void addCommitManager(StringBuilder sb, IAtsWorkItem workItem2, WidgetDefinition widget) {
+   private void addCommitManager(StringBuilder sb, IAtsWorkItem workItem2, WidgetDef widget) {
       sb.append("Commit Manager: ");
       BranchToken branch = atsApi.getBranchService().getBranch((IAtsTeamWorkflow) workItem);
       if (branch.isValid()) {
@@ -330,7 +330,7 @@ public class ActionPage {
       return ignoredWidgets;
    }
 
-   private void addRoleWidget(StringBuilder sb, IAtsWorkItem workItem, WidgetDefinition widget) {
+   private void addRoleWidget(StringBuilder sb, IAtsWorkItem workItem, WidgetDef widget) {
       sb.append("Roles: ");
       Collection<String> roles =
          atsApi.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.Role);
@@ -353,7 +353,7 @@ public class ActionPage {
       }
    }
 
-   private void addDefectWidget(StringBuilder sb, IAtsWorkItem workItem, WidgetDefinition widget) {
+   private void addDefectWidget(StringBuilder sb, IAtsWorkItem workItem, WidgetDef widget) {
       sb.append("Defects: ");
       Collection<String> defects =
          atsApi.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.ReviewDefect);
@@ -378,7 +378,7 @@ public class ActionPage {
       }
    }
 
-   private void addWidgetDefault(StringBuilder sb, IAtsWorkItem workItem, WidgetDefinition widget) {
+   private void addWidgetDefault(StringBuilder sb, IAtsWorkItem workItem, WidgetDef widget) {
       sb.append(widget.getName());
       try {
          AttributeTypeToken attrType = widget.getAttributeType();

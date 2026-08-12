@@ -250,13 +250,14 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
    }
 
    /**
-    * Sets the from address
-    *
-    * @param address - the user name the message is from
-    */
+   * Sets the from address
+   *
+   * @param address - the user name the message is from
+   */
    // Set all the From Values
    @Override
    public void setFrom(String address) throws AddressException, MessagingException {
+      this.fromAddress = address;
       setFrom(new InternetAddress(address));
    }
 
@@ -265,6 +266,7 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
     */
    @Override
    public void setReplyTo(String address) throws MessagingException {
+      this.replyToAddress = address;
       InternetAddress replyAddresses[] = new InternetAddress[1];
       replyAddresses[0] = new InternetAddress(address);
       setReplyTo(replyAddresses);

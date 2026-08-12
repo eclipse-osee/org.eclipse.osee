@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
@@ -48,15 +48,15 @@ public class WorkDefTaskDefault extends AbstractWorkDef {
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
             new CompositeLayoutItem(6, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
+               new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
+               new WidgetDef(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
-               new WidgetDefinition(AtsAttributeTypes.Category1, "XTextDam") //
+               new WidgetDef(AtsAttributeTypes.WorkflowNotes, "XTextDam"), //
+               new WidgetDef(AtsAttributeTypes.Category1, "XTextDam") //
             ));
 
       bld.andState(2, "Completed", StateType.Completed) //

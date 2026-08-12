@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
@@ -44,10 +44,10 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredTransition extends Ab
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFT), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", RFT) //
+               new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFT), //
+               new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam", RFT) //
             ));
 
       bld.andState(2, "Implement", StateType.Working) //
@@ -55,10 +55,10 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredTransition extends Ab
 
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
             new CompositeLayoutItem(4, //
-               new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFT), //
-               new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam", RFT) //
+               new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFT), //
+               new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam", RFT) //
             ));
 
       bld.andState(3, "Completed", StateType.Completed) //
