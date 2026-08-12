@@ -22,14 +22,6 @@ const routes: Routes = [
 		path: '',
 		loadComponent: () => import('./structure-names.component'),
 	},
-	{
-		path: ':branchType',
-		loadComponent: () => import('./structure-names.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		loadComponent: () => import('./structure-names.component'),
-	},
 ];
 
 export default routes;

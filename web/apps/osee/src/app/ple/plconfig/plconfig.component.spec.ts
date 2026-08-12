@@ -89,6 +89,12 @@ describe('PlconfigComponent', () => {
 									branchType: 'all',
 								})
 							),
+							queryParamMap: of(
+								convertToParamMap({
+									branchType: 'all',
+									branchId: '10',
+								})
+							),
 						},
 					},
 				],

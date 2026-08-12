@@ -21,15 +21,7 @@ const routes: Routes = [
 	},
 	{ path: '', loadComponent: () => import('./connection-view.component') },
 	{
-		path: ':branchType',
-		loadComponent: () => import('./connection-view.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		loadComponent: () => import('./connection-view.component'),
-	},
-	{
-		path: ':branchType/:branchId/diff',
+		path: 'diff',
 		loadComponent: () => import('./connection-view.component'),
 		resolve: {
 			diff: diffReportResolverFn,

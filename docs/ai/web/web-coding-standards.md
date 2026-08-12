@@ -390,6 +390,9 @@ test.describe('Feature Name', () => {
 ### What to avoid
 
 - **Hardcoded URLs** — use relative paths for `page.goto()` and `APP_BASE` only for `waitForResponse` or API request matching.
+- **Local-only data** — never hardcode branch names, artifact names, or IDs that only exist in your local database. Tests run against CI's demo database which is initialized by Setup projects. Use branch/artifact names created by the Setup scripts (e.g., `'MIM Demo'`, `'SAW Product Line'`, `'SAW PL Hardening Branch'`). When writing tests with `playwright codegen`, replace any local-specific names with the CI equivalents before committing.
+- **`keyboard.press('Tab')` for triggering blur/save** — in headless mode, Tab doesn't reliably move focus away from an element. Use `element.evaluate((el) => el.blur())` instead to programmatically trigger blur. This works consistently in both headed and headless modes.
+- **`router.navigate([])` from root-level services** — when a singleton service (like `BranchRoutedUIService`) calls `router.navigate([], { queryParams, queryParamsHandling: 'merge' })`, Angular resolves `[]` relative to the root route, which can strip named outlets and cause 404s on pages with child routes. Use `router.navigateByUrl(tree)` with a parsed URL tree instead — it preserves the full URL structure including outlets and only updates query params.
 - **Chained `waitForTimeout`** — replace with proper waitFor conditions.
 - **Overly specific selectors** — `page.locator('div > span:nth-child(3)')` will break on any layout change.
 - **Tests that depend on execution order** — use `test.describe.configure({ mode: 'serial' })` only when tests genuinely share state (e.g., multi-step workflows like branch creation then commit).

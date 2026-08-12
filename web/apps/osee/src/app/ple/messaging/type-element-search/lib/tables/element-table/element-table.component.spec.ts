@@ -14,6 +14,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { CurrentElementSearchService } from '../../services/current-element-search.service';
 import { MockElementTableSearchComponent } from '../../testing/element-table-search.component.mock';
@@ -40,6 +41,7 @@ describe('ElementTableComponent', () => {
 			providers: [
 				{ provide: CurrentElementSearchService, useValue: serviceSpy },
 				provideNoopAnimations(),
+				provideRouter([]),
 			],
 		}).compileComponents();
 	});

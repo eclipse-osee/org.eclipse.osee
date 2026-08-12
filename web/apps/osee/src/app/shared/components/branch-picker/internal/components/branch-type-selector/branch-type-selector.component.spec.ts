@@ -36,11 +36,6 @@ describe('BranchTypeSelectorComponent', () => {
 			imports: [
 				RouterTestingModule.withRoutes([
 					{ path: '', component: DummyComponent },
-					{ path: ':branchType', component: DummyComponent },
-					{
-						path: ':branchType/:branchId',
-						component: DummyComponent,
-					},
 				]),
 				MatRadioModule,
 				FormsModule,

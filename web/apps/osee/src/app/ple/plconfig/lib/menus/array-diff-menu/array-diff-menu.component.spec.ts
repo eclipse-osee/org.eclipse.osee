@@ -39,19 +39,8 @@ describe('ArrayDiffMenuComponent', () => {
 						component: ArrayDiffMenuComponent,
 						children: [
 							{
-								path: ':branchType',
-								children: [
-									{
-										path: ':branchId',
-										children: [
-											{
-												path: 'diff',
-												component:
-													ArrayDiffMenuComponent,
-											},
-										],
-									},
-								],
+								path: 'diff',
+								component: ArrayDiffMenuComponent,
 							},
 						],
 					},

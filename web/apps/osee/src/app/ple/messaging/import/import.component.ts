@@ -84,7 +84,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 	private importService = inject(ImportService);
 
 	ngOnInit(): void {
-		this.route.paramMap.subscribe((params) => {
+		this.route.queryParamMap.subscribe((params) => {
 			this.routerState.idValue = params.get('branchId') || '';
 			this.routerState.typeValue =
 				(params.get('branchType') as 'working' | 'baseline' | '') || '';

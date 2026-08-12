@@ -309,31 +309,10 @@ export class ReportsService {
 		take(1)
 	);
 
-	private _diffReportRoute = combineLatest([this.ui.id, this.ui.type]).pipe(
-		switchMap(([branchId, branchType]) =>
-			of(
-				'/ple/messaging/reports/' +
-					branchType +
-					'/' +
-					branchId +
-					'/differences'
-			)
-		)
-	);
+	private _diffReportRoute = of('/ple/messaging/reports/differences');
 
-	private _impactedConnectionsRoute = combineLatest([
-		this.ui.id,
-		this.ui.type,
-	]).pipe(
-		switchMap(([branchId, branchType]) =>
-			of(
-				'/ple/messaging/reports/' +
-					branchType +
-					'/' +
-					branchId +
-					'/impactedConnections'
-			)
-		)
+	private _impactedConnectionsRoute = of(
+		'/ple/messaging/reports/impactedConnections'
 	);
 
 	private _impactedConnectionsArtifacts = combineLatest([this.ui.id]).pipe(
@@ -347,34 +326,10 @@ export class ReportsService {
 		)
 	);
 
-	private _nodeTraceReportRoute = combineLatest([
-		this.ui.id,
-		this.ui.type,
-	]).pipe(
-		switchMap(([branchId, branchType]) =>
-			of(
-				'/ple/messaging/reports/' +
-					branchType +
-					'/' +
-					branchId +
-					'/traceReport'
-			)
-		)
-	);
+	private _nodeTraceReportRoute = of('/ple/messaging/reports/traceReport');
 
-	private _unreferencedReportRoute = combineLatest([
-		this.ui.id,
-		this.ui.type,
-	]).pipe(
-		switchMap(([branchId, branchType]) =>
-			of(
-				'/ple/messaging/reports/' +
-					branchType +
-					'/' +
-					branchId +
-					'/unreferenced'
-			)
-		)
+	private _unreferencedReportRoute = of(
+		'/ple/messaging/reports/unreferenced'
 	);
 
 	get nodeTraceReportRequirements() {
