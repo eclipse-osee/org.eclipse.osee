@@ -124,8 +124,13 @@ import { catchError, EMPTY, filter, of, switchMap, take, tap } from 'rxjs';
 					</span>
 					@if (branchId() && branchType()) {
 						<a
-							[routerLink]="'/ple/change-report/' + branchId()"
+							[routerLink]="'/ple/change-report'"
+							[queryParams]="{
+								branchId: branchId(),
+								branchType: branchType(),
+							}"
 							target="_blank"
+							rel="noopener noreferrer"
 							class="tw-no-underline">
 							<button
 								mat-button
@@ -136,6 +141,26 @@ import { catchError, EMPTY, filter, of, switchMap, take, tap } from 'rxjs';
 									>differences</mat-icon
 								>
 								Change Report
+							</button>
+						</a>
+						<a
+							[routerLink]="'/ple/markdown-change-report'"
+							[queryParams]="{
+								branchId: branchId(),
+								branchType: branchType(),
+							}"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="tw-no-underline">
+							<button
+								mat-button
+								class="tw-w-full tw-justify-start tw-text-foreground-text disabled:tw-opacity-50"
+								matTooltip="View markdown content changes made on this branch"
+								aria-label="Markdown Change Report">
+								<mat-icon class="material-icons-outlined"
+									>difference</mat-icon
+								>
+								Markdown Change Report
 							</button>
 						</a>
 					}

@@ -134,17 +134,14 @@
 	mat-dialog-actions
 	align="end"
 	class="tw-gap-2">
-	<span class="tw-inline-flex">
-		<button
-			mat-stroked-button
-			type="button"
-			class="tw-text-osee-red-8"
-			(click)="cancelDialog()">
-			Cancel
-		</button>
-	</span>
+	<button
+		mat-stroked-button
+		type="button"
+		class="tw-text-foreground-text"
+		(click)="cancelDialog()">
+		Cancel
+	</button>
 	<span
-		class="tw-inline-flex"
 		[matTooltip]="!selectedFile() ? 'Select an image file first.' : ''"
 		[matTooltipDisabled]="!!selectedFile()">
 		<button

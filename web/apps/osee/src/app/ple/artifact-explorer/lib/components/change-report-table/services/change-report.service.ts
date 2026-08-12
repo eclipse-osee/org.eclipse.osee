@@ -30,6 +30,38 @@ export class ChangeReportService {
 		return this.crHttpService.getBranchChangeReport(branch1Id, branch2Id);
 	}
 
+	getFilteredPaginatedChanges(
+		branch1Id: string,
+		branch2Id: string,
+		filter = '',
+		pageNum = 0,
+		pageSize = 10,
+		attributeType = ''
+	) {
+		return this.crHttpService.getFilteredPaginatedChangeReport(
+			branch1Id,
+			branch2Id,
+			filter,
+			pageNum,
+			pageSize,
+			attributeType
+		);
+	}
+
+	getFilteredPaginatedChangesCount(
+		branch1Id: string,
+		branch2Id: string,
+		filter = '',
+		attributeType = ''
+	) {
+		return this.crHttpService.getFilteredPaginatedChangeReportCount(
+			branch1Id,
+			branch2Id,
+			filter,
+			attributeType
+		);
+	}
+
 	getTxChanges(branchId: string, tx1: string, tx2: string) {
 		return this.crHttpService.getTxChangeReport(branchId, tx1, tx2);
 	}
