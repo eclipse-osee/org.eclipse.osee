@@ -47,6 +47,17 @@ import org.eclipse.osee.orcs.search.QueryIndexer;
  */
 public class IndexerEndpointImpl implements IndexerEndpoint {
 
+   /**
+    * Shared fixed-size thread pool for all reindex operations. This ensures that even if many
+    * reindex requests arrive concurrently, at most 2 run in parallel rather than spawning
+    * unbounded threads that overwhelm the database.
+    */
+   private static final ExecutorService REINDEX_EXECUTOR = Executors.newFixedThreadPool(2, r -> {
+      Thread t = new Thread(r, "reindex-direct-worker");
+      t.setDaemon(true);
+      return t;
+   });
+
    private final OrcsApi orcsApi;
 
    public IndexerEndpointImpl(OrcsApi orcsApi) {
@@ -154,17 +165,12 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
       }
 
       int typeCount = attrTypeIds.size();
-      ExecutorService executor = Executors.newSingleThreadExecutor();
-      executor.submit(() -> {
-         try {
-            orcsApi.getQueryIndexer().indexMissingByAttrTypeIds(attrTypeIds);
-         } finally {
-            executor.shutdown();
-         }
+      REINDEX_EXECUTOR.submit(() -> {
+         orcsApi.getQueryIndexer().indexMissingByAttrTypeIds(attrTypeIds);
       });
 
       return Response.accepted(
-         "Reindex started for " + typeCount + " attribute type(s). Running in background.").build();
+         "Reindex queued for " + typeCount + " attribute type(s). Running in background (serialized).").build();
    }
 
    @Override
@@ -181,19 +187,18 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
       }
 
       int typeCount = attrTypeIds.size();
-      ExecutorService executor = Executors.newSingleThreadExecutor();
-      executor.submit(() -> {
-         try {
-            for (Long typeId : attrTypeIds) {
-               orcsApi.getQueryIndexer().indexDirectByAttrType(typeId);
-            }
-         } finally {
-            executor.shutdown();
-         }
-      });
+
+      // Each type is submitted as a separate task to the shared single-thread executor.
+      // This means multiple calls to this endpoint queue up and run one at a time,
+      // preventing the database from being overwhelmed by concurrent indexing.
+      for (Long typeId : attrTypeIds) {
+         REINDEX_EXECUTOR.submit(() -> {
+            orcsApi.getQueryIndexer().indexDirectByAttrType(typeId);
+         });
+      }
 
       return Response.accepted(
-         "Direct reindex started for " + typeCount + " attribute type(s). Running in background.").build();
+         "Direct reindex queued for " + typeCount + " attribute type(s). Serialized execution in background.").build();
    }
 
 }
