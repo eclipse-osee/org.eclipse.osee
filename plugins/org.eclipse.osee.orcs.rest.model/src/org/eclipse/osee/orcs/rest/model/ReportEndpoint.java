@@ -20,7 +20,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -35,20 +34,19 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 @Swagger
 public interface ReportEndpoint {
 
+   /**
+    * Generates a report from the given template. The output format is controlled by the {@code format} query parameter
+    * (xml, xlsx, or html; defaults to xml). If an {@code email} query parameter is provided, the report is generated
+    * asynchronously and a JSON status response is returned immediately; otherwise the report streams synchronously.
+    */
    @GET
    @Path("{branch}/view/{view}/template/{template}")
-   @Produces({MediaType.APPLICATION_XML})
+   @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_HTML,
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", MediaType.APPLICATION_JSON})
    Response getReportFromTemplate(@PathParam("branch") BranchId branch,
       @DefaultValue("-1") @PathParam("view") ArtifactId view,
-      @DefaultValue("-1") @PathParam("template") ArtifactId templateArt);
-
-   @GET
-   @Path("{branch}/view/{view}/template/{template}/async/{email}")
-   @Produces({MediaType.APPLICATION_JSON})
-   Response getReportFromTemplateAsync(@PathParam("branch") BranchId branch,
-      @DefaultValue("-1") @PathParam("view") ArtifactId view,
       @DefaultValue("-1") @PathParam("template") ArtifactId templateArt,
-      @PathParam("email") String emailRecipient);
+      @DefaultValue("xml") @QueryParam("format") String format, @QueryParam("email") String emailRecipient);
 
    @PUT
    @Path("{branch}/hierarchyNumber/{artifact}")

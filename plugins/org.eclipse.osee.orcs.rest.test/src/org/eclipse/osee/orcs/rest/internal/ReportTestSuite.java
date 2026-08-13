@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author David W. Miller
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({GenericReportBuilderTest.class})
+@Suite.SuiteClasses({GenericReportBuilderTest.class, ReportFormatTest.class})
 public class ReportTestSuite {
    // Test Suite
 }
