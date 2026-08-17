@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
@@ -96,7 +97,7 @@ public class ShowSprintsAction extends AbstractAtsAction implements IMenuCreator
             addActionToMenu(menu, new OpenSprintAction(sprint));
          }
          if (openSprints.isEmpty()) {
-            Action noSprintsAction = new Action("No open sprints") {
+            Action noSprintsAction = new Action("No Open Sprints") {
                // empty
             };
             noSprintsAction.setEnabled(false);
@@ -126,15 +127,13 @@ public class ShowSprintsAction extends AbstractAtsAction implements IMenuCreator
       public OpenSprintAction(IAgileSprint sprint) {
          super(sprint.getName());
          this.sprint = sprint;
-         setImageDescriptor(ImageManager.getImageDescriptor(
-            AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT)));
+         setImageDescriptor(
+            ImageManager.getImageDescriptor(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT)));
       }
 
       @Override
       public void run() {
-         List<IAtsWorkItem> workItems = new ArrayList<>();
-         workItems.add(sprint);
-         WorldEditor.open(sprint.getName(), workItems);
+         WorkflowEditor.edit(sprint);
       }
    }
 
