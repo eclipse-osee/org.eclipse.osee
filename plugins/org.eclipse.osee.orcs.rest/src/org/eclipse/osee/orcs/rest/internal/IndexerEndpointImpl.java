@@ -188,8 +188,8 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
 
       int typeCount = attrTypeIds.size();
 
-      // Each type is submitted as a separate task to the shared single-thread executor.
-      // This means multiple calls to this endpoint queue up and run one at a time,
+      // Each type is submitted as a separate task to the shared fixed-size thread pool.
+      // This means multiple calls to this endpoint queue up and at most 2 run concurrently,
       // preventing the database from being overwhelmed by concurrent indexing.
       for (Long typeId : attrTypeIds) {
          REINDEX_EXECUTOR.submit(() -> {
