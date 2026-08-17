@@ -82,4 +82,17 @@ public interface IndexerEndpoint {
    @Path("reindex/direct")
    Response reindexDirect(@DefaultValue("0") @QueryParam("attrTypeId") long attrTypeId);
 
+   /**
+    * Time-scoped incremental re-index for the nightly catch-up job. Finds attributes modified within the specified
+    * time window (via osee_tx_details.time), filters to taggable types, and indexes only those gammas missing from
+    * osee_search_tags_hash. Much faster than a full scan when only a small number of attributes changed recently.
+    * <p>
+    * Returns 202 immediately; indexing runs in the background.
+    *
+    * @param hours Number of hours to look back for recent transactions (default: 25, to cover a full day plus buffer)
+    */
+   @POST
+   @Path("reindex/recent")
+   Response reindexRecent(@DefaultValue("25") @QueryParam("hours") int hours);
+
 }

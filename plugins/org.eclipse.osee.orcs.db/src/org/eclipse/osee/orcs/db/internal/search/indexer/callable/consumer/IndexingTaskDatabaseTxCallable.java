@@ -36,6 +36,7 @@ import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
+import org.eclipse.osee.orcs.db.internal.search.tagger.LegacyTagEncoder;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
@@ -116,27 +117,35 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
 
    private long createTags(JdbcConnection connection, Collection<IndexedResource> sources) {
       SearchTagCollector tagCollector = new SearchTagCollector();
+      LegacyTagEncoder legacyEncoder = new LegacyTagEncoder();
 
       Set<Long> processed = new HashSet<>();
 
-      Map<Long, Collection<Long>> toStore = new HashMap<>();
+      Map<Long, Collection<Long>> hashTagsToStore = new HashMap<>();
+      Map<Long, Collection<Long>> legacyTagsToStore = new HashMap<>();
       for (IndexedResource source : sources) {
          long startItemTime = System.currentTimeMillis();
          GammaId gamma = source.getGammaId();
          if (processed.add(gamma.getId())) {
-            Set<Long> tags = new HashSet<>();
-            toStore.put(gamma.getId(), tags);
-            tagCollector.setCurrentTag(gamma.getId(), tags);
+            Set<Long> hashTags = new HashSet<>();
+            Set<Long> legacyTags = new HashSet<>();
+            hashTagsToStore.put(gamma.getId(), hashTags);
+            legacyTagsToStore.put(gamma.getId(), legacyTags);
+            tagCollector.setCurrentTag(gamma.getId(), hashTags);
             try {
                TaggerTypeToken taggerType =
                   tokenService.getAttributeTypeOrSentinel(source.getAttributeType().getId()).getTaggerType();
                if (taggerType.isValid()) {
                   Tagger tagger = taggingEngine.getTagger(taggerType);
-                  tagger.tagIt(source.getResourceInput(), tagCollector);
-                  if (isStorageAllowed(toStore)) {
-                     getLogger().debug("Stored a - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection,
-                        toStore);
-                     storeTags(connection, toStore);
+                  // Wrap the collector to also produce legacy bit-packed tags from each word
+                  TagCollector dualCollector = (word, codedTag) -> {
+                     tagCollector.addTag(word, codedTag);
+                     legacyEncoder.encode(word, (w, legacyTag) -> legacyTags.add(legacyTag));
+                  };
+                  tagger.tagIt(source.getResourceInput(), dualCollector);
+                  if (isStorageAllowed(hashTagsToStore)) {
+                     getLogger().debug("Stored a - [%s] - connectionId[%s]", getTagQueueQueryId(), connection);
+                     storeTags(connection, legacyTagsToStore, hashTagsToStore);
                   }
                } else {
                   getLogger().error("Field has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]",
@@ -146,14 +155,14 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
                getLogger().error(ex, "Unable to tag - [%s]", gamma);
             } finally {
                long endItemTime = System.currentTimeMillis() - startItemTime;
-               notifyOnIndexItemComplete(gamma, tags.size(), endItemTime);
+               notifyOnIndexItemComplete(gamma, hashTags.size(), endItemTime);
             }
          }
       }
 
-      if (!toStore.isEmpty()) {
-         getLogger().debug("Stored b - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection, toStore);
-         storeTags(connection, toStore);
+      if (!hashTagsToStore.isEmpty()) {
+         getLogger().debug("Stored b - [%s] - connectionId[%s]", getTagQueueQueryId(), connection);
+         storeTags(connection, legacyTagsToStore, hashTagsToStore);
       }
       return tagCollector.getTotalTags();
    }
@@ -211,24 +220,38 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return numberDeleted;
    }
 
-   private int storeTags(JdbcConnection connection, Map<Long, Collection<Long>> toStore) {
+   private int storeTags(JdbcConnection connection, Map<Long, Collection<Long>> legacyTags,
+      Map<Long, Collection<Long>> hashTags) {
       int updated = 0;
-      if (!toStore.isEmpty()) {
-         List<Object[]> data = new ArrayList<>();
-         for (Entry<Long, Collection<Long>> entry : toStore.entrySet()) {
-            Long gammaId = entry.getKey();
-            for (Long codedTag : entry.getValue()) {
-               data.add(new Object[] {codedTag, gammaId});
-               getLogger().debug("Storing: gamma:[%s] tag:[%s]", gammaId, codedTag);
+      if (!legacyTags.isEmpty() || !hashTags.isEmpty()) {
+         // Write legacy bit-packed tags to osee_search_tags
+         if (!legacyTags.isEmpty()) {
+            List<Object[]> legacyData = new ArrayList<>();
+            for (Entry<Long, Collection<Long>> entry : legacyTags.entrySet()) {
+               Long gammaId = entry.getKey();
+               for (Long codedTag : entry.getValue()) {
+                  legacyData.add(new Object[] {codedTag, gammaId});
+               }
+            }
+            legacyTags.clear();
+            if (!legacyData.isEmpty()) {
+               updated +=
+                  getJdbcClient().runBatchUpdate(connection, OseeDb.OSEE_SEARCH_TAGS_TABLE.getInsertSql(), legacyData);
             }
          }
-         toStore.clear();
-         if (!data.isEmpty()) {
-            updated += getJdbcClient().runBatchUpdate(connection, OseeDb.OSEE_SEARCH_TAGS_TABLE.getInsertSql(), data);
-            // Dual-write to hash table during transition period while legacy release
-            // still uses the old bit-packed osee_search_tags table.
-            // Remove this line once all release tracks are on the new encoding.
-            getJdbcClient().runBatchUpdate(connection, OseeDb.OSEE_SEARCH_TAGS_HASH_TABLE.getInsertSql(), data);
+         // Write hash tags to osee_search_tags_hash
+         if (!hashTags.isEmpty()) {
+            List<Object[]> hashData = new ArrayList<>();
+            for (Entry<Long, Collection<Long>> entry : hashTags.entrySet()) {
+               Long gammaId = entry.getKey();
+               for (Long codedTag : entry.getValue()) {
+                  hashData.add(new Object[] {codedTag, gammaId});
+               }
+            }
+            hashTags.clear();
+            if (!hashData.isEmpty()) {
+               getJdbcClient().runBatchUpdate(connection, OseeDb.OSEE_SEARCH_TAGS_HASH_TABLE.getInsertSql(), hashData);
+            }
          }
       }
       return updated;

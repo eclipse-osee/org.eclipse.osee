@@ -55,4 +55,12 @@ public interface QueryEngineIndexer {
     * inserts tags directly. Much faster for bulk migration after truncating osee_search_tags.
     */
    void indexDirectByAttrType(OrcsTokenService tokenService, Long attrTypeId);
+
+   /**
+    * Index only attributes modified within the specified time window that are missing from osee_search_tags_hash.
+    * Scopes the query to recent transactions via osee_tx_details.time.
+    *
+    * @return number of gammas indexed
+    */
+   long indexRecentlyModified(OrcsTokenService tokenService, int hours);
 }
