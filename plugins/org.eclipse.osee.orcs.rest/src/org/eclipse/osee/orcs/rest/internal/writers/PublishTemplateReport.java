@@ -22,19 +22,16 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author David W. Miller
  */
 public final class PublishTemplateReport implements StreamingOutput {
    private final OrcsApi orcsApi;
-   private final QueryFactory queryApi;
-   private final BranchToken branch;
+   private final BranchId branch;
    private final ArtifactId view;
    private final ArtifactId reportTemplateArt;
    private ExcelXmlWriter writer;
@@ -43,8 +40,7 @@ public final class PublishTemplateReport implements StreamingOutput {
 
    public PublishTemplateReport(OrcsApi orcsApi, BranchId branch, ArtifactId view, ArtifactId templateArt) {
       this.orcsApi = orcsApi;
-      this.queryApi = orcsApi.getQueryFactory();
-      this.branch = queryApi.branchQuery().andId(branch).getResultsAsId().getExactlyOne();
+      this.branch = branch;
       this.view = view;
       this.reportTemplateArt = templateArt;
       this.results = new XResultData();

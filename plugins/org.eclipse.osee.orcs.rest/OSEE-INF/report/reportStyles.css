@@ -1,0 +1,90 @@
+body {
+   font-family: Calibri, Arial, sans-serif;
+   margin: 20px;
+   font-size: 11pt;
+}
+
+h1 {
+   color: #333;
+   border-bottom: 2px solid #D9E2F3;
+   padding-bottom: 8px;
+}
+
+.report-table {
+   border-collapse: collapse;
+   width: 100%;
+   margin-top: 16px;
+}
+
+.report-table th, .report-table td {
+   border: 1px solid #999;
+   padding: 6px 10px;
+   vertical-align: top;
+   text-align: left;
+}
+
+.top-row th {
+   background-color: #4472C4;
+   color: white;
+   font-weight: bold;
+}
+
+.header-row th {
+   background-color: #D9E2F3;
+   font-weight: bold;
+}
+
+.report-table tbody tr:nth-child(even) {
+   background-color: #F8F9FA;
+}
+
+.report-table tbody tr:hover {
+   background-color: #EBF0F7;
+}
+
+/* Nested markdown content within cells */
+.report-table td table {
+   border-collapse: collapse;
+   width: auto;
+   margin: 4px 0;
+}
+
+.report-table td table th, .report-table td table td {
+   border: 1px solid #666;
+   padding: 3px 6px;
+   font-size: 10pt;
+}
+
+.report-table td table th {
+   background-color: #E8EDF5;
+   font-weight: bold;
+}
+
+.report-table td code {
+   background-color: #F4F4F4;
+   padding: 1px 4px;
+   border-radius: 2px;
+   font-family: Consolas, monospace;
+   font-size: 10pt;
+}
+
+.report-table td pre {
+   background-color: #F4F4F4;
+   padding: 8px;
+   border-radius: 4px;
+   font-family: Consolas, monospace;
+   font-size: 10pt;
+   overflow-x: auto;
+}
+
+.report-table td img {
+   max-width: 400px;
+   height: auto;
+}
+
+.report-table td blockquote {
+   border-left: 3px solid #D9E2F3;
+   margin: 4px 0;
+   padding: 4px 12px;
+   color: #555;
+}
