@@ -255,6 +255,90 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
       logger.info("Direct index complete for attr type %d: %d gammas, %d tags", attrTypeId, totalGammas, totalTags);
    }
 
+   @Override
+   public long indexRecentlyModified(OrcsTokenService tokenService, int hours) {
+      // Build the set of taggable attr type IDs for the IN clause
+      List<Long> taggableTypeIds = new ArrayList<>();
+      for (var attrType : tokenService.getTaggedAttrs()) {
+         taggableTypeIds.add(attrType.getId());
+      }
+      if (taggableTypeIds.isEmpty()) {
+         logger.info("No taggable attribute types found, nothing to index");
+         return;
+      }
+
+      StringBuilder inClause = new StringBuilder();
+      for (int i = 0; i < taggableTypeIds.size(); i++) {
+         if (i > 0) {
+            inClause.append(',');
+         }
+         inClause.append(taggableTypeIds.get(i));
+      }
+
+      // Query for attributes modified in recent transactions that are missing from osee_search_tags_hash
+      String query = "SELECT DISTINCT att.gamma_id, att.value, att.uri, att.attr_type_id" //
+         + " FROM osee_tx_details txd, osee_txs txs, osee_attribute att" //
+         + " WHERE txd.time > CURRENT_TIMESTAMP - INTERVAL '" + hours + "' HOUR" //
+         + " AND txd.transaction_id = txs.transaction_id" //
+         + " AND txs.gamma_id = att.gamma_id" //
+         + " AND txs.tx_current = 1" //
+         + " AND att.attr_type_id IN (" + inClause + ")" //
+         + " AND NOT EXISTS (SELECT 1 FROM osee_search_tags_hash tag WHERE tag.gamma_id = att.gamma_id)";
+
+      List<Object[]> batchData = new ArrayList<>();
+      long totalGammas = 0;
+      long totalTags = 0;
+
+      try (JdbcStatement chStmt = jdbcClient.getStatement()) {
+         chStmt.runPreparedQueryWithMaxFetchSize(query);
+         while (chStmt.next()) {
+            long gammaId = chStmt.getLong("gamma_id");
+            String value = chStmt.getString("value");
+            String uri = chStmt.getString("uri");
+            long attrTypeId = chStmt.getLong("attr_type_id");
+
+            TaggerTypeToken taggerType = tokenService.getAttributeTypeOrSentinel(attrTypeId).getTaggerType();
+            if (!taggerType.isValid()) {
+               continue;
+            }
+
+            Tagger tagger = taggingEngine.getTagger(taggerType);
+            Set<Long> tags = new HashSet<>();
+            TagCollector collector = (word, codedTag) -> tags.add(codedTag);
+
+            try {
+               InputStream input = getInputStream(value, uri);
+               if (input != null) {
+                  tagger.tagIt(input, collector);
+                  input.close();
+               }
+            } catch (Exception ex) {
+               logger.error(ex, "Error tagging gamma %d", gammaId);
+               continue;
+            }
+
+            for (Long tag : tags) {
+               batchData.add(new Object[] {tag, gammaId});
+            }
+            totalTags += tags.size();
+            totalGammas++;
+
+            if (batchData.size() >= 10000) {
+               jdbcClient.runBatchUpdate(OseeDb.OSEE_SEARCH_TAGS_HASH_TABLE.getInsertSql(), batchData);
+               batchData.clear();
+            }
+         }
+      }
+
+      if (!batchData.isEmpty()) {
+         jdbcClient.runBatchUpdate(OseeDb.OSEE_SEARCH_TAGS_HASH_TABLE.getInsertSql(), batchData);
+         batchData.clear();
+      }
+
+      logger.info("Recent index complete (%d hour window): %d gammas, %d tags", hours, totalGammas, totalTags);
+      return totalGammas;
+   }
+
    private InputStream getInputStream(String value, String uri) throws Exception {
       if (Strings.isValid(uri)) {
          try {

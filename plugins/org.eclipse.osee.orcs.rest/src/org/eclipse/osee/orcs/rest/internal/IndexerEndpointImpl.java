@@ -201,4 +201,14 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
          "Direct reindex queued for " + typeCount + " attribute type(s). Serialized execution in background.").build();
    }
 
+   @Override
+   public Response reindexRecent(int hours) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      long gammasIndexed = orcsApi.getQueryIndexer().indexRecentlyModified(hours);
+
+      return Response.ok(
+         "Indexed " + gammasIndexed + " gamma(s) modified in the last " + hours + " hour(s).").build();
+   }
+
 }

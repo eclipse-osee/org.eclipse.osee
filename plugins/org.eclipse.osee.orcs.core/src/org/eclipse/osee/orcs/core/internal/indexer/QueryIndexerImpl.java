@@ -96,4 +96,9 @@ public class QueryIndexerImpl implements QueryIndexer {
       engineIndexer.indexDirectByAttrType(tokenService, attrTypeId);
    }
 
+   @Override
+   public long indexRecentlyModified(int hours) {
+      return engineIndexer.indexRecentlyModified(tokenService, hours);
+   }
+
 }
