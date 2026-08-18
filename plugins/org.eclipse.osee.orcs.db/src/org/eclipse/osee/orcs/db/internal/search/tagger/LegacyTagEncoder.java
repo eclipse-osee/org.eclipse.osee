@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2026 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -21,7 +21,6 @@ import java.util.Arrays;
  * <p>
  * Remove this class once all release tracks have migrated to hash-based search via osee_search_tags_hash.
  *
- * @author Roberto E. Escobar
  */
 public class LegacyTagEncoder {
 
