@@ -403,6 +403,9 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new AtsRemoteEventTestItem());
          items.add(new OseeProductionTestsNavItem());
          items.add(new XNavigateItemAction(new GetNextArtifactId(), CoreImage.ADD_GREEN, TOP_ADMIN));
+
+         items.add(new XNavigateItemFolder("Testing", PluginUiImage.ADMIN, ADMIN_TESTING, SUBCAT));
+         items.add(new OpenWorkDefExamplesNavigateItem(ADMIN_TESTING));
       }
       time.end();
    }

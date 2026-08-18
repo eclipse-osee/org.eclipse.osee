@@ -31,6 +31,7 @@ import org.eclipse.swt.graphics.Image;
 public abstract class XNavigateItem {
 
    public static final XNavItemCat TOP_ADMIN = new XNavItemCat("Admin");
+   public static final XNavItemCat ADMIN_TESTING = new XNavItemCat("Admin.Testing");
 
    public static final XNavItemCat REPORTS = new XNavItemCat("Reports");
    public static final XNavItemCat EMAIL_NOTIFICATIONS = new XNavItemCat("Email & Notifications");
