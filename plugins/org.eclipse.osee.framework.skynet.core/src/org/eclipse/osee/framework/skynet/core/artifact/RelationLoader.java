@@ -52,7 +52,7 @@ class RelationLoader {
          return; // TODO: someday we might have a use for historical relations, but not now
       }
 
-      Map<ArtifactToken, TransactionToken> artToTx = new HashMap<>();
+      Map<Long, TransactionToken> artIdToMaxTx = new HashMap<>();
 
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
@@ -66,8 +66,8 @@ class RelationLoader {
             RelationTypeToken relationType = tokenservice.getRelationType(chStmt.getLong("rel_link_type_id"));
 
             TransactionToken txTok = TransactionToken.valueOf(chStmt.getLong("transaction_id"), branch);
-            artToTx.put(aArtifactId, txTok);
-            artToTx.put(bArtifactId, txTok);
+            updateMaxTx(artIdToMaxTx, aArtifactId.getId(), txTok);
+            updateMaxTx(artIdToMaxTx, bArtifactId.getId(), txTok);
 
             GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
             String rationale = chStmt.getString("rationale");
@@ -90,8 +90,8 @@ class RelationLoader {
             RelationTypeToken relationType = tokenservice.getRelationType(chStmt.getLong("rel_type"));
 
             TransactionToken txTok = TransactionToken.valueOf(chStmt.getLong("transaction_id"), branch);
-            artToTx.put(aArtifactId, txTok);
-            artToTx.put(bArtifactId, txTok);
+            updateMaxTx(artIdToMaxTx, aArtifactId.getId(), txTok);
+            updateMaxTx(artIdToMaxTx, bArtifactId.getId(), txTok);
 
             GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
             int relOrder = chStmt.getInt("rel_order");
@@ -108,20 +108,21 @@ class RelationLoader {
       }
 
       for (Artifact artifact : artifacts) {
-         setTransactionRecord(artToTx, artifact);
+         TransactionToken maxRelTx = artIdToMaxTx.get(artifact.getId());
+         if (maxRelTx != null && maxRelTx.isValid()) {
+            TransactionRecord txRec = TransactionManager.getTransactionRecord(maxRelTx);
+            if (txRec != null && txRec.isValid() && artifact.getTransaction().getId() < txRec.getId()) {
+               artifact.setTransaction(txRec);
+            }
+         }
          artifact.setLinksLoaded(true);
       }
    }
 
-   private static void setTransactionRecord(Map<ArtifactToken, TransactionToken> artToTx, Artifact artifact) {
-      TransactionToken txTok = artToTx.get(artifact);
-      if (txTok != null && txTok.isValid()) {
-         TransactionRecord txRec = TransactionManager.getTransactionRecord(txTok);
-         if (txRec != null && txRec.isValid()) {
-            if (artifact.getTransaction().getId() < txRec.getId()) {
-               artifact.setTransaction(txRec);
-            }
-         }
+   private static void updateMaxTx(Map<Long, TransactionToken> map, Long artId, TransactionToken txTok) {
+      TransactionToken existing = map.get(artId);
+      if (existing == null || txTok.getId() > existing.getId()) {
+         map.put(artId, txTok);
       }
    }
 }

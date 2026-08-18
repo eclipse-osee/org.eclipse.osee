@@ -76,7 +76,11 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final ArtifactId view;
    private final QueryFactory queryFactory;
    private final ApplicabilityToken applicability;
-   private final TransactionId txId;
+   /**
+    * Transaction from the artifact row's osee_txs entry. This is effectively the artifact creation transaction and does
+    * not reflect attribute or relation modifications.
+    */
+   private final TransactionId artTxId;
    private final TransactionDetails latestTxDetails;
    private final ModificationType modType;
    private final HashCollection<AttributeId, ArtifactReadable> referenceAttributes = new HashCollection<>();
@@ -90,7 +94,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.branch = branch;
       this.view = view;
       this.applicability = applicability;
-      this.txId = txId;
+      this.artTxId = txId;
       this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, DateUtil.getSentinalDate(),
          Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
       this.modType = modType;
@@ -104,7 +108,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.branch = branch;
       this.view = view;
       this.applicability = ApplicabilityToken.valueOf(applicability.getId(), "");
-      this.txId = txId;
+      this.artTxId = txId;
       this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, DateUtil.getSentinalDate(),
          Strings.EMPTY_STRING, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
       this.modType = modType;
@@ -118,7 +122,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.branch = branch;
       this.view = view;
       this.applicability = applicability;
-      this.txId = txId;
+      this.artTxId = txId;
       this.latestTxDetails = txDetails;
       this.modType = modType;
       this.queryFactory = queryFactory;
@@ -138,9 +142,14 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       return branch;
    }
 
+   /**
+    * Returns the transaction from the artifact row's osee_txs entry. This is effectively the artifact creation
+    * transaction and does not change when attributes or relations are modified. Use
+    * {@link #getLastModifiedTransaction()} to get the true last-modified transaction.
+    */
    @Override
    public TransactionId getTransaction() {
-      return txId;
+      return artTxId;
    }
 
    @Override
@@ -154,7 +163,14 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
+   /**
+    * Only populated with .andTransactionDetails() in QueryBuilder. This is the latest transaction details from all art,
+    * attr and rel changes.
+    */
    public TransactionId getLastModifiedTransaction() {
+      if (latestTxDetails.getTxId().isValid()) {
+         return latestTxDetails.getTxId();
+      }
       return TransactionId.SENTINEL;
    }
 
@@ -328,7 +344,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       (side.isSideA() ? relationsSideA : relationsSideB).put(relationType, artifact);
    }
 
-   public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact, GammaId gamma) {
+   public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact,
+      GammaId gamma) {
       (side.isSideA() ? relationsSideA : relationsSideB).put(relationType, artifact);
       String key = relationType.getIdString() + ":" + side.name() + ":" + artifact.getIdString();
       relationGammas.put(key, gamma);

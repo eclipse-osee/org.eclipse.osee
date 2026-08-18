@@ -21,7 +21,12 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -31,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
 import org.eclipse.osee.orcs.search.ds.FollowAllCriteria;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * Test server QueryBuilder against demo populated data
@@ -63,6 +69,7 @@ public class AtsDbTestQueryOp {
       testAsArtifactFollowAllTwoLevel();
       testAtsGetArtifactNewGetSiblings();
       testAtsGetArtifactNewFollowAllGetSiblings();
+      testTransactionUpdatesOnAttrAndRelChange();
 
       rd.log(getClass().getSimpleName() + " - End");
       return rd;
@@ -244,6 +251,73 @@ public class AtsDbTestQueryOp {
          orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).and(AtsAttributeTypes.AtsId,
             Arrays.asList(ATSID_TW7), QueryOption.EXACT_MATCH_OPTIONS).asArtifacts();
       rd.assertEquals("testAttrValueExactMatch", 1, asArtifacts.size());
+   }
+
+   private void testTransactionUpdatesOnAttrAndRelChange() {
+      rd.log("testTransactionUpdatesOnAttrAndRelChange - Start");
+
+      // Create a folder artifact on Common
+      TransactionBuilder createTx =
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Create test folder for tx test");
+      ArtifactId testFolder = createTx.createArtifact(CoreArtifactTypes.Folder, "Tx Test Folder " + System.currentTimeMillis());
+      TransactionToken createTxResult = createTx.commit();
+      if (!createTxResult.isValid()) {
+         rd.errorf("testTransactionUpdatesOnAttrAndRelChange - Create tx should be valid\n");
+         return;
+      }
+
+      // Load artifact and capture initial transaction
+      ArtifactReadable loaded = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(testFolder).includeTransactionDetails().asArtifact();
+      rd.assertNotNull(loaded, "testTransactionUpdatesOnAttrAndRelChange - Loaded artifact should not be null");
+      TransactionId initialTx = loaded.getLastModifiedTransaction();
+      if (!initialTx.isValid()) {
+         rd.errorf("testTransactionUpdatesOnAttrAndRelChange - Initial tx should be valid\n");
+      }
+
+      // --- Attribute change: modify description, commit, reload, verify tx changes ---
+      TransactionBuilder attrTx =
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Attr change for tx test");
+      attrTx.setSoleAttributeValue(testFolder, CoreAttributeTypes.Description, "Test description for tx update test");
+      TransactionToken attrTxResult = attrTx.commit();
+      if (!attrTxResult.isValid()) {
+         rd.errorf("testTransactionUpdatesOnAttrAndRelChange - Attr tx should be valid\n");
+      }
+
+      // Reload and verify tx changed
+      ArtifactReadable afterAttrLoad =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(testFolder).includeTransactionDetails().asArtifact();
+      TransactionId afterAttrTx = afterAttrLoad.getLastModifiedTransaction();
+      if (initialTx.equals(afterAttrTx)) {
+         rd.errorf("testTransactionUpdatesOnAttrAndRelChange - Tx should change after attr persist, was [%s]\n",
+            initialTx);
+      }
+
+      // --- Relation change: relate as supporting info to OSEE Configuration folder ---
+      TransactionBuilder relTx =
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Relation change for tx test");
+      relTx.relate(CoreArtifactTokens.OseeConfiguration, CoreRelationTypes.SupportingInfo_SupportingInfo, testFolder);
+      TransactionToken relTxResult = relTx.commit();
+      if (!relTxResult.isValid()) {
+         rd.errorf("testTransactionUpdatesOnAttrAndRelChange - Rel tx should be valid\n");
+      }
+
+      // Reload and verify tx changed after relation-only change
+      ArtifactReadable afterRelLoad =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(testFolder).includeTransactionDetails().asArtifact();
+      TransactionId afterRelTx = afterRelLoad.getLastModifiedTransaction();
+      if (afterAttrTx.equals(afterRelTx)) {
+         rd.errorf(
+            "testTransactionUpdatesOnAttrAndRelChange - Tx should change after relation persist, afterAttrTx [%s] afterRelTx [%s]\n",
+            afterAttrTx, afterRelTx);
+      }
+
+      // Cleanup: delete the test artifact
+      TransactionBuilder cleanupTx =
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Cleanup tx test folder");
+      cleanupTx.deleteArtifact(testFolder);
+      cleanupTx.commit();
+
+      rd.log("testTransactionUpdatesOnAttrAndRelChange - End");
    }
 
 }
