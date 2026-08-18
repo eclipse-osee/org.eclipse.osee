@@ -87,7 +87,7 @@ public interface IndexerEndpoint {
     * time window (via osee_tx_details.time), filters to taggable types, and indexes only those gammas missing from
     * osee_search_tags_hash. Much faster than a full scan when only a small number of attributes changed recently.
     * <p>
-    * Returns 202 immediately; indexing runs in the background.
+    * Synchronous — blocks until indexing completes and returns 200 with the count of gammas indexed.
     *
     * @param hours Number of hours to look back for recent transactions (default: 25, to cover a full day plus buffer)
     */
