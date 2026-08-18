@@ -215,7 +215,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
             datas.add(new Object[] {source.getGammaId()});
          }
          numberDeleted = getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
-         getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS_HASH, datas);
+         numberDeleted += getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS_HASH, datas);
       }
       return numberDeleted;
    }

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2026 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -32,7 +32,6 @@ import org.junit.Test;
  * This validates the contract between the indexing path and the query path: both use the same TagProcessor/TagEncoder
  * combination, so the hashes generated at query time must match those stored at index time.
  *
- * @author Roberto E. Escobar
  */
 public class AttributeTokenSqlHandlerHybridQueryTest {
 

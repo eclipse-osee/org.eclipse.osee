@@ -87,6 +87,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.data.OrcsPurgeResult;
 import org.eclipse.osee.orcs.rest.internal.operations.ArtifactValidityReport;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
@@ -103,6 +104,7 @@ import org.eclipse.osee.orcs.search.ArtifactTable;
 import org.eclipse.osee.orcs.search.ArtifactTableOptions;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryData;
 import org.eclipse.osee.orcs.search.ds.FollowAllCriteria;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -333,22 +335,18 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       //         orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedRecursive(DefaultHierarchical_Child,
       //            parent).follow(SupportingRequirement_LowerLevelRequirement).asArtifacts();
       //      return Collections.cast(artifacts);
-      //      QueryBuilder subQuery = new QueryData(QueryType.SELECT, orcsApi.tokenService()) //
-      //         .followFork(CoreRelationTypes.InterfaceMessagePubNode_Node, artifactType, null) //
-      //         .follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage)//
-      //         .follow(CoreRelationTypes.InterfaceSubMessageContent_Structure) //
-      //         .follow(CoreRelationTypes.InterfaceStructureContent_DataElement) //
-      //         .follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
-      //      List<ArtifactReadable> results = orcsApi.getQueryFactory().fromBranch(BranchId.valueOf(9031454494668930248L)) //
-      //         //.andIsOfType(CoreArtifactTypes.InterfaceConnection) //
-      //         .andId(ArtifactId.valueOf(200255)) //
-      //         .followFork(CoreRelationTypes.InterfaceConnectionNode_Node, CoreArtifactTypes.InterfaceNode, null)//
-      //         .followFork(CoreRelationTypes.InterfaceConnectionMessage_Message, CoreArtifactTypes.InterfaceMessage,
-      //            subQuery).asArtifacts();
-      List<ArtifactReadable> results =
-         orcsApi.getQueryFactory().fromBranch(BranchId.valueOf(88L)).andId(ArtifactId.valueOf(8255184L)).follow(
-            CoreRelationTypes.DefaultHierarchical_Child).follow(
-               CoreRelationTypes.InterfaceConnectionMessage_Message).asArtifacts();
+      QueryBuilder subQuery = new QueryData(QueryType.SELECT, orcsApi.tokenService()) //
+         .followFork(CoreRelationTypes.InterfaceMessagePubNode_Node, artifactType, null) //
+         .follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage)//
+         .follow(CoreRelationTypes.InterfaceSubMessageContent_Structure) //
+         .follow(CoreRelationTypes.InterfaceStructureContent_DataElement) //
+         .follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      List<ArtifactReadable> results = orcsApi.getQueryFactory().fromBranch(BranchId.valueOf(9031454494668930248L)) //
+         //.andIsOfType(CoreArtifactTypes.InterfaceConnection) //
+         .andId(ArtifactId.valueOf(200255)) //
+         .followFork(CoreRelationTypes.InterfaceConnectionNode_Node, CoreArtifactTypes.InterfaceNode, null)//
+         .followFork(CoreRelationTypes.InterfaceConnectionMessage_Message, CoreArtifactTypes.InterfaceMessage,
+            subQuery).asArtifacts();
       System.out.println(results.toString());
       return null;
    }

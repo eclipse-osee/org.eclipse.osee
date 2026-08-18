@@ -52,7 +52,7 @@ public final class DeleteTagSetDatabaseTxCallable extends AbstractDatastoreTxCal
          }
          if (!datas.isEmpty()) {
             numberDeleted = getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
-            getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS_HASH, datas);
+            numberDeleted += getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS_HASH, datas);
          }
       } finally {
          chStmt.close();
