@@ -539,6 +539,12 @@ public class XResultData {
       }
    }
 
+   public void assertEquals(Long expected, Long actual) {
+      if (!expected.equals(actual)) {
+         errorf("Expected: %s Actual: %s\n", expected, actual);
+      }
+   }
+
    public void assertNotNull(Object obj) {
       if (obj == null) {
          error("object can not be null");
