@@ -354,10 +354,13 @@ public class QueryEngineImpl implements QueryEngine {
                }
                artifact.putAttributeValue(attributeType, attribute);
             }
+            // Update artifact's transaction if this attribute row has a newer transaction
+            TransactionId attrTxId = TransactionId.valueOf(stmt.getLong("transaction_id"));
+            artifact.updateTransactionIfNewer(attrTxId);
             if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
 
-               if (artifact.getLatestTxDetails().getAuthor().isInvalid()) {
-                  if (maxTime.equals(timeStr)) {
+               if (maxTime.equals(timeStr)) {
+                  if (artifact.getLatestTxDetails().getTxId().isOlderThan(suppTxId) || artifact.getLatestTxDetails().getAuthor().isInvalid()) {
                      artifact.getLatestTxDetails().setTime(time);
                      artifact.getLatestTxDetails().setAuthor(author);
                      artifact.getLatestTxDetails().setOseeComment(oseeComment);
@@ -388,10 +391,14 @@ public class QueryEngineImpl implements QueryEngine {
                GammaId relGamma = GammaId.valueOf(stmt.getLong("gamma_id"));
                artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact, relGamma);
             }
+            // Update artifact's transaction if this relation row has a newer transaction
+            TransactionId relTxId = TransactionId.valueOf(stmt.getLong("transaction_id"));
+            artifact.updateTransactionIfNewer(relTxId);
             if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
+               artifact.updateTransactionIfNewer(suppTxId);
 
-               if (artifact.getLatestTxDetails().getAuthor().isInvalid()) {
-                  if (maxTime.equals(timeStr)) {
+               if (maxTime.equals(timeStr)) {
+                  if (artifact.getLatestTxDetails().getTxId().isOlderThan(suppTxId) || artifact.getLatestTxDetails().getAuthor().isInvalid()) {
                      artifact.getLatestTxDetails().setTime(time);
                      artifact.getLatestTxDetails().setAuthor(author);
                      artifact.getLatestTxDetails().setOseeComment(oseeComment);
@@ -520,10 +527,13 @@ public class QueryEngineImpl implements QueryEngine {
                }
                artifact.putAttributeValue(attributeType, attribute);
             }
+            // Update artifact's transaction if this attribute row has a newer transaction
+            TransactionId attrTxId = TransactionId.valueOf(stmt.getLong("transaction_id"));
+            artifact.updateTransactionIfNewer(attrTxId);
             if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
 
-               if (artifact.getLatestTxDetails().getAuthor().isInvalid()) {
-                  if (maxTime.equals(timeStr)) {
+               if (maxTime.equals(timeStr)) {
+                  if (artifact.getLatestTxDetails().getTxId().isOlderThan(suppTxId) || artifact.getLatestTxDetails().getAuthor().isInvalid()) {
                      artifact.getLatestTxDetails().setTime(time);
                      artifact.getLatestTxDetails().setAuthor(author);
                      artifact.getLatestTxDetails().setOseeComment(oseeComment);
@@ -554,11 +564,14 @@ public class QueryEngineImpl implements QueryEngine {
                GammaId relGamma = GammaId.valueOf(stmt.getLong("gamma_id"));
                artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact, relGamma);
             }
+            // Update artifact's transaction if this relation row has a newer transaction
+            TransactionId relTxId = TransactionId.valueOf(stmt.getLong("transaction_id"));
+            artifact.updateTransactionIfNewer(relTxId);
             if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
+               artifact.updateTransactionIfNewer(suppTxId);
 
-               if (artifact.getLatestTxDetails().getAuthor().isInvalid()) {
-
-                  if (maxTime.equals(timeStr)) {
+               if (maxTime.equals(timeStr)) {
+                  if (artifact.getLatestTxDetails().getTxId().isOlderThan(suppTxId) || artifact.getLatestTxDetails().getAuthor().isInvalid()) {
                      artifact.getLatestTxDetails().setTime(time);
                      artifact.getLatestTxDetails().setAuthor(author);
                      artifact.getLatestTxDetails().setOseeComment(oseeComment);
