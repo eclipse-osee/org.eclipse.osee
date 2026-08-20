@@ -113,6 +113,12 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final QueryEngine queryEngine;
    private final OrcsTokenService tokenService;
    private final HashMap<SqlTable, String> mainAliases = new HashMap<>(4);
+   /**
+    * Accumulates single-attribute-type constraints from {@code .and()} calls. These are held here instead of
+    * being immediately converted to criteria so that 2+ consecutive single-type constraints can be combined
+    * into a single {@link CriteriaAttributeKeywordsChained} for a more efficient chained CTE query plan.
+    * Flushed at query execution boundaries and structural transitions (follow, setQueryType, getMatches).
+    */
    private final List<AttributeConstraint> pendingAttributeConstraints = new ArrayList<>();
    private QueryType queryType;
    private boolean followCausesChild = true;
@@ -609,12 +615,14 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       if (isIncludeAllTypes || attributeTypes.size() > 1) {
-         // Multi-type or ANY_ATTRIBUTE_TYPE searches can't be chained — flush pending and add directly
+         // Multi-type or ANY_ATTRIBUTE_TYPE searches use a different SQL pattern and can't participate
+         // in chaining. Flush any pending single-type constraints first to preserve criteria ordering.
          flushPendingAttributeChain();
          return addAndCheck(
             new CriteriaAttributeKeywords(isIncludeAllTypes, attributeTypes, tokenService, values, options));
       }
-      // Single attribute type: buffer for chaining
+      // Single attribute type: buffer for potential chaining. If another single-type .and() follows,
+      // both will be combined into a CriteriaAttributeKeywordsChained at flush time.
       AttributeTypeToken attrType = attributeTypes.iterator().next();
       pendingAttributeConstraints.add(new AttributeConstraint(attrType, values, options));
       return this;
@@ -675,9 +683,19 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    /**
-    * Flushes any buffered attribute constraints. If there's only one, it goes through as a standard
-    * CriteriaAttributeKeywords. If there are two or more, they are combined into a single
-    * CriteriaAttributeKeywordsChained for a more efficient chained CTE query.
+    * Materializes any buffered single-attribute-type constraints into the criteria list. Called at every point
+    * where pending constraints must be committed:
+    * <ul>
+    * <li>{@code setQueryType} — query is about to execute (covers getResults, getCount, asArtifacts, etc.)</li>
+    * <li>{@code getMatches} — executes without going through setQueryType</li>
+    * <li>{@code follow/followRelation} — transitions to a child QueryData scope; pending constraints belong to
+    * the current level and would be lost if not flushed before the new child is created</li>
+    * <li>{@code and()} with multi-type or ANY_ATTRIBUTE_TYPE — non-chainable criteria that must appear after
+    * any pending chainable constraints in the criteria order</li>
+    * </ul>
+    * <p>
+    * If there's only one buffered constraint, it produces a standard {@link CriteriaAttributeKeywords}.
+    * Two or more are combined into a {@link CriteriaAttributeKeywordsChained} for chained CTE generation.
     */
    private void flushPendingAttributeChain() {
       if (pendingAttributeConstraints.isEmpty()) {
