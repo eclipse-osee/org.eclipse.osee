@@ -343,4 +343,64 @@ public class ArtifactQueryTest {
       Assert.assertFalse(ArtifactQuery.isArtifactChangedViaEntries(folder));
 
    }
+
+   /**
+    * Tests that multiple .and() calls on the query builder produce correct results via the automatic chained CTE
+    * optimization. Verifies that chaining narrows results correctly when 2+ attribute constraints are applied.
+    */
+   @Test
+   public void testChainedAttributeQuery() {
+      Artifact art1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, DemoBranches.SAW_Bld_1,
+         "ChainTest_Alpha");
+      art1.setSoleAttributeFromString(CoreAttributeTypes.StaticId, "chain-group-a");
+      art1.setSoleAttributeFromString(CoreAttributeTypes.Description, "first item");
+      art1.persist(getClass().getSimpleName());
+
+      Artifact art2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, DemoBranches.SAW_Bld_1,
+         "ChainTest_Beta");
+      art2.setSoleAttributeFromString(CoreAttributeTypes.StaticId, "chain-group-a");
+      art2.setSoleAttributeFromString(CoreAttributeTypes.Description, "second item");
+      art2.persist(getClass().getSimpleName());
+
+      Artifact art3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, DemoBranches.SAW_Bld_1,
+         "ChainTest_Gamma");
+      art3.setSoleAttributeFromString(CoreAttributeTypes.StaticId, "chain-group-b");
+      art3.setSoleAttributeFromString(CoreAttributeTypes.Description, "first item");
+      art3.persist(getClass().getSimpleName());
+
+      try {
+         // Single .and() — should match 2 artifacts with StaticId = "chain-group-a"
+         QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(DemoBranches.SAW_Bld_1);
+         builder.and(CoreAttributeTypes.StaticId, "chain-group-a", QueryOption.EXACT_MATCH_OPTIONS);
+         Assert.assertEquals(2, builder.getCount());
+
+         // Two .and() calls — should narrow to only art1 (StaticId=chain-group-a AND Description=first item)
+         builder = ArtifactQuery.createQueryBuilder(DemoBranches.SAW_Bld_1);
+         builder.and(CoreAttributeTypes.StaticId, "chain-group-a", QueryOption.EXACT_MATCH_OPTIONS);
+         builder.and(CoreAttributeTypes.Description, "first item", QueryOption.EXACT_MATCH_OPTIONS);
+         List<Artifact> results = builder.getResults().getList();
+         Assert.assertEquals(1, results.size());
+         Assert.assertEquals(art1.getArtId(), results.get(0).getArtId());
+
+         // Three .and() calls — should still narrow to art1 by name
+         builder = ArtifactQuery.createQueryBuilder(DemoBranches.SAW_Bld_1);
+         builder.and(CoreAttributeTypes.StaticId, "chain-group-a", QueryOption.EXACT_MATCH_OPTIONS);
+         builder.and(CoreAttributeTypes.Description, "first item", QueryOption.EXACT_MATCH_OPTIONS);
+         builder.and(CoreAttributeTypes.Name, "ChainTest_Alpha", QueryOption.EXACT_MATCH_OPTIONS);
+         results = builder.getResults().getList();
+         Assert.assertEquals(1, results.size());
+         Assert.assertEquals(art1.getArtId(), results.get(0).getArtId());
+
+         // Non-match — all constraints but description doesn't exist
+         builder = ArtifactQuery.createQueryBuilder(DemoBranches.SAW_Bld_1);
+         builder.and(CoreAttributeTypes.StaticId, "chain-group-a", QueryOption.EXACT_MATCH_OPTIONS);
+         builder.and(CoreAttributeTypes.Description, "nonexistent", QueryOption.EXACT_MATCH_OPTIONS);
+         Assert.assertEquals(0, builder.getCount());
+
+      } finally {
+         art1.purgeFromBranch();
+         art2.purgeFromBranch();
+         art3.purgeFromBranch();
+      }
+   }
 }
