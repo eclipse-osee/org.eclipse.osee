@@ -9,52 +9,52 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test", "rust_doc_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_doc_test", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "applicability_parser",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability:applicability",
-        "//cli/applicability_parser_types:applicability_parser_types"
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
-    ]
+        "serde",
+    ],
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability",
+        "//cli/applicability_parser_types",
+    ],
 )
 
 rust_test(
-    name="applicability_parser_test",
-    crate=":applicability_parser",
-    size="small",
+    name = "applicability_parser_test",
+    size = "small",
+    crate = ":applicability_parser",
     crate_features = [
         "default",
         "derive",
-        "serde"
-    ]
+        "serde",
+    ],
 )
 
 rust_doc(
-    name="applicability_parser_doc",
-    crate=":applicability_parser"
+    name = "applicability_parser_doc",
+    crate = ":applicability_parser",
 )
 
 rust_doc_test(
-    name="applicability_parser_doc_test",
-    crate=":applicability_parser",
-    size="small",
+    name = "applicability_parser_doc_test",
+    size = "small",
+    crate = ":applicability_parser",
 )
 
 rust_clippy(
-    name="applicability_parser_clippy",
+    name = "applicability_parser_clippy",
     testonly = True,
-    deps=[
-        ":applicability_parser"
-    ]
+    deps = [
+        ":applicability_parser",
+    ],
 )

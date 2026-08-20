@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Format & Lint Rust Workspace",
+  "description": "Runs cargo fmt --all to format all Rust files in the workspace, then runs cargo clippy --workspace to report any lint warnings or errors.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run `cargo fmt --all` from the workspace root to format all Rust files. Then run `cargo clippy --workspace` and report any warnings or errors that need manual fixing."
+  }
+}

@@ -9,8 +9,9 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 # Keep in sync with MODULE.bazel
 rules_osee_version = "0.2.10"
-bat_version = "1.1.1"
-pat_version = "1.0.0"
+bat_version = "1.1.10"
+pat_version = "1.1.10"
+ple_version = "1.1.10"
