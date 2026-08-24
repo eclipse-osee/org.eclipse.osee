@@ -426,15 +426,17 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       createQueryBuilder();
       getBaseSearchCriteria(teamWorkflowArtTypes, true, allArtTypes);
 
-      addTeamWorkflowAttributeCriteria();
-
+      // Add teamWorkflow-specific attribute criteria
+      if (!teamWorkflowAttr.isEmpty()) {
+         for (AtsAttributeQuery attrQuery : teamWorkflowAttr) {
+            queryAnd(attrQuery.getAttrType(), attrQuery.getValues(), attrQuery.getQueryOption());
+         }
+      }
       addTeamDefCriteria();
-
       addAiCriteria();
+      addWorkPackageCriteria();
 
       addVersionCriteria();
-
-      addWorkPackageCriteria();
 
       return collectResults(allResults, allArtTypes, newSearch);
    }
@@ -819,8 +821,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          queryAndIds(artifactIds);
       }
 
-      addStateTypeNameAndAttributeCriteria();
-
+      addStateTypeCriteria();
+      addStateNameCriteria();
+      addAttributeCriteria();
+      addRelationCriteria();
       addChangeTypeCriteria();
       addPrioritiesCriteria();
    }
@@ -867,14 +871,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private void addAttributeCriteria() {
       if (!andAttr.isEmpty()) {
          for (AtsAttributeQuery attrQuery : andAttr) {
-            queryAnd(attrQuery.getAttrType(), attrQuery.getValues(), attrQuery.getQueryOption());
-         }
-      }
-   }
-
-   private void addTeamWorkflowAttributeCriteria() {
-      if (!teamWorkflowAttr.isEmpty()) {
-         for (AtsAttributeQuery attrQuery : teamWorkflowAttr) {
             queryAnd(attrQuery.getAttrType(), attrQuery.getValues(), attrQuery.getQueryOption());
          }
       }
@@ -938,20 +934,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    public void queryAnd(AttributeTypeToken attrType, Collection<String> values) {
       query.and(attrType, values);
-   }
-
-   private void addStateTypeNameAndAttributeCriteria() {
-      // stateTypes
-      addStateTypeCriteria();
-
-      // stateName
-      addStateNameCriteria();
-
-      // attributes
-      addAttributeCriteria();
-
-      // relations
-      addRelationCriteria();
    }
 
    @Override

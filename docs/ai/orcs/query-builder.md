@@ -1,5 +1,5 @@
 ---
-summary: "ORCS QueryBuilder API: building queries, follow/followFork for relation loading, and terminal methods (asArtifacts vs asArtifactIds)"
+summary: "ORCS QueryBuilder API: building queries, follow/followFork for relation loading, chained attribute query optimization, and terminal methods (asArtifacts vs asArtifactIds)"
 tags:
   [
     orcs,
@@ -10,8 +10,10 @@ tags:
     relations,
     artifacts,
     FollowRelation,
+    chained-cte,
+    attribute-query,
   ]
-fileMatch: "**/orcs/**/search/QueryBuilder.java,**/orcs/**/search/QueryData.java,**/orcs/**/SelectiveArtifactSqlWriter.java,**/orcs/**/QueryEngineImpl.java,**/orcs/core/ds/FollowRelation.java,**/accessor/**/ArtifactAccessorImpl.java"
+fileMatch: "**/orcs/**/search/QueryBuilder.java,**/orcs/**/search/QueryData.java,**/orcs/**/SelectiveArtifactSqlWriter.java,**/orcs/**/QueryEngineImpl.java,**/orcs/core/ds/FollowRelation.java,**/accessor/**/ArtifactAccessorImpl.java,**/search/handlers/AttributeTokenChainedSqlHandler.java,**/criteria/CriteriaAttributeKeywordsChained.java"
 ---
 
 # ORCS QueryBuilder
@@ -473,6 +475,94 @@ List<ArtifactId> ids = orcsApi.getQueryFactory().fromBranch(branch)
    .andIsOfType(CoreArtifactTypes.SoftwareRequirementMsWord)
    .asArtifactIds();
 ```
+
+## Chained Attribute Query Optimization
+
+When a query uses multiple `.and()` calls with single attribute types, `QueryData`
+automatically combines them into a single chained CTE query rather than emitting
+independent CTEs that the final `artWith` must join separately. This produces a more
+efficient query plan where each constraint progressively narrows the `art_id` set.
+
+### How It Works
+
+Instead of immediately creating a `CriteriaAttributeKeywords` for each `.and()` call,
+`QueryData` buffers single-attribute-type constraints in `pendingAttributeConstraints`.
+When the query is finalized or a structural boundary is reached, `flushPendingAttributeChain()`
+emits the buffered constraints:
+
+- **1 constraint**: goes through as a standard `CriteriaAttributeKeywords` (no change in behavior).
+- **2+ constraints**: combined into a single `CriteriaAttributeKeywordsChained`, which the
+  `AttributeTokenChainedSqlHandler` translates into a chain of CTEs where each `att` CTE
+  joins to the previous one's `art_id` set.
+
+### When `flushPendingAttributeChain()` Is Called
+
+The flush must happen at every point where the buffered constraints need to be materialized
+into the criteria list — either because the query is about to execute, or because a
+subsequent operation would be semantically incorrect if pending constraints remained
+unbatched:
+
+| Call Site | Why |
+|---|---|
+| `setQueryType(QueryType)` | Terminal methods (`getResults`, `getCount`, `asArtifacts`, etc.) all flow through `setQueryType`. This is the primary "query is about to execute" trigger. Constraints must be materialized before the engine builds SQL. |
+| `getMatches()` | Calls `artQueryFactory.createSearchWithMatches` directly without going through `setQueryType`, so it needs its own flush. |
+| `follow(RelationTypeSide, ArtifactTypeToken, boolean)` | `follow` creates a child `QueryData` and starts a new criteria scope. Pending constraints belong to the *current* level and must be flushed before descending — otherwise they'd be lost (never added to the parent's criteria list). |
+| `followRelation(RelationTypeSide)` | Same reason as `follow` — transitions to a new criteria set and level. |
+| `and(Collection<AttributeTypeToken>, Collection<String>, QueryOption...)` when multi-type or `ANY_ATTRIBUTE_TYPE` | Multi-type searches can't participate in chaining (they use a different SQL pattern). Before adding the non-chainable criteria, pending single-type constraints must be flushed so they appear in the correct order in the criteria list. |
+
+### Why Not Flush Everywhere?
+
+Calls like `andId()`, `andIsOfType()`, `andRelatedTo()`, etc. do **not** flush. These
+non-attribute criteria are independent of the chaining buffer — they produce their own
+CTE patterns in the SQL and don't interact with the attribute constraint chain. Flushing
+at every criteria addition would defeat the purpose of buffering.
+
+### SQL Shape: Before vs After
+
+**Before (independent CTEs):**
+```sql
+-- Each .and() produces its own att CTE
+WITH att1 AS (SELECT art_id FROM osee_attribute ... WHERE attr_type_id = ? AND value = ?),
+     att2 AS (SELECT art_id FROM osee_attribute ... WHERE attr_type_id = ? AND value = ?),
+     artWith AS (SELECT art_id FROM osee_artifact
+                 JOIN att1 ON ... JOIN att2 ON ...)
+```
+
+**After (chained CTEs):**
+```sql
+-- First att CTE is a standalone filter; subsequent ones narrow from the previous
+WITH att1 AS (SELECT art_id FROM osee_attribute att, osee_txs txs
+              WHERE att.attr_type_id = ? AND att.value = ? AND ...),
+     att2 AS (SELECT art_id FROM osee_attribute att, osee_txs txs, att1
+              WHERE att.art_id = att1.art_id
+                AND att.attr_type_id = ? AND att.value = ? AND ...),
+     artWith AS (SELECT art_id FROM osee_artifact JOIN att2 ON ...)
+```
+
+The chained version narrows the candidate set early, reducing work in subsequent joins.
+
+### Tokenized vs Exact Match
+
+`AttributeTokenChainedSqlHandler` checks each constraint to determine if it's tokenized
+(tag-based search) or an exact value match:
+
+- **Exact match** (`QueryOption.EXACT_MATCH_OPTIONS` or explicit case+delimiter+order match):
+  the att CTE does a direct `att.value = ?` or `att.value IN (...)`.
+- **Tokenized**: a gamma CTE is emitted first (intersecting `osee_search_tags` rows for
+  each tag), then the att CTE joins to the gamma CTE via `gamma_id`.
+
+Both styles participate in the chaining — each att CTE still joins `att.art_id` to the
+previous att CTE's output regardless of how it resolves its own constraint.
+
+### Constraints That Cannot Be Chained
+
+- **Multi-type searches** (`attributeTypes.size() > 1`) — these match across multiple
+  attribute types simultaneously and use a different SQL pattern.
+- **`ANY_ATTRIBUTE_TYPE`** searches — scans all attribute types, incompatible with the
+  single-type chaining assumption.
+
+These fall through to the standard `CriteriaAttributeKeywords` path after flushing any
+pending buffered constraints.
 
 ## Key Takeaways
 

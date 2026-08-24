@@ -73,6 +73,8 @@ import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactTxComment;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywords;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywordsChained;
+import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeKeywordsChained.AttributeConstraint;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.search.ds.criteria.CriteriaAttributeTypeExists;
@@ -111,6 +113,13 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final QueryEngine queryEngine;
    private final OrcsTokenService tokenService;
    private final HashMap<SqlTable, String> mainAliases = new HashMap<>(4);
+   /**
+    * Accumulates single-attribute-type constraints from {@code .and()} calls. These are held here instead of
+    * being immediately converted to criteria so that 2+ consecutive single-type constraints can be combined
+    * into a single {@link CriteriaAttributeKeywordsChained} for a more efficient chained CTE query plan.
+    * Flushed at query execution boundaries and structural transitions (follow, setQueryType, getMatches).
+    */
+   private final List<AttributeConstraint> pendingAttributeConstraints = new ArrayList<>();
    private QueryType queryType;
    private boolean followCausesChild = true;
    private ApplicabilityId appId;
@@ -605,8 +614,18 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public QueryBuilder and(Collection<AttributeTypeToken> attributeTypes, Collection<String> values,
       QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
-      return addAndCheck(
-         new CriteriaAttributeKeywords(isIncludeAllTypes, attributeTypes, tokenService, values, options));
+      if (isIncludeAllTypes || attributeTypes.size() > 1) {
+         // Multi-type or ANY_ATTRIBUTE_TYPE searches use a different SQL pattern and can't participate
+         // in chaining. Flush any pending single-type constraints first to preserve criteria ordering.
+         flushPendingAttributeChain();
+         return addAndCheck(
+            new CriteriaAttributeKeywords(isIncludeAllTypes, attributeTypes, tokenService, values, options));
+      }
+      // Single attribute type: buffer for potential chaining. If another single-type .and() follows,
+      // both will be combined into a CriteriaAttributeKeywordsChained at flush time.
+      AttributeTypeToken attrType = attributeTypes.iterator().next();
+      pendingAttributeConstraints.add(new AttributeConstraint(attrType, values, options));
+      return this;
    }
 
    @Override
@@ -651,6 +670,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public QueryBuilder followRelation(RelationTypeSide relationTypeSide) {
+      flushPendingAttributeChain();
       addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide, ArtifactTypeToken.SENTINEL, true, true));
       newCriteriaSet();
       return this;
@@ -660,6 +680,37 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       criteria.checkValid(getOptions());
       addCriteria(criteria);
       return this;
+   }
+
+   /**
+    * Materializes any buffered single-attribute-type constraints into the criteria list. Called at every point
+    * where pending constraints must be committed:
+    * <ul>
+    * <li>{@code setQueryType} — query is about to execute (covers getResults, getCount, asArtifacts, etc.)</li>
+    * <li>{@code getMatches} — executes without going through setQueryType</li>
+    * <li>{@code follow/followRelation} — transitions to a child QueryData scope; pending constraints belong to
+    * the current level and would be lost if not flushed before the new child is created</li>
+    * <li>{@code and()} with multi-type or ANY_ATTRIBUTE_TYPE — non-chainable criteria that must appear after
+    * any pending chainable constraints in the criteria order</li>
+    * </ul>
+    * <p>
+    * If there's only one buffered constraint, it produces a standard {@link CriteriaAttributeKeywords}.
+    * Two or more are combined into a {@link CriteriaAttributeKeywordsChained} for chained CTE generation.
+    */
+   private void flushPendingAttributeChain() {
+      if (pendingAttributeConstraints.isEmpty()) {
+         return;
+      }
+      if (pendingAttributeConstraints.size() == 1) {
+         AttributeConstraint c = pendingAttributeConstraints.get(0);
+         addAndCheck(new CriteriaAttributeKeywords(false, Collections.singleton(c.getAttributeType()), tokenService,
+            c.getValues(), c.getOptions()));
+      } else {
+         CriteriaAttributeKeywordsChained criteria = new CriteriaAttributeKeywordsChained(
+            new ArrayList<>(pendingAttributeConstraints));
+         addAndCheck(criteria);
+      }
+      pendingAttributeConstraints.clear();
    }
 
    @Override
@@ -731,6 +782,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    private QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
       boolean terminalFollow) {
+      flushPendingAttributeChain();
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;
       followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow, true));
@@ -995,6 +1047,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() {
+      flushPendingAttributeChain();
       return artQueryFactory.createSearchWithMatches(null, this);
    }
 
@@ -1022,6 +1075,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    public void setQueryType(QueryType queryType) {
+      flushPendingAttributeChain();
       this.queryType = queryType;
       if (parentQueryData != null) {
          parentQueryData.setQueryType(queryType);

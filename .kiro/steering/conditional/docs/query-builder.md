@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "**/orcs/**/search/QueryBuilder.java,**/orcs/**/search/QueryData.java,**/orcs/**/SelectiveArtifactSqlWriter.java,**/orcs/**/QueryEngineImpl.java,**/orcs/core/ds/FollowRelation.java,**/accessor/**/ArtifactAccessorImpl.java"
+fileMatchPattern: "**/orcs/**/search/QueryBuilder.java,**/orcs/**/search/QueryData.java,**/orcs/**/SelectiveArtifactSqlWriter.java,**/orcs/**/QueryEngineImpl.java,**/orcs/core/ds/FollowRelation.java,**/accessor/**/ArtifactAccessorImpl.java,**/search/handlers/AttributeTokenChainedSqlHandler.java,**/criteria/CriteriaAttributeKeywordsChained.java"
 ---
 
 #[[file:docs/ai/orcs/query-builder.md]]
