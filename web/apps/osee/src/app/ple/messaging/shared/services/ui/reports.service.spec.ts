@@ -59,9 +59,9 @@ describe('ReportsService', () => {
 			service.BranchId = '10';
 			service.BranchType = 'working';
 			const expectedObservable = {
-				a: '/ple/messaging/reports/working/10/differences',
+				a: '/ple/messaging/reports/differences',
 			};
-			const expectedMarble = '(a)';
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.diffReportRoute)
 				.toBe(expectedMarble, expectedObservable);
@@ -81,8 +81,8 @@ describe('ReportsService', () => {
 		scheduler.run(({ expectObservable }) => {
 			service.BranchId = '10';
 			service.BranchType = 'working';
-			expectObservable(service.diffReportRoute).toBe('a', {
-				a: '/ple/messaging/reports/working/10/differences',
+			expectObservable(service.diffReportRoute).toBe('(a|)', {
+				a: '/ple/messaging/reports/differences',
 			});
 		});
 	});
@@ -91,8 +91,8 @@ describe('ReportsService', () => {
 		scheduler.run(({ expectObservable }) => {
 			service.BranchId = '10';
 			service.BranchType = 'working';
-			expectObservable(service.nodeTraceReportRoute).toBe('a', {
-				a: '/ple/messaging/reports/working/10/traceReport',
+			expectObservable(service.nodeTraceReportRoute).toBe('(a|)', {
+				a: '/ple/messaging/reports/traceReport',
 			});
 		});
 	});

@@ -1,21 +1,24 @@
 ---
-summary: "Generic Report: template-driven REST endpoint, AST-parsed Java code, hierarchical Excel XML output"
+summary: "Generic Report: template-driven REST endpoint, AST-parsed Java code, multi-format output (XML, XLSX, HTML)"
 tags: [orcs, report, rest, excel, ast, template]
-fileMatch: "**/GenericReport*,**/ReportEndpoint*,**/PublishTemplateReport*,**/TemplateParser*,**/GenericReportBuilder*,**/ASTParserUtil*"
+fileMatch: "**/GenericReport*,**/ReportEndpoint*,**/ReportFormat*,**/PublishTemplateReport*,**/TemplateParser*,**/GenericReportBuilder*,**/ASTParserUtil*"
 ---
 
 # Generic Report
 
 ## Overview
 
-The Generic Report system generates hierarchical Excel XML spreadsheets from OSEE artifact data. Reports are defined as Java code stored in a `ReportTemplate` artifact's `JavaCode` attribute, parsed at runtime via the Eclipse JDT AST parser, and executed against artifact queries. It is exposed via the REST endpoint at `orcs/report/{branch}/view/{view}/template/{template}`.
+The Generic Report system generates reports from OSEE artifact data in multiple formats (XML/SpreadsheetML, XLSX, HTML). Reports are defined as Java code stored in a `ReportTemplate` artifact's `JavaCode` attribute, parsed at runtime via the Eclipse JDT AST parser, and executed against artifact queries. The report generation endpoint is at `orcs/report/{branch}/view/{view}/template/{template}` with `format` and `email` query parameters controlling output format and sync/async delivery. The same REST interface also exposes a hierarchy numbering endpoint at `orcs/report/{branch}/hierarchyNumber/{artifact}`.
 
 ## Key Files
 
 - `plugins/org.eclipse.osee.orcs.rest.model/src/org/eclipse/osee/orcs/rest/model/GenericReport.java` — Fluent builder API interface
-- `plugins/org.eclipse.osee.orcs.rest.model/src/org/eclipse/osee/orcs/rest/model/ReportEndpoint.java` — REST endpoint interface
-- `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/ReportEndpointImpl.java` — REST endpoint implementation (sync + async)
-- `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/writers/PublishTemplateReport.java` — StreamingOutput orchestrator
+- `plugins/org.eclipse.osee.orcs.rest.model/src/org/eclipse/osee/orcs/rest/model/ReportEndpoint.java` — REST endpoint interface (report generation with `format` and `email` query params, plus hierarchy numbering)
+- `plugins/org.eclipse.osee.orcs.rest.model/src/org/eclipse/osee/orcs/rest/model/ReportFormat.java` — Enum mapping format names to extensions, media types, and writer factories
+- `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/ReportEndpointImpl.java` — REST endpoint implementation (sync + async, dispatches on ReportFormat)
+- `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/writers/PublishTemplateReport.java` — StreamingOutput for XML (SpreadsheetML) format
+- `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/writers/PublishTemplateReportXlsx.java` — StreamingOutput for native XLSX (POI) format
+- `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/writers/PublishTemplateReportHtml.java` — StreamingOutput for HTML format
 - `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/writers/TemplateParser.java` — AST parsing and reflective method invocation
 - `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/writers/GenericReportBuilder.java` — GenericReport implementation with query execution and data row generation
 - `plugins/org.eclipse.osee.orcs.rest/src/org/eclipse/osee/orcs/rest/internal/writers/GenericReportCode.java` — Example report definitions
@@ -35,16 +38,20 @@ The Generic Report system generates hierarchical Excel XML spreadsheets from OSE
 
 ### Data Flow
 
-1. REST endpoint receives branch, view, and template artifact IDs.
-2. `PublishTemplateReport` (StreamingOutput) is created with a `GenericReportBuilder` and `XResultData`.
-3. `TemplateParser` loads the template artifact from COMMON branch and reads its `JavaCode` attribute.
-4. The Java code is parsed via `ASTParserUtil` (Eclipse JDT `ASTParser.JLS20`) with configured classpath and sourcepath entries.
-5. `TemplateVisitor` (ASTVisitor) extracts method invocations and import declarations.
-6. `TemplateReflector` resolves arguments from AST expressions (literals, qualified names, nested method calls) and invokes the corresponding `GenericReport` builder methods via reflection.
-7. `GenericReportBuilder` accumulates `ReportLevel` objects, each with columns and an associated relation (main + optional fork relations stored on the level).
-8. `getDataRowsFromQuery()` executes the built query, recursively traverses levels via all level relations (main + forks), fills data rows.
-9. `ExcelXmlWriter` outputs the data as Excel XML (SpreadsheetML format).
-10. A `DebugInfo` sheet is appended with parsing logs from `XResultData`.
+1. REST endpoint receives branch, view, template artifact IDs, `format` query param (xml/xlsx/html, default xml), and optional `email` query param.
+2. `ReportFormat.fromString(format)` resolves the enum. If `email` is present, async path is taken; otherwise sync.
+3. `ReportEndpointImpl.createWriter()` dispatches to the appropriate `StreamingOutput` implementation based on format:
+   - `XML` → `PublishTemplateReport` (SpreadsheetML via `ExcelXmlWriter`)
+   - `XLSX` → `PublishTemplateReportXlsx` (native .xlsx via Apache POI)
+   - `HTML` → `PublishTemplateReportHtml` (standalone HTML document)
+4. `TemplateParser` loads the template artifact from COMMON branch and reads its `JavaCode` attribute.
+5. The Java code is parsed via `ASTParserUtil` (Eclipse JDT `ASTParser.JLS20`) with configured classpath and sourcepath entries.
+6. `TemplateVisitor` (ASTVisitor) extracts method invocations and import declarations.
+7. `TemplateReflector` resolves arguments from AST expressions (literals, qualified names, nested method calls) and invokes the corresponding `GenericReport` builder methods via reflection.
+8. `GenericReportBuilder` accumulates `ReportLevel` objects, each with columns and an associated relation (main + optional fork relations stored on the level).
+9. `getDataRowsFromQuery()` executes the built query, recursively traverses levels via all level relations (main + forks), fills data rows.
+10. The format-specific writer serializes data rows to the output stream.
+11. A `DebugInfo` sheet/section is appended with parsing logs from `XResultData`.
 
 ### AST Parser Configuration
 
@@ -73,13 +80,25 @@ The `TemplateParser.setPathsForParser()` method auto-classifies paths from the t
 
 ### Async Report Generation
 
-The async endpoint (`/async/{email}`) spawns a background `Thread` that:
+When the `email` query parameter is present, the endpoint submits a background task via `ExecutorAdmin` that:
 
-1. Writes the Excel XML to the server's publish directory (`OseeClient.OSEE_APPLICATION_SERVER_DATA + "/publish"`).
-2. Sends an email to the recipient with a download link pointing to `/orcs/resources/publish?path={fileName}`.
-3. Returns immediately with a JSON response containing status, file name, and download link.
+1. Creates the format-specific `StreamingOutput` writer via `ReportEndpointImpl.createWriter()`.
+2. Writes the report to the server's publish directory (`OseeClient.OSEE_APPLICATION_SERVER_DATA + "/publish"`).
+3. Sends an email to the recipient with a download link pointing to `/orcs/resources/publish?path={fileName}`.
+4. Returns immediately with a JSON response containing status, file name, and download link.
 
-Error handling: exceptions during setup (invalid email, missing data path) return a 500 response with a JSON error message. Exceptions during async generation are logged via `OseeCoreException` on the background thread.
+Error handling: exceptions during setup (invalid email) return a 500 response with a JSON error message. Exceptions during async generation trigger a failure notification email to the recipient and are logged via `OseeLog` at `SEVERE_POPUP` level.
+
+### Hierarchy Numbering Endpoint
+
+`PUT orcs/report/{branch}/hierarchyNumber/{artifact}?attributeType={id}&padding={n}`
+
+Applies sequential hierarchy numbers to all descendants of the given artifact via `DefaultHierarchical_Child` relations. Requires `OseeAccessAdmin` role.
+
+- **attributeType** (required): ID of the attribute to write. Restricted to: `Annotation`, `Description`, `DoorsHierarchy`, `ParagraphNumber`.
+- **padding** (optional, default 2): zero-padded width per segment (1–5). Determines max children per level (10^padding − 1).
+
+Numbers are formatted as dot-separated segments (e.g., `01.03.02` with padding=2). The endpoint recursively traverses up to 100 levels deep and commits a single transaction. Returns `XResultData` with per-artifact log entries and any warnings/errors.
 
 ### Template Artifact Setup
 
@@ -118,6 +137,6 @@ Data rows are generated recursively. For each artifact at level N, related artif
 ## Testing
 
 - **Unit test** (`GenericReportBuilderTest`): uses Mockito to verify level/column/query construction, header generation, data row filling with mocked artifacts and relations, and `followFork` validation (valid chaining, rejection after column, duplicate relation detection via `ReportLevel.hasForkRelationName`, rejection after query-based level via `ReportLevel.isRelationLevel`).
-- **Integration test** (`ReportEndpointTest`): creates ReportTemplate artifacts with `relationLevel` and `followFork` code, sets up test artifacts with Code-Requirement relations on the SAW working branch, calls the endpoint, and verifies Excel XML content contains expected data. Also tests the async endpoint returns proper JSON, and that a `followFork` template parses and executes without errors.
+- **Integration test** (`ReportEndpointTest`): creates ReportTemplate artifacts with `relationLevel` and `followFork` code, sets up test artifacts with Code-Requirement relations on the SAW working branch, calls the endpoint with various `format` query parameter values (xml, xlsx, html), and verifies responses. Tests include: default XML format produces Excel XML, `format=xlsx` returns binary XLSX with correct Content-Disposition header, `format=html` returns HTML containing test data, async with `email` param returns JSON status, and that `followFork` templates parse and execute without errors.
 
 Run via the ATS IDE integration test suite. Tests validate response status, XML worksheet presence, test data in cells, level/column headers, and async JSON fields.

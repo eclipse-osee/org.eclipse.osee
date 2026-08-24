@@ -172,43 +172,67 @@ report.level("Requirements",
 
 ## Running the Report
 
-### Synchronous Endpoint
+### Unified Endpoint
 
 ```
-GET /orcs/report/{branch}/view/{view}/template/{template}
+GET /orcs/report/{branch}/view/{view}/template/{template}?format={format}&email={email}
 ```
 
-Returns the report as a streamed Excel XML file attachment. Parameters:
+A single endpoint serves all format and delivery combinations. Parameters:
 
-| Parameter  | Description                                                |
-| ---------- | ---------------------------------------------------------- |
-| `branch`   | The branch ID to query artifacts from                      |
-| `view`     | The applicability view ID (use `-1` for no view filtering) |
-| `template` | The artifact ID of the ReportTemplate on the COMMON branch |
+| Parameter  | Type  | Description                                                            |
+| ---------- | ----- | ---------------------------------------------------------------------- |
+| `branch`   | path  | The branch ID to query artifacts from                                  |
+| `view`     | path  | The applicability view ID (use `-1` for no view filtering)             |
+| `template` | path  | The artifact ID of the ReportTemplate on the COMMON branch             |
+| `format`   | query | Output format: `xml` (default), `xlsx`, or `html`                      |
+| `email`    | query | Optional. If provided, report generates asynchronously and emails link |
 
-### Asynchronous Endpoint
+### Synchronous (default)
+
+When no `email` parameter is provided, the report streams back directly as a file attachment:
 
 ```
-GET /orcs/report/{branch}/view/{view}/template/{template}/async/{email}
+GET /orcs/report/570/view/-1/template/12345
+GET /orcs/report/570/view/-1/template/12345?format=xlsx
+GET /orcs/report/570/view/-1/template/12345?format=html
 ```
 
-Kicks off report generation in the background. When complete, the report is written to the server's publish directory and an email with a download link is sent to the specified recipient. Returns immediately with a JSON confirmation:
+### Asynchronous
+
+When the `email` parameter is provided, the endpoint returns immediately with a JSON status and generates the report in the background. When complete, an email with a download link is sent to the recipient:
+
+```
+GET /orcs/report/570/view/-1/template/12345?format=xlsx&email=user@example.com
+```
+
+Response:
 
 ```json
 {
   "status": "Report generation started",
-  "fileName": "Generic_Trace_Report_2026-05-28_10-30.xml",
+  "fileName": "Generic_Trace_Report_2026-05-28_10-30.xlsx",
   "branch": "570",
   "view": "-1",
   "template": "12345",
   "emailRecipient": "user@example.com",
-  "downloadLink": "http://server:8089/orcs/resources/publish?path=Generic_Trace_Report_2026-05-28_10-30.xml"
+  "downloadLink": "http://server:8089/orcs/resources/publish?path=Generic_Trace_Report_2026-05-28_10-30.xlsx"
 }
 ```
 
-## Output Format
+## Output Formats
 
-The report is generated as **Excel XML** (Microsoft SpreadsheetML format), which can be opened directly in Excel or LibreOffice Calc.
+### XML (SpreadsheetML) — `format=xml` (default)
+
+The default format generates **Excel XML** (Microsoft SpreadsheetML format), which can be opened directly in Excel or LibreOffice Calc.
+
+### XLSX — `format=xlsx`
+
+Produces a native `.xlsx` workbook using Apache POI. Supports embedded images resolved from `<image-link>` tags, markdown tables rendered as embedded PNG images, and rich text formatting for inline markdown (bold, italic, code).
+
+### HTML — `format=html`
+
+Produces a standalone HTML document with embedded CSS styling. Markdown content in cells is rendered to HTML, and `<image-link>` tags are resolved to inline base64 images.
 
 ### Worksheet Structure
 

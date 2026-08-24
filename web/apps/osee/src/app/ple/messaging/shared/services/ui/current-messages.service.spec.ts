@@ -326,8 +326,8 @@ describe('CurrentMessagesService', () => {
 		scheduler.run(({ expectObservable }) => {
 			service.branchId = '10';
 			service.branchType = 'working';
-			expectObservable(service.connectionsRoute).toBe('a', {
-				a: '/ple/messaging/connections/working/10',
+			expectObservable(service.connectionsRoute).toBe('(a|)', {
+				a: '/ple/messaging/connections',
 			});
 		});
 	});

@@ -22,14 +22,6 @@ const routes: Routes = [
 		path: '',
 		loadComponent: () => import('./type-element-search.component'),
 	},
-	{
-		path: ':branchType',
-		loadComponent: () => import('./type-element-search.component'),
-	},
-	{
-		path: ':branchType/:branchId',
-		loadComponent: () => import('./type-element-search.component'),
-	},
 ];
 
 export default routes;

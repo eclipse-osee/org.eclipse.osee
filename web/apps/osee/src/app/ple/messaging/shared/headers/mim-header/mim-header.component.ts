@@ -97,22 +97,13 @@ export class MimHeaderComponent {
 																			displayName:
 																				type,
 																			routerLink:
-																				'/ple/messaging/' +
-																				'connections' +
-																				'/' +
-																				type,
+																				'/ple/messaging/connections',
 																		},
 																		{
 																			displayName:
 																				detail.name,
 																			routerLink:
-																				'/ple/messaging/' +
-																				'connections' +
-																				'/' +
-																				type +
-																				'/' +
-																				id +
-																				'/',
+																				'/ple/messaging/connections',
 																		},
 																		{
 																			displayName:
@@ -120,12 +111,7 @@ export class MimHeaderComponent {
 																					.name
 																					.value,
 																			routerLink:
-																				'/ple/messaging/' +
-																				'connections/' +
-																				type +
-																				'/' +
-																				id +
-																				'/' +
+																				'/ple/messaging/connections/' +
 																				connection +
 																				'/messages',
 																		},
@@ -133,12 +119,7 @@ export class MimHeaderComponent {
 																			displayName:
 																				submessageToStructureBreadCrumbs,
 																			routerLink:
-																				'/ple/messaging/' +
-																				'connections/' +
-																				type +
-																				'/' +
-																				id +
-																				'/' +
+																				'/ple/messaging/connections/' +
 																				connection +
 																				'/messages/' +
 																				message +
@@ -152,12 +133,7 @@ export class MimHeaderComponent {
 																					.name
 																					.value,
 																			routerLink:
-																				'/ple/messaging/' +
-																				'connections/' +
-																				type +
-																				'/' +
-																				id +
-																				'/' +
+																				'/ple/messaging/connections/' +
 																				connection +
 																				'/messages/' +
 																				message +
@@ -174,22 +150,13 @@ export class MimHeaderComponent {
 																displayName:
 																	type,
 																routerLink:
-																	'/ple/messaging/' +
-																	'connections' +
-																	'/' +
-																	type,
+																	'/ple/messaging/connections',
 															},
 															{
 																displayName:
 																	detail.name,
 																routerLink:
-																	'/ple/messaging/' +
-																	'connections' +
-																	'/' +
-																	type +
-																	'/' +
-																	id +
-																	'/',
+																	'/ple/messaging/connections',
 															},
 															{
 																displayName:
@@ -197,12 +164,7 @@ export class MimHeaderComponent {
 																		.name
 																		.value,
 																routerLink:
-																	'/ple/messaging/' +
-																	'connections/' +
-																	type +
-																	'/' +
-																	id +
-																	'/' +
+																	'/ple/messaging/connections/' +
 																	connection +
 																	'/messages',
 															},
@@ -210,12 +172,7 @@ export class MimHeaderComponent {
 																displayName:
 																	submessageToStructureBreadCrumbs,
 																routerLink:
-																	'/ple/messaging/' +
-																	'connections/' +
-																	type +
-																	'/' +
-																	id +
-																	'/' +
+																	'/ple/messaging/connections/' +
 																	connection +
 																	'/messages/' +
 																	message +
@@ -231,34 +188,20 @@ export class MimHeaderComponent {
 													{
 														displayName: type,
 														routerLink:
-															'/ple/messaging/' +
-															'connections' +
-															'/' +
-															type,
+															'/ple/messaging/connections',
 													},
 													{
 														displayName:
 															detail.name,
 														routerLink:
-															'/ple/messaging/' +
-															'connections' +
-															'/' +
-															type +
-															'/' +
-															id +
-															'/',
+															'/ple/messaging/connections',
 													},
 													{
 														displayName:
 															connectionDetails
 																.name.value,
 														routerLink:
-															'/ple/messaging/' +
-															'connections/' +
-															type +
-															'/' +
-															id +
-															'/' +
+															'/ple/messaging/connections/' +
 															connection +
 															'/messages',
 													},
@@ -270,20 +213,23 @@ export class MimHeaderComponent {
 										{
 											displayName: type,
 											routerLink:
-												'/ple/messaging/' +
-												'connections' +
-												'/' +
-												type,
+												'/ple/messaging/connections',
 										},
 										{
 											displayName: detail.name,
-											routerLink: type + '/' + id,
+											routerLink:
+												'/ple/messaging/connections',
 										},
 									])
 								)
 							)
 						),
-						of([{ displayName: type, routerLink: type }])
+						of([
+							{
+								displayName: type,
+								routerLink: '/ple/messaging/connections',
+							},
+						])
 					),
 					of()
 				)

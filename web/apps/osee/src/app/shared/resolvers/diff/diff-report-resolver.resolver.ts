@@ -25,20 +25,20 @@ export const diffReportResolverFn: ResolveFn<changeInstance[] | undefined> = (
 	const diffService = inject(DiffUIService);
 	let currentRoute = route;
 	while (
-		!currentRoute.paramMap.has('branchId') &&
-		!currentRoute.paramMap.has('branchType') &&
+		!currentRoute.queryParamMap.has('branchId') &&
+		!currentRoute.queryParamMap.has('branchType') &&
 		currentRoute.parent !== null
 	) {
 		currentRoute = currentRoute.parent;
 	}
-	if (diffService.id !== currentRoute.paramMap.get('branchId')) {
+	if (diffService.id !== currentRoute.queryParamMap.get('branchId')) {
 		requested = false;
-		diffService.branchId = currentRoute.paramMap.get('branchId') || '';
+		diffService.branchId = currentRoute.queryParamMap.get('branchId') || '';
 	}
-	if (diffService.type !== currentRoute.paramMap.get('branchType')) {
+	if (diffService.type !== currentRoute.queryParamMap.get('branchType')) {
 		requested = false;
 		diffService.branchType =
-			(currentRoute.paramMap.get('branchType') as
+			(currentRoute.queryParamMap.get('branchType') as
 				| 'working'
 				| 'baseline'
 				| '') || '';

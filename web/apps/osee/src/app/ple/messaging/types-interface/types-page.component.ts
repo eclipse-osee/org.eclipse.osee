@@ -50,7 +50,7 @@ export class TypesPageComponent implements OnInit {
 	});
 
 	ngOnInit(): void {
-		this.route.paramMap.subscribe((values) => {
+		this.route.queryParamMap.subscribe((values) => {
 			this.uiService.BranchIdString = values.get('branchId') || '';
 			this.uiService.branchType =
 				(values.get('branchType') as 'working' | 'baseline' | '') || '';

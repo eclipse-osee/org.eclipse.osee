@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
 	CurrentGraphService,
@@ -32,37 +33,42 @@ export class ConnectionViewComponent implements OnInit {
 	private router = inject(Router);
 	private routerState = inject(RouteStateService);
 	private graph = inject(CurrentGraphService);
+	private destroyRef = inject(DestroyRef);
 
 	ngOnInit(): void {
 		combineLatest([
-			this.route.paramMap,
+			this.route.queryParamMap,
 			this.route.data,
 			iif(() => this.router.url.includes('diff'), of(false), of(true)),
-		]).subscribe(([params, data, mode]) => {
-			if (mode) {
-				this.routerState.branchId = params.get('branchId') || '';
-				this.routerState.branchType =
-					(params.get('branchType') as 'working' | 'baseline' | '') ||
-					'';
-				/**
-				 * Set params to uninitalized state for invalid routes
-				 */
-				this.routerState.connectionId = '-1';
-				this.routerState.messageId = '';
-				this.routerState.subMessageId = '-1';
-				this.routerState.subMessageToStructureBreadCrumbs = '';
-				this.routerState.singleStructureId = '';
-				///////////////////////////////////////////////////////////
-				this.routerState.DiffMode = false;
-			} else {
-				this.routerState.connectionId = '-1';
-				this.routerState.messageId = '';
-				this.routerState.subMessageId = '-1';
-				this.routerState.subMessageToStructureBreadCrumbs = '';
-				this.routerState.singleStructureId = '';
-				this.graph.difference = data.diff;
-			}
-		});
+		])
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(([params, data, mode]) => {
+				if (mode) {
+					this.routerState.branchId = params.get('branchId') || '';
+					this.routerState.branchType =
+						(params.get('branchType') as
+							| 'working'
+							| 'baseline'
+							| '') || '';
+					/**
+					 * Set params to uninitalized state for invalid routes
+					 */
+					this.routerState.connectionId = '-1';
+					this.routerState.messageId = '';
+					this.routerState.subMessageId = '-1';
+					this.routerState.subMessageToStructureBreadCrumbs = '';
+					this.routerState.singleStructureId = '';
+					///////////////////////////////////////////////////////////
+					this.routerState.DiffMode = false;
+				} else {
+					this.routerState.connectionId = '-1';
+					this.routerState.messageId = '';
+					this.routerState.subMessageId = '-1';
+					this.routerState.subMessageToStructureBreadCrumbs = '';
+					this.routerState.singleStructureId = '';
+					this.graph.difference = data.diff;
+				}
+			});
 	}
 }
 export default ConnectionViewComponent;

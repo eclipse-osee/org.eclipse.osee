@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.ApiKeyApi;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -46,6 +48,7 @@ public class OrcsApplication extends Application {
    private IResourceManager resourceManager;
    private ActivityLog activityLog;
    private JdbcService jdbcService;
+   private ExecutorAdmin executorAdmin;
 
    public void setApiKeyApi(ApiKeyApi apiKeyApi) {
       this.apiKeyApi = apiKeyApi;
@@ -71,6 +74,10 @@ public class OrcsApplication extends Application {
       this.resourceManager = resourceManager;
    }
 
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
+   }
+
    public void start() {
       // Add all root resource, provider and feature instances.
       singletons.add(new QueryEndpointImpl(orcsApi));
@@ -88,7 +95,7 @@ public class OrcsApplication extends Application {
       singletons.add(new KeyValueResource(orcsApi));
 
       singletons.add(new LinkUpdateResource(orcsApi));
-      singletons.add(new ReportEndpointImpl(orcsApi));
+      singletons.add(new ReportEndpointImpl(orcsApi, executorAdmin));
       singletons.add(new TransactionBuilderMessageReader(orcsApi, resourceManager));
       singletons.add(new ExceptionRegistryEndpointImpl(orcsApi));
       singletons.add(new HelpEndpointImpl(orcsApi));
@@ -103,6 +110,6 @@ public class OrcsApplication extends Application {
 
    @Override
    public Set<Object> getSingletons() {
-      return singletons;
+      return Collections.unmodifiableSet(singletons);
    }
 }

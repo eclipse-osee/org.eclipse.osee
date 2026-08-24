@@ -30,11 +30,6 @@ describe('BranchRoutedUIService', () => {
 			imports: [
 				RouterTestingModule.withRoutes([
 					{ path: '', component: DummyComponent },
-					{ path: ':branchType', component: DummyComponent },
-					{
-						path: ':branchType/:branchId',
-						component: DummyComponent,
-					},
 				]),
 			],
 		});
@@ -46,7 +41,7 @@ describe('BranchRoutedUIService', () => {
 	});
 	describe('Core Functionality', () => {
 		describe('Branch Type Navigation', () => {
-			it('should utilize a split base url to form a url', () => {
+			it('should update the branch type via query params', () => {
 				service.branchType = 'baseline';
 				service.branchType = 'working';
 				expect(service.type.getValue()).toEqual('working');
@@ -54,14 +49,14 @@ describe('BranchRoutedUIService', () => {
 		});
 
 		describe('Id Navigation', () => {
-			it('should utilize a split base url to form a url', () => {
+			it('should update the branch id via query params', () => {
 				service.branchType = 'baseline';
 				service.branchId = '0';
 				service.branchId = '8';
 				expect(service.id.getValue()).toEqual('8');
 			});
 
-			it('should not utilize a split base url to form a url', () => {
+			it('should update the branch id without branch type', () => {
 				service.branchId = '0';
 				service.branchId = '8';
 				expect(service.id.getValue()).toEqual('8');

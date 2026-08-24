@@ -131,7 +131,7 @@ export class UnreferencedReportComponent {
 		initialValue: false,
 	});
 	constructor() {
-		this.route.paramMap.subscribe((params) => {
+		this.route.queryParamMap.subscribe((params) => {
 			this._ui.idValue = params.get('branchId') || '';
 			this._ui.typeValue =
 				(params.get('branchType') as 'working' | 'baseline' | '') || '';

@@ -13,10 +13,12 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	DestroyRef,
 	OnDestroy,
 	OnInit,
 	inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CurrentMessagesService } from '@osee/messaging/shared/services';
 import { combineLatest, iif, of } from 'rxjs';
@@ -35,6 +37,7 @@ export class MessagePageComponent implements OnInit, OnDestroy {
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);
 	private messageService = inject(CurrentMessagesService);
+	private destroyRef = inject(DestroyRef);
 
 	ngOnDestroy(): void {
 		this.messageService.clearRows();
@@ -44,34 +47,40 @@ export class MessagePageComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		combineLatest([
 			this.route.paramMap,
+			this.route.queryParamMap,
 			this.route.data,
 			iif(() => this.router.url.includes('diff'), of(false), of(true)),
-		]).subscribe(([values, data, mode]) => {
-			if (mode) {
-				this.messageService.messageFilter.set(
-					values.get('type')?.trim().toLowerCase() || ''
-				); //@todo FIX
-				this.messageService.branchType =
-					(values.get('branchType') as 'working' | 'baseline' | '') ||
-					'';
-				this.messageService.branch = values.get('branchId') || '';
-				this.messageService.connection =
-					(values.get('connection') as `${number}`) || '-1';
-				this.messageService.messageId = '';
-				this.messageService.subMessageId = '-1';
-				this.messageService.submessageToStructureBreadCrumbs = '';
-				this.messageService.singleStructureId = '';
-				this.messageService.DiffMode = false;
-			} else {
-				this.messageService.connection =
-					(values.get('connection') as `${number}`) || '-1';
-				this.messageService.messageId = '';
-				this.messageService.subMessageId = '-1';
-				this.messageService.submessageToStructureBreadCrumbs = '';
-				this.messageService.singleStructureId = '';
-				this.messageService.difference = data.diff;
-			}
-		});
+		])
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(([values, queryParams, data, mode]) => {
+				if (mode) {
+					this.messageService.messageFilter.set(
+						values.get('type')?.trim().toLowerCase() || ''
+					); //@todo FIX
+					this.messageService.branchType =
+						(queryParams.get('branchType') as
+							| 'working'
+							| 'baseline'
+							| '') || '';
+					this.messageService.branch =
+						queryParams.get('branchId') || '';
+					this.messageService.connection =
+						(values.get('connection') as `${number}`) || '-1';
+					this.messageService.messageId = '';
+					this.messageService.subMessageId = '-1';
+					this.messageService.submessageToStructureBreadCrumbs = '';
+					this.messageService.singleStructureId = '';
+					this.messageService.DiffMode = false;
+				} else {
+					this.messageService.connection =
+						(values.get('connection') as `${number}`) || '-1';
+					this.messageService.messageId = '';
+					this.messageService.subMessageId = '-1';
+					this.messageService.submessageToStructureBreadCrumbs = '';
+					this.messageService.singleStructureId = '';
+					this.messageService.difference = data.diff;
+				}
+			});
 	}
 }
 

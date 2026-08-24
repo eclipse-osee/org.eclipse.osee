@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
 import { MatDivider } from '@angular/material/divider';
@@ -29,7 +29,6 @@ import { navigationStructure } from '@osee/layout/routing';
 import { SideNavService } from '@osee/shared/services/layout';
 import { navigationElement } from '@osee/shared/types';
 import { filter, from, iif, of, reduce, switchMap } from 'rxjs';
-import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-top-level-navigation',
@@ -51,22 +50,6 @@ export class TopLevelNavigationComponent {
 	private readonly router = inject(Router);
 	private readonly userService = inject(UserDataAccountService);
 	readonly sideNavService = inject(SideNavService);
-	private readonly ui = inject(UiService);
-
-	private readonly _branchType = toSignal(this.ui.type, {
-		initialValue: '',
-	});
-	private readonly _branchId = toSignal(this.ui.id, { initialValue: '' });
-	readonly branchPath = computed(() => {
-		let path = '';
-		if (this._branchType() !== '') {
-			path = '/' + this._branchType();
-			if (this._branchId() !== '' && this._branchId() !== '-1') {
-				path = path + '/' + this._branchId();
-			}
-		}
-		return path;
-	});
 
 	readonly navElements = navigationStructure;
 
