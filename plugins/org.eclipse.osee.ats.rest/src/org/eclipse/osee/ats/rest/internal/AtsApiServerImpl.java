@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.query.IAtsQueryServiceServer;
+import org.eclipse.osee.ats.api.reqts.icd.AtsIcdService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
@@ -38,6 +39,7 @@ import org.eclipse.osee.ats.rest.internal.health.AtsHealthServiceImpl;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.rest.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.rest.internal.query.AtsQueryServiceServerImpl;
+import org.eclipse.osee.ats.rest.internal.reqts.icd.AtsIcdServiceServerImpl;
 import org.eclipse.osee.ats.rest.internal.util.ArtifactResolverImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsEarnedValueImpl;
@@ -62,6 +64,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    private final Map<String, IAtsDatabaseConversion> externalConversions = new ConcurrentHashMap<>();
    private IAtsHealthService healthService;
    private IAtsQueryServiceServer atsQueryServiceServer;
+   private AtsIcdService icdService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -243,5 +246,13 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    @Override
    public IAtsRelationService<ArtifactToken> relSvc() {
       throw new UnsupportedOperationException("not available on server");
+   }
+
+   @Override
+   public AtsIcdService getAtsIcdService() {
+      if (icdService == null) {
+         icdService = new AtsIcdServiceServerImpl(this);
+      }
+      return icdService;
    }
 }
