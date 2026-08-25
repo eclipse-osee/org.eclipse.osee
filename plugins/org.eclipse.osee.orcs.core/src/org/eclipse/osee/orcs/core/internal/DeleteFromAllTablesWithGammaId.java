@@ -24,7 +24,7 @@ public final class DeleteFromAllTablesWithGammaId {
 
       String deleteFromWhereGamma = "delete from %s where gamma_id = ?";
       int purgeSearchTags = client.runBatchUpdate(String.format(deleteFromWhereGamma, "osee_search_tags"), gammaIds);
-      client.runBatchUpdate(String.format(deleteFromWhereGamma, "osee_search_tags_hash"), gammaIds);
+      purgeSearchTags += client.runBatchUpdate(String.format(deleteFromWhereGamma, "osee_search_tags_hash"), gammaIds);
       int purgeTxs = client.runBatchUpdate(String.format(deleteFromWhereGamma, "osee_txs"), gammaIds);
       int purgeTxsArchived = client.runBatchUpdate(String.format(deleteFromWhereGamma, "osee_txs_archived"), gammaIds);
       int purgeRelationLink =
