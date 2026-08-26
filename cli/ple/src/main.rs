@@ -9,6 +9,7 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
+ *
  **********************************************************************/
 use bat_lib::{BatInternalCliOptions, perform_block_applicability};
 use clap::{Parser, Subcommand};
