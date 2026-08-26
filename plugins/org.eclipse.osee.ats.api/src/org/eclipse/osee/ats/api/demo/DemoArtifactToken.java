@@ -13,11 +13,7 @@
 
 package org.eclipse.osee.ats.api.demo;
 
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoCodeTeamWorkflow;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoProblemReportTeamWorkflow;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoReqTeamWorkflow;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DemoTestTeamWorkflow;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.*;
 import static org.eclipse.osee.framework.core.data.ArtifactToken.valueOf;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.ats.api.config.tx.AtsActionableItemArtifactToken;

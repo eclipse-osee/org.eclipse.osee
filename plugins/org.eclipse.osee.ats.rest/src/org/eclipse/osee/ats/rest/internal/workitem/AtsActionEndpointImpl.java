@@ -45,6 +45,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.sysml.SysmlPackage;
+import org.eclipse.osee.ats.api.sysml.SysmlTextWriter;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -72,6 +74,8 @@ import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.sysml.ConfigExporter;
+import org.eclipse.osee.ats.core.sysml.WorkflowExporter;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.bids.BidsOperations;
@@ -907,6 +911,28 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          }
       }
       return visitedItems;
+   }
+
+   @Override
+   public String getSysmlConfig(ArtifactId programId) {
+      try {
+         ConfigExporter exporter = new ConfigExporter(atsApi);
+         SysmlPackage pkg = exporter.export(programId);
+         return new SysmlTextWriter().write(pkg);
+      } catch (Exception ex) {
+         return "// Error exporting SysML config for program [" + programId + "]: " + ex.getMessage();
+      }
+   }
+
+   @Override
+   public String getSysmlWorkflows(ArtifactId programId) {
+      try {
+         WorkflowExporter exporter = new WorkflowExporter(atsApi);
+         SysmlPackage pkg = exporter.export(programId);
+         return new SysmlTextWriter().write(pkg);
+      } catch (Exception ex) {
+         return "// Error exporting SysML workflows for program [" + programId + "]: " + ex.getMessage();
+      }
    }
 
 }

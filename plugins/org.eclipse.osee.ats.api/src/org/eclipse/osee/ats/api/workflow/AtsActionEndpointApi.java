@@ -381,4 +381,14 @@ public interface AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public WorkflowData getWorkflowData(@PathParam("id") ArtifactId workItemId);
 
+   @Path("{programId}/sysml/config")
+   @GET
+   @Produces(MediaType.TEXT_PLAIN)
+   public String getSysmlConfig(@PathParam("programId") ArtifactId programId);
+
+   @Path("{programId}/sysml/workflows")
+   @GET
+   @Produces(MediaType.TEXT_PLAIN)
+   public String getSysmlWorkflows(@PathParam("programId") ArtifactId programId);
+
 }

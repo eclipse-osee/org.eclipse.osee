@@ -3,4 +3,4 @@ inclusion: fileMatch
 fileMatchPattern: "**/*.java"
 ---
 
-#[[file:docs/ai/javadoc-policy.md]]
+#[[file:docs/ai/java-coding-standards.md]]
