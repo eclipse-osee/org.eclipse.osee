@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.SqlTable;
@@ -54,6 +54,9 @@ public class TxData implements HasSession, HasBranchId {
       COMMIT_FAILED;
    }
    private static final long SPACING = (long) Math.pow(2.0, 18.0);
+   private static final long TOTAL_ORDER_RANGE = (long) Integer.MAX_VALUE - (long) Integer.MIN_VALUE;
+   private static final double HEAD_RESERVE_RATIO = 0.10;
+   private static final double ITEM_RANGE_RATIO = 0.25;
    private final OrcsSession session;
    private final GraphData graph;
    private final List<TupleData> tuples = new ArrayList<>();
@@ -231,7 +234,46 @@ public class TxData implements HasSession, HasBranchId {
    }
 
    public int calculateInsertionOrderIndex(int afterIndex, int beforeIndex) {
-      return (int) ((long) (afterIndex) + beforeIndex) / 2;
+      return (int) (((long) afterIndex + (long) beforeIndex) / 2);
+   }
+
+   /**
+    * Returns true if a reorder is needed — either less than SPACING room below currentMin (head insertions) or less
+    * than SPACING room above currentMax (end appends).
+    */
+   public static boolean shouldReorder(int currentMin, int currentMax) {
+      boolean lowOnHeadRoom = (long) currentMin - (long) Integer.MIN_VALUE < SPACING;
+      boolean lowOnTailRoom = (long) Integer.MAX_VALUE - (long) currentMax < SPACING;
+      return lowOnHeadRoom || lowOnTailRoom;
+   }
+
+   public static long getSpacing() {
+      return SPACING;
+   }
+
+   /**
+    * Computes evenly-spaced order values for the given relations. Items are packed into 25% of the integer range,
+    * starting after a 10% head reserve. This leaves ~65% of the range above the last item for end-appends (the most
+    * common operation) and 10% below for head insertions.
+    */
+   public static TreeMap<Integer, Pair<ArtifactId, GammaId>> computeRedistributedOrders(
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
+      long headReserve = (long) (TOTAL_ORDER_RANGE * HEAD_RESERVE_RATIO);
+      long itemRange = (long) (TOTAL_ORDER_RANGE * ITEM_RANGE_RATIO);
+      long maxItems = itemRange / SPACING;
+      if (relOrders.size() > maxItems) {
+         throw new OseeArgumentException(
+            "Too many relations (%d) to redistribute within available order range (max %d)", relOrders.size(),
+            maxItems);
+      }
+      long pad = itemRange / (relOrders.size() + 1);
+      long orderValue = Integer.MIN_VALUE + headReserve + pad;
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> result = new TreeMap<>();
+      for (Pair<ArtifactId, GammaId> entry : relOrders.values()) {
+         result.put((int) orderValue, entry);
+         orderValue += pad;
+      }
+      return result;
    }
 
    public void addGammaId(GammaId gammaId) {
@@ -249,4 +291,5 @@ public class TxData implements HasSession, HasBranchId {
    public List<GammaId> getGammaIdsFailed() {
       return this.gammaIdsFailed;
    }
+
 }
