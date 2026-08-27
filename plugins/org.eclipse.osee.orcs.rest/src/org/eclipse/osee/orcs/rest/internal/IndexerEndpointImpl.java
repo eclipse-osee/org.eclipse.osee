@@ -34,6 +34,8 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.IndexResources;
@@ -166,7 +168,12 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
 
       int typeCount = attrTypeIds.size();
       REINDEX_EXECUTOR.submit(() -> {
-         orcsApi.getQueryIndexer().indexMissingByAttrTypeIds(attrTypeIds);
+         try {
+            orcsApi.getQueryIndexer().indexMissingByAttrTypeIds(attrTypeIds);
+         } catch (Exception ex) {
+            OseeLog.log(IndexerEndpointImpl.class, OseeLevel.SEVERE_POPUP,
+               "Error during background reindex (all current)", ex);
+         }
       });
 
       return Response.accepted(
@@ -193,7 +200,12 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
       // preventing the database from being overwhelmed by concurrent indexing.
       for (Long typeId : attrTypeIds) {
          REINDEX_EXECUTOR.submit(() -> {
-            orcsApi.getQueryIndexer().indexDirectByAttrType(typeId);
+            try {
+               orcsApi.getQueryIndexer().indexDirectByAttrType(typeId);
+            } catch (Exception ex) {
+               OseeLog.log(IndexerEndpointImpl.class, OseeLevel.SEVERE_POPUP,
+                  "Error during background direct reindex for attrTypeId " + typeId, ex);
+            }
          });
       }
 
@@ -205,10 +217,11 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
    public Response reindexRecent(int hours) {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
 
-      long gammasIndexed = orcsApi.getQueryIndexer().indexRecentlyModified(hours);
+      int cappedHours = Math.min(Math.max(hours, 1), 168);
+      long gammasIndexed = orcsApi.getQueryIndexer().indexRecentlyModified(cappedHours);
 
       return Response.ok(
-         "Indexed " + gammasIndexed + " gamma(s) modified in the last " + hours + " hour(s).").build();
+         "Indexed " + gammasIndexed + " gamma(s) modified in the last " + cappedHours + " hour(s).").build();
    }
 
 }

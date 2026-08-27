@@ -223,11 +223,9 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
             Set<Long> tags = new HashSet<>();
             TagCollector collector = (word, codedTag) -> tags.add(codedTag);
 
-            try {
-               InputStream input = getInputStream(value, uri);
+            try (InputStream input = getInputStream(value, uri)) {
                if (input != null) {
                   tagger.tagIt(input, collector);
-                  input.close();
                }
             } catch (Exception ex) {
                logger.error(ex, "Error tagging gamma %d", gammaId);
@@ -308,11 +306,9 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
                Set<Long> tags = new HashSet<>();
                TagCollector collector = (word, codedTag) -> tags.add(codedTag);
 
-               try {
-                  InputStream input = getInputStream(value, uri);
+               try (InputStream input = getInputStream(value, uri)) {
                   if (input != null) {
                      tagger.tagIt(input, collector);
-                     input.close();
                   }
                } catch (Exception ex) {
                   logger.error(ex, "Error tagging gamma %d", gammaId);
