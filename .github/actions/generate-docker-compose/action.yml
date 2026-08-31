@@ -4,7 +4,7 @@ description: Generates a docker compose file to run a docker network for e2e tes
 inputs:
   postgres_image:
     description: Postgres image to use for e2e tests
-    default: ghcr.io/eclipse-osee/org.eclipse.osee/osee-postgres:20240711202911
+    default: ghcr.io/eclipse-osee/org.eclipse.osee/osee-postgres:20260831205357
   osee_image:
     description: Osee image to use for e2e tests
     default: ghcr.io/eclipse-osee/org.eclipse.osee/osee-server:latest
