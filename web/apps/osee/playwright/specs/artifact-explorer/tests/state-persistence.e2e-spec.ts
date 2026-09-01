@@ -131,19 +131,19 @@ test.describe('State Persistence', () => {
 		page,
 	}) => {
 		await openBranch(page, BRANCH);
-		const scrollArea = page.getByRole('tree', {
-			name: 'Artifact hierarchy',
-		});
-		await expect(scrollArea.first()).toBeVisible();
+		const scrollArea = page
+			.getByRole('tree', {
+				name: 'Artifact hierarchy',
+			})
+			.first();
+		await expect(scrollArea).toBeVisible();
 
-		const scrollbarStyles = await page.evaluate(() => {
-			const el = document.querySelector('.hierarchy-scroll');
-			if (!el) return null;
+		const scrollbarStyles = await scrollArea.evaluate((el) => {
 			const computedStyle = window.getComputedStyle(el);
 			return { scrollbarWidth: computedStyle.scrollbarWidth };
 		});
 
 		expect(scrollbarStyles).not.toBeNull();
-		expect(scrollbarStyles!.scrollbarWidth).toBe('auto');
+		expect(scrollbarStyles.scrollbarWidth).toBe('auto');
 	});
 });
