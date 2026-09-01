@@ -54,6 +54,7 @@ public class DemoUtil {
       Arrays.asList("Document how Graph View works", "Update help contents", "Review new documentation",
          "Publish documentation to website", "Remove old viewer", "Deploy release");
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
+   public static String SAW_DESIGN_LEGACY_PCR_ID = "PCR 4455";
 
    private DemoUtil() {
       // Utility class
@@ -173,7 +174,7 @@ public class DemoUtil {
       AtsApiService.get().setOseeInfo("PopulateSuccessful", String.valueOf(success));
    }
 
-   public static IAtsTeamWorkflow getSawCodeCommittedWf() {
+   public static TeamWorkflow getSawCodeCommittedWf() {
       return (TeamWorkflow) getWorkItemSvc().getWorkItem(DemoArtifactToken.SAW_Commited_Code_TeamWf);
    }
 

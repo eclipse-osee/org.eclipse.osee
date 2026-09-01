@@ -16,10 +16,18 @@ package org.eclipse.osee.ats.ide.integration.tests.skynet.core;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLogBlocker;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
@@ -84,6 +92,55 @@ public class ArtifactQueryTest {
 
    @Rule
    public ExitDatabaseInitializationRule exitDatabaseInitializationRule = new ExitDatabaseInitializationRule();
+
+   /**
+    * This tests that the QueryData is loaded on client, shipped to server to run and comes back with correct answer
+    */
+   @Test
+   public void testClientToServerWithQueryData() {
+
+      IAtsTeamWorkflow testTeamWf = DemoUtil.getSawSWDesignUnCommittedWf();
+
+      // Test 1 attr
+      Collection<IAtsWorkItem> items = AtsApiService.get().getQueryService() //
+         .createQuery(WorkItemType.TeamWorkflow) //
+         .andLegacyIds(Arrays.asList(DemoUtil.SAW_DESIGN_LEGACY_PCR_ID) //
+         ).getItems();
+      Assert.assertEquals(1, items.size());
+      Assert.assertEquals(DemoUtil.SAW_DESIGN_LEGACY_PCR_ID, items.iterator().next().getLegacyId());
+
+      // Test 2 attrs
+      String atsId = testTeamWf.getAtsId();
+      Collection<IAtsWorkItem> items2 = AtsApiService.get().getQueryService() //
+         .createQuery(WorkItemType.TeamWorkflow) //
+         .andLegacyIds(Arrays.asList(DemoUtil.SAW_DESIGN_LEGACY_PCR_ID)) //
+         .andAtsIds(Arrays.asList(atsId) //
+         ).getItems();
+      Assert.assertEquals(1, items2.size());
+      Assert.assertEquals(DemoUtil.SAW_DESIGN_LEGACY_PCR_ID, items2.iterator().next().getLegacyId());
+      Assert.assertEquals(atsId, items2.iterator().next().getAtsId());
+
+      // Test 3 attrs
+      Collection<IAtsWorkItem> items3 = AtsApiService.get().getQueryService() //
+         .createQuery(WorkItemType.TeamWorkflow) //
+         .andLegacyIds(Arrays.asList(DemoUtil.SAW_DESIGN_LEGACY_PCR_ID)) //
+         .andAtsIds(Arrays.asList(atsId)) //
+         .andAttr(AtsAttributeTypes.CurrentStateName, TeamState.Implement.getName() //
+         ).getItems();
+      Assert.assertEquals(1, items3.size());
+      Assert.assertEquals(DemoUtil.SAW_DESIGN_LEGACY_PCR_ID, items3.iterator().next().getLegacyId());
+      Assert.assertEquals(atsId, items3.iterator().next().getAtsId());
+      Assert.assertEquals(TeamState.Implement.getName(), items3.iterator().next().getCurrentStateName());
+
+      // Test 3 attrs - fail
+      Collection<IAtsWorkItem> items4 = AtsApiService.get().getQueryService() //
+         .createQuery(WorkItemType.TeamWorkflow) //
+         .andLegacyIds(Arrays.asList(DemoUtil.SAW_DESIGN_LEGACY_PCR_ID)) //
+         .andAtsIds(Arrays.asList(atsId)) //
+         .andAttr(AtsAttributeTypes.CurrentStateName, TeamState.Analyze.getName() //
+         ).getItems();
+      Assert.assertEquals(0, items4.size());
+   }
 
    @Test
    public void testGetArtifactFromGUIDDeleted() {
@@ -350,20 +407,20 @@ public class ArtifactQueryTest {
     */
    @Test
    public void testChainedAttributeQuery() {
-      Artifact art1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, DemoBranches.SAW_Bld_1,
-         "ChainTest_Alpha");
+      Artifact art1 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, DemoBranches.SAW_Bld_1, "ChainTest_Alpha");
       art1.setSoleAttributeFromString(CoreAttributeTypes.StaticId, "chain-group-a");
       art1.setSoleAttributeFromString(CoreAttributeTypes.Description, "first item");
       art1.persist(getClass().getSimpleName());
 
-      Artifact art2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, DemoBranches.SAW_Bld_1,
-         "ChainTest_Beta");
+      Artifact art2 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, DemoBranches.SAW_Bld_1, "ChainTest_Beta");
       art2.setSoleAttributeFromString(CoreAttributeTypes.StaticId, "chain-group-a");
       art2.setSoleAttributeFromString(CoreAttributeTypes.Description, "second item");
       art2.persist(getClass().getSimpleName());
 
-      Artifact art3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, DemoBranches.SAW_Bld_1,
-         "ChainTest_Gamma");
+      Artifact art3 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, DemoBranches.SAW_Bld_1, "ChainTest_Gamma");
       art3.setSoleAttributeFromString(CoreAttributeTypes.StaticId, "chain-group-b");
       art3.setSoleAttributeFromString(CoreAttributeTypes.Description, "first item");
       art3.persist(getClass().getSimpleName());
