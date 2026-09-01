@@ -86,7 +86,7 @@ test.describe('State Persistence', () => {
 		page,
 	}) => {
 		await openBranch(page, BRANCH);
-		const panel = page.locator('osee-artifact-hierarchy-panel');
+		const panel = page.locator('osee-artifact-explorer-sidebar');
 		await expect(panel).toBeVisible();
 
 		await page.getByRole('button', { name: 'Artifact Hierarchy' }).click();
@@ -107,7 +107,7 @@ test.describe('State Persistence', () => {
 		await expect(handle).toBeVisible();
 
 		const panel = page
-			.locator('osee-artifact-hierarchy-panel')
+			.locator('osee-artifact-explorer-sidebar')
 			.locator('..');
 		const initialBox = await panel.boundingBox();
 		expect(initialBox).not.toBeNull();
@@ -131,19 +131,19 @@ test.describe('State Persistence', () => {
 		page,
 	}) => {
 		await openBranch(page, BRANCH);
-		const scrollArea = page.getByRole('tree', {
-			name: 'Artifact hierarchy',
-		});
-		await expect(scrollArea.first()).toBeVisible();
+		const scrollArea = page
+			.getByRole('tree', {
+				name: 'Artifact hierarchy',
+			})
+			.first();
+		await expect(scrollArea).toBeVisible();
 
-		const scrollbarStyles = await page.evaluate(() => {
-			const el = document.querySelector('.hierarchy-scroll');
-			if (!el) return null;
+		const scrollbarStyles = await scrollArea.evaluate((el) => {
 			const computedStyle = window.getComputedStyle(el);
 			return { scrollbarWidth: computedStyle.scrollbarWidth };
 		});
 
 		expect(scrollbarStyles).not.toBeNull();
-		expect(scrollbarStyles!.scrollbarWidth).toBe('auto');
+		expect(scrollbarStyles.scrollbarWidth).toBe('auto');
 	});
 });

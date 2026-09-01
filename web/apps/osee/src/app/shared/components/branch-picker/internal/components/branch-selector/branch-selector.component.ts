@@ -17,12 +17,18 @@ import {
 	MatAutocomplete,
 	MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
 import {
 	ErrorStateMatcher,
 	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { HttpLoadingService } from '@osee/shared/services/network';
 import { branch } from '@osee/shared/types';
@@ -50,11 +56,14 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 		AsyncPipe,
 		MatFormField,
 		MatLabel,
+		MatSuffix,
 		MatInput,
 		MatAutocomplete,
 		MatAutocompleteTrigger,
 		MatOption,
 		MatOptionLoadingComponent,
+		MatIconButton,
+		MatIcon,
 	],
 })
 export class BranchSelectorComponent {
@@ -121,7 +130,7 @@ export class BranchSelectorComponent {
 		new ShowOnDirtyErrorStateMatcher();
 
 	get filter() {
-		return this._typeAhead;
+		return this.branchListingService.displayFilter;
 	}
 	updateTypeAhead(value: string | branch) {
 		if (typeof value === 'string') {
@@ -154,12 +163,11 @@ export class BranchSelectorComponent {
 		return val?.name || '';
 	}
 
-	/** Whether a branch has the Product Line category. */
-	isProductLine(b: branch): boolean {
-		return (
-			b.categories?.some(
-				(c) => c.name === 'Product Line' || c.id === '2'
-			) ?? false
-		);
+	/** Clears the selected branch and resets the input. */
+	clearBranch(event: MouseEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+		this.branchRouteState.branchId = '';
+		this.updateTypeAhead('');
 	}
 }

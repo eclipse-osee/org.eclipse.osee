@@ -12,18 +12,16 @@
  -->
 <h1 mat-dialog-title>
 	<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-		<mat-icon class="tw-text-osee-red-8">delete</mat-icon>
+		<mat-icon class="tw-text-warning">delete</mat-icon>
 		Remove Relation?
 	</div>
 </h1>
 <mat-dialog-content>
 	<p class="tw-text-sm">
 		Are you sure you want to remove the relation between
-		<span class="tw-font-bold tw-text-osee-red-8">{{
-			data.sideAName
-		}}</span>
+		<span class="tw-font-bold tw-text-warning">{{ data.sideAName }}</span>
 		and
-		<span class="tw-font-bold tw-text-osee-red-8">{{ data.sideBName }}</span
+		<span class="tw-font-bold tw-text-warning">{{ data.sideBName }}</span
 		>?
 	</p>
 </mat-dialog-content>
@@ -33,13 +31,14 @@
 	class="tw-gap-2">
 	<button
 		mat-stroked-button
-		class="tw-text-osee-red-8"
+		class="tw-text-foreground-text"
 		mat-dialog-close="cancel"
 		data-cy="cancel-btn">
 		Cancel
 	</button>
 	<button
 		mat-stroked-button
+		class="tw-text-warning"
 		mat-dialog-close="ok"
 		data-cy="submit-btn">
 		Remove

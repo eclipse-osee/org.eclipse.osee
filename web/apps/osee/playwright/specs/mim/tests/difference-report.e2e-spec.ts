@@ -28,18 +28,15 @@ test('test', async ({ page }) => {
 	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0' })
-		.getByRole('button')
+		.getByTestId('structure-table-expand-button')
 		.click();
 	await page
 		.getByRole('cell', { name: 'Float Element', exact: true })
 		.click();
 	await page.keyboard.press('Control+a');
 	await page.keyboard.type('Float');
-	await page
-		.getByText(
-			'Select a Viewundochange_history In Workexpand_more Peer Review'
-		)
-		.click();
+	// Click a stable toolbar control to blur/commit the cell edit.
+	await page.getByRole('combobox', { name: 'Select a View' }).click();
 	await page
 		.getByRole('cell', { name: 'Integer Element', exact: true })
 		.click({

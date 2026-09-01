@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { BranchCategoryService } from '../../internal/services/branch-category.service';
 import { BranchSelectorComponent } from '../internal/components/branch-selector/branch-selector.component';
 import { BranchTypeSelectorComponent } from '../internal/components/branch-type-selector/branch-type-selector.component';
@@ -20,7 +20,9 @@ import { WorktypeService } from '@osee/shared/services';
 @Component({
 	selector: 'osee-branch-picker',
 	imports: [BranchTypeSelectorComponent, BranchSelectorComponent],
-	template: `<div class="tw-flex tw-flex-col">
+	template: `<div
+		class="tw-flex tw-flex-col"
+		[style.gap.rem]="gapRem()">
 		<osee-branch-type-selector />
 		<osee-branch-selector />
 	</div>`,
@@ -32,6 +34,9 @@ export class BranchPickerComponent {
 	category = input<`${number}`>('-1');
 	excludeCategory = input<`${number}`>('-1');
 	workType = input<workType>('None');
+	gap = input<string>('4');
+
+	protected gapRem = computed(() => Number(this.gap()) * 0.25);
 
 	private _categoryEffect = effect(
 		() => (this.branchCategoryService.category = this.category())

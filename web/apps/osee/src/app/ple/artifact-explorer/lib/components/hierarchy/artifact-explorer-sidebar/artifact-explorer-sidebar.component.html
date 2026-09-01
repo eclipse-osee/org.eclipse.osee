@@ -1,0 +1,74 @@
+<!--
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+<div class="tw-flex tw-h-full tw-flex-col">
+	<!-- Branch picker (always visible) -->
+	<div
+		class="tw-relative tw-z-10 tw-shrink-0 tw-px-2 tw-pb-3 tw-pt-2 tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2)] dark:tw-shadow-[0_2px_4px_-1px_rgba(0,0,0,0.3)]">
+		<osee-branch-picker></osee-branch-picker>
+		<div
+			class="tw-flex tw-w-full tw-flex-col tw-items-center tw-gap-2 tw-pt-4">
+			@if (branchHasPleCategory()) {
+				<osee-current-view-selector class="tw-w-full" />
+			}
+		</div>
+	</div>
+	<!-- Active section content -->
+	<div class="tw-flex tw-min-h-0 tw-flex-1 tw-flex-col tw-overflow-hidden">
+		<div
+			class="tw-min-h-0 tw-flex-1 tw-overflow-auto [scrollbar-color:rgba(128,128,128,0.4)_transparent] [scrollbar-width:auto]"
+			role="tree"
+			aria-label="Artifact hierarchy"
+			[class.tw-hidden]="activeSection() !== 'hierarchy'">
+			<h3
+				class="tw-px-4 tw-pt-4 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-opacity-70">
+				Hierarchy
+			</h3>
+			@if (branchIdValid() && branchType()) {
+				<div
+					cdkDropList
+					cdkDropListConnectedTo="relationList">
+					@if (paths | async; as paths) {
+						<osee-artifact-hierarchy
+							[paths]="paths"
+							artifactId="197818"></osee-artifact-hierarchy>
+					} @else {
+						<osee-artifact-hierarchy
+							artifactId="197818"></osee-artifact-hierarchy>
+					}
+				</div>
+			} @else {
+				<div class="tw-p-4 tw-text-sm tw-opacity-50">
+					Select a branch to browse the artifact hierarchy.
+				</div>
+			}
+		</div>
+		<div
+			class="tw-min-h-0 tw-flex-1 tw-flex-col"
+			[class.tw-hidden]="activeSection() !== 'search'">
+			<h3
+				class="tw-px-4 tw-pt-4 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-opacity-70">
+				Search
+			</h3>
+			<osee-artifact-search
+				class="tw-min-h-0 tw-flex-1"
+				(navigateToHierarchy)="navigateToHierarchy.emit()" />
+		</div>
+		<div [class.tw-hidden]="activeSection() !== 'branch'">
+			<h3
+				class="tw-px-4 tw-pt-4 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-opacity-70">
+				Branch Management
+			</h3>
+			<osee-branch-management />
+		</div>
+	</div>
+</div>

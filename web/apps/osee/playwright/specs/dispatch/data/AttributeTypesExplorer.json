@@ -1,0 +1,44 @@
+{
+	"version": "1",
+	"title": "Attribute Types Explorer",
+	"tabs": [
+		{
+			"key": "attributes",
+			"label": "Get Attribute Types",
+			"description": "Fetch attribute types for a selected artifact type.",
+			"instructions": "1. Select a branch.\n2. Select an artifact type.\n3. Click Get Attribute Types.",
+			"dropdowns": [
+				{
+					"key": "branch",
+					"label": "Branch",
+					"component": "branchSelector"
+				},
+				{
+					"key": "artifactType",
+					"label": "Artifact Type",
+					"required": true,
+					"dependsOn": ["branch"],
+					"contentApi": {
+						"method": "GET",
+						"url": "/orcs/types/artifact"
+					}
+				}
+			],
+			"checkboxes": [],
+			"fileInputs": [
+				{
+					"key": "dummyFile",
+					"label": "Attachment (optional)",
+					"accept": ".json,.txt",
+					"required": false,
+					"multiple": false
+				}
+			],
+			"targetApi": {
+				"method": "GET",
+				"url": "/orcs/types/artifact/{artifactType}/attributes",
+				"button": "Get Attribute Types"
+			}
+		}
+	]
+}

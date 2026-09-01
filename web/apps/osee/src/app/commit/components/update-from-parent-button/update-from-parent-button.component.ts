@@ -19,7 +19,7 @@ import {
 	signal,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { MatButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -32,13 +32,12 @@ import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-update-from-parent-button',
-	imports: [MatButton, MatTooltip, MatIcon],
+	imports: [MatIconButton, MatTooltip, MatIcon],
 	template: `<div
 		[matTooltip]="loading() ? 'Disabled while loading.' : disabledMessage()"
 		[matTooltipDisabled]="!disabledOrLoading()">
 		<button
-			mat-flat-button
-			class="tw-flex tw-justify-center tw-bg-primary tw-text-background disabled:tw-bg-background-selected-disabled-button [&_*]:tw-m-0"
+			mat-icon-button
 			(click)="updateFromParent()"
 			[disabled]="disabledOrLoading()"
 			matTooltip="Update Branch From Parent">

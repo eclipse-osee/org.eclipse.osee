@@ -55,7 +55,7 @@ test('test', async ({ page }) => {
 		.click();
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0' })
-		.getByRole('button')
+		.getByTestId('structure-table-expand-button')
 		.click();
 	await page.waitForTimeout(500);
 	await page.getByText('Demo Fault').click();
