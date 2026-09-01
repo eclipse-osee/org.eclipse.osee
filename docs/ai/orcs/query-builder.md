@@ -504,11 +504,93 @@ unbatched:
 
 | Call Site | Why |
 |---|---|
+| `getCriteriaSets()` | Returns the criteria list for serialization or cross-process transfer. **Critical for the IDE client path** (see below). Without this flush, buffered constraints are silently lost when `QueryData` is serialized to JSON and sent to the server. |
 | `setQueryType(QueryType)` | Terminal methods (`getResults`, `getCount`, `asArtifacts`, etc.) all flow through `setQueryType`. This is the primary "query is about to execute" trigger. Constraints must be materialized before the engine builds SQL. |
 | `getMatches()` | Calls `artQueryFactory.createSearchWithMatches` directly without going through `setQueryType`, so it needs its own flush. |
 | `follow(RelationTypeSide, ArtifactTypeToken, boolean)` | `follow` creates a child `QueryData` and starts a new criteria scope. Pending constraints belong to the *current* level and must be flushed before descending — otherwise they'd be lost (never added to the parent's criteria list). |
 | `followRelation(RelationTypeSide)` | Same reason as `follow` — transitions to a new criteria set and level. |
 | `and(Collection<AttributeTypeToken>, Collection<String>, QueryOption...)` when multi-type or `ANY_ATTRIBUTE_TYPE` | Multi-type searches can't participate in chaining (they use a different SQL pattern). Before adding the non-chainable criteria, pending single-type constraints must be flushed so they appear in the correct order in the criteria list. |
+
+### Two Execution Paths — Why `getCriteriaSets()` Matters
+
+`QueryData` is used in two fundamentally different execution paths, and the pending
+buffer must be flushed correctly in both.
+
+**Path 1: Server-side (local execution)**
+
+When query building and execution happen in the same JVM (e.g., the REST server's
+`AtsQueryImpl`), the flush happens naturally because `getResults()` → `setQueryType()`
+is always called before the query engine reads the criteria.
+
+```mermaid
+sequenceDiagram
+    participant Caller as ATS Query Code
+    participant QD as QueryData
+    participant PB as pendingAttributeConstraints
+    participant CL as criterias (criteria list)
+    participant QE as QueryEngine
+
+    Caller->>QD: .and(attrType, value, options)
+    QD->>PB: buffer constraint
+    Note over CL: criterias does NOT<br/>contain the constraint yet
+
+    Caller->>QD: collectResults() → getResults()
+    QD->>QD: setQueryType(SELECT)
+    QD->>QD: flushPendingAttributeChain()
+    QD->>PB: read + clear buffer
+    PB-->>CL: move constraint(s) into criterias
+    Note over CL: criterias NOW contains<br/>the attribute constraint
+
+    QD->>QE: build SQL from criterias
+    QE-->>Caller: query results (filtered correctly)
+```
+
+**Path 2: IDE client → server (serialization)**
+
+When the IDE client builds a query, `QueryData` is just a data container — it has `null`
+for `queryEngine`, `artQueryFactory`, etc. The client never calls `getResults()` or
+`setQueryType()` on this object. Instead, it serializes the `QueryData` to JSON and
+sends it to the server via a REST endpoint. The flush in `getCriteriaSets()` is the
+only opportunity to move buffered constraints into `criterias` before they cross the wire.
+
+```mermaid
+sequenceDiagram
+    participant Caller as IDE Client Code
+    participant QD as QueryData (client)
+    participant PB as pendingAttributeConstraints
+    participant CL as criterias (criteria list)
+    participant SER as Jackson Serializer
+    participant NET as REST Endpoint
+    participant SQD as QueryData (server)
+    participant QE as QueryEngine (server)
+
+    Caller->>QD: .and(attrType, value, options)
+    QD->>PB: buffer constraint
+    Note over CL: criterias is EMPTY
+
+    Caller->>QD: collectResults() → runQueryLegacy()
+
+    Note over SER: serialize QueryData to JSON
+    SER->>QD: getCriteriaSets()
+    QD->>QD: flushPendingAttributeChain()
+    QD->>PB: read + clear buffer
+    PB-->>CL: move constraint(s) into criterias
+    Note over CL: criterias NOW contains<br/>the attribute constraint
+    QD-->>SER: return criterias (with constraint)
+
+    SER->>NET: JSON over HTTP
+
+    NET->>NET: createLocalQueryBuilder()
+    Note over NET: copies criteriaSets into<br/>fresh server-side QueryData
+    NET->>SQD: setCriteriaSets(criteriaSets)
+    SQD->>QE: build SQL from criterias
+    QE-->>Caller: query results (filtered correctly)
+```
+
+Without the flush in `getCriteriaSets()`, the `criterias` list would arrive empty on
+the server. `QueryEndpointImpl.createLocalQueryBuilder()` only copies `criteriaSets` —
+it never sees `pendingAttributeConstraints`. The server's own `QueryData` has its own
+empty buffer. The result: an unfiltered query that returns everything.
 
 ### Why Not Flush Everywhere?
 
