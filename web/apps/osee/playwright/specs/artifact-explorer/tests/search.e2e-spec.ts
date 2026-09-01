@@ -108,7 +108,7 @@ test.describe('Search & Show in Hierarchy', () => {
 		await searchAndShowInHierarchy(page, 'AE Search Child A');
 
 		const hierarchyTree = page.locator(
-			'osee-artifact-hierarchy-panel osee-artifact-hierarchy'
+			'osee-artifact-explorer-sidebar osee-artifact-hierarchy'
 		);
 		await expect(hierarchyTree.getByText('AE Search Child A')).toBeVisible({
 			timeout: 20000,

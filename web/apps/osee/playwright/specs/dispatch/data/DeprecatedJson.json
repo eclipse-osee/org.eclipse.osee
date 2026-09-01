@@ -1,0 +1,19 @@
+{
+	"version": "0",
+	"title": "Old Deprecated Page",
+	"tabs": [
+		{
+			"key": "old",
+			"label": "Old Tab",
+			"description": "This should never appear in the UI.",
+			"instructions": "This page is version 0 and should be filtered out.",
+			"dropdowns": [],
+			"checkboxes": [],
+			"targetApi": {
+				"method": "GET",
+				"url": "/should-not-be-called",
+				"button": "Should Not Appear"
+			}
+		}
+	]
+}

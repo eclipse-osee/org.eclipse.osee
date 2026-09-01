@@ -66,7 +66,10 @@ test('remove elements', async ({ page }) => {
 		.filter({ hasText: /^expand_more$/ })
 		.click();
 	await page.getByTestId('submessage-details-btnSubmessage 1').click();
-	await page.getByTestId('structure-table').getByRole('button').click();
+	await page
+		.getByTestId('structure-table')
+		.getByTestId('structure-table-expand-button')
+		.click();
 
 	await expect(
 		page.getByTestId('element-table-row-Boolean Element')

@@ -33,6 +33,7 @@ import {
 	MatSuffix,
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { applic } from '@osee/applicability/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
@@ -84,7 +85,17 @@ import {
 			[(ngModel)]="filter"
 			(focusin)="autoCompleteOpened()"
 			[matAutocomplete]="autoApplicability" />
-		<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
+		@if (filter()) {
+			<button
+				matSuffix
+				mat-icon-button
+				aria-label="Clear applicability selection"
+				(mousedown)="clearApplicability($event)">
+				<mat-icon>close</mat-icon>
+			</button>
+		} @else {
+			<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
+		}
 		<mat-autocomplete
 			autoActiveFirstOption
 			#autoApplicability="matAutocomplete"
@@ -135,6 +146,7 @@ import {
 		MatSuffix,
 		MatOption,
 		MatOptionLoadingComponent,
+		MatIconButton,
 	],
 })
 export class ApplicabilityDropdownComponent {
@@ -190,5 +202,12 @@ export class ApplicabilityDropdownComponent {
 
 	autoCompleteOpened() {
 		this._openAutoComplete.next();
+	}
+
+	clearApplicability(event: MouseEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+		this.applicability.set({ id: '-1', name: '' });
+		this.filter.set('');
 	}
 }

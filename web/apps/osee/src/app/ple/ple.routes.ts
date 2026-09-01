@@ -60,9 +60,8 @@ const routes: Routes = [
 		loadChildren: () => import('./change-report/change-report.routes'),
 	},
 	{
-		path: 'publishing',
-		loadChildren: () =>
-			import('./publish-launcher/publish-launcher.routes'),
+		path: 'dispatch',
+		loadChildren: () => import('./dispatch/dispatch.routes'),
 	},
 ];
 

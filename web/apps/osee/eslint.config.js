@@ -31,6 +31,7 @@ export default tseslint.config(
 				project: [
 					'tsconfig.app.editor.json',
 					'tsconfig.spec.editor.json',
+					'tsconfig.playwright.editor.json',
 				],
 			},
 		},

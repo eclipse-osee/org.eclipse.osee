@@ -17,49 +17,67 @@
 	<!-- Activity bar (vertical icon strip, like VS Code) -->
 	<div
 		class="tw-flex tw-h-full tw-w-12 tw-shrink-0 tw-flex-col tw-items-center tw-gap-1 tw-border-r tw-border-solid tw-border-r-background-hover tw-pt-2">
-		<button
-			mat-icon-button
-			(click)="toggleSection('hierarchy')"
-			matTooltip="Artifact Hierarchy"
-			aria-label="Artifact Hierarchy"
-			[class]="
-				!panelCollapsed() && activeSection() === 'hierarchy'
-					? 'tw-text-primary'
-					: 'tw-opacity-60'
-			">
-			<mat-icon>account_tree</mat-icon>
-		</button>
-		<button
-			mat-icon-button
-			(click)="toggleSection('search')"
-			matTooltip="Artifact Search"
-			aria-label="Artifact Search"
-			[class]="
-				!panelCollapsed() && activeSection() === 'search'
-					? 'tw-text-primary'
-					: 'tw-opacity-60'
-			">
-			<mat-icon>search</mat-icon>
-		</button>
-		<button
-			mat-icon-button
-			(click)="toggleSection('branch')"
-			matTooltip="Branch Management"
-			aria-label="Branch Management"
-			[class]="
-				!panelCollapsed() && activeSection() === 'branch'
-					? 'tw-text-primary'
-					: 'tw-opacity-60'
-			">
-			<mat-icon>merge_type</mat-icon>
-		</button>
+		<div class="tw-relative tw-flex tw-items-center">
+			<button
+				mat-icon-button
+				(click)="toggleSection('hierarchy')"
+				matTooltip="Artifact Hierarchy"
+				aria-label="Artifact Hierarchy"
+				[class]="
+					!panelCollapsed() && activeSection() === 'hierarchy'
+						? 'tw-text-primary'
+						: ''
+				">
+				<mat-icon>account_tree</mat-icon>
+			</button>
+			@if (!panelCollapsed() && activeSection() === 'hierarchy') {
+				<span
+					class="tw-absolute tw-right-0 tw-top-1/2 tw-h-6 tw-w-0.5 tw--translate-y-1/2 tw-rounded-full tw-bg-primary"></span>
+			}
+		</div>
+		<div class="tw-relative tw-flex tw-items-center">
+			<button
+				mat-icon-button
+				(click)="toggleSection('search')"
+				matTooltip="Artifact Search"
+				aria-label="Artifact Search"
+				[class]="
+					!panelCollapsed() && activeSection() === 'search'
+						? 'tw-text-primary'
+						: ''
+				">
+				<mat-icon>search</mat-icon>
+			</button>
+			@if (!panelCollapsed() && activeSection() === 'search') {
+				<span
+					class="tw-absolute tw-right-0 tw-top-1/2 tw-h-6 tw-w-0.5 tw--translate-y-1/2 tw-rounded-full tw-bg-primary"></span>
+			}
+		</div>
+		<div class="tw-relative tw-flex tw-items-center">
+			<button
+				mat-icon-button
+				(click)="toggleSection('branch')"
+				matTooltip="Branch Management"
+				aria-label="Branch Management"
+				[class]="
+					!panelCollapsed() && activeSection() === 'branch'
+						? 'tw-text-primary'
+						: ''
+				">
+				<mat-icon>merge_type</mat-icon>
+			</button>
+			@if (!panelCollapsed() && activeSection() === 'branch') {
+				<span
+					class="tw-absolute tw-right-0 tw-top-1/2 tw-h-6 tw-w-0.5 tw--translate-y-1/2 tw-rounded-full tw-bg-primary"></span>
+			}
+		</div>
 	</div>
 	@if (!panelCollapsed()) {
 		<!-- Hierarchy panel (resizable) -->
 		<div
 			class="tw-h-full tw-shrink-0 tw-overflow-hidden"
 			[style.width.%]="panelWidthPercent()">
-			<osee-artifact-hierarchy-panel
+			<osee-artifact-explorer-sidebar
 				class="tw-block tw-h-full"
 				[activeSection]="activeSection()"
 				(navigateToHierarchy)="activeSection.set('hierarchy')" />

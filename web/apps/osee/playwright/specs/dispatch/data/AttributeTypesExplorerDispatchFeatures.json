@@ -1,0 +1,83 @@
+{
+	"version": "1",
+	"title": "Attribute Types Explorer - Dispatch Features",
+	"tabs": [
+		{
+			"key": "dispatch-features",
+			"label": "Dispatch Feature Coverage",
+			"description": "Exercises checkboxes, static dropdowns, file inputs, view selector, and email selector.",
+			"instructions": "1. Select a branch.\n2. Select a view.\n3. Fill in the required file.\n4. Click Get Attribute Types.",
+			"dropdowns": [
+				{
+					"key": "branch",
+					"label": "Branch",
+					"component": "branchSelector"
+				},
+				{
+					"key": "view",
+					"label": "View",
+					"component": "viewSelector",
+					"dependsOn": ["branch"]
+				},
+				{
+					"key": "artifactType",
+					"label": "Artifact Type",
+					"required": true,
+					"dependsOn": ["branch"],
+					"contentApi": {
+						"method": "GET",
+						"url": "/orcs/types/artifact"
+					}
+				},
+				{
+					"key": "format",
+					"label": "Format",
+					"required": false,
+					"options": [
+						{ "id": "json", "label": "JSON" },
+						{ "id": "xml", "label": "XML" },
+						{ "id": "csv", "label": "CSV" }
+					]
+				},
+				{
+					"key": "emails",
+					"label": "Notify",
+					"component": "emailSelector"
+				}
+			],
+			"checkboxes": [
+				{
+					"key": "includeInherited",
+					"label": "Include Inherited",
+					"default": true
+				},
+				{
+					"key": "includeDeprecated",
+					"label": "Include Deprecated",
+					"default": false
+				}
+			],
+			"fileInputs": [
+				{
+					"key": "configFile",
+					"label": "Config File",
+					"accept": ".json",
+					"required": true,
+					"multiple": false
+				},
+				{
+					"key": "supplementaryFiles",
+					"label": "Supplementary Files",
+					"accept": ".json,.xml,.csv",
+					"required": false,
+					"multiple": true
+				}
+			],
+			"targetApi": {
+				"method": "GET",
+				"url": "/orcs/types/artifact/{artifactType}/attributes",
+				"button": "Get Attribute Types"
+			}
+		}
+	]
+}

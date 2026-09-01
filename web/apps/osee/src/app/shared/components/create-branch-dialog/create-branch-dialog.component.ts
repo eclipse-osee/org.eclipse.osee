@@ -60,7 +60,7 @@ import { MatInput } from '@angular/material/input';
 			class="tw-gap-2">
 			<button
 				mat-stroked-button
-				class="tw-text-osee-red-8"
+				class="tw-text-foreground-text"
 				(click)="onCancel()">
 				Cancel
 			</button>

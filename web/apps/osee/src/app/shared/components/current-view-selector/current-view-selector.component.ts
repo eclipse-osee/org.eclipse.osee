@@ -17,8 +17,14 @@ import {
 	MatAutocomplete,
 	MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { applic } from '@osee/applicability/types';
 import {
@@ -42,10 +48,13 @@ import {
 		FormsModule,
 		MatFormField,
 		MatLabel,
+		MatSuffix,
 		MatInput,
 		MatAutocomplete,
 		MatAutocompleteTrigger,
 		MatOption,
+		MatIconButton,
+		MatIcon,
 	],
 	templateUrl: './current-view-selector.component.html',
 	styles: [],
@@ -86,5 +95,12 @@ export class CurrentViewSelectorComponent {
 	applyFilter(text: Event) {
 		const value = (text.target as HTMLInputElement).value;
 		this.filterText.next(value);
+	}
+
+	clearView(event: MouseEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+		this.selectView(this.noneOption);
+		this.filterText.next('');
 	}
 }

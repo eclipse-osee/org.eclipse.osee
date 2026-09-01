@@ -21,24 +21,6 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 @Component({
 	selector: 'osee-branch-type-selector',
 	templateUrl: './branch-type-selector.component.html',
-	styles: [
-		`
-			:host {
-				--mat-button-toggle-label-text-size: 13px;
-				--mat-button-toggle-height: 32px;
-				--mat-button-toggle-selected-state-background-color: var(
-					--osee-primary-default
-				);
-				--mat-button-toggle-selected-state-text-color: var(
-					--osee-background-background
-				);
-				--mat-button-toggle-text-color: var(
-					--osee-foreground-secondary-text
-				);
-				--mat-button-toggle-shape: 4px;
-			}
-		`,
-	],
 	imports: [MatButtonToggleGroup, MatButtonToggle],
 })
 export class BranchTypeSelectorComponent implements OnInit {
@@ -50,6 +32,10 @@ export class BranchTypeSelectorComponent implements OnInit {
 		this.routerState.type.subscribe((value) => {
 			this.branchType = value;
 		});
+		// Default to baseline if no type is set
+		if (!this.branchType) {
+			this.routerState.branchType = 'baseline';
+		}
 	}
 
 	selectType(event: MatButtonToggleChange) {

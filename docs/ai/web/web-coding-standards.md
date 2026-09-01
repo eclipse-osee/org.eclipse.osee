@@ -75,6 +75,27 @@ When a panel or section has no content to display (e.g., no branch selected, no 
 - **No italic** — plain text only.
 - **Message content**: Tell the user what action to take (e.g., "Select a branch to browse the artifact hierarchy.").
 
+## Icon buttons
+
+- Use `mat-icon-button` for toolbar and panel actions (not `mat-flat-button` or `mat-raised-button` with icons only).
+- **Default state**: foreground text color (inherits from theme). No opacity reduction or greying out.
+- **Hover**: default Material ripple/circle shading (no custom override needed).
+- **Selected/active state**: `tw-text-primary` to indicate the active panel or toggled-on state.
+- **Disabled state**: Material handles disabled styling automatically — do not add custom disabled classes.
+- Always include `matTooltip` and `aria-label` for accessibility.
+
+Example (activity bar toggle):
+```html
+<button
+  mat-icon-button
+  (click)="toggleSection('hierarchy')"
+  matTooltip="Artifact Hierarchy"
+  aria-label="Artifact Hierarchy"
+  [class]="isActive('hierarchy') ? 'tw-text-primary' : ''">
+  <mat-icon>account_tree</mat-icon>
+</button>
+```
+
 ## Toggle button groups
 
 - Use `mat-button-toggle-group` for mutually exclusive options (not radio buttons).
@@ -83,6 +104,37 @@ When a panel or section has no content to display (e.g., no branch selected, no 
   - `--mat-button-toggle-selected-state-background-color: var(--osee-primary-default)`
   - `--mat-button-toggle-selected-state-text-color: var(--osee-background-background)`
 - Never use white text on a colored (filled) background for toggle selections — use the background token so it adapts to light/dark mode.
+
+## Autocomplete dropdowns (clear button)
+
+All autocomplete-style dropdown inputs (`mat-autocomplete`) must include a clear (X) icon button as a `matSuffix` when a value is selected. This lets users quickly reset the field without manually clearing text.
+
+Rules:
+- Show the clear button only when there is a selected value (non-empty, non-default).
+- Use `mat-icon-button` with `matSuffix`, icon `close`, and `aria-label` describing the action.
+- Use `(mousedown)` instead of `(click)` so the button fires before the input's `focusout` event closes the autocomplete panel.
+- Call `event.preventDefault()` and `event.stopPropagation()` in the handler to prevent focus loss side effects.
+- The handler should reset both the bound value (e.g., route state, signal) and any filter text.
+
+Example:
+```html
+<mat-form-field appearance="outline" subscriptSizing="dynamic" class="tw-w-full">
+  <mat-label>Select a Branch</mat-label>
+  <input matInput [matAutocomplete]="auto" ... />
+  @if (hasSelection()) {
+    <button
+      matSuffix
+      mat-icon-button
+      aria-label="Clear selection"
+      (mousedown)="clearSelection($event)">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+  <mat-autocomplete #auto="matAutocomplete" ...>
+    ...
+  </mat-autocomplete>
+</mat-form-field>
+```
 
 ## Form field appearance
 
@@ -145,17 +197,59 @@ Examples:
   [value]="item.name" />
 ```
 
-## Styling Angular Material components
+## Styling (Angular Material + Tailwind)
 
-- **Prefer Tailwind utility classes** for layout, spacing, colors, and typography where they work. Only use Material CSS tokens when customizing Material-specific visual behaviors that Tailwind can't reach (e.g., selected state colors, indicator heights).
-- **Never target internal Material/MDC classes** (`.mdc-text-field--filled`, `.mdc-tab--active`, `.mat-mdc-menu-item`, `.mdc-form-field`, etc.) in component styles or global styles. These are implementation details that break on dependency upgrades.
-- **Use Material CSS custom property tokens** to customize component appearance. These are the public API for theming. Examples:
-  - `--mdc-filled-text-field-container-color: transparent` (form field background)
-  - `--mat-menu-item-one-line-container-height: 36px` (menu item height)
-  - `--mdc-radio-state-layer-size: 24px` (radio button touch target)
-  - `--mdc-tab-indicator-active-indicator-height: 2px` (tab indicator)
-- **Set tokens on `:host`** in component styles for scoped overrides, or on the component's element selector in `styles.sass` for global overrides that need to cascade through child components.
-- **If no token exists**, prefer changing the component's `appearance` (e.g., `appearance="outline"` for borderless fields) or restructuring the template over targeting internals. **Do not use `::ng-deep`** — it is deprecated and creates fragile, hard-to-maintain styles. If a Material component doesn't expose the customization you need, restructure the template or use a different component.
+Reach for the first option that works and only escalate when it genuinely can't
+express what you need:
+
+1. **Tailwind utility classes** for layout, spacing, colors, and typography.
+2. **Material CSS custom property tokens** for Material-specific visuals Tailwind
+   can't reach (selected-state colors, indicator heights, control sizes). Tokens
+   are Material's public theming API. Set them as Tailwind arbitrary properties
+   directly on the element in the template:
+   `class="[--mat-button-toggle-height:32px] [--mdc-tab-indicator-active-indicator-height:2px]"`.
+   Common tokens: `--mdc-filled-text-field-container-color` (field background),
+   `--mat-menu-item-one-line-container-height` (menu item height),
+   `--mdc-radio-state-layer-size` (radio touch target).
+3. **A component input** such as `appearance="outline"` (borderless fields) when
+   no token exists.
+4. **Restructure the template, or use a different component**, when the public
+   API still can't express it.
+
+Hard rules:
+
+- **Do not put styling in `@Component` metadata** — no `styleUrls:`, no `:host`
+  blocks, no ad-hoc `styles:` for appearance. All styling lives in the template
+  via Tailwind classes and token arbitrary properties.
+- **Never target a component's internal Material/MDC classes**
+  (`.mdc-text-field--filled`, `.mat-mdc-menu-item`, `.mat-button-toggle-button`,
+  etc.) through **any** mechanism — `::ng-deep`, descendant selectors, or
+  Tailwind's `[&_selector]:utility` syntax
+  (e.g. `[&_.mat-button-toggle-button]:tw-w-full`). These are implementation
+  details that break on dependency upgrades. Use a token or input instead
+  (steps 2–4). `::ng-deep` is additionally deprecated — never use it.
+
+**Exception — cascading token overrides:** when a token must reach Material
+components nested inside child components (e.g. form-field theming across a
+sidebar), set the tokens in a `styles:` block scoped to the component's own
+element selector together with `encapsulation: ViewEncapsulation.None`, so the
+tokens inherit into descendants. This block may set **only** custom-property
+tokens — never internal class selectors. This is the sole allowed use of
+`styles:` / `ViewEncapsulation.None`. Example:
+
+```ts
+@Component({
+  // ...
+  styles: [
+    `
+      osee-my-component {
+        --mat-form-field-container-color: transparent;
+      }
+    `,
+  ],
+  encapsulation: ViewEncapsulation.None,
+})
+```
 
 ## Typing + code style (apply broadly)
 
