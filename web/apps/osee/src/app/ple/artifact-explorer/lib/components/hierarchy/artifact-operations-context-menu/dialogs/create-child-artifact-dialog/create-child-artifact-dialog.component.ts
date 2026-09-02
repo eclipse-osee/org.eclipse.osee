@@ -28,7 +28,6 @@ import {
 } from '@angular/material/autocomplete';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
-import { ImmediateErrorStateMatcher } from '@osee/shared/matchers';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -47,10 +46,11 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
+import { ImmediateErrorStateMatcher } from '@osee/shared/matchers';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { attribute } from '@osee/attributes/types';
-import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+import { ATTRIBUTETYPEID, MULTIPLICITY_ID } from '@osee/attributes/constants';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
@@ -204,13 +204,11 @@ export class CreateChildArtifactDialogComponent {
 		map((attributes) =>
 			attributes
 				.filter((attribute) => attribute.name?.toLowerCase() !== 'name')
-				.sort((a, b) =>
-					a.multiplicity?.id === '2' || a.multiplicity?.id === '4'
-						? -1
-						: b.multiplicity?.id === '2' ||
-							  b.multiplicity?.id === '4'
-							? 1
-							: 0
+				// Required attributes (multiplicity AT_LEAST_ONE / EXACTLY_ONE) first.
+				.sort(
+					(a, b) =>
+						Number(this.isRequiredMultiplicity(b)) -
+						Number(this.isRequiredMultiplicity(a))
 				)
 		),
 		// Seed any server-provided default values into the submission payload so
@@ -238,6 +236,27 @@ export class CreateChildArtifactDialogComponent {
 
 	get isArtifactTypeValid(): boolean {
 		return !!this.data.artifactTypeId && this.data.artifactTypeId !== '0';
+	}
+
+	/** True when the attribute's multiplicity is EXACTLY_ONE or AT_LEAST_ONE. */
+	private isRequiredMultiplicity(
+		attr: attribute<string, ATTRIBUTETYPEID>
+	): boolean {
+		return (
+			attr.multiplicity?.id === MULTIPLICITY_ID.EXACTLY_ONE ||
+			attr.multiplicity?.id === MULTIPLICITY_ID.AT_LEAST_ONE
+		);
+	}
+
+	/** Tooltip explaining why the create buttons are disabled; empty when enabled. */
+	protected disabledReason(formInvalid: boolean | null): string {
+		if (!this.isArtifactTypeValid) {
+			return 'Select a valid artifact type from the list.';
+		}
+		if (formInvalid) {
+			return 'Required fields not filled out.';
+		}
+		return '';
 	}
 
 	// Handle form status change

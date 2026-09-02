@@ -16,10 +16,7 @@ import { AttributesEditorComponent } from './attributes-editor.component';
 import { MarkdownEditorComponent } from './../markdown-editor/markdown-editor.component';
 import { mockAttribute } from '../../types/attribute';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import {
-	ImmediateErrorStateMatcher,
-	ParentErrorStateMatcher,
-} from '@osee/shared/matchers';
+import { ImmediateErrorStateMatcher } from '@osee/shared/matchers';
 import { ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { attribute } from '@osee/attributes/types';
 import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
@@ -88,7 +85,7 @@ describe('AttributesEditorComponent', () => {
 			}
 		).errorMatcher();
 		expect(matcher).toBeInstanceOf(ImmediateErrorStateMatcher);
-		// Sanity: it is not the default matcher.
-		expect(matcher).not.toBeInstanceOf(ParentErrorStateMatcher);
+		// Sanity: it is not the default (dirty) matcher.
+		expect(matcher).not.toBeInstanceOf(ShowOnDirtyErrorStateMatcher);
 	});
 });

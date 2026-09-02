@@ -67,6 +67,7 @@ test.describe('Artifact Create & Delete', () => {
 			.getByRole('option', {
 				name: 'Software Requirement - Markdown',
 			})
+			.first()
 			.click();
 
 		await Promise.all([
@@ -159,6 +160,7 @@ test.describe('Artifact Create & Delete', () => {
 		await typeInput.fill('Software Requirement - Markdown');
 		await page
 			.getByRole('option', { name: 'Software Requirement - Markdown' })
+			.first()
 			.click();
 
 		// The Extension attribute defaults to "md" on the Markdown type, so its
@@ -217,6 +219,7 @@ test.describe('Artifact Create & Delete', () => {
 		await typeInput.fill('Software Requirement - Markdown');
 		await page
 			.getByRole('option', { name: 'Software Requirement - Markdown' })
+			.first()
 			.click();
 
 		const addAnother = page.getByRole('button', {

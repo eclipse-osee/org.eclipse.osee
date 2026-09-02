@@ -51,6 +51,7 @@ import {
 import {
 	BASEATTRIBUTETYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
+	MULTIPLICITY_ID,
 } from '@osee/attributes/constants';
 
 // Attributes Editor does not enforce required fields.
@@ -141,7 +142,9 @@ export class AttributesEditorComponent {
 						const dateValue = new Date(attribute.value);
 						formattedAttribute.value = `${dateValue.getTime()}`;
 					} else {
-						formattedAttribute.value = attribute.value.toString();
+						formattedAttribute.value = String(
+							attribute.value ?? ''
+						);
 					}
 
 					return formattedAttribute;
@@ -193,8 +196,8 @@ export class AttributesEditorComponent {
 	isRequired(attribute: attribute<string, ATTRIBUTETYPEID>) {
 		return attribute.name === 'Id'
 			? false
-			: attribute.multiplicity?.id === '2' ||
-					attribute.multiplicity?.id === '4';
+			: attribute.multiplicity?.id === MULTIPLICITY_ID.EXACTLY_ONE ||
+					attribute.multiplicity?.id === MULTIPLICITY_ID.AT_LEAST_ONE;
 	}
 
 	setAttribute(val: string, attribute: attribute<string, ATTRIBUTETYPEID>) {
