@@ -26,6 +26,35 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - Use `viewChild()` or `viewChild.required()` if template references to forms or elements are required.
 - **Avoid constructors in components.** Prefer field initializers with `inject()` and lifecycle callbacks (`afterNextRender`, effects) for initialization logic. For data loading, use signal-based patterns (`httpResource`, `toSignal()`, `computed()`) which handle async state declaratively without constructor logic. Use a constructor only when logic must run synchronously at creation time before the first render and no signal-based alternative exists (e.g., synchronous batch rendering of pre-loaded local data).
 
+### Prefer reactive chains over manual `subscribe`
+
+Manual `.subscribe()` calls tend to cause side effects and leak open streams.
+Prefer declarative composition and keep imperative subscriptions rare and bounded.
+
+- **Prefer signal/declarative sources** (`toSignal`, `httpResource`, `computed`,
+  `async` pipe in templates) over `.subscribe()` wherever the value only feeds
+  the view or another stream.
+- **Never nest `subscribe` inside `subscribe`.** Compose with a flattening
+  operator (`switchMap`, `mergeMap`, `concatMap`, `exhaustMap`) so the whole flow
+  is one chain with a single terminal `.subscribe()`.
+- **Always bound long-lived streams** so they complete. Use
+  `takeUntil(<end-signal>)`, `takeUntilDestroyed()`, `take(n)`, or `first()`.
+  A subscription that never completes is a leak.
+- **Choose the flattening operator deliberately** for repeated/user-triggered
+  actions:
+  - `switchMap` — cancel the previous inner when a new outer arrives (typeahead,
+    latest-wins reads). **Do not** use for writes you don't want cancelled.
+  - `mergeMap` — run all inners concurrently; use when every action must complete
+    even if the user triggers them rapidly (e.g. a "create & add another" button
+    firing repeated create transactions).
+  - `concatMap` — queue inners in order (ordered writes).
+  - `exhaustMap` — ignore new outers while one is in flight (submit buttons that
+    shouldn't double-fire).
+- **Expose an RxJS `Subject`, not Angular `output()`, when the parent needs to
+  compose the event into a stream** — `output()` has no `.pipe()`. A dialog that
+  emits submit requests its opener flattens into a transaction is the canonical
+  case (see `docs/ai/web/artifact-explorer-attributes.md` → "Create & add another").
+
 ## Angular Material + dialogs
 
 - Use angular materials where possible.
@@ -196,6 +225,36 @@ Examples:
   [artifactId]="item.id"
   [value]="item.name" />
 ```
+
+## Form validation error state
+
+Angular Material decides when to paint a field red via an `ErrorStateMatcher`.
+The default (`ShowOnDirtyErrorStateMatcher`) only highlights after the control is
+dirty or the form is submitted. For most forms that's correct — don't yell at the
+user before they've typed.
+
+- **Default behavior:** leave the matcher alone (touch/dirty-based highlighting).
+- **Highlight required fields immediately** (before the user touches them) only
+  when the form's whole purpose is to show what's blocking submission up front —
+  e.g. a create dialog with a disabled submit button and several required fields.
+  Use `ImmediateErrorStateMatcher` from `@osee/shared/matchers`, which reports
+  `control.invalid` regardless of touched/dirty/submitted state.
+- **Make it opt-in on shared editors.** When a shared component (like
+  `osee-attributes-editor`) has consumers that want each behavior, expose a
+  boolean `input()` (default `false`) and swap the matcher in a `computed()`
+  rather than changing the default for everyone.
+
+```typescript
+highlightRequiredImmediately = input<boolean>(false);
+private readonly immediateMatcher = new ImmediateErrorStateMatcher();
+private readonly defaultMatcher = new ShowOnDirtyErrorStateMatcher();
+protected readonly errorMatcher = computed<ErrorStateMatcher>(() =>
+  this.highlightRequiredImmediately() ? this.immediateMatcher : this.defaultMatcher
+);
+```
+
+New shared matchers live in `web/apps/osee/src/app/shared/matchers/` and must be
+exported from that folder's `public-api.ts` (import via `@osee/shared/matchers`).
 
 ## Styling (Angular Material + Tailwind)
 

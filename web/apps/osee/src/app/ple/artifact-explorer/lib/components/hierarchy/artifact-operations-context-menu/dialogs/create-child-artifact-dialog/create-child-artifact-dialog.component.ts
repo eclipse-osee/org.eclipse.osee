@@ -15,8 +15,10 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	computed,
+	ElementRef,
 	inject,
 	signal,
+	viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -26,10 +28,10 @@ import {
 } from '@angular/material/autocomplete';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
+import { ImmediateErrorStateMatcher } from '@osee/shared/matchers';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
-	MatDialogClose,
 	MatDialogContent,
 	MatDialogRef,
 	MatDialogTitle,
@@ -52,11 +54,13 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
+	Subject,
 	debounceTime,
 	distinctUntilChanged,
 	filter,
 	map,
 	switchMap,
+	tap,
 } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
 import { ArtifactIconService } from '../../../../../services/artifact-icon.service';
@@ -82,7 +86,6 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 		MatOption,
 		MatDialogActions,
 		MatButton,
-		MatDialogClose,
 		MatTooltip,
 	],
 	templateUrl: './create-child-artifact-dialog.component.html',
@@ -95,8 +98,49 @@ export class CreateChildArtifactDialogComponent {
 	data = inject<createChildArtifactDialogData>(MAT_DIALOG_DATA);
 	private readonly artifactIconService = inject(ArtifactIconService);
 
+	/**
+	 * Emits a create request each time the user submits. The opener subscribes
+	 * to perform the transaction; `keepOpen` tells it whether the dialog is
+	 * staying open for another entry (Create & add another) or closing (Create).
+	 */
+	readonly create = new Subject<{
+		data: createChildArtifactDialogData;
+		keepOpen: boolean;
+	}>();
+
+	/** Highlights required fields as invalid immediately, before they're touched. */
+	protected readonly errorMatcher = new ImmediateErrorStateMatcher();
+
+	private readonly nameInput =
+		viewChild<ElementRef<HTMLInputElement>>('nameInput');
+
 	onCancel() {
 		this.dialogRef.close();
+	}
+
+	/**
+	 * Creates the current artifact and keeps the dialog open, clearing only the
+	 * name (type and attribute values carry over) so the user can add another of
+	 * the same type without re-entering shared values.
+	 */
+	createAndAddAnother() {
+		this.create.next({ data: this.snapshotData(), keepOpen: true });
+		this.data.name = '';
+		this.nameInput()?.nativeElement.focus();
+	}
+
+	/** Creates the current artifact and closes the dialog. */
+	createAndClose() {
+		this.create.next({ data: this.snapshotData(), keepOpen: false });
+		this.dialogRef.close();
+	}
+
+	/** Deep-enough copy so each emitted create request is independent of later edits. */
+	private snapshotData(): createChildArtifactDialogData {
+		return {
+			...this.data,
+			attributes: this.data.attributes.map((attr) => ({ ...attr })),
+		};
 	}
 
 	// Artifact type single select
@@ -168,7 +212,18 @@ export class CreateChildArtifactDialogComponent {
 							? 1
 							: 0
 				)
-		)
+		),
+		// Seed any server-provided default values into the submission payload so
+		// they are saved even if the user never edits the pre-filled field. The
+		// attributes editor overwrites these via (updatedAttributes) on any edit.
+		tap((attributes) => {
+			this.data.attributes = attributes
+				.filter((attribute) => `${attribute.value ?? ''}` !== '')
+				.map((attribute) => ({
+					...attribute,
+					value: `${attribute.value}`,
+				}));
+		})
 	);
 
 	// Handle attributes editor form attributes changes

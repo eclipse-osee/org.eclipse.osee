@@ -73,7 +73,7 @@ test.describe('Artifact Create & Delete', () => {
 			page.waitForResponse(
 				(res) => res.url().includes('orcs/txs') && res.status() === 200
 			),
-			page.getByRole('button', { name: 'Ok' }).click(),
+			page.getByRole('button', { name: 'Create', exact: true }).click(),
 		]);
 
 		await expect(page.getByText('AE CD Created')).toBeVisible({
@@ -81,7 +81,7 @@ test.describe('Artifact Create & Delete', () => {
 		});
 	});
 
-	test('should disable Ok when artifact type is not selected from dropdown', async ({
+	test('should disable Create when artifact type is not selected from dropdown', async ({
 		page,
 	}) => {
 		await openBranch(page, BRANCH);
@@ -106,7 +106,9 @@ test.describe('Artifact Create & Delete', () => {
 		// Click away to blur without selecting from dropdown
 		await page.getByRole('textbox', { name: 'Enter a Name' }).click();
 
-		await expect(page.getByRole('button', { name: 'Ok' })).toBeDisabled();
+		await expect(
+			page.getByRole('button', { name: 'Create', exact: true })
+		).toBeDisabled();
 
 		await page.getByRole('button', { name: 'Cancel' }).click();
 	});
@@ -133,6 +135,127 @@ test.describe('Artifact Create & Delete', () => {
 		]);
 
 		await expect(page.getByText('AE CD Created')).not.toBeVisible({
+			timeout: 10000,
+		});
+	});
+
+	test('should prepopulate attribute editors with the type default value', async ({
+		page,
+	}) => {
+		await openBranch(page, BRANCH);
+		await expandArtifact(page, 'System Requirements - Markdown');
+		await expect(page.getByText('AE CD Parent')).toBeVisible({
+			timeout: 10000,
+		});
+
+		await page.getByText('AE CD Parent').click({ button: 'right' });
+		await page
+			.getByRole('menuitem', { name: 'Create Child Artifact' })
+			.click();
+
+		// Selecting Software Requirement - Markdown loads its attribute editors.
+		const typeInput = page.getByRole('combobox', { name: 'Select a Type' });
+		await typeInput.click();
+		await typeInput.fill('Software Requirement - Markdown');
+		await page
+			.getByRole('option', { name: 'Software Requirement - Markdown' })
+			.click();
+
+		// The Extension attribute defaults to "md" on the Markdown type, so its
+		// editor should be prepopulated without any user input.
+		const extensionField = page.getByRole('textbox', { name: 'Extension' });
+		await expect(extensionField).toHaveValue('md', { timeout: 10000 });
+
+		await page.getByRole('button', { name: 'Cancel' }).click();
+	});
+
+	test('should show required fields as invalid immediately on open', async ({
+		page,
+	}) => {
+		await openBranch(page, BRANCH);
+		await expandArtifact(page, 'System Requirements - Markdown');
+		await expect(page.getByText('AE CD Parent')).toBeVisible({
+			timeout: 10000,
+		});
+
+		await page.getByText('AE CD Parent').click({ button: 'right' });
+		await page
+			.getByRole('menuitem', { name: 'Create Child Artifact' })
+			.click();
+
+		// Without touching anything, the required-fields notice is shown and
+		// both create actions are disabled.
+		await expect(
+			page.getByText('Required fields not filled out')
+		).toBeVisible();
+		await expect(
+			page.getByRole('button', { name: 'Create', exact: true })
+		).toBeDisabled();
+		await expect(
+			page.getByRole('button', { name: 'Create & add another' })
+		).toBeDisabled();
+
+		await page.getByRole('button', { name: 'Cancel' }).click();
+	});
+
+	test('should create multiple artifacts with "Create & add another"', async ({
+		page,
+	}) => {
+		await openBranch(page, BRANCH);
+		await expandArtifact(page, 'System Requirements - Markdown');
+		await expect(page.getByText('AE CD Parent')).toBeVisible({
+			timeout: 10000,
+		});
+
+		await page.getByText('AE CD Parent').click({ button: 'right' });
+		await page
+			.getByRole('menuitem', { name: 'Create Child Artifact' })
+			.click();
+
+		const typeInput = page.getByRole('combobox', { name: 'Select a Type' });
+		await typeInput.click();
+		await typeInput.fill('Software Requirement - Markdown');
+		await page
+			.getByRole('option', { name: 'Software Requirement - Markdown' })
+			.click();
+
+		const addAnother = page.getByRole('button', {
+			name: 'Create & add another',
+		});
+
+		// First artifact via "Create & add another" — dialog stays open.
+		await page
+			.getByRole('textbox', { name: 'Enter a Name' })
+			.fill('AE CD Multi One');
+		await Promise.all([
+			page.waitForResponse(
+				(res) => res.url().includes('orcs/txs') && res.status() === 200
+			),
+			addAnother.click(),
+		]);
+
+		// The dialog is still open with the name cleared but type preserved.
+		await expect(
+			page.getByRole('textbox', { name: 'Enter a Name' })
+		).toHaveValue('');
+		await expect(typeInput).toHaveValue('Software Requirement - Markdown');
+
+		// Second artifact, this time closing with "Create".
+		await page
+			.getByRole('textbox', { name: 'Enter a Name' })
+			.fill('AE CD Multi Two');
+		await Promise.all([
+			page.waitForResponse(
+				(res) => res.url().includes('orcs/txs') && res.status() === 200
+			),
+			page.getByRole('button', { name: 'Create', exact: true }).click(),
+		]);
+
+		// Both artifacts exist under the parent (the create flow auto-expands it).
+		await expect(page.getByText('AE CD Multi One')).toBeVisible({
+			timeout: 10000,
+		});
+		await expect(page.getByText('AE CD Multi Two')).toBeVisible({
 			timeout: 10000,
 		});
 	});

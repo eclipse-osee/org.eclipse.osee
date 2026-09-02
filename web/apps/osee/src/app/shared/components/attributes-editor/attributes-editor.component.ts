@@ -13,7 +13,13 @@
 import { DatePipe } from '@angular/common';
 import { Component, Output, computed, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
+import {
+	ErrorStateMatcher,
+	MatOption,
+	provideNativeDateAdapter,
+	ShowOnDirtyErrorStateMatcher,
+} from '@angular/material/core';
+import { ImmediateErrorStateMatcher } from '@osee/shared/matchers';
 import {
 	MatDatepicker,
 	MatDatepickerInput,
@@ -79,6 +85,24 @@ export class AttributesEditorComponent {
 	editable = input.required<boolean>();
 	artifactId = input<string>('');
 	branchId = input<string>('');
+
+	/**
+	 * When true, required attribute fields show the invalid (red) state
+	 * immediately on render instead of only after the field is touched. Use
+	 * from create dialogs so users can see which required attributes are
+	 * blocking submission before interacting with them.
+	 */
+	highlightRequiredImmediately = input<boolean>(false);
+
+	private readonly immediateMatcher = new ImmediateErrorStateMatcher();
+	private readonly defaultMatcher = new ShowOnDirtyErrorStateMatcher();
+
+	/** Error matcher applied to each field, based on the immediate-highlight input. */
+	protected readonly errorMatcher = computed<ErrorStateMatcher>(() =>
+		this.highlightRequiredImmediately()
+			? this.immediateMatcher
+			: this.defaultMatcher
+	);
 
 	@Output() updatedAttributes = new BehaviorSubject<
 		attribute<string, ATTRIBUTETYPEID>[]

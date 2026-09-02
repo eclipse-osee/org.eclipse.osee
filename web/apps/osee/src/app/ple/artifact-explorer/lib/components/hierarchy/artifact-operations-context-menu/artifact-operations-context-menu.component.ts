@@ -21,13 +21,23 @@ import { TransactionService } from '@osee/transactions/services';
 import { attribute } from '@osee/attributes/types';
 import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
-import { combineLatest, filter, map, switchMap, take, tap } from 'rxjs';
+import {
+	combineLatest,
+	filter,
+	map,
+	mergeMap,
+	switchMap,
+	take,
+	takeUntil,
+	tap,
+} from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
 import { CreateChildArtifactDialogComponent } from './dialogs/create-child-artifact-dialog/create-child-artifact-dialog.component';
+import { createChildArtifactDialogData } from '../../../types/artifact-explorer';
 import { DeleteArtifactDialogComponent } from './dialogs/delete-artifact-dialog/delete-artifact-dialog.component';
 import {
 	artifactTypeIcon,
@@ -226,9 +236,10 @@ export class ArtifactOperationsContextMenuComponent {
 		this.branchId$
 			.pipe(
 				take(1),
-				switchMap((branchId) =>
-					this.dialog
-						.open(CreateChildArtifactDialogComponent, {
+				switchMap((branchId) => {
+					const dialogRef = this.dialog.open(
+						CreateChildArtifactDialogComponent,
+						{
 							data: {
 								name: '',
 								artifactTypeId: '0',
@@ -237,72 +248,72 @@ export class ArtifactOperationsContextMenuComponent {
 								operationType: operationType,
 							},
 							minWidth: '60%',
-						})
-						.afterClosed()
-						.pipe(
-							filter(
-								(data) =>
-									data &&
-									data?.name !== '' &&
-									data?.artifactTypeId !== '0' &&
-									data?.parentArtifactId !== '0'
-							),
-							switchMap((result) =>
-								this.transactionService
-									.performMutation({
-										branch: branchId,
-										txComment:
-											'Creating artifact: ' +
-											result?.name,
-										createArtifacts: [
-											{
-												name: result?.name,
-												typeId: result?.artifactTypeId,
-												attributes: result?.attributes
-													.filter(
-														(
-															attr: attribute<
-																string,
-																ATTRIBUTETYPEID
-															>
-														) => attr.value != null
-													)
-													.map(
-														(
-															attr: attribute<
-																string,
-																ATTRIBUTETYPEID
-															>
-														) => ({
-															typeId: attr.typeId,
-															value: attr.value,
-														})
-													),
-												relations: [
-													{
-														typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
-														sideA: result?.parentArtifactId,
-													},
-												],
-											},
-										],
-									})
-									.pipe(
-										take(1),
-										tap(() => {
-											// Auto-expand the artifact we created under so the new child is visible
-											this.expandedService.expandArtifact(
-												this.parentArtifactId(),
-												this.artifactId()
-											);
-											this.uiService.updated = true;
-										})
-									)
-							)
+						}
+					);
+					// The dialog stays open for "Create & add another", emitting
+					// one request per click; create per emission until it closes.
+					return dialogRef.componentInstance.create.pipe(
+						takeUntil(dialogRef.afterClosed()),
+						filter(
+							({ data }) =>
+								data &&
+								data.name !== '' &&
+								data.artifactTypeId !== '0' &&
+								data.parentArtifactId !== '0'
+						),
+						mergeMap(({ data }) =>
+							this.createArtifactTransaction(branchId, data)
 						)
-				)
+					);
+				})
 			)
 			.subscribe();
+	}
+
+	/** Runs the create transaction for a single artifact and refreshes the tree. */
+	private createArtifactTransaction(
+		branchId: string,
+		data: createChildArtifactDialogData
+	) {
+		return this.transactionService
+			.performMutation({
+				branch: branchId,
+				txComment: 'Creating artifact: ' + data.name,
+				createArtifacts: [
+					{
+						name: data.name,
+						typeId: data.artifactTypeId,
+						attributes: data.attributes
+							.filter(
+								(attr: attribute<string, ATTRIBUTETYPEID>) =>
+									attr.value != null
+							)
+							.map(
+								(attr: attribute<string, ATTRIBUTETYPEID>) => ({
+									typeId: attr.typeId,
+									value: attr.value,
+								})
+							),
+						relations: [
+							{
+								typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
+								sideA: data.parentArtifactId,
+							},
+						],
+					},
+				],
+			})
+			.pipe(
+				take(1),
+				tap(() => {
+					// Auto-expand the artifact we created under so the new child is visible
+					this.expandedService.expandArtifact(
+						this.parentArtifactId(),
+						this.artifactId()
+					);
+					this.uiService.updated = true;
+				})
+			);
 	}
 
 	private deleteArtifact(operationType: operationType) {

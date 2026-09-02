@@ -121,7 +121,7 @@ export const createArtifact = async (
 		page.waitForResponse(
 			(res) => res.url().includes('orcs/txs') && res.status() === 200
 		),
-		page.getByRole('button', { name: 'Ok' }).click(),
+		page.getByRole('button', { name: 'Create', exact: true }).click(),
 	]);
 };
 
