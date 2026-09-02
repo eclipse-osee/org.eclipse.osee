@@ -14,27 +14,30 @@ import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import {
 	Component,
 	DestroyRef,
+	effect,
 	ElementRef,
 	HostListener,
 	inject,
+	input,
 	signal,
 	viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { fromEvent, take, takeUntil } from 'rxjs';
 import { ArtifactTabGroupComponent } from './lib/components/artifact-tab-group/artifact-tab-group.component';
-import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
-import { HierarchySection } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
+import { ArtifactExplorerSidebarComponent } from './lib/components/hierarchy/artifact-explorer-sidebar/artifact-explorer-sidebar.component';
+import { HierarchySection } from './lib/components/hierarchy/artifact-explorer-sidebar/artifact-explorer-sidebar.component';
 import { ArtifactExplorerTabService } from './lib/services/artifact-explorer-tab.service';
 import { ArtifactEditorDirtyService } from './lib/services/artifact-editor-dirty.service';
 
 @Component({
 	selector: 'osee-artifact-explorer',
 	imports: [
-		ArtifactHierarchyPanelComponent,
+		ArtifactExplorerSidebarComponent,
 		ArtifactTabGroupComponent,
 		CdkDropListGroup,
 		MatIcon,
@@ -44,9 +47,13 @@ import { ArtifactEditorDirtyService } from './lib/services/artifact-editor-dirty
 	templateUrl: './artifact-explorer.component.html',
 })
 export class ArtifactExplorerComponent {
+	/** Route param for the active sidebar panel. */
+	panel = input<string>('');
+
 	private dirtyService = inject(ArtifactEditorDirtyService);
 	private tabService = inject(ArtifactExplorerTabService);
 	private destroyRef = inject(DestroyRef);
+	private router = inject(Router);
 
 	constructor() {
 		this.destroyRef.onDestroy(() => {
@@ -54,6 +61,15 @@ export class ArtifactExplorerComponent {
 			document.body.style.userSelect = '';
 		});
 	}
+
+	/** Sync route param to activeSection on init. */
+	private readonly syncPanelFromRoute = effect(() => {
+		const panel = this.panel();
+		if (panel === 'hierarchy' || panel === 'search' || panel === 'branch') {
+			this.activeSection.set(panel);
+			this.panelCollapsed.set(false);
+		}
+	});
 
 	/** Reference to the main layout container for percentage calculations. */
 	protected layoutContainer =
@@ -79,11 +95,23 @@ export class ArtifactExplorerComponent {
 	 */
 	toggleSection(section: HierarchySection) {
 		if (!this.panelCollapsed() && this.activeSection() === section) {
+			// Collapsing the active panel: drop the section from the URL so the
+			// route no longer advertises an open panel and syncPanelFromRoute
+			// won't re-open it on reload.
 			this.panelCollapsed.set(true);
-		} else {
-			this.activeSection.set(section);
-			this.panelCollapsed.set(false);
+			this.router.navigate(['/ple/artifact/explorer'], {
+				queryParamsHandling: 'merge',
+				replaceUrl: true,
+			});
+			return;
 		}
+		// Activating a section: reflect it in the URL and open the panel.
+		this.activeSection.set(section);
+		this.panelCollapsed.set(false);
+		this.router.navigate(['/ple/artifact/explorer', section], {
+			queryParamsHandling: 'merge',
+			replaceUrl: true,
+		});
 	}
 
 	onDividerMouseDown(event: MouseEvent): void {

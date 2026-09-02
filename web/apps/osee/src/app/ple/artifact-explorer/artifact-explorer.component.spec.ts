@@ -11,9 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { ArtifactExplorerComponent } from './artifact-explorer.component';
-import { ArtifactHierarchyMockComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component.mock';
-import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
+import { ArtifactExplorerSidebarMockComponent } from './lib/components/hierarchy/artifact-explorer-sidebar/artifact-explorer-sidebar.component.mock';
+import { ArtifactExplorerSidebarComponent } from './lib/components/hierarchy/artifact-explorer-sidebar/artifact-explorer-sidebar.component';
 import { ArtifactExplorerPreferencesHttpService } from './lib/services/artifact-explorer-preferences-http.service';
 import { artifactExplorerPreferencesHttpServiceMock } from './lib/testing/artifact-explorer-preferences-http.service.mock';
 import { UserDataAccountService } from '@osee/auth';
@@ -30,14 +31,15 @@ describe('ArtifactExplorerComponent', () => {
 	beforeEach(() => {
 		TestBed.overrideComponent(ArtifactExplorerComponent, {
 			add: {
-				imports: [ArtifactHierarchyMockComponent],
+				imports: [ArtifactExplorerSidebarMockComponent],
 			},
 			remove: {
-				imports: [ArtifactHierarchyPanelComponent],
+				imports: [ArtifactExplorerSidebarComponent],
 			},
 		}).configureTestingModule({
 			imports: [ArtifactExplorerComponent],
 			providers: [
+				provideRouter([]),
 				{
 					provide: ArtifactExplorerPreferencesHttpService,
 					useValue: artifactExplorerPreferencesHttpServiceMock,

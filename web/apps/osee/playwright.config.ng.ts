@@ -104,16 +104,16 @@ const config: PlaywrightTestConfig = {
 			dependencies: ['Setup'],
 		},
 		{
-			name: 'Publish-Launcher Demo Init',
+			name: 'Dispatch Demo Init',
 			testMatch:
-				'playwright/specs/publish-launcher/setup/publish-launcher-demo-init.e2e-spec.ts',
+				'playwright/specs/dispatch/setup/dispatch-demo-init.e2e-spec.ts',
 			dependencies: ['Setup'],
 		},
 		{
-			name: 'Publish-Launcher Tests',
+			name: 'Dispatch Tests',
 			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/publish-launcher/tests',
-			dependencies: ['Publish-Launcher Demo Init'],
+			testDir: 'playwright/specs/dispatch/tests',
+			dependencies: ['Dispatch Demo Init'],
 		},
 		{
 			name: 'Artifact Explorer Tests',

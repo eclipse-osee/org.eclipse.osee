@@ -128,6 +128,32 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    @Test
+   // /ats/action/{programId}/sysml/config
+   public void testGetSysmlConfig() {
+      String sysml = actionEp.getSysmlConfig(DemoArtifactToken.SAW_PL_Program);
+      Assert.assertNotNull(sysml);
+      Assert.assertFalse("Export should not return an error comment", sysml.startsWith("// Error"));
+      Assert.assertTrue("Should declare a config package", sysml.contains("_Config {"));
+      Assert.assertTrue("Should define Program part", sysml.contains("part def Program {"));
+      Assert.assertTrue("Should define TeamDefinition part", sysml.contains("part def TeamDefinition {"));
+      Assert.assertTrue("Should include TeamActionableItem connection def",
+         sysml.contains("connection def TeamActionableItem {"));
+   }
+
+   @Test
+   // /ats/action/{programId}/sysml/workflows
+   public void testGetSysmlWorkflows() {
+      String sysml = actionEp.getSysmlWorkflows(DemoArtifactToken.SAW_PL_Program);
+      Assert.assertNotNull(sysml);
+      Assert.assertFalse("Export should not return an error comment", sysml.startsWith("// Error"));
+      Assert.assertTrue("Should declare a workflows package", sysml.contains("_Workflows {"));
+      Assert.assertTrue("Should import the config package", sysml.contains("import "));
+      Assert.assertTrue("Should define TeamWorkflow part", sysml.contains("part def TeamWorkflow {"));
+      Assert.assertTrue("Should include ActionToWorkflow connection def",
+         sysml.contains("connection def ActionToWorkflow {"));
+   }
+
+   @Test
    // /ats/action/query/workitems/ids
    public void testQueryByids() {
       AtsSearchData data = new AtsSearchData();

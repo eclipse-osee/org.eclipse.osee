@@ -390,7 +390,7 @@ test('create structure', async ({ page }) => {
 	await expect(
 		page
 			.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
-			.getByRole('button')
+			.getByTestId('structure-table-expand-button')
 	).toBeVisible();
 });
 
@@ -408,11 +408,11 @@ test('create elements', async ({ page }) => {
 	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
-		.getByRole('button')
+		.getByTestId('structure-table-expand-button')
 		.waitFor({ state: 'visible' });
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
-		.getByRole('button')
+		.getByTestId('structure-table-expand-button')
 		.click();
 
 	// Create Integer Element
@@ -572,11 +572,11 @@ test('add array element', async ({ page }) => {
 	await page.getByTestId('submessage-details-btnSubmessage 1').click();
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
-		.getByRole('button')
+		.getByTestId('structure-table-expand-button')
 		.waitFor({ state: 'visible' });
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
-		.getByRole('button')
+		.getByTestId('structure-table-expand-button')
 		.click();
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();

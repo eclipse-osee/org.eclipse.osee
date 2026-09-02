@@ -1,4 +1,4 @@
-FROM postgres:16.2-alpine3.19
+FROM postgres:18.6-alpine3.24
 
 ARG IMAGE_DIRECTORY
 

@@ -97,6 +97,16 @@ export class BranchListService {
 		takeUntilDestroyed()
 	);
 
+	/** Instant (non-debounced) filter for displaying the current text in the input. */
+	private _displayFilter = merge(
+		this._currentBranchName,
+		this._branchFilter
+	).pipe(
+		distinctUntilChanged(),
+		shareReplay({ bufferSize: 1, refCount: true }),
+		takeUntilDestroyed()
+	);
+
 	get branches() {
 		return this._branches;
 	}
@@ -109,6 +119,11 @@ export class BranchListService {
 
 	set filter(value: string) {
 		this._branchFilter.next(value);
+	}
+
+	/** Returns the instant (non-debounced) filter value for display purposes. */
+	get displayFilter(): Observable<string> {
+		return this._displayFilter;
 	}
 
 	getFilteredPaginatedBranches(pageNum: string | number, filter?: string) {
