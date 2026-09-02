@@ -34,9 +34,11 @@
 				subscriptSizing="dynamic">
 				<mat-label> Enter a Name: </mat-label>
 				<input
+					#nameInput
 					matInput
 					name="name"
 					required
+					[errorStateMatcher]="errorMatcher"
 					[(ngModel)]="data.name" />
 			</mat-form-field>
 
@@ -51,6 +53,7 @@
 					matInput
 					#input
 					required
+					[errorStateMatcher]="errorMatcher"
 					placeholder="Unspecified"
 					id="artifactTypes"
 					name="artifactTypes"
@@ -92,6 +95,7 @@
 				<osee-attributes-editor
 					[attributes]="attributes"
 					[editable]="true"
+					[highlightRequiredImmediately]="true"
 					(updatedAttributes)="handleUpdatedAttributes($event)" />
 			}
 		</div>
@@ -116,11 +120,32 @@
 			">
 			<button
 				mat-stroked-button
-				[mat-dialog-close]="data"
+				class="tw-text-foreground-text"
+				type="button"
+				(click)="createAndAddAnother()"
 				[disabled]="
 					createChildArtifactForm.invalid || !isArtifactTypeValid
 				">
-				Ok
+				Create &amp; add another
+			</button>
+		</span>
+		<span
+			[matTooltip]="
+				!isArtifactTypeValid
+					? 'Select a valid artifact type from the list.'
+					: createChildArtifactForm.invalid
+						? 'Required fields not filled out.'
+						: ''
+			">
+			<button
+				mat-flat-button
+				color="primary"
+				type="button"
+				(click)="createAndClose()"
+				[disabled]="
+					createChildArtifactForm.invalid || !isArtifactTypeValid
+				">
+				Create
 			</button>
 		</span>
 	</div>

@@ -20,6 +20,7 @@
 					[(attributeValue)]="attribute.value"
 					(attributeValueChange)="emitUpdatedAttributes()"
 					[label]="attribute.name | attributeNameTrim"
+					[errorMatcher]="errorMatcher()"
 					[required]="
 						isRequired(attribute) &&
 						(attribute.name | attributeNameTrim | ifIdReturnFalse)
@@ -56,6 +57,7 @@
 						[name]="'attrString' + attribute.typeId"
 						[(ngModel)]="attribute.value"
 						(input)="emitUpdatedAttributes()"
+						[errorStateMatcher]="errorMatcher()"
 						[required]="
 							isRequired(attribute) &&
 							(attribute.name
@@ -76,6 +78,7 @@
 					[name]="'attrBoolean' + attribute.typeId"
 					[(ngModel)]="attribute.value"
 					(selectionChange)="emitUpdatedAttributes()"
+					[errorStateMatcher]="errorMatcher()"
 					[required]="
 						isRequired(attribute) &&
 						(attribute.name | attributeNameTrim | ifIdReturnFalse)
@@ -104,6 +107,7 @@
 						isRequired(attribute) &&
 						(attribute.name | attributeNameTrim | ifIdReturnFalse)
 					"
+					[errorStateMatcher]="errorMatcher()"
 					readonly
 					[disabled]="!editable()" />
 				<mat-datepicker-toggle
@@ -125,6 +129,7 @@
 					[name]="'attrInteger' + attribute.typeId"
 					[(ngModel)]="attribute.value"
 					(change)="emitUpdatedAttributes()"
+					[errorStateMatcher]="errorMatcher()"
 					[required]="
 						isRequired(attribute) &&
 						(attribute.name | attributeNameTrim | ifIdReturnFalse)
@@ -144,6 +149,7 @@
 					[name]="'attrLong' + attribute.typeId"
 					[(ngModel)]="attribute.value"
 					(change)="emitUpdatedAttributes()"
+					[errorStateMatcher]="errorMatcher()"
 					[required]="
 						isRequired(attribute) &&
 						(attribute.name | attributeNameTrim | ifIdReturnFalse)
