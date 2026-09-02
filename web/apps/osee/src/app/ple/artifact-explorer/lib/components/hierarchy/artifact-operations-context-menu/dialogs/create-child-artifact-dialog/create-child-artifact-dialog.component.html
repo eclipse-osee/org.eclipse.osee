@@ -110,14 +110,7 @@
 			(click)="onCancel()">
 			Cancel
 		</button>
-		<span
-			[matTooltip]="
-				!isArtifactTypeValid
-					? 'Select a valid artifact type from the list.'
-					: createChildArtifactForm.invalid
-						? 'Required fields not filled out.'
-						: ''
-			">
+		<span [matTooltip]="disabledReason(createChildArtifactForm.invalid)">
 			<button
 				mat-stroked-button
 				class="tw-text-foreground-text"
@@ -129,17 +122,9 @@
 				Create &amp; add another
 			</button>
 		</span>
-		<span
-			[matTooltip]="
-				!isArtifactTypeValid
-					? 'Select a valid artifact type from the list.'
-					: createChildArtifactForm.invalid
-						? 'Required fields not filled out.'
-						: ''
-			">
+		<span [matTooltip]="disabledReason(createChildArtifactForm.invalid)">
 			<button
-				mat-flat-button
-				color="primary"
+				mat-stroked-button
 				type="button"
 				(click)="createAndClose()"
 				[disabled]="
