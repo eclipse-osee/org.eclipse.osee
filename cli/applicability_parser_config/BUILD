@@ -9,46 +9,54 @@
 #
 # Contributors:
 #     Boeing - initial API and implementation
-# 
+#
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test", "rust_doc_test")
+load("@rules_rust//rust:defs.bzl", "rust_clippy", "rust_doc", "rust_doc_test", "rust_library", "rust_test")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
     name = "applicability_parser_config",
-    srcs = glob(['src/**/*.rs']),
-    deps = all_crate_deps(normal = True)+[
-        "//cli/applicability:applicability",
-    ],
+    srcs = glob(["src/**/*.rs"]),
     crate_features = [
         "default",
         "derive",
-        "serde"
-    ]
+        "serde",
+    ],
+    deps = all_crate_deps(normal = True) + [
+        "//cli/applicability",
+        "//cli/applicability_document_schema",
+        "//cli/applicability_parser_errors",
+        "//cli/applicability_parser_v2",
+        "//cli/applicability_tokens_to_ast",
+    ],
 )
 
 rust_test(
-    name="applicability_parser_config_test",
-    crate=":applicability_parser_config",
-    size="small"
+    name = "applicability_parser_config_test",
+    size = "small",
+    crate = ":applicability_parser_config",
+    proc_macro_deps = all_crate_deps(
+        proc_macro_dev = True,
+    ),
+    deps = all_crate_deps(normal_dev = True) + [],
 )
 
 rust_doc(
-    name="applicability_parser_config_doc",
-    crate=":applicability_parser_config"
+    name = "applicability_parser_config_doc",
+    crate = ":applicability_parser_config",
 )
 
 rust_doc_test(
-    name="applicability_parser_config_doc_test",
-    crate=":applicability_parser_config",
-    size="small",
+    name = "applicability_parser_config_doc_test",
+    size = "small",
+    crate = ":applicability_parser_config",
 )
 
 rust_clippy(
-    name="applicability_parser_config_clippy",
+    name = "applicability_parser_config_clippy",
     testonly = True,
-    deps=[
-        ":applicability_parser_config"
-    ]
+    deps = [
+        ":applicability_parser_config",
+    ],
 )
