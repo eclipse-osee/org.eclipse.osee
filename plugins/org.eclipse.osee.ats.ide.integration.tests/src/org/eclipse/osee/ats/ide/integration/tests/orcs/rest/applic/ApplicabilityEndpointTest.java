@@ -231,18 +231,12 @@ public class ApplicabilityEndpointTest {
 
       // Checking that readme.txt exists
       File readmeFile = new File(inputFolder, "readme.txt");
-      System.out.println("Input Folder: " + inputFolder);
-      System.out.println("readmeFile absolute path: " + readmeFile.getAbsolutePath());
-      System.out.println("isFile: " + readmeFile.isFile());
 
       // Alt Check
-      System.out.println("ALTERNATE CHECK");
       Path resourcePath = Paths.get(OsgiUtil.getResourceAsUrl(ApplicabilityEndpointTest.class,
          "/support/BlockApplicabilityTest/InputFiles").toURI());
-      System.out.println("Resolved Path: " + resourcePath);
       assertTrue(Files.exists(resourcePath.resolve("readme.txt")));
 
-      System.out.println("ORIGINAL CHECK");
       assertTrue(readmeFile.exists());
 
       // Checking Code Folder

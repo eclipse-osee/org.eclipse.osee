@@ -48,13 +48,10 @@ public class AccessControlUtil {
    }
 
    public static void errorf(String message, Object... data) {
-      if (logDebugOn == null) {
-         logDebugOn = "true".equals(System.getProperty("access.debug"));
-      }
-      if (debugOn || logDebugOn) {
+      if (debugOn || isDebugOn()) {
          XConsoleLogger.err(message, data);
       }
-      if (logDebugOn) {
+      if (isDebugOn()) {
          OseeLog.log(AccessControlUtil.class, Level.INFO, String.format(message, data));
       }
    }
@@ -64,7 +61,13 @@ public class AccessControlUtil {
    }
 
    public static boolean isDebugOn() {
+      if (logDebugOn == null) {
+         logDebugOn = "true".equals(System.getProperty("access.debug"));
+      }
       return logDebugOn;
+   }
+
+   public static void logf(String simpleName) {
    }
 
 }

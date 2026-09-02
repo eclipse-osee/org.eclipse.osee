@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet;
 
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -26,8 +27,11 @@ import org.junit.runners.Suite;
    LinkUtilTest.class, //
 })
 public class FrameworkUiSkynetTest_Suite {
+
    @BeforeClass
    public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
       DemoUtil.checkDbInitAndPopulateSuccess();
    }
+
 }

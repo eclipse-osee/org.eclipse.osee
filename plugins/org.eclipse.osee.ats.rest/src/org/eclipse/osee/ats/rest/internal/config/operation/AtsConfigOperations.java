@@ -230,7 +230,7 @@ public class AtsConfigOperations {
 
    private TeamDefinition handleTeamDef(ArtifactReadable teamDefArt, TeamDefinition teamDef,
       Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs) {
-      ArtifactReadable parent = teamDefArt.getParent();
+      ArtifactReadable parent = teamDefArt.getParentOrNull();
       if (parent != null) {
          teamDef.setParentId(parent.getId());
       }

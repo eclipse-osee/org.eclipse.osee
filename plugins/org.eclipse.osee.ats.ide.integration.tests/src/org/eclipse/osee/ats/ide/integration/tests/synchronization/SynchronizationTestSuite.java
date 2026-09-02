@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.synchronization;
 
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,20 +24,14 @@ import org.junit.runners.Suite;
  * @author Loren K. Ashley
  */
 
-//@formatter:off
 @RunWith(Suite.class)
-@Suite.SuiteClasses
-   (
-      {
-         SynchronizationEndpointTest.class,
-         ReqifRelationshipsTest.class,
-         Permissions.class
-      }
-   )
+@Suite.SuiteClasses({SynchronizationEndpointTest.class, ReqifRelationshipsTest.class, Permissions.class})
 
 public class SynchronizationTestSuite {
-   // Test Suite
-}
-//@formatter:on
 
-/* EOF */
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
+
+}

@@ -69,7 +69,6 @@ public class CreateNewDemoChangeRequestBlamTest {
             atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.DemoChangeRequestTeamWorkflow, TITLE);
       }
 
-      System.out.println("Waited for " + pollingIntervalMilliseconds + " milliseconds...");
       Assert.assertNotNull(artifactByName);
 
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifactByName);

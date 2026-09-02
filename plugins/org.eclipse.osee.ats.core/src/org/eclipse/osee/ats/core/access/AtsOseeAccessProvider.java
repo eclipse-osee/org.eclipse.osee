@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.access.IAtsAccessContextProvider;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.task.TaskAutoGenArtifactChecks;
-import org.eclipse.osee.framework.core.access.AccessControlUtil;
 import org.eclipse.osee.framework.core.access.ArtifactCheck;
 import org.eclipse.osee.framework.core.access.IOseeAccessProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -42,7 +41,6 @@ public class AtsOseeAccessProvider implements IOseeAccessProvider {
 
    public AtsOseeAccessProvider() {
       // for jax-rs
-      AccessControlUtil.errorf(getClass().getSimpleName());
       getDefaultAtsAccessProvider();
    }
 
