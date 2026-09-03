@@ -5,9 +5,9 @@ on:
 jobs:
   cargo-pr:
     permissions:
-        contents: read
-        checks: write
-        pull-requests: write
+      contents: read
+      checks: write
+      pull-requests: write
     strategy:
       fail-fast: false
       matrix:
@@ -38,13 +38,17 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: dtolnay/rust-toolchain@stable
         with:
-            targets: x86_64-unknown-linux-musl
-            components: clippy, rust-std, rustfmt
+          targets: x86_64-unknown-linux-musl
+          components: clippy, rust-std, rustfmt
 
       - name: musl setup
         if: steps.changed-files.outputs.any_changed == 'true' && matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update && sudo apt-get install -y musl-tools
+
+      - name: Setup macos linkers
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: brew install lld
 
       - name: build default
         if: steps.changed-files.outputs.any_changed == 'true'
@@ -52,13 +56,13 @@ jobs:
 
       - name: test
         if: steps.changed-files.outputs.any_changed == 'true'
-        run: cargo test
+        run: cargo test --lib --release
 
       - name: clippy
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: auguwu/clippy-action@1.4.0
         with:
-            token: ${{ github.token }}
+          token: ${{ github.token }}
 
       - name: Check Rust formatting
         run: cargo fmt -- --check
@@ -121,9 +125,9 @@ jobs:
 
       - uses: bazel-contrib/setup-bazel@0.8.5
         with:
-            bazelisk-cache: true
-            disk-cache: ${{ github.workflow }}
-            repository-cache: true
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
 
       - name: build
         if: steps.changed-files.outputs.any_changed == 'true'
