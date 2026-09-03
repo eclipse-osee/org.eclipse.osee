@@ -10,4 +10,5 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+export * from './immediate-error-state.matcher';
 export * from './parent-error-state.matcher';

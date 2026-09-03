@@ -113,9 +113,34 @@ public class TypesEndpointImpl implements TypesEndpoint {
       return orcsApi.tokenService().getArtifactTypes().stream().filter(
          art -> art.getId().equals(artifactId.getId())).flatMap(
             art -> art.getValidAttributeTypes().stream().map(
-               attr -> AttributePojo.valueOf(Id.SENTINEL, attr, GammaId.SENTINEL, "", "",
-                  art.getMultiplicity(attr)))).collect(
-                     Collectors.toList());
+               attr -> buildDefaultValuedAttribute(art, attr))).collect(
+                  Collectors.toList());
+   }
+
+   /**
+    * Seeds the pojo's value with the attribute's default so the client can pre-populate new-artifact editors; the
+    * value is the empty string when there is no usable default.
+    */
+   private AttributePojo<?> buildDefaultValuedAttribute(ArtifactTypeToken artType, AttributeTypeToken attrToken) {
+      AttributeTypeGeneric<?> attrType = orcsTokenService.getAttributeType(attrToken.getId());
+      String defaultString = defaultValueAsString(artType, attrType);
+      return AttributePojo.valueOf(Id.SENTINEL, attrToken, GammaId.SENTINEL, defaultString, defaultString,
+         artType.getMultiplicity(attrToken));
+   }
+
+   /**
+    * Renders the attribute's default as its storage string, preferring the artifact-type-specific default (e.g.
+    * {@code Extension = "md"} on Markdown types) and falling back to the attribute type's own base default. Returns
+    * an empty string when neither is set. The generic parameter binds the value to its type so
+    * {@code storageStringFromValue} type-checks.
+    */
+   private <T> String defaultValueAsString(ArtifactTypeToken artType, AttributeTypeGeneric<T> attrType) {
+      T defaultValue = artType.getAttributeDefault(attrType);
+      if (defaultValue == null) {
+         return "";
+      }
+      String stored = attrType.storageStringFromValue(defaultValue);
+      return stored != null ? stored : "";
    }
 
    @Override
