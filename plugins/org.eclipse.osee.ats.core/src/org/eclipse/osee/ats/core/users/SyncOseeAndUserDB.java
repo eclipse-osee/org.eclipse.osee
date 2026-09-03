@@ -546,10 +546,9 @@ public abstract class SyncOseeAndUserDB {
             AtsUser wssoUser = getWssoUser(uad);
             if (wssoUser != null) {
                String wssoUserId = wssoUser.getUserId();
-               String wssoLoginId = wssoUser.getLoginIds().size() == 0 ? "" : wssoUser.getLoginIds().get(0);
+               String wssoLoginId = wssoUser.getLoginIds().isEmpty() ? "" : wssoUser.getLoginIds().get(0);
                String wssoUserName = wssoUser.getName();
-               String wssoMail = wssoUser.getEmail();
-               String wssoExternalMail = wssoUser.getExternalEmail();
+               String wssoEmail = wssoUser.getEmail();
 
                // No record returned, so nothing to update
                if (Strings.isInvalid(wssoUserName)) {
@@ -565,31 +564,22 @@ public abstract class SyncOseeAndUserDB {
 
                // If loginId == null, not a valid record/email, don't update or error
                if (wssoLoginId != null) {
-                  // Prefer an external email when present and valid, otherwise fall back to the normal mail field
-                  String preferredMail = null;
-                  if (EmailUtil.isEmailValid(wssoExternalMail)) {
-                     preferredMail = wssoExternalMail;
-                  } else if (EmailUtil.isEmailValid(wssoMail)) {
-                     preferredMail = wssoMail;
-                  }
-
-                  if (preferredMail == null) {
+                  if (!EmailUtil.isEmailValid(wssoEmail)) {
                      if (!uad.getTags().contains(NO_EMAIL_STATIC_ID)) {
                         if (debug) {
                            results.warningf(
-                              "[%s] WSSO User Email invalid; mail [%s], externalEmail [%s]: %s\n",
-                              user.toStringWithId(), wssoMail, wssoExternalMail, wssoUser.getJson());
+                              "[%s] WSSO User Email invalid or unavailable; wssoEmail [%s]: %s\n",
+                              user.toStringWithId(), wssoEmail, wssoUser.getJson());
                         }
                      }
-                  } else if (!user.getEmail().equals(preferredMail)) {
-                     // Update the user's email to the preferred WSSO email (external when present, otherwise mail)
-                     results.warningf("(On Persist) - [%s] wsso.preferredEmail [%s] != user.email [%s]\n",
-                        user.toStringWithId(), preferredMail, user.getEmail());
+                  } else if (!user.getEmail().equals(wssoEmail)) {
+                     results.warningf("(On Persist) - [%s] wsso.email [%s] != user.email [%s]\n",
+                        user.toStringWithId(), wssoEmail, user.getEmail());
                      if (persist) {
-                        changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Email, preferredMail);
+                        changes.setSoleAttributeValue(getUser(user), CoreAttributeTypes.Email, wssoEmail);
                         // Certificate is bound to the old email address — remove it.
                         changes.deleteAttributes(getUser(user), CoreAttributeTypes.EmailPublicCertificate);
-                        results.logf("Fixed Email to %s (certificate cleared)\n", preferredMail);
+                        results.logf("Fixed Email to %s (certificate cleared)\n", wssoEmail);
                      }
                   }
                }
