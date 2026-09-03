@@ -247,6 +247,8 @@ export class ArtifactOperationsContextMenuComponent {
 								attributes: [],
 								operationType: operationType,
 							},
+							width: '70%',
+							maxWidth: '900px',
 							minWidth: '60%',
 						}
 					);
@@ -283,17 +285,7 @@ export class ArtifactOperationsContextMenuComponent {
 					{
 						name: data.name,
 						typeId: data.artifactTypeId,
-						attributes: data.attributes
-							.filter(
-								(attr: attribute<string, ATTRIBUTETYPEID>) =>
-									attr.value != null
-							)
-							.map(
-								(attr: attribute<string, ATTRIBUTETYPEID>) => ({
-									typeId: attr.typeId,
-									value: attr.value,
-								})
-							),
+						attributes: this.groupAttributesByType(data.attributes),
 						relations: [
 							{
 								typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
@@ -314,6 +306,32 @@ export class ArtifactOperationsContextMenuComponent {
 					this.uiService.updated = true;
 				})
 			);
+	}
+
+	/**
+	 * Groups create-dialog attributes by type into transaction attribute nodes.
+	 * Multiple instances of the same attribute type are emitted as a single node
+	 * with an array `value`; the backend expands an array value into multiple
+	 * attribute instances. A single instance keeps a scalar `value`. Without this
+	 * grouping the server applies each same-type node via a "set sole attribute"
+	 * call, so repeated types overwrite each other (last value wins).
+	 */
+	private groupAttributesByType(
+		attributes: attribute<string, ATTRIBUTETYPEID>[]
+	): { typeId: string; value: string | string[] }[] {
+		const byType = new Map<string, string[]>();
+		for (const attr of attributes) {
+			if (attr.value == null) {
+				continue;
+			}
+			const values = byType.get(attr.typeId) ?? [];
+			values.push(attr.value);
+			byType.set(attr.typeId, values);
+		}
+		return [...byType.entries()].map(([typeId, values]) => ({
+			typeId,
+			value: values.length === 1 ? values[0] : values,
+		}));
 	}
 
 	private deleteArtifact(operationType: operationType) {

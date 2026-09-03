@@ -317,7 +317,9 @@ export class AttributesEditorPanelComponent {
 				id: '-1' as const,
 				typeId: type.typeId,
 				gammaId: '-1' as const,
-				value: this.getDefaultValue(type),
+				// Prefer the server-seeded default (carried in the token's value,
+				// e.g. Extension -> "md"); fall back to a store-type default.
+				value: this.getSeededDefaultValue(type),
 				name: type.name,
 				storeType: type.storeType,
 				multiplicity: type.multiplicity,
@@ -409,8 +411,26 @@ export class AttributesEditorPanelComponent {
 			});
 	}
 
+	/**
+	 * Returns the initial value for a newly added attribute. Prefers the
+	 * server-seeded default carried in the attribute type token's `value`
+	 * (from GET /orcs/types/artifact/{id}/attributes, e.g. Extension -> "md"),
+	 * falling back to a store-type default when the type has no default.
+	 */
+	private getSeededDefaultValue(
+		type: attribute<string, ATTRIBUTETYPEID>
+	): string {
+		const seeded = `${type.value ?? ''}`;
+		if (seeded !== '') {
+			return seeded;
+		}
+		return this.getStoreTypeDefault(type);
+	}
+
 	/** Returns an appropriate default value for a new attribute based on store type. */
-	private getDefaultValue(type: attribute<string, ATTRIBUTETYPEID>): string {
+	private getStoreTypeDefault(
+		type: attribute<string, ATTRIBUTETYPEID>
+	): string {
 		switch (type.storeType) {
 			case 'Boolean':
 				return 'false';

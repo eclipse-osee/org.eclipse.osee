@@ -19,6 +19,35 @@ import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer
 import { ArtifactExplorerHttpServiceMock } from '../../../testing/artifact-explorer-http.service.mock';
 import { TransactionService } from '@osee/transactions/services';
 import { transactionServiceMock } from '@osee/transactions/services/testing';
+import type { attribute } from '@osee/attributes/types';
+import type { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+
+/** Accessor for the private groupAttributesByType helper (test-only). */
+function groupAttributesByType(
+	component: ArtifactOperationsContextMenuComponent,
+	attributes: attribute<string, ATTRIBUTETYPEID>[]
+): { typeId: string; value: string | string[] }[] {
+	return (
+		component as unknown as {
+			groupAttributesByType: (
+				a: attribute<string, ATTRIBUTETYPEID>[]
+			) => { typeId: string; value: string | string[] }[];
+		}
+	).groupAttributesByType(attributes);
+}
+
+const makeAttr = (
+	typeId: string,
+	value: string | null
+): attribute<string, ATTRIBUTETYPEID> =>
+	({
+		name: 'Attr',
+		value,
+		typeId: typeId as ATTRIBUTETYPEID,
+		id: '-1',
+		gammaId: '-1',
+		storeType: 'String',
+	}) as attribute<string, ATTRIBUTETYPEID>;
 
 describe('ArtifactOperationsContextMenuComponent', () => {
 	let component: ArtifactOperationsContextMenuComponent;
@@ -52,5 +81,48 @@ describe('ArtifactOperationsContextMenuComponent', () => {
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
+	});
+
+	describe('groupAttributesByType', () => {
+		it('emits a scalar value for a single instance of a type', () => {
+			const result = groupAttributesByType(component, [
+				makeAttr('100', 'md'),
+			]);
+			expect(result).toEqual([{ typeId: '100', value: 'md' }]);
+		});
+
+		it('emits an array value for multiple instances of the same type', () => {
+			const result = groupAttributesByType(component, [
+				makeAttr('317', 'Unspecified'),
+				makeAttr('317', 'Unlimited Rights'),
+				makeAttr('317', 'Unspecified'),
+			]);
+			expect(result).toEqual([
+				{
+					typeId: '317',
+					value: ['Unspecified', 'Unlimited Rights', 'Unspecified'],
+				},
+			]);
+		});
+
+		it('groups mixed types: scalars stay scalar, duplicates become arrays', () => {
+			const result = groupAttributesByType(component, [
+				makeAttr('100', 'md'),
+				makeAttr('317', 'A'),
+				makeAttr('317', 'B'),
+			]);
+			expect(result).toEqual([
+				{ typeId: '100', value: 'md' },
+				{ typeId: '317', value: ['A', 'B'] },
+			]);
+		});
+
+		it('skips attributes with a null value', () => {
+			const result = groupAttributesByType(component, [
+				makeAttr('100', null),
+				makeAttr('200', 'keep'),
+			]);
+			expect(result).toEqual([{ typeId: '200', value: 'keep' }]);
+		});
 	});
 });

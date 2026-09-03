@@ -22,6 +22,22 @@ import { artifactServiceMock } from '../../../../../../../../shared/services/ple
 import { FormDirective } from '@osee/shared/directives';
 import { operationTypeMock } from '../../../../../testing/artifact-explorer.data.mock';
 import { createChildArtifactDialogData } from '../../../../../types/artifact-explorer';
+import type { WritableSignal } from '@angular/core';
+import type { attribute } from '@osee/attributes/types';
+import type { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+
+/** Accessor for the protected `visibleAttributes` signal (test-only). */
+function visibleAttributes(
+	component: CreateChildArtifactDialogComponent
+): WritableSignal<attribute<string, ATTRIBUTETYPEID>[]> {
+	return (
+		component as unknown as {
+			visibleAttributes: WritableSignal<
+				attribute<string, ATTRIBUTETYPEID>[]
+			>;
+		}
+	).visibleAttributes;
+}
 
 describe('CreateChildArtifactDialogComponent', () => {
 	let component: CreateChildArtifactDialogComponent;
@@ -119,6 +135,9 @@ describe('CreateChildArtifactDialogComponent', () => {
 	});
 
 	it('createAndAddAnother should preserve type and attribute values across entries', () => {
+		// The visible attributes (seeded from the selected type) are the source
+		// of truth for the submission payload.
+		visibleAttributes(component).set([...dialogData.attributes]);
 		const emitted: {
 			data: createChildArtifactDialogData;
 			keepOpen: boolean;
@@ -128,11 +147,13 @@ describe('CreateChildArtifactDialogComponent', () => {
 		component.createAndAddAnother();
 
 		expect(component.data.artifactTypeId).toBe('123');
-		expect(component.data.attributes).toEqual(dialogData.attributes);
+		// Attributes carry over (dialog stays open with the same visible attrs).
+		expect(visibleAttributes(component)()).toEqual(dialogData.attributes);
 		expect(emitted[0].data.attributes[0].value).toBe('md');
 	});
 
 	it('createAndAddAnother should emit an independent attribute snapshot', () => {
+		visibleAttributes(component).set([...dialogData.attributes]);
 		const emitted: {
 			data: createChildArtifactDialogData;
 			keepOpen: boolean;
@@ -141,8 +162,32 @@ describe('CreateChildArtifactDialogComponent', () => {
 
 		component.createAndAddAnother();
 		// Mutate the live attributes after the emit; the snapshot must not change.
-		component.data.attributes[0].value = 'txt';
+		visibleAttributes(component)()[0].value = 'txt';
 
 		expect(emitted[0].data.attributes[0].value).toBe('md');
+	});
+
+	it('includes every visible attribute even when left empty', () => {
+		// An added-but-untouched attribute (empty, no default) must still be
+		// submitted so it is created with its (empty) default value.
+		const withDefault = { ...dialogData.attributes[0], value: 'md' };
+		const emptyAdded = {
+			...dialogData.attributes[0],
+			typeId: '999' as never,
+			name: 'Qualification Method',
+			value: '',
+		};
+		visibleAttributes(component).set([withDefault, emptyAdded]);
+		const emitted: {
+			data: createChildArtifactDialogData;
+			keepOpen: boolean;
+		}[] = [];
+		component.create.subscribe((req) => emitted.push(req));
+
+		component.createAndClose();
+
+		expect(emitted[0].data.attributes).toHaveLength(2);
+		expect(emitted[0].data.attributes[0].value).toBe('md');
+		expect(emitted[0].data.attributes[1].value).toBe('');
 	});
 });

@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-@for (attribute of attributes(); track attribute) {
+
+<!-- Field renderer for a single attribute instance (store-type switch). -->
+<ng-template
+	#attrField
+	let-attribute="attribute"
+	let-attrIndex="attrIndex">
 	@switch (attribute.storeType) {
 		@case ('Enumeration') {
 			@if (attribute.typeId) {
@@ -54,7 +59,7 @@
 						"
 						matInput
 						matInputAutosize
-						[name]="'attrString' + attribute.typeId"
+						[name]="'attrString' + attribute.typeId + attrIndex"
 						[(ngModel)]="attribute.value"
 						(input)="emitUpdatedAttributes()"
 						[errorStateMatcher]="errorMatcher()"
@@ -75,7 +80,7 @@
 				<mat-label>{{ attribute.name | attributeNameTrim }}</mat-label>
 				<mat-select
 					[disabled]="!editable()"
-					[name]="'attrBoolean' + attribute.typeId"
+					[name]="'attrBoolean' + attribute.typeId + attrIndex"
 					[(ngModel)]="attribute.value"
 					(selectionChange)="emitUpdatedAttributes()"
 					[errorStateMatcher]="errorMatcher()"
@@ -98,7 +103,7 @@
 				<input
 					matInput
 					[matDatepicker]="picker"
-					[name]="'attrDate' + attribute.typeId"
+					[name]="'attrDate' + attribute.typeId + attrIndex"
 					[ngModel]="attribute.value | stringToDate"
 					(ngModelChange)="
 						setAttribute($event, attribute); emitUpdatedAttributes()
@@ -126,7 +131,7 @@
 					[disabled]="!editable()"
 					matInput
 					matInputAutosize
-					[name]="'attrInteger' + attribute.typeId"
+					[name]="'attrInteger' + attribute.typeId + attrIndex"
 					[(ngModel)]="attribute.value"
 					(change)="emitUpdatedAttributes()"
 					[errorStateMatcher]="errorMatcher()"
@@ -146,7 +151,7 @@
 					[disabled]="!editable()"
 					matInput
 					matInputAutosize
-					[name]="'attrLong' + attribute.typeId"
+					[name]="'attrLong' + attribute.typeId + attrIndex"
 					[(ngModel)]="attribute.value"
 					(change)="emitUpdatedAttributes()"
 					[errorStateMatcher]="errorMatcher()"
@@ -156,7 +161,95 @@
 					"></textarea>
 			</mat-form-field>
 		}
-		@case ('Input Stream') {
+	}
+	@if (isDuplicateValue(attribute)) {
+		<div class="tw-px-1 tw-text-sm tw-text-warning tw-opacity-75">
+			Duplicate value — only one instance of this value will be saved.
+		</div>
+	}
+</ng-template>
+
+@if (allowDelete()) {
+	<!-- Grouped layout (create dialog): group instances by type with a
+	     "Name (count)" header, matching the artifact editor. -->
+	@for (group of groupedAttributes(); track group.typeId) {
+		@if (group.items.length === 1) {
+			<!-- Single instance: plain field + optional remove button. -->
+			<div class="tw-flex tw-w-full tw-items-start tw-gap-1">
+				<div class="tw-min-w-0 tw-flex-1">
+					<ng-container
+						*ngTemplateOutlet="
+							attrField;
+							context: {
+								attribute: group.items[0].attribute,
+								attrIndex: group.items[0].index,
+							}
+						" />
+				</div>
+				@if (canDelete(group.items[0].attribute)) {
+					<button
+						mat-icon-button
+						type="button"
+						class="tw-mt-4 tw-text-foreground-text"
+						[attr.aria-label]="
+							'Remove ' +
+							(group.items[0].attribute.name ?? 'attribute')
+						"
+						matTooltip="Remove this optional attribute"
+						(click)="removeAttribute(group.items[0].attribute)">
+						<mat-icon>close</mat-icon>
+					</button>
+				}
+			</div>
+		} @else {
+			<!-- Multiple instances: bordered group box with a count header. -->
+			<div class="tw-pt-4">
+				<span
+					class="tw-mb-1 tw-block tw-text-xs tw-font-medium"
+					data-testid="attribute-group-header">
+					{{ group.name | attributeNameTrim }}
+					<span class="tw-opacity-50"
+						>({{ group.items.length }})</span
+					>
+				</span>
+				<div
+					class="tw-flex tw-flex-col tw-gap-2 tw-rounded tw-border tw-border-solid tw-border-osee-neutral-50 tw-p-2 dark:tw-border-osee-neutral-60">
+					@for (item of group.items; track item.index) {
+						<div class="tw-flex tw-w-full tw-items-start tw-gap-1">
+							<div class="tw-min-w-0 tw-flex-1">
+								<ng-container
+									*ngTemplateOutlet="
+										attrField;
+										context: {
+											attribute: item.attribute,
+											attrIndex: item.index,
+										}
+									" />
+							</div>
+							@if (canDelete(item.attribute)) {
+								<button
+									mat-icon-button
+									type="button"
+									class="tw-mt-4 tw-text-foreground-text"
+									[attr.aria-label]="
+										'Remove ' +
+										(item.attribute.name ?? 'attribute')
+									"
+									matTooltip="Remove this attribute instance"
+									(click)="removeAttribute(item.attribute)">
+									<mat-icon>close</mat-icon>
+								</button>
+							}
+						</div>
+					}
+				</div>
+			</div>
+		}
+	}
+} @else {
+	<!-- Flat layout (default consumers): one field per attribute. -->
+	@for (attribute of attributes(); track attribute; let attrIndex = $index) {
+		@if (attribute.storeType === 'Input Stream') {
 			@if (nativeEditorAttrs(); as na) {
 				<osee-native-content-editor
 					[nativeEditorAttributes]="na"
@@ -169,6 +262,12 @@
 					(updatedAttributes)="handleNativeContentChanges($event)">
 				</osee-native-content-editor>
 			}
+		} @else {
+			<ng-container
+				*ngTemplateOutlet="
+					attrField;
+					context: { attribute: attribute, attrIndex: attrIndex }
+				" />
 		}
 	}
 }
