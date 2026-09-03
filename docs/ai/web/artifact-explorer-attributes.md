@@ -120,14 +120,99 @@ where the `value`/`displayableString` carries the default:
 - There is **no separate `defaultValue` field** on the wire `attribute` type —
   the seeded `value` is the default.
 
-**Frontend** — in the dialog's `_attributes` stream, a `tap` copies any
-non-empty `value` into `this.data.attributes` so seeded defaults are saved even
-if the user never edits that field. `AttributesEditorComponent` renders `value`
-as the starting input value; any edit emits `(updatedAttributes)` which
-overwrites `data.attributes` via `handleUpdatedAttributes`.
+**Frontend** — the loaded attribute-type tokens (defaults live in each token's
+`value`) are the source of the pre-filled values. The dialog keeps them as
+signals: `allAttributeTypes` (every valid type) and `visibleAttributes` (the
+ones currently in the editor). `AttributesEditorComponent` renders each
+attribute's `value` as its starting input value and mutates it in place via
+`ngModel`, so `visibleAttributes()` always reflects the latest edits. At submit
+time `snapshotData()` builds the payload from `visibleAttributes()`.
 
-> Gotcha: attributes with an empty value are filtered out of the seed so we
-> don't submit blank attributes. Only defaulted/edited attributes are sent.
+> Every visible attribute is submitted — required ones and any the user added —
+> even when left at its (possibly empty) default. An added-but-untouched
+> attribute is still created, using its seeded default or an empty value when the
+> type has no default. `snapshotData()` does **not** filter empties: everything
+> shown in the dialog ends up on the created artifact.
+
+### Required-only initial view + add/delete attributes
+
+The create dialog initially shows **only the required attributes** for the
+selected type (multiplicity `EXACTLY_ONE`/`AT_LEAST_ONE`), so the user isn't
+faced with every optional field up front.
+
+- An `effect()` seeds `visibleAttributes` with the required attributes (each via
+  `toSeededAttribute`, which stringifies the token's default `value`) whenever
+  the selected type's attributes load.
+- An **Add attribute** button opens the shared `AddAttributeDialogComponent`
+  (reused from the attributes-editor-panel) with `allAttributeTypes` and the
+  current `visibleAttributes` as `existingAttributes`. Chosen types are appended
+  to `visibleAttributes` — **with their default `value` seeded**, same as the
+  panel's add flow. The button is gated by `hasAddableAttributes()` (mirrors the
+  add dialog's multiplicity-based addable filter).
+- Optional attributes can be removed inline: the editor's `deleteAttribute`
+  output (see below) calls `removeAttribute`, which filters `visibleAttributes`.
+
+**Default on add (panel + dialog).** When an attribute is added — in the
+attributes-editor-panel *or* the create dialog — its editor is pre-filled with
+the attribute type's default. The panel's `addAttributes` uses
+`getSeededDefaultValue(type)` = the token's server-seeded `value` (e.g.
+`Extension → "md"`), falling back to a store-type default (`getStoreTypeDefault`:
+Boolean→`false`, Integer/Long→`0`, else `""`). Do **not** revert this to a
+store-type-only default — the seeded token `value` is the real per-type default.
+
+#### Shared editor opt-in delete
+
+`AttributesEditorComponent` exposes an opt-in delete affordance so the create
+dialog can remove optional attributes without affecting the panel/merge-manager/
+actra consumers:
+
+- `allowDelete = input<boolean>(false)` — when `true`, deletable attributes
+  render a `close` icon-button.
+- `deleteAttribute = output<attribute>()` — emits the attribute to remove.
+- Same opt-in pattern as `highlightRequiredImmediately`: default off, so the
+  three other consumers are unchanged.
+
+**`canDelete()` is per-instance, not per-type.** "Required" is a property of the
+attribute *type* (multiplicity `EXACTLY_ONE`/`AT_LEAST_ONE`), but only the
+*minimum count* is required. `canDelete` returns `false` for Name and when
+`allowDelete` is off; `true` for optional types; and for required types only when
+more than one instance of that type is present (`instanceCount > 1`) — so extra
+instances of a required type **are** deletable and only the last one is locked.
+This mirrors the panel's `isDeletable`. Do not simplify it back to
+`!isRequired()` — that wrongly hides the delete button on the 2nd..Nth instance
+of a repeatable required type.
+
+**Duplicate-value warning (`isDuplicateValue`).** The backend stores an
+attribute type's values as a *set* on create (`setAttributesFromStrings`
+de-duplicates via a `LinkedHashSet`), so two same-type instances with the same
+value collapse to one — identical duplicates carry no information. This is
+intentional, not a bug. To avoid the "my field vanished" surprise, when
+`allowDelete` is on the editor shows an inline muted warning under any field that
+shares its type+value with another visible instance: "Duplicate value — only one
+instance of this value will be saved." It does **not** block submit; distinct
+values persist normally (one attribute per distinct value).
+
+#### Grouped layout when `allowDelete` is on
+
+To match the artifact editor's grouping, `AttributesEditorComponent` renders a
+**grouped layout** whenever `allowDelete` is `true` (the create dialog):
+attributes are grouped by type, and a type with multiple instances shows a
+`Name (count)` header above a bordered box containing each instance (with its own
+remove button + duplicate warning). Single-instance types render as a plain
+field. The default consumers (`allowDelete` off) keep the **flat** one-field-per-
+attribute layout unchanged. The store-type field switch is shared between both
+layouts via an `<ng-template #attrField>` + `ngTemplateOutlet` so there's no
+duplication. Native-content (Input Stream) attributes render only in the flat
+layout (the create dialog has no native content).
+
+#### Multiple instances of the same type need unique form-control names
+
+Each rendered field's `[name]` must be unique **per instance**, not just per
+type. The editor keys names as `'attr<StoreType>' + attribute.typeId + $index`
+(via `let attrIndex = $index` on the `@for`). If the name is keyed only by
+`typeId`, two instances of the same type register the same template-driven form
+control, Angular collapses them, and the second instance's `ngModel` never binds
+— its value is silently lost. Keep the `$index` suffix on every `[name]`.
 
 ### Immediate required-field highlighting
 
@@ -196,9 +281,14 @@ createAndClose() {
   this.create.next({ data: this.snapshotData(), keepOpen: false });
   this.dialogRef.close();
 }
-// Deep-enough copy so each emitted request is independent of later edits
+// Builds the payload from the visible attributes (editor mutates their value
+// in place). Includes ALL visible attributes, even empty ones, so an
+// added-but-untouched attribute is still created with its default/empty value.
+// Deep-copied so each emitted request is independent of later edits.
 private snapshotData() {
-  return { ...this.data, attributes: this.data.attributes.map((a) => ({ ...a })) };
+  const attributes = this.visibleAttributes()
+    .map((attr) => ({ ...attr, value: `${attr.value ?? ''}` }));
+  return { ...this.data, attributes };
 }
 ```
 
@@ -232,3 +322,48 @@ Why these operators:
 - **`takeUntil(dialogRef.afterClosed())`** bounds the `create` stream so it
   completes when the dialog closes — no leaked open subscription.
 - **`take(1)`** on `branchId$` so the outer stream completes after one open.
+
+### Multiple attribute instances: group by type into an array value
+
+When building the create transaction, the opener groups attributes by `typeId`
+(`groupAttributesByType`): a type with one instance emits a scalar
+`{ typeId, value }`, but a type with **multiple** instances emits a single
+`{ typeId, value: [v1, v2, …] }` with an **array** value.
+
+This is required because of how the backend applies create attributes. The ORCS
+create path (`TransactionBuilderDataFactory.readAttributes`) applies each scalar
+attribute node via `setSoleAttributeFromString` — "sole" meaning one instance
+per type — so **repeated scalar nodes of the same type overwrite each other
+(last value wins)**. Only an **array** value routes to
+`setAttributesFromStrings`, which creates one attribute instance per element.
+
+> Do **not** emit repeated scalar `{ typeId, value }` nodes for the same type in
+> a create transaction — only the last survives. Group them into one array-valued
+> node. (This is a frontend workaround for the sole-set behavior; the backend
+> `readAttributes` create branch was not changed.)
+
+Note that `setAttributesFromStrings` de-duplicates the array by value
+(`LinkedHashSet`), so the array creates one instance **per distinct value** —
+identical values still collapse to one. This is the same intentional set-semantics
+behind the duplicate-value warning above; the grouping only preserves *distinct*
+multi-instance values.
+
+### E2E persistence verification pattern
+
+The Playwright coverage (`create-delete.e2e-spec.ts`) verifies these behaviors
+**end-to-end against the running backend**, not just in the dialog:
+
+- Capture the create transaction response (`res.url().includes('orcs/txs')`),
+  read the new artifact id from `results.ids[0]`, then GET
+  `/orcs/branch/{branchId}/artifact/{id}/related/direct?viewId=-1&includeRelations=false&includeAttributes=true`
+  (the JSON endpoint — the plain `/artifact/{id}` path returns HTML) and assert
+  on `artifact.attributes` (`[{ typeId, value, … }]`).
+- Covered cases: default value persists, added-but-untouched attribute persists,
+  values carry across "Create & add another", and multiple **distinct** instances
+  of a repeatable type persist.
+
+> Enum (`osee-attribute-enums-dropdown`) writes its selected value back to the
+> model on an `auditTime(500)` delay. When a test selects an enum value and then
+> immediately submits, wait past that window first (e.g. `waitForTimeout(700)`)
+> or the value won't be in the payload. This is real component latency, not just
+> a test artifact.

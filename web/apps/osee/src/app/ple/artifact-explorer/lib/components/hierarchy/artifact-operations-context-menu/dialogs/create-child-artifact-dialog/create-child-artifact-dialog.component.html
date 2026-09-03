@@ -24,7 +24,7 @@
 	<mat-dialog-content>
 		<div class="tw-flex tw-flex-col tw-gap-0">
 			@if (createChildArtifactForm.invalid) {
-				<div class="tw-pb-4 tw-italic tw-text-warning">
+				<div class="tw-pt-2 tw-italic tw-text-warning">
 					*Required fields not filled out
 				</div>
 			}
@@ -91,12 +91,29 @@
 				</mat-autocomplete>
 			</mat-form-field>
 
-			@if (_attributes | async; as attributes) {
+			@if (isArtifactTypeValid) {
+				<h3
+					class="tw-pt-4 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-wide tw-opacity-70">
+					Attributes
+				</h3>
+
+				@if (hasAddableAttributes()) {
+					<button
+						mat-stroked-button
+						type="button"
+						class="tw-mt-2 tw-self-start tw-text-foreground-text"
+						(click)="openAddAttributeDialog()">
+						<mat-icon>add</mat-icon>
+						Add attribute
+					</button>
+				}
+
 				<osee-attributes-editor
-					[attributes]="attributes"
+					[attributes]="visibleAttributes()"
 					[editable]="true"
 					[highlightRequiredImmediately]="true"
-					(updatedAttributes)="handleUpdatedAttributes($event)" />
+					[allowDelete]="true"
+					(deleteAttribute)="removeAttribute($event)" />
 			}
 		</div>
 	</mat-dialog-content>

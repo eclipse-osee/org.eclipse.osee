@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
 	computed,
+	effect,
 	ElementRef,
 	inject,
 	signal,
@@ -30,6 +30,7 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import {
 	MAT_DIALOG_DATA,
+	MatDialog,
 	MatDialogActions,
 	MatDialogContent,
 	MatDialogRef,
@@ -58,18 +59,21 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	filter,
-	map,
 	switchMap,
-	tap,
+	take,
 } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
 import { ArtifactIconService } from '../../../../../services/artifact-icon.service';
 import { createChildArtifactDialogData } from '../../../../../types/artifact-explorer';
+import {
+	AddAttributeDialogComponent,
+	addAttributeDialogData,
+	addAttributeDialogResult,
+} from '../../../../editor/attributes-editor-panel/add-attribute-dialog/add-attribute-dialog.component';
 
 @Component({
 	selector: 'osee-create-artifact-dialog',
 	imports: [
-		AsyncPipe,
 		FormsModule,
 		AttributesEditorComponent,
 		FormDirective,
@@ -135,11 +139,22 @@ export class CreateChildArtifactDialogComponent {
 		this.dialogRef.close();
 	}
 
-	/** Deep-enough copy so each emitted create request is independent of later edits. */
+	/**
+	 * Builds the submission payload from the currently visible attributes. The
+	 * editor mutates each attribute's `value` in place, so this reflects the
+	 * latest edits. Every visible attribute is included — required ones and any
+	 * the user added — even when left at its (possibly empty) default, so an
+	 * added-but-untouched attribute is still created with its default value.
+	 * Deep-copied so each emitted create request is independent of later edits.
+	 */
 	private snapshotData(): createChildArtifactDialogData {
+		const attributes = this.visibleAttributes().map((attr) => ({
+			...attr,
+			value: `${attr.value ?? ''}`,
+		}));
 		return {
 			...this.data,
-			attributes: this.data.attributes.map((attr) => ({ ...attr })),
+			attributes,
 		};
 	}
 
@@ -191,45 +206,121 @@ export class CreateChildArtifactDialogComponent {
 		input.focus();
 	}
 
-	// Attribute fetching to pass into attribute editor - Requires artifact type to be selected
+	// Attributes: fetch the artifact type's valid attributes, seed the editor
+	// with the REQUIRED ones (optional ones are added on demand via the Add
+	// Attribute dialog). Requires an artifact type to be selected.
 
+	private readonly _dialog = inject(MatDialog);
 	private readonly _artifactTypeIdSubject = new BehaviorSubject<string>('0');
-	protected _attributes = this._artifactTypeIdSubject.asObservable().pipe(
-		filter((val) => val != '0'),
-		debounceTime(500),
-		distinctUntilChanged(),
-		switchMap((artifactTypeId) =>
-			this._artExpHttpService.getArtifactTypeAttributes(artifactTypeId)
-		),
-		map((attributes) =>
-			attributes
-				.filter((attribute) => attribute.name?.toLowerCase() !== 'name')
-				// Required attributes (multiplicity AT_LEAST_ONE / EXACTLY_ONE) first.
-				.sort(
-					(a, b) =>
-						Number(this.isRequiredMultiplicity(b)) -
-						Number(this.isRequiredMultiplicity(a))
-				)
-		),
-		// Seed any server-provided default values into the submission payload so
-		// they are saved even if the user never edits the pre-filled field. The
-		// attributes editor overwrites these via (updatedAttributes) on any edit.
-		tap((attributes) => {
-			this.data.attributes = attributes
-				.filter((attribute) => `${attribute.value ?? ''}` !== '')
-				.map((attribute) => ({
-					...attribute,
-					value: `${attribute.value}`,
-				}));
-		})
+
+	/** All valid attribute type tokens for the selected artifact type (defaults live in each token's `value`). */
+	protected readonly allAttributeTypes = signal<
+		attribute<string, ATTRIBUTETYPEID>[]
+	>([]);
+
+	/** Attributes currently shown in the editor (required + any the user added). */
+	protected readonly visibleAttributes = signal<
+		attribute<string, ATTRIBUTETYPEID>[]
+	>([]);
+
+	/** Attribute types the user can still add (optional, or repeatable). */
+	protected readonly hasAddableAttributes = computed(
+		() => this.buildAddableTypes().length > 0
 	);
 
-	// Handle attributes editor form attributes changes
+	private readonly _attributesLoad = this._artifactTypeIdSubject
+		.asObservable()
+		.pipe(
+			filter((val) => val != '0'),
+			debounceTime(500),
+			distinctUntilChanged(),
+			switchMap((artifactTypeId) =>
+				this._artExpHttpService.getArtifactTypeAttributes(
+					artifactTypeId
+				)
+			)
+		);
 
-	handleUpdatedAttributes(
-		updatedAttributes: attribute<string, ATTRIBUTETYPEID>[]
-	) {
-		this.data.attributes = updatedAttributes;
+	private readonly _attributeTypes = toSignal(this._attributesLoad, {
+		initialValue: [] as attribute<string, ATTRIBUTETYPEID>[],
+	});
+
+	constructor() {
+		// When the artifact type's attributes load, seed the editor with the
+		// required attributes (with their server-provided default values).
+		effect(() => {
+			const types = this._attributeTypes();
+			this.allAttributeTypes.set(types);
+			const required = types
+				.filter((attr) => attr.name?.toLowerCase() !== 'name')
+				.filter((attr) => this.isRequiredMultiplicity(attr))
+				.map((attr) => this.toSeededAttribute(attr));
+			this.visibleAttributes.set(required);
+		});
+	}
+
+	/** Opens the Add Attribute dialog and appends the chosen optional attributes. */
+	protected openAddAttributeDialog() {
+		const dialogData: addAttributeDialogData = {
+			allAttributeTypes: this.allAttributeTypes(),
+			existingAttributes: this.visibleAttributes(),
+		};
+		this._dialog
+			.open(AddAttributeDialogComponent, {
+				data: dialogData,
+				width: '480px',
+				restoreFocus: false,
+			})
+			.afterClosed()
+			.pipe(take(1))
+			.subscribe((result: addAttributeDialogResult | undefined) => {
+				if (result && result.selectedTypes.length > 0) {
+					const added = result.selectedTypes.map((attr) =>
+						this.toSeededAttribute(attr)
+					);
+					this.visibleAttributes.update((attrs) => [
+						...attrs,
+						...added,
+					]);
+				}
+			});
+	}
+
+	/** Removes an optional attribute the user added. */
+	protected removeAttribute(attr: attribute<string, ATTRIBUTETYPEID>) {
+		this.visibleAttributes.update((attrs) =>
+			attrs.filter((a) => a !== attr)
+		);
+	}
+
+	/** Copies an attribute type token into an editable attribute with its default value stringified. */
+	private toSeededAttribute(
+		attr: attribute<string, ATTRIBUTETYPEID>
+	): attribute<string, ATTRIBUTETYPEID> {
+		return { ...attr, value: `${attr.value ?? ''}` };
+	}
+
+	/** The addable types not already required/shown (mirrors the add dialog's own filter). */
+	private buildAddableTypes(): attribute<string, ATTRIBUTETYPEID>[] {
+		const existing = this.visibleAttributes();
+		return this.allAttributeTypes().filter((type) => {
+			if (type.name?.toLowerCase() === 'name') {
+				return false;
+			}
+			const count = existing.filter(
+				(e) => e.typeId === type.typeId
+			).length;
+			const id = type.multiplicity?.id;
+			// EXACTLY_ONE / ZERO_OR_ONE: max one instance.
+			if (
+				id === MULTIPLICITY_ID.EXACTLY_ONE ||
+				id === MULTIPLICITY_ID.ZERO_OR_ONE
+			) {
+				return count < 1;
+			}
+			// ANY / AT_LEAST_ONE: unlimited.
+			return true;
+		});
 	}
 
 	// Make sure required data is filled out
