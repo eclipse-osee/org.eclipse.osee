@@ -43,4 +43,15 @@ public interface QueryIndexer {
 
    CancellableCallable<Integer> purgeAllIndexes();
 
+   void indexDirectByAttrType(Long attrTypeId);
+
+   /**
+    * Index only attributes modified within the specified time window that are missing from osee_search_tags_hash.
+    * Uses osee_tx_details.time to scope the query to recent transactions, avoiding a full table scan.
+    *
+    * @param hours number of hours to look back
+    * @return number of gammas indexed
+    */
+   long indexRecentlyModified(int hours);
+
 }

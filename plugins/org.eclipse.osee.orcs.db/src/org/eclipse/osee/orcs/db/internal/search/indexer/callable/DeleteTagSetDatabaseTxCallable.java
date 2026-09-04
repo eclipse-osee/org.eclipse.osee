@@ -28,6 +28,7 @@ import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 public final class DeleteTagSetDatabaseTxCallable extends AbstractDatastoreTxCallable<Integer> {
 
    private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where gamma_id = ?";
+   private static final String DELETE_SEARCH_TAGS_HASH = "delete from osee_search_tags_hash where gamma_id = ?";
 
    private static final String SELECT_GAMMAS_FROM_TX_JOIN =
       "select gamma_id from osee_join_transaction where query_id = ?";
@@ -51,6 +52,7 @@ public final class DeleteTagSetDatabaseTxCallable extends AbstractDatastoreTxCal
          }
          if (!datas.isEmpty()) {
             numberDeleted = getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
+            numberDeleted += getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS_HASH, datas);
          }
       } finally {
          chStmt.close();

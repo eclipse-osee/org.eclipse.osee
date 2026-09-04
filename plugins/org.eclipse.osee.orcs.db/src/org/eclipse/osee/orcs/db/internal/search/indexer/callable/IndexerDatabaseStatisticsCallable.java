@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
  */
 public class IndexerDatabaseStatisticsCallable extends AbstractDatastoreCallable<IndexerData> {
 
-   private static final String SELECT_TOTAL_TAGS = "select count(1) from osee_search_tags";
+   private static final String SELECT_TOTAL_TAGS = "select count(1) from osee_search_tags_hash";
 
    private static final String SELECT_TOTAL_QUERY_IDS_IN_QUEUE =
       "select count(DISTINCT query_id) from osee_tag_gamma_queue";
