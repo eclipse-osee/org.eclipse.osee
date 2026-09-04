@@ -13,10 +13,13 @@
 import { CommitBranchService } from '@osee/commit/services';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { mergeDataMock } from './commit-branch.mock';
-import { testCommitResponse } from '@osee/shared/testing';
+import { testBranchInfo, testCommitResponse } from '@osee/shared/testing';
 
 const mergeData = new BehaviorSubject(true);
 export const commitBranchServiceMock: Partial<CommitBranchService> = {
+	getBranch(branchId: string) {
+		return of(testBranchInfo);
+	},
 	getMergeData(branchId: string) {
 		return of(mergeDataMock);
 	},

@@ -119,6 +119,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
     * into a single {@link CriteriaAttributeKeywordsChained} for a more efficient chained CTE query plan.
     * Flushed at query execution boundaries and structural transitions (follow, setQueryType, getMatches).
     */
+   @JsonIgnore
    private final List<AttributeConstraint> pendingAttributeConstraints = new ArrayList<>();
    private QueryType queryType;
    private boolean followCausesChild = true;
@@ -242,6 +243,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    public List<List<Criteria>> getCriteriaSets() {
+      flushPendingAttributeChain();
       return criterias;
    }
 

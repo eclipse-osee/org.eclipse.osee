@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.demo.DemoUtil.SoftwareRequirementStrs;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -191,6 +192,11 @@ public class Pdd21CreateUnCommittedAction extends AbstractPopulateDemoDatabase {
          changes.setSoleAttributeValue(newArt, CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          changes.addChild(parentArt, newArt);
       }
+      changes.execute();
+
+      TeamWorkflow testsTeamWf = DemoUtil.getSawSWDesignUnCommittedWf();
+      changes = atsApi.createChangeSet("Add legacy pcr id");
+      changes.addAttribute(testsTeamWf, AtsAttributeTypes.LegacyPcrId, DemoUtil.SAW_DESIGN_LEGACY_PCR_ID);
       changes.execute();
 
    }

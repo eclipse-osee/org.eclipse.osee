@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, input, inject } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 import { combineLatest, of, switchMap, take, tap } from 'rxjs';
@@ -23,13 +23,12 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-commit-branch-button',
-	imports: [MatButton, MatIcon, MatTooltip],
+	imports: [MatIconButton, MatIcon, MatTooltip],
 	template: `<div
 		[matTooltip]="disabledMessage()"
 		[matTooltipDisabled]="!disabled()">
 		<button
-			mat-flat-button
-			class="tw-flex tw-justify-center tw-bg-primary tw-text-background disabled:tw-bg-background-selected-disabled-button [&_*]:tw-m-0"
+			mat-icon-button
 			[disabled]="disabled()"
 			(click)="commitBranch()"
 			aria-label="Commit Branch"

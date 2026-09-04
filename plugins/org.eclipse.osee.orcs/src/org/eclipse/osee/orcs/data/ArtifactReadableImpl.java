@@ -76,7 +76,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final ArtifactId view;
    private final QueryFactory queryFactory;
    private final ApplicabilityToken applicability;
-   private final TransactionId txId;
+   private TransactionId txId;
    private final TransactionDetails latestTxDetails;
    private final ModificationType modType;
    private final HashCollection<AttributeId, ArtifactReadable> referenceAttributes = new HashCollection<>();
@@ -143,6 +143,16 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       return txId;
    }
 
+   /**
+    * Updates the artifact's transaction ID if the provided transaction is newer. Used during loading to account for
+    * attribute and relation changes that have a later transaction than the artifact row itself.
+    */
+   public void updateTransactionIfNewer(TransactionId newTxId) {
+      if (newTxId.isValid() && txId.isOlderThan(newTxId)) {
+         this.txId = newTxId;
+      }
+   }
+
    @Override
    public ModificationType getModificationType() {
       return modType;
@@ -154,8 +164,15 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
+   /**
+    * Only populated with .andTransactionDetails() in QueryBuilder. This is the latest transaction details from all art,
+    * attr and rel changes.
+    */
    public TransactionId getLastModifiedTransaction() {
-      return TransactionId.SENTINEL;
+      if (latestTxDetails.getTxId().isValid()) {
+         return latestTxDetails.getTxId();
+      }
+      return txId;
    }
 
    @Override
@@ -177,14 +194,6 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    public Collection<AttributeTypeToken> getExistingAttributeTypes() {
       return attributes.keySet();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws AttributeDoesNotExist {@inheritDoc}
-    * @throws MultipleAttributesExist {@inheritDoc}
-    * @throws OseeStateException when the attribute values have not been loaded for the artifact.
-    */
 
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeType) {
@@ -287,12 +296,6 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       return list.iterator().next().getId();
    }
 
-   /**
-    * {@inheritDoc}
-    *
-    * @throws OseeStateException when attribute values have not been loaded for the artifact.
-    */
-
    @SuppressWarnings("unchecked")
    @Override
    public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
@@ -328,7 +331,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       (side.isSideA() ? relationsSideA : relationsSideB).put(relationType, artifact);
    }
 
-   public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact, GammaId gamma) {
+   public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact,
+      GammaId gamma) {
       (side.isSideA() ? relationsSideA : relationsSideB).put(relationType, artifact);
       String key = relationType.getIdString() + ":" + side.name() + ":" + artifact.getIdString();
       relationGammas.put(key, gamma);
@@ -464,11 +468,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    /**
-    * {@inheritDoc}
-    *
-    * @implNote Performs a database query to obtain all hierarchically subordinate artifacts.
+    * Returns all hierarchically subordinate artifacts.
     */
-
    @Override
    public List<ArtifactReadable> getDescendants() {
       return queryFactory.fromBranch(branch, view).andRelatedRecursive(CoreRelationTypes.DefaultHierarchical_Child,
@@ -484,12 +485,6 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    public boolean isDescendantOf(ArtifactToken parent) {
       throw new UnsupportedOperationException();
    }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @implNote Uses the artifact's relationships to obtain the immediate children of the artifact.
-    */
 
    @Override
    public List<ArtifactReadable> getChildren() {
@@ -585,9 +580,6 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       return ApplicabilityId.valueOf(applicability.getId());
    }
 
-   /**
-    * @return string collection containing of all the attribute values of type attributeType
-    */
    @Override
    public List<String> fetchAttributesAsStringList(AttributeTypeToken attributeType) {
 

@@ -140,7 +140,7 @@ export const openBranch = async (page: Page, branchName: string) => {
 /** Ensure the hierarchy section is visible in the left panel. */
 export const switchToHierarchy = async (page: Page) => {
 	const hierarchyTree = page.locator(
-		'osee-artifact-hierarchy-panel osee-artifact-hierarchy'
+		'osee-artifact-explorer-sidebar osee-artifact-hierarchy'
 	);
 	if (
 		(await hierarchyTree.count()) > 0 &&
@@ -160,7 +160,7 @@ export const switchToSearch = async (page: Page) => {
 
 /** Ensure the branch management section is visible in the left panel. */
 export const switchToBranchManagement = async (page: Page) => {
-	const branchPanel = page.locator('osee-branch-management-panel');
+	const branchPanel = page.locator('osee-branch-management');
 	if (await branchPanel.isVisible()) return;
 	await page.getByRole('button', { name: 'Branch Management' }).click();
 };

@@ -13,7 +13,7 @@
 <form>
 	<mat-form-field
 		appearance="outline"
-		class="tw-w-full tw-pt-4"
+		class="tw-w-full"
 		subscriptSizing="dynamic">
 		<mat-label>Select a View</mat-label>
 		<input
@@ -23,6 +23,15 @@
 			[ngModel]="(selectedView | async)?.name || ''"
 			(keyup)="applyFilter($event)"
 			name="autocomplete-text" />
+		@if ((selectedView | async)?.name) {
+			<button
+				matSuffix
+				mat-icon-button
+				aria-label="Clear view selection"
+				(mousedown)="clearView($event)">
+				<mat-icon>close</mat-icon>
+			</button>
+		}
 		<mat-autocomplete
 			autoActiveFirstOption
 			#auto="matAutocomplete">

@@ -227,8 +227,6 @@ public abstract class CreateNewProblemReportBlam extends CreateNewChangeRequestB
          }
       }
       time.endSec();
-
-      System.err.println("here");
    }
 
    @Override

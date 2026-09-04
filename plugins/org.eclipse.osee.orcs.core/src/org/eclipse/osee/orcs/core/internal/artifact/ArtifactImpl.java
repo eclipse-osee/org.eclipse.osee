@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
+import org.eclipse.osee.orcs.core.internal.relation.Relation;
+import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
 import org.eclipse.osee.orcs.search.ds.ArtifactData;
 import org.eclipse.osee.orcs.search.ds.Attribute;
@@ -79,6 +81,17 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
          TransactionId tx = attribute.getOrcsData().getVersion().getTransactionId();
          if (maxTransactionId.isOlderThan(tx)) {
             maxTransactionId = tx;
+         }
+      }
+      if (graph != null) {
+         RelationNodeAdjacencies adjacencies = graph.getAdjacencies(this);
+         if (adjacencies != null) {
+            for (Relation relation : adjacencies.getAll()) {
+               TransactionId tx = relation.getOrcsData().getVersion().getTransactionId();
+               if (maxTransactionId.isOlderThan(tx)) {
+                  maxTransactionId = tx;
+               }
+            }
          }
       }
       return maxTransactionId;
