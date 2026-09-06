@@ -148,6 +148,14 @@ public class DatabaseType extends BaseId {
       }
    }
 
+   public String getTimestampMinusHours(int hours) {
+      if (matches(oracle)) {
+         return "SYSTIMESTAMP - NUMTODSINTERVAL(" + hours + ", 'HOUR')";
+      } else {
+         return "CURRENT_TIMESTAMP - INTERVAL '" + hours + " hours'";
+      }
+   }
+
    public String getInStringSql(String str, String searchString) {
       if (matches(oracle, hsql)) {
          return "instr(" + str + "," + searchString + ")";

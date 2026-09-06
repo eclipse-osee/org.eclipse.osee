@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SqlHandlerFactoryUtilTest.class})
+@Suite.SuiteClasses({SqlHandlerFactoryUtilTest.class, AttributeTokenSqlHandlerHybridQueryTest.class})
 public class Handlers_JUnit_TestSuite {
    // Test Suite
 }

@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.rest.model;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -48,5 +49,50 @@ public interface IndexerEndpoint {
    @DELETE
    @Path("queue/{query-id}")
    Response deleteIndexQueueItem(@PathParam("query-id") int queryId);
+
+   /**
+    * Re-indexes the search tags table for all baseline (non-working) branches. This regenerates hash-based tags for
+    * external resources and is required after migrating from the legacy bit-packed encoding.
+    */
+   @POST
+   @Path("reindex/baseline")
+   Response reindexBaselineBranches(@DefaultValue("false") @QueryParam("includeWorking") boolean includeWorking);
+
+   /**
+    * Fast re-index of all current attributes using the queue-based async pipeline. Queries osee_attribute directly
+    * (no branch traversal) for all taggable attributes with tx_current = 1 that do not already have entries in
+    * osee_search_tags_hash. Returns 202 immediately; indexing runs in the background.
+    * <p>
+    * Best for incremental top-ups: picks up newly-created attributes that haven't been indexed yet.
+    * For bulk migration after a full table truncate, prefer {@code /reindex/direct} which is significantly faster.
+    */
+   @POST
+   @Path("reindex/all")
+   Response reindexAllCurrent(@DefaultValue("0") @QueryParam("attrTypeId") long attrTypeId);
+
+   /**
+    * Direct batch re-index that bypasses the async pipeline. Streams attribute data, tokenizes in Java, and batch
+    * inserts tags directly into osee_search_tags_hash. Skips gammas that already have tags (safe to call on a
+    * partially-indexed database). Returns 202 immediately; indexing runs in the background.
+    * <p>
+    * Preferred for bulk migration after truncating osee_search_tags_hash, as it avoids the overhead of the
+    * queue/join-table pipeline. For incremental re-indexing of a few missing gammas, {@code /reindex/all} is simpler.
+    */
+   @POST
+   @Path("reindex/direct")
+   Response reindexDirect(@DefaultValue("0") @QueryParam("attrTypeId") long attrTypeId);
+
+   /**
+    * Time-scoped incremental re-index for the nightly catch-up job. Finds attributes modified within the specified
+    * time window (via osee_tx_details.time), filters to taggable types, and indexes only those gammas missing from
+    * osee_search_tags_hash. Much faster than a full scan when only a small number of attributes changed recently.
+    * <p>
+    * Synchronous — blocks until indexing completes and returns 200 with the count of gammas indexed.
+    *
+    * @param hours Number of hours to look back for recent transactions (default: 25, to cover a full day plus buffer)
+    */
+   @POST
+   @Path("reindex/recent")
+   Response reindexRecent(@DefaultValue("25") @QueryParam("hours") int hours);
 
 }

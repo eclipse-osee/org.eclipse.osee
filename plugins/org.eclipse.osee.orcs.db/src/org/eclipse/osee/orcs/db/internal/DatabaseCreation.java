@@ -14,7 +14,6 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import static org.eclipse.osee.orcs.OseeDb.*;
-import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
@@ -30,9 +29,6 @@ public final class DatabaseCreation {
 
    public void createDataStore() {
       dropTables();
-      if (jdbcClient.getDbType().equals(DatabaseType.hsql)) {
-         jdbcClient.runPreparedUpdate("SET DATABASE SQL SYNTAX ORA TRUE;");
-      }
       jdbcClient.createTable(ARTIFACT_TABLE);
       jdbcClient.createTable(ATTRIBUTE_TABLE);
       jdbcClient.createTable(RELATION_TABLE);
@@ -84,6 +80,7 @@ public final class DatabaseCreation {
       jdbcClient.createTable(ATTRIBUTE_BINARY_TABLE);
       jdbcClient.createTable(API_KEY_TABLE);
       jdbcClient.createTable(TXS_COLD_STORAGE_TABLE);
+      jdbcClient.createTable(OSEE_SEARCH_TAGS_HASH_TABLE);
    }
 
    private void dropTables() {
@@ -147,5 +144,6 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(ATTRIBUTE_BINARY_TABLE);
       jdbcClient.dropTable(API_KEY_TABLE);
       jdbcClient.dropTable(TXS_COLD_STORAGE_TABLE);
+      jdbcClient.dropTable(OSEE_SEARCH_TAGS_HASH_TABLE);
    }
 }

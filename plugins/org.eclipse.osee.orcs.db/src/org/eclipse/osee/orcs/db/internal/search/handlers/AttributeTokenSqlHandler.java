@@ -91,6 +91,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       int valueCount = values.size();
       int valueIdx = 0;
       String jIdAlias = null;
+
       for (String value : values) {
          List<Long> tags = new ArrayList<>();
          tokenize(value, tags);
@@ -121,7 +122,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          } else {
             for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
                Long tag = tags.get(tagIdx);
-               writer.write(" SELECT gamma_id FROM osee_search_tags WHERE ");
+               writer.write(" SELECT gamma_id FROM osee_search_tags_hash WHERE ");
                writer.writeEqualsParameter("coded_tag_id", tag);
                if (tagIdx + 1 < tagsSize) {
                   writer.write("\n INTERSECT \n");

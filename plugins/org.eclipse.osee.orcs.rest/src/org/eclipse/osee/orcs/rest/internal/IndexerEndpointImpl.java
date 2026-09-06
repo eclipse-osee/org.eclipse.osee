@@ -16,18 +16,26 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.IndexResources;
@@ -40,6 +48,17 @@ import org.eclipse.osee.orcs.search.QueryIndexer;
  * @author Roberto E. Escobar
  */
 public class IndexerEndpointImpl implements IndexerEndpoint {
+
+   /**
+    * Shared fixed-size thread pool for all reindex operations. This ensures that even if many
+    * reindex requests arrive concurrently, at most 2 run in parallel rather than spawning
+    * unbounded threads that overwhelm the database.
+    */
+   private static final ExecutorService REINDEX_EXECUTOR = Executors.newFixedThreadPool(2, r -> {
+      Thread t = new Thread(r, "reindex-direct-worker");
+      t.setDaemon(true);
+      return t;
+   });
 
    private final OrcsApi orcsApi;
 
@@ -106,6 +125,103 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
       Integer result = executeCallable(op);
       boolean modified = result > 0;
       return asResponse(modified);
+   }
+
+   @Override
+   public Response reindexBaselineBranches(boolean includeWorking) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      Set<Branch> branches = new LinkedHashSet<>();
+
+      // Always include baseline and system root branches
+      ResultSet<Branch> baselineResults =
+         newBranchQuery().andIsOfType(BranchType.BASELINE, BranchType.SYSTEM_ROOT).getResults();
+      for (Branch branch : baselineResults) {
+         branches.add(branch);
+      }
+
+      if (includeWorking) {
+         ResultSet<Branch> workingResults = newBranchQuery().andIsOfType(BranchType.WORKING).getResults();
+         for (Branch branch : workingResults) {
+            branches.add(branch);
+         }
+      }
+
+      Callable<Integer> op = getIndexer().indexBranches(branches, false);
+      Integer result = executeCallable(op);
+      boolean modified = result > 0;
+      return asResponse(modified);
+   }
+
+   @Override
+   public Response reindexAllCurrent(long attrTypeId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      List<Long> attrTypeIds = new ArrayList<>();
+      if (attrTypeId > 0) {
+         attrTypeIds.add(attrTypeId);
+      } else {
+         for (var attrType : orcsApi.tokenService().getTaggedAttrs()) {
+            attrTypeIds.add(attrType.getId());
+         }
+      }
+
+      int typeCount = attrTypeIds.size();
+      REINDEX_EXECUTOR.submit(() -> {
+         try {
+            orcsApi.getQueryIndexer().indexMissingByAttrTypeIds(attrTypeIds);
+         } catch (Exception ex) {
+            OseeLog.log(IndexerEndpointImpl.class, OseeLevel.SEVERE_POPUP,
+               "Error during background reindex (all current)", ex);
+         }
+      });
+
+      return Response.accepted(
+         "Reindex queued for " + typeCount + " attribute type(s). Running in background (serialized).").build();
+   }
+
+   @Override
+   public Response reindexDirect(long attrTypeId) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      List<Long> attrTypeIds = new ArrayList<>();
+      if (attrTypeId > 0) {
+         attrTypeIds.add(attrTypeId);
+      } else {
+         for (var attrType : orcsApi.tokenService().getTaggedAttrs()) {
+            attrTypeIds.add(attrType.getId());
+         }
+      }
+
+      int typeCount = attrTypeIds.size();
+
+      // Each type is submitted as a separate task to the shared fixed-size thread pool.
+      // This means multiple calls to this endpoint queue up and at most 2 run concurrently,
+      // preventing the database from being overwhelmed by concurrent indexing.
+      for (Long typeId : attrTypeIds) {
+         REINDEX_EXECUTOR.submit(() -> {
+            try {
+               orcsApi.getQueryIndexer().indexDirectByAttrType(typeId);
+            } catch (Exception ex) {
+               OseeLog.log(IndexerEndpointImpl.class, OseeLevel.SEVERE_POPUP,
+                  "Error during background direct reindex for attrTypeId " + typeId, ex);
+            }
+         });
+      }
+
+      return Response.accepted(
+         "Direct reindex queued for " + typeCount + " attribute type(s). Serialized execution in background.").build();
+   }
+
+   @Override
+   public Response reindexRecent(int hours) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+
+      int cappedHours = Math.min(Math.max(hours, 1), 168);
+      long gammasIndexed = orcsApi.getQueryIndexer().indexRecentlyModified(cappedHours);
+
+      return Response.ok(
+         "Indexed " + gammasIndexed + " gamma(s) modified in the last " + cappedHours + " hour(s).").build();
    }
 
 }
