@@ -11,11 +11,15 @@
  *     Boeing - initial API and implementation
  -->
 
-<!-- Field renderer for a single attribute instance (store-type switch). -->
+<!-- Field renderer for a single attribute instance (store-type switch).
+     showLabel: false suppresses per-field labels when the group header already
+     identifies the attribute type. -->
 <ng-template
 	#attrField
 	let-attribute="attribute"
-	let-attrIndex="attrIndex">
+	let-attrIndex="attrIndex"
+	let-showLabel="showLabel"
+	let-grouped="grouped">
 	@switch (attribute.storeType) {
 		@case ('Enumeration') {
 			@if (attribute.typeId) {
@@ -24,7 +28,10 @@
 					[attributeId]="attribute.typeId"
 					[(attributeValue)]="attribute.value"
 					(attributeValueChange)="emitUpdatedAttributes()"
-					[label]="attribute.name | attributeNameTrim"
+					[label]="
+						showLabel ? (attribute.name | attributeNameTrim) : ''
+					"
+					[grouped]="grouped"
 					[errorMatcher]="errorMatcher()"
 					[required]="
 						isRequired(attribute) &&
@@ -43,11 +50,17 @@
 			} @else {
 				<mat-form-field
 					appearance="outline"
-					class="tw-w-full tw-pt-4"
+					[class]="grouped ? 'tw-w-full' : 'tw-w-full tw-pt-4'"
+					hideRequiredMarker
 					subscriptSizing="dynamic">
-					<mat-label>{{
-						attribute.name | attributeNameTrim
-					}}</mat-label>
+					@if (showLabel) {
+						<mat-label
+							>{{ attribute.name | attributeNameTrim }}
+							@if (showRequiredMarker(attribute)) {
+								<span class="tw-text-warning"> *</span>
+							}
+						</mat-label>
+					}
 					<textarea
 						[disabled]="
 							!editable() ||
@@ -75,9 +88,17 @@
 		@case ('Boolean') {
 			<mat-form-field
 				appearance="outline"
-				class="tw-w-full tw-pt-4"
+				[class]="grouped ? 'tw-w-full' : 'tw-w-full tw-pt-4'"
+				hideRequiredMarker
 				subscriptSizing="dynamic">
-				<mat-label>{{ attribute.name | attributeNameTrim }}</mat-label>
+				@if (showLabel) {
+					<mat-label
+						>{{ attribute.name | attributeNameTrim }}
+						@if (showRequiredMarker(attribute)) {
+							<span class="tw-text-warning"> *</span>
+						}
+					</mat-label>
+				}
 				<mat-select
 					[disabled]="!editable()"
 					[name]="'attrBoolean' + attribute.typeId + attrIndex"
@@ -97,9 +118,17 @@
 		@case ('Date') {
 			<mat-form-field
 				appearance="outline"
-				class="tw-w-full tw-pt-4"
+				[class]="grouped ? 'tw-w-full' : 'tw-w-full tw-pt-4'"
+				hideRequiredMarker
 				subscriptSizing="dynamic">
-				<mat-label>{{ attribute.name | attributeNameTrim }}</mat-label>
+				@if (showLabel) {
+					<mat-label
+						>{{ attribute.name | attributeNameTrim }}
+						@if (showRequiredMarker(attribute)) {
+							<span class="tw-text-warning"> *</span>
+						}
+					</mat-label>
+				}
 				<input
 					matInput
 					[matDatepicker]="picker"
@@ -124,9 +153,17 @@
 		@case ('Integer') {
 			<mat-form-field
 				appearance="outline"
-				class="tw-w-full tw-pt-4"
+				[class]="grouped ? 'tw-w-full' : 'tw-w-full tw-pt-4'"
+				hideRequiredMarker
 				subscriptSizing="dynamic">
-				<mat-label>{{ attribute.name | attributeNameTrim }}</mat-label>
+				@if (showLabel) {
+					<mat-label
+						>{{ attribute.name | attributeNameTrim }}
+						@if (showRequiredMarker(attribute)) {
+							<span class="tw-text-warning"> *</span>
+						}
+					</mat-label>
+				}
 				<textarea
 					[disabled]="!editable()"
 					matInput
@@ -144,9 +181,17 @@
 		@case ('Long') {
 			<mat-form-field
 				appearance="outline"
-				class="tw-w-full tw-pt-4"
+				[class]="grouped ? 'tw-w-full' : 'tw-w-full tw-pt-4'"
+				hideRequiredMarker
 				subscriptSizing="dynamic">
-				<mat-label>{{ attribute.name | attributeNameTrim }}</mat-label>
+				@if (showLabel) {
+					<mat-label
+						>{{ attribute.name | attributeNameTrim }}
+						@if (showRequiredMarker(attribute)) {
+							<span class="tw-text-warning"> *</span>
+						}
+					</mat-label>
+				}
 				<textarea
 					[disabled]="!editable()"
 					matInput
@@ -162,60 +207,50 @@
 			</mat-form-field>
 		}
 	}
-	@if (isDuplicateValue(attribute)) {
-		<div class="tw-px-1 tw-text-sm tw-text-warning tw-opacity-75">
-			Duplicate value — only one instance of this value will be saved.
-		</div>
-	}
 </ng-template>
 
-@if (allowDelete()) {
-	<!-- Grouped layout (create dialog): group instances by type with a
-	     "Name (count)" header, matching the artifact editor. -->
-	@for (group of groupedAttributes(); track group.typeId) {
-		@if (group.items.length === 1) {
-			<!-- Single instance: plain field + optional remove button. -->
-			<div class="tw-flex tw-w-full tw-items-start tw-gap-1">
-				<div class="tw-min-w-0 tw-flex-1">
-					<ng-container
-						*ngTemplateOutlet="
-							attrField;
-							context: {
-								attribute: group.items[0].attribute,
-								attrIndex: group.items[0].index,
-							}
-						" />
+@if (groupByType()) {
+	<!-- Grouped layout (create dialog): group instances by type. A flex column
+	     with a uniform gap gives every field/group the same vertical rhythm
+	     (matching the artifact editor panel); individual fields don't add their
+	     own top padding in this mode. Delete affordances within are still gated
+	     by allowDelete() via canDelete(). -->
+	<div class="tw-flex tw-flex-col tw-gap-4 tw-pt-4">
+		@for (group of groupedAttributes(); track group.typeId) {
+			@if (group.items.length === 1) {
+				<!-- Single instance: field with label + optional remove button. -->
+				<div class="tw-flex tw-w-full tw-items-center tw-gap-1">
+					<div class="tw-min-w-0 tw-flex-1">
+						<ng-container
+							*ngTemplateOutlet="
+								attrField;
+								context: {
+									attribute: group.items[0].attribute,
+									attrIndex: group.items[0].index,
+									showLabel: true,
+									grouped: true,
+								}
+							" />
+					</div>
+					@if (canDelete(group.items[0].attribute)) {
+						<osee-attribute-delete-button
+							[deletable]="true"
+							[ariaLabel]="
+								'Remove ' +
+								(group.items[0].attribute.name ?? 'attribute')
+							"
+							(delete)="
+								removeAttribute(group.items[0].attribute)
+							" />
+					}
 				</div>
-				@if (canDelete(group.items[0].attribute)) {
-					<button
-						mat-icon-button
-						type="button"
-						class="tw-mt-4 tw-text-foreground-text"
-						[attr.aria-label]="
-							'Remove ' +
-							(group.items[0].attribute.name ?? 'attribute')
-						"
-						matTooltip="Remove this optional attribute"
-						(click)="removeAttribute(group.items[0].attribute)">
-						<mat-icon>close</mat-icon>
-					</button>
-				}
-			</div>
-		} @else {
-			<!-- Multiple instances: bordered group box with a count header. -->
-			<div class="tw-pt-4">
-				<span
-					class="tw-mb-1 tw-block tw-text-xs tw-font-medium"
-					data-testid="attribute-group-header">
-					{{ group.name | attributeNameTrim }}
-					<span class="tw-opacity-50"
-						>({{ group.items.length }})</span
-					>
-				</span>
-				<div
-					class="tw-flex tw-flex-col tw-gap-2 tw-rounded tw-border tw-border-solid tw-border-osee-neutral-50 tw-p-2 dark:tw-border-osee-neutral-60">
+			} @else {
+				<!-- Multiple instances: grouped under a header, labels hidden inside. -->
+				<osee-attribute-field-group
+					[name]="group.name | attributeNameTrim"
+					[count]="group.items.length">
 					@for (item of group.items; track item.index) {
-						<div class="tw-flex tw-w-full tw-items-start tw-gap-1">
+						<div class="tw-flex tw-w-full tw-items-center tw-gap-1">
 							<div class="tw-min-w-0 tw-flex-1">
 								<ng-container
 									*ngTemplateOutlet="
@@ -223,31 +258,30 @@
 										context: {
 											attribute: item.attribute,
 											attrIndex: item.index,
+											showLabel: false,
+											grouped: true,
 										}
 									" />
 							</div>
 							@if (canDelete(item.attribute)) {
-								<button
-									mat-icon-button
-									type="button"
-									class="tw-mt-4 tw-text-foreground-text"
-									[attr.aria-label]="
+								<osee-attribute-delete-button
+									[deletable]="true"
+									[ariaLabel]="
 										'Remove ' +
 										(item.attribute.name ?? 'attribute')
 									"
-									matTooltip="Remove this attribute instance"
-									(click)="removeAttribute(item.attribute)">
-									<mat-icon>close</mat-icon>
-								</button>
+									(delete)="
+										removeAttribute(item.attribute)
+									" />
 							}
 						</div>
 					}
-				</div>
-			</div>
+				</osee-attribute-field-group>
+			}
 		}
-	}
+	</div>
 } @else {
-	<!-- Flat layout (default consumers): one field per attribute. -->
+	<!-- Flat layout (default consumers): one field per attribute, labels shown. -->
 	@for (attribute of attributes(); track attribute; let attrIndex = $index) {
 		@if (attribute.storeType === 'Input Stream') {
 			@if (nativeEditorAttrs(); as na) {
@@ -266,7 +300,11 @@
 			<ng-container
 				*ngTemplateOutlet="
 					attrField;
-					context: { attribute: attribute, attrIndex: attrIndex }
+					context: {
+						attribute: attribute,
+						attrIndex: attrIndex,
+						showLabel: true,
+					}
 				" />
 		}
 	}

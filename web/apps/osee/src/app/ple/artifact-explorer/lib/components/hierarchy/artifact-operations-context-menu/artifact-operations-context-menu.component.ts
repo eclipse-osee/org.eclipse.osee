@@ -26,6 +26,7 @@ import {
 	filter,
 	map,
 	mergeMap,
+	of,
 	switchMap,
 	take,
 	takeUntil,
@@ -272,11 +273,24 @@ export class ArtifactOperationsContextMenuComponent {
 			.subscribe();
 	}
 
-	/** Runs the create transaction for a single artifact and refreshes the tree. */
+	/**
+	 * Runs the create transaction for a single artifact and refreshes the tree.
+	 *
+	 * The create endpoint applies each `createArtifacts[].attributes` node via a
+	 * "set sole attribute" call, so it keeps only ONE instance per attribute
+	 * type. To support multiple instances of the same type, the first instance
+	 * of each type is created with the artifact, then any extra instances are
+	 * added in a follow-up `modifyArtifacts[].addAttributes` transaction (which
+	 * uses the non-deduping "create attribute" path) once the new artifact id is
+	 * known.
+	 */
 	private createArtifactTransaction(
 		branchId: string,
 		data: createChildArtifactDialogData
 	) {
+		const { firstPerType, extras } = this.splitAttributeInstances(
+			data.attributes
+		);
 		return this.transactionService
 			.performMutation({
 				branch: branchId,
@@ -285,7 +299,7 @@ export class ArtifactOperationsContextMenuComponent {
 					{
 						name: data.name,
 						typeId: data.artifactTypeId,
-						attributes: this.groupAttributesByType(data.attributes),
+						attributes: firstPerType,
 						relations: [
 							{
 								typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
@@ -297,6 +311,29 @@ export class ArtifactOperationsContextMenuComponent {
 			})
 			.pipe(
 				take(1),
+				switchMap((result) => {
+					const newArtifactId = result.results?.ids?.[0];
+					if (extras.length === 0 || !newArtifactId) {
+						return of(result);
+					}
+					// Add the remaining same-type instances via the add path so
+					// they persist as separate attributes instead of collapsing.
+					return this.transactionService
+						.performMutation({
+							branch: branchId,
+							txComment: 'Creating artifact: ' + data.name,
+							modifyArtifacts: [
+								{
+									id: newArtifactId,
+									addAttributes: extras,
+								},
+							],
+						})
+						.pipe(
+							take(1),
+							map(() => result)
+						);
+				}),
 				tap(() => {
 					// Auto-expand the artifact we created under so the new child is visible
 					this.expandedService.expandArtifact(
@@ -309,29 +346,33 @@ export class ArtifactOperationsContextMenuComponent {
 	}
 
 	/**
-	 * Groups create-dialog attributes by type into transaction attribute nodes.
-	 * Multiple instances of the same attribute type are emitted as a single node
-	 * with an array `value`; the backend expands an array value into multiple
-	 * attribute instances. A single instance keeps a scalar `value`. Without this
-	 * grouping the server applies each same-type node via a "set sole attribute"
-	 * call, so repeated types overwrite each other (last value wins).
+	 * Splits create-dialog attributes into the first instance of each type
+	 * (created with the artifact) and any extra instances of a type that already
+	 * appeared (added afterward). Each is emitted as a separate `{ typeId, value }`
+	 * node so identical values persist as distinct attributes.
 	 */
-	private groupAttributesByType(
+	private splitAttributeInstances(
 		attributes: attribute<string, ATTRIBUTETYPEID>[]
-	): { typeId: string; value: string | string[] }[] {
-		const byType = new Map<string, string[]>();
+	): {
+		firstPerType: { typeId: string; value: string }[];
+		extras: { typeId: string; value: string }[];
+	} {
+		const seen = new Set<string>();
+		const firstPerType: { typeId: string; value: string }[] = [];
+		const extras: { typeId: string; value: string }[] = [];
 		for (const attr of attributes) {
 			if (attr.value == null) {
 				continue;
 			}
-			const values = byType.get(attr.typeId) ?? [];
-			values.push(attr.value);
-			byType.set(attr.typeId, values);
+			const node = { typeId: attr.typeId, value: attr.value };
+			if (seen.has(attr.typeId)) {
+				extras.push(node);
+			} else {
+				seen.add(attr.typeId);
+				firstPerType.push(node);
+			}
 		}
-		return [...byType.entries()].map(([typeId, values]) => ({
-			typeId,
-			value: values.length === 1 ? values[0] : values,
-		}));
+		return { firstPerType, extras };
 	}
 
 	private deleteArtifact(operationType: operationType) {

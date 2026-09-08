@@ -45,13 +45,19 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatTooltip } from '@angular/material/tooltip';
 import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
-import { AttributesEditorComponent } from '@osee/shared/components';
+import {
+	AttributesEditorComponent,
+	AttributeToolbarComponent,
+} from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
-import { ImmediateErrorStateMatcher } from '@osee/shared/matchers';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import { attribute } from '@osee/attributes/types';
-import { ATTRIBUTETYPEID, MULTIPLICITY_ID } from '@osee/attributes/constants';
+import {
+	ATTRIBUTETYPEID,
+	MULTIPLICITY_ID,
+	isRequiredMultiplicity,
+} from '@osee/attributes/constants';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
@@ -76,6 +82,7 @@ import {
 	imports: [
 		FormsModule,
 		AttributesEditorComponent,
+		AttributeToolbarComponent,
 		FormDirective,
 		MatDialogTitle,
 		MatIcon,
@@ -112,11 +119,15 @@ export class CreateChildArtifactDialogComponent {
 		keepOpen: boolean;
 	}>();
 
-	/** Highlights required fields as invalid immediately, before they're touched. */
-	protected readonly errorMatcher = new ImmediateErrorStateMatcher();
-
 	private readonly nameInput =
 		viewChild<ElementRef<HTMLInputElement>>('nameInput');
+
+	/** Whether delete mode is active (shows × on deletable attributes). */
+	protected readonly deleteMode = signal(false);
+
+	protected toggleDeleteMode() {
+		this.deleteMode.update((v) => !v);
+	}
 
 	onCancel() {
 		this.dialogRef.close();
@@ -253,7 +264,7 @@ export class CreateChildArtifactDialogComponent {
 			this.allAttributeTypes.set(types);
 			const required = types
 				.filter((attr) => attr.name?.toLowerCase() !== 'name')
-				.filter((attr) => this.isRequiredMultiplicity(attr))
+				.filter((attr) => isRequiredMultiplicity(attr))
 				.map((attr) => this.toSeededAttribute(attr));
 			this.visibleAttributes.set(required);
 		});
@@ -327,16 +338,6 @@ export class CreateChildArtifactDialogComponent {
 
 	get isArtifactTypeValid(): boolean {
 		return !!this.data.artifactTypeId && this.data.artifactTypeId !== '0';
-	}
-
-	/** True when the attribute's multiplicity is EXACTLY_ONE or AT_LEAST_ONE. */
-	private isRequiredMultiplicity(
-		attr: attribute<string, ATTRIBUTETYPEID>
-	): boolean {
-		return (
-			attr.multiplicity?.id === MULTIPLICITY_ID.EXACTLY_ONE ||
-			attr.multiplicity?.id === MULTIPLICITY_ID.AT_LEAST_ONE
-		);
 	}
 
 	/** Tooltip explaining why the create buttons are disabled; empty when enabled. */

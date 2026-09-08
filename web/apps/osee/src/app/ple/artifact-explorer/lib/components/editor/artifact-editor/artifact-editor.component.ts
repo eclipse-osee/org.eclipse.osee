@@ -29,6 +29,7 @@ import { ArtifactHistoryPanelComponent } from '../artifact-history-panel/artifac
 import { HelpTopicRegistryService } from '@osee/shared/components';
 import { HelpButtonComponent } from '@osee/shared/components';
 import { HelpAnchorDirective } from '@osee/shared/components';
+import { AttributeToolbarComponent } from '@osee/shared/components';
 
 export type EditorSection = 'attributes' | 'relations' | 'history' | 'info';
 
@@ -44,6 +45,7 @@ export type EditorSection = 'attributes' | 'relations' | 'history' | 'info';
 		ArtifactHistoryPanelComponent,
 		HelpButtonComponent,
 		HelpAnchorDirective,
+		AttributeToolbarComponent,
 	],
 	templateUrl: './artifact-editor.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,

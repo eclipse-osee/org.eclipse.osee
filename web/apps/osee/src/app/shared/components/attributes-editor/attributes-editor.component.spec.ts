@@ -167,70 +167,8 @@ describe('AttributesEditorComponent', () => {
 		});
 	});
 
-	describe('isDuplicateValue', () => {
-		const isDuplicateValue = (attr: attribute<string, ATTRIBUTETYPEID>) =>
-			(
-				component as unknown as {
-					isDuplicateValue: (
-						a: attribute<string, ATTRIBUTETYPEID>
-					) => boolean;
-				}
-			).isDuplicateValue(attr);
-
-		const dupAttr = (
-			typeId: string,
-			value: string
-		): attribute<string, ATTRIBUTETYPEID> =>
-			({
-				name: 'Attr',
-				value,
-				typeId: typeId as ATTRIBUTETYPEID,
-				id: '-1',
-				gammaId: '-1',
-				storeType: 'String',
-			}) as attribute<string, ATTRIBUTETYPEID>;
-
-		it('flags two same-type instances that share a value', () => {
-			fixture.componentRef.setInput('allowDelete', true);
-			const a = dupAttr('100', 'dup');
-			const b = dupAttr('100', 'dup');
-			fixture.componentRef.setInput('attributes', [a, b]);
-			fixture.detectChanges();
-			expect(isDuplicateValue(a)).toBe(true);
-			expect(isDuplicateValue(b)).toBe(true);
-		});
-
-		it('does not flag same-type instances with distinct values', () => {
-			fixture.componentRef.setInput('allowDelete', true);
-			const a = dupAttr('100', 'one');
-			const b = dupAttr('100', 'two');
-			fixture.componentRef.setInput('attributes', [a, b]);
-			fixture.detectChanges();
-			expect(isDuplicateValue(a)).toBe(false);
-			expect(isDuplicateValue(b)).toBe(false);
-		});
-
-		it('does not flag identical values across different types', () => {
-			fixture.componentRef.setInput('allowDelete', true);
-			const a = dupAttr('100', 'same');
-			const b = dupAttr('200', 'same');
-			fixture.componentRef.setInput('attributes', [a, b]);
-			fixture.detectChanges();
-			expect(isDuplicateValue(a)).toBe(false);
-		});
-
-		it('never flags when allowDelete is off', () => {
-			fixture.componentRef.setInput('allowDelete', false);
-			const a = dupAttr('100', 'dup');
-			const b = dupAttr('100', 'dup');
-			fixture.componentRef.setInput('attributes', [a, b]);
-			fixture.detectChanges();
-			expect(isDuplicateValue(a)).toBe(false);
-		});
-	});
-
-	it('groups multiple instances of a type under a count header when allowDelete is on', async () => {
-		fixture.componentRef.setInput('allowDelete', true);
+	it('groups multiple instances of a type under a count header when groupByType is on', async () => {
+		fixture.componentRef.setInput('groupByType', true);
 		const first: attribute<string, ATTRIBUTETYPEID> = {
 			...stringAttributeWithDefault,
 			value: 'md',

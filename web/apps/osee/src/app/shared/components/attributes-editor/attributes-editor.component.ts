@@ -40,9 +40,6 @@ import {
 } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
 import { attribute } from '@osee/attributes/types';
 import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
@@ -59,10 +56,13 @@ import {
 	NativeContentEditorComponent,
 	NativeEditorAttributes,
 } from './native-content-editor/native-content-editor.component';
+import { AttributeFieldGroupComponent } from './attribute-field-group/attribute-field-group.component';
+import { AttributeDeleteButtonComponent } from './attribute-delete-button/attribute-delete-button.component';
 import {
 	BASEATTRIBUTETYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
-	MULTIPLICITY_ID,
+	isAttributeInstanceDeletable,
+	isRequiredMultiplicity,
 } from '@osee/attributes/constants';
 
 // Attributes Editor does not enforce required fields.
@@ -88,9 +88,8 @@ import {
 		IfIdReturnFalsePipe,
 		StringToDatePipe,
 		NativeContentEditorComponent,
-		MatIconButton,
-		MatIcon,
-		MatTooltip,
+		AttributeFieldGroupComponent,
+		AttributeDeleteButtonComponent,
 	],
 	providers: [provideNativeDateAdapter()],
 	templateUrl: './attributes-editor.component.html',
@@ -117,6 +116,14 @@ export class AttributesEditorComponent {
 	 * optional attributes they added.
 	 */
 	allowDelete = input<boolean>(false);
+
+	/**
+	 * When true, instances are grouped by attribute type (multiple instances of
+	 * one type render under a "Name (count)" header). Opt-in and independent of
+	 * `allowDelete` so grouping is available regardless of whether delete mode
+	 * is active. Used by the create dialog.
+	 */
+	groupByType = input<boolean>(false);
 
 	/** Emits the attribute the user requested to remove (only when `allowDelete`). */
 	readonly deleteAttribute = output<attribute<string, ATTRIBUTETYPEID>>();
@@ -222,8 +229,14 @@ export class AttributesEditorComponent {
 	isRequired(attribute: attribute<string, ATTRIBUTETYPEID>) {
 		return attribute.name === 'Id'
 			? false
-			: attribute.multiplicity?.id === MULTIPLICITY_ID.EXACTLY_ONE ||
-					attribute.multiplicity?.id === MULTIPLICITY_ID.AT_LEAST_ONE;
+			: isRequiredMultiplicity(attribute);
+	}
+
+	/** Whether to render the red required marker in this attribute's label. */
+	protected showRequiredMarker(
+		attribute: attribute<string, ATTRIBUTETYPEID>
+	) {
+		return this.isRequired(attribute);
 	}
 
 	/**
@@ -236,17 +249,8 @@ export class AttributesEditorComponent {
 		if (this.allowDelete() !== true) {
 			return false;
 		}
-		if (attribute.name?.toLowerCase() === 'name') {
-			return false;
-		}
-		if (!this.isRequired(attribute)) {
-			return true;
-		}
-		// Required type: deletable only when more than one instance exists.
-		const instanceCount = this.attributes().filter(
-			(a) => a.typeId === attribute.typeId
-		).length;
-		return instanceCount > 1;
+		// Shared min-count rule (name excluded; required type needs >1 instance).
+		return isAttributeInstanceDeletable(attribute, this.attributes());
 	}
 
 	protected removeAttribute(attribute: attribute<string, ATTRIBUTETYPEID>) {
@@ -286,24 +290,6 @@ export class AttributesEditorComponent {
 		});
 		return [...groups.values()];
 	});
-
-	/**
-	 * Whether this attribute shares its type and value with another visible
-	 * instance. The backend stores attribute values as a set per type on create,
-	 * so identical same-type values collapse to one instance — this flags that so
-	 * the user isn't surprised when a duplicate silently disappears. Only relevant
-	 * when the editor manages an addable list (`allowDelete`).
-	 */
-	protected isDuplicateValue(attribute: attribute<string, ATTRIBUTETYPEID>) {
-		if (this.allowDelete() !== true) {
-			return false;
-		}
-		const value = `${attribute.value ?? ''}`;
-		const sameValueCount = this.attributes().filter(
-			(a) => a.typeId === attribute.typeId && `${a.value ?? ''}` === value
-		).length;
-		return sameValueCount > 1;
-	}
 
 	setAttribute(val: string, attribute: attribute<string, ATTRIBUTETYPEID>) {
 		const datePipe = new DatePipe('en-US');

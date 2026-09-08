@@ -256,6 +256,37 @@ protected readonly errorMatcher = computed<ErrorStateMatcher>(() =>
 New shared matchers live in `web/apps/osee/src/app/shared/matchers/` and must be
 exported from that folder's `public-api.ts` (import via `@osee/shared/matchers`).
 
+## Required field marker
+
+The asterisk (`*`) that marks a required field **must be red** (the warning
+color) so required fields read consistently across the app.
+
+Material 21 renders its own required marker via `.mdc-floating-label--required`
+with no color token — it just inherits the label color, and there is **no
+`--mat-form-field-required-marker-color` token**. Do **not** try to color it by
+targeting `.mat-mdc-form-field-required-marker` / `.mdc-floating-label--required`
+(that violates the "never target internal Material/MDC classes" rule below).
+
+Instead, suppress Material's marker and render the asterisk yourself:
+
+1. Add `hideRequiredMarker` to the `mat-form-field`.
+2. Put a red `*` inside the `<mat-label>` using `tw-text-warning`, shown only
+   when the field is actually required.
+
+```html
+<mat-form-field appearance="outline" hideRequiredMarker subscriptSizing="dynamic">
+  <mat-label>
+    Artifact Name @if (isRequired()) {<span class="tw-text-warning"> *</span>}
+  </mat-label>
+  <input matInput required />
+</mat-form-field>
+```
+
+For a static always-required field, drop the `@if` and just include the span.
+Shared input components that build their own `mat-label` from a string label
+(e.g. `osee-attribute-enums-dropdown`) apply the same pattern internally, gated
+on their `required` input.
+
 ## Styling (Angular Material + Tailwind)
 
 Reach for the first option that works and only escalate when it genuinely can't
