@@ -12,23 +12,10 @@
  **********************************************************************/
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CrashOrBlankDisplay;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CustomerDescription;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.CustomerDescriptionLock;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.FeatureImpactReference;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.FlightNumber;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.HowFound;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ManagerSignedOffBy;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProposedResolution;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProposedResolutionDate;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Ship;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.SoftwareAnalysis;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.SystemAnalysis;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TestDate;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TestNumber;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -71,11 +58,13 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
       bld.andHeader() //
          .andLayout( //
 
-            new CompositeLayoutItem(4, //
+            new CompositeLayoutItem(6, //
                new EnumeratedArtifactWidgetDefinition(true, AtsAttributeTypes.CogPriority,
                   AtsArtifactToken.CogPriorityConfigArt), //
                new SpaceWidgetDefinition(), //
-               new PriorityWidgetDefinition(true) //
+               new PriorityWidgetDefinition(true), //
+               new SpaceWidgetDefinition(), //
+               new WidgetDef(CrewImpact, "XHyperlinkTriStateBooleanDam", RFT, LABEL_AFTER, SAVE) //
             ),
 
             new ChangeTypeWidgetDefinition(true, ChangeTypes.Problem, ChangeTypes.Improvement, ChangeTypes.Support,
@@ -107,8 +96,7 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
                new CompositeLayoutItem(4,
                   new WidgetDef("Found-In Version", AtsRelationTypes.TeamWorkflowToFoundInVersion_Version,
                      "XFoundInVersionWithPersistWidget").andWidgetHint(WidgetHint.SortAscending),
-                  new WidgetDef("Introduced-In Version",
-                     AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version,
+                  new WidgetDef("Introduced-In Version", AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version,
                      "XIntroducedInVersionWithPersistWidget").andWidgetHint(WidgetHint.SortAscending)), //
 
                new WidgetDef("Open Build Impacts", "XHyperlinkOpenBitTab") //
@@ -116,8 +104,7 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
             ), //
 
             new GroupCompositeLayoutItem(1, "Analysis",
-               new CompositeLayoutItem(4,
-                  new WidgetDef("Applicability", "XHyperlinkApplicabilityWidgetDam", SAVE), //
+               new CompositeLayoutItem(4, new WidgetDef("Applicability", "XHyperlinkApplicabilityWidgetDam", SAVE), //
                   new WidgetDef("Feature(s) Impacted", FeatureImpactReference, "XHyperlinkFeatureDam", SAVE) //
                ), new WidgetDef(SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
                new WidgetDef(SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //
