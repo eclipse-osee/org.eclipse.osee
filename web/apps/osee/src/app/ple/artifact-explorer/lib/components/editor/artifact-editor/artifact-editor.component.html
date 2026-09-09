@@ -75,58 +75,43 @@
 			<div
 				class="tw-flex tw-items-center tw-gap-1"
 				oseeHelpAnchor="attr-toolbar">
-				<button
-					mat-icon-button
-					(click)="openAddAttributeDialog()"
-					matTooltip="Add Attribute"
-					aria-label="Add Attribute"
-					oseeHelpAnchor="attr-add-btn">
-					<mat-icon>add_circle_outline</mat-icon>
-				</button>
-				<button
-					mat-icon-button
-					(click)="toggleDeleteMode()"
-					[matTooltip]="
-						deleteMode() ? 'Exit delete mode' : 'Delete attributes'
-					"
-					aria-label="Toggle Delete Mode"
-					[class]="deleteMode() ? 'tw-text-warning' : ''"
-					oseeHelpAnchor="attr-delete-btn">
-					<mat-icon>{{
-						deleteMode() ? 'delete_sweep' : 'delete_outline'
-					}}</mat-icon>
-				</button>
+				<osee-attribute-toolbar
+					[deleteMode]="deleteMode()"
+					addHelpAnchor="attr-add-btn"
+					deleteHelpAnchor="attr-delete-btn"
+					(add)="openAddAttributeDialog()"
+					(toggleDeleteMode)="toggleDeleteMode()" />
 				<osee-help-button topicId="attribute-editor" />
 			</div>
 		}
 	</div>
-	<!-- Section content (hidden/shown to preserve state) -->
-	<div>
-		<div
-			class="tw-p-2"
-			[class.tw-hidden]="activeSection() !== 'attributes'">
-			<osee-attributes-editor-panel
-				#attrPanel
-				[tab]="tab()"
-				[deleteMode]="deleteMode()"
-				oseeHelpAnchor="attr-panel" />
-		</div>
-		<div [class.tw-hidden]="activeSection() !== 'relations'">
-			<osee-relations-editor-panel
-				[editable]="tab().artifact.editable"
-				[artifactId]="tab().artifact.id"
-				[branchId]="tab().branchId"
-				[viewId]="tab().viewId" />
-		</div>
-		<div
-			class="tw-p-2"
-			[class.tw-hidden]="activeSection() !== 'history'">
-			<osee-artifact-history-panel [tab]="tab()" />
-		</div>
-		<div
-			class="tw-p-2"
-			[class.tw-hidden]="activeSection() !== 'info'">
-			<osee-artifact-info-panel [tab]="tab()" />
-		</div>
+</div>
+<!-- Section content (hidden/shown to preserve state) -->
+<div>
+	<div
+		class="tw-p-2"
+		[class.tw-hidden]="activeSection() !== 'attributes'">
+		<osee-attributes-editor-panel
+			#attrPanel
+			[tab]="tab()"
+			[deleteMode]="deleteMode()"
+			oseeHelpAnchor="attr-panel" />
+	</div>
+	<div [class.tw-hidden]="activeSection() !== 'relations'">
+		<osee-relations-editor-panel
+			[editable]="tab().artifact.editable"
+			[artifactId]="tab().artifact.id"
+			[branchId]="tab().branchId"
+			[viewId]="tab().viewId" />
+	</div>
+	<div
+		class="tw-p-2"
+		[class.tw-hidden]="activeSection() !== 'history'">
+		<osee-artifact-history-panel [tab]="tab()" />
+	</div>
+	<div
+		class="tw-p-2"
+		[class.tw-hidden]="activeSection() !== 'info'">
+		<osee-artifact-info-panel [tab]="tab()" />
 	</div>
 </div>

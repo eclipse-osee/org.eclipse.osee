@@ -64,14 +64,17 @@ test('set up relations', async ({ page }) => {
 			button: 'right',
 		});
 	await page.getByRole('menuitem', { name: 'Create Child Artifact' }).click();
-	await page.getByLabel('Enter a Name:').fill('Fault Handling');
-	await page.getByPlaceholder('Unspecified').first().click();
 	await page
-		.getByPlaceholder('Unspecified')
+		.getByRole('textbox', { name: 'Artifact Name' })
+		.fill('Fault Handling');
+	const typeInput = page.getByRole('combobox', { name: 'Artifact Type' });
+	await typeInput.click();
+	await typeInput.fill('software requirement');
+	await page
+		.getByRole('option', { name: 'Software Requirement', exact: true })
 		.first()
-		.fill('software requirement');
-	await page.getByText('Software Requirement', { exact: true }).click();
-	await page.getByRole('button', { name: 'Ok' }).click();
+		.click();
+	await page.getByRole('button', { name: 'Create', exact: true }).click();
 
 	// Relate requirement to element
 	await page.getByRole('button', { name: 'Relations' }).click();

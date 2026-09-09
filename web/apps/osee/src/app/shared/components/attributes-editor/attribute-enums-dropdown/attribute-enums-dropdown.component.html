@@ -20,10 +20,16 @@
 	<mat-form-field
 		appearance="outline"
 		subscriptSizing="dynamic"
+		hideRequiredMarker
 		id="enum-selector"
-		class="tw-w-full tw-pt-4">
+		[class]="grouped ? 'tw-w-full' : 'tw-w-full tw-pt-4'">
 		@if (label) {
-			<mat-label>{{ label }}</mat-label>
+			<mat-label
+				>{{ label }}
+				@if (required) {
+					<span class="tw-text-warning"> *</span>
+				}
+			</mat-label>
 		}
 		<input
 			type="text"
@@ -32,6 +38,7 @@
 			[ngModel]="autoCompleteState.filter"
 			[required]="required"
 			[disabled]="disabled"
+			[errorStateMatcher]="errorMatcher"
 			placeholder="Unspecified"
 			[id]="_componentId"
 			[name]="_componentId"
