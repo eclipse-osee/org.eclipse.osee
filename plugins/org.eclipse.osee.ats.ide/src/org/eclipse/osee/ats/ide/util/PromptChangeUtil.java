@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 
 /**
@@ -68,6 +69,20 @@ public final class PromptChangeUtil {
       }
       return false;
 
+   }
+
+   /**
+    * Prompt to change an attribute on any artifact, including Action artifacts which are not workflows.
+    */
+   public static boolean promptChangeAttribute(Artifact artifact, AttributeTypeToken attributeType,
+      final boolean persist) {
+      try {
+         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(artifact), persist,
+            PromptChangeUtil.class.getSimpleName());
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
    }
 
 }
