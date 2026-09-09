@@ -85,7 +85,8 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
          .isShowMetricsHeader(false); //
 
       bld.andState(1, "Open", StateType.Working).isStartState() //
-         .andToStates(StateToken.Analyzed, StateToken.Closed, StateToken.Monitor, StateToken.Cancelled) //
+         .andToStates(StateToken.Analyzed, StateToken.Closed, StateToken.Cancelled) //
+         .andToWaitStates(StateToken.Monitor) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
 
@@ -134,7 +135,8 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
          ); //
 
       bld.andState(2, "Analyzed", StateType.Working) //
-         .andToStates(StateToken.Closed, StateToken.Monitor, StateToken.Cancelled) //
+         .andToStates(StateToken.Closed, StateToken.Cancelled) //
+         .andToWaitStates(StateToken.Monitor) //
          .andColor(StateColor.BLACK) //
          .andLayoutFromState(StateToken.Open);
 

@@ -43,6 +43,7 @@ public class StateDefBuilder {
    StateDefinition state;
    private final WorkDefinition workDef;
    private final List<StateToken> toStateTokens = new ArrayList<>();
+   private final List<StateToken> toWaitStateTokens = new ArrayList<>();
    private final List<DecisionReviewDefinitionBuilder> decRevBldrs = new LinkedList<>();
    private final List<PeerReviewDefinitionBuilder> peerRevBldrs = new LinkedList<>();
    private final XResultData rd;
@@ -122,6 +123,28 @@ public class StateDefBuilder {
       return this;
    }
 
+   /**
+    * Wait states reachable from this state. A wait state is a holding place (e.g. Monitor) where a work item is parked
+    * until some external event occurs. Required-field validation is not enforced when transitioning to or from a wait
+    * state. Each token is also registered as a normal toState, so callers do not need to repeat it in andToStates.
+    */
+   public StateDefBuilder andToWaitStates(StateToken... stateTokens) {
+      for (StateToken stateTok : stateTokens) {
+         if (stateTok == StateToken.ANY) {
+            rd.errorf("Should not use StateToken.ANY with andToWaitStates in state [%s] for Work Def %s\n",
+               state.getName(), workDef.getName());
+         }
+         if (this.toWaitStateTokens.contains(stateTok)) {
+            rd.errorf("Should not have duplicate [%s] states in andToWaitStates call for Work Def %s\n",
+               stateTok.getName(), workDef.getName());
+         }
+         this.toWaitStateTokens.add(stateTok);
+      }
+      // Reuse andToStates for validity checks and to register these as normal toStates
+      andToStates(stateTokens);
+      return this;
+   }
+
    public StateDefBuilder andRules(RuleDefinitionOption... rules) {
       for (RuleDefinitionOption rule : rules) {
          state.addRule(rule.name());
@@ -195,6 +218,10 @@ public class StateDefBuilder {
       return toStateTokens;
    }
 
+   public List<StateToken> getToWaitStateTokens() {
+      return toWaitStateTokens;
+   }
+
    public StateDefBuilder andLayoutFromState(StateToken fromState) {
       if (state.getOrdinal() == 1) {
          rd.errorf(
@@ -218,6 +245,11 @@ public class StateDefBuilder {
 
    public StateDefBuilder addToState(StateDefinition toState) {
       state.getToStates().add(toState);
+      return this;
+   }
+
+   public StateDefBuilder addToWaitState(StateDefinition toState) {
+      state.getToWaitStates().add(toState);
       return this;
    }
 

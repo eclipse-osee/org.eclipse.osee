@@ -90,7 +90,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       IAtsTeamWorkflow buttonSTeamWf = DemoTestUtil.getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 45);
+      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 46);
    }
 
    //   @Path("ids/{id}/")
@@ -125,7 +125,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       IAtsTeamWorkflow buttonSTeamWf = DemoTestUtil.getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 51);
+      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 52);
    }
 
    //   @Path("release/{release}")

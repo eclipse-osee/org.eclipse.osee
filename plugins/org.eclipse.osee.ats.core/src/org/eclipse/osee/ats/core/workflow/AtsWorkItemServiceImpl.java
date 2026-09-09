@@ -71,6 +71,7 @@ import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsArchiveBranchWhenCompleteHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsWaitStateReturnHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsWriteDiffWhenCompleteHook;
 import org.eclipse.osee.ats.core.workflow.hooks.ConfirmPlarbApprovalHook;
 import org.eclipse.osee.ats.core.workflow.note.AtsStateNoteServiceImpl;
@@ -271,6 +272,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          transitionHooks.add(new AtsPeerToPeerReviewReviewWorkItemHook());
          transitionHooks.add(new AtsArchiveBranchWhenCompleteHook());
          transitionHooks.add(new AtsWriteDiffWhenCompleteHook());
+         transitionHooks.add(new AtsWaitStateReturnHook());
       }
       return transitionHooks;
    }
