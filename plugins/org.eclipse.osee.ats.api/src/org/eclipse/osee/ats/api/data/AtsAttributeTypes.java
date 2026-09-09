@@ -116,6 +116,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString CustomerDescription = ats.createString(4644659728286514207L, "ats.Customer Description", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean CustomerDescriptionLock = ats.createBoolean(64323156288586L, "ats.Customer Description Lock", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean CrashOrBlankDisplay = ats.createBoolean(1601107563L, "ats.Crash or Blank Display", TEXT_PLAIN, "Crash OR cockpit displays are blank", DisplayHint.YesNoBoolean, Edit);
+   AttributeTypeBoolean CrewImpact = ats.createBoolean(2385182363053364578L, "ats.Crew Impact", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString Decision = ats.createString(1152921504606847221L, "ats.Decision", TEXT_PLAIN, "Option selected during decision review.", Edit);
    AttributeTypeString DecisionReviewOptions = ats.createString(1152921504606847220L, "ats.Decision Review Options", TEXT_PLAIN, "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>\")", Read);
    AttributeTypeBoolean Default = ats.createBoolean(1152921875139002538L, "ats.Default", TEXT_PLAIN, "Default", Read);
