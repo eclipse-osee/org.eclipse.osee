@@ -373,6 +373,7 @@ Each state in the workflow:
 | `StateType` | StateType | `Working`, `Completed`, or `Cancelled` |
 | `ordinal` | int | Ordering of states |
 | `toStates` | List\<StateDefinition\> | Valid transition targets |
+| `toWaitStates` | List\<StateDefinition\> | Wait (holding) states, e.g. Monitor; transitions to/from these skip required-field validation |
 | `stateItems` | List\<LayoutItem\> | UI widgets for this state |
 | `ruleMgr` | RuleManager | Named rules (e.g., `RequireTargetedVersion`, `ForceAssigneesToTeamLeads`) |
 | `decisionReviews` | List\<IAtsDecisionReviewDefinition\> | Auto-triggered decision reviews |
@@ -455,7 +456,7 @@ Open (START) --> Analyzed --> Closed
 
 **Key differences from CR:**
 - No targeted version requirement (`WorkDefOption.NoTargetedVersion`)
-- Has a "Monitor" state (watch-and-wait)
+- Has a "Monitor" wait state (watch-and-wait); Open and Analyzed reach it via `andToWaitStates`, so transitioning into or out of Monitor skips required-field validation (see [Wait States](#wait-states-holding-states))
 - Backward transitions allowed (Monitor → Open, Monitor → Analyzed)
 - Requires Manager Signoff in Open state
 - Captures field-specific data: Ship, Test Number, Flight Number, Test Date, System/Software Analysis
@@ -553,6 +554,8 @@ Different Team Definitions can use different Work Definitions. For example:
 
 The `TeamWorkflowArtifactType` attribute on the Team Definition also controls which artifact subtype is created (e.g., `ProblemReportTeamWorkflow`, `ChangeRequestTeamWorkflow`, or plain `TeamWorkflow`).
 
+When creating an action, the WorkDefinition and artifact type come from the Team Definition (resolved via the selected Actionable Item) by default, but can be overridden for specific cases via `NewActionData.andWorkDef(...)` / `andArtType(...)`.
+
 **Key source:** `plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workdef/internal/AtsWorkDefinitionProviderService.java`
 
 ---
@@ -589,6 +592,31 @@ Rules applied to individual states:
 | `RequireTargetedVersion` | Block transition if no version targeted |
 | `RequireAssignee` | Require assignee for transition |
 | `AllowTransitionWithoutTaskCompletion` | Allow transition with incomplete tasks |
+
+### Wait States (Holding States)
+
+A wait state is a holding place (e.g. Monitor) where a work item is parked until some external event occurs. A state declares which destinations are wait states via the builder:
+
+```java
+bld.andState(1, "Open", StateType.Working).isStartState()
+   .andToStates(StateToken.Analyzed, StateToken.Closed, StateToken.Cancelled)
+   .andToWaitStates(StateToken.Monitor);
+```
+
+`andToWaitStates(...)` registers each target both as a normal to-state and in `StateDefinition.toWaitStates`, so the target does not need to be repeated in `andToStates`.
+
+A wait state is a **temporary hold**. Required-field validation checks the current (from) state's layout plus the header, so it always validates "the state you are sitting in," never a state you passed through earlier. To keep the wait state from being used to advance the workflow while bypassing the origin state's required fields, its exits are restricted.
+
+Semantics (enforced in `TransitionManager`):
+
+- **Into a wait state:** if `fromStateDef.isToWaitState(toStateDef)` is true, required-field validation is skipped. Example: `Open -> Monitor` does not require Open's fields (e.g. Manager Signoff).
+- **Out of a wait state:** a state is a wait state if any other state lists it as a wait target (`isWaitState()`, derived from incoming edges - no separate flag). From a wait state the **only** valid exits are back to the state it was entered from (`LastStateName`) or to a cancelled state (by state type). Any other destination is **blocked** with a transition error in `handleTransitionValidation` (not merely validated). The two sanctioned exits also skip required-field validation. Example: `Monitor -> Open` (the last state) succeeds; `Monitor -> Cancelled` succeeds; `Monitor -> Analyzed` is blocked - to advance to Analyzed you return to Open and transition normally, where Open's required fields apply.
+
+`LastStateName` (`AtsAttributeTypes.LastStateName`, "ats.Last State Name") is set on every transition to the state being left, and read back via `IAtsWorkItem.getLastStateName()`. It is the return-transition anchor above and the default transition target: `AtsWaitStateReturnHook` (a core `IAtsTransitionHook`) returns it from `getOverrideTransitionToStateName(...)` when the work item is in a wait state, so the UI defaults to "return to where you came from".
+
+This is a static, per-work-def declaration and coexists with the existing dynamic exemption in `isOverrideAttributeValidationState(...)` (transitioning backward to a previously visited, lower-ordinal state) and the per-call `TransitionOption.OverrideTransitionValidityCheck` (which also bypasses the wait-state exit restriction). Transition hooks (`IAtsTransitionHook.transitioning`) still fire on wait-state transitions.
+
+**Key source:** `plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/workflow/transition/TransitionManager.java` (`isStateTransitionable`)
 
 ---
 
