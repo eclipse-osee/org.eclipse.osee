@@ -54,4 +54,21 @@ describe('ArtifactEditorComponent', () => {
 	it('should create', () => {
 		expect(component).toBeTruthy();
 	});
+
+	it('should have a sticky toolbar that stays pinned when the editor scrolls', () => {
+		// The toolbar must be position:sticky at top:0 AND must be a sibling of
+		// the section content — not a parent wrapping it — so that the scroll
+		// container can scroll the content under the pinned toolbar.
+		const toolbar: HTMLElement =
+			fixture.nativeElement.querySelector('[role="toolbar"]');
+		expect(toolbar).toBeTruthy();
+		expect(toolbar.classList).toContain('tw-sticky');
+		expect(toolbar.classList).toContain('tw-top-0');
+
+		// The section content must NOT be a child of the toolbar.
+		const contentInsideToolbar = toolbar.querySelector(
+			'osee-attributes-editor-panel'
+		);
+		expect(contentInsideToolbar).toBeNull();
+	});
 });
