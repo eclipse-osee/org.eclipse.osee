@@ -45,7 +45,10 @@ public class DatabaseActivityStorage implements ActivityStorage {
    private static final String INSERT_TYPE =
       "INSERT INTO osee_activity_type (type_id, log_level, module, msg_format) SELECT (?,?,?,?) where NOT EXISTS (SELECT 1 from osee_activity_type where type_id = ?)";
 
-   private static final String DELETE_ENTRIES = "DELETE FROM osee_activity WHERE start_timestamp <= ?";
+   private static final String DELETE_ENTRIES_BATCH =
+      "DELETE FROM osee_activity WHERE rowid IN (SELECT rowid FROM osee_activity WHERE start_timestamp <= ? AND rownum <= ?)";
+
+   private static final int DELETE_BATCH_SIZE = 50000;
 
    private JdbcClient jdbcClient;
 
@@ -110,7 +113,12 @@ public class DatabaseActivityStorage implements ActivityStorage {
          daysToKeep = -daysToKeep;
       }
       cal.add(Calendar.DATE, daysToKeep);
-      jdbcClient.runPreparedUpdate(DELETE_ENTRIES, cal.getTime());
+      java.util.Date cutoff = cal.getTime();
+
+      int deleted;
+      do {
+         deleted = jdbcClient.runPreparedUpdate(DELETE_ENTRIES_BATCH, cutoff, DELETE_BATCH_SIZE);
+      } while (deleted >= DELETE_BATCH_SIZE);
    }
 
    @Override
