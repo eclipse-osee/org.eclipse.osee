@@ -147,7 +147,7 @@ public class AttributeLoader {
       public String getError() {
          if (Strings.isValid(error)) {
             return error;
-         } else if (attributeType.getName().startsWith(AttributeTypeToken.MISSING_TYPE)) {
+         } else if (attributeType.isMissingAttributeType()) {
             return attributeType.getName();
          }
          return "";

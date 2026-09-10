@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
+import org.eclipse.osee.ats.api.reqts.icd.AtsIcdEndpointApi;
 import org.eclipse.osee.ats.api.store.AtsRelationEndpointApi;
 import org.eclipse.osee.ats.api.store.AtsStoreEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
@@ -105,5 +106,7 @@ public interface IAtsServerEndpointProvider {
    AtsRelationEndpointApi getRelationEp();
 
    BranchEndpoint getBrchEp();
+
+   AtsIcdEndpointApi getIcdEp();
 
 }

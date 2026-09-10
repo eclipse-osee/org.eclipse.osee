@@ -62,12 +62,23 @@ export class ArtifactExplorerComponent {
 		});
 	}
 
-	/** Sync route param to activeSection on init. */
+	/** Route sentinel for "panel closed" — keeps us on the `:panel` route. */
+	private readonly COLLAPSED_PANEL = 'collapsed';
+
+	/**
+	 * Sync the route param to the panel state (supports deep-linking / reload).
+	 * A section name opens that section; the `collapsed` sentinel closes the
+	 * panel while remembering which section was last active for highlighting.
+	 * We always navigate within the `:panel` route (never back to the base
+	 * path) so the component is not re-created mid-interaction.
+	 */
 	private readonly syncPanelFromRoute = effect(() => {
 		const panel = this.panel();
 		if (panel === 'hierarchy' || panel === 'search' || panel === 'branch') {
 			this.activeSection.set(panel);
 			this.panelCollapsed.set(false);
+		} else if (panel === this.COLLAPSED_PANEL) {
+			this.panelCollapsed.set(true);
 		}
 	});
 
@@ -90,28 +101,32 @@ export class ArtifactExplorerComponent {
 
 	/**
 	 * Toggle a section in the activity bar.
-	 * If the clicked section is already active and the panel is open, collapse it.
-	 * Otherwise, set the section and ensure the panel is open.
+	 * If the clicked section is already active and the panel is open, collapse
+	 * it; otherwise set the section and open the panel. The panel state lives
+	 * in the `:panel` route param (section name when open, the `collapsed`
+	 * sentinel when closed) so we never navigate back to the base path — that
+	 * would re-create this component and lose the panel state, which caused the
+	 * extra clicks / "reset to hierarchy" behavior.
 	 */
 	toggleSection(section: HierarchySection) {
-		if (!this.panelCollapsed() && this.activeSection() === section) {
-			// Collapsing the active panel: drop the section from the URL so the
-			// route no longer advertises an open panel and syncPanelFromRoute
-			// won't re-open it on reload.
-			this.panelCollapsed.set(true);
-			this.router.navigate(['/ple/artifact/explorer'], {
+		const collapsing =
+			!this.panelCollapsed() && this.activeSection() === section;
+
+		this.panelCollapsed.set(collapsing);
+		if (!collapsing) {
+			this.activeSection.set(section);
+		}
+
+		this.router.navigate(
+			[
+				'/ple/artifact/explorer',
+				collapsing ? this.COLLAPSED_PANEL : section,
+			],
+			{
 				queryParamsHandling: 'merge',
 				replaceUrl: true,
-			});
-			return;
-		}
-		// Activating a section: reflect it in the URL and open the panel.
-		this.activeSection.set(section);
-		this.panelCollapsed.set(false);
-		this.router.navigate(['/ple/artifact/explorer', section], {
-			queryParamsHandling: 'merge',
-			replaceUrl: true,
-		});
+			}
+		);
 	}
 
 	onDividerMouseDown(event: MouseEvent): void {

@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsQueryServiceServer;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataService;
+import org.eclipse.osee.ats.api.reqts.icd.AtsIcdService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskProvider;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
@@ -292,5 +293,7 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    IAtsSearchDataService getAtsSearchDataService();
 
    IAtsQueryServiceServer getQueryServiceServer();
+
+   AtsIcdService getAtsIcdService();
 
 }

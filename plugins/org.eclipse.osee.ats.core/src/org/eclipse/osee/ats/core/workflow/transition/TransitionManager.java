@@ -246,6 +246,20 @@ public class TransitionManager implements IAtsChangeSetListener {
                      continue;
                   }
 
+                  // A wait state is a temporary hold; the only valid exits are back to the state it was entered from
+                  // (LastStateName) or to a cancelled state. Blocking other destinations prevents using the wait
+                  // state to skip the fromState's required fields and advance the workflow.
+                  if (!transData.isOverrideTransitionValidityCheck() && fromStateDef.isWaitState() && !isReturnFromWaitState(
+                     workItem, fromStateDef, toStateDef)) {
+                     String errStr = String.format(
+                        "Wait state [%s] can only transition back to [%s] or to a cancelled state, not to \"[%s]\" for Work Def [%s] on %s",
+                        fromStateDef.getName(), workItem.getLastStateName(), toStateDef.getName(),
+                        workItem.getWorkDefinition().getName(), workItem.toStringWithId());
+                     OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
+                     results.addResult(workItem, new TransitionResult(errStr));
+                     continue;
+                  }
+
                   // Validate Editable
                   logTimeStart("05.2 - Validate Editable");
                   boolean isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(workItem);
@@ -392,6 +406,10 @@ public class TransitionManager implements IAtsChangeSetListener {
                      toStateAssignees.addAll(getToAssignees(workItem, fromState, toState));
                   }
 
+                  // Record the state being left so wait states can default/validate the return transition
+                  attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.LastStateName, fromState.getName(),
+                     changes);
+
                   if (changes != null) {
                      changes.updateForTransition(workItem, toState, toStateAssignees);
                      // If implementers hasn't been set yet, set before complete/cancel
@@ -513,8 +531,13 @@ public class TransitionManager implements IAtsChangeSetListener {
    private void isStateTransitionable(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef,
       StateDefinition fromStateDef) {
       logTimeStart("05.4 - isStateTransitionable");
-      boolean isOverrideAttributeValidationState =
-         transData.isOverrideTransitionValidityCheck() || isOverrideAttributeValidationState(workItem, toStateDef);
+      boolean isOverrideAttributeValidationState = transData.isOverrideTransitionValidityCheck() //
+         || isOverrideAttributeValidationState(workItem, toStateDef) //
+         // Transitioning into a wait state (e.g. Monitor)
+         || fromStateDef.isToWaitState(toStateDef) //
+         // Sanctioned exit from a wait state (back to LastStateName or a cancelled state); other exits are already
+         // blocked in handleTransitionValidation.
+         || isReturnFromWaitState(workItem, fromStateDef, toStateDef);
       if (toStateDef.isCancelled()) {
          validateTaskCompletion(workItem, toStateDef, taskService);
          validateReviewsCancelled(results, workItem, toStateDef);
@@ -579,6 +602,24 @@ public class TransitionManager implements IAtsChangeSetListener {
          }
       }
       logTimeSpent("05.4 - isStateTransitionable");
+   }
+
+   /**
+    * A wait state (e.g. Monitor) is a temporary hold. The only sanctioned exits are back to the state it was entered
+    * from (the LastStateName) or to a cancelled state (by state type). Those exits also skip required-field validation.
+    * All other exits are blocked in handleTransitionValidation, so the wait state cannot be used to advance the
+    * workflow while bypassing the from-state's required fields.
+    */
+   private boolean isReturnFromWaitState(IAtsWorkItem workItem, StateDefinition fromStateDef,
+      StateDefinition toStateDef) {
+      if (!fromStateDef.isWaitState()) {
+         return false;
+      }
+      if (toStateDef.isCancelled()) {
+         return true;
+      }
+      String lastStateName = workItem.getLastStateName();
+      return Strings.isValid(lastStateName) && toStateDef.getName().equals(lastStateName);
    }
 
    private void validatePeerMeetingAttendees(TransitionResults results, IAtsWorkItem workItem,

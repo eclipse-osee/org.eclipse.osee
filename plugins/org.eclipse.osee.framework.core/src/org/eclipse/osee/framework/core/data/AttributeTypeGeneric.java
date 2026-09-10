@@ -33,6 +33,7 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    private final T defaultValue;
    private final Set<OperationTypeToken> operationTypes;
    protected final Set<DisplayHint> displayHints = new HashSet<DisplayHint>();
+   private boolean missingAttributeType = false;
 
    public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue, Set<OperationTypeToken> operationTypes, DisplayHint... hints) {
       super(id, name, description);
@@ -111,6 +112,20 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    @Override
    public Set<OperationTypeToken> getOperationTypes() {
       return operationTypes;
+   }
+
+   /**
+    * A missing attribute type is a placeholder created by the token service when an id cannot be resolved to a
+    * real registered type (see OrcsTokenServiceImpl.getAttributeTypeOrCreate). The flag lets callers detect and
+    * report the placeholder without relying on matching the generated name.
+    */
+   @Override
+   public boolean isMissingAttributeType() {
+      return missingAttributeType;
+   }
+
+   public void setMissingAttributeType(boolean missingAttributeType) {
+      this.missingAttributeType = missingAttributeType;
    }
 
 }

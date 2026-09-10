@@ -250,7 +250,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       boolean datesAsLong = options.contains(WorkItemWriterOptions.DatesAsLong);
       if (!attributes.isEmpty()) {
          for (AttributeTypeToken attrType : attrTypes) {
-            if (attrType.getName().contains(AttributeTypeToken.MISSING_TYPE)) {
+            if (attrType.isMissingAttributeType()) {
                writer.writeFieldName("Invalid Type");
                writer.writeString(attrType.getName());
                continue;

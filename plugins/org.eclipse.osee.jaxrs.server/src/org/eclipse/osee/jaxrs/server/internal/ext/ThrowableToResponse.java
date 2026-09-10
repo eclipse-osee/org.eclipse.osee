@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.jaxrs.JaxRsConstants;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
@@ -74,7 +75,17 @@ class ThrowableToResponse {
       String message = url + "\n" + Lib.exceptionToString(throwable);
 
       if (exceptionRegistryOperations.okToLog(throwable)) {
-         logger.errorNoFormat(throwable, url);
+         if (isClientDisconnect(throwable)) {
+            // Client closed the connection before the response finished sending (e.g. canceled download,
+            // closed tab, request timeout). This is not a server error, so log quietly without a stack trace.
+            logger.info("Client disconnected before response completed: %s", url);
+         } else if (OseeProperties.isInTest()) {
+            // In tests, response-stream write failures (e.g. canceled or aborted report exports) are expected
+            // noise. Log quietly. On a real server these still log at ERROR so genuine failures are surfaced.
+            logger.info("Response streaming failed during test run: %s", url);
+         } else {
+            logger.errorNoFormat(throwable, url);
+         }
       }
 
       //@formatter:off
@@ -86,6 +97,37 @@ class ThrowableToResponse {
             .build();
       //@formatter:on
 
+   }
+
+   /**
+    * Determines whether the given throwable (or any exception in its cause chain) represents a client
+    * disconnect - i.e. the client closed the connection before the response was fully written. These are
+    * detected by exception type name (e.g. Jetty's EofException) or by an IOException whose message
+    * indicates an aborted, reset, or broken connection. Detection is by name/message to avoid a compile
+    * time dependency on the servlet container.
+    *
+    * @param throwable the throwable to inspect.
+    * @return true if the throwable chain indicates a client disconnect; false otherwise.
+    */
+
+   private static boolean isClientDisconnect(Throwable throwable) {
+      for (Throwable cause = throwable; cause != null; cause = cause.getCause()) {
+         String simpleName = cause.getClass().getSimpleName();
+         if ("EofException".equals(simpleName) || "ClientAbortException".equals(simpleName)) {
+            return true;
+         }
+         if (cause instanceof java.io.IOException) {
+            String msg = cause.getMessage();
+            if (msg != null) {
+               String lower = msg.toLowerCase();
+               if (lower.contains("connection was aborted") || lower.contains("connection reset")
+                  || lower.contains("broken pipe") || lower.contains("aborted by")) {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
    }
 }
 

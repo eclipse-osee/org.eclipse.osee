@@ -42,7 +42,7 @@ public class TestDuplicateAttributesWithPersist implements IAtsHealthCheck {
       IAtsChangeSet changes, IAtsOperationCache cache) {
       // Test for null attribute values
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem)) {
-         if (attr.getAttributeType().getDescription().startsWith(AttributeTypeToken.MISSING_TYPE)) {
+         if (attr.getAttributeType().isMissingAttributeType()) {
             results.log(workItem.getStoreObject(), getClass().getSimpleName() + ".MissingAttributeType",
                String.format("Error: %s for " + workItem.getAtsId(), attr.getIdString()));
          } else if (attr.getValue() == null) {
@@ -63,7 +63,7 @@ public class TestDuplicateAttributesWithPersist implements IAtsHealthCheck {
       for (Entry<AttributeTypeToken, List<IAttribute<?>>> entry : attrsByType.entrySet()) {
          AttributeTypeToken attrType = entry.getKey();
          // If attr type missing, log separately cause just bad code/db, handle manually
-         if (attrType.getName().contains(AttributeTypeToken.MISSING_TYPE)) {
+         if (attrType.isMissingAttributeType()) {
             results.log(workItem.getStoreObject(), getClass().getSimpleName() + ".MissingAttributeType",
                String.format("Error: %s for " + workItem.getAtsId(), attrType.getName()));
             continue;

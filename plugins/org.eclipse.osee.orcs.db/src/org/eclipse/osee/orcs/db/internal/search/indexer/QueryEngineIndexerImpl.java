@@ -33,9 +33,9 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
+import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.jdbc.DatabaseType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OseeDb;
@@ -275,12 +275,12 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
 
          // Find attributes modified in recent transactions, filtered to taggable types via join table,
          // that are missing from osee_search_tags_hash
-         String hint = jdbcClient.getDbType().equals(DatabaseType.oracle)
-            ? "/*+ LEADING(txd txs att oji) USE_NL(txs att) */" : "";
+         String hint =
+            jdbcClient.getDbType().equals(DatabaseType.oracle) ? "/*+ LEADING(txd txs att oji) USE_NL(txs att) */" : "";
          String query = "SELECT " + hint + " DISTINCT att.gamma_id, att.value, att.uri, att.attr_type_id" //
             + " FROM osee_tx_details txd, osee_txs txs, osee_attribute att, osee_join_id oji" //
             + " WHERE txd.time > " + jdbcClient.getDbType().getTimestampMinusHours(hours) //
-            + " AND txd.transaction_id = txs.transaction_id" //
+            + " AND txd.branch_id = txs.branch_id and txd.transaction_id = txs.transaction_id" //
             + " AND txs.gamma_id = att.gamma_id" //
             + " AND txs.tx_current = 1" //
             + " AND oji.query_id = ?" //

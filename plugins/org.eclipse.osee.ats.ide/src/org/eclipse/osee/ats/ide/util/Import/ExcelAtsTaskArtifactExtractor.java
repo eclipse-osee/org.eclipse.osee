@@ -119,7 +119,6 @@ public class ExcelAtsTaskArtifactExtractor {
       protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma, XResultData rd) {
          this(monitor, newTaskData, sma);
          this.rd = rd;
-         this.rd.setLogToSysErr(true);
       }
 
       private ArtifactTypeToken resolveTaskArtifactType(AbstractWorkflowArtifact sma) {
@@ -181,9 +180,8 @@ public class ExcelAtsTaskArtifactExtractor {
        * Validate header columns upfront to report invalid attribute types once under Row 1 (Header).
        */
       private void validateHeaderColumns() {
-         java.util.List<String> knownColumns = java.util.Arrays.asList("Title", "Created By", "Assignees",
-            "Resolution", "Description", "Related to State", "Notes", "Percent Complete", "Hours Spent",
-            "Estimated Hours");
+         java.util.List<String> knownColumns = java.util.Arrays.asList("Title", "Created By", "Assignees", "Resolution",
+            "Description", "Related to State", "Notes", "Percent Complete", "Hours Spent", "Estimated Hours");
          boolean hasHeaderErrors = false;
          for (int i = 0; i < headerRow.length; i++) {
             String header = headerRow[i];
@@ -380,8 +378,8 @@ public class ExcelAtsTaskArtifactExtractor {
                if (!Strings.isPrintable(str)) {
                   String cleaned = Strings.removeNonPrintableCharacters(str);
                   String stripped = getStrippedCharacters(str, cleaned);
-                  rd.logf("  Row %d, Col %s [Title]: Removed non-printable characters: %s\n", rowNum,
-                     getColumnLabel(i), stripped);
+                  rd.logf("  Row %d, Col %s [Title]: Removed non-printable characters: %s\n", rowNum, getColumnLabel(i),
+                     stripped);
                   str = cleaned;
                }
                if (str.matches("(?s).*[\r\n]+.*")) {
@@ -443,7 +441,8 @@ public class ExcelAtsTaskArtifactExtractor {
       }
 
       private boolean isNonPrintable(char c) {
-         return c > 0x7F || (c < 0x20 && c != '\r' && c != '\n' && c != '\t') || Character.getType(c) == Character.CONTROL;
+         return c > 0x7F || (c < 0x20 && c != '\r' && c != '\n' && c != '\t') || Character.getType(
+            c) == Character.CONTROL;
       }
 
       private void processNotes(String[] row, JaxAtsTask jTask, int i) {

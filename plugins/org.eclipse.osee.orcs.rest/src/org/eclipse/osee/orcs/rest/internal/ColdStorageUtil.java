@@ -40,7 +40,7 @@ public final class ColdStorageUtil {
 
    /**
     * Resolves the cold storage directory path, creating it if necessary. Falls back to user.home if the server data
-    * path system property is not set (a warning is logged in that case).
+    * path system property is not set (an info message is logged in that case).
     *
     * @return the absolute path to the cold_storage directory, or null if the server data path cannot be determined
     */
@@ -52,8 +52,7 @@ public final class ColdStorageUtil {
             if (fallback == null || fallback.isBlank() || "null".equals(fallback)) {
                return null;
             }
-            LOGGER.log(Level.WARNING, "OSEE server data path not configured; cold storage will use fallback: {0}",
-               fallback);
+            LOGGER.log(Level.INFO, "OSEE server data path not configured; cold storage will use fallback: {0}", fallback);
             serverPath = fallback;
          }
          Path purgeFolder = Paths.get(serverPath + File.separator + "purge");

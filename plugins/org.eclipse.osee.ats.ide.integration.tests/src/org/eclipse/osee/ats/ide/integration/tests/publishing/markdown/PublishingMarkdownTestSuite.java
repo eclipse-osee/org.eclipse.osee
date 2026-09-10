@@ -12,8 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.publishing.markdown;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -31,13 +29,5 @@ import org.junit.runners.Suite.SuiteClasses;
    WordTemplateContentToMarkdownContentConversionTest.class,
    EmbedImagesTest.class})
 public class PublishingMarkdownTestSuite {
-   @BeforeClass
-   public static void setUp() {
-      System.out.println("Begin Markdown Test Suite");
-   }
-
-   @AfterClass
-   public static void cleanup() {
-      System.out.println("End Markdown Test Suite\n");
-   }
+   // Test Suite
 }
