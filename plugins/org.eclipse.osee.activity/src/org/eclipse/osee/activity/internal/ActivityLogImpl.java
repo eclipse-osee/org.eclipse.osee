@@ -254,7 +254,13 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    }
 
    private void clean() {
-      storage.cleanEntries(cleanerKeepDays);
+      enabled = false;
+      try {
+         flush(true);
+         storage.cleanEntries(cleanerKeepDays);
+      } finally {
+         enabled = true;
+      }
    }
 
    private void setupCleaner() {
