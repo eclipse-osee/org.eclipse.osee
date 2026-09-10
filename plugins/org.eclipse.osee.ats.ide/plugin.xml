@@ -392,6 +392,12 @@
             id="org.eclipse.osee.ats.ide.AtsSearchResultViewPage"
             searchResultClass="org.eclipse.osee.ats.ide.search.quick.AtsSearchResult"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.osee.ats.ide.internal.Activator">
+      </startup>
+   </extension>
    
    
 </plugin>

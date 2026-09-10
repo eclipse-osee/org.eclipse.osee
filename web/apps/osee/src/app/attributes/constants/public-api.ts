@@ -12,3 +12,4 @@
  **********************************************************************/
 export * from './attribute';
 export * from './multiplicity-id';
+export * from './multiplicity-rules';

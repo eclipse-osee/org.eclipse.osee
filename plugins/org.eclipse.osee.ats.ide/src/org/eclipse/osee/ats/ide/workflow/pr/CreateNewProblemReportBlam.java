@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -198,7 +197,6 @@ public abstract class CreateNewProblemReportBlam extends CreateNewChangeRequestB
       }
 
       // Check for duplicate Problem Report with same title
-      ElapsedTime time = new ElapsedTime(getName());
       String title = variableMap.getString(TITLE);
       if (Strings.isValid(title)) {
          IAtsTeamDefinition teamDef = getSelectedProgramTeamDefOrSentinel();
@@ -226,7 +224,6 @@ public abstract class CreateNewProblemReportBlam extends CreateNewChangeRequestB
             }
          }
       }
-      time.endSec();
    }
 
    @Override

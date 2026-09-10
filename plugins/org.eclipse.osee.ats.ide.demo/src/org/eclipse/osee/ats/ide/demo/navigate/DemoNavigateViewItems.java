@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.ide.config.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.demo.reqts.icd.CheckSignalsRoundTripTestNavigateItem;
 import org.eclipse.osee.ats.ide.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.ide.navigate.ToggleAtsAdmin;
 import org.eclipse.osee.ats.ide.util.CreateActionUsingAllActionableItems;
@@ -94,6 +95,9 @@ public class DemoNavigateViewItems implements XNavigateItemProvider {
          items.add(new CreateGoalTestDemoArtifacts(JHU_HEALTH));
          items.add(new CreateActionUsingAllActionableItems(XNavigateItem.DEMO));
          items.add(new AtsConfig2ExampleNavigateItem());
+
+         // ICD Signal Checking
+         items.add(new CheckSignalsRoundTripTestNavigateItem(XNavigateItem.DEMO));
       }
 
       return items;

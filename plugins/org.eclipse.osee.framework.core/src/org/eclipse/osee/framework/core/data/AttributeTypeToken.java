@@ -35,7 +35,6 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
    static final String APPLICATION_ZIP = "application/zip";
    static final Date DEFAULT_DATE = new Date(0);
    static final String IMAGE = "image/*";
-   static final String MISSING_TYPE = "Missing Attribute Type ";
    static final String MODEL_OSEE = "model/osee";
    static final AttributeTypeGeneric<?> SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
    static final String TEXT_CALENDAR = "text/calendar";
@@ -234,7 +233,7 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
    public Set<OperationTypeToken> getOperationTypes();
 
    public default boolean isMissingAttributeType() {
-      return getName().startsWith(MISSING_TYPE);
+      return false;
    }
 
 }

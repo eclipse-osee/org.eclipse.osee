@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.rest.internal.config.VersionResource;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.report.AtsReportEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.reqts.icd.AtsIcdEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.review.AtsReviewEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.store.AtsRelationEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.store.AtsStoreEndpointImpl;
@@ -156,6 +157,9 @@ public class AtsApplication extends Application {
       singletons.add(new AtsPrEndpointImpl(atsApiServer));
       singletons.add(new AtsStoreEndpointImpl(atsApiServer));
       singletons.add(new AtsRelationEndpointImpl(atsApiServer, orcsApi));
+
+      // ICD Signal Checking
+      singletons.add(new AtsIcdEndpointImpl(atsApiServer));
 
       // UIs
       singletons.add(new AtsActionUiEndpointImpl(atsApiServer, logger));

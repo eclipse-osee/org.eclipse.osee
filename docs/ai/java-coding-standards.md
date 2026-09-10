@@ -155,3 +155,46 @@ public void deleteBranch(BranchId branch) {
 - Prefer early return over deep nesting.
 - One class per file (inner classes excepted).
 - Do not merge `TODO` or `TBD` comments. Remove them before merging and track the improvement in the issue tracking system instead.
+- Intentionally empty blocks (empty catch, no-op branch, empty anonymous body) must contain a `// do nothing` comment so it is clear the emptiness is deliberate, not an oversight.
+- Do not add `/* EOF */` or similar end-of-file trailer comments. They add no value and drift out of sync.
+
+## Testing
+
+- Test suites and test classes that require test mode set `OseeProperties.setIsInTest(true)` in `@BeforeClass`.
+- Do NOT reset the flag to `false` in `@AfterClass`/teardown. The flag is a shared process-wide setting; turning it off in one suite can leave a later suite running without test mode in the same JVM, causing intermittent, hard-to-diagnose failures. Once set for a run, leave it on.
+
+### No console logging during tests
+
+Tests must run quietly. A passing run should produce no incidental stdout/stderr chatter beyond the test framework results and intentional WARN/ERROR diagnostics.
+
+- Do not add code whose purpose is to print progress or debug information to the console during a test.
+- Rely on the launch config's `-Dlogback.configurationFile` and `-Djava.util.logging.config.file` for logging levels rather than reconfiguring logging in test code.
+- If a test must assert on log output, capture it programmatically (appender/handler) rather than printing to the console.
+
+### `ElapsedTime` must not log to the console in tests
+
+`org.eclipse.osee.framework.jdk.core.util.ElapsedTime` writes to the console (via `XConsoleLogger.err`) whenever it is on. Its no-arg and single-arg constructors default `on=true` and `logStart=true`, logging immediately on construction. In tests:
+
+- Construct it disabled: `new ElapsedTime("name", false)`, or call `.off()` before it logs.
+- Do NOT pass `true` to `end(Units, boolean printToSysErr)` -- that forces console output. Use `end(units)` on a disabled instance, or `getTimeSpentString(units)` / `getTimeSpent()` which compute timing without logging.
+- Never commit an `ElapsedTime` in test code left on (logging) just for local debugging.
+
+### `System.out` / `System.err` in tests
+
+Do not use `System.out.*` or `System.err.*` in individual test classes. This includes `printStackTrace()`, which writes to `System.err` by default.
+
+Exception: test suite classes (JUnit `@RunWith(Suite.class)` aggregators and their `@BeforeClass`/`@AfterClass`, e.g. `*TestSuite` / `*_Suite`) MAY use `System.out.println` for coarse startup/progress banners (e.g. reporting the active logback/config file). This is suite-level orchestration output, not per-test chatter.
+
+- In individual test classes, use the OSEE logging path (`OseeLog` / SLF4J) for diagnostics so output honors configured levels.
+- On failure, prefer JUnit assertions with descriptive messages, or rethrow/wrap the exception, over printing.
+
+### Logback config changes must be reverted or reviewed before merge
+
+`plugins/org.eclipse.osee.server.p2/logback-dev.xml` is shared across the server, IDE, and integration-test launches, so changes affect every launch that references it.
+
+- Temporary debugging edits (raising a logger to `INFO`/`DEBUG`, flipping `debug="true"`, adding appenders) must be reverted before a PR is opened.
+- If a logback change is intentional and meant to ship, call it out in the PR description and get it reviewed -- do not let it ride along silently in an unrelated change.
+
+### Balance resource open/close in test teardown
+
+Close each resource exactly once, and close every resource a test opens. For example, JGit's `Git.close()` already closes its wrapped `Repository`; calling `git.getRepository().close()` then `git.close()` double-closes and logs `close() called when useCnt is already zero`.

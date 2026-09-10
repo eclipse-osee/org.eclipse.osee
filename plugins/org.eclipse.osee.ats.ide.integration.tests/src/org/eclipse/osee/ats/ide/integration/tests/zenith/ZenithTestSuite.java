@@ -13,11 +13,20 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.zenith;
 
+import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ScriptPurgeEndpointTest.class})
 public class ZenithTestSuite {
-   // Test Suite
+
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+      DemoUtil.checkDbInitAndPopulateSuccess();
+   }
+
 }

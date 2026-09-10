@@ -112,16 +112,16 @@ export const createArtifact = async (
 	});
 	await page.getByRole('menuitem', { name: 'Create Child Artifact' }).click();
 
-	await page.getByRole('textbox', { name: 'Enter a Name' }).fill(childName);
-	await page.getByRole('combobox', { name: 'Select a Type' }).click();
-	await page.getByRole('combobox', { name: 'Select a Type' }).fill(typeName);
+	await page.getByRole('textbox', { name: 'Artifact Name' }).fill(childName);
+	await page.getByRole('combobox', { name: 'Artifact Type' }).click();
+	await page.getByRole('combobox', { name: 'Artifact Type' }).fill(typeName);
 	await page.getByRole('option', { name: typeName }).first().click();
 
 	await Promise.all([
 		page.waitForResponse(
 			(res) => res.url().includes('orcs/txs') && res.status() === 200
 		),
-		page.getByRole('button', { name: 'Ok' }).click(),
+		page.getByRole('button', { name: 'Create', exact: true }).click(),
 	]);
 };
 

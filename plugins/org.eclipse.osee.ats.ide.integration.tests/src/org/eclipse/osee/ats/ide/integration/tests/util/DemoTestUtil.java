@@ -77,6 +77,22 @@ public class DemoTestUtil {
       return teamWf;
    }
 
+   /**
+    * Creates a demo Problem Report action governed by WorkDefTeamDemoProblemReport (Open declares
+    * andToWaitStates(Monitor) and has required fields). The title is used as the operation name and artifact name so
+    * the workflow can be removed with AtsTestUtil.cleanupSimpleTest(title).
+    */
+   public static IAtsTeamWorkflow createDemoProblemReport(String title) {
+      AtsApi atsApi = AtsApiService.get();
+      NewActionData data = atsApi.getActionService() //
+         .createActionData(title, title, DemoArtifactToken.SAW_PL_PR_AI) //
+         .andChangeType(ChangeTypes.Problem) //
+         .andPriority("3");
+      NewActionData newActionData = atsApi.getActionService().createAction(data);
+      Conditions.assertTrue(newActionData.getRd().isSuccess(), newActionData.getRd().toString());
+      return newActionData.getActResult().getAtsTeamWfs().iterator().next();
+   }
+
    public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) {
       return AtsApiService.get().getActionableItemService().getActionableItems(
          Arrays.asList(demoActionableItems.getName()));
