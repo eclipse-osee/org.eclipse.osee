@@ -44,14 +44,10 @@
 					[disabled]="!editable()" />
 			</div>
 			@if (deleteMode()) {
-				<span matTooltip="Name cannot be deleted.">
-					<button
-						mat-icon-button
-						disabled
-						aria-label="Cannot delete Name">
-						<mat-icon>remove_circle_outline</mat-icon>
-					</button>
-				</span>
+				<osee-attribute-delete-button
+					[deletable]="false"
+					disabledReason="Name cannot be deleted."
+					disabledAriaLabel="Cannot delete Name" />
 			}
 		</div>
 	}
@@ -68,14 +64,10 @@
 				</form>
 			</div>
 			@if (deleteMode()) {
-				<span matTooltip="Applicability cannot be deleted.">
-					<button
-						mat-icon-button
-						disabled
-						aria-label="Cannot delete applicability">
-						<mat-icon>remove_circle_outline</mat-icon>
-					</button>
-				</span>
+				<osee-attribute-delete-button
+					[deletable]="false"
+					disabledReason="Applicability cannot be deleted."
+					disabledAriaLabel="Cannot delete applicability" />
 			}
 		</div>
 	}
@@ -91,26 +83,11 @@
 						[artifactApplicability]="applicability()"
 						[disabled]="!editable()" />
 				</div>
-				@if (deleteMode() && isDeletable(group.attrs[0])) {
-					<button
-						mat-icon-button
-						(click)="deleteInlineAttribute(group.attrs[0])"
-						matTooltip="Delete Attribute"
-						aria-label="Delete attribute">
-						<mat-icon class="tw-text-warning"
-							>remove_circle_outline</mat-icon
-						>
-					</button>
-				}
-				@if (deleteMode() && !isDeletable(group.attrs[0])) {
-					<span matTooltip="Required attribute cannot be deleted.">
-						<button
-							mat-icon-button
-							disabled
-							aria-label="Cannot delete attribute">
-							<mat-icon>remove_circle_outline</mat-icon>
-						</button>
-					</span>
+				@if (deleteMode()) {
+					<osee-attribute-delete-button
+						[deletable]="isDeletable(group.attrs[0])"
+						disabledReason="Required attribute cannot be deleted."
+						(delete)="deleteInlineAttribute(group.attrs[0])" />
 				}
 			</div>
 		} @else {

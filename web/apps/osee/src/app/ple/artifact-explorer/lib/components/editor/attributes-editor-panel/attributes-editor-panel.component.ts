@@ -32,7 +32,7 @@ import {
 	ATTRIBUTETYPEID,
 	BASEATTRIBUTETYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
-	MULTIPLICITY_ID,
+	isAttributeInstanceDeletable,
 } from '@osee/attributes/constants';
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
@@ -40,6 +40,7 @@ import { FormDirective } from '@osee/shared/directives';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { PersistedArtifactAttributeEditorComponent } from './persisted-artifact-attribute-editor/persisted-artifact-attribute-editor.component';
 import { AttributeGroupComponent } from './attribute-group/attribute-group.component';
+import { AttributeDeleteButtonComponent } from '@osee/shared/components';
 import {
 	NativeContentEditorComponent,
 	NativeEditorAttributes,
@@ -67,6 +68,7 @@ import {
 		PersistedArtifactAttributeEditorComponent,
 		NativeContentEditorComponent,
 		AttributeGroupComponent,
+		AttributeDeleteButtonComponent,
 	],
 	viewProviders: [provideOptionalControlContainerNgForm()],
 	templateUrl: './attributes-editor-panel.component.html',
@@ -317,7 +319,9 @@ export class AttributesEditorPanelComponent {
 				id: '-1' as const,
 				typeId: type.typeId,
 				gammaId: '-1' as const,
-				value: this.getDefaultValue(type),
+				// Prefer the server-seeded default (carried in the token's value,
+				// e.g. Extension -> "md"); fall back to a store-type default.
+				value: this.getSeededDefaultValue(type),
 				name: type.name,
 				storeType: type.storeType,
 				multiplicity: type.multiplicity,
@@ -341,29 +345,11 @@ export class AttributesEditorPanelComponent {
 
 	/**
 	 * Checks whether a specific attribute instance can be deleted
-	 * based on multiplicity minimums.
+	 * based on multiplicity minimums. Shared with the create dialog so the rule
+	 * stays consistent.
 	 */
 	protected isDeletable(attr: attribute<string, ATTRIBUTETYPEID>): boolean {
-		// Never allow deleting Name
-		if (attr.name?.toLowerCase() === 'name') {
-			return false;
-		}
-
-		const multiplicityId = attr.multiplicity?.id;
-		const allOfType = this.attributes().filter(
-			(a) => a.typeId === attr.typeId
-		);
-
-		// EXACTLY_ONE or AT_LEAST_ONE: need at least 1
-		if (
-			multiplicityId === MULTIPLICITY_ID.EXACTLY_ONE ||
-			multiplicityId === MULTIPLICITY_ID.AT_LEAST_ONE
-		) {
-			return allOfType.length > 1;
-		}
-
-		// ANY or ZERO_OR_ONE: can always delete
-		return true;
+		return isAttributeInstanceDeletable(attr, this.attributes());
 	}
 
 	/**
@@ -371,17 +357,7 @@ export class AttributesEditorPanelComponent {
 	 * Checks multiplicity minimum before allowing deletion.
 	 */
 	protected deleteInlineAttribute(attr: attribute<string, ATTRIBUTETYPEID>) {
-		const allOfType = this.attributes().filter(
-			(a) => a.typeId === attr.typeId
-		);
-		const multiplicityId = attr.multiplicity?.id;
-
-		// EXACTLY_ONE or AT_LEAST_ONE: need at least 1
-		if (
-			(multiplicityId === MULTIPLICITY_ID.EXACTLY_ONE ||
-				multiplicityId === MULTIPLICITY_ID.AT_LEAST_ONE) &&
-			allOfType.length <= 1
-		) {
+		if (!isAttributeInstanceDeletable(attr, this.attributes())) {
 			this.uiService.ErrorText =
 				'Cannot delete: at least one instance of this attribute is required.';
 			return;
@@ -409,8 +385,26 @@ export class AttributesEditorPanelComponent {
 			});
 	}
 
+	/**
+	 * Returns the initial value for a newly added attribute. Prefers the
+	 * server-seeded default carried in the attribute type token's `value`
+	 * (from GET /orcs/types/artifact/{id}/attributes, e.g. Extension -> "md"),
+	 * falling back to a store-type default when the type has no default.
+	 */
+	private getSeededDefaultValue(
+		type: attribute<string, ATTRIBUTETYPEID>
+	): string {
+		const seeded = `${type.value ?? ''}`;
+		if (seeded !== '') {
+			return seeded;
+		}
+		return this.getStoreTypeDefault(type);
+	}
+
 	/** Returns an appropriate default value for a new attribute based on store type. */
-	private getDefaultValue(type: attribute<string, ATTRIBUTETYPEID>): string {
+	private getStoreTypeDefault(
+		type: attribute<string, ATTRIBUTETYPEID>
+	): string {
 		switch (type.storeType) {
 			case 'Boolean':
 				return 'false';

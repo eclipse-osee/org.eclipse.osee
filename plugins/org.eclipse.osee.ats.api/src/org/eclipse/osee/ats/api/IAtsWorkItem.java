@@ -241,6 +241,28 @@ public interface IAtsWorkItem extends IAtsObject {
       return getAtsApi().getAttributeResolver().getSoleAttributeValue(this, AtsAttributeTypes.LegacyPcrId, "");
    }
 
+   /**
+    * Name of the state entered immediately before the current state, or empty if unknown. Populated on every
+    * transition via the LastStateName attribute. For work items that predate that attribute (e.g. existing data
+    * during deployment), falls back to the most recent StateComplete entry in the ATS Log, which names the state most
+    * recently left. For a wait state (see {@link StateDefinition#isWaitState()}) this is the state to return to.
+    */
+   default String getLastStateName() {
+      String lastStateName =
+         getAtsApi().getAttributeResolver().getSoleAttributeValue(this, AtsAttributeTypes.LastStateName, "");
+      if (Strings.isValid(lastStateName)) {
+         return lastStateName;
+      }
+      IAtsLog log = getLog();
+      if (log != null) {
+         IAtsLogItem lastCompleted = log.getStateEvent(LogType.StateComplete);
+         if (lastCompleted != null) {
+            return lastCompleted.getState();
+         }
+      }
+      return "";
+   }
+
    default List<String> getPcrIds() {
       return getAtsApi().getAttributeResolver().getAttributesToStringList(this, AtsAttributeTypes.PcrId);
    }

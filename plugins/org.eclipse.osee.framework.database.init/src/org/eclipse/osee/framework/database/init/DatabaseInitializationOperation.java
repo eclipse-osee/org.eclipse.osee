@@ -72,12 +72,9 @@ public class DatabaseInitializationOperation extends AbstractOperation {
             String.format("You are not allowed to run config client against production: [%s].\nExiting.", dbName));
       }
 
-      System.out.println("Begin Database Initialization...");
-
       OseeProperties.setInDbInit(true);
       try {
          processTasks();
-         System.out.println("Database Initialization Complete");
       } catch (Exception ex) {
          OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE, ex);
          OseeCoreException.wrapAndThrow(ex);

@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 public final class EmailCertificateValidator {
 
@@ -46,10 +47,10 @@ public final class EmailCertificateValidator {
          cert.checkValidity(new Date()); // throws CertificateException if expired/not yet valid
          return cert;
       } catch (IllegalArgumentException e) {
-         LOGGER.log(Level.WARNING, "Certificate Base64 decoding failed", e);
+         LOGGER.log(logLevel(), "Certificate Base64 decoding failed", e);
          throw new EmailCertificateValidationException("Certificate is not valid Base64 PEM", e);
       } catch (CertificateException e) {
-         LOGGER.log(Level.WARNING, "Certificate validation failed: " + e.getMessage(), e);
+         LOGGER.log(logLevel(), "Certificate validation failed: " + e.getMessage(), e);
          throw new EmailCertificateValidationException("Invalid X.509 certificate: " + e.getMessage(), e);
       }
    }
@@ -68,7 +69,7 @@ public final class EmailCertificateValidator {
                "Certificate is not intended for email protection (missing EKU emailProtection)");
          }
       } catch (CertificateException e) {
-         LOGGER.log(Level.WARNING, "Certificate extended key usage check failed", e);
+         LOGGER.log(logLevel(), "Certificate extended key usage check failed", e);
          throw new EmailCertificateValidationException("Certificate extended key usage is invalid for email", e);
       }
 
@@ -81,6 +82,14 @@ public final class EmailCertificateValidator {
                "Certificate key usage must allow keyEncipherment for email encryption");
          }
       }
+   }
+
+   /**
+    * When running in a test, certificate validation failures are expected noise (tests exercise invalid
+    * and expired certs), so log at INFO. On a real server these are logged at WARNING.
+    */
+   private static Level logLevel() {
+      return OseeProperties.isInTest() ? Level.INFO : Level.WARNING;
    }
 
    private static String stripPemHeaders(String pem) {

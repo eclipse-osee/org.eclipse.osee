@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -252,6 +253,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public XResultData demoDbServerTests() {
+      // Because we're running server tests, we can set server isInTest flag
+      OseeProperties.setIsInTest(true);
       return new AtsDbServerTestsOp(atsApi, orcsApi).run();
    }
 

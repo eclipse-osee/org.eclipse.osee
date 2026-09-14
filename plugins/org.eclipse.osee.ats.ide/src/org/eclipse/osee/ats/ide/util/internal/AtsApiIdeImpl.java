@@ -27,6 +27,8 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.reqts.icd.AtsIcdService;
+import org.eclipse.osee.ats.ide.reqts.icd.AtsIcdServiceIdeImpl;
 import org.eclipse.osee.ats.api.query.IAtsQueryServiceServer;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
@@ -78,6 +80,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    private IAtsServerEndpointProvider serverEndpoints;
    private AtsBranchServiceIde branchServiceIde;
    private AtsJiraServiceImpl jiraService;
+   private AtsIcdService icdService;
 
    public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
       this.configurationsService = configurationsService;
@@ -294,6 +297,14 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public IAtsRelationService<?> relSvc() {
       return relationService;
+   }
+
+   @Override
+   public AtsIcdService getAtsIcdService() {
+      if (icdService == null) {
+         icdService = new AtsIcdServiceIdeImpl(this);
+      }
+      return icdService;
    }
 
 }

@@ -82,13 +82,13 @@ public class AtsIdeIntegrationTestSuite {
    public static void setup() {
       time = new ElapsedTime("AtsIdeIntegrationTestSuite", true);
       OseeProperties.setIsInTest(true);
+      System.out.println("Logback Config File: " + System.getProperty("logback.configurationFile",
+         "<not set - using logback classpath default>"));
    }
 
    @AfterClass
    public static void cleanup() {
       time.end(Units.MIN);
-      OseeProperties.setIsInTest(false);
-      AtsApiService.get().setIsInTest(false);
    }
 
 }

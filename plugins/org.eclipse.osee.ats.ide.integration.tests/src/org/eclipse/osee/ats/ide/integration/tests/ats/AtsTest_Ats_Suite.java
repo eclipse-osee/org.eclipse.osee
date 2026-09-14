@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.notify.AtsTest_Notify_Suit
 import org.eclipse.osee.ats.ide.integration.tests.ats.operation.AtsTest_Operation_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.render.AtsTest_Renderer_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.report.AtsTest_Report_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.reqts.icd.AtsTest_RqtsIcd_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AtsTest_Resource_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.users.AtsTest_Users_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.util.AtsTest_Util_Suite;
@@ -59,6 +60,7 @@ import org.junit.runners.Suite;
    AtsTest_Operation_Suite.class,
    AtsTest_Renderer_Suite.class,
    AtsTest_Report_Suite.class,
+   AtsTest_RqtsIcd_Suite.class,
    AtsTest_Resource_Suite.class,
    AtsTest_Users_Suite.class,
    AtsTest_Util_Suite.class,

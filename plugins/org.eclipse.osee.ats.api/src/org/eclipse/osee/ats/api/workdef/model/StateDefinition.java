@@ -40,6 +40,8 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
    @JsonIgnore
    private final List<StateDefinition> toStates = new ArrayList<>(5);
    @JsonIgnore
+   private final List<StateDefinition> toWaitStates = new ArrayList<>(2);
+   @JsonIgnore
    private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<>();
    @JsonIgnore
    private final List<IAtsPeerReviewDefinition> peerReviews = new ArrayList<>();
@@ -113,6 +115,35 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
 
    public List<StateDefinition> getToStates() {
       return toStates;
+   }
+
+   /**
+    * Wait states this state can transition to. A wait state is a holding place (e.g. Monitor) where a work item is
+    * parked until some external event occurs. Required-field validation is not enforced when transitioning to or from
+    * a wait state; transition hooks still run. A state named here is also a valid to-state.
+    */
+   public List<StateDefinition> getToWaitStates() {
+      return toWaitStates;
+   }
+
+   public boolean isToWaitState(StateDefinition toState) {
+      return toWaitStates.contains(toState);
+   }
+
+   /**
+    * True if this state is a wait state, i.e. any state in this work definition transitions to it via
+    * {@link #getToWaitStates()}. Required-field validation is not enforced on transitions into or out of a wait state.
+    */
+   public boolean isWaitState() {
+      if (workDefinition == null) {
+         return false;
+      }
+      for (StateDefinition state : workDefinition.getStates()) {
+         if (state.isToWaitState(this)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    public WorkDefinition getWorkDefinition() {

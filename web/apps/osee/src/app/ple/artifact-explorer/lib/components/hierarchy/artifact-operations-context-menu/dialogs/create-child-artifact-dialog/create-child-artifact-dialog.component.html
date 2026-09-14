@@ -18,83 +18,105 @@
 			<mat-icon [class]="getIconClasses(data.operationType.materialIcon)">
 				{{ data.operationType.materialIcon.icon }}
 			</mat-icon>
-			{{ data.operationType.name }}
+			<span class="tw-flex-1">{{ data.operationType.name }}</span>
+			@if (isArtifactTypeValid) {
+				<osee-attribute-toolbar
+					[showAdd]="hasAddableAttributes()"
+					[deleteMode]="deleteMode()"
+					(add)="openAddAttributeDialog()"
+					(toggleDeleteMode)="toggleDeleteMode()" />
+			}
 		</div>
+		@if (createChildArtifactForm.invalid) {
+			<div
+				class="tw-mt-1 tw-text-sm tw-font-normal tw-italic tw-text-warning">
+				Required fields (<span class="tw-text-warning">*</span>) are not
+				all filled out
+			</div>
+		} @else {
+			<div
+				class="tw-mt-1 tw-text-sm tw-font-normal tw-italic tw-text-foreground-text">
+				<span class="tw-text-warning">*</span> indicates a required
+				field
+			</div>
+		}
 	</h1>
 	<mat-dialog-content>
-		<div class="tw-flex tw-flex-col tw-gap-0">
-			@if (createChildArtifactForm.invalid) {
-				<div class="tw-pb-4 tw-italic tw-text-warning">
-					*Required fields not filled out
-				</div>
-			}
-			<mat-form-field
-				appearance="outline"
-				class="tw-w-full tw-pt-4"
-				subscriptSizing="dynamic">
-				<mat-label> Enter a Name: </mat-label>
-				<input
-					matInput
-					name="name"
-					required
-					[(ngModel)]="data.name" />
-			</mat-form-field>
+		<mat-form-field
+			appearance="outline"
+			class="tw-w-full tw-pt-4"
+			hideRequiredMarker
+			subscriptSizing="dynamic">
+			<mat-label>
+				Artifact Name <span class="tw-text-warning">*</span>
+			</mat-label>
+			<input
+				#nameInput
+				matInput
+				name="name"
+				required
+				[(ngModel)]="data.name" />
+		</mat-form-field>
 
-			<mat-form-field
-				appearance="outline"
-				subscriptSizing="dynamic"
-				id="artifactType-selector"
-				class="tw-w-full tw-pt-4">
-				<mat-label> Select a Type: </mat-label>
-				<input
-					type="text"
-					matInput
-					#input
-					required
-					placeholder="Unspecified"
-					id="artifactTypes"
-					name="artifactTypes"
-					ngModel
-					(focusin)="autoCompleteOpened()"
-					(focusout)="inputFocused.set(false)"
-					(input)="updateTypeAhead(input.value)"
-					[matAutocomplete]="autoArtifactTypes" />
-				@if (!inputFocused()) {
-					<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
-				}
-				@if (inputFocused() && input.value !== '') {
-					<button
-						mat-icon-button
-						matIconSuffix
-						class="tw-mr-1"
-						(mousedown)="$event.preventDefault(); clear(input)">
-						<mat-icon>close</mat-icon>
-					</button>
-				}
-				<mat-autocomplete
-					autoActiveFirstOption="true"
-					requireSelection="true"
-					#autoArtifactTypes="matAutocomplete"
-					[displayWith]="displayArtifactType"
-					(optionSelected)="updateValue($event.option.value)">
-					@if (isLoadingTypes()) {
-						<mat-option disabled> Loading... </mat-option>
-					}
-					@for (type of artifactTypes(); track type.id) {
-						<mat-option [value]="type">
-							{{ type.name }}
-						</mat-option>
-					}
-				</mat-autocomplete>
-			</mat-form-field>
-
-			@if (_attributes | async; as attributes) {
-				<osee-attributes-editor
-					[attributes]="attributes"
-					[editable]="true"
-					(updatedAttributes)="handleUpdatedAttributes($event)" />
+		<mat-form-field
+			appearance="outline"
+			subscriptSizing="dynamic"
+			hideRequiredMarker
+			id="artifactType-selector"
+			class="tw-w-full tw-pt-4">
+			<mat-label>
+				Artifact Type <span class="tw-text-warning">*</span>
+			</mat-label>
+			<input
+				type="text"
+				matInput
+				#input
+				required
+				placeholder="Unspecified"
+				id="artifactTypes"
+				name="artifactTypes"
+				ngModel
+				(focusin)="autoCompleteOpened()"
+				(focusout)="inputFocused.set(false)"
+				(input)="updateTypeAhead(input.value)"
+				[matAutocomplete]="autoArtifactTypes" />
+			@if (!inputFocused()) {
+				<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
 			}
-		</div>
+			@if (inputFocused() && input.value !== '') {
+				<button
+					mat-icon-button
+					matIconSuffix
+					class="tw-mr-1"
+					(mousedown)="$event.preventDefault(); clear(input)">
+					<mat-icon>close</mat-icon>
+				</button>
+			}
+			<mat-autocomplete
+				autoActiveFirstOption="true"
+				requireSelection="true"
+				#autoArtifactTypes="matAutocomplete"
+				[displayWith]="displayArtifactType"
+				(optionSelected)="updateValue($event.option.value)">
+				@if (isLoadingTypes()) {
+					<mat-option disabled> Loading... </mat-option>
+				}
+				@for (type of artifactTypes(); track type.id) {
+					<mat-option [value]="type">
+						{{ type.name }}
+					</mat-option>
+				}
+			</mat-autocomplete>
+		</mat-form-field>
+
+		@if (isArtifactTypeValid) {
+			<osee-attributes-editor
+				[attributes]="visibleAttributes()"
+				[editable]="true"
+				[groupByType]="true"
+				[allowDelete]="deleteMode()"
+				(deleteAttribute)="removeAttribute($event)" />
+		}
 	</mat-dialog-content>
 	<div
 		mat-dialog-actions
@@ -106,21 +128,27 @@
 			(click)="onCancel()">
 			Cancel
 		</button>
-		<span
-			[matTooltip]="
-				!isArtifactTypeValid
-					? 'Select a valid artifact type from the list.'
-					: createChildArtifactForm.invalid
-						? 'Required fields not filled out.'
-						: ''
-			">
+		<span [matTooltip]="disabledReason(createChildArtifactForm.invalid)">
 			<button
 				mat-stroked-button
-				[mat-dialog-close]="data"
+				class="tw-text-foreground-text"
+				type="button"
+				(click)="createAndAddAnother()"
 				[disabled]="
 					createChildArtifactForm.invalid || !isArtifactTypeValid
 				">
-				Ok
+				Create &amp; add another
+			</button>
+		</span>
+		<span [matTooltip]="disabledReason(createChildArtifactForm.invalid)">
+			<button
+				mat-stroked-button
+				type="button"
+				(click)="createAndClose()"
+				[disabled]="
+					createChildArtifactForm.invalid || !isArtifactTypeValid
+				">
+				Create
 			</button>
 		</span>
 	</div>

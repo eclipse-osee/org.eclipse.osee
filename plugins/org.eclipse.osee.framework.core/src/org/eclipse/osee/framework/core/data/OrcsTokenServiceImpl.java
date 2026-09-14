@@ -43,6 +43,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Ryan D. Brooks
  */
 public final class OrcsTokenServiceImpl implements OrcsTokenService {
+   private static final String MISSING_ARTIFACT_TYPE = "Missing Artifact Type ";
+   private static final String MISSING_REL_TYPE = "Missing Relation Type ";
+   private static final String MISSING_ATTR_TYPE = "Missing Attribute Type ";
    private final Map<String, Class<?>> tokenClasses = new ConcurrentHashMap<>();
    private final Map<Long, ArtifactTypeToken> artifactTypes = new ConcurrentHashMap<>();
    private final Map<Long, AttributeTypeGeneric<?>> attributeTypes = new ConcurrentHashMap<>();
@@ -81,6 +84,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
             String json = Lib.fileToString(relFile);
             ObjectMapper objectMapper = new ObjectMapper();
             TypeReference<List<String>> relListType = new TypeReference<List<String>>() {
+               // do nothing
             };
             List<String> relList = objectMapper.readValue(json, relListType);
             convertedRelations.addAll(relList);
@@ -223,9 +227,15 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    public ArtifactTypeToken getArtifactTypeOrCreate(Long id) {
       ArtifactTypeToken artifactType = getArtifactTypeOrSentinel(id);
       if (artifactType.isInvalid()) {
-         artifactType = ArtifactTypeToken.valueOf(id, "Mising Artifact Type " + id);
-         registerArtifactType(artifactType);
+         artifactType = createAndRegisterMissingArtType(id);
       }
+      return artifactType;
+   }
+
+   private ArtifactTypeToken createAndRegisterMissingArtType(Long id) {
+      ArtifactTypeToken artifactType;
+      artifactType = ArtifactTypeToken.valueOf(id, MISSING_ARTIFACT_TYPE + id);
+      registerArtifactType(artifactType);
       return artifactType;
    }
 
@@ -233,10 +243,16 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    public AttributeTypeGeneric<?> getAttributeTypeOrCreate(Long id) {
       AttributeTypeGeneric<?> attributeType = getAttributeTypeOrSentinel(id);
       if (attributeType.isInvalid()) {
-         String missing = AttributeTypeToken.MISSING_TYPE + id;
-         attributeType = AttributeTypeToken.valueOf(id, missing, missing);
-         registerAttributeType(attributeType);
+         attributeType = createAndRegisterMissingAttrType(id, attributeType);
       }
+      return attributeType;
+   }
+
+   private AttributeTypeGeneric<?> createAndRegisterMissingAttrType(Long id, AttributeTypeGeneric<?> attributeType) {
+      String missing = MISSING_ATTR_TYPE + id;
+      attributeType = AttributeTypeToken.valueOf(id, missing, missing);
+      attributeType.setMissingAttributeType(true);
+      registerAttributeType(attributeType);
       return attributeType;
    }
 
@@ -244,7 +260,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    public RelationTypeToken getRelationTypeOrCreate(Long id) {
       RelationTypeToken relationType = getRelationTypeOrSentinel(id);
       if (relationType.isInvalid()) {
-         relationType = RelationTypeToken.create(id, "Missing Artifact Type " + id, null, null, null, null, null, null);
+         relationType = RelationTypeToken.create(id, MISSING_REL_TYPE + id, null, null, null, null, null, null);
          registerRelationType(relationType);
       }
       return relationType;

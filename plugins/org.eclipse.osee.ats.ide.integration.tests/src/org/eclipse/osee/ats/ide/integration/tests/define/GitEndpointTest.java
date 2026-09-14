@@ -102,8 +102,10 @@ public class GitEndpointTest {
 
    @After
    public void cleanup() {
-      git.getRepository().close();
       git.close();
+      if (jgitRepo != null) {
+         jgitRepo.close();
+      }
       repoFolder.delete();
       remoteFolder.delete();
       repoArtifact.purgeFromBranch();

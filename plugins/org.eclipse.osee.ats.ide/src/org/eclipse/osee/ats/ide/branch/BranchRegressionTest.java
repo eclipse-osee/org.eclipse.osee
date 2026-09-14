@@ -78,7 +78,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
@@ -131,11 +130,6 @@ public abstract class BranchRegressionTest {
    public static void setUp() {
       RenderingUtil.setPopupsAllowed(false);
       OseeProperties.setIsInTest(true);
-   }
-
-   @AfterClass
-   public static void tearDown() {
-      OseeProperties.setIsInTest(false);
    }
 
    // Extend with additional checks

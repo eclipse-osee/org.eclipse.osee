@@ -13,9 +13,12 @@
 
 package org.eclipse.osee.ats.ide.integration.tests;
 
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.publishing.PublishingTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.BranchPurgeTest;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.BranchStateTest;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -24,16 +27,14 @@ import org.junit.runners.Suite;
  *
  * @author Donald G. Dunne
  */
-//@formatter:off
 @RunWith(Suite.class)
-@Suite.SuiteClasses
-   (
-      {
-         BranchPurgeTest.class,
-         BranchStateTest.class,
-         PublishingTestSuite.class
-      }
-   )
+@Suite.SuiteClasses({BranchPurgeTest.class, BranchStateTest.class, PublishingTestSuite.class})
 public class LongRunningTestSuite {
-   // Test Suite
+
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+      DemoUtil.checkDbInitAndPopulateSuccess();
+   }
+
 }

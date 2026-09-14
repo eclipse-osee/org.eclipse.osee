@@ -209,6 +209,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(HoursSpentWorkflow)
       .zeroOrOne(Imported)
       .any(Implementer)
+      .zeroOrOne(LastStateName)
       .zeroOrOne(Log)
       .zeroOrOne(Numeric1)
       .zeroOrOne(Numeric2)

@@ -11,9 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { DatePipe } from '@angular/common';
-import { Component, Output, computed, input, signal } from '@angular/core';
+import {
+	Component,
+	Output,
+	computed,
+	input,
+	output,
+	signal,
+} from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
+import {
+	ErrorStateMatcher,
+	MatOption,
+	provideNativeDateAdapter,
+	ShowOnDirtyErrorStateMatcher,
+} from '@angular/material/core';
+import { ImmediateErrorStateMatcher } from '@osee/shared/matchers';
 import {
 	MatDatepicker,
 	MatDatepickerInput,
@@ -42,9 +56,13 @@ import {
 	NativeContentEditorComponent,
 	NativeEditorAttributes,
 } from './native-content-editor/native-content-editor.component';
+import { AttributeFieldGroupComponent } from './attribute-field-group/attribute-field-group.component';
+import { AttributeDeleteButtonComponent } from './attribute-delete-button/attribute-delete-button.component';
 import {
 	BASEATTRIBUTETYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
+	isAttributeInstanceDeletable,
+	isRequiredMultiplicity,
 } from '@osee/attributes/constants';
 
 // Attributes Editor does not enforce required fields.
@@ -53,6 +71,7 @@ import {
 @Component({
 	selector: 'osee-attributes-editor',
 	imports: [
+		NgTemplateOutlet,
 		AttributeEnumsDropdownComponent,
 		FormsModule,
 		MatFormField,
@@ -69,6 +88,8 @@ import {
 		IfIdReturnFalsePipe,
 		StringToDatePipe,
 		NativeContentEditorComponent,
+		AttributeFieldGroupComponent,
+		AttributeDeleteButtonComponent,
 	],
 	providers: [provideNativeDateAdapter()],
 	templateUrl: './attributes-editor.component.html',
@@ -79,6 +100,43 @@ export class AttributesEditorComponent {
 	editable = input.required<boolean>();
 	artifactId = input<string>('');
 	branchId = input<string>('');
+
+	/**
+	 * When true, required attribute fields show the invalid (red) state
+	 * immediately on render instead of only after the field is touched. Use
+	 * from create dialogs so users can see which required attributes are
+	 * blocking submission before interacting with them.
+	 */
+	highlightRequiredImmediately = input<boolean>(false);
+
+	/**
+	 * When true, non-required attributes render a delete affordance that emits
+	 * `deleteAttribute`. Opt-in so editors over a fixed attribute list (the
+	 * default) are unaffected; used by the create dialog to let users remove
+	 * optional attributes they added.
+	 */
+	allowDelete = input<boolean>(false);
+
+	/**
+	 * When true, instances are grouped by attribute type (multiple instances of
+	 * one type render under a "Name (count)" header). Opt-in and independent of
+	 * `allowDelete` so grouping is available regardless of whether delete mode
+	 * is active. Used by the create dialog.
+	 */
+	groupByType = input<boolean>(false);
+
+	/** Emits the attribute the user requested to remove (only when `allowDelete`). */
+	readonly deleteAttribute = output<attribute<string, ATTRIBUTETYPEID>>();
+
+	private readonly immediateMatcher = new ImmediateErrorStateMatcher();
+	private readonly defaultMatcher = new ShowOnDirtyErrorStateMatcher();
+
+	/** Error matcher applied to each field, based on the immediate-highlight input. */
+	protected readonly errorMatcher = computed<ErrorStateMatcher>(() =>
+		this.highlightRequiredImmediately()
+			? this.immediateMatcher
+			: this.defaultMatcher
+	);
 
 	@Output() updatedAttributes = new BehaviorSubject<
 		attribute<string, ATTRIBUTETYPEID>[]
@@ -117,7 +175,9 @@ export class AttributesEditorComponent {
 						const dateValue = new Date(attribute.value);
 						formattedAttribute.value = `${dateValue.getTime()}`;
 					} else {
-						formattedAttribute.value = attribute.value.toString();
+						formattedAttribute.value = String(
+							attribute.value ?? ''
+						);
 					}
 
 					return formattedAttribute;
@@ -169,9 +229,67 @@ export class AttributesEditorComponent {
 	isRequired(attribute: attribute<string, ATTRIBUTETYPEID>) {
 		return attribute.name === 'Id'
 			? false
-			: attribute.multiplicity?.id === '2' ||
-					attribute.multiplicity?.id === '4';
+			: isRequiredMultiplicity(attribute);
 	}
+
+	/** Whether to render the red required marker in this attribute's label. */
+	protected showRequiredMarker(
+		attribute: attribute<string, ATTRIBUTETYPEID>
+	) {
+		return this.isRequired(attribute);
+	}
+
+	/**
+	 * Whether a per-row delete control should show for this attribute instance.
+	 * "Required" is per attribute *type* (multiplicity), but per *instance* only
+	 * the minimum count is required — so extra instances of a required type
+	 * (EXACTLY_ONE / AT_LEAST_ONE) are removable, while the last one is not.
+	 */
+	protected canDelete(attribute: attribute<string, ATTRIBUTETYPEID>) {
+		if (this.allowDelete() !== true) {
+			return false;
+		}
+		// Shared min-count rule (name excluded; required type needs >1 instance).
+		return isAttributeInstanceDeletable(attribute, this.attributes());
+	}
+
+	protected removeAttribute(attribute: attribute<string, ATTRIBUTETYPEID>) {
+		this.deleteAttribute.emit(attribute);
+	}
+
+	/**
+	 * Attributes grouped by type for the grouped (create-dialog) layout, each
+	 * with a stable flat index per instance for unique form-control names.
+	 * Native-content (Input Stream) attributes are excluded — they render via
+	 * the dedicated native editor, not as grouped fields.
+	 */
+	protected readonly groupedAttributes = computed(() => {
+		const groups = new Map<
+			string,
+			{
+				name: string;
+				typeId: string;
+				items: {
+					attribute: attribute<string, ATTRIBUTETYPEID>;
+					index: number;
+				}[];
+			}
+		>();
+		this.attributes().forEach((attribute, index) => {
+			if (attribute.storeType === 'Input Stream') {
+				return;
+			}
+			const key = attribute.typeId;
+			const group = groups.get(key) ?? {
+				name: attribute.name ?? key,
+				typeId: key,
+				items: [],
+			};
+			group.items.push({ attribute, index });
+			groups.set(key, group);
+		});
+		return [...groups.values()];
+	});
 
 	setAttribute(val: string, attribute: attribute<string, ATTRIBUTETYPEID>) {
 		const datePipe = new DatePipe('en-US');

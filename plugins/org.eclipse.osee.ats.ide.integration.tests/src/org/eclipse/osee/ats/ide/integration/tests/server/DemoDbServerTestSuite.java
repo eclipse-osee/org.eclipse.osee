@@ -33,7 +33,7 @@ import org.junit.runners.Suite;
 public class DemoDbServerTestSuite {
    @BeforeClass
    public static void setUp() throws Exception {
-      System.out.println("Begin Database Populate");
+      System.out.println("Begin Demo Server Tests");
       DemoUtil.checkDbInitSuccess();
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
@@ -47,6 +47,6 @@ public class DemoDbServerTestSuite {
 
    @AfterClass
    public static void cleanup() throws Exception {
-      System.out.println("End Database Populate\n");
+      System.out.println("End Demo Server Tests\n");
    }
 }

@@ -124,6 +124,9 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       Map<Long, Collection<Long>> hashTagsToStore = new HashMap<>();
       Map<Long, Collection<Long>> legacyTagsToStore = new HashMap<>();
       for (IndexedResource source : sources) {
+         if (source.getAttributeType().isMissingAttributeType()) {
+            continue;
+         }
          long startItemTime = System.currentTimeMillis();
          GammaId gamma = source.getGammaId();
          if (processed.add(gamma.getId())) {
@@ -148,8 +151,9 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
                      storeTags(connection, legacyTagsToStore, hashTagsToStore);
                   }
                } else {
-                  getLogger().error("Field has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]",
-                     taggerType, gamma);
+                  getLogger().error(
+                     "Field of type %s has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]",
+                     source.getAttributeType().toStringWithId(), taggerType, gamma);
                }
             } catch (Exception ex) {
                getLogger().error(ex, "Unable to tag - [%s]", gamma);

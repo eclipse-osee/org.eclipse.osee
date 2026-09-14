@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog;
 
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -28,8 +29,11 @@ import org.junit.runners.Suite;
    FilteredTreeArtifactTypeDialogTest.class, //
 })
 public class FrameworkUiSkynetTest_Dialog_Suite {
+
    @BeforeClass
    public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
       DemoUtil.checkDbInitAndPopulateSuccess();
    }
+
 }

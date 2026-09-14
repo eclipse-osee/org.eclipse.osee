@@ -113,6 +113,14 @@ public class WorkDefBuilder {
                stateDefBuilder.addToState(toState);
             }
          }
+         // wait states (holding places such as Monitor)
+         for (StateToken toStateToken : stateDefBuilder.getToWaitStateTokens()) {
+            StateDefinition toState = getStateDefinition(toStateToken.getName());
+            Conditions.assertNotNull(toState,
+               String.format("wait toState [%s] can't be null in state [%s] and work def [%s]", toStateToken,
+                  stateDefBuilder.getName(), workDef.getName()));
+            stateDefBuilder.addToWaitState(toState);
+         }
       }
 
       // Resolve any states with StateToken.ANY as toStateToken

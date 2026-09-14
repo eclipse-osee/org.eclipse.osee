@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -41,5 +43,10 @@ import org.junit.runners.Suite;
  * @author Ryan D. Brooks
  */
 public class SkynetUiCoreIntegrationTestSuite {
-   // Test Suite
+
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+   }
+
 }

@@ -88,6 +88,8 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 	@Input() disabled = false;
 	@Input() hintHidden = false;
 	@Input() label = '';
+	/** When true, drops the field's top padding so a parent gap controls spacing. */
+	@Input() grouped = false;
 	@Input() attributeValue = '';
 
 	private _attributeValueChange = new Subject<string>();

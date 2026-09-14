@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.TransactionBuilderMessageReader;
 import org.eclipse.osee.orcs.rest.admin.LinkUpdateResource;
@@ -42,6 +43,7 @@ import org.osgi.service.event.EventAdmin;
 @ApplicationPath("orcs")
 public class OrcsApplication extends Application {
 
+   private Log logger;
    private final Set<Object> singletons = new HashSet<>();
    private OrcsApi orcsApi;
    private ApiKeyApi apiKeyApi;
@@ -49,6 +51,10 @@ public class OrcsApplication extends Application {
    private ActivityLog activityLog;
    private JdbcService jdbcService;
    private ExecutorAdmin executorAdmin;
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
 
    public void setApiKeyApi(ApiKeyApi apiKeyApi) {
       this.apiKeyApi = apiKeyApi;
@@ -79,6 +85,10 @@ public class OrcsApplication extends Application {
    }
 
    public void start() {
+      String logbackConfig = System.getProperty("logback.configurationFile");
+      logger.warn("Logback Config File: %s",
+         logbackConfig != null ? logbackConfig : "<not set - using logback classpath default>");
+
       // Add all root resource, provider and feature instances.
       singletons.add(new QueryEndpointImpl(orcsApi));
       singletons.add(new BranchesResource(orcsApi, jdbcService));

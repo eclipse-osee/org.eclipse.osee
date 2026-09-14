@@ -1,4 +1,4 @@
-<configuration debug="true">
+<configuration debug="false">
 	<!-- See documentation at http://logback.qos.ch/manual/joran.html -->
 
 	<!-- To select this configuration add -Dlogback.configurationFile=logback-test.xml -->

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.metrics.MetricsEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
+import org.eclipse.osee.ats.api.reqts.icd.AtsIcdEndpointApi;
 import org.eclipse.osee.ats.api.store.AtsRelationEndpointApi;
 import org.eclipse.osee.ats.api.store.AtsStoreEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
@@ -83,6 +84,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsStoreEndpointApi storeEp;
    private AtsRelationEndpointApi relEp;
    private BranchEndpoint brchEp;
+   private AtsIcdEndpointApi icdEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -329,6 +331,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          relEp = jaxRsApi.newProxy("ats", AtsRelationEndpointApi.class);
       }
       return relEp;
+   }
+
+   @Override
+   public AtsIcdEndpointApi getIcdEp() {
+      if (icdEp == null) {
+         icdEp = jaxRsApi.newProxy("ats", AtsIcdEndpointApi.class);
+      }
+      return icdEp;
    }
 
 }

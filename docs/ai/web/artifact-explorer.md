@@ -42,6 +42,23 @@ Root component. Manages:
 - `window:beforeunload` guard via `ArtifactEditorDirtyService`
 - Branch/view routing from `@Input()` setters → `UiService`
 
+#### Panel state lives in the `:panel` route param
+
+The open panel is reflected in the route (`.../artifact/explorer/:panel`) for
+deep-linking and reload: the param is the section name (`hierarchy` / `search` /
+`branch`) when open, and a `collapsed` sentinel when closed. `toggleSection`
+sets the signals and navigates within the `:panel` route family; a
+`syncPanelFromRoute` effect maps the param back to the signals.
+
+> **Always navigate within the `:panel` route — never back to the base path to
+> "close".** The base path (`''`) and `:panel` are separate `loadComponent`
+> routes, so navigating between them **re-creates** this component and resets
+> `activeSection`/`panelCollapsed` to their defaults. That caused the panel to
+> take two clicks to close (and search/branch to "reset to hierarchy"). Using the
+> `collapsed` sentinel keeps every button a clean single-click toggle. Covered by
+> Playwright in `state-persistence.e2e-spec.ts` (open/close in one click per
+> section + switch-then-close).
+
 ## Visual Design
 
 ### Background colors
