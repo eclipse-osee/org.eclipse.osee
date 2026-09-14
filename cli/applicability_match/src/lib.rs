@@ -1,3 +1,4 @@
+use applicability_parser_types::applic_tokens::MatchApplicabilityInternalError;
 /*********************************************************************
  * Copyright (c) 2024 Boeing
  *
@@ -10,65 +11,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use applicability::applic_tag::ApplicabilityTag;
-use applicability_parser_types::{
-    applic_tokens::MatchToken,
-    applicability_parser_syntax_tag::{ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot},
-};
-
+use feature_definition::FeatureDefinition;
+use thiserror::Error;
 pub trait MatchApplicability<T> {
+    type TagType;
     fn match_applicability(
         &self,
         match_list: &[T],
-        config_name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
-    ) -> bool;
+        config_name: &Self::TagType,
+        parent_group: Option<&Self::TagType>,
+        child_configurations: Option<&[Self::TagType]>,
+        ple_model: &[FeatureDefinition<Self::TagType>],
+    ) -> Result<bool, MatchApplicabilityError<Self::TagType>>;
 }
-impl MatchApplicability<ApplicabilityTag> for ApplicabilitySyntaxTag {
-    fn match_applicability(
-        &self,
-        match_list: &[ApplicabilityTag],
-        config_name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
-    ) -> bool {
-        let mut found = false;
-        let tags = self.0.to_vec();
-        for applic_tag in tags {
-            found = applic_tag.match_token(
-                match_list,
-                config_name,
-                parent_group,
-                child_configurations,
-                found,
-                &self.2,
-            );
-        }
-        found
-    }
+#[derive(Debug, Error, Clone, PartialEq)]
+pub enum MatchApplicabilityError<I1> {
+    #[error("Feature Tag does not exist in the PLE Model: {0}")]
+    FeatureTagDoesNotExistInPLEModel(I1),
+    #[error("Feature Value does not exist does not exist in the PLE Model: {0}")]
+    FeatureValueDoesNotExistInPLEModel(String),
 }
-
-impl MatchApplicability<ApplicabilityTag> for ApplicabilitySyntaxTagNot {
-    fn match_applicability(
-        &self,
-        match_list: &[ApplicabilityTag],
-        config_name: &str,
-        parent_group: Option<&str>,
-        child_configurations: Option<&[&str]>,
-    ) -> bool {
-        let mut found = false;
-        let tags = self.0.to_vec();
-        for applic_tag in tags {
-            found = applic_tag.match_token(
-                match_list,
-                config_name,
-                parent_group,
-                child_configurations,
-                found,
-                &self.2,
-            );
+impl<I1> From<MatchApplicabilityInternalError<I1>> for MatchApplicabilityError<I1> {
+    fn from(value: MatchApplicabilityInternalError<I1>) -> Self {
+        match value {
+            MatchApplicabilityInternalError::FeatureTagDoesNotExist(i) => {
+                Self::FeatureTagDoesNotExistInPLEModel(i)
+            }
+            MatchApplicabilityInternalError::FeatureValueDoesNotExist(i) => {
+                Self::FeatureValueDoesNotExistInPLEModel(i)
+            }
         }
-        !found
     }
 }

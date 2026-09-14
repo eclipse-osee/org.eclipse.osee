@@ -1,0 +1,65 @@
+/*********************************************************************
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+use nom::{AsChar, Compare, FindSubstring, Input, Parser, error::ParseError, multi::many0};
+
+use crate::utils::tag_terminated::TagTerminated;
+use applicability_lexer_applicability_structure_base::{
+    delimiters::{space::LexSpace, tab::LexTab},
+    feature::case::LexFeatureCase,
+};
+use applicability_lexer_base::{applicability_structure::LexerToken, utils::locatable::Locatable};
+
+pub trait FeatureCaseSingleLineTerminated {
+    fn feature_case_terminated<I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
+    where
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
+        I::Item: AsChar,
+        E: ParseError<I>;
+}
+
+impl<T> FeatureCaseSingleLineTerminated for T
+where
+    T: TagTerminated + LexFeatureCase + LexSpace + LexTab,
+{
+    fn feature_case_terminated<I, E>(
+        &self,
+    ) -> impl Parser<I, Output = Vec<LexerToken<I>>, Error = E>
+    where
+        I: Input
+            + for<'x> FindSubstring<&'x str>
+            + for<'x> Compare<&'x str>
+            + Locatable
+            + Send
+            + Sync,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        let tag = self.terminated_tag();
+
+        self.lex_feature_case()
+            .and(many0(self.lex_space().or(self.lex_tab())))
+            .and(tag)
+            .map(|((f, mut spaces), t)| {
+                spaces.insert(0, f);
+                spaces.extend(t);
+                spaces
+            })
+    }
+}

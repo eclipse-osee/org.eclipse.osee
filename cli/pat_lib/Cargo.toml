@@ -1,0 +1,40 @@
+ #####################################################################
+ # Copyright (c) 2025 Boeing
+ #
+ # This program and the accompanying materials are made
+ # available under the terms of the Eclipse Public License 2.0
+ # which is available at https://www.eclipse.org/legal/epl-2.0/
+ #
+ # SPDX-License-Identifier: EPL-2.0
+ #
+ # Contributors:
+ #     Boeing - initial API and implementation
+ ######################################################################
+[package]
+name = "pat_lib"
+version = "1.1.13"
+edition = "2024"
+license.workspace = true
+
+[dependencies]
+anyhow = { version = "1.0.82" }
+clap = { version = "4.4.6", features = ["derive"] }
+serde = { version = "1.0.188", optional = false, features = ["derive"] }
+jwalk = "0.5"
+symlink = { version = "0.1.0" }
+rayon = { version = "1.10.0" }
+thiserror = "2.0.12"
+tracing = { version = "0.1.40" }
+tracing-indicatif = { version = "0.3.12" }
+clap-verbosity-flag = { version = "2.2.0" }
+applicability = { path = "../applicability",features = ["serde"]}
+applicability_parser_config = { path = "../applicability_parser_config"}
+applicability_parser_errors = { path = "../applicability_parser_errors"}
+applicability_project = { path = "../applicability_project"}
+applicability_sanitization = { path = "../applicability_sanitization"}
+applicability_tokens_to_ast = { path = "../applicability_tokens_to_ast"}
+bill_of_features = { path = "../bill_of_features" }
+doc_definitions = { path = "../doc_definitions"}
+feature_definition = { path = "../feature_definition"}
+pat_config = { path = "../pat_config" }
+validate_bof = { path="../validate_bof"}

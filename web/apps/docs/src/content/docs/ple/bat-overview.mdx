@@ -1,0 +1,33 @@
+---
+title: Block Applicability Tool (BAT)
+description: Overview of the Block Applicability Tool
+---
+
+import CurrentRelease from "../../../components/ple-current-release.astro";
+
+BAT takes input file(s), and processes the Feature/Configuration tags using 1 or many views.
+BAT uses the [applicability reference implementation](/org.eclipse.osee/ple/applicability-reference-implementations#ple-reference-implementation).
+
+BAT will export files into the output directory, with a folder for each view processed.
+
+## Download
+
+BAT is available at <CurrentRelease />.
+
+<br />
+rules_osee can be used to simplify BAT usage for those using [bazel](https://bazel.build/).
+rules_osee is available at [eclipse.org](https://download.eclipse.org/technology/osee/downloads/rules_osee/)
+
+## CLI options
+
+-   -a/--applicability-config : This is a config file containing the features,substitutions, configurations, and configuration groups that the tool will be running for. See the documentation from running -h to see the shape of this file.
+-   -o/--out-dir : Output directory for BAT processed results.
+-   -s/--srcs : Source files to be processed by the BAT tool.
+-   -b/--begin-comment-syntax This is an advanced feature to enable users to specify an alternate beginning syntax for applicability tags on existing languages, and to specify the syntax for non-supported file types. It is highly encouraged that to file an issue or PR on BAT to fix this if you have a use case that's not supported.
+-   -e/--end-comment-syntax This is an advanced feature to enable users to specify an alternate end syntax for applicability tags on existing languages, and to specify the syntax for non-supported file types. It is highly encouraged that to file an issue or PR on BAT to fix this if you have a use case that's not supported.
+-   -u/--use-direct-output If the output directory and input files are close together(i.e. like a git repo), this will make the file output more predictable. Also helpful for third party tool integrations like [bazel](https://bazel.build/).
+-   -n/--no-write-config-folder Turns off BAT writing out a folder per configuration present in the configuration file. This option should only be used when running the tool for 1 configuration.
+-   -v/--verbose Increase the tool output verbosity. Add this if issues occur. This can be added multiple times in a row (i.e. -vvv) to increase verbosity further.
+-   -q/--quiet Decrease the tool output verbosity. Helpful for CI runs where I/O throughput is of high priority.
+-   -h/--help Display help information regarding the tool.
+-   -V/--version Print version of the tool in use.
