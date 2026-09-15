@@ -18,15 +18,18 @@ use applicability_parser_types::{
     },
 };
 use nom::{
+    IResult,
     branch::alt,
     character::complete::line_ending,
     combinator::{map, opt},
     multi::many0,
     sequence::tuple,
-    IResult,
 };
 
-use crate::tag_parser::applicability_tag;
+use crate::{
+    tag_parser::applicability_tag,
+    types::{ContentsResult, ElseResult, EndResult, ParserResult},
+};
 
 use super::{
     config_group_text::{
@@ -43,16 +46,7 @@ use super::{
 fn parse_end<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(
-    &'a str,
-) -> IResult<
-    &'a str,
-    (
-        u8,
-        Vec<ApplicabilityParserSyntaxTag>,
-        (Option<u8>, Option<&'a str>),
-    ),
-> {
+) -> impl FnMut(&'a str) -> EndResult<'a> {
     map(
         tuple((
             opt(end_config_group_parser(
@@ -76,16 +70,7 @@ fn config_group_contents_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
     starting_parser: impl FnMut(&'a str) -> IResult<&'a str, u8>,
-) -> impl FnMut(
-    &'a str,
-) -> IResult<
-    &'a str,
-    (
-        Vec<ApplicTokens>,
-        Option<&'a str>,
-        Vec<ApplicabilityParserSyntaxTag>,
-    ),
-> {
+) -> impl FnMut(&'a str) -> ContentsResult<'a> {
     let tag_parser = config_group_tag_parser(starting_parser, custom_end_comment_syntax);
     let content_parser =
         parse_config_group_inner(custom_start_comment_syntax, custom_end_comment_syntax);
@@ -99,16 +84,7 @@ fn config_group_contents_parser<'a>(
 fn else_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(
-    &'a str,
-) -> IResult<
-    &'a str,
-    (
-        u8,
-        Vec<ApplicabilityParserSyntaxTag>,
-        (Option<u8>, Option<&'a str>),
-    ),
-> {
+) -> impl FnMut(&'a str) -> ElseResult<'a> {
     let end_parser = tuple((
         opt(end_config_group_parser(
             custom_start_comment_syntax,
@@ -127,23 +103,7 @@ fn config_group_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
     starting_parser: impl FnMut(&'a str) -> IResult<&'a str, u8>,
-) -> impl FnMut(
-    &'a str,
-) -> IResult<
-    &'a str,
-    (
-        (
-            Vec<ApplicTokens>,
-            Option<&'a str>,
-            Vec<ApplicabilityParserSyntaxTag>,
-        ),
-        (
-            u8,
-            Vec<ApplicabilityParserSyntaxTag>,
-            (Option<u8>, Option<&'a str>),
-        ),
-    ),
-> {
+) -> impl FnMut(&'a str) -> ParserResult<'a> {
     let parse_else_or_end = alt((
         else_parser(custom_start_comment_syntax, custom_end_comment_syntax),
         parse_end(custom_start_comment_syntax, custom_end_comment_syntax),
@@ -178,16 +138,36 @@ pub fn parse_config_group<'a>(
                 .clone()
                 .iter()
                 .map(|x| match x {
-                    applicability_parser_types::applic_tokens::ApplicTokens::NoTag(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::Not(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::And(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NotAnd(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::Or(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NotOr(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedAnd(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotAnd(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedOr(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotOr(t) => t.1,
+                    applicability_parser_types::applic_tokens::ApplicTokens::NoTag(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::Not(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::And(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NotAnd(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::Or(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NotOr(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedAnd(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotAnd(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedOr(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotOr(t) => {
+                        t.1.unwrap_or_default()
+                    }
                 })
                 .sum();
             let start_postfix = match start_tag_line_ending {
@@ -233,10 +213,13 @@ mod parse_config_group_tests {
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
-                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                        tag: "SOMETHING".to_string(),
-                        value: "Included".to_string()
-                    },0))],
+                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                        ApplicabilityTag {
+                            tag: "SOMETHING".to_string(),
+                            value: "Included".to_string()
+                        },
+                        Some(0)
+                    ))],
                     vec![ApplicabilityParserSyntaxTag::Text(
                         " Some Text Here \n".to_string()
                     ),],
@@ -253,18 +236,31 @@ mod parse_config_group_tests {
     fn anded_config_group() {
         let mut parser = parse_config_group("``", "``");
         assert_eq!(
-            parser("`` ConfigurationGroup[SOMETHING & SOMETHING_ELSE] ``\n Some Text Here \n`` End ConfigurationGroup ``"),
+            parser(
+                "`` ConfigurationGroup[SOMETHING & SOMETHING_ELSE] ``\n Some Text Here \n`` End ConfigurationGroup ``"
+            ),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
-                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                        tag: "SOMETHING".to_string(),
-                        value: "Included".to_string()
-                    },0)), ApplicTokens::And(ApplicabilityAndTag(ApplicabilityTag {
-                        tag: "SOMETHING_ELSE".to_string(),
-                        value: "Included".to_string()
-                    },0))],
-                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
+                    vec![
+                        ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING".to_string(),
+                                value: "Included".to_string()
+                            },
+                            Some(0)
+                        )),
+                        ApplicTokens::And(ApplicabilityAndTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING_ELSE".to_string(),
+                                value: "Included".to_string()
+                            },
+                            Some(0)
+                        ))
+                    ],
+                    vec![ApplicabilityParserSyntaxTag::Text(
+                        " Some Text Here \n".to_string()
+                    ),],
                     ApplicabilityTagTypes::ConfigurationGroup,
                     vec![],
                     1,
@@ -279,18 +275,31 @@ mod parse_config_group_tests {
     fn ored_config_group() {
         let mut parser = parse_config_group("``", "``");
         assert_eq!(
-            parser("`` ConfigurationGroup[SOMETHING | SOMETHING_ELSE] ``\n Some Text Here \n`` End ConfigurationGroup ``"),
+            parser(
+                "`` ConfigurationGroup[SOMETHING | SOMETHING_ELSE] ``\n Some Text Here \n`` End ConfigurationGroup ``"
+            ),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
-                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                        tag: "SOMETHING".to_string(),
-                        value: "Included".to_string()
-                    },0)),ApplicTokens::Or(ApplicabilityOrTag(ApplicabilityTag {
-                        tag: "SOMETHING_ELSE".to_string(),
-                        value: "Included".to_string()
-                    },0))],
-                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
+                    vec![
+                        ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING".to_string(),
+                                value: "Included".to_string()
+                            },
+                            Some(0)
+                        )),
+                        ApplicTokens::Or(ApplicabilityOrTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING_ELSE".to_string(),
+                                value: "Included".to_string()
+                            },
+                            Some(0)
+                        ))
+                    ],
+                    vec![ApplicabilityParserSyntaxTag::Text(
+                        " Some Text Here \n".to_string()
+                    ),],
                     ApplicabilityTagTypes::ConfigurationGroup,
                     vec![],
                     1,
@@ -320,16 +329,36 @@ pub fn parse_config_group_not<'a>(
                 .clone()
                 .iter()
                 .map(|x| match x {
-                    applicability_parser_types::applic_tokens::ApplicTokens::NoTag(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::Not(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::And(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NotAnd(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::Or(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NotOr(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedAnd(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotAnd(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedOr(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotOr(t) => t.1,
+                    applicability_parser_types::applic_tokens::ApplicTokens::NoTag(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::Not(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::And(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NotAnd(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::Or(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NotOr(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedAnd(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotAnd(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedOr(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotOr(t) => {
+                        t.1.unwrap_or_default()
+                    }
                 })
                 .sum();
             let start_postfix = match start_tag_line_ending {
@@ -371,15 +400,22 @@ mod parse_config_group_not_tests {
     fn simple_config_group() {
         let mut parser = parse_config_group_not("``", "``");
         assert_eq!(
-            parser("`` ConfigurationGroup Not[SOMETHING] ``\n Some Text Here \n`` End ConfigurationGroup ``"),
+            parser(
+                "`` ConfigurationGroup Not[SOMETHING] ``\n Some Text Here \n`` End ConfigurationGroup ``"
+            ),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
-                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                        tag: "SOMETHING".to_string(),
-                        value: "Included".to_string()
-                    },0))],
-                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
+                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                        ApplicabilityTag {
+                            tag: "SOMETHING".to_string(),
+                            value: "Included".to_string()
+                        },
+                        Some(0)
+                    ))],
+                    vec![ApplicabilityParserSyntaxTag::Text(
+                        " Some Text Here \n".to_string()
+                    ),],
                     ApplicabilityTagTypes::ConfigurationGroup,
                     vec![],
                     1,
@@ -399,14 +435,25 @@ mod parse_config_group_not_tests {
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
-                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                        tag: "SOMETHING".to_string(),
-                        value: "Included".to_string()
-                    },0)), ApplicTokens::And(ApplicabilityAndTag(ApplicabilityTag {
-                        tag: "SOMETHING_ELSE".to_string(),
-                        value: "Included".to_string()
-                    },0))],
-                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
+                    vec![
+                        ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING".to_string(),
+                                value: "Included".to_string()
+                            },
+                            Some(0)
+                        )),
+                        ApplicTokens::And(ApplicabilityAndTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING_ELSE".to_string(),
+                                value: "Included".to_string()
+                            },
+                            Some(0)
+                        ))
+                    ],
+                    vec![ApplicabilityParserSyntaxTag::Text(
+                        " Some Text Here \n".to_string()
+                    ),],
                     ApplicabilityTagTypes::ConfigurationGroup,
                     vec![],
                     1,
@@ -427,14 +474,25 @@ mod parse_config_group_not_tests {
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
-                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                        tag: "SOMETHING".to_string(),
-                        value: "Included".to_string()
-                    },0)), ApplicTokens::Or(ApplicabilityOrTag(ApplicabilityTag {
-                        tag: "SOMETHING_ELSE".to_string(),
-                        value: "Included".to_string()
-                    },0))],
-                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
+                    vec![
+                        ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING".to_string(),
+                                value: "Included".to_string()
+                            },
+                            Some(0)
+                        )),
+                        ApplicTokens::Or(ApplicabilityOrTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING_ELSE".to_string(),
+                                value: "Included".to_string()
+                            },
+                            Some(0)
+                        ))
+                    ],
+                    vec![ApplicabilityParserSyntaxTag::Text(
+                        " Some Text Here \n".to_string()
+                    ),],
                     ApplicabilityTagTypes::ConfigurationGroup,
                     vec![],
                     1,

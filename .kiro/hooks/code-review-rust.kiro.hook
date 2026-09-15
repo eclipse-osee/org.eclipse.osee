@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Review Changed Rust Code",
+  "description": "Reviews all Rust files changed since origin/main. Reads each changed file, checks for code quality issues, potential bugs, missing error handling, and adherence to Rust idioms and project coding standards.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run `git diff --name-only origin/main -- \"*.rs\"` from the workspace root to find all changed Rust files. Read each changed file and perform a thorough code review checking for: 1) Bugs or logic errors, 2) Error handling (prefer Result/Option over panics/unwrap/expect in library code, proper use of the `?` operator, meaningful error types), 3) Ownership and borrowing issues (unnecessary clones, lifetimes, avoidable allocations), 4) Idiomatic Rust (iterator adapters over manual loops, pattern matching, derive macros, use of `impl Trait`, avoiding needless `unsafe`), 5) Performance concerns, 6) Concurrency safety (Send/Sync, proper use of Arc/Mutex, no data races), 7) Adherence to project conventions (module structure, naming per rustfmt/clippy, crate boundaries per the workspace Cargo layout), 8) Dead code or unused imports, 9) Missing or misleading documentation on public items, 10) Edge cases not handled. Where possible, run `cargo clippy` and `cargo fmt --check` on the affected crates and incorporate their findings. Present findings grouped by file with severity (error/warning/suggestion) and specific line references where possible."
+  }
+}
