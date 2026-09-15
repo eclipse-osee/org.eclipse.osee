@@ -295,8 +295,7 @@ public class TxPurgeColdStorage {
       XResultData results = new XResultData();
 
       // Check if transaction already exists in the database
-      int existingCount = jdbcClient.fetch(0,
-         "SELECT COUNT(1) FROM osee_tx_details WHERE TRANSACTION_ID = ?", txId);
+      int existingCount = jdbcClient.fetch(0, "SELECT COUNT(1) FROM osee_tx_details WHERE TRANSACTION_ID = ?", txId);
       if (existingCount > 0) {
          results.errorf("Transaction %s already exists in the database; cannot restore a duplicate", txId);
          return results;
@@ -359,7 +358,7 @@ public class TxPurgeColdStorage {
 
          if (!found) {
             results.errorf("Transaction %s not found in archive file %s", txId, fileName);
-         } else {
+         } else if (!results.isErrors()) {
             results.logf("Successfully restored transaction %s from %s", txId, fileName);
          }
 
@@ -738,6 +737,17 @@ public class TxPurgeColdStorage {
       }
 
       dis.readUTF(); // "TX_END"
+
+      // Safeguard: Verify the branch(es) exist and fail gracefully instead.
+      for (Object[] txDetailsRow : txDetailsRows) {
+         Long branchId = (Long) txDetailsRow[0];
+         if (jdbcClient.fetch(0, "SELECT count(1) FROM osee_branch WHERE branch_id = ?", branchId) == 0) {
+            results.errorf(
+               "Cannot restore: branch [%s] referenced by the archive no longer exists (likely a stale archive from a prior dbinit). Skipping restore.",
+               branchId);
+            return;
+         }
+      }
 
       // Insert in order: backing data first, then tx_details, then txs
       // Use batch inserts for performance

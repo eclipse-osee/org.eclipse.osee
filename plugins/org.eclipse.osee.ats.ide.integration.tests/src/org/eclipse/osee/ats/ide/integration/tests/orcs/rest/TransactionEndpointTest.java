@@ -71,6 +71,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -89,6 +90,11 @@ public class TransactionEndpointTest {
       transactionEndpoint = ServiceUtil.getOseeClient().getTransactionEndpoint();
       applicEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
       jaxRsApi = ServiceUtil.getOseeClient().jaxRsApi();
+   }
+
+   @After
+   public void tearDown() {
+      deleteColdStorageArchives();
    }
 
    /**
@@ -135,7 +141,6 @@ public class TransactionEndpointTest {
 
    @Test
    public void testCreateTransaction() {
-      // test transactionEndpoint.create(tx);
       String json = OseeInf.getResourceContents("create_tx.json", getClass());
       Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
       assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
@@ -808,6 +813,9 @@ public class TransactionEndpointTest {
 
    @Test
    public void testTxPurgeColdStorageAndRestore() {
+
+      deleteColdStorageArchives();
+
       // Create a transaction with test data
       SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
          "ColdStorageTest: Create artifact for purge/restore test");
@@ -819,12 +827,10 @@ public class TransactionEndpointTest {
       JdbcClient client = AtsApiService.get().getJdbcService().getClient();
 
       // Verify the transaction exists
-      int txDetailsBefore = client.fetch(0,
-         "SELECT count(1) FROM osee_tx_details WHERE transaction_id = ?", txToken);
+      int txDetailsBefore = client.fetch(0, "SELECT count(1) FROM osee_tx_details WHERE transaction_id = ?", txToken);
       assertEquals(1, txDetailsBefore);
 
-      int txsBefore = client.fetch(0,
-         "SELECT count(1) FROM osee_txs WHERE transaction_id = ? AND branch_id = ?",
+      int txsBefore = client.fetch(0, "SELECT count(1) FROM osee_txs WHERE transaction_id = ? AND branch_id = ?",
          txToken, DemoBranches.SAW_PL_Working_Branch);
       assertTrue(txsBefore > 0);
 
@@ -834,8 +840,7 @@ public class TransactionEndpointTest {
       }
 
       // Verify the transaction is gone
-      int txDetailsAfter = client.fetch(0,
-         "SELECT count(1) FROM osee_tx_details WHERE transaction_id = ?", txToken);
+      int txDetailsAfter = client.fetch(0, "SELECT count(1) FROM osee_tx_details WHERE transaction_id = ?", txToken);
       assertEquals(0, txDetailsAfter);
 
       // List purged tx archives - should find one
@@ -856,19 +861,17 @@ public class TransactionEndpointTest {
       assertTrue(restoreResults.toString().contains("Successfully restored"));
 
       // Verify the transaction is back
-      int txDetailsRestored = client.fetch(0,
-         "SELECT count(1) FROM osee_tx_details WHERE transaction_id = ?", txToken);
+      int txDetailsRestored = client.fetch(0, "SELECT count(1) FROM osee_tx_details WHERE transaction_id = ?", txToken);
       assertEquals(1, txDetailsRestored);
 
-      int txsRestored = client.fetch(0,
-         "SELECT count(1) FROM osee_txs WHERE transaction_id = ? AND branch_id = ?",
+      int txsRestored = client.fetch(0, "SELECT count(1) FROM osee_txs WHERE transaction_id = ? AND branch_id = ?",
          txToken, DemoBranches.SAW_PL_Working_Branch);
       assertTrue(txsRestored > 0);
 
-      // Clean up - decache the test artifact and remove the cold storage archive file
       ArtifactCache.deCache(testArt);
+   }
 
-      // Delete cold storage files created during this test
+   private void deleteColdStorageArchives() {
       String serverPath = System.getProperty("osee.application.server.data");
       if (serverPath == null) {
          serverPath = System.getProperty("user.home");
@@ -879,13 +882,13 @@ public class TransactionEndpointTest {
       }
       File coldDir = new File(serverPath + File.separator + "cold_storage");
       if (coldDir.exists()) {
-         File[] archiveFiles = coldDir.listFiles(
-            (d, name) -> name.startsWith("tx_purge_") && name.contains(txToken.getIdString()));
-         if (archiveFiles != null) {
-            for (File f : archiveFiles) {
+         File[] files = coldDir.listFiles();
+         if (files != null) {
+            for (File f : files) {
                f.delete();
             }
          }
       }
    }
+
 }
