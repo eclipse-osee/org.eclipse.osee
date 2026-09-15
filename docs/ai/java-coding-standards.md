@@ -56,7 +56,9 @@ public class MyClass {
 
 ### Principle
 
-Code should be self-documenting. JavaDoc is only warranted when it communicates something a developer cannot infer from reading the method signature, argument names, and a short method body.
+Code should be self-documenting. **Default to NO JavaDoc.** Method names, parameter names, field names, and short method bodies are the primary documentation - make them clear instead of describing them. Add JavaDoc only when it communicates something a developer genuinely cannot infer from the signature and a short read of the body. When in doubt, leave it out.
+
+This applies to methods, fields, and types alike. Prefer a better name over any comment. Most methods - especially getters, setters, simple delegations, and anything whose name already states what it does - should have no JavaDoc at all. Do not generate a JavaDoc block per method as a matter of habit.
 
 ### Rules
 
