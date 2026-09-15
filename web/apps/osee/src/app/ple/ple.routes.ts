@@ -60,6 +60,10 @@ const routes: Routes = [
 		loadChildren: () => import('./change-report/change-report.routes'),
 	},
 	{
+		path: 'markdown-change-report',
+		loadChildren: () => import('./markdown-diff/markdown-diff.routes'),
+	},
+	{
 		path: 'dispatch',
 		loadChildren: () => import('./dispatch/dispatch.routes'),
 	},

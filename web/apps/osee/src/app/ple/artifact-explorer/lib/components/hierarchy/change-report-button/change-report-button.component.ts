@@ -18,9 +18,7 @@ import {
 	input,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { map } from 'rxjs';
-import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
+import { UiService } from '@osee/shared/services';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -31,8 +29,10 @@ import { RouterLink } from '@angular/router';
 	imports: [MatIconButton, MatIcon, MatTooltip, RouterLink],
 	template: `@if (branchId() && branchType()) {
 		<a
-			[routerLink]="'/ple/change-report/' + branchId()"
-			target="_blank">
+			[routerLink]="'/ple/change-report'"
+			[queryParams]="{ branchId: branchId(), branchType: branchType() }"
+			target="_blank"
+			rel="noopener noreferrer">
 			<button
 				mat-icon-button
 				matTooltip="Change Report"
@@ -47,8 +47,6 @@ export class ChangeReportButtonComponent {
 	inputBranchType = input<string>('');
 	inputBranchId = input<string>('');
 
-	private currentBranchService = inject(CurrentBranchInfoService);
-	private tabService = inject(ArtifactExplorerTabService);
 	private uiService = inject(UiService);
 
 	protected serviceBranchType = toSignal(this.uiService.type, {
@@ -68,11 +66,5 @@ export class ChangeReportButtonComponent {
 		this.inputBranchId() === ''
 			? this.serviceBranchId()
 			: this.inputBranchId()
-	);
-
-	branchName = toSignal(
-		this.currentBranchService.currentBranch.pipe(
-			map((branch) => branch.name)
-		)
 	);
 }

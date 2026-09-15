@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { changeReportRow } from '@osee/shared/types/change-report';
 import { apiURL } from '@osee/environments';
@@ -21,9 +21,54 @@ import { apiURL } from '@osee/environments';
 export class ChangeReportHttpService {
 	private http = inject(HttpClient);
 
+	/**
+	 * @deprecated Use getFilteredPaginatedChangeReport for paginated, filtered results.
+	 */
 	getBranchChangeReport(branch1Id: string, branch2Id: string) {
 		return this.http.get<changeReportRow[]>(
 			`${apiURL}/orcs/branches/${branch1Id}/changes/${branch2Id}`
+		);
+	}
+
+	getFilteredPaginatedChangeReport(
+		branch1Id: string,
+		branch2Id: string,
+		filter = '',
+		pageNum = 0,
+		pageSize = 10,
+		attributeType = ''
+	) {
+		let params = new HttpParams()
+			.set('pageNum', pageNum.toString())
+			.set('count', pageSize.toString());
+		if (filter) {
+			params = params.set('filter', filter);
+		}
+		if (attributeType) {
+			params = params.set('attributeType', attributeType);
+		}
+		return this.http.get<changeReportRow[]>(
+			`${apiURL}/orcs/branches/${branch1Id}/changes/${branch2Id}/filtered`,
+			{ params }
+		);
+	}
+
+	getFilteredPaginatedChangeReportCount(
+		branch1Id: string,
+		branch2Id: string,
+		filter = '',
+		attributeType = ''
+	) {
+		let params = new HttpParams();
+		if (filter) {
+			params = params.set('filter', filter);
+		}
+		if (attributeType) {
+			params = params.set('attributeType', attributeType);
+		}
+		return this.http.get<number>(
+			`${apiURL}/orcs/branches/${branch1Id}/changes/${branch2Id}/filtered/count`,
+			{ params }
 		);
 	}
 
