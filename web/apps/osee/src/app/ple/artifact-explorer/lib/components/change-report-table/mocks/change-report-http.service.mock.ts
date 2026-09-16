@@ -15,9 +15,6 @@ import { ChangeReportHttpService } from '../services/change-report-http.service'
 import { changeReportMock } from './changeReportMock';
 
 export const changeReportHttpServiceMock: Partial<ChangeReportHttpService> = {
-	getBranchChangeReport(branch1Id: string, branch2Id: string) {
-		return of(changeReportMock);
-	},
 	getTxChangeReport(branchId: string, tx1: string, tx2: string) {
 		return of(changeReportMock);
 	},

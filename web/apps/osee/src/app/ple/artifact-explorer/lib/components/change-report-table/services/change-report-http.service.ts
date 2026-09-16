@@ -21,15 +21,6 @@ import { apiURL } from '@osee/environments';
 export class ChangeReportHttpService {
 	private http = inject(HttpClient);
 
-	/**
-	 * @deprecated Use getFilteredPaginatedChangeReport for paginated, filtered results.
-	 */
-	getBranchChangeReport(branch1Id: string, branch2Id: string) {
-		return this.http.get<changeReportRow[]>(
-			`${apiURL}/orcs/branches/${branch1Id}/changes/${branch2Id}`
-		);
-	}
-
 	getFilteredPaginatedChangeReport(
 		branch1Id: string,
 		branch2Id: string,

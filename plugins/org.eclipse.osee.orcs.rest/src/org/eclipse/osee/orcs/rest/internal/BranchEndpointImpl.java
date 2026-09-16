@@ -366,13 +366,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public List<ChangeReportRowDto> getBranchChangeReport(BranchId branch1, BranchId branch2) {
-      TransactionToken sourceTx = newTxQuery().andIsHead(branch1).getResults().getExactlyOne();
-      TransactionToken destinationTx = newTxQuery().andIsHead(branch2).getResults().getExactlyOne();
-      return orcsApi.getTransactionFactory().getTxChangeReport(branch1, branch2, sourceTx, destinationTx);
-   }
-
-   @Override
    public List<ChangeReportRowDto> getFilteredPaginatedChangeReport(BranchId branch1, BranchId branch2, String filter,
       long pageNum, long pageSize, String attributeType) {
       List<ChangeReportRowDto> all = getFilteredChanges(branch1, branch2, filter, attributeType);

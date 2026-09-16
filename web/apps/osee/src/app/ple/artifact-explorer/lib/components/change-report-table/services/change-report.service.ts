@@ -26,10 +26,6 @@ export class ChangeReportService {
 	private actionService = inject(ActionService);
 	private txService = inject(TransactionHistoryService);
 
-	getBranchChanges(branch1Id: string, branch2Id: string) {
-		return this.crHttpService.getBranchChangeReport(branch1Id, branch2Id);
-	}
-
 	getFilteredPaginatedChanges(
 		branch1Id: string,
 		branch2Id: string,

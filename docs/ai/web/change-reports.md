@@ -42,7 +42,7 @@ GET /orcs/branches/{branch1}/changes/{branch2}/filtered/count
 
 The endpoint is generic — any consumer can paginate/filter any attribute type. The Markdown Change Report passes `attributeType=Markdown Content`; the Change Report page passes no `attributeType`.
 
-**Implementation:** `BranchEndpointImpl.getFilteredPaginatedChangeReport` fetches all changes via the existing `TransactionFactory.getTxChangeReport`, then filters in-memory for the attribute type and text filter, then paginates with an in-memory `subList` (`count`/count endpoint returns the filtered `.size()`). The old unpaginated endpoint (`GET /orcs/branches/{branch1}/changes/{branch2}`) is deprecated but preserved.
+**Implementation:** `BranchEndpointImpl.getFilteredPaginatedChangeReport` fetches all changes via the existing `TransactionFactory.getTxChangeReport`, then filters in-memory for the attribute type and text filter, then paginates with an in-memory `subList` (`count`/count endpoint returns the filtered `.size()`).
 
 The page bounds are computed in `long` (`pageNum * pageSize`) and clamped to the list size before the `subList` cast so a large `pageNum`/`pageSize` cannot overflow `int` into a negative index. A `pageSize <= 0` or `pageNum < 0` request returns the full filtered list, and a start offset past the end returns an empty list.
 
@@ -65,7 +65,7 @@ Because the component only holds one page at a time, **export re-fetches the ful
 
 | Service | Location | Role |
 |---------|----------|------|
-| `ChangeReportHttpService` | `change-report-table/services/` | HTTP calls to both old and new endpoints |
+| `ChangeReportHttpService` | `change-report-table/services/` | HTTP calls to the `/filtered` (page) and `/filtered/count` endpoints, plus the tx-delta `/changes/{tx1}/{tx2}` endpoint |
 | `ChangeReportService` | `change-report-table/services/` | Facade adding branch info, action, tx info lookups |
 | `MarkdownDiffHttpService` | `markdown-diff/services/` | Calls the server `/filtered` (page) and `/filtered/count` (total) endpoints with `attributeType=Markdown Content`; maps rows to display entries. `getMarkdownChanges(..., pageSize=0)` returns the full set for export |
 | `MarkdownDiffService` | `markdown-diff/services/` | Facade for markdown diff page |

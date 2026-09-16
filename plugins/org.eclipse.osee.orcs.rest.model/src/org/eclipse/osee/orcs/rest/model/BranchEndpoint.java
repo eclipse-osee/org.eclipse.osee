@@ -222,16 +222,6 @@ public interface BranchEndpoint {
    List<BranchUniqueArtifacts> compareArtifactIds(@PathParam("branch1") BranchId branch1,
       @PathParam("branch2") BranchId branch2);
 
-   /**
-    * @deprecated Use {@link #getFilteredPaginatedChangeReport} for paginated, filtered changes.
-    */
-   @Deprecated
-   @GET
-   @Path("{branch1}/changes/{branch2}")
-   @Produces({MediaType.APPLICATION_JSON})
-   List<ChangeReportRowDto> getBranchChangeReport(@PathParam("branch1") BranchId branch1,
-      @PathParam("branch2") BranchId branch2);
-
    @GET
    @Path("{branch1}/changes/{branch2}/filtered")
    @Produces({MediaType.APPLICATION_JSON})
