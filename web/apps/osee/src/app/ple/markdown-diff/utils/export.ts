@@ -13,6 +13,19 @@
 import { MarkdownDiffEntry } from '../types/markdown-diff';
 import { computeSideBySideDiff } from './compute-diff';
 
+/** A newly added artifact: no prior value, so render every line as added. */
+function isNewEntry(entry: MarkdownDiffEntry): boolean {
+	return entry.changeType === 'New' || !entry.wasValue.trim();
+}
+
+/** A deleted artifact: no current value, so render every line as removed. */
+function isDeletedEntry(entry: MarkdownDiffEntry): boolean {
+	return (
+		entry.changeType.toLowerCase().includes('deleted') ||
+		!entry.isValue.trim()
+	);
+}
+
 /**
  * Number of entries processed between yields to the event loop. Large reports
  * (thousands of entries, each running an LCS diff) would otherwise block the
@@ -76,7 +89,7 @@ export async function generateMarkdownExport(
 		lines.push(`**Change Type:** ${entry.changeDescription}`);
 		lines.push('');
 
-		if (entry.changeType === 'New' || !entry.wasValue.trim()) {
+		if (isNewEntry(entry)) {
 			const contentLines = entry.isValue.split('\n');
 			const fence = fenceFor(contentLines);
 			lines.push(`${fence}diff`);
@@ -84,10 +97,7 @@ export async function generateMarkdownExport(
 				lines.push(`+ ${line}`);
 			}
 			lines.push(fence);
-		} else if (
-			entry.changeType.toLowerCase().includes('deleted') ||
-			!entry.isValue.trim()
-		) {
+		} else if (isDeletedEntry(entry)) {
 			const contentLines = entry.wasValue.split('\n');
 			const fence = fenceFor(contentLines);
 			lines.push(`${fence}diff`);
@@ -199,7 +209,7 @@ export async function generateHtmlExport(
 function generateDiffTableHtml(entry: MarkdownDiffEntry): string {
 	let rows: string;
 
-	if (entry.changeType === 'New' || !entry.wasValue.trim()) {
+	if (isNewEntry(entry)) {
 		rows = entry.isValue
 			.split('\n')
 			.map(
@@ -213,10 +223,7 @@ function generateDiffTableHtml(entry: MarkdownDiffEntry): string {
 			</tr>`
 			)
 			.join('');
-	} else if (
-		entry.changeType.toLowerCase().includes('deleted') ||
-		!entry.isValue.trim()
-	) {
+	} else if (isDeletedEntry(entry)) {
 		rows = entry.wasValue
 			.split('\n')
 			.map(
