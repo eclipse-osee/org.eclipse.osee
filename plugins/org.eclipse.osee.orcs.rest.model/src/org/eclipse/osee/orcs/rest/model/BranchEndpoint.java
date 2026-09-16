@@ -223,10 +223,20 @@ public interface BranchEndpoint {
       @PathParam("branch2") BranchId branch2);
 
    @GET
-   @Path("{branch1}/changes/{branch2}")
+   @Path("{branch1}/changes/{branch2}/filtered")
    @Produces({MediaType.APPLICATION_JSON})
-   List<ChangeReportRowDto> getBranchChangeReport(@PathParam("branch1") BranchId branch1,
-      @PathParam("branch2") BranchId branch2);
+   List<ChangeReportRowDto> getFilteredPaginatedChangeReport(@PathParam("branch1") BranchId branch1,
+      @PathParam("branch2") BranchId branch2, @QueryParam("filter") @DefaultValue("") String filter,
+      @QueryParam("pageNum") @DefaultValue("0") long pageNum,
+      @QueryParam("count") @DefaultValue("0") long pageSize,
+      @QueryParam("attributeType") @DefaultValue("") String attributeType);
+
+   @GET
+   @Path("{branch1}/changes/{branch2}/filtered/count")
+   @Produces({MediaType.APPLICATION_JSON})
+   int getFilteredPaginatedChangeReportCount(@PathParam("branch1") BranchId branch1,
+      @PathParam("branch2") BranchId branch2, @QueryParam("filter") @DefaultValue("") String filter,
+      @QueryParam("attributeType") @DefaultValue("") String attributeType);
 
    @GET
    @Path("{branch}/changes/{tx1}/{tx2}")

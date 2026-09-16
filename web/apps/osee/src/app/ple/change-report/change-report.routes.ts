@@ -23,11 +23,6 @@ const routes: Routes = [
 		title: 'Change Report',
 		loadComponent: () => import('./change-report.component'),
 	},
-	{
-		path: ':branchId',
-		title: 'Change Report',
-		loadComponent: () => import('./change-report.component'),
-	},
 ];
 
 export default routes;

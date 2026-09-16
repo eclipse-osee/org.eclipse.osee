@@ -65,14 +65,6 @@ describe('ChangeReportService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should get changes given two branch ids', () => {
-		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.getBranchChanges('10', '8')).toBe('(a|)', {
-				a: changeReportMock,
-			});
-		});
-	});
-
 	it('should get changes given a branch id and two txs', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(service.getTxChanges('10', '1', '2')).toBe(

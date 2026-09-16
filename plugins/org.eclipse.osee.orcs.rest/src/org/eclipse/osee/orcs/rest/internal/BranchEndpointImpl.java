@@ -366,10 +366,71 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public List<ChangeReportRowDto> getBranchChangeReport(BranchId branch1, BranchId branch2) {
+   public List<ChangeReportRowDto> getFilteredPaginatedChangeReport(BranchId branch1, BranchId branch2, String filter,
+      long pageNum, long pageSize, String attributeType) {
+      List<ChangeReportRowDto> all = getFilteredChanges(branch1, branch2, filter, attributeType);
+      if (pageSize <= 0 || pageNum < 0) {
+         return all;
+      }
+      // Compute the page bounds in long to avoid int overflow (pageNum * pageSize
+      // can exceed Integer.MAX_VALUE), then clamp to the list size before casting.
+      long startLong = pageNum * pageSize;
+      if (startLong >= all.size()) {
+         return java.util.Collections.emptyList();
+      }
+      int start = (int) startLong;
+      int end = (int) Math.min(startLong + pageSize, all.size());
+      return all.subList(start, end);
+   }
+
+   @Override
+   public int getFilteredPaginatedChangeReportCount(BranchId branch1, BranchId branch2, String filter,
+      String attributeType) {
+      return getFilteredChanges(branch1, branch2, filter, attributeType).size();
+   }
+
+   private List<ChangeReportRowDto> getFilteredChanges(BranchId branch1, BranchId branch2, String filter,
+      String attributeType) {
       TransactionToken sourceTx = newTxQuery().andIsHead(branch1).getResults().getExactlyOne();
       TransactionToken destinationTx = newTxQuery().andIsHead(branch2).getResults().getExactlyOne();
-      return orcsApi.getTransactionFactory().getTxChangeReport(branch1, branch2, sourceTx, destinationTx);
+      List<ChangeReportRowDto> all = orcsApi.getTransactionFactory().getTxChangeReport(branch1, branch2, sourceTx,
+         destinationTx);
+      List<ChangeReportRowDto> filtered = all;
+      if (attributeType != null && !attributeType.isEmpty()) {
+         filtered = filtered.stream().filter(
+            row -> row.getItemKindType().isAttributeChange() && row.getItemType().equalsIgnoreCase(
+               attributeType)).collect(Collectors.toList());
+      }
+      if (filter != null && !filter.isEmpty()) {
+         String lowerFilter = filter.toLowerCase();
+         filtered = filtered.stream().filter(row -> {
+            String description = deriveChangeDescription(row);
+            return row.getNames().toLowerCase().contains(lowerFilter) || row.getIds().toLowerCase().contains(
+               lowerFilter) || row.getChangeType().toLowerCase().contains(
+                  lowerFilter) || row.getItemType().toLowerCase().contains(
+                     lowerFilter) || row.getItemKind().toLowerCase().contains(
+                        lowerFilter) || description.toLowerCase().contains(lowerFilter);
+         }).collect(Collectors.toList());
+      }
+      return filtered;
+   }
+
+   private String deriveChangeDescription(ChangeReportRowDto row) {
+      String type = row.getChangeType().toLowerCase();
+      String itemType = row.getItemType();
+      if (type.contains("deleted")) {
+         return "Artifact Deleted";
+      }
+      if (type.equals("new")) {
+         return itemType + " Added";
+      }
+      if (type.equals("modified")) {
+         return itemType + " Modified";
+      }
+      if (type.equals("applicability")) {
+         return "Applicability Changed";
+      }
+      return row.getChangeType();
    }
 
    @Override

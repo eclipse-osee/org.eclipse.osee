@@ -44,16 +44,6 @@ describe('ChangeReportHttpService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should get a change report using two branch ids', () => {
-		service.getBranchChangeReport('10', '12').subscribe();
-		const req = httpTestingController.expectOne(
-			`${apiURL}/orcs/branches/10/changes/12`
-		);
-		expect(req.request.method).toEqual('GET');
-		req.flush(changeReportMock);
-		httpTestingController.verify();
-	});
-
 	it('should get a change report using transaction ids', () => {
 		service.getTxChangeReport('10', '1', '2').subscribe();
 		const req = httpTestingController.expectOne(
