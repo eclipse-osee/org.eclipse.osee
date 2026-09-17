@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
@@ -26,11 +27,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  */
 public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric<T> {
    private final List<T> enumTokens;
-   private final List<T> dbLoadedEnumTokens = new ArrayList<>();
+   private final List<T> dbLoadedEnumTokens = new CopyOnWriteArrayList<>();
 
    public AttributeTypeEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, int enumCount, DisplayHint... hints) {
       super(id, namespace, name, mediaType, description, taggerType, "", null, null, hints);
-      this.enumTokens = new ArrayList<T>(enumCount);
+      this.enumTokens = new CopyOnWriteArrayList<T>();
    }
 
    protected void addEnum(T enumeration) {
@@ -49,12 +50,7 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
    }
 
    private boolean containsEnumWithName(String name) {
-      for (T enumValue : enumTokens) {
-         if (enumValue.getName().equals(name)) {
-            return true;
-         }
-      }
-      return false;
+      return findByName(enumTokens, name).isPresent();
    }
 
    @SuppressWarnings("unchecked")
@@ -63,12 +59,7 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
    }
 
    public Optional<T> getEnum(String name) {
-      for (var enumToken : this.enumTokens) {
-         if (enumToken.getName().equals(name)) {
-            return Optional.of(enumToken);
-         }
-      }
-      return Optional.empty();
+      return findByName(this.enumTokens, name);
    }
 
    public Optional<T> getEnum(int ordinal) {
@@ -134,21 +125,56 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
    }
 
    public boolean isValidEnum(String enumName) {
-      for (T enumToken : enumTokens) {
-         if (enumToken.getName().equals(enumName)) {
-            return true;
-         }
+      return findByName(enumTokens, enumName).isPresent();
+   }
+
+   /**
+    * Promotes a runtime-discovered value into the VALID enum set (used for pick lists and
+    * validation). Idempotent by name and identity-preserving:
+    * <ul>
+    * <li>If the name is already a valid enum, its existing token is returned and the valid set is
+    * unchanged.</li>
+    * <li>If the name was previously minted by {@link #valueFromStorageString} into
+    * {@code dbLoadedEnumTokens}, that same token is moved into the valid set (its ordinal is
+    * preserved) so a stored value and its promoted valid value remain {@code ==}/{@code equals}
+    * equal and no duplicate name or colliding ordinal is created.</li>
+    * <li>Otherwise a new token is minted with the next ordinal using the same scheme as
+    * {@link #valueFromStorageString}.</li>
+    * </ul>
+    * Synchronized on this instance; combined with the synchronization on
+    * {@link #valueFromStorageString}, concurrent callers cannot produce duplicate names or colliding
+    * ordinals.
+    */
+   public synchronized T addDbLoadedValidEnum(String name) {
+      if (name == null || name.isBlank()) {
+         throw new OseeArgumentException("name cannot be null or blank for [%s]", this);
       }
-      return false;
+      if (enumTokens.isEmpty()) {
+         throw new OseeArgumentException("no seed enum token available to clone for [%s]", this);
+      }
+      Optional<T> existingValid = getEnum(name);
+      if (existingValid.isPresent()) {
+         return existingValid.get();
+      }
+      Optional<T> alreadyLoaded = findByName(dbLoadedEnumTokens, name);
+      if (alreadyLoaded.isPresent()) {
+         T promoted = alreadyLoaded.get();
+         dbLoadedEnumTokens.remove(promoted);
+         enumTokens.add(promoted);
+         return promoted;
+      }
+      T enumeration = cloneWithNextOrdinal(name);
+      enumTokens.add(enumeration);
+      return enumeration;
    }
 
    @Override
-   public T valueFromStorageString(String storedValue) {
-      Optional<T> eTok = enumTokens.stream().filter(val -> val.getName().equals(storedValue)).findFirst();
+   public synchronized T valueFromStorageString(String storedValue) {
+      Optional<T> eTok = findByName(enumTokens, storedValue);
       if (eTok.isPresent()) {
          return eTok.get();
       }
-      eTok = dbLoadedEnumTokens.stream().filter(val -> val.getName().equals(storedValue)).findFirst();
+      eTok = findByName(dbLoadedEnumTokens, storedValue);
       if (eTok.isPresent()) {
          return eTok.get();
       }
@@ -157,8 +183,7 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
        * enumerations. Use a different storage so any calls to get currently valid Enums do not get database loaded
        * ones.
        */
-      T enumeration = enumTokens.get(0).clone(Long.valueOf(enumTokens.size() + dbLoadedEnumTokens.size()));
-      enumeration.setName(storedValue);
+      T enumeration = cloneWithNextOrdinal(storedValue);
       /**
        * New enumerations are created if a loaded enum value isn't in the original enumTokens list. Need to keep track
        * of these so each loaded token gets the next id, but do not want to add to the enumTokens list or they will be
@@ -166,6 +191,21 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
        */
       dbLoadedEnumTokens.add(enumeration);
       return enumeration;
+   }
+
+   private T cloneWithNextOrdinal(String name) {
+      T enumeration = enumTokens.get(0).clone(Long.valueOf(enumTokens.size() + dbLoadedEnumTokens.size()));
+      enumeration.setName(name);
+      return enumeration;
+   }
+
+   private Optional<T> findByName(List<T> tokens, String name) {
+      for (T enumToken : tokens) {
+         if (enumToken.getName().equals(name)) {
+            return Optional.of(enumToken);
+         }
+      }
+      return Optional.empty();
    }
 
 }

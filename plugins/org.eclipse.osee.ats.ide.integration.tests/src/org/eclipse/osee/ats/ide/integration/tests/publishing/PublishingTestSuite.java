@@ -71,6 +71,7 @@ public class PublishingTestSuite extends Suite {
    private static final Class<?>[] publishingTests =
       new Class<?>[]
       {
+         DataRightsClassificationClientRefresherTest.class,
          PublishingDataRightsTest.class,
          PublishingDiffTest.class,
          PublishingIncludeFoldersTest.class,

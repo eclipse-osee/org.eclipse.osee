@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationSeedPropertyTest;
+import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationSeedTest;
+import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationStaticInitTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,6 +25,10 @@ import org.junit.runners.Suite;
    DeletionFlagTest.class,
    PermissionEnumTest.class,
    AttributeTypeEnumTest.class,
+   AttributeTypeEnumConcurrencyTest.class,
+   DataRightsClassificationSeedTest.class,
+   DataRightsClassificationSeedPropertyTest.class,
+   DataRightsClassificationStaticInitTest.class,
 //@formatter:on
 })
 /**

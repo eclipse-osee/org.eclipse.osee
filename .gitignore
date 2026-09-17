@@ -30,3 +30,6 @@ output_rules_osee_bazel
 
 #Ignore playwright screenshots
 screenshots/
+
+#Ignore Kiro spec working documents
+.kiro/specs/

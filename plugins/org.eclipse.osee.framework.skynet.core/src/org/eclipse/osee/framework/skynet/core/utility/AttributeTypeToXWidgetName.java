@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -31,6 +32,9 @@ public class AttributeTypeToXWidgetName {
       int maxOccurrence = artType.getMax(attributeType);
       String xWidgetName = "";
       if (attributeType.isEnumerated()) {
+         if (attributeType.equals(CoreAttributeTypes.DataRightsClassification)) {
+            DataRightsClassificationClientRefresher.ensureRefreshed();
+         }
          AttributeTypeEnum<T> enumeratedType =
             (AttributeTypeEnum<T>) ServiceUtil.getOrcsTokenService().getAttributeType(attributeType.getId());
          artType = ServiceUtil.getOrcsTokenService().getArtifactType(artType.getId());

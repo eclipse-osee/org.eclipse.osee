@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseBranchAccessor;
+import org.eclipse.osee.framework.skynet.core.utility.DataRightsClassificationClientRefresher;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 
@@ -67,5 +68,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    @Override
    public void clearAll() {
       getBranchCache().decacheAll();
+      DataRightsClassificationClientRefresher.reset();
    }
 }

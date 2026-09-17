@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.publishing.DataRight;
+import org.eclipse.osee.framework.core.publishing.DataRightsClassificationNameParser;
 import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -105,21 +106,23 @@ class DataRightClassificationMap {
             (
                ( footer ) ->
                {
-                  var parts = ((String) footer).split("\\n", 2);
+                  var value = (String) footer;
 
-                  if (parts.length == 2) {
-
-                     var classification = parts[0].trim();
-                     var content        = parts[1].trim();
-
-                     DataRight dataRight = new DataRight(classification, content);
-                     toReturn.put(classification, dataRight);
-                  }
+                  DataRightsClassificationNameParser.parseFooter( value )
+                     .ifPresent
+                        (
+                           ( parsedFooter ) ->
+                           {
+                              DataRight dataRight =
+                                 new DataRight( parsedFooter.getClassification(), parsedFooter.getContent() );
+                              toReturn.put( parsedFooter.getClassification(), dataRight );
+                           }
+                        );
                }
             );
       //@formatter:on
 
-      if (toReturn.size() == 0) {
+      if (toReturn.isEmpty()) {
          return DataRightClassificationMap.unspecifiedDataRightClassificationMap;
       }
 
@@ -158,5 +161,3 @@ class DataRightClassificationMap {
    }
 
 }
-
-/* EOF */

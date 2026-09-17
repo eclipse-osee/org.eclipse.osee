@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.exception.ExceptionTestSuite;
 import org.eclipse.osee.framework.core.executor.ExecutorAdminTestSuite;
 import org.eclipse.osee.framework.core.operation.OperationTestSuite;
 import org.eclipse.osee.framework.core.ops.OpsTestSuite;
+import org.eclipse.osee.framework.core.publishing.PublishingTestSuite;
 import org.eclipse.osee.framework.core.util.UtilCoreTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -31,7 +32,8 @@ import org.junit.runners.Suite;
    ExecutorAdminTestSuite.class,
    UtilCoreTestSuite.class,
    OperationTestSuite.class,
-   OpsTestSuite.class})
+   OpsTestSuite.class,
+   PublishingTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */
