@@ -110,6 +110,13 @@ public interface TransactionBuilder {
 
    ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination);
 
+   /**
+    * Changes the artifact's type in place through transaction history. Caller is responsible for ensuring the artifact
+    * holds no attributes or relations that are invalid for the new type; invalid data is neither validated nor removed
+    * here and will be orphaned.
+    */
+   void setArtifactType(ArtifactId art, ArtifactTypeToken artifactType);
+
    // ATTRIBUTE
 
    void setName(ArtifactId art, String value);

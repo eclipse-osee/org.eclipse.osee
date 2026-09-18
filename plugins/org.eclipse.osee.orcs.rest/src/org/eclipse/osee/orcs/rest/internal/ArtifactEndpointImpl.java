@@ -80,6 +80,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -401,6 +402,20 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       }
       adminOps.changeArtifactTypeOutsideofHistory(newType, artifacts);
       return artifacts;
+   }
+
+   @Override
+   public TransactionToken changeArtifactTypeById(BranchId branch, ArtifactTypeToken newType,
+      List<ArtifactId> artifacts) {
+      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
+      if (artifacts.isEmpty()) {
+         throw new OseeArgumentException("The artifact list can not be empty");
+      }
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - change artifact type");
+      for (ArtifactId artifact : artifacts) {
+         tx.setArtifactType(artifact, newType);
+      }
+      return tx.commit();
    }
 
    @Override

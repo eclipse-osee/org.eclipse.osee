@@ -231,6 +231,19 @@ public interface ArtifactEndpoint {
       @PathParam("oldType") ArtifactTypeToken oldType, @PathParam("newType") ArtifactTypeToken newType,
       List<String> names);
 
+   /**
+    * Changes the type of the given artifacts through transaction history. Intended for the case where the new type
+    * supports the same relations and (at least) the attributes actually in use, so no attribute or relation cleanup is
+    * required. The caller must guarantee that no attribute or relation held by these artifacts is invalid for
+    * {@code newType}; this operation does not validate or remove incompatible data.
+    */
+   @POST
+   @Path("new-type/{newType}/change")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   TransactionToken changeArtifactTypeById(@PathParam("branch") BranchId branch,
+      @PathParam("newType") ArtifactTypeToken newType, List<ArtifactId> artifacts);
+
    @DELETE
    @Path("{artifact}")
    @Produces(MediaType.APPLICATION_JSON)

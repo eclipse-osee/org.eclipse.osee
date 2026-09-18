@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -288,6 +289,21 @@ public class ArtifactEndpointTest {
       ArtifactToken artifactToken =
          artifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.PlainText, parentArtifact, name);
       return artifactToken;
+   }
+
+   @Test
+   public void changeArtifactTypeById() {
+      String name = getClass().getSimpleName() + " ChangeType";
+      ArtifactToken artifact =
+         artifactEndpoint.createArtifact(COMMON, CoreArtifactTypes.GeneralData, DefaultHierarchyRoot, name);
+      Assert.assertEquals(CoreArtifactTypes.GeneralData, artifact.getArtifactType());
+
+      TransactionToken tx =
+         artifactEndpoint.changeArtifactTypeById(COMMON, CoreArtifactTypes.HeadingMsWord, Arrays.asList(artifact));
+      Assert.assertTrue(tx.isValid());
+
+      ArtifactToken reloaded = artifactEndpoint.getArtifactToken(artifact);
+      Assert.assertEquals(CoreArtifactTypes.HeadingMsWord, reloaded.getArtifactType());
    }
 
    @Test

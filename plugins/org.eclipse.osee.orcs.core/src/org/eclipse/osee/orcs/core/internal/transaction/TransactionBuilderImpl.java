@@ -391,6 +391,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public void setArtifactType(ArtifactId sourceArtifact, ArtifactTypeToken artifactType) {
+      validateBuilder();
+      Artifact asArtifact = getForWrite(sourceArtifact);
+      asArtifact.setArtifactType(artifactType);
+   }
+
+   @Override
    public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeToken attributeType,
       Collection<T> values) {
       checkPermissionsForLoginId(attributeType);
