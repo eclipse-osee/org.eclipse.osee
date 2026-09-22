@@ -24,6 +24,7 @@ import org.eclipse.osee.define.operations.api.synchronization.SynchronizationOpe
 import org.eclipse.osee.define.operations.api.toggles.TogglesOperations;
 import org.eclipse.osee.define.operations.api.traceability.TraceabilityOperations;
 import org.eclipse.osee.define.operations.publisher.PublisherOperationsImpl;
+import org.eclipse.osee.define.operations.publisher.datarights.DataRightsOperationsImpl;
 import org.eclipse.osee.define.operations.publisher.publishing.PublishingPermissions;
 import org.eclipse.osee.define.operations.reports.ReportsOperationsImpl;
 import org.eclipse.osee.define.operations.synchronization.SynchronizationOperationsImpl;
@@ -125,6 +126,19 @@ public class DefineOperationsImpl implements DefineOperations {
       this.importOperations = new ImportOperationsImpl(this.orcsApi);
 
       this.publisherOperations = PublisherOperationsImpl.create(orcsApi, atsApi, logger, eventAdmin);
+
+      /*
+       * Refresh the valid data rights classification enum set once at startup so footer-defined
+       * classifications are selectable without waiting for a publish or a cache clear. The
+       * data-rights cache is lazy and not preloaded here, so cache-clear wiring alone is
+       * insufficient. create returns the existing singleton established above; the refresh is
+       * additive and never throws for a missing footers artifact. This runs before orcsApi is
+       * nulled out below.
+       */
+
+      int addedDataRightsIndicators = DataRightsOperationsImpl.create(this.orcsApi).refreshRequiredIndicators();
+      this.logger.info("DefineOperationsImpl: refreshed %d data rights classification indicator(s) at startup.",
+         addedDataRightsIndicators);
 
       this.reportsOperations = ReportsOperationsImpl.create(orcsApi, this);
 

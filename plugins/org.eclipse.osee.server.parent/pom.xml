@@ -88,6 +88,9 @@
 					../../plugins/org.eclipse.osee.define.rest.test
 				</module>
 				<module>
+					../../plugins/org.eclipse.osee.define.test
+				</module>
+				<module>
 					../../plugins/org.eclipse.osee.framework.core.server
 				</module>
 				<module>

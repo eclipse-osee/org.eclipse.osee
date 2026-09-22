@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -45,6 +47,8 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 
 public class DataRightsOperationsImpl implements DataRightsOperations {
+
+   private static final Logger logger = Logger.getLogger(DataRightsOperationsImpl.class.getName());
 
    /**
     * Saves the single instance of the {@link DataRightsOperationsImpl}.
@@ -103,14 +107,40 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
    private final QueryFactory queryFactory;
 
+   private final RequiredIndicatorRefresher requiredIndicatorRefresher;
+
    /**
-    * Private constructor creates the single instance of the {@link DataRightsOperationsImpl}.
+    * Guards the cached classification maps. The cached maps are instance state, so the monitor is a
+    * per-instance object rather than the static singleton reference. This keeps {@link #deleteCache}
+    * and {@link #getDataRightsClassificationMap} mutually exclusive while remaining usable on
+    * directly constructed instances (for testing) that were not created through {@link #create}.
+    */
+
+   private final Object cacheLock = new Object();
+
+   /**
+    * Private constructor creates the single instance of the {@link DataRightsOperationsImpl} wired
+    * for production use with a {@link RequiredIndicatorRefresherImpl}.
     *
-    * @param queryFactory a handle to the {@link QueryFactory} from the {@Link OrcsApi}.
+    * @param queryFactory a handle to the {@link QueryFactory} from the {@link OrcsApi}.
     */
 
    private DataRightsOperationsImpl(QueryFactory queryFactory) {
+      this(queryFactory, new RequiredIndicatorRefresherImpl());
+   }
+
+   /**
+    * Package-private constructor provided so tests, which reside in the same package, can inject a
+    * mock {@link RequiredIndicatorRefresher} and {@link QueryFactory} to verify {@link #deleteCache}
+    * behavior without creating the singleton through {@link #create}.
+    *
+    * @param queryFactory a handle to the {@link QueryFactory} from the {@link OrcsApi}.
+    * @param requiredIndicatorRefresher the refresher invoked when the cache is cleared.
+    */
+
+   DataRightsOperationsImpl(QueryFactory queryFactory, RequiredIndicatorRefresher requiredIndicatorRefresher) {
       this.queryFactory = queryFactory;
+      this.requiredIndicatorRefresher = requiredIndicatorRefresher;
       this.dataRightClassificationMap = null;
       this.htmlDataRightClassificationMap = null;
    }
@@ -122,10 +152,39 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
    @Override
    public void deleteCache() {
 
-      synchronized (DataRightsOperationsImpl.dataRightsOperationsImpl) {
+      synchronized (this.cacheLock) {
          this.dataRightClassificationMap = null;
          this.htmlDataRightClassificationMap = null;
       }
+
+      /*
+       * Clearing the cache invalidates the cached footers; refresh the valid classification enum set
+       * from the common branch footers artifact so footer-defined names remain selectable. The
+       * refresh is additive and never throws for a missing artifact, so it runs after the cache is
+       * nulled and does not interfere with cache invalidation. Any unexpected failure of the refresh
+       * (e.g. a query factory failure) must not fail cache invalidation, so it is caught and logged;
+       * the cache is already cleared and the seed set continues to govern.
+       */
+
+      try {
+         this.requiredIndicatorRefresher.refresh(this.queryFactory.fromBranch(CoreBranches.COMMON));
+      } catch (Exception e) {
+         DataRightsOperationsImpl.logger.log(Level.WARNING,
+            "Failed to refresh data rights classification indicators after cache clear.", e);
+      }
+   }
+
+   /**
+    * Refreshes the valid {@code DataRightsClassification} enum set from the common branch
+    * {@code DataRightsFooters} artifact. Intended to be called once at server startup (when the
+    * {@link OrcsApi} query factory is available) so footer-defined classifications are valid without
+    * waiting for a publish or a cache clear. Additive and safe to call repeatedly.
+    *
+    * @return the number of classification names newly added to the valid set.
+    */
+
+   public int refreshRequiredIndicators() {
+      return this.requiredIndicatorRefresher.refresh(this.queryFactory.fromBranch(CoreBranches.COMMON));
    }
 
    private DataRightResult findSequences(DataRightEntryList dataRightEntryList) {
@@ -418,7 +477,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    private DataRightClassificationMap getDataRightsClassificationMap(PublishingOutputFormatter formatter) {
-      synchronized (DataRightsOperationsImpl.dataRightsOperationsImpl) {
+      synchronized (this.cacheLock) {
          final ArtifactToken artifact = formatter.getDataRightsMappingArtifact();
          final Supplier<DataRightClassificationMap> creator =
             () -> DataRightClassificationMap.create(this.queryFactory.fromBranch(CoreBranches.COMMON), formatter);
@@ -564,5 +623,3 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
    }
 
 }
-
-/* EOF */
