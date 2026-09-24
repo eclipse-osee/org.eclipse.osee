@@ -76,7 +76,6 @@ export class TransactionService {
 		if (types.length === 0) {
 			types.push('attribute_modified');
 		}
-		// If there are creates/deletes that also have relations, include relation_added
 		if (
 			types.includes('artifact_created') &&
 			'createArtifacts' in body &&

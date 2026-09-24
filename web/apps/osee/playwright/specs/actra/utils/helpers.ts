@@ -119,7 +119,7 @@ export const createWorkflowViaUi = async (
 	const submit = page.getByRole('button', { name: 'Create Action' });
 	await expect(submit).toBeEnabled({ timeout: 15000 });
 
-	// Submit. The action + team workflow is created server-side.
+	// The action + team workflow is created server-side on submit.
 	await Promise.all([
 		page.waitForResponse(
 			(res) => res.url().includes('/ats/action') && res.status() === 200

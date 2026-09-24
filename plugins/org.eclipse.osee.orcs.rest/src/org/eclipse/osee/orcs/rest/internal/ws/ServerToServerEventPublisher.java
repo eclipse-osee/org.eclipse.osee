@@ -34,7 +34,7 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 /**
- * Phase 3: Publishes lightweight server-to-server events via ActiveMQ.
+ * Publishes lightweight server-to-server events via ActiveMQ.
  * <p>
  * When a transaction commit happens on this server (via REST from a web client),
  * this handler publishes a lightweight JSON event to a dedicated ActiveMQ topic.

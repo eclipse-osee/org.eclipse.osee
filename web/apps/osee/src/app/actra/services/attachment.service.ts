@@ -89,19 +89,15 @@ export class AttachmentService {
 					// attachment-id set and break refetch-on-update.
 					filter(
 						(inv) =>
-							// A relation change on the workflow itself means an
-							// attachment was related/unrelated -- refetch the list.
-							// A pure attribute edit on the workflow (e.g. its
-							// description) does NOT change the attachment set, so it
-							// must not trigger a refetch.
+							// Workflow relate/unrelate changes the attachment set; a
+							// pure workflow attribute edit does not, so gate on relation.
 							(inv.artifactId === workflowId() &&
 								inv.changeTypes.some(
 									(t) =>
 										t === 'relation_added' ||
 										t === 'relation_deleted'
 								)) ||
-							// An in-place update to a currently-listed attachment
-							// touches only that attachment artifact.
+							// In-place update to a currently-listed attachment.
 							currentAttachmentIds().includes(
 								inv.artifactId as `${number}`
 							)

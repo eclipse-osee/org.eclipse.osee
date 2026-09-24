@@ -452,12 +452,9 @@ export class ActraWorkflowEditorComponent implements OnInit {
 		) {
 			return;
 		}
-		// Normal (non-conflict) save: persist the pending edits, then clear local
-		// state and refetch so the fields reflect the saved values. Split by whether the attribute
-		// already has a stored instance: existing instances (real id/gamma) are `set`, while a
-		// never-before-saved attribute -- a type-template with id "-1" (e.g. a Boolean the user just
-		// toggled on) -- must be `add`. Without this split the new attribute is dropped by the
-		// transaction's set-mapping (which requires a valid id) and silently never persists.
+		// Split pending edits: attributes with a stored instance are `set`; a never-saved
+		// attribute (id "-1", e.g. a Boolean just toggled on) must be `add`, else the
+		// transaction's set-mapping drops it for lacking a valid id and it never persists.
 		const pending = this.updatedAttributes();
 		this.saveAttributes({
 			set: pending.filter((a) => !isNewAttr(a)),

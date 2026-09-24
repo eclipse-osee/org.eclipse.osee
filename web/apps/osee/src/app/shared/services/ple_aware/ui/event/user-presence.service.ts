@@ -156,7 +156,6 @@ export class UserPresenceService {
 	}
 
 	constructor() {
-		// Subscribe to SSE presence updates
 		this.sseEventService.presenceUpdates$
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe((update) => {
@@ -173,7 +172,6 @@ export class UserPresenceService {
 				}
 			});
 
-		// Set up presence coordination channel
 		this.presenceChannel = new BroadcastChannel('osee-presence');
 		this.presenceChannel.onmessage = (event) =>
 			this.handlePresenceChannelMessage(
@@ -343,7 +341,6 @@ export class UserPresenceService {
 		}
 		subscribers.add(users);
 
-		// Notify leader of updated contexts
 		this.broadcastLocalContexts();
 	}
 
@@ -363,7 +360,6 @@ export class UserPresenceService {
 			this.localContexts.delete(context);
 		}
 
-		// Notify leader of updated contexts
 		this.broadcastLocalContexts();
 	}
 

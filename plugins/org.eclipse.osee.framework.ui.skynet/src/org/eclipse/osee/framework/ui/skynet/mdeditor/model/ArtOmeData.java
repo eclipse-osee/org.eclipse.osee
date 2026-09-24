@@ -184,18 +184,10 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
    }
 
    /**
-    * Refreshes the editor content in response to a remote change (e.g. an edit committed from the
-    * web or another desktop client). Two things are required for the new text to appear and neither
-    * was happening before:
-    * <ol>
-    * <li>The reload touches the SWT {@link XText} widget, so it MUST run on the display thread.
-    * Calling {@link #load()} directly on the event-dispatch thread threw an invalid-thread-access
-    * and silently failed. This mirrors the working editors (WFE / Artifact editor) which wrap their
-    * refresh in {@link Displays#ensureInDisplayThread}.</li>
-    * <li>{@link #load()} re-reads the cached artifact's attribute value, so the cached artifact must
-    * be current. The remote-event handler only updates the cache when the event carries the attribute
-    * change; reloading the artifact first guarantees the freshest value regardless of payload.</li>
-    * </ol>
+    * Refreshes the editor content in response to a remote change (web or another desktop client).
+    * Must run on the display thread because the reload touches the SWT {@link XText} widget. The
+    * artifact is reloaded first because {@link #load()} re-reads the cached value, which is only
+    * updated when the event carries the attribute change.
     */
    private void reloadFromRemoteEvent() {
       Displays.ensureInDisplayThread(new Runnable() {

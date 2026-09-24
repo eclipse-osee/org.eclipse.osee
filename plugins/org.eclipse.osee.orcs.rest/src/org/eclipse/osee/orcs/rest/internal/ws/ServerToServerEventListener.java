@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Phase 3: Receives lightweight server-to-server events from ActiveMQ.
+ * Receives lightweight server-to-server events from ActiveMQ.
  * <p>
  * When another server in the cluster commits a transaction, it publishes a
  * lightweight JSON event. This listener receives it and rebroadcasts it to local SSE clients, which

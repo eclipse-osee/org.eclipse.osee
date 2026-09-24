@@ -126,10 +126,9 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       result.setResults(resultData);
       result.setFailedGammas(tx.getGammaIdsFailed());
 
-      // SSE broadcast is now handled by SseTransactionCommitHandler via EventAdmin.
-      // The TxCallableFactory fires a TransactionCommitTopic event after every successful
-      // commit (regardless of origin), and the handler broadcasts to SSE with user-based
-      // self-exclusion. No inline broadcast needed here.
+      // SSE broadcast happens in SseTransactionCommitHandler: TxCallableFactory fires a
+      // TransactionCommitTopic event after every successful commit (regardless of origin), so no
+      // inline broadcast is needed here.
 
       return result;
    }

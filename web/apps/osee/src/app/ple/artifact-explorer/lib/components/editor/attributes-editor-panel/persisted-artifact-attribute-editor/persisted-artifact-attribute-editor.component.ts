@@ -259,8 +259,7 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 		} else if (this.dirtyService.isDirty(key) && !this.conflicted()) {
 			// Value edited back to the persisted value -- clean the field. While a
 			// conflict is pending we do NOT clean/prune: every edited attribute must
-			// stay tracked so it appears in the resolution dialog and keeps its ring
-			// (fix for the conflict state losing all-but-the-last edited attribute).
+			// stay tracked so it appears in the resolution dialog and keeps its ring.
 			this.dirtyService.markClean(key);
 			this.pendingValuesService.remove(this.attr().id);
 		}

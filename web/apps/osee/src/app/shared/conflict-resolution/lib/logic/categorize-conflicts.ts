@@ -51,8 +51,8 @@ export type conflictKeyOptions = {
  * - Converged: server value equals the local value -> nothing to do.
  * - Safe: server value equals the base value (server untouched) -> autoSaveAttrs.
  * - Delete conflict: the attribute is gone from the server while edited locally
- *   -> conflict with `serverDeleted: true` (this is the fix for the previously
- *   silent auto-commit when the server had deleted the attribute).
+ *   -> conflict with `serverDeleted: true` (never silently auto-commit over a
+ *   server-side deletion).
  * - Value conflict: server and local both diverge from base and differ from each
  *   other -> conflict with the server attr.
  *
@@ -134,7 +134,7 @@ function indexByKey(
 ): Map<string, attribute<string, ATTRIBUTETYPEID>> {
 	const map = new Map<string, attribute<string, ATTRIBUTETYPEID>>();
 	for (const attr of attrs) {
-		// First-wins: keep the earliest instance for a key (matches prior find()).
+		// First-wins: keep the earliest instance for a key.
 		if (!map.has(keyOf(attr))) {
 			map.set(keyOf(attr), attr);
 		}

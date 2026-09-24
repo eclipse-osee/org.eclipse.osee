@@ -188,7 +188,7 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 				);
 				await expect(dialog).toBeVisible({ timeout: 15000 });
 
-				// Default resolution is "Take Server's" (take-theirs); apply it.
+				// Default resolution is "Take Server's" (take-theirs).
 				await jason
 					.getByRole('button', { name: /^Apply Resolution/ })
 					.click();

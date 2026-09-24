@@ -167,12 +167,8 @@ export class ActraWorldComponent implements OnInit {
 				}),
 				catchError(() => of(worldDataEmpty))
 			);
-			// Re-fetch only when a change on the ATS branch is relevant to THIS user:
-			// either the change newly associates the user (e.g. a workflow assigned to
-			// them — via associatedUsers), OR it touches a work item already in their
-			// list (covers reassignment away / state change — matched by row id). This
-			// keeps the view from refreshing on unrelated system-wide workflow changes,
-			// with no server-side per-user query.
+			// Re-fetch only on ATS-branch changes relevant to this user (see
+			// isRelevantChange), avoiding refreshes on unrelated system-wide changes.
 			return worldData$.pipe(
 				repeat({
 					// Re-fetch on a relevant change, OR on SSE resync (reconnect) since relevant

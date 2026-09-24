@@ -58,18 +58,16 @@ import org.osgi.service.event.EventHandler;
  * <p>
  * Responsibilities:
  * <ul>
- *   <li><b>Phase 1 Desktop -> Web:</b> Subscribes to {@code RemotePersistEvent1} on ActiveMQ.
+ *   <li><b>Desktop -> Web:</b> Subscribes to {@code RemotePersistEvent1} on ActiveMQ.
  *       When a desktop client commits directly to the DB and fires an ActiveMQ event,
  *       this bridge receives it and relays to SSE web clients.</li>
- *   <li><b>Phase 1 Web -> Desktop:</b> Listens to the OSGi EventAdmin transaction commit topic.
+ *   <li><b>Web -> Desktop:</b> Listens to the OSGi EventAdmin transaction commit topic.
  *       When a web client commits via REST, this bridge constructs a {@code RemotePersistEvent1}
  *       and sends it via ActiveMQ so desktop clients update their cache.</li>
- *   <li><b>Phase 3 Multi-Server:</b> Publishes lightweight server-to-server events via
+ *   <li><b>Multi-Server:</b> Publishes lightweight server-to-server events via
  *       {@link ServerToServerEventPublisher} and receives them via
  *       {@link ServerToServerEventListener}.</li>
  * </ul>
- * <p>
- * Uses DS annotations per project convention.
  */
 @Component(immediate = true, service = EventHandler.class, property = {
    EventConstants.EVENT_TOPIC + "=" + TransactionCommitTopic.TOPIC})
@@ -107,7 +105,7 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
          return;
       }
       try {
-         // Subscribe to ActiveMQ events from desktop clients (Phase 1: Desktop -> Web)
+         // Subscribe to ActiveMQ events from desktop clients (desktop -> web).
          messagingService.addFrameworkListener(this);
          messagingService.addConnectionListener(new ConnectionListener() {
             @Override
@@ -145,12 +143,12 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
       }
    }
 
-   // --- Phase 1: Desktop -> Web (ActiveMQ -> SSE) ---
+   // --- Desktop -> Web (ActiveMQ -> SSE) ---
 
    /**
     * Called when a RemoteEvent arrives from ActiveMQ. Desktop clients fire
-    * {@code RemotePersistEvent1} after committing directly to the DB.
-    * We relay the event data to SSE web clients.
+    * {@code RemotePersistEvent1} after committing directly to the DB; relay the event data to SSE
+    * web clients.
     */
    @Override
    public void onEvent(RemoteEvent remoteEvent) {
@@ -207,8 +205,7 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
          List<ArtifactChangeMessage.AssociatedUsers> associatedUsers = collectAssociatedUsers(persistEvent);
 
          // Broadcast to all SSE web clients (no self-exclusion needed since
-         // desktop clients don't have SSE sinks). associatedUsers carried on the message
-         // lets interested views (e.g. Actra /world) decide relevance client-side.
+         // desktop clients don't have SSE sinks).
          SseBroadcastService.broadcastArtifactChange(branchId, artifactIds, transactionId, userId, changeTypes,
             associatedUsers, null);
 
@@ -221,7 +218,7 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
       }
    }
 
-   // --- Phase 1: Web -> Desktop (EventAdmin -> ActiveMQ) ---
+   // --- Web -> Desktop (EventAdmin -> ActiveMQ) ---
 
    /**
     * Handles the OSGi EventAdmin transaction commit event fired by TxCallableFactory.
@@ -244,12 +241,10 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
             return;
          }
 
-         // Build RemotePersistEvent1 for desktop clients
          RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
          remoteEvent.setBranchGuid(BranchId.valueOf(branchId));
          remoteEvent.setTransactionId(Integer.parseInt(transactionId));
 
-         // Parse attribute changes JSON if available
          String attrChangesJson = (String) event.getProperty(TransactionCommitTopic.ATTRIBUTE_CHANGES);
          Map<String, List<AttrChangeInfo>> attrChangesByArtifact = parseAttributeChanges(attrChangesJson);
 
@@ -274,7 +269,6 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
             art.setArtId(Long.parseLong(artifactIdsArray[i]));
             art.setArtTypeGuid(artTypeGuid);
 
-            // Add attribute changes for this artifact
             List<AttrChangeInfo> attrChanges = attrChangesByArtifact.get(artifactIdsArray[i]);
             if (attrChanges != null) {
                for (AttrChangeInfo attrChange : attrChanges) {
@@ -308,7 +302,6 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
                remRel.setModTypeGuid(relModTypeNameToGuid(rel.modType));
                remRel.setRationale(rel.rationale);
                remRel.setRelOrder(rel.relOrder);
-               // Set artA and artB as basic artifact references
                RemoteBasicGuidArtifact1 artA = new RemoteBasicGuidArtifact1();
                artA.setArtId(rel.artIdA);
                artA.setArtGuid(String.valueOf(rel.artIdA));
