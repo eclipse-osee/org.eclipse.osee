@@ -28,7 +28,30 @@ import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 public class JAXBUtil {
 
    public static void marshal(Object obj, OutputStream stream) {
-      JAXB.marshal(obj, stream);
+      runWithJaxbClassLoader(() -> JAXB.marshal(obj, stream));
+   }
+
+   /**
+    * Runs a JAXB operation with the thread context classloader temporarily set to this bundle's
+    * classloader.
+    * <p>
+    * {@code jakarta.xml.bind.JAXB} discovers its runtime implementation
+    * ({@code org.glassfish.jaxb.runtime}) via a {@code ServiceLoader} lookup that uses the thread
+    * context classloader, and caches the result on first use. In OSGi the marshal can be triggered
+    * from arbitrary threads (e.g. the EventAdmin dispatch thread) whose TCCL cannot see the JAXB
+    * runtime; if that thread wins the race to the first marshal, discovery fails and the failure is
+    * cached for the JVM lifetime. Pinning the TCCL to this bundle (which imports the runtime) makes
+    * discovery deterministic regardless of the calling thread.
+    */
+   private static void runWithJaxbClassLoader(Runnable jaxbOp) {
+      Thread current = Thread.currentThread();
+      ClassLoader previous = current.getContextClassLoader();
+      try {
+         current.setContextClassLoader(JAXBUtil.class.getClassLoader());
+         jaxbOp.run();
+      } finally {
+         current.setContextClassLoader(previous);
+      }
    }
 
    public static String marshal(Object obj) throws UnsupportedEncodingException {
@@ -40,7 +63,9 @@ public class JAXBUtil {
    public static Object unmarshal(String str, Class<?> clazz) throws UnsupportedEncodingException {
       String sanitized = Xml.removeInvalidChars(str);
       ByteArrayInputStream is = new ByteArrayInputStream(sanitized.getBytes("UTF-8"));
-      return JAXB.unmarshal(new StreamSource(is), clazz);
+      Object[] result = new Object[1];
+      runWithJaxbClassLoader(() -> result[0] = JAXB.unmarshal(new StreamSource(is), clazz));
+      return result[0];
    }
 
    public static Object unmarshal(Object body, OseeMessagingListener listener) throws UnsupportedEncodingException {

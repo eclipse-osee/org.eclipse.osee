@@ -43,6 +43,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
@@ -84,6 +85,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Context
    private UriInfo uriInfo;
+
    public TransactionEndpointImpl(OrcsApi orcsApi, IResourceManager resourceManager) {
       this.orcsApi = orcsApi;
       this.resourceManager = resourceManager;
@@ -116,10 +118,19 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       result.setTx(token);
       XResultData resultData = new XResultData();
       resultData.setTxId(token.getIdString());
-      resultData.setIds(
-         tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
+      List<String> artifactIds =
+         tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList());
+      // Also include modified artifacts (writeables) -- getTxDataReadables only returns created artifacts
+      tx.getTxDataWriteableIds().stream().map(id -> id.getIdString()).forEach(artifactIds::add);
+      resultData.setIds(artifactIds);
       result.setResults(resultData);
       result.setFailedGammas(tx.getGammaIdsFailed());
+
+      // SSE broadcast is now handled by SseTransactionCommitHandler via EventAdmin.
+      // The TxCallableFactory fires a TransactionCommitTopic event after every successful
+      // commit (regardless of origin), and the handler broadcasts to SSE with user-based
+      // self-exclusion. No inline broadcast needed here.
+
       return result;
    }
 
@@ -158,8 +169,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
             String exportFile = txColdStorage.exportTransactions(txList);
             if (exportFile == null) {
                return Response.serverError().entity(
-                  "Failed to export transactions to cold storage before purge. " +
-                  "Verify server data path is configured and writable.").build();
+                  "Failed to export transactions to cold storage before purge. " + "Verify server data path is configured and writable.").build();
             }
          } catch (Exception ex) {
             return Response.serverError().entity(
@@ -170,9 +180,9 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       Response purgeResponse = asResponse(orcsApi.getTransactionFactory().purgeTxs(txIds));
       // If purge fails after successful cold storage export, log that an orphaned archive exists
       if (purgeResponse.getStatus() != Response.Status.OK.getStatusCode()) {
-         orcsApi.getActivityLog().createEntry(
-            org.eclipse.osee.framework.core.data.CoreActivityTypes.OSEE_ERROR, 100,
-            String.format("Cold storage archive was created for txs [%s] but purge failed — orphaned archive may exist", txIds));
+         orcsApi.getActivityLog().createEntry(CoreActivityTypes.OSEE_ERROR, 100,
+            String.format("Cold storage archive was created for txs [%s] but purge failed -- orphaned archive may exist",
+               txIds));
       }
       return purgeResponse;
    }

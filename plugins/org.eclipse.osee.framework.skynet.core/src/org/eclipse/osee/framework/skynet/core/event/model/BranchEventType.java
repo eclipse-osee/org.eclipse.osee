@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.event.model;
 
+import org.eclipse.osee.framework.core.event.BranchEventGuids;
 import org.eclipse.osee.framework.core.event.EventType;
 
 /**
@@ -22,21 +23,21 @@ public enum BranchEventType {
 
    // Local and Remote events
    // justify branch refresh
-   Added(EventType.LocalAndRemote, "AAn_QHDohywDoSTxwcQA", true),
-   ArchiveStateUpdated(EventType.LocalAndRemote, "AAn_QHS7Zhr6OLhKl3gA", true),
-   Renamed(EventType.LocalAndRemote, "AAn_QHGLIUsH2BdX2gwA", true),
-   StateUpdated(EventType.LocalAndRemote, "AAn_QHQdKhxNLtWPchAA", true),
-   TypeUpdated(EventType.LocalAndRemote, "AAn_QHLW4DKKbUkEZggA", true),
+   Added(EventType.LocalAndRemote, BranchEventGuids.ADDED, true),
+   ArchiveStateUpdated(EventType.LocalAndRemote, BranchEventGuids.ARCHIVE_STATE_UPDATED, true),
+   Renamed(EventType.LocalAndRemote, BranchEventGuids.RENAMED, true),
+   StateUpdated(EventType.LocalAndRemote, BranchEventGuids.STATE_UPDATED, true),
+   TypeUpdated(EventType.LocalAndRemote, BranchEventGuids.TYPE_UPDATED, true),
    // no need to refresh branch
-   Purging(EventType.LocalAndRemote, "ATPHeMoAFyL543vrAyQA", false),
-   Purged(EventType.LocalAndRemote, "AAn_QG7jRGZAqPE0UewA", false),
-   Deleting(EventType.LocalAndRemote, "ATPHeNujxAkPZEkWUtQA", false),
-   Deleted(EventType.LocalAndRemote, "AAn_QHBDvwtT5jjKaHgA", false),
-   Committing(EventType.LocalAndRemote, "ATPHeN1du2GAbS3SQsAA", false),
-   CommitFailed(EventType.LocalAndRemote, "ATPHeN3RaBnDmpoYXkQA", false),
-   Committed(EventType.LocalAndRemote, "AAn_QHIu0mGZytQ11QwA", false),
-   MergeConflictResolved(EventType.LocalAndRemote, "AAn_QHiJ53W5W_k8W7AA", false),
-   FavoritesUpdated(EventType.LocalOnly, "AFRkIheIUn3Jpz4kNBgA", false);
+   Purging(EventType.LocalAndRemote, BranchEventGuids.PURGING, false),
+   Purged(EventType.LocalAndRemote, BranchEventGuids.PURGED, false),
+   Deleting(EventType.LocalAndRemote, BranchEventGuids.DELETING, false),
+   Deleted(EventType.LocalAndRemote, BranchEventGuids.DELETED, false),
+   Committing(EventType.LocalAndRemote, BranchEventGuids.COMMITTING, false),
+   CommitFailed(EventType.LocalAndRemote, BranchEventGuids.COMMIT_FAILED, false),
+   Committed(EventType.LocalAndRemote, BranchEventGuids.COMMITTED, false),
+   MergeConflictResolved(EventType.LocalAndRemote, BranchEventGuids.MERGE_CONFLICT_RESOLVED, false),
+   FavoritesUpdated(EventType.LocalOnly, BranchEventGuids.FAVORITES_UPDATED, false);
 
    private final EventType eventType;
    private final String guid;

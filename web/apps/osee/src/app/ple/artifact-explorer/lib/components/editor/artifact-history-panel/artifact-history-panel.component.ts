@@ -14,6 +14,7 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	computed,
+	effect,
 	inject,
 	input,
 	signal,
@@ -72,6 +73,12 @@ export class ArtifactHistoryPanelComponent {
 	private dialog = inject(MatDialog);
 
 	tab = input.required<artifactTab>();
+	/**
+	 * Incremented by the parent on ANY change to this artifact (local or remote). History must
+	 * reflect the user's own commits too, so this is intentionally bound to the parent's
+	 * all-changes counter, not a remote-only one.
+	 */
+	changeCount = input(0);
 
 	private branchId = computed(() => this.tab().branchId);
 	private artifactId = computed(() => this.tab().artifact.id);
@@ -87,6 +94,14 @@ export class ArtifactHistoryPanelComponent {
 		this.currentPage,
 		this.pageSize
 	);
+
+	/** Reload history when the parent signals a change (local or remote). */
+	private _reloadOnChange = effect(() => {
+		const count = this.changeCount();
+		if (count > 0) {
+			this.historyResource.reload();
+		}
+	});
 
 	/** Group history entries by transaction ID for table display. */
 	protected groupedHistory = computed<historyGroup[]>(() => {

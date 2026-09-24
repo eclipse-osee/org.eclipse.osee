@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
+import org.eclipse.osee.framework.core.event.EventModType;
 import org.eclipse.osee.framework.core.event.NetworkSender;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -63,7 +65,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicAttributeChangeTransfer;
@@ -282,6 +283,7 @@ public final class FrameworkEventUtil {
       event.setBranch(guidArt.getBranch());
       event.setArtifactType(guidArt.getArtifactType());
       event.setArtGuid(guidArt.getGuid());
+      event.setArtId(guidArt.getArtId());
       return event;
    }
 
@@ -325,14 +327,18 @@ public final class FrameworkEventUtil {
 
    public static EventBasicGuidArtifact getEventBasicGuidArtifact(EventModType modType,
       RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
-      return new EventBasicGuidArtifact(modType, remGuidArt.getBranch(),
-         tokenService.getArtifactType(remGuidArt.getArtTypeGuid()), remGuidArt.getArtGuid());
+      EventBasicGuidArtifact result = new EventBasicGuidArtifact(modType, remGuidArt.getBranch(),
+         safeGetArtifactType(remGuidArt.getArtTypeGuid(), tokenService), remGuidArt.getArtGuid());
+      result.setArtId(remGuidArt.getArtId());
+      return result;
    }
 
    public static EventChangeTypeBasicGuidArtifact getEventChangeTypeBasicGuidArtifact(EventModType modType,
       RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
-      return new EventChangeTypeBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
-         tokenService.getArtifactType(remGuidArt.getToArtTypeGuid()), remGuidArt.getArtGuid());
+      EventChangeTypeBasicGuidArtifact result = new EventChangeTypeBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
+         safeGetArtifactType(remGuidArt.getToArtTypeGuid(), tokenService), remGuidArt.getArtGuid());
+      result.setArtId(remGuidArt.getArtId());
+      return result;
    }
 
    public static EventModifiedBasicGuidArtifact getEventModifiedBasicGuidArtifact(EventModType modType,
@@ -341,14 +347,33 @@ public final class FrameworkEventUtil {
       for (RemoteAttributeChange1 remAttrChg : remGuidArt.getAttributes()) {
          attributeChanges.add(getAttributeChange(remAttrChg));
       }
-      return new EventModifiedBasicGuidArtifact(remGuidArt.getBranch(),
-         tokenService.getArtifactType(remGuidArt.getArtTypeGuid()), remGuidArt.getArtGuid(), attributeChanges);
+      EventModifiedBasicGuidArtifact result = new EventModifiedBasicGuidArtifact(remGuidArt.getBranch(),
+         safeGetArtifactType(remGuidArt.getArtTypeGuid(), tokenService), remGuidArt.getArtGuid(), attributeChanges);
+      result.setArtId(remGuidArt.getArtId());
+      return result;
+   }
+
+   /**
+    * Safely resolves an artifact type ID, returning SENTINEL for unknown/zero types
+    * (e.g., relation participants from web->desktop events that lack full type info).
+    */
+   private static ArtifactTypeToken safeGetArtifactType(long artTypeId, OrcsTokenService tokenService) {
+      if (artTypeId <= 0) {
+         return ArtifactTypeToken.SENTINEL;
+      }
+      try {
+         return tokenService.getArtifactType(artTypeId);
+      } catch (Exception ex) {
+         return ArtifactTypeToken.SENTINEL;
+      }
    }
 
    private static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt,
       OrcsTokenService tokenService) {
-      return new DefaultBasicGuidArtifact(remGuidArt.getBranch(),
-         tokenService.getArtifactType(remGuidArt.getArtTypeGuid()), remGuidArt.getArtGuid());
+      DefaultBasicGuidArtifact result = new DefaultBasicGuidArtifact(remGuidArt.getBranch(),
+         safeGetArtifactType(remGuidArt.getArtTypeGuid(), tokenService), remGuidArt.getArtGuid());
+      result.setArtId(remGuidArt.getArtId());
+      return result;
    }
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid,
@@ -358,6 +383,7 @@ public final class FrameworkEventUtil {
       remoteGuidArt.setBranch(guidArt.getBranch());
       remoteGuidArt.setArtifactType(guidArt.getArtifactType());
       remoteGuidArt.setModTypeGuid(modTypeGuid);
+      remoteGuidArt.setArtId(guidArt.getArtId());
       if (attributeChanges != null) {
          for (AttributeChange attrChg : attributeChanges) {
             remoteGuidArt.getAttributes().add(getRemoteAttributeChange(attrChg));

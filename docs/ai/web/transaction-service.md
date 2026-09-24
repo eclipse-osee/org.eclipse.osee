@@ -24,7 +24,7 @@ The web app uses `CurrentTransactionService` (from `@osee/transactions/services`
 | `createTx(comment, branchIdOverride?)` | Creates a `Required<transaction>` as an Observable (reactive). |
 | `modifyArtifactAndMutate(comment, artId, applicability, attrConfig, branchIdOverride?)` | Builds a modify transaction and immediately executes it. |
 | `modifyArt(comment, artId, applicability, attrConfig, branchIdOverride?)` | Builds a modify transaction without executing — returns `Observable<Required<transaction>>`. |
-| `performMutation()` | RxJS pipe operator that sends the transaction to the server and triggers a UI refresh. |
+| `performMutation()` | RxJS pipe operator that sends the transaction to the server, sets `uiService.updated = true` for backward compat. Local change notification is handled automatically by `TransactionService`. |
 
 ### `attrConfig` shape
 
@@ -156,8 +156,12 @@ this.currentTxService.modifyArtifactAndMutate(...)
 
 ## Important notes
 
-- `performMutation()` sets `uiService.updated = true` which triggers global resource refreshes via `httpResource` factories that read `uiService.updateCount()`.
-- Do **not** call `TransactionService.performMutation()` directly from components — always use `CurrentTransactionService` which handles branch resolution and UI refresh.
+- `TransactionService.performMutation()` automatically emits a **targeted local change event** via `ArtifactChangeNotificationService.emitLocalChange()` after every successful commit. Change types are derived from the transaction content (creates → `artifact_created`, deletes → `artifact_deleted`, relations → `relation_added`/`relation_deleted`, modifications → `attribute_modified`).
+- `CurrentTransactionService.performMutation()` is an RxJS operator that sets `uiService.updated = true` for backward compatibility with components that have not yet migrated to the SSE notification pattern (MIM, CI Dashboard, Actra). It delegates to `TransactionService` for the actual mutation and notification.
+- `TransactionService.performMutation()` sends the `X-SSE-Connection-Id` header with every request so the server can exclude the originating SSE connection from broadcast (preventing duplicate notifications on the same tab).
+- Components may call `TransactionService.performMutation()` directly for cases where they build their own transaction objects (e.g., context menu delete). Local change notifications are handled automatically.
 - `TransactionService.performMutation()` accepts both the modern `transaction` type and `legacyTransaction` for backward compatibility with older MIM services.
-- The `transaction-legacy.ts` types exist for backward compatibility with older MIM services. New code should use `CurrentTransactionService` exclusively.
+- The `transaction-legacy.ts` types exist for backward compatibility with older MIM services. New code should use `CurrentTransactionService` exclusively for the operator pattern.
 - The `modifyArtifact` type includes a typed `deleteAttributes?: deleteAttributeRef[]` field (where `deleteAttributeRef = { id: string }`). The functions/operators populate this from the `delete` array in `attrConfig`, filtering to valid attributes and mapping to `{id}`.
+- `transactionResult` now includes `failedGammas: string[]` — when the server rejects a save due to stale gamma, this array is populated and the local change event is NOT emitted.
+- The `artifactIds` carried by the change event come from `transactionResult.results.ids`, which the server populates with **both created artifacts and modified/touched writeables** (`TransactionEndpointImpl.create`: `getTxDataReadables` + `getTxDataWriteableIds`). So relating a new artifact to an existing one (e.g. an attachment related to a workflow) reports **both** ids — the new artifact and the existing side-A artifact that the relation touched. Consumers that scope a refresh by artifact id can rely on the existing anchor artifact appearing on relate/unrelate, even though the other artifact's id may be freshly minted (create) or gone (delete).

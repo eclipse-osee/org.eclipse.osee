@@ -28,12 +28,17 @@ import {
 	shareReplay,
 	tap,
 } from 'rxjs/operators';
-import { BranchInfoService, WorktypeService } from '@osee/shared/services';
+import {
+	BranchChangeEventService,
+	BranchInfoService,
+	WorktypeService,
+} from '@osee/shared/services';
 import { UiService } from '@osee/shared/services';
 import { BranchCategoryService } from './branch-category.service';
 import { BranchPageService } from './branch-page.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { branch } from '@osee/shared/types';
+import { startWith } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root',
@@ -44,6 +49,7 @@ export class BranchListService {
 	private categoryService = inject(BranchCategoryService);
 	private workTypeService = inject(WorktypeService);
 	private pageSizeService = inject(BranchPageService);
+	private branchChangeService = inject(BranchChangeEventService);
 
 	private _type = this.ui.type.pipe(
 		map((type) =>
@@ -53,12 +59,26 @@ export class BranchListService {
 
 	private _branchFilter = new BehaviorSubject<string>('');
 
+	/**
+	 * Re-fires the branch list load when a branch is created/deleted/renamed/etc. (a branch the
+	 * list isn't keyed on can appear or disappear) or on SSE resync. Seeded so the list loads once
+	 * up front.
+	 */
+	private _reload = merge(
+		this.branchChangeService.listAffectingChanges$,
+		this.branchChangeService.resync$
+	).pipe(
+		map(() => undefined),
+		startWith(undefined)
+	);
+
 	private _branches = combineLatest([
 		this._type,
 		this.categoryService.branchCategory,
 		this.categoryService.excludeBranchCategory,
 		this._branchFilter,
 		this.workTypeService.workType,
+		this._reload,
 	]).pipe(
 		switchMap(([type, category, excludeCategory, filter, workType]) =>
 			iif(

@@ -16,6 +16,8 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '@osee/environments';
+import { SseEventService } from '@osee/shared/services/network';
+import { sseEventServiceMock } from '@osee/shared/testing';
 import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
 import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
 import { TestScheduler } from 'rxjs/testing';
@@ -45,6 +47,7 @@ describe('EnumerationSetService', () => {
 				},
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
+				{ provide: SseEventService, useValue: sseEventServiceMock },
 			],
 		});
 		service = TestBed.inject(EnumerationSetService);

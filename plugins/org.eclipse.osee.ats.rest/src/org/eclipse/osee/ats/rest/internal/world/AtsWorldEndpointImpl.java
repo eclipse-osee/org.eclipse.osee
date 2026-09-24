@@ -344,6 +344,10 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          Map<String, String> cells = new HashMap<>();
          wr.getRows().add(cells);
 
+         // Stable artifact id for the row (reserved key), so clients can match a row against
+         // artifact-change events (e.g. to drop a row when a workflow is reassigned away).
+         cells.put("id", workItem.getIdString());
+
          // create row
          for (XViewerColumn header : headers) {
             String text = "";

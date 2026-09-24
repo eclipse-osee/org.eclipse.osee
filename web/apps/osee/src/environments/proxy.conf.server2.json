@@ -1,0 +1,59 @@
+{
+	"/orcs": {
+		"target": "http://localhost:8090",
+		"secure": true,
+		"timeout": 900000,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/orcs": ""
+		}
+	},
+	"/ats": {
+		"target": "http://localhost:8090",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/ats": ""
+		}
+	},
+	"/health": {
+		"target": "http://localhost:8090",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/health": ""
+		}
+	},
+	"/mim": {
+		"target": "http://localhost:8090",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/mim": ""
+		}
+	},
+	"/script": {
+		"target": "http://localhost:8090",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/script": ""
+		}
+	},
+	"/define": {
+		"target": "http://localhost:8090",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/define": ""
+		}
+	},
+	"/launch": {
+		"target": "http://localhost:8090",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/launch": ""
+		}
+	}
+}

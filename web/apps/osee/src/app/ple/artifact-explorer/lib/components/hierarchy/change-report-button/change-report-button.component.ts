@@ -19,14 +19,14 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
-import { MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'osee-change-report-button',
-	imports: [MatIconButton, MatIcon, MatTooltip, RouterLink],
+	imports: [MatButton, MatIcon, MatTooltip, RouterLink],
 	template: `@if (branchId() && branchType()) {
 		<a
 			[routerLink]="'/ple/change-report'"
@@ -34,7 +34,8 @@ import { RouterLink } from '@angular/router';
 			target="_blank"
 			rel="noopener noreferrer">
 			<button
-				mat-icon-button
+				mat-flat-button
+				class="primary-button tw-flex tw-justify-center [&_*]:tw-m-0"
 				matTooltip="Change Report"
 				aria-label="Change Report">
 				<mat-icon class="material-icons-outlined">differences</mat-icon>

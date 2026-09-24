@@ -20,13 +20,17 @@ import {
 	MatMenuTrigger,
 } from '@angular/material/menu';
 import { ExpandIconComponent } from '@osee/shared/components';
-import { UiService } from '@osee/shared/services';
+import {
+	UiService,
+	ArtifactChangeNotificationService,
+} from '@osee/shared/services';
 import {
 	BehaviorSubject,
 	combineLatest,
 	debounceTime,
 	filter,
 	map,
+	merge,
 	shareReplay,
 	startWith,
 	switchMap,
@@ -59,6 +63,7 @@ import { ArtifactOperationsContextMenuComponent } from '../artifact-operations-c
 export class ArtifactHierarchyComponent {
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
 	private uiService = inject(UiService);
+	private changeNotification = inject(ArtifactChangeNotificationService);
 	private tabService = inject(ArtifactExplorerTabService);
 	private artifactIconService = inject(ArtifactIconService);
 	private artifactsExpandedService = inject(
@@ -117,11 +122,26 @@ export class ArtifactHierarchyComponent {
 
 	// Hierarchical children (lightweight - only name, id, icon)
 
+	/**
+	 * Structural change trigger: fires on remote creates/deletes via SSE (plus local updates), and
+	 * on SSE resync (reconnect) since structural changes may have been missed during the gap.
+	 */
+	private structuralChange$ = this.branchId$.pipe(
+		filter((branch) => branch !== '' && branch !== '-1' && branch !== '0'),
+		switchMap((branch) =>
+			merge(
+				this.changeNotification.structuralChangesForBranch(branch),
+				this.changeNotification.resync$
+			)
+		),
+		map(() => true)
+	);
+
 	children$ = combineLatest([
 		this._paths,
 		this.branchId$,
 		this.viewId$,
-		this.uiService.update.pipe(startWith(true)),
+		this.structuralChange$.pipe(startWith(true)),
 	]).pipe(
 		debounceTime(100),
 		filter(

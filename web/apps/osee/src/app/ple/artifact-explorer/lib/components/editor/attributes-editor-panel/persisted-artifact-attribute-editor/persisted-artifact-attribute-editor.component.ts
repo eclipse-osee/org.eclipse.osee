@@ -37,10 +37,26 @@ import {
 import { CurrentTransactionService } from '@osee/transactions/services';
 import { take } from 'rxjs';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
-import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor-dirty.service';
+import { SseEventService } from '@osee/shared/services/network';
+import {
+	EditorDirtyService,
+	PendingAttributeValuesService,
+} from '@osee/shared/conflict-resolution';
 
 @Component({
 	selector: 'osee-persisted-artifact-attribute-editor',
+	// Amber "caution" ring shown while a save is blocked by an unresolved conflict. This is a
+	// caution state, NOT a destructive/error one, so the semantic `warning` token (which is red)
+	// would be wrong here. The app has no amber/caution semantic token, so raw amber slots are
+	// used deliberately: osee-yellow-10 in light mode, osee-amber-9 in dark for adequate contrast.
+	host: {
+		'[class.tw-block]': 'true',
+		'[class.tw-rounded]': 'blockedUnsaved()',
+		'[class.tw-ring-2]': 'blockedUnsaved()',
+		'[class.tw-ring-osee-yellow-10]': 'blockedUnsaved()',
+		'[class.dark:tw-ring-osee-amber-9]': 'blockedUnsaved()',
+		'[class.tw-ring-offset-1]': 'blockedUnsaved()',
+	},
 	imports: [
 		FormsModule,
 		FocusLostInputComponent,
@@ -108,6 +124,7 @@ import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor
 							[disabled]="disabled()"
 							[value]="displayValue()"
 							(valueChange)="onValueChange($event)"
+							(liveInput)="onLiveInput($event)"
 							[label]="showLabel() ? (attr().name ?? '') : ''"
 							[placeholder]="showLabel() ? '' : 'Enter value...'"
 							[tooltip]="attr().name ?? ''">
@@ -120,7 +137,9 @@ import { ArtifactEditorDirtyService } from '../../../../services/artifact-editor
 })
 export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	private currentTxService = inject(CurrentTransactionService);
-	private dirtyService = inject(ArtifactEditorDirtyService);
+	private dirtyService = inject(EditorDirtyService);
+	private pendingValuesService = inject(PendingAttributeValuesService);
+	private sseEventService = inject(SseEventService);
 	private destroyRef = inject(DestroyRef);
 
 	/** The attribute to edit. */
@@ -131,6 +150,8 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	artifactApplicability = input.required<applic>();
 	/** Whether the field is disabled. */
 	disabled = input(false);
+	/** Whether a remote conflict exists (blocks auto-save). */
+	conflicted = input(false);
 	/** Whether to show the field label. Set false when inside a grouped multi-instance section. */
 	showLabel = input(true);
 
@@ -140,9 +161,26 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	/** Whether the markdown editor is currently focused. */
 	protected readonly markdownFocused = signal(false);
 
-	/** Unique key for dirty tracking. */
+	/**
+	 * Unique key for dirty tracking. Uses the artifact ID and attribute instance
+	 * ID (both immutable across edits) — intentionally excludes the gammaId so
+	 * dirty state survives a resource reload that bumps the gamma. This keeps the
+	 * conflict "red ring" visible after a remote change arrives.
+	 */
 	private editorKey = computed(
-		() => `${this.artifactId()}-${this.attr().id}-${this.attr().gammaId}`
+		() => `${this.artifactId()}-${this.attr().id}`
+	);
+
+	/**
+	 * True when this field has an unsaved edit that is currently blocked: a remote
+	 * change landed on the entity while this editor is dirty, so auto-save is held
+	 * until the user resolves. Shown as an amber ring (caution), NOT red -- whether
+	 * this specific field truly conflicts with the server is only known once the
+	 * resolution dialog fetches server state; the dialog is where genuine conflicts
+	 * (and the read-only auto-saved changes) are shown.
+	 */
+	protected blockedUnsaved = computed(
+		() => this.conflicted() && this.dirtyService.isDirty(this.editorKey())
 	);
 
 	/**
@@ -172,26 +210,85 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	/** Guards against the effect resetting previousValue while a save is in-flight. */
 	private saving = signal(false);
 
+	/** Tracks server-ready transitions so a save deferred while disconnected flushes on reconnect. */
+	private wasServerReady = this.sseEventService.serverReady();
+
 	constructor() {
 		effect(() => {
 			if (!this.saving()) {
 				this.previousValue.set(this.displayValue());
 			}
 		});
+
+		// A blur-save attempted while disconnected is rejected by the mutation chokepoint but the
+		// edit stays dirty/pending. When the server becomes ready again, flush it so the user's
+		// change is persisted. If the server state diverged, the normal conflict path handles it.
+		effect(() => {
+			const ready = this.sseEventService.serverReady();
+			const becameReady = ready && !this.wasServerReady;
+			this.wasServerReady = ready;
+			if (!becameReady || this.conflicted()) {
+				return;
+			}
+			const pending = this.pendingValuesService.get(this.attr().id);
+			if (
+				pending !== undefined &&
+				this.dirtyService.isDirty(this.editorKey())
+			) {
+				this.saveAttribute(pending);
+			}
+		});
+	}
+
+	/**
+	 * Records the latest in-progress value and keeps the dirty flag in sync.
+	 *
+	 * The pending value is a plain `Map` write with no reactivity, so it is
+	 * updated on every call (the conflict dialog needs the newest value). The
+	 * dirty signal, however, rebuilds a `Set` and notifies subscribers, so it is
+	 * only touched on an actual clean↔dirty transition — not on every keystroke.
+	 * If the value is edited back to the persisted value, the field is cleaned.
+	 */
+	private trackPendingEdit(newValue: string) {
+		const key = this.editorKey();
+		if (newValue !== this.previousValue()) {
+			this.pendingValuesService.set(this.attr().id, newValue);
+			if (!this.dirtyService.isDirty(key)) {
+				this.dirtyService.markDirty(key);
+			}
+		} else if (this.dirtyService.isDirty(key) && !this.conflicted()) {
+			// Value edited back to the persisted value -- clean the field. While a
+			// conflict is pending we do NOT clean/prune: every edited attribute must
+			// stay tracked so it appears in the resolution dialog and keeps its ring
+			// (fix for the conflict state losing all-but-the-last edited attribute).
+			this.dirtyService.markClean(key);
+			this.pendingValuesService.remove(this.attr().id);
+		}
 	}
 
 	onBooleanChange(checked: boolean) {
 		const newValue = checked ? 'true' : 'false';
 		if (newValue !== this.previousValue()) {
+			this.trackPendingEdit(newValue);
 			this.saveAttribute(newValue);
 		}
 	}
 
 	onValueChange(newValue: string) {
 		if (newValue !== this.previousValue()) {
-			this.dirtyService.markDirty(this.editorKey());
+			this.trackPendingEdit(newValue);
 			this.saveAttribute(newValue);
 		}
+	}
+
+	/**
+	 * Fires on every keystroke (before blur) for single-line/text inputs so a
+	 * concurrent remote change is detected as a conflict while the user is still
+	 * typing — matching the markdown editor. The actual save still happens on
+	 * blur via `onValueChange`. Dirty-signal churn is avoided by `trackPendingEdit`.
+	 */
+	onLiveInput(newValue: string) {
+		this.trackPendingEdit(newValue);
 	}
 
 	/** Stores pending markdown content without saving. */
@@ -200,9 +297,7 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	/** Called when markdown editor content changes (typing). */
 	onMarkdownChange(newValue: string) {
 		this.pendingMarkdown = newValue;
-		if (newValue !== this.previousValue()) {
-			this.dirtyService.markDirty(this.editorKey());
-		}
+		this.trackPendingEdit(newValue);
 	}
 
 	/**
@@ -228,13 +323,19 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 		) {
 			this.saveAttribute(this.pendingMarkdown);
 			this.pendingMarkdown = null;
-		} else {
-			// No changes were made — clear dirty state
+		} else if (this.dirtyService.isDirty(this.editorKey())) {
+			// No net change — clear dirty state (guarded to avoid signal churn).
 			this.dirtyService.markClean(this.editorKey());
+			this.pendingValuesService.remove(this.attr().id);
 		}
 	}
 
 	private saveAttribute(newValue: string) {
+		// Block save if a remote conflict exists — user must resolve first
+		if (this.conflicted()) {
+			return;
+		}
+
 		const current = this.attr();
 		const updated = { ...current, value: newValue };
 		const attrs =
@@ -255,6 +356,7 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 				next: () => {
 					this.previousValue.set(newValue);
 					this.dirtyService.markClean(this.editorKey());
+					this.pendingValuesService.remove(this.attr().id);
 					this.saving.set(false);
 				},
 				error: () => {
@@ -265,5 +367,6 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 
 	ngOnDestroy() {
 		this.dirtyService.markClean(this.editorKey());
+		this.pendingValuesService.remove(this.attr().id);
 	}
 }

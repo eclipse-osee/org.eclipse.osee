@@ -34,4 +34,5 @@ export const transactionResultMock: transactionResult = {
 		txId: '-1',
 		warningCount: 0,
 	},
+	failedGammas: [],
 };

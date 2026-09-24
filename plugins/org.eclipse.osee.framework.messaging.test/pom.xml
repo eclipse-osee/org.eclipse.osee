@@ -62,16 +62,18 @@
    			<configuration>
 					<dependency-resolution>
 						<extraRequirements>
+						<!-- ActiveMQ 5.17.0 single vendor OSGi bundle. The messaging tests stand up
+						     embedded brokers via @Rule; activemq-osgi provides both client and broker. -->
 						<requirement>
 							<type>eclipse-plugin</type>
-							<id>jms.libraries</id>
+							<id>org.apache.activemq.osgi</id>
 							<versionRange>0.0.0</versionRange>
 						</requirement>
 						<requirement>
 							<type>eclipse-plugin</type>
 							<id>jms.activemq.launch</id>
 							<versionRange>0.0.0</versionRange>
-						</requirement>						
+						</requirement>
 					</extraRequirements>
 					</dependency-resolution>
 				</configuration>

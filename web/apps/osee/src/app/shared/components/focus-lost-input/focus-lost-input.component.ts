@@ -15,6 +15,7 @@ import {
 	Component,
 	input,
 	model,
+	output,
 	signal,
 } from '@angular/core';
 import { outputFromObservable, toObservable } from '@angular/core/rxjs-interop';
@@ -51,6 +52,7 @@ let nextUniqueId = 0;
 			[ngModel]="value()"
 			[ngModelOptions]="{ updateOn: 'blur' }"
 			(ngModelChange)="value.set($event)"
+			(input)="liveInput.emit($any($event.target).value)"
 			[disabled]="disabled()"
 			[maxlength]="maxlength()"
 			[placeholder]="placeholder()"
@@ -81,4 +83,13 @@ export class FocusLostInputComponent<T> {
 	private _value$ = toObservable(this.value);
 	private _value = this._value$.pipe(debounceTime(500), sample(this._focus));
 	valueChange = outputFromObservable(this._value);
+
+	/**
+	 * Emits the raw input value on every keystroke (before blur). Unlike
+	 * `valueChange` (which is debounced and only fires on focus loss), this lets
+	 * consumers react to in-progress edits — e.g. to mark a field dirty for
+	 * conflict detection while the user is still typing. Does not affect the
+	 * blur-based commit/save behavior.
+	 */
+	liveInput = output<string>();
 }

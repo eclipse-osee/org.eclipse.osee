@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.HasBranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.event.EventModType;
 import org.eclipse.osee.framework.core.event.FrameworkEvent;
 import org.eclipse.osee.framework.core.event.HasNetworkSender;
 import org.eclipse.osee.framework.core.event.NetworkSender;
@@ -189,6 +190,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
    public void addArtifact(Artifact artifact) {
       EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
          artifact.getArtifactType(), artifact.getGuid(), artifact.getDirtyFrameworkAttributeChanges());
+      guidArt.setArtId(artifact.getId());
       artifacts.add(guidArt);
       relationReorderRecords.addAll(artifact.getRelationOrderRecords());
    }

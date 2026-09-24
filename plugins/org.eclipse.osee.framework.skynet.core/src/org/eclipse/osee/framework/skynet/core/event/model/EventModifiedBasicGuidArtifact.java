@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.event.EventModType;
 
 /**
  * @author Donald G. Dunne

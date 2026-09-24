@@ -101,12 +101,18 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    @Override
    public void addConnectionListener(ConnectionListener connectionListener) {
-      getConnectionNode().addConnectionListener(connectionListener);
+      ConnectionNode node = getConnectionNode();
+      if (node != null) {
+         node.addConnectionListener(connectionListener);
+      }
    }
 
    @Override
    public void removeConnectionListener(ConnectionListener connectionListener) {
-      getConnectionNode().removeConnectionListener(connectionListener);
+      ConnectionNode node = getConnectionNode();
+      if (node != null) {
+         node.removeConnectionListener(connectionListener);
+      }
    }
 
    @Override
@@ -136,8 +142,13 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    private <T extends RemoteEvent> void subscribe(ResMessages messageId, Class<T> clazz, boolean isVerbose,
       IFrameworkEventListener frameworkEventListener) {
+      ConnectionNode node = getConnectionNode();
+      if (node == null) {
+         // No broker configured -- messaging disabled; nothing to subscribe to.
+         return;
+      }
       OseeMessagingListener listener = new FrameworkRelayMessagingListener<>(clazz, frameworkEventListener, isVerbose);
-      getConnectionNode().subscribe(messageId, listener, this);
+      node.subscribe(messageId, listener, this);
       HashCollectionSet<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
       if (listeners == null) {
          listeners = new HashCollectionSet<>(true, HashSet::new);

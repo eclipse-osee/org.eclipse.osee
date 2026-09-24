@@ -15,7 +15,7 @@
 	<packaging>pom</packaging>
 	<name>OSEE Runtime - Parent (Incubation)</name>
 	<version>1.0.0-SNAPSHOT</version>
-	
+
 	<modules>
 		<module>../../features/org.eclipse.osee.core.runtime.feature</module>
 
@@ -24,7 +24,7 @@
 		<module>../../features/org.eclipse.osee.core.plugin.feature</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.messaging</module>
-      
+
 		<module>../../plugins/org.eclipse.osee.framework.plugin.core</module>
 
 		<module>../../features/org.eclipse.osee.core.ui.feature</module>
@@ -35,8 +35,7 @@
 
 		<module>../../features/org.eclipse.osee.external.feature</module>
 		<module>../../plugins/jms.activemq.launch</module>
-		<module>../../plugins/jms.libraries</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.runtime.p2</module>
 	</modules>
 

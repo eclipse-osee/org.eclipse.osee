@@ -73,6 +73,7 @@ import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.eclipse.osee.orcs.utility.EmailCertificateService;
 import org.eclipse.osee.orcs.utility.KeyValueService;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
@@ -112,6 +113,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    ExternalArtifactManager proxyManager;
    private IOseeEmailService emailService;
+   private EventAdmin eventAdmin;
 
    // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService) {
    // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi) {
@@ -134,6 +136,11 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    public void setActivityLog(ActivityLog activityLog) {
       this.activityLog = activityLog;
+   }
+
+   public void setEventAdmin(EventAdmin eventAdmin) {
+      // Passed to TxCallableFactory once it's created (in start())
+      this.eventAdmin = eventAdmin;
    }
 
    public void start() {
@@ -191,6 +198,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, module.getDataFactory(),
          module.getDataFactory(), txDataLoader);
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
+      txCallableFactory.setEventAdmin(eventAdmin);
 
       queryModule = new QueryModule(this, logger, module.getQueryEngine(), graphBuilderFactory, graphProvider,
          tokenService(), proxyManager);
@@ -242,7 +250,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    public OrcsBranch getBranchOps() {
       OrcsSession session = getSession();
       QueryFactory queryFactory = getQueryFactory();
-      return new OrcsBranchImpl(this, logger, session, module.getBranchDataStore(), queryFactory);
+      return new OrcsBranchImpl(this, logger, session, module.getBranchDataStore(), queryFactory, eventAdmin);
    }
 
    @Override

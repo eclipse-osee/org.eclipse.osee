@@ -18,7 +18,7 @@
    </license>
 
    <requires>
-      <import plugin="jms.libraries"/>
+      <import plugin="org.apache.activemq.osgi"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.commons.logging"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -30,6 +30,45 @@
 
    <plugin
          id="org.eclipse.osee.framework.messaging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.messaging.event.res"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <!-- ActiveMQ 5.17.0 single vendor OSGi bundle (client + broker in one bundle;
+        the raw client/broker Maven jars split-package and do not compose in OSGi).
+        Present everywhere messaging is used. A broker is only hosted when a
+        vm:broker: URI is configured; production uses tcp:// and never hosts one. -->
+   <plugin
+         id="org.apache.activemq.osgi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.geronimo.specs.geronimo-jms_1.1_spec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.fusesource.hawtbuf.hawtbuf"
          download-size="0"
          install-size="0"
          version="0.0.0"

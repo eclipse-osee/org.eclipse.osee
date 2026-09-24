@@ -24,8 +24,8 @@ public class AtsDisplayHint extends DisplayHint {
    public static final AtsDisplayHint Read = new AtsDisplayHint(82L, "ATS Read-Only"); // Can NOT be edited without Admin
    public static final AtsDisplayHint Config = new AtsDisplayHint(83L, "ATS Config"); // Attributes used in ATS Config objects (not workflows)
    public static final AtsDisplayHint ReadConfig = new AtsDisplayHint(84L, "ATS Read-Only and Config"); // Corner case where attr used in workflows and config
-   public static final AtsDisplayHint UserArtId = new AtsDisplayHint(85L, "ATS User ArtId Attr"); // Attribute where store value is a user artifact id
-   public static final AtsDisplayHint UserUserId = new AtsDisplayHint(86L, "ATS User UserId Attr"); // Attribute where store value is a user UserId
+   // User-reference markers moved to core DisplayHint (UserArtId / UserId) so non-ATS
+   // domains can mark user-valued attributes too. Reference DisplayHint.UserArtId / UserId.
    public static final AtsDisplayHint SignByDate = new AtsDisplayHint(87L, "Sign-By Date"); // Date Attribute used for approval
    public static final AtsDisplayHint SignByUser = new AtsDisplayHint(88L, "Sign-By User"); // User Attribute used for approval
 

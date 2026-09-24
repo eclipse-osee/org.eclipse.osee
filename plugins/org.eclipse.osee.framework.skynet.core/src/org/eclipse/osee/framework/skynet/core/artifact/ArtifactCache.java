@@ -90,7 +90,15 @@ public final class ArtifactCache {
    public static Collection<Artifact> getActive(Collection<? extends DefaultBasicGuidArtifact> basicGuidArtifacts) {
       Set<Artifact> artifacts = new HashSet<>();
       for (DefaultBasicGuidArtifact guidArt : basicGuidArtifacts) {
-         Artifact art = ID_CACHE.getByGuid(guidArt.getGuid(), guidArt.getBranch());
+         Artifact art = null;
+         // New path: try artId first
+         if (guidArt.getArtId() > 0) {
+            art = ID_CACHE.getByArtId(guidArt.getArtId(), guidArt.getBranch().getId());
+         }
+         // Legacy path: fall back to GUID
+         if (art == null) {
+            art = ID_CACHE.getByGuid(guidArt.getGuid(), guidArt.getBranch());
+         }
          if (art != null) {
             artifacts.add(art);
          }
@@ -110,6 +118,14 @@ public final class ArtifactCache {
    }
 
    public static Artifact getActive(DefaultBasicGuidArtifact guidArt) {
+      // New path: use artId when available (web->desktop and new desktop->desktop events)
+      if (guidArt.getArtId() > 0) {
+         Artifact result = ID_CACHE.getByArtId(guidArt.getArtId(), guidArt.getBranch().getId());
+         if (result != null) {
+            return result;
+         }
+      }
+      // Legacy path: use GUID string (old desktop->desktop events)
       return getActive(guidArt.getGuid(), guidArt.getBranch());
    }
 

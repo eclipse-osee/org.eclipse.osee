@@ -121,6 +121,12 @@ const config: PlaywrightTestConfig = {
 			testDir: 'playwright/specs/artifact-explorer/tests',
 			dependencies: ['Setup'],
 		},
+		{
+			name: 'Actra Tests',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/actra/tests',
+			dependencies: ['Setup'],
+		},
 	],
 };
 

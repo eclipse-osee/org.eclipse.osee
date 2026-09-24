@@ -438,6 +438,37 @@
             version="0.0.0"
             unpack="false"/>
 
+      <!-- ActiveMQ 5.17.0 single vendor OSGi bundle (replaces fat jms.libraries).
+           Canonical location for all third-party deps per docs/ai/server/adding-dependencies.md.
+           Acquired via the OSGi converter (org.eclipse.osee.osgi.converter). -->
+      <plugin
+            id="org.apache.activemq.osgi"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.geronimo.specs.geronimo-jms_1.1_spec"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.fusesource.hawtbuf.hawtbuf"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
       <plugin
             id="org.apache.aries.blueprint.core"
             download-size="0"

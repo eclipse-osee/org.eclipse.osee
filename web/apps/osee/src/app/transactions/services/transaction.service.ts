@@ -14,6 +14,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import {
+	MutationService,
+	artifactChangeType,
+} from '@osee/shared/services/network';
+import {
 	legacyTransaction,
 	transaction,
 	transactionResult,
@@ -24,8 +28,64 @@ import {
 })
 export class TransactionService {
 	private http = inject(HttpClient);
+	private mutation = inject(MutationService);
 
 	performMutation(body: transaction | legacyTransaction) {
-		return this.http.post<transactionResult>(apiURL + '/orcs/txs', body);
+		const changeTypes = this.deriveChangeTypes(body);
+		return this.mutation.mutateAndNotify(
+			this.http.post<transactionResult>(apiURL + '/orcs/txs', body),
+			(result) => {
+				const txId = result.tx?.id;
+				const artifactIds = result.results?.ids ?? [];
+				if (
+					!!txId &&
+					txId !== '0' &&
+					txId !== '-1' &&
+					(result.failedGammas?.length ?? 0) === 0 &&
+					artifactIds.length > 0
+				) {
+					return {
+						type: 'artifact',
+						branchId: body.branch,
+						artifactIds,
+						transactionId: txId,
+						changeTypes,
+					};
+				}
+				return null;
+			}
+		);
+	}
+
+	private deriveChangeTypes(
+		body: transaction | legacyTransaction
+	): artifactChangeType[] {
+		const types: artifactChangeType[] = [];
+		if ('createArtifacts' in body && body.createArtifacts?.length) {
+			types.push('artifact_created');
+		}
+		if ('deleteArtifacts' in body && body.deleteArtifacts?.length) {
+			types.push('artifact_deleted');
+		}
+		if ('addRelations' in body && body.addRelations?.length) {
+			types.push('relation_added');
+		}
+		if ('deleteRelations' in body && body.deleteRelations?.length) {
+			types.push('relation_deleted');
+		}
+		if (types.length === 0) {
+			types.push('attribute_modified');
+		}
+		// If there are creates/deletes that also have relations, include relation_added
+		if (
+			types.includes('artifact_created') &&
+			'createArtifacts' in body &&
+			body.createArtifacts?.some((a) => a.relations?.length)
+		) {
+			if (!types.includes('relation_added')) {
+				types.push('relation_added');
+			}
+		}
+		return types;
 	}
 }

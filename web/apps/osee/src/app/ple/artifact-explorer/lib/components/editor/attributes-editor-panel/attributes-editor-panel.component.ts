@@ -18,12 +18,15 @@ import {
 	inject,
 	input,
 	signal,
+	untracked,
 } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { HttpResourceRef } from '@angular/common/http';
 import { artifactTab } from '../../../types/artifact-explorer';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
@@ -37,6 +40,7 @@ import {
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { FormDirective } from '@osee/shared/directives';
+import { artifactWithRelations } from '@osee/artifact-with-relations/types';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { PersistedArtifactAttributeEditorComponent } from './persisted-artifact-attribute-editor/persisted-artifact-attribute-editor.component';
 import { AttributeGroupComponent } from './attribute-group/attribute-group.component';
@@ -49,12 +53,19 @@ import {
 	NativeContentAttribute,
 } from '../../../../../../shared/components/attributes-editor/native-content-editor/native-content-editor.component';
 import { CurrentTransactionService } from '@osee/transactions/services';
-import { take } from 'rxjs';
+import { map, skip, take } from 'rxjs';
 import {
 	AddAttributeDialogComponent,
 	addAttributeDialogData,
 	addAttributeDialogResult,
 } from './add-attribute-dialog/add-attribute-dialog.component';
+import {
+	ConflictResolutionService,
+	EditorDirtyService,
+	PendingAttributeValuesService,
+	conflictChangeNotification,
+	resolutionOperations,
+} from '@osee/shared/conflict-resolution';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -71,6 +82,7 @@ import {
 		AttributeDeleteButtonComponent,
 	],
 	viewProviders: [provideOptionalControlContainerNgForm()],
+	providers: [PendingAttributeValuesService],
 	templateUrl: './attributes-editor-panel.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	styles: [
@@ -88,28 +100,174 @@ export class AttributesEditorPanelComponent {
 	private currentTxService = inject(CurrentTransactionService);
 	private uiService = inject(UiService);
 	private dialog = inject(MatDialog);
+	private dirtyService = inject(EditorDirtyService);
+	private pendingValuesService = inject(PendingAttributeValuesService);
+	private conflictResolution = inject(ConflictResolutionService);
 
 	tab = input.required<artifactTab>();
 	deleteMode = input(false);
+	/** Incremented by parent when a remote change is detected. */
+	remoteChangeCount = input(0);
+
+	/**
+	 * Remote-change stream fed to the conflict dialog so it re-derives against fresh
+	 * server state while open. Each parent increment of {@link remoteChangeCount} maps to
+	 * an `attribute_modified` notification; the initial value is skipped so only genuine
+	 * new remote changes trigger a live re-fetch. The dialog re-fetches on each emission.
+	 */
+	private readonly remoteChanges$ = toObservable(this.remoteChangeCount).pipe(
+		skip(1),
+		map(
+			(): conflictChangeNotification => ({
+				changeTypes: ['attribute_modified'],
+				isLocal: false,
+			})
+		)
+	);
+	/** Shared artifact resource from parent (includes relations). */
+	artifactResource =
+		input.required<HttpResourceRef<artifactWithRelations | undefined>>();
 
 	branchHasPleCategory = this.currBranchInfoService.branchHasPleCategory;
+
+	/**
+	 * Whether this artifact has been changed remotely while the user has
+	 * unsaved local edits. When true, the template should show a warning banner.
+	 */
+	readonly remoteChangeWhileDirty = signal(false);
+
+	/** True while the conflict dialog is fetching the latest server state. */
+	readonly resolvingConflict = signal(false);
 
 	// Derived signals for the resource
 	private branchId = computed(() => this.tab().branchId);
 	private _artifactId = computed(() => this.tab().artifact.id);
 	private viewId = computed(() => this.tab().viewId);
 
-	// Reactive artifact resource that auto-refreshes via uiService.updateCount()
-	private artifactResource =
-		this.artExpHttpService.getArtifactWithRelationsResource(
-			this.branchId,
-			this._artifactId,
-			this.viewId
-		);
+	/** Track last seen remote change count to detect only NEW remote events. */
+	private lastSeenRemoteCount = 0;
+
+	/**
+	 * Detects when a new remote change arrives while editors are dirty.
+	 * Only fires on actual remoteChangeCount increments — not on re-evaluations
+	 * caused by unrelated signal changes (like dirty state clearing during save).
+	 *
+	 * When dirty, the parent skips reloading the shared resource so the user's
+	 * in-progress edits are preserved. We simply flag the conflict here; the
+	 * latest server state is fetched on demand when the resolution dialog opens.
+	 */
+	private _flagRemoteConflict = effect(() => {
+		const count = this.remoteChangeCount();
+		if (count > this.lastSeenRemoteCount) {
+			this.lastSeenRemoteCount = count;
+			// Check dirty state without tracking it — we only want this effect
+			// to re-run when remoteChangeCount changes, not when dirty state changes.
+			const isDirty = untracked(() =>
+				this.dirtyService.hasDirtyEditors()
+			);
+			if (isDirty) {
+				this.remoteChangeWhileDirty.set(true);
+			}
+		}
+	});
+
+	/**
+	 * Dismisses the remote-change warning and forces a refresh,
+	 * discarding any local unsaved edits.
+	 */
+	dismissAndRefresh() {
+		this.dirtyService.clearAll();
+		this.pendingValuesService.clear();
+		this.remoteChangeWhileDirty.set(false);
+		this.artifactResource().reload();
+	}
+
+	/**
+	 * Records a dirty attribute value so it can be used in conflict resolution.
+	 * Called by child editors when they have pending unsaved changes.
+	 */
+	trackDirtyValue(attrId: string, value: string) {
+		this.pendingValuesService.set(attrId, value);
+	}
+
+	/**
+	 * Removes a tracked dirty value (e.g., after a successful save).
+	 */
+	clearDirtyValue(attrId: string) {
+		this.pendingValuesService.remove(attrId);
+	}
+
+	/**
+	 * Opens the conflict resolution dialog. Fetches the latest server state
+	 * on demand (the shared resource was intentionally NOT reloaded so local
+	 * edits are preserved), then compares each dirty attribute against the
+	 * server value to build the set of true conflicts.
+	 */
+	openConflictResolutionDialog() {
+		this.conflictResolution.resolve({
+			entityName:
+				this.artifactResource().value()?.name ??
+				this.tab().artifact.name,
+			entityId: this.artifactId(),
+			baseAttrs: this.attributes(),
+			fetchServerAttrs: () =>
+				this.artExpHttpService
+					.getartifactWithRelations(
+						this.branchId(),
+						this._artifactId(),
+						this.viewId(),
+						false
+					)
+					.pipe(map((a) => a.attributes)),
+			pendingValues: this.pendingValuesService.getAll(),
+			// Keep an open dialog live: each new remote change re-fetches + re-categorizes
+			// so the user never resolves against a stale server value.
+			changes: this.remoteChanges$,
+			commit: (ops) =>
+				this.currentTxService
+					.modifyArtifactAndMutate(
+						'Resolving attribute conflicts',
+						this.artifactId(),
+						this.applicability(),
+						this.toAttrConfig(ops)
+					)
+					.pipe(
+						// Surface optimistic-concurrency rejections to the shared flow so a
+						// stale write (someone changed the attr while the dialog was open) is
+						// re-resolved against the latest value rather than silently reported
+						// as applied.
+						map((result) => ({
+							staleGammas: result.failedGammas ?? [],
+						}))
+					),
+			refresh: () => this.artifactResource().reload(),
+			clearLocalState: () => {
+				this.dirtyService.clearAll();
+				this.pendingValuesService.clear();
+				this.remoteChangeWhileDirty.set(false);
+			},
+			onError: (message) => (this.uiService.ErrorText = message),
+			setResolving: (resolving) => this.resolvingConflict.set(resolving),
+		});
+	}
+
+	/** Maps resolution operations to the transaction attr-config shape. */
+	private toAttrConfig(ops: resolutionOperations): {
+		set?: attribute<string, ATTRIBUTETYPEID>[];
+		add?: attribute<string, ATTRIBUTETYPEID>[];
+	} {
+		const attrConfig: {
+			set?: attribute<string, ATTRIBUTETYPEID>[];
+			add?: attribute<string, ATTRIBUTETYPEID>[];
+		} = {};
+		if (ops.set.length > 0) attrConfig.set = ops.set;
+		if (ops.add.length > 0) attrConfig.add = ops.add;
+		return attrConfig;
+	}
 
 	/** Sync artifact name back to tab title when resource refreshes with a new name. */
 	private _nameSyncEffect = effect(() => {
-		const name = this.artifactResource.value()?.name;
+		const name = this.artifactResource().value()?.name;
 		if (name && name !== this.tab().artifact.name) {
 			this.tabService.updateTabTitle(this.tab().artifact.id, name);
 		}
@@ -122,7 +280,7 @@ export class AttributesEditorPanelComponent {
 	 */
 	protected attributes = computed<attribute<string, ATTRIBUTETYPEID>[]>(
 		() => {
-			const resourceAttrs = this.artifactResource.value()?.attributes;
+			const resourceAttrs = this.artifactResource().value()?.attributes;
 			if (resourceAttrs) {
 				this._lastAttributes = [...resourceAttrs].sort((a, b) => {
 					const typeCompare = a.typeId.localeCompare(b.typeId);
@@ -255,26 +413,26 @@ export class AttributesEditorPanelComponent {
 
 	protected editable = computed<boolean>(
 		() =>
-			this.artifactResource.value()?.editable ??
+			this.artifactResource().value()?.editable ??
 			this.tab().artifact.editable
 	);
 
 	protected artifactId = computed<`${number}`>(
 		() =>
-			(this.artifactResource.value()?.id ??
+			(this.artifactResource().value()?.id ??
 				this.tab().artifact.id) as `${number}`
 	);
 
 	protected applicability = computed(
 		() =>
-			this.artifactResource.value()?.applicability ??
+			this.artifactResource().value()?.applicability ??
 			this.tab().artifact.applicability
 	);
 
 	/** The artifact type ID (used to fetch valid attribute types). */
 	private artifactTypeId = computed<`${number}`>(
 		() =>
-			(this.artifactResource.value()?.typeId ??
+			(this.artifactResource().value()?.typeId ??
 				this.tab().artifact.typeId) as `${number}`
 	);
 

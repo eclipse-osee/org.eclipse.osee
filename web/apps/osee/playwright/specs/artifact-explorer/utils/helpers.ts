@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { expect, Page } from '@ngx-playwright/test';
+import { expect, Browser, Page } from '@ngx-playwright/test';
 import { APIRequestContext } from '@playwright/test';
 import { API_BASE, AUTH_HEADER } from '../../../shared/test-config';
 import { selectBranch } from '../../../shared/branch-helpers';
@@ -237,4 +237,36 @@ export const switchEditorSection = async (
  */
 export const searchForArtifact = async (page: Page, artifactName: string) => {
 	await searchAndOpenArtifact(page, artifactName);
+};
+
+/**
+ * Demo users for multi-user real-time tests. The account id is the demo loginId
+ * (see framework.core DemoUsers): it is seeded into localStorage so the app
+ * authenticates each browser context as that user. Initials are what the
+ * presence-avatars component renders.
+ */
+export const DEMO_USERS = {
+	joe: { accountId: '3333', name: 'Joe Smith', initials: 'JS' },
+	jason: { accountId: '5555', name: 'Jason Michael', initials: 'JM' },
+} as const;
+
+/**
+ * Opens a page in a fresh browser context authenticated as the given demo user.
+ *
+ * Demo auth identifies the logged-in user by `osee.account.id` in localStorage
+ * (UserHeaderDemoService reads it once at app boot and sends it as the
+ * `Authorization: Basic <id>` header). Seeding it via addInitScript BEFORE the
+ * app boots makes each context a distinct real user -- so presence ("who ELSE is
+ * viewing") and "changed by another user" flows are genuinely exercised, each
+ * context holding its own SSE connection.
+ */
+export const newUserPage = async (
+	browser: Browser,
+	user: { accountId: string }
+): Promise<Page> => {
+	const context = await browser.newContext();
+	await context.addInitScript((accountId) => {
+		localStorage.setItem('osee.account.id', accountId);
+	}, user.accountId);
+	return context.newPage();
 };

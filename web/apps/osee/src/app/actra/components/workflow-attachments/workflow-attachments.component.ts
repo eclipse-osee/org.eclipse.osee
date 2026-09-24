@@ -20,6 +20,7 @@ import {
 } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -48,11 +49,11 @@ import { HttpLoadingService } from '@osee/shared/services/network';
 	selector: 'osee-workflow-attachments',
 	imports: [
 		MatButton,
+		MatIcon,
 		MatTooltip,
 		MatTableModule,
 		MatCheckboxModule,
 		BytesPipe,
-		MatTooltip,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './workflow-attachments.component.html',
@@ -65,8 +66,18 @@ export class WorkflowAttachmentsComponent {
 	private dialog = inject(MatDialog);
 	private loadingService = inject(HttpLoadingService);
 
+	/**
+	 * Ids of the attachments currently loaded. Read (lazily) by the resource's change trigger so an
+	 * in-place update to a listed attachment refetches. Defined before the resource; the `computed`
+	 * body runs lazily, so its forward reference to {@link attachments} is safe.
+	 */
+	private readonly currentAttachmentIds = computed(() =>
+		this.attachments().map((a) => a.id)
+	);
+
 	protected readonly attachmentsResource = this.svc.getAttachmentsResource(
-		this.teamWorkflowId
+		this.teamWorkflowId,
+		this.currentAttachmentIds
 	);
 
 	protected readonly attachments = linkedSignal<

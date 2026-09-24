@@ -17,6 +17,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
+import org.eclipse.osee.framework.core.event.OriginContext;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -43,5 +44,8 @@ public class AuthenticationResponseFilter implements ContainerResponseFilter {
        * user making the new request on that thread.
        */
       orcsApi.userService().removeUserFromCurrentThread();
+
+      // Clear the request-scoped origin id for the same pooled-thread-reuse reason.
+      OriginContext.clear();
    }
 }
