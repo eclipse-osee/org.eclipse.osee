@@ -1,5 +1,5 @@
 ---
-summary: "SSE real-time change propagation for the web client: transport choice, target architecture (broadcast-to-all, origin-ID dedup, GET-on-notify), presence, associatedUsers relevance, ActiveMQ desktop bridge, reconnect/resync, multi-server testing, and requirements"
+summary: "SSE real-time change propagation for the web client: transport choice, target architecture (broadcast-to-all, origin-ID dedup, GET-on-notify), presence, associatedUsers relevance, changedAttributeTypeIds targeted refresh, ActiveMQ desktop bridge, reconnect/resync, multi-server testing, and requirements"
 tags: [web, sse, real-time, architecture, events, artifacts, presence, activemq, multi-server]
 fileMatch: "**/sse-event.service.ts,**/origin-aware-event-stream.ts,**/origin-id.service.ts,**/mutation.service.ts,**/artifact-change-notification.service.ts,**/branch-change-event.service.ts,**/user-presence.service.ts,**/user-data-account.service.ts,**/global-error-handler.ts,**/presence-avatars/**,**/ws/**,**/artifact-change**,**/SseTransactionCommitHandler*,**/SseBranchChangeHandler*,**/OseeSseEndpoint*,**/PresenceRegistry*,**/SseBroadcastService*,**/ActiveMqSseBridge*,**/ServerToServerEvent*,**/WebBranchChangeType*,**/BranchChangeTopic*,**/OrcsBranchImpl*,**/SelectedBranchLifecycleService*,**/selected-branch-lifecycle.service*,**/OriginContext*,**/BranchEndpointImpl*,**/HealthEndpointImpl*,**/proxy.conf.server2.json,**/api.server2.ts,**/OSEE_Application_Server_2_*"
 ---
@@ -115,8 +115,9 @@ EE8).
 
 Three event categories flow over the same SSE connection:
 - **Artifact changes** -- transaction commits (attribute edits, creates, deletes, relations).
-  Optionally carries `associatedUsers` (user references from changed user-valued attributes) so
-  views decide relevance client-side.
+  Optionally carries `associatedUsers` (user references from changed user-valued attributes) and
+  `changedAttributeTypeIds` (which attribute types changed) so views decide relevance / do targeted
+  refreshes client-side.
 - **Branch changes** -- branch metadata modifications (commit, rename, archive, state/type,
   delete/purge, rebaselined).
 - **Presence updates** -- who is viewing what context.
@@ -577,12 +578,13 @@ Artifact-specific notification bus. Local + remote changes flow through the same
 | Method | Purpose |
 |--------|---------|
 | `initialize()` | Starts SSE (called once from AppComponent) |
-| `emitLocalChange(branchId, artifactIds, txId, changeTypes, associatedUsers?)` | Local change (from the `MutationService` chokepoint) |
+| `emitLocalChange(branchId, artifactIds, txId, changeTypes, associatedUsers?, changedAttributeTypeIds?)` | Local change (from the `MutationService` chokepoint) |
 | `resync$` | Emits on reconnect; consumers merge into their refetch trigger to re-GET after a missed-event window |
 | `artifactInvalidations$` | All changes (local `isLocal: true` + remote) |
 | `forArtifact(branchId, artifactId)` | Filtered to one artifact |
 | `forBranch(branchId)` | Filtered to branch |
 | `structuralChangesForBranch(branchId)` | Create/delete/relation only |
+| `forChangedAttributeType(branchId, typeId)` | Changes whose `changedAttributeTypeIds` include `typeId` (targeted refresh, e.g. Name) |
 
 ### `BranchChangeEventService` (`@osee/shared/services`)
 
@@ -667,6 +669,10 @@ type artifactChangeEvent = {
   // User references from changed user-valued attributes, grouped by attribute type.
   // Lets views decide relevance client-side (e.g. Actra "My World").
   associatedUsers?: associatedUsers[];
+  // Distinct attribute type ids changed in the transaction. Lets views do targeted
+  // refreshes (e.g. a hierarchy label only on a Name change) instead of reacting to
+  // every attribute_modified.
+  changedAttributeTypeIds?: string[];
   // Client-minted id of the originating tab (echoed by the server); the originating tab
   // ignores its own echo.
   originId?: string;
@@ -715,7 +721,7 @@ type presenceUser = {
 | `TransactionEndpointImpl` | `orcs.rest/internal/` | Commits the transaction; SSE broadcast is fired by `SseTransactionCommitHandler` off the commit topic (not inline) |
 | `BranchEndpointImpl` | `orcs.rest/internal/` | Branch REST ops; only `rebaselined` is broadcast here (imperative). Others broadcast from the ORCS chokepoint |
 | `OrcsBranchImpl` | `orcs.core/internal/` | Single branch chokepoint: fires `BranchChangeTopic` on every branch mutation (carries `originId` + `associatedArtifactId` when the `Branch` is loaded) |
-| `TxCallableFactory` | `orcs.core/internal/transaction/` | Fires `TransactionCommitTopic` after commit (branchId, transactionId, artifactIds, artifactTypeIds, associatedUsers, **originId** from `OriginContext`) |
+| `TxCallableFactory` | `orcs.core/internal/transaction/` | Fires `TransactionCommitTopic` after commit (branchId, transactionId, artifactIds, artifactTypeIds, associatedUsers, changedAttributeTypeIds, **originId** from `OriginContext`) |
 | `OriginContext` | `framework.core/event/` | Request-scoped holder for the client `originId`; set by `AuthenticationRequestFilter`, read at broadcast points (tx + branch) |
 | `TransactionCommitTopic` | `framework.core/event/` | OSGi EventAdmin topic + property constants for artifact commits (incl. `ORIGIN_ID`) |
 | `BranchChangeTopic` | `framework.core/event/` | OSGi EventAdmin topic + property constants for branch changes (incl. `ORIGIN_ID`, `ASSOCIATED_ARTIFACT_ID`) |
@@ -875,6 +881,32 @@ with the core `DisplayHint`:
 
 Example: `ats.Current State Assignee` is declared `..., Read, UserArtId`. No SSE/event code changes
 are needed -- both producers read the marker generically.
+
+### Targeted refresh via `changedAttributeTypeIds`
+
+A parallel, domain-neutral relevance mechanism: the `artifactChanged` event carries the distinct
+attribute type ids changed in the transaction (`changedAttributeTypeIds`), so a view can refresh only
+when an attribute type it cares about changed, instead of on every `attribute_modified`.
+
+- **Producers** mirror `associatedUsers` exactly: `TxCallableFactory` collects the ids from the dirty
+  attributes it already iterates (web path); `ActiveMqSseBridge` collects them from the relayed
+  `RemotePersistEvent1` attribute changes (desktop path); `ServerToServerEvent` carries them across
+  servers. No extra query.
+- **Consumers** use `ArtifactChangeNotificationService.forChangedAttributeType(branchId, typeId)`
+  (mirrors `forAssociatedUser`), or read `inv.changedAttributeTypeIds` off any invalidation.
+- **Local path:** the acting tab populates it itself from the transaction body's attribute `typeId`s
+  (`TransactionService.deriveChangedAttributeTypeIds`), so it does not wait for the server echo.
+  (Deleted attributes carry only an instance id in the body, so the local path omits them; the remote
+  echo -- derived from the actually-dirty attributes -- covers that case.)
+
+Motivating example -- **artifact hierarchy tree label on rename.** The hierarchy tree
+(`ArtifactHierarchyComponent`) refetches its lightweight children on structural changes
+(`structuralChangesForBranch`), which deliberately excludes `attribute_modified` so it does not
+refetch the whole tree on every attribute edit anywhere on the branch. But a **Name** change is the
+one attribute edit that affects a node's displayed label. So the tree adds a second trigger:
+`forChangedAttributeType(branch, ATTRIBUTETYPEIDENUM.NAME)`, scoped to the artifact ids currently
+shown at that level, to refetch the label when a visible node's Name changes -- local or remote --
+without a whole-branch refetch storm.
 
 ## Consuming changes in components
 

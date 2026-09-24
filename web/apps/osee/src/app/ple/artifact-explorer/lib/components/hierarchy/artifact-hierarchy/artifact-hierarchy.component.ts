@@ -34,7 +34,9 @@ import {
 	shareReplay,
 	startWith,
 	switchMap,
+	tap,
 } from 'rxjs';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
@@ -137,11 +139,40 @@ export class ArtifactHierarchyComponent {
 		map(() => true)
 	);
 
+	/**
+	 * Name-change trigger: refetches this level when a child artifact's Name attribute changes, so
+	 * its tree label stays current. A Name edit is a pure `attribute_modified` and so is excluded
+	 * from {@link structuralChange$}; here we react specifically to the Name attribute type (via
+	 * `changedAttributeTypeIds`), and only when the changed artifact is one currently shown at this
+	 * level, so an unrelated Name edit elsewhere on the branch does not refetch.
+	 */
+	/**
+	 * Ids of the artifacts currently shown at this level. Maintained as a plain field (updated as a
+	 * side effect of {@link children$}) so {@link nameChange$} can scope its refetch to visible
+	 * nodes WITHOUT subscribing to `children$` — which would create a circular subscription, since
+	 * `children$`'s own trigger merges `nameChange$`.
+	 */
+	private currentChildIds = new Set<string>();
+
+	private nameChange$ = this.branchId$.pipe(
+		filter((branch) => branch !== '' && branch !== '-1' && branch !== '0'),
+		switchMap((branch) =>
+			this.changeNotification.forChangedAttributeType(
+				branch,
+				ATTRIBUTETYPEIDENUM.NAME
+			)
+		),
+		// Only refetch when the renamed artifact is one currently shown at this level, so an
+		// unrelated Name edit elsewhere on the branch does not refetch this level.
+		filter((inv) => this.currentChildIds.has(inv.artifactId)),
+		map(() => true)
+	);
+
 	children$ = combineLatest([
 		this._paths,
 		this.branchId$,
 		this.viewId$,
-		this.structuralChange$.pipe(startWith(true)),
+		merge(this.structuralChange$, this.nameChange$).pipe(startWith(true)),
 	]).pipe(
 		debounceTime(100),
 		filter(
@@ -159,6 +190,10 @@ export class ArtifactHierarchyComponent {
 				view
 			)
 		),
+		// Track the visible node ids so nameChange$ can scope its refetch without subscribing here.
+		tap((children) => {
+			this.currentChildIds = new Set(children.map((c) => c.id));
+		}),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 

@@ -204,10 +204,13 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
          // knowledge here. Lets interested views (e.g. Actra /world) decide relevance client-side.
          List<ArtifactChangeMessage.AssociatedUsers> associatedUsers = collectAssociatedUsers(persistEvent);
 
+         // Distinct attribute type ids changed, so web clients can do targeted refreshes.
+         List<String> changedAttributeTypeIds = collectChangedAttributeTypeIds(persistEvent);
+
          // Broadcast to all SSE web clients (no self-exclusion needed since
          // desktop clients don't have SSE sinks).
          SseBroadcastService.broadcastArtifactChange(branchId, artifactIds, transactionId, userId, changeTypes,
-            associatedUsers, null);
+            associatedUsers, changedAttributeTypeIds, null);
 
          OseeLog.logf(ActiveMqSseBridge.class, Level.FINE,
             "Relayed desktop RemotePersistEvent1 to SSE: branch=%s, tx=%s, artifacts=%d",
@@ -502,6 +505,20 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
             new ArrayList<>(entry.getValue())));
       }
       return result;
+   }
+
+   /**
+    * Collects the distinct attribute type ids changed in a desktop {@code RemotePersistEvent1}, so
+    * web clients can do targeted refreshes (mirrors the web-commit path's changedAttributeTypeIds).
+    */
+   private List<String> collectChangedAttributeTypeIds(RemotePersistEvent1 persistEvent) {
+      LinkedHashSet<String> typeIds = new LinkedHashSet<>();
+      for (RemoteBasicGuidArtifact1 art : persistEvent.getArtifacts()) {
+         for (RemoteAttributeChange1 attrChange : art.getAttributes()) {
+            typeIds.add(String.valueOf(attrChange.getAttrTypeGuid()));
+         }
+      }
+      return typeIds.isEmpty() ? null : new ArrayList<>(typeIds);
    }
 
    // --- Attribute Change Parsing ---

@@ -87,6 +87,14 @@ public final class TransactionCommitTopic {
    public static final String ASSOCIATED_USERS = "associatedUsers";
 
    /**
+    * Property: distinct attribute type ids changed anywhere in this transaction (String -- JSON
+    * array of id strings, e.g. {@code ["1152921504606847088", ...]}). Populated from the dirty
+    * attributes at commit; lets clients do targeted refreshes (e.g. refresh a hierarchy label only
+    * when the Name attribute type changed) instead of reacting to every {@code attribute_modified}.
+    */
+   public static final String CHANGED_ATTRIBUTE_TYPE_IDS = "changedAttributeTypeIds";
+
+   /**
     * Property: client-minted origin id (String) identifying the browser tab/client that initiated
     * the commit, captured from the {@code X-Origin-Id} request header via {@link OriginContext}.
     * <p>

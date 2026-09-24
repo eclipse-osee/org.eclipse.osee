@@ -39,6 +39,12 @@ export type artifactInvalidation = {
 	 * a server round-trip. Empty when the change touched no user-valued attributes.
 	 */
 	associatedUsers: associatedUsers[];
+	/**
+	 * Distinct attribute type ids changed in the transaction. Lets a consumer refetch only when a
+	 * specific attribute type changed (e.g. a hierarchy label on a Name change) rather than on
+	 * every `attribute_modified`. Empty when the change touched no attribute values.
+	 */
+	changedAttributeTypeIds: string[];
 	/** True if this change originated from the current tab (local save). */
 	isLocal?: boolean;
 	/**
@@ -128,6 +134,25 @@ export class ArtifactChangeNotificationService {
 	}
 
 	/**
+	 * Returns an observable that emits when a change on the given branch modified the given
+	 * attribute type (matched against the event's `changedAttributeTypeIds`). Use this for views
+	 * that must react to a specific attribute changing — e.g. a hierarchy tree refreshing a node
+	 * label when its Name attribute changes — without reacting to every `attribute_modified`.
+	 */
+	forChangedAttributeType(
+		branchId: string,
+		attributeTypeId: string
+	): Observable<artifactInvalidation> {
+		return this.artifactInvalidations$.pipe(
+			filter(
+				(inv) =>
+					inv.branchId === branchId &&
+					inv.changedAttributeTypeIds.includes(attributeTypeId)
+			)
+		);
+	}
+
+	/**
 	 * Returns an observable that emits when structural changes (create, delete,
 	 * relation add/remove) occur on the given branch. Does NOT emit for
 	 * attribute-only modifications. Use this for hierarchy trees that only
@@ -208,6 +233,8 @@ export class ArtifactChangeNotificationService {
 							'attribute_modified',
 						],
 						associatedUsers: event.associatedUsers ?? [],
+						changedAttributeTypeIds:
+							event.changedAttributeTypeIds ?? [],
 						originId: event.originId ?? undefined,
 					});
 				}
@@ -238,13 +265,16 @@ export class ArtifactChangeNotificationService {
 	 * @param changeTypes what kinds of changes occurred
 	 * @param associatedUsers user references from the changed attributes (optional); lets the
 	 * acting tab's own views decide relevance immediately without waiting for the server echo
+	 * @param changedAttributeTypeIds distinct attribute type ids changed (optional); lets the acting
+	 * tab's own views do targeted refreshes without waiting for the server echo
 	 */
 	emitLocalChange(
 		branchId: string,
 		artifactIds: string[],
 		transactionId: string,
 		changeTypes: artifactChangeType[],
-		associatedUsers: associatedUsers[] = []
+		associatedUsers: associatedUsers[] = [],
+		changedAttributeTypeIds: string[] = []
 	): void {
 		for (const artifactId of artifactIds) {
 			this.stream.emitLocal({
@@ -253,6 +283,7 @@ export class ArtifactChangeNotificationService {
 				transactionId,
 				changeTypes,
 				associatedUsers,
+				changedAttributeTypeIds,
 				isLocal: true,
 			});
 		}

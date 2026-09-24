@@ -32,6 +32,8 @@ export class TransactionService {
 
 	performMutation(body: transaction | legacyTransaction) {
 		const changeTypes = this.deriveChangeTypes(body);
+		const changedAttributeTypeIds =
+			this.deriveChangedAttributeTypeIds(body);
 		return this.mutation.mutateAndNotify(
 			this.http.post<transactionResult>(apiURL + '/orcs/txs', body),
 			(result) => {
@@ -50,11 +52,43 @@ export class TransactionService {
 						artifactIds,
 						transactionId: txId,
 						changeTypes,
+						changedAttributeTypeIds,
 					};
 				}
 				return null;
 			}
 		);
+	}
+
+	/**
+	 * Collects the distinct attribute type ids the transaction sets/adds on existing or new
+	 * artifacts, so the acting tab can do targeted refreshes without waiting for the server echo.
+	 * Mirrors the server's changedAttributeTypeIds. Deleted attributes carry only an instance id
+	 * (no type id) in the body, so they are not represented here; the server echo covers them.
+	 */
+	private deriveChangedAttributeTypeIds(
+		body: transaction | legacyTransaction
+	): string[] {
+		const typeIds = new Set<string>();
+		const collect = (attrs?: { typeId?: string }[]): void => {
+			for (const attr of attrs ?? []) {
+				if (attr.typeId) {
+					typeIds.add(attr.typeId);
+				}
+			}
+		};
+		if ('modifyArtifacts' in body) {
+			for (const mod of body.modifyArtifacts ?? []) {
+				collect(mod.setAttributes);
+				collect(mod.addAttributes);
+			}
+		}
+		if ('createArtifacts' in body) {
+			for (const create of body.createArtifacts ?? []) {
+				collect(create.attributes);
+			}
+		}
+		return [...typeIds];
 	}
 
 	private deriveChangeTypes(

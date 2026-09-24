@@ -74,9 +74,27 @@ describe('MutationService', () => {
 			['11', '22'],
 			'999',
 			['attribute_modified'],
+			[],
 			[]
 		);
 		expect(emitBranch).not.toHaveBeenCalled();
+	});
+
+	it('threads a descriptor changedAttributeTypeIds through to the local emit', async () => {
+		await firstValueFrom(
+			service.mutateAndNotify(of({ ok: true }), () => ({
+				...artifactDescriptor,
+				changedAttributeTypeIds: ['1152921504606847088'],
+			}))
+		);
+		expect(emitArtifact).toHaveBeenCalledWith(
+			'570',
+			['11', '22'],
+			'999',
+			['attribute_modified'],
+			[],
+			['1152921504606847088']
+		);
 	});
 
 	it('emits a branch local change for a branch descriptor', async () => {

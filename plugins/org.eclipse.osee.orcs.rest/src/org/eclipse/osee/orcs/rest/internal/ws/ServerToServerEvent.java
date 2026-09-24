@@ -53,6 +53,7 @@ public class ServerToServerEvent {
    private final String newBranchId;
    private final String associatedArtifactId;
    private final List<String> changeTypes;
+   private final List<String> changedAttributeTypeIds;
    private final String context;
    private final List<PresenceEntry> presenceUsers;
 
@@ -76,6 +77,7 @@ public class ServerToServerEvent {
       @JsonProperty("newBranchId") String newBranchId,
       @JsonProperty("associatedArtifactId") String associatedArtifactId,
       @JsonProperty("changeTypes") List<String> changeTypes,
+      @JsonProperty("changedAttributeTypeIds") List<String> changedAttributeTypeIds,
       @JsonProperty("context") String context,
       @JsonProperty("presenceUsers") List<PresenceEntry> presenceUsers) {
       this.branchId = branchId;
@@ -90,6 +92,7 @@ public class ServerToServerEvent {
       this.newBranchId = newBranchId;
       this.associatedArtifactId = associatedArtifactId;
       this.changeTypes = changeTypes;
+      this.changedAttributeTypeIds = changedAttributeTypeIds;
       this.context = context;
       this.presenceUsers = presenceUsers;
    }
@@ -97,30 +100,31 @@ public class ServerToServerEvent {
    /** An artifact/attribute/relation change committed on {@code branchId}. */
    public static ServerToServerEvent artifactChanged(String branchId, List<String> artifactIds, String transactionId,
       String authorUserId, String originServerId, String associatedUsersJson, String originId,
-      List<String> changeTypes) {
+      List<String> changeTypes, List<String> changedAttributeTypeIds) {
       return new ServerToServerEvent(branchId, artifactIds, transactionId, ARTIFACT_CHANGED, authorUserId,
-         originServerId, associatedUsersJson, originId, null, null, null, changeTypes, null, null);
+         originServerId, associatedUsersJson, originId, null, null, null, changeTypes, changedAttributeTypeIds, null,
+         null);
    }
 
    /** A branch metadata change (created/committed/renamed/state/etc.) on {@code branchId}. */
    public static ServerToServerEvent branchChanged(String branchId, String changeType, String authorUserId,
       String originServerId, String originId, String associatedArtifactId) {
       return new ServerToServerEvent(branchId, null, null, BRANCH_CHANGED, authorUserId, originServerId, null,
-         originId, changeType, null, associatedArtifactId, null, null, null);
+         originId, changeType, null, associatedArtifactId, null, null, null, null);
    }
 
    /** An update-from-parent branch swap: {@code oldBranchId} retired for {@code newBranchId}. */
    public static ServerToServerEvent branchRebaselined(String oldBranchId, String newBranchId, String changeType,
       String authorUserId, String originServerId, String originId) {
       return new ServerToServerEvent(oldBranchId, null, null, BRANCH_REBASELINED, authorUserId, originServerId, null,
-         originId, changeType, newBranchId, null, null, null, null);
+         originId, changeType, newBranchId, null, null, null, null, null);
    }
 
    /** This server's current user set for a presence {@code context}. */
    public static ServerToServerEvent presence(String context, String originServerId,
       List<PresenceEntry> presenceUsers) {
       return new ServerToServerEvent(null, null, null, PRESENCE, null, originServerId, null, null, null, null, null,
-         null, context, presenceUsers);
+         null, null, context, presenceUsers);
    }
 
    public String getBranchId() {
@@ -207,6 +211,15 @@ public class ServerToServerEvent {
     */
    public List<String> getChangeTypes() {
       return changeTypes;
+   }
+
+   /**
+    * The distinct attribute type ids changed in this transaction for an {@link #ARTIFACT_CHANGED}
+    * event, carried across servers so a peer server's clients can do targeted refreshes (e.g. only
+    * when the Name attribute type changed). Null for other event types / when none changed.
+    */
+   public List<String> getChangedAttributeTypeIds() {
+      return changedAttributeTypeIds;
    }
 
    /**

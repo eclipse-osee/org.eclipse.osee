@@ -34,6 +34,7 @@ public class ArtifactChangeMessage {
    private String userId;
    private List<String> changeTypes;
    private List<AssociatedUsers> associatedUsers;
+   private List<String> changedAttributeTypeIds;
    private String originId;
 
    public ArtifactChangeMessage() {
@@ -41,13 +42,15 @@ public class ArtifactChangeMessage {
    }
 
    public ArtifactChangeMessage(String branchId, Collection<String> artifactIds, String transactionId, String userId,
-      List<String> changeTypes, List<AssociatedUsers> associatedUsers, String originId) {
+      List<String> changeTypes, List<AssociatedUsers> associatedUsers, List<String> changedAttributeTypeIds,
+      String originId) {
       this.branchId = branchId;
       this.artifactIds = new ArrayList<>(artifactIds);
       this.transactionId = transactionId;
       this.userId = userId;
       this.changeTypes = changeTypes;
       this.associatedUsers = associatedUsers;
+      this.changedAttributeTypeIds = changedAttributeTypeIds;
       this.originId = originId;
    }
 
@@ -97,6 +100,19 @@ public class ArtifactChangeMessage {
 
    public void setAssociatedUsers(List<AssociatedUsers> associatedUsers) {
       this.associatedUsers = associatedUsers;
+   }
+
+   /**
+    * @return the distinct attribute type ids changed in this transaction, or null. Lets clients do
+    * targeted refreshes (e.g. only when the Name attribute type changed) rather than reacting to
+    * every {@code attribute_modified}.
+    */
+   public List<String> getChangedAttributeTypeIds() {
+      return changedAttributeTypeIds;
+   }
+
+   public void setChangedAttributeTypeIds(List<String> changedAttributeTypeIds) {
+      this.changedAttributeTypeIds = changedAttributeTypeIds;
    }
 
    /**

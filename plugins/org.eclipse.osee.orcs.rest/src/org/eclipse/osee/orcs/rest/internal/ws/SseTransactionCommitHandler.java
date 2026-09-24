@@ -68,12 +68,15 @@ public class SseTransactionCommitHandler implements EventHandler {
          List<ArtifactChangeMessage.AssociatedUsers> associatedUsers =
             SseBroadcastService.parseAssociatedUsers((String) event.getProperty(TransactionCommitTopic.ASSOCIATED_USERS));
 
+         List<String> changedAttributeTypeIds = SseBroadcastService.parseChangedAttributeTypeIds(
+            (String) event.getProperty(TransactionCommitTopic.CHANGED_ATTRIBUTE_TYPE_IDS));
+
          // Broadcast to ALL SSE sinks (including the author's). The originating client recognizes
          // its own echo via originId and ignores it; no server-side connection exclusion.
          String originId = (String) event.getProperty(TransactionCommitTopic.ORIGIN_ID);
 
          SseBroadcastService.broadcastArtifactChange(branchId, artifactIds, transactionId, authorUserId, changeTypes,
-            associatedUsers, originId);
+            associatedUsers, changedAttributeTypeIds, originId);
       } catch (Exception ex) {
          OseeLog.logf(SseTransactionCommitHandler.class, Level.WARNING,
             "Failed to handle transaction commit event for SSE broadcast: %s", ex.getMessage());

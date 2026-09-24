@@ -129,7 +129,8 @@ public class ServerToServerEventListener {
             SseBroadcastService.parseAssociatedUsers(event.getAssociatedUsersJson());
          SseBroadcastService.broadcastArtifactChange(
             branchId, artifactIds, event.getTransactionId(),
-            event.getAuthorUserId(), changeTypes, associatedUsers, event.getOriginId());
+            event.getAuthorUserId(), changeTypes, associatedUsers, event.getChangedAttributeTypeIds(),
+            event.getOriginId());
       }
    }
 }

@@ -58,15 +58,17 @@ public final class SseBroadcastService {
     * @param associatedUsers user references from the changed attributes, grouped by attribute
     * type (see {@link ArtifactChangeMessage.AssociatedUsers}); lets views decide relevance
     * client-side. May be null/empty.
+    * @param changedAttributeTypeIds distinct attribute type ids changed in the transaction; lets
+    * clients do targeted refreshes (e.g. only on a Name change). May be null/empty.
     * @param originId the client-minted origin id of the initiating tab (null for
     * desktop/internal-originated changes); echoed on the message for client self-dedup
     */
    public static void broadcastArtifactChange(String branchId, Collection<String> artifactIds, String transactionId,
       String userId, List<String> changeTypes, List<ArtifactChangeMessage.AssociatedUsers> associatedUsers,
-      String originId) {
+      List<String> changedAttributeTypeIds, String originId) {
       try {
          ArtifactChangeMessage message = new ArtifactChangeMessage(branchId, artifactIds, transactionId, userId,
-            changeTypes, associatedUsers, originId);
+            changeTypes, associatedUsers, changedAttributeTypeIds, originId);
          String json = MAPPER.writeValueAsString(message);
          OseeSseEndpoint.broadcast("artifactChanged", json);
       } catch (Exception ex) {
@@ -248,6 +250,25 @@ public final class SseBroadcastService {
       } catch (Exception ex) {
          OseeLog.logf(SseBroadcastService.class, Level.WARNING,
             "Failed to parse associatedUsers JSON: %s", ex.getMessage());
+         return null;
+      }
+   }
+
+   /**
+    * Parses the {@code changedAttributeTypeIds} JSON (a JSON array of id strings, as produced for
+    * the transaction commit topic / carried on ActiveMQ) into a list. Returns null on empty/invalid
+    * input.
+    */
+   public static List<String> parseChangedAttributeTypeIds(String json) {
+      if (json == null || json.isEmpty() || json.equals("[]")) {
+         return null;
+      }
+      try {
+         List<String> result = MAPPER.readValue(json, new TypeReference<List<String>>() {});
+         return result.isEmpty() ? null : result;
+      } catch (Exception ex) {
+         OseeLog.logf(SseBroadcastService.class, Level.WARNING,
+            "Failed to parse changedAttributeTypeIds JSON: %s", ex.getMessage());
          return null;
       }
    }

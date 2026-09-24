@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Page, Request } from '@ngx-playwright/test';
+import { Page, Request, expect } from '@ngx-playwright/test';
 
 /**
  * Substrings of URLs that belong to the long-lived real-time streams (SSE) rather than to a
@@ -114,4 +114,34 @@ export async function waitForNetworkIdleIgnoringSse(
 		page.off('requestfinished', onSettled);
 		page.off('requestfailed', onSettled);
 	}
+}
+
+/**
+ * Waits until the page's SSE stream is live. The toolbar user-display exposes the connection state
+ * as a `status` element whose accessible name is "Real-time sync active." once connected. Cross-user
+ * propagation cannot be observed before this — an event committed while a tab is still connecting is
+ * never delivered to it (GET-on-notify has no notify for a missed event).
+ */
+export async function waitForRealtimeConnected(
+	page: Page,
+	{ timeoutMs = 30000 }: { timeoutMs?: number } = {}
+): Promise<void> {
+	await expect(
+		page.getByRole('status', { name: 'Real-time sync active.' })
+	).toBeVisible({ timeout: timeoutMs });
+}
+
+/**
+ * Waits until a page is fully ready to both act and observe real-time changes: its discrete data
+ * loads have gone quiet AND its SSE stream is connected. This is the precondition for reliable
+ * two-user SSE assertions — clicking or asserting before both hold is the common source of flake
+ * (a click that doesn't drive the handler, or a tab that misses the event because it wasn't yet
+ * subscribed). Call it on every participating page after navigation before the cross-user steps.
+ */
+export async function waitForPageReadyForSse(
+	page: Page,
+	options: { idleMs?: number; timeoutMs?: number } = {}
+): Promise<void> {
+	await waitForRealtimeConnected(page, { timeoutMs: options.timeoutMs });
+	await waitForNetworkIdleIgnoringSse(page, options);
 }

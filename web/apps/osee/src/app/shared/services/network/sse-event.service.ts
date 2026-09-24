@@ -48,6 +48,12 @@ export type artifactChangeEvent = {
 	 */
 	associatedUsers?: associatedUsers[];
 	/**
+	 * Distinct attribute type ids changed anywhere in this transaction. Lets consumers do targeted
+	 * refreshes (e.g. a hierarchy label only when the Name attribute type changed) instead of
+	 * reacting to every `attribute_modified`. Empty/absent when no attribute values changed.
+	 */
+	changedAttributeTypeIds?: string[];
+	/**
 	 * The origin id of the tab that initiated the change (echoed by the server). When it equals
 	 * this tab's own origin id, the event is this tab's own echo and is treated as local.
 	 */

@@ -29,6 +29,8 @@ export type artifactChangeDescriptor = {
 	transactionId?: string;
 	changeTypes: artifactChangeType[];
 	associatedUsers?: associatedUsers[];
+	/** Distinct attribute type ids changed; lets the acting tab do targeted refreshes locally. */
+	changedAttributeTypeIds?: string[];
 };
 
 /**
@@ -166,7 +168,8 @@ export class MutationService {
 								descriptor.artifactIds,
 								descriptor.transactionId ?? '',
 								descriptor.changeTypes,
-								descriptor.associatedUsers ?? []
+								descriptor.associatedUsers ?? [],
+								descriptor.changedAttributeTypeIds ?? []
 							);
 						}
 					} else if (descriptor.type === 'branch') {

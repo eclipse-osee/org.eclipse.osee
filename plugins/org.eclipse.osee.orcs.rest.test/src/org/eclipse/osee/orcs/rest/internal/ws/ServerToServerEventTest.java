@@ -37,8 +37,10 @@ public class ServerToServerEventTest {
    public void testArtifactChangedFactory() {
       List<String> artIds = Arrays.asList("11", "22");
       List<String> changeTypes = Arrays.asList("attribute_modified");
+      List<String> changedAttributeTypeIds = Arrays.asList("1152921504606847088");
       ServerToServerEvent event = ServerToServerEvent.artifactChanged("570", artIds, "999", "user-1", "server-A",
-         "[{\"typeId\":\"1\",\"encoding\":\"artId\",\"userIds\":[\"3\"]}]", "tab-7", changeTypes);
+         "[{\"typeId\":\"1\",\"encoding\":\"artId\",\"userIds\":[\"3\"]}]", "tab-7", changeTypes,
+         changedAttributeTypeIds);
 
       assertEquals(ServerToServerEvent.ARTIFACT_CHANGED, event.getEventType());
       assertEquals("570", event.getBranchId());
@@ -48,6 +50,7 @@ public class ServerToServerEventTest {
       assertEquals("server-A", event.getOriginServerId());
       assertEquals("tab-7", event.getOriginId());
       assertEquals(changeTypes, event.getChangeTypes());
+      assertEquals(changedAttributeTypeIds, event.getChangedAttributeTypeIds());
       // Branch/presence-only fields stay null on an artifact event.
       assertNull(event.getChangeType());
       assertNull(event.getNewBranchId());
@@ -106,7 +109,7 @@ public class ServerToServerEventTest {
    @Test
    public void testArtifactChangedJsonRoundTrip() throws Exception {
       ServerToServerEvent original = ServerToServerEvent.artifactChanged("570", Arrays.asList("11"), "999", "user-1",
-         "server-A", null, "tab-7", Arrays.asList("attribute_modified"));
+         "server-A", null, "tab-7", Arrays.asList("attribute_modified"), Arrays.asList("1152921504606847088"));
 
       ServerToServerEvent restored =
          MAPPER.readValue(MAPPER.writeValueAsString(original), ServerToServerEvent.class);
@@ -117,6 +120,7 @@ public class ServerToServerEventTest {
       assertEquals(original.getTransactionId(), restored.getTransactionId());
       assertEquals(original.getOriginId(), restored.getOriginId());
       assertEquals(original.getChangeTypes(), restored.getChangeTypes());
+      assertEquals(original.getChangedAttributeTypeIds(), restored.getChangedAttributeTypeIds());
    }
 
    @Test

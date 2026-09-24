@@ -153,6 +153,28 @@ describe('ArtifactChangeNotificationService', () => {
 		expect(received.map((i) => i.artifactId)).toEqual(['11']);
 	});
 
+	it('forChangedAttributeType matches events that changed the given attribute type', () => {
+		const received: artifactInvalidation[] = [];
+		service
+			.forChangedAttributeType('570', '1152921504606847088')
+			.subscribe((i) => received.push(i));
+
+		emitSse({
+			artifactIds: ['11'],
+			transactionId: 't1',
+			changedAttributeTypeIds: ['1152921504606847088', '999'],
+			originId: 'other',
+		});
+		emitSse({
+			artifactIds: ['22'],
+			transactionId: 't2',
+			changedAttributeTypeIds: ['999'],
+			originId: 'other',
+		});
+
+		expect(received.map((i) => i.artifactId)).toEqual(['11']);
+	});
+
 	it('emitLocalChange marks the invalidation isLocal and delivers immediately', () => {
 		const received: artifactInvalidation[] = [];
 		service.artifactInvalidations$.subscribe((i) => received.push(i));

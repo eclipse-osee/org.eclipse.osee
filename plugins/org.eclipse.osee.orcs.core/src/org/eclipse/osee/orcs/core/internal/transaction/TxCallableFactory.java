@@ -147,6 +147,7 @@ public class TxCallableFactory {
    private static class AttributeChangeCollection {
       String attrChangesJson = "{}";
       String associatedUsersJson = "[]";
+      String changedAttributeTypeIdsJson = "[]";
    }
 
    /**
@@ -163,6 +164,8 @@ public class TxCallableFactory {
       // typeId -> { encoding, userIds set }
       Map<String, String> typeEncoding = new HashMap<>();
       Map<String, LinkedHashSet<String>> usersByType = new HashMap<>();
+      // Distinct attribute type ids changed anywhere in the tx, for client targeted refreshes.
+      LinkedHashSet<String> changedAttributeTypeIds = new LinkedHashSet<>();
       try {
          for (Artifact artifact : txData.getAllWriteables()) {
             for (Attribute<?> attr : artifact.getAttributes(DeletionFlag.INCLUDE_DELETED)) {
@@ -185,6 +188,8 @@ public class TxCallableFactory {
                   data.add(uri != null ? uri : "");
                   attrMap.put("data", data);
                   attrList.add(attrMap);
+
+                  changedAttributeTypeIds.add(String.valueOf(attrType.getId()));
 
                   // Generic user-reference collection via type-level DisplayHint marker
                   if (attrType.isUserReference() && storageString != null && !storageString.isEmpty()) {
@@ -219,6 +224,12 @@ public class TxCallableFactory {
       } catch (Exception ex) {
          logger.warn(ex, "Failed to serialize associated users for commit notification");
          collection.associatedUsersJson = "[]";
+      }
+      try {
+         collection.changedAttributeTypeIdsJson = MAPPER.writeValueAsString(new ArrayList<>(changedAttributeTypeIds));
+      } catch (Exception ex) {
+         logger.warn(ex, "Failed to serialize changed attribute type ids for commit notification");
+         collection.changedAttributeTypeIdsJson = "[]";
       }
       return collection;
    }
@@ -369,6 +380,8 @@ public class TxCallableFactory {
          properties.put(TransactionCommitTopic.ARTIFACT_MOD_TYPES, artifactModTypes.toArray(new String[0]));
          properties.put(TransactionCommitTopic.ATTRIBUTE_CHANGES, attrChanges.attrChangesJson);
          properties.put(TransactionCommitTopic.ASSOCIATED_USERS, attrChanges.associatedUsersJson);
+         properties.put(TransactionCommitTopic.CHANGED_ATTRIBUTE_TYPE_IDS,
+            attrChanges.changedAttributeTypeIdsJson);
          properties.put(TransactionCommitTopic.CHANGE_TYPES, eventData.changeTypes.toArray(new String[0]));
          properties.put(TransactionCommitTopic.RELATION_CHANGES,
             MAPPER.writeValueAsString(eventData.relationChanges));

@@ -155,10 +155,12 @@ public class ServerToServerEventPublisher implements EventHandler {
          String[] changeTypesArray = (String[]) event.getProperty(TransactionCommitTopic.CHANGE_TYPES);
          List<String> changeTypes =
             changeTypesArray != null && changeTypesArray.length > 0 ? Arrays.asList(changeTypesArray) : null;
+         List<String> changedAttributeTypeIds = SseBroadcastService.parseChangedAttributeTypeIds(
+            (String) event.getProperty(TransactionCommitTopic.CHANGED_ATTRIBUTE_TYPE_IDS));
 
          ServerToServerEvent s2sEvent = ServerToServerEvent.artifactChanged(
             branchId, artifactIds, transactionId, authorUserId, SERVER_ID, associatedUsersJson, originId,
-            changeTypes);
+            changeTypes, changedAttributeTypeIds);
 
          publish(s2sEvent);
 

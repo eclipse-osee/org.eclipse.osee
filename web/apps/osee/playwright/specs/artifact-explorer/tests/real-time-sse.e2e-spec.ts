@@ -22,6 +22,7 @@ import {
 	searchAndOpenArtifact,
 	switchEditorSection,
 } from '../utils/helpers';
+import { waitForPageReadyForSse } from '../../../shared/sse-helpers';
 
 /**
  * Real-time (SSE) behavior for the artifact editor, exercised with two distinct
@@ -77,6 +78,41 @@ async function editNameAndSave(page: Page, value: string) {
 			(res) => res.url().includes('orcs/txs') && res.status() === 200
 		),
 		field.evaluate((el) => el.blur()),
+	]);
+}
+
+/** Adds one instance of the given attribute type via the Add Attribute dialog and saves. */
+async function addAttribute(page: Page, typeFilter: string) {
+	await page.getByRole('button', { name: 'Add Attribute' }).click();
+	const dialog = page.locator('mat-dialog-container');
+	await expect(
+		dialog.getByRole('textbox', { name: 'Filter attribute types' })
+	).toBeVisible({ timeout: 5000 });
+	await dialog
+		.getByRole('textbox', { name: 'Filter attribute types' })
+		.fill(typeFilter);
+	await dialog.locator('mat-checkbox').first().click();
+	await Promise.all([
+		page.waitForResponse(
+			(res) => res.url().includes('orcs/txs') && res.status() === 200
+		),
+		dialog.getByRole('button', { name: 'Add' }).click(),
+	]);
+	await expect(dialog).not.toBeVisible();
+}
+
+/** Deletes the first deletable attribute instance (delete mode must be on) and saves. */
+async function deleteFirstAttributeInstance(page: Page) {
+	await page.getByRole('button', { name: 'Toggle Delete Mode' }).click();
+	const deleteBtn = page
+		.getByRole('button', { name: 'Delete attribute instance' })
+		.first();
+	await expect(deleteBtn).toBeVisible({ timeout: 5000 });
+	await Promise.all([
+		page.waitForResponse(
+			(res) => res.url().includes('orcs/txs') && res.status() === 200
+		),
+		deleteBtn.click(),
 	]);
 }
 
@@ -199,6 +235,67 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 				await expect(nameField(jason)).toHaveValue(joeValue, {
 					timeout: 20000,
 				});
+			});
+		} finally {
+			await joe.context().close();
+			await jason.context().close();
+			await purgeBranchViaApi(request, branchId);
+		}
+	});
+
+	test('attribute add, delete, and history updates by one user propagate to another', async ({
+		browser,
+		request,
+	}) => {
+		// These behaviors share one setup (a branch + artifact + two open editors) and chain
+		// on the same artifact (add an attribute, delete it, observe history grow), so they
+		// run as labeled steps in one test rather than three each re-paying that setup (per
+		// the perf guidance: consolidate shared-setup steps). Joe acts; Jason observes over SSE.
+		test.setTimeout(90000);
+		// Label must not contain a word that collides with an editor-section button name
+		// (e.g. "History"): switchEditorSection uses getByRole('button', { name }) which
+		// substring-matches, and the artifact-name button would otherwise also match.
+		const { branchId, branchName, artifact } =
+			await setupBranchWithArtifact(browser, request, 'Log');
+		const joe = await newUserPage(browser, DEMO_USERS.joe);
+		const jason = await newUserPage(browser, DEMO_USERS.jason);
+		try {
+			await openArtifact(joe, branchName, artifact);
+			await openArtifact(jason, branchName, artifact);
+			// Both tabs must have settled + connected SSE before cross-user steps.
+			await Promise.all([
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
+			]);
+
+			await test.step('an added attribute appears in the other editor', async () => {
+				await expect(jason.getByLabel('CUI Limited')).toHaveCount(0);
+				await addAttribute(joe, 'CUI Limited');
+				await expect(
+					jason.getByLabel('CUI Limited').first()
+				).toBeVisible({ timeout: 20000 });
+			});
+
+			await test.step('a deleted attribute disappears from the other editor', async () => {
+				await deleteFirstAttributeInstance(joe);
+				await expect(jason.getByLabel('CUI Limited')).toHaveCount(0, {
+					timeout: 20000,
+				});
+			});
+
+			await test.step('a commit grows the other user open History tab', async () => {
+				// Jason watches History; it reloads over SSE (GET-on-notify) via the parent's
+				// change counter and gains a new transaction row when Joe commits.
+				await switchEditorSection(jason, 'History');
+				const historyRows = jason.locator('tbody tr');
+				await expect(historyRows.first()).toBeVisible({
+					timeout: 20000,
+				});
+				const initialCount = await historyRows.count();
+				await editNameAndSave(joe, artifact + ' Edit');
+				await expect
+					.poll(() => historyRows.count(), { timeout: 20000 })
+					.toBeGreaterThan(initialCount);
 			});
 		} finally {
 			await joe.context().close();
