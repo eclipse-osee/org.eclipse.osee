@@ -501,7 +501,7 @@
 									<source>true</source>
 								</artifact>
 
-								<!-- ActiveMQ 5.17.0 as the single vendor OSGi bundle (activemq-osgi).
+								<!-- ActiveMQ as the single vendor OSGi bundle (activemq-osgi).
 								     This is exactly what Apache's own activemq-client Karaf feature uses for
 								     a client-only OSGi deployment: activemq-client/activemq-broker are plain
 								     Maven jars that SPLIT-PACKAGE org.apache.activemq.broker/.transport and do

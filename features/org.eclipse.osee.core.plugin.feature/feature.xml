@@ -42,7 +42,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   <!-- ActiveMQ 5.17.0 single vendor OSGi bundle (client + broker in one bundle;
+   <!-- ActiveMQ single vendor OSGi bundle (client + broker in one bundle;
         the raw client/broker Maven jars split-package and do not compose in OSGi).
         Present everywhere messaging is used. A broker is only hosted when a
         vm:broker: URI is configured; production uses tcp:// and never hosts one. -->

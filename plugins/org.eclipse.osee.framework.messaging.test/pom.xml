@@ -62,7 +62,7 @@
    			<configuration>
 					<dependency-resolution>
 						<extraRequirements>
-						<!-- ActiveMQ 5.17.0 single vendor OSGi bundle. The messaging tests stand up
+						<!-- ActiveMQ single vendor OSGi bundle. The messaging tests stand up
 						     embedded brokers via @Rule; activemq-osgi provides both client and broker. -->
 						<requirement>
 							<type>eclipse-plugin</type>

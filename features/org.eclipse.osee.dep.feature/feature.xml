@@ -438,7 +438,7 @@
             version="0.0.0"
             unpack="false"/>
 
-      <!-- ActiveMQ 5.17.0 single vendor OSGi bundle (replaces fat jms.libraries).
+      <!-- ActiveMQ single vendor OSGi bundle (replaces fat jms.libraries).
            Canonical location for all third-party deps per docs/ai/server/adding-dependencies.md.
            Acquired via the OSGi converter (org.eclipse.osee.osgi.converter). -->
       <plugin

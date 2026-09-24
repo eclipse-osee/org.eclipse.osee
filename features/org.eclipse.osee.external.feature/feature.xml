@@ -353,7 +353,7 @@
             version="0.0.0"
             unpack="false"/>
 
-      <!-- ActiveMQ 5.17.0 single vendor OSGi bundle (replaces the legacy fat
+      <!-- ActiveMQ single vendor OSGi bundle (replaces the legacy fat
            jms.libraries activemq-all-5.14.0). One bundle for client + embedded
            broker; the raw client/broker Maven jars split-package and do not
            compose as separate OSGi bundles. -->
