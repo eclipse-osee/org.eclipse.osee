@@ -38,6 +38,7 @@ import {
 	categorizeConflicts,
 	conflictCategorization,
 	conflictKeyOptions,
+	stagedAddInput,
 } from '../logic/categorize-conflicts';
 import {
 	mapResolutionsToOperations,
@@ -78,6 +79,15 @@ export type conflictResolutionConfig = {
 	>;
 	/** Unsaved local values, keyed the same way as {@link keyOf}. */
 	pendingValues: ReadonlyMap<string, string>;
+	/**
+	 * New attribute instances the user staged locally while the entity was
+	 * conflicted (created but not persisted). Categorized alongside value edits:
+	 * a staged add whose type the server did not also add is applied as an `add`
+	 * op without prompting; one that collides with a server-side add of the same
+	 * type is surfaced as a conflict. Omit or pass empty when the page does not
+	 * stage adds.
+	 */
+	stagedAdds?: readonly stagedAddInput[];
 	/**
 	 * How pending edits are matched to base/server attrs. Default keys by instance
 	 * `id`; pass `{ keyOf: (a) => a.typeId }` for editors that track edits by type.
@@ -183,16 +193,23 @@ export class ConflictResolutionService {
 		config: conflictResolutionConfig,
 		serverAttrs: readonly attribute<string, ATTRIBUTETYPEID>[]
 	): void {
-		const { conflicts, autoSaveAttrs } = categorizeConflicts(
+		const categorization = categorizeConflicts(
 			config.baseAttrs,
 			serverAttrs,
 			config.pendingValues,
-			config.keyOptions
+			config.keyOptions,
+			config.stagedAdds
 		);
+		const { conflicts, autoSaveAttrs, stagedAddAttrs } = categorization;
 
-		// No true conflicts: commit the safe edits (server never touched them).
+		// No true conflicts: commit the safe edits and staged additions (the server
+		// never touched the edited attrs and did not add the staged types). Converged
+		// edits are intentionally NOT committed -- the server already holds that value.
 		if (conflicts.length === 0) {
-			this.commitAndRefresh(config, { set: autoSaveAttrs, add: [] });
+			this.commitAndRefresh(config, {
+				set: autoSaveAttrs,
+				add: stagedAddAttrs,
+			});
 			return;
 		}
 
@@ -202,10 +219,9 @@ export class ConflictResolutionService {
 		// auto-save edits) derive from the same value and cannot drift. This is what keeps
 		// auto-save gammas fresh: committing an older snapshot would send stale gammas and
 		// be rejected by the optimistic-concurrency guard, spuriously re-opening the dialog.
-		const latest = new BehaviorSubject<conflictCategorization>({
-			conflicts,
-			autoSaveAttrs,
-		});
+		const latest = new BehaviorSubject<conflictCategorization>(
+			categorization
+		);
 
 		// Live-update channel: while the dialog is open, re-derive conflicts from fresh
 		// server state whenever another remote change lands, and push them into the dialog.
@@ -217,6 +233,12 @@ export class ConflictResolutionService {
 			// Show non-conflicting edits read-only so the dialog accounts for every
 			// changed field (matching what the editor flagged), not just conflicts.
 			autoResolved: this.toAutoResolved(autoSaveAttrs),
+			// Show staged additions read-only too, so the dialog accounts for every
+			// pending change including new instances.
+			stagedAdds: this.toAutoResolved(stagedAddAttrs),
+			// Show converged edits (same value set by both users) read-only so the
+			// dialog accounts for the ring without implying a pending save.
+			converged: this.toAutoResolved(categorization.convergedAttrs),
 			entityName: config.entityName,
 			entityId: config.entityId,
 			liveUpdates$: liveUpdates.asObservable(),
@@ -242,7 +264,8 @@ export class ConflictResolutionService {
 						config.baseAttrs,
 						freshServerAttrs,
 						config.pendingValues,
-						config.keyOptions
+						config.keyOptions,
+						config.stagedAdds
 					);
 					// Update the single source of truth, then derive the dialog payload
 					// from it so display and commit stay in lockstep.
@@ -251,6 +274,12 @@ export class ConflictResolutionService {
 						conflicts: recategorized.conflicts,
 						autoResolved: this.toAutoResolved(
 							recategorized.autoSaveAttrs
+						),
+						stagedAdds: this.toAutoResolved(
+							recategorized.stagedAddAttrs
+						),
+						converged: this.toAutoResolved(
+							recategorized.convergedAttrs
 						),
 					});
 				},
@@ -290,14 +319,17 @@ export class ConflictResolutionService {
 					const { set, add } = mapResolutionsToOperations(
 						result.resolutions
 					);
-					// Derive the auto-save set from the single source of truth so its gammas
-					// match the latest server state; the conflict resolutions already carry
-					// fresh gammas via the dialog's live `conflicts` signal.
-					const { autoSaveAttrs: freshAutoSave } = latest.getValue();
+					// Derive the auto-save + staged-add sets from the single source of truth
+					// so their values/gammas match the latest server state; the conflict
+					// resolutions already carry fresh gammas via the dialog's live signals.
+					const {
+						autoSaveAttrs: freshAutoSave,
+						stagedAddAttrs: freshStagedAdds,
+					} = latest.getValue();
 					latest.complete();
 					this.commitAndRefresh(config, {
 						set: [...freshAutoSave, ...set],
-						add,
+						add: [...freshStagedAdds, ...add],
 					});
 				}
 			);

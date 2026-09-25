@@ -188,6 +188,23 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	 * Handles cases where the backend sends an object instead of a string.
 	 */
 	protected displayValue = computed(() => {
+		// Re-hydrate an in-progress conflict edit. This editor can be destroyed and
+		// rebuilt for structural reasons while a conflict is pending (e.g. a sibling
+		// instance of the same type is added/removed, flipping the panel's
+		// single-vs-grouped branch). On rebuild the attribute still carries the server
+		// value, so without this the field would show the server value even though the
+		// user's edit is preserved in the pending map. Prefer the tracked pending value
+		// while conflicted and dirty so the field shows what the user actually typed.
+		if (this.conflicted()) {
+			const pending = this.pendingValuesService.get(this.attr().id);
+			if (
+				pending !== undefined &&
+				this.dirtyService.isDirty(this.editorKey())
+			) {
+				return pending;
+			}
+		}
+
 		const val = this.attr().value;
 		if (val === null || val === undefined) {
 			return '';
@@ -316,6 +333,17 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 
 		this.markdownFocused.set(false);
 
+		// While a conflict is pending, focusout must not touch local edit state: the
+		// save is blocked until resolution, and the pending value + dirty ring must
+		// survive so this field still appears in the resolution dialog. Losing focus
+		// (e.g. clicking the Add Attribute button) is otherwise indistinguishable
+		// from a no-op blur, which would clear the pending value and silently drop
+		// the conflict. Keep pendingMarkdown intact too, so a later blur does not
+		// then fall into the clean-up branch.
+		if (this.conflicted()) {
+			return;
+		}
+
 		if (
 			this.pendingMarkdown !== null &&
 			this.pendingMarkdown !== this.previousValue()
@@ -365,6 +393,17 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	}
 
 	ngOnDestroy() {
+		// While a conflict is pending, this editor's dirty flag and pending value are
+		// owned by the panel-level conflict flow, not by this component instance. The
+		// editor can be torn down and rebuilt for purely structural reasons (e.g. a
+		// sibling instance of the same type is added/removed, flipping the panel
+		// between its single-instance and grouped rendering branches). Clearing state
+		// on such a teardown would silently drop an in-progress conflict edit -- the
+		// field would lose its ring and revert to the server value. So while
+		// conflicted we preserve the state; it is cleared wholesale on resolve/dismiss.
+		if (this.conflicted()) {
+			return;
+		}
 		this.dirtyService.markClean(this.editorKey());
 		this.pendingValuesService.remove(this.attr().id);
 	}

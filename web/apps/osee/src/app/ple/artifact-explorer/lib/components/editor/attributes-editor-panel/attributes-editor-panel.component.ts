@@ -63,6 +63,7 @@ import {
 	ConflictResolutionService,
 	EditorDirtyService,
 	PendingAttributeValuesService,
+	StagedAttributeService,
 	conflictChangeNotification,
 	resolutionOperations,
 } from '@osee/shared/conflict-resolution';
@@ -82,7 +83,7 @@ import {
 		AttributeDeleteButtonComponent,
 	],
 	viewProviders: [provideOptionalControlContainerNgForm()],
-	providers: [PendingAttributeValuesService],
+	providers: [PendingAttributeValuesService, StagedAttributeService],
 	templateUrl: './attributes-editor-panel.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	styles: [
@@ -102,6 +103,7 @@ export class AttributesEditorPanelComponent {
 	private dialog = inject(MatDialog);
 	private dirtyService = inject(EditorDirtyService);
 	private pendingValuesService = inject(PendingAttributeValuesService);
+	private stagedAttributeService = inject(StagedAttributeService);
 	private conflictResolution = inject(ConflictResolutionService);
 
 	tab = input.required<artifactTab>();
@@ -178,6 +180,7 @@ export class AttributesEditorPanelComponent {
 	dismissAndRefresh() {
 		this.dirtyService.clearAll();
 		this.pendingValuesService.clear();
+		this.stagedAttributeService.clear();
 		this.remoteChangeWhileDirty.set(false);
 		this.artifactResource().reload();
 	}
@@ -209,7 +212,10 @@ export class AttributesEditorPanelComponent {
 				this.artifactResource().value()?.name ??
 				this.tab().artifact.name,
 			entityId: this.artifactId(),
-			baseAttrs: this.attributes(),
+			// Base set for conflict detection is the real server-backed attributes
+			// only. Staged adds are reconciled through their own channel below;
+			// including them here would corrupt base-vs-server instance counts.
+			baseAttrs: this.serverBackedAttributes(),
 			fetchServerAttrs: () =>
 				this.artExpHttpService
 					.getartifactWithRelations(
@@ -220,6 +226,7 @@ export class AttributesEditorPanelComponent {
 					)
 					.pipe(map((a) => a.attributes)),
 			pendingValues: this.pendingValuesService.getAll(),
+			stagedAdds: this.stagedAddsForResolution(),
 			// Keep an open dialog live: each new remote change re-fetches + re-categorizes
 			// so the user never resolves against a stale server value.
 			changes: this.remoteChanges$,
@@ -244,11 +251,34 @@ export class AttributesEditorPanelComponent {
 			clearLocalState: () => {
 				this.dirtyService.clearAll();
 				this.pendingValuesService.clear();
+				this.stagedAttributeService.clear();
 				this.remoteChangeWhileDirty.set(false);
 			},
 			onError: (message) => (this.uiService.ErrorText = message),
 			setResolving: (resolving) => this.resolvingConflict.set(resolving),
 		});
+	}
+
+	/**
+	 * Builds the staged-add inputs for conflict resolution, overlaying each staged
+	 * instance with its latest pending value (a staged add edited in place before
+	 * resolving records the newest value under its stagedKey, not on the stored
+	 * instance). Keyed by stagedKey so the shared logic can echo it back on any
+	 * resulting collision conflict.
+	 */
+	private stagedAddsForResolution() {
+		return this.stagedAttributeService
+			.getAll()
+			.map(({ stagedKey, attr }) => {
+				const pending = this.pendingValuesService.get(stagedKey);
+				return {
+					key: stagedKey,
+					attr:
+						pending !== undefined
+							? { ...attr, value: pending }
+							: attr,
+				};
+			});
 	}
 
 	/** Maps resolution operations to the transaction attr-config shape. */
@@ -278,28 +308,80 @@ export class AttributesEditorPanelComponent {
 	 * Intentionally caches the last known good value in `_lastAttributes` as a side effect
 	 * so that the UI does not flash empty while the resource is refetching.
 	 */
+	/**
+	 * The artifact's real, server-backed attributes (sorted), WITHOUT any locally
+	 * staged additions. This is the base set for conflict detection: staged adds
+	 * are reconciled separately via their own channel, so mixing them in here would
+	 * corrupt base-vs-server comparisons (e.g. inflating per-type instance counts
+	 * used to detect a server-side add of the same type).
+	 *
+	 * Caches the last known good value in `_lastAttributes` as a side effect so the
+	 * UI does not flash empty while the resource is refetching.
+	 */
+	protected serverBackedAttributes = computed<
+		attribute<string, ATTRIBUTETYPEID>[]
+	>(() => {
+		const resourceAttrs = this.artifactResource().value()?.attributes;
+		if (resourceAttrs) {
+			this._lastAttributes = [...resourceAttrs].sort(this.byTypeThenId);
+		}
+		return (
+			this._lastAttributes ??
+			[...this.tab().artifact.attributes].sort(this.byTypeThenId)
+		);
+	});
+
+	/**
+	 * The attributes rendered in the editor: the server-backed set plus any
+	 * locally-staged additions (created while conflicted, not yet persisted) so
+	 * they render and can be edited in place. Staged instances keep their
+	 * server-add sentinel gamma but expose the stable stagedKey as `id` so each
+	 * stages/rings/resolves independently; the child editor keys dirty/pending
+	 * state by `id`, and its persist path is a no-op while conflicted, so these
+	 * never hit the transaction layer until resolution.
+	 */
 	protected attributes = computed<attribute<string, ATTRIBUTETYPEID>[]>(
 		() => {
-			const resourceAttrs = this.artifactResource().value()?.attributes;
-			if (resourceAttrs) {
-				this._lastAttributes = [...resourceAttrs].sort((a, b) => {
-					const typeCompare = a.typeId.localeCompare(b.typeId);
-					if (typeCompare !== 0) return typeCompare;
-					return a.id.localeCompare(b.id);
-				});
+			const serverAttrs = this.serverBackedAttributes();
+			const staged = this.stagedAttributesForDisplay();
+			if (staged.length === 0) {
+				return serverAttrs;
 			}
-			return (
-				this._lastAttributes ??
-				[...this.tab().artifact.attributes].sort((a, b) => {
-					const typeCompare = a.typeId.localeCompare(b.typeId);
-					if (typeCompare !== 0) return typeCompare;
-					return a.id.localeCompare(b.id);
-				})
-			);
+			return [...serverAttrs, ...staged].sort(this.byTypeThenId);
 		}
 	);
 
+	/** Stable attribute ordering: by type, then by instance id. */
+	private byTypeThenId = (
+		a: attribute<string, ATTRIBUTETYPEID>,
+		b: attribute<string, ATTRIBUTETYPEID>
+	) => {
+		const typeCompare = a.typeId.localeCompare(b.typeId);
+		if (typeCompare !== 0) return typeCompare;
+		return a.id.localeCompare(b.id);
+	};
+
 	private _lastAttributes: attribute<string, ATTRIBUTETYPEID>[] | null = null;
+
+	/**
+	 * Staged additions shaped for display: the stable {@link stagedKey} is exposed
+	 * as the instance `id` so dirty flags, pending values, and the amber ring key
+	 * uniquely per staged instance (all share the `-1` add sentinel otherwise). The
+	 * cast is deliberate and local to this panel, which owns the temp-key
+	 * convention; the child editor treats `id` opaquely for keying and never
+	 * persists these while conflicted.
+	 */
+	private stagedAttributesForDisplay = computed<
+		attribute<string, ATTRIBUTETYPEID>[]
+	>(() =>
+		this.stagedAttributeService.stagedAdds().map(
+			({ stagedKey, attr }) =>
+				({
+					...attr,
+					id: stagedKey,
+				}) as unknown as attribute<string, ATTRIBUTETYPEID>
+		)
+	);
 
 	/** The Name attribute (always shown first). */
 	protected nameAttr = computed(() =>
@@ -486,6 +568,15 @@ export class AttributesEditorPanelComponent {
 			})
 		);
 
+		// While a conflict is pending, do NOT commit new attributes to the server:
+		// that would bypass resolution and immediately apply changes made in a
+		// conflict state. Stage them locally instead (amber ring, editable in place),
+		// to be reconciled and applied through the resolution dialog.
+		if (this.remoteChangeWhileDirty()) {
+			this.stageAttributes(newAttrs);
+			return;
+		}
+
 		this.currentTxService
 			.modifyArtifactAndMutate(
 				`Adding attribute${newAttrs.length > 1 ? 's' : ''} to artifact`,
@@ -499,6 +590,22 @@ export class AttributesEditorPanelComponent {
 					this.uiService.ErrorText = `Failed to add attribute: ${err?.message ?? 'Unknown error'}`;
 				},
 			});
+	}
+
+	/**
+	 * Stages new attribute instances locally instead of persisting them, used while
+	 * the artifact is conflicted. Each staged instance gets a stable client key so
+	 * it is dirty-tracked, ringed, and resolved independently (all share the `-1`
+	 * add sentinel otherwise). The pending value is recorded under the same key so
+	 * an in-place edit before resolution is carried into the dialog.
+	 */
+	private stageAttributes(newAttrs: attribute<string, ATTRIBUTETYPEID>[]) {
+		for (const attr of newAttrs) {
+			const stagedKey = this.stagedAttributeService.nextKey();
+			this.stagedAttributeService.add(stagedKey, attr);
+			this.pendingValuesService.set(stagedKey, `${attr.value}`);
+			this.dirtyService.markDirty(`${this.artifactId()}-${stagedKey}`);
+		}
 	}
 
 	/**
@@ -521,7 +628,38 @@ export class AttributesEditorPanelComponent {
 			return;
 		}
 
+		// A staged (not-yet-persisted) instance was never sent to the server, so
+		// "deleting" it is purely local: drop it from the staged store and clear its
+		// local edit state. It must NOT issue a delete mutation (there is nothing to
+		// delete server-side) -- doing so while conflicted would round-trip the
+		// server, shift the conflict base, and silently drop the pending conflict.
+		if (this.stagedAttributeService.has(attr.id)) {
+			this.discardStagedAttribute(attr.id);
+			return;
+		}
+
+		// Deleting a persisted instance while conflicted would immediately commit and
+		// bypass resolution (the same class of bug staging fixes for adds). Hold it
+		// until the user resolves, matching how value edits are blocked while conflicted.
+		if (this.remoteChangeWhileDirty()) {
+			this.uiService.ErrorText =
+				'Resolve the pending conflict before deleting this attribute.';
+			return;
+		}
+
 		this.deleteAttributes([attr]);
+	}
+
+	/**
+	 * Discards a locally-staged addition: removes it from the staged store and
+	 * clears the dirty flag and pending value tracked under its client key. When no
+	 * staged adds or other edits remain, the conflict banner is dismissed so the
+	 * editor returns to a clean state.
+	 */
+	private discardStagedAttribute(stagedKey: string) {
+		this.stagedAttributeService.remove(stagedKey);
+		this.pendingValuesService.remove(stagedKey);
+		this.dirtyService.markClean(`${this.artifactId()}-${stagedKey}`);
 	}
 
 	/**

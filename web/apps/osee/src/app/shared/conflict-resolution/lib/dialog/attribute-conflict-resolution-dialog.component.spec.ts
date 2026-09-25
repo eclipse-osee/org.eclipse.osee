@@ -91,6 +91,8 @@ describe('AttributeConflictResolutionDialogComponent', () => {
 		const data: attributeConflictResolutionDialogData = {
 			conflicts,
 			autoResolved: [],
+			stagedAdds: [],
+			converged: [],
 			entityName: 'WF 1',
 			entityId: '100',
 			liveUpdates$: liveUpdates$?.asObservable(),
@@ -255,7 +257,12 @@ describe('AttributeConflictResolutionDialogComponent', () => {
 		dialog.setAction(0, 'take-yours');
 
 		// Same server value/gamma -> user's decision must be kept.
-		live.next({ conflicts: [conflict], autoResolved: [] });
+		live.next({
+			conflicts: [conflict],
+			autoResolved: [],
+			stagedAdds: [],
+			converged: [],
+		});
 
 		expect(dialog.states()[0].action).toBe('take-yours');
 		expect(dialog.states()[0].serverChanged).toBeFalsy();
@@ -274,7 +281,12 @@ describe('AttributeConflictResolutionDialogComponent', () => {
 			serverDeleted: false,
 			allowsMultiple: true,
 		};
-		live.next({ conflicts: [moved], autoResolved: [] });
+		live.next({
+			conflicts: [moved],
+			autoResolved: [],
+			stagedAdds: [],
+			converged: [],
+		});
 
 		expect(dialog.states()[0].action).toBe('take-theirs'); // back to safe default
 		expect(dialog.states()[0].serverChanged).toBe(true);
@@ -290,7 +302,12 @@ describe('AttributeConflictResolutionDialogComponent', () => {
 			serverDeleted: false,
 			allowsMultiple: true,
 		};
-		live.next({ conflicts: [moved], autoResolved: [] });
+		live.next({
+			conflicts: [moved],
+			autoResolved: [],
+			stagedAdds: [],
+			converged: [],
+		});
 		expect(dialog.states()[0].serverChanged).toBe(true);
 
 		dialog.setAction(0, 'take-yours');
@@ -308,7 +325,12 @@ describe('AttributeConflictResolutionDialogComponent', () => {
 			serverDeleted: false,
 			allowsMultiple: true,
 		};
-		live.next({ conflicts: [moved], autoResolved: [] });
+		live.next({
+			conflicts: [moved],
+			autoResolved: [],
+			stagedAdds: [],
+			converged: [],
+		});
 
 		// Choose take-both so the resolution echoes the (fresh) server value.
 		dialog.setAction(0, 'take-both');

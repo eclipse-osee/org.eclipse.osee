@@ -313,6 +313,166 @@ describe('ConflictResolutionService', () => {
 		expect(ops.set[0].gammaId).toBe('20');
 	});
 
+	it('keeps a staged add in the live update after a remote re-categorize', () => {
+		// Regression: a remote change while the dialog is open triggered a re-categorize
+		// that omitted the staged adds, so the dialog's live update dropped them (the
+		// "ADDED" row vanished) until the dialog was closed and reopened. The live
+		// re-categorize must thread stagedAdds through just like the initial one.
+		const stagedAttr = {
+			id: '-1',
+			gammaId: '-1',
+			typeId: '2000',
+			value: 'Unspecified',
+			name: 'Qualification Method',
+			storeType: 'String',
+			multiplicity: { id: '1', name: 'any' },
+		} as unknown as attr;
+
+		const changes$ = new Subject<{
+			changeTypes: string[];
+			isLocal: boolean;
+		}>();
+
+		// a1 diverges (true conflict) so the dialog opens; the staged 2000 add has no
+		// server counterpart, so it stays a safe staged add across both categorizations.
+		const fetchServerAttrs = () => of([makeAttr('a1', 'theirs')]);
+
+		const liveStagedAdds: { name: string; localValue: string }[][] = [];
+
+		// The dialog is opened before its afterClosed is subscribed, so by the time
+		// this runs the open() spy has recorded the dialog data. Subscribe to the live
+		// update stream, THEN emit the remote change so the re-categorized snapshot is
+		// captured, then cancel (no apply).
+		afterClosed = new Observable((subscriber) => {
+			const data = dialogOpen.mock.calls[0][1].data as {
+				stagedAdds: { name: string; localValue: string }[];
+				liveUpdates$?: Observable<{
+					stagedAdds: { name: string; localValue: string }[];
+				}>;
+			};
+			data.liveUpdates$?.subscribe((u) =>
+				liveStagedAdds.push(u.stagedAdds)
+			);
+			changes$.next({
+				changeTypes: ['attribute_modified'],
+				isLocal: false,
+			});
+			subscriber.next(undefined);
+			subscriber.complete();
+		});
+
+		const config = baseConfig({
+			baseAttrs: [makeAttr('a1', 'orig')],
+			pendingValues: new Map([['a1', 'mine']]),
+			fetchServerAttrs,
+			changes: changes$.asObservable(),
+			stagedAdds: [{ key: 'TEMP-1', attr: stagedAttr }],
+		});
+		service.resolve(config);
+
+		// The open-time dialog data carried the staged add...
+		const openData = dialogOpen.mock.calls[0][1].data as {
+			stagedAdds: { name: string; localValue: string }[];
+		};
+		expect(openData.stagedAdds.map((s) => s.localValue)).toEqual([
+			'Unspecified',
+		]);
+		// ...and the live update after the remote change still carries it (not empty).
+		expect(liveStagedAdds).toHaveLength(1);
+		expect(liveStagedAdds[0].map((s) => s.localValue)).toEqual([
+			'Unspecified',
+		]);
+	});
+
+	it('commits a non-colliding staged add without opening the dialog', () => {
+		// No pending edits and no true conflicts; a staged add of a type the server did
+		// not add is applied straight through as an `add` op.
+		const stagedAttr = {
+			id: '-1',
+			gammaId: '-1',
+			typeId: '2000',
+			value: 'new value',
+			name: 'Extra',
+			storeType: 'String',
+			multiplicity: { id: '1', name: 'any' },
+		} as unknown as attr;
+
+		service.resolve(
+			baseConfig({
+				pendingValues: new Map(),
+				fetchServerAttrs: () => of([makeAttr('a1', 'orig')]),
+				stagedAdds: [{ key: 'TEMP-1', attr: stagedAttr }],
+			})
+		);
+
+		expect(dialogOpen).not.toHaveBeenCalled();
+		const ops = commit.mock.calls[0][0] as resolutionOperations;
+		expect(ops.set).toHaveLength(0);
+		expect(ops.add).toHaveLength(1);
+		expect(ops.add[0].typeId).toBe('2000');
+		expect(ops.add[0].value).toBe('new value');
+		expect(clearLocalState).toHaveBeenCalled();
+		expect(refresh).toHaveBeenCalled();
+	});
+
+	it('opens the dialog for a staged add colliding with a server add and adds it on take-both', () => {
+		// Server added an instance of the same type the user staged -> conflict. The user
+		// chooses take-both, so the staged instance is added alongside the server's.
+		const stagedAttr = {
+			id: '-1',
+			gammaId: '-1',
+			typeId: '2000',
+			value: 'mine',
+			name: 'Extra',
+			storeType: 'String',
+			multiplicity: { id: '1', name: 'any' },
+		} as unknown as attr;
+		const serverAdded = {
+			id: '55',
+			gammaId: '9',
+			typeId: '2000',
+			value: 'theirs',
+			name: 'Extra',
+			storeType: 'String',
+			multiplicity: { id: '1', name: 'any' },
+		} as unknown as attr;
+
+		const takeBothResult: attributeConflictResolutionDialogResult = {
+			resolutions: [
+				{
+					conflict: {
+						baseAttr: stagedAttr,
+						conflictKey: 'TEMP-1',
+						localValue: 'mine',
+						serverAttr: serverAdded,
+						serverDeleted: false,
+						allowsMultiple: true,
+						stagedAdd: true,
+					},
+					action: 'take-both',
+					resolvedValues: ['theirs', 'mine'],
+				} as resolvedConflict,
+			],
+		};
+		afterClosed = of(takeBothResult);
+
+		service.resolve(
+			baseConfig({
+				// No base instance of type 2000; server now has one -> collision.
+				baseAttrs: [makeAttr('a1', 'orig')],
+				pendingValues: new Map(),
+				fetchServerAttrs: () =>
+					of([makeAttr('a1', 'orig'), serverAdded]),
+				stagedAdds: [{ key: 'TEMP-1', attr: stagedAttr }],
+			})
+		);
+
+		expect(dialogOpen).toHaveBeenCalled();
+		const ops = commit.mock.calls[0][0] as resolutionOperations;
+		// take-both adds the user's staged value as a new instance.
+		expect(ops.add.map((a) => a.value)).toContain('mine');
+	});
+
 	it('reports an error when fetching server state fails', () => {
 		service.resolve(
 			baseConfig({

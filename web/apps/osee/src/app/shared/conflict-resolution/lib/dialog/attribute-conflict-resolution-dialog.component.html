@@ -24,7 +24,11 @@
 		attribute.
 	</p>
 
-	@for (conflict of conflicts(); track conflict.baseAttr.id; let i = $index) {
+	@for (
+		conflict of conflicts();
+		track conflict.conflictKey ?? conflict.baseAttr.id;
+		let i = $index
+	) {
 		<div
 			class="tw-rounded-md tw-border tw-border-solid tw-border-foreground-divider tw-p-3">
 			<!-- Attribute name header -->
@@ -109,6 +113,32 @@
 						>
 					</mat-radio-button>
 				</mat-radio-group>
+			} @else if (conflict.stagedAdd) {
+				<!-- Staged add colliding with a server-side add of the same type. There is
+				     no existing instance to overwrite, so only discard-mine and (when the
+				     type allows multiples) keep-both are offered. -->
+				<mat-radio-group
+					[ngModel]="getState(i).action"
+					(ngModelChange)="setAction(i, $event)"
+					[name]="'conflict-resolution-' + i"
+					class="tw-flex tw-flex-col tw-gap-1">
+					<mat-radio-button value="take-theirs">
+						<span class="tw-text-sm">Take Server's</span>
+						<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+							>Keep the attribute the other user added, discard
+							yours.</span
+						>
+					</mat-radio-button>
+					@if (conflict.allowsMultiple) {
+						<mat-radio-button value="take-both">
+							<span class="tw-text-sm">Take Both</span>
+							<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+								>Keep the other user's and add yours as a
+								separate instance.</span
+							>
+						</mat-radio-button>
+					}
+				</mat-radio-group>
 			} @else {
 				<mat-radio-group
 					[ngModel]="getState(i).action"
@@ -158,9 +188,11 @@
 		</div>
 	}
 
-	<!-- Non-conflicting edits: shown read-only so the user sees a complete account
-	     of what will be saved, matching every field flagged in the editor. -->
-	@if (autoResolved().length > 0) {
+	<!-- Non-conflicting changes, shown read-only so the user sees a complete account
+	     of what will be saved: value edits the server did not touch, plus new
+	     instances staged while conflicted that the server did not also add. Added
+	     attributes are tagged so both kinds live in one section. -->
+	@if (otherChanges().length > 0) {
 		<div
 			class="tw-rounded-md tw-border tw-border-solid tw-border-foreground-divider tw-p-3">
 			<div class="tw-mb-2 tw-flex tw-items-center tw-gap-2">
@@ -170,15 +202,63 @@
 					>check_circle</mat-icon
 				>
 				<span class="tw-text-sm tw-font-medium"
-					>Your Other Changes</span
+					>Uncontested Changes</span
 				>
 			</div>
 			<p class="tw-my-0 tw-mb-2 tw-text-xs tw-opacity-60">
-				The other user did not touch these, so your changes save without
-				a decision.
+				The other user did not touch these, so they save without a
+				decision.
 			</p>
 			<div class="tw-flex tw-flex-col tw-gap-2">
-				@for (change of autoResolved(); track change.name) {
+				@for (change of otherChanges(); track change.name) {
+					<div
+						class="tw-grid tw-grid-cols-2 tw-items-start tw-gap-2 tw-text-xs">
+						<span
+							class="tw-flex tw-items-center tw-gap-1 tw-font-medium tw-opacity-60">
+							{{ change.name }}
+							@if (change.added) {
+								<span
+									class="tw-rounded tw-bg-background-hover tw-px-1 tw-py-0.5 tw-text-[10px] tw-uppercase tw-tracking-wide tw-text-success">
+									Added
+								</span>
+							}
+						</span>
+						@if (change.localValue) {
+							<span
+								class="tw-block tw-max-h-[20vh] tw-overflow-auto tw-whitespace-pre-wrap tw-break-words">
+								{{ change.localValue }}
+							</span>
+						} @else {
+							<span class="tw-block tw-italic tw-opacity-50"
+								>(empty)</span
+							>
+						}
+					</div>
+				}
+			</div>
+		</div>
+	}
+
+	<!-- Converged edits: the user and another user independently set the same value.
+	     Nothing to save or decide, but shown so the field (which still rings in the
+	     editor) is accounted for and the match is explained. -->
+	@if (converged().length > 0) {
+		<div
+			class="tw-rounded-md tw-border tw-border-solid tw-border-foreground-divider tw-p-3">
+			<div class="tw-mb-2 tw-flex tw-items-center tw-gap-2">
+				<mat-icon
+					class="tw-text-base tw-opacity-60"
+					fontSet="material-icons-outlined"
+					>done_all</mat-icon
+				>
+				<span class="tw-text-sm tw-font-medium">Already In Sync</span>
+			</div>
+			<p class="tw-my-0 tw-mb-2 tw-text-xs tw-opacity-60">
+				You and the other user set these to the same value, so there is
+				nothing to apply.
+			</p>
+			<div class="tw-flex tw-flex-col tw-gap-2">
+				@for (change of converged(); track change.name) {
 					<div
 						class="tw-grid tw-grid-cols-2 tw-items-start tw-gap-2 tw-text-xs">
 						<span class="tw-font-medium tw-opacity-60">{{

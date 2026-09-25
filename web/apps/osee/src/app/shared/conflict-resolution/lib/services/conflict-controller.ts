@@ -15,7 +15,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, filter } from 'rxjs';
 import { attribute } from '@osee/attributes/types';
 import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
-import { conflictKeyOptions } from '../logic/categorize-conflicts';
+import {
+	conflictKeyOptions,
+	stagedAddInput,
+} from '../logic/categorize-conflicts';
 import { resolutionOperations } from '../logic/map-resolutions-to-operations';
 import type {
 	ConflictResolutionService,
@@ -64,6 +67,15 @@ export type conflictControllerConfig = {
 	pendingValues: () => ReadonlyMap<string, string>;
 	/** How pending edits are matched to base/server attrs (default: instance id). */
 	keyOptions?: conflictKeyOptions;
+	/**
+	 * New instances the user staged locally while conflicted (created but not
+	 * persisted), if the page supports staging additions during a conflict.
+	 * Categorized alongside value edits: a staged add whose type the server did not
+	 * also add is applied without prompting; one that collides with a server-side
+	 * add of the same type is surfaced as a conflict. Omit for pages that persist
+	 * additions immediately.
+	 */
+	stagedAdds?: () => readonly stagedAddInput[];
 	/**
 	 * Persists the resolved operations; return the mutation observable resolving to a
 	 * {@link conflictCommitOutcome} so the flow can detect optimistic-concurrency
@@ -127,6 +139,7 @@ export class ConflictController {
 			fetchServerAttrs: this.config.fetchServerAttrs,
 			pendingValues: this.config.pendingValues(),
 			keyOptions: this.config.keyOptions,
+			stagedAdds: this.config.stagedAdds?.(),
 			// Forward the live change stream so an open dialog keeps re-deriving against
 			// fresh server state (the controller already uses this stream for detection).
 			changes: this.config.changes,

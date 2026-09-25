@@ -88,6 +88,24 @@ export class AttributeConflictResolutionDialogComponent {
 	/** The current non-conflicting edits (read-only display), kept current with live updates. */
 	protected readonly autoResolved = signal(this.data.autoResolved);
 
+	/** The current staged additions (read-only display), kept current with live updates. */
+	protected readonly stagedAdds = signal(this.data.stagedAdds);
+
+	/** The current converged edits (same value both users), kept current with live updates. */
+	protected readonly converged = signal(this.data.converged);
+
+	/**
+	 * The complete set of changes that will be saved without a decision, shown
+	 * read-only: value edits the server did not touch, plus new instances staged
+	 * while conflicted that the server did not also add. Each is tagged so the user
+	 * can tell an edit from a newly added attribute in one place, rather than
+	 * splitting them across two near-identical sections.
+	 */
+	protected readonly otherChanges = computed(() => [
+		...this.autoResolved().map((c) => ({ ...c, added: false })),
+		...this.stagedAdds().map((c) => ({ ...c, added: true })),
+	]);
+
 	/**
 	 * Resolution state per conflict, aligned by index with {@link conflicts}. The safe
 	 * default accepts the server truth: `take-theirs` for a value conflict,
@@ -105,6 +123,11 @@ export class AttributeConflictResolutionDialogComponent {
 		this.data.liveUpdates$
 			?.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe((update) => this.applyLiveUpdate(update));
+	}
+
+	/** Stable identity for reconciling live updates: explicit key or base instance id. */
+	private keyOfConflict(conflict: attributeConflict): string {
+		return conflict.conflictKey ?? conflict.baseAttr.id;
 	}
 
 	/** Safe default resolution state for a conflict (accept server truth). */
@@ -127,13 +150,13 @@ export class AttributeConflictResolutionDialogComponent {
 		const prevStates = this.states();
 		const prevByKey = new Map(
 			prevConflicts.map((c, i) => [
-				c.baseAttr.id,
+				this.keyOfConflict(c),
 				{ c, state: prevStates[i] },
 			])
 		);
 
 		const nextStates = update.conflicts.map((next) => {
-			const prev = prevByKey.get(next.baseAttr.id);
+			const prev = prevByKey.get(this.keyOfConflict(next));
 			if (!prev) {
 				// Newly conflicting attribute -> safe default.
 				return this.defaultState(next);
@@ -152,6 +175,8 @@ export class AttributeConflictResolutionDialogComponent {
 
 		this.conflicts.set(update.conflicts);
 		this.autoResolved.set(update.autoResolved);
+		this.stagedAdds.set(update.stagedAdds);
+		this.converged.set(update.converged);
 		this.states.set(nextStates);
 	}
 

@@ -14,6 +14,7 @@ export * from './lib/types/attribute-conflict.types';
 export * from './lib/logic/categorize-conflicts';
 export * from './lib/logic/map-resolutions-to-operations';
 export * from './lib/services/pending-attribute-values.service';
+export * from './lib/services/staged-attribute.service';
 export * from './lib/services/editor-dirty.service';
 export * from './lib/services/conflict-resolution.service';
 export * from './lib/services/conflict-controller';

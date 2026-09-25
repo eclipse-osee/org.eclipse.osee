@@ -30,6 +30,15 @@ export type attributeConflict = {
 	/** The user's unsaved local value. */
 	localValue: string;
 	/**
+	 * Stable identity for this conflict, used to reconcile a re-categorized live
+	 * snapshot against the open dialog's in-progress selections. Defaults to the
+	 * base attribute instance id. Set explicitly for conflicts whose base carries
+	 * the new-instance sentinel (`id` of `-1`) -- e.g. a staged add colliding with
+	 * a server-side add of the same type -- so multiple such conflicts do not all
+	 * key to `-1` and clobber one another.
+	 */
+	conflictKey?: string;
+	/**
 	 * The server's current value (from the remote change). Undefined when the
 	 * server deleted the attribute ({@link serverDeleted} is then true).
 	 */
@@ -38,6 +47,16 @@ export type attributeConflict = {
 	serverDeleted: boolean;
 	/** Whether this attribute type allows multiple instances (enables "take both"). */
 	allowsMultiple: boolean;
+	/**
+	 * True when this conflict is a locally-staged NEW instance colliding with a
+	 * server-side add of the same type (rather than a divergent edit of an existing
+	 * instance). Here {@link baseAttr} is the user's staged instance (new-instance
+	 * sentinel id/gamma). Only "take server's" (discard the staged add) and, when
+	 * {@link allowsMultiple}, "take both" (add the staged instance alongside the
+	 * server's) are meaningful -- there is no existing instance to overwrite in
+	 * place, so "take yours"/"manual" are not offered.
+	 */
+	stagedAdd?: boolean;
 };
 
 /**
@@ -95,6 +114,10 @@ export type liveConflictUpdate = {
 	conflicts: attributeConflict[];
 	/** The freshly re-categorized non-conflicting edits. */
 	autoResolved: autoResolvedChange[];
+	/** The freshly re-categorized staged additions that will be added without a decision. */
+	stagedAdds: autoResolvedChange[];
+	/** The freshly re-categorized converged edits (same value set by both users). */
+	converged: autoResolvedChange[];
 };
 
 /**
@@ -109,6 +132,19 @@ export type attributeConflictResolutionDialogData = {
 	 * fields flagged in the editor. Empty when there are none.
 	 */
 	autoResolved: autoResolvedChange[];
+	/**
+	 * New instances the user staged while conflicted that will be added without a
+	 * decision (the server did not add the same type). Shown read-only so the
+	 * dialog accounts for staged additions too, not just edits. Empty when none.
+	 */
+	stagedAdds: autoResolvedChange[];
+	/**
+	 * Edits where the user and another user independently set the SAME value. There
+	 * is nothing to save (the server already holds the value) and nothing to decide,
+	 * but the field is shown read-only so the dialog accounts for the ring the
+	 * editor still displays. Empty when none.
+	 */
+	converged: autoResolvedChange[];
 	/** The owning entity name (artifact/workflow) for display. */
 	entityName: string;
 	/** Owning entity ID (needed by widgets like the markdown editor for uploads). */
