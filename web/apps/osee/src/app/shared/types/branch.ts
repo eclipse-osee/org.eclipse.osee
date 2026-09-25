@@ -71,3 +71,10 @@ export const branchSentinel: branch = {
 	viewId: '-1',
 	currentUserPermission: permissionEnum.READ,
 };
+
+/**
+ * The Common branch id — a fixed OSEE core branch token
+ * ({@code CoreBranches.COMMON = BranchToken.create(570, "Common")}). ATS work items and most
+ * configuration data live here. Constant across all instances; use this instead of a bare '570'.
+ */
+export const COMMON_BRANCH_ID = '570';

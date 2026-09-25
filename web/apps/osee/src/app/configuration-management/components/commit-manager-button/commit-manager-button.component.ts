@@ -10,87 +10,59 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgClass } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	inject,
+	input,
+} from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CommitManagerDialogComponent } from '@osee/commit/components';
-import { ActionService } from '@osee/configuration-management/services';
-import { UiService } from '@osee/shared/services';
-import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
-import { switchMap, repeat, filter, take } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { teamWorkflowDetails } from '@osee/shared/types/configuration-management';
 
 @Component({
 	selector: 'osee-commit-manager-button',
-	imports: [MatButton, MatTooltip, NgClass],
+	imports: [MatButton, MatTooltip],
 	template: `<button
-		mat-raised-button
-		class="tw-text-background-background"
-		[ngClass]="
+		mat-flat-button
+		[class]="
 			allBranchesCommitted()
-				? 'tw-bg-success'
-				: 'tw-bg-osee-blue-7 tw-text-background-background dark:tw-bg-osee-blue-10'
+				? 'tw-whitespace-nowrap tw-bg-success tw-text-background-background'
+				: 'primary-button tw-whitespace-nowrap'
 		"
-		[matTooltip]="
-			allBranchesCommitted()
-				? 'All commits are complete'
-				: 'There are ' +
-					teamWorkflow().branchesToCommitTo.length +
-					' branches left to commit to'
-		"
+		[matTooltip]="commitTooltip()"
 		(click)="openCommitManager()">
 		Open Commit Manager
 	</button>`,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommitManagerButtonComponent {
-	actionService = inject(ActionService);
-	uiService = inject(UiService);
+	/**
+	 * The workflow to commit. Provided by the container (which already owns it); this presentational
+	 * button does not fetch, so it never duplicates the container's `/ats/teamwf/details` GET.
+	 */
+	teamWorkflow = input.required<teamWorkflowDetails>();
 
-	teamWorkflowId = input.required<`${number}`>();
-	teamWorkflowId$ = toObservable(this.teamWorkflowId);
-
-	teamWorkflow = toSignal(
-		this.teamWorkflowId$.pipe(
-			switchMap((id) =>
-				this.actionService.getTeamWorkflowDetails(id).pipe(
-					repeat({
-						delay: () =>
-							this.uiService.updateArtifact.pipe(
-								filter(
-									(updatedId) => updatedId === id.toString()
-								)
-							),
-					})
-				)
-			)
-		),
-		{ initialValue: new teamWorkflowDetailsImpl() }
-	);
-
-	teamWorkflow$ = toObservable(this.teamWorkflow);
-
-	allBranchesCommitted = computed(
+	protected readonly allBranchesCommitted = computed(
 		() => this.teamWorkflow().branchesToCommitTo.length === 0
 	);
 
-	dialog = inject(MatDialog);
+	protected readonly commitTooltip = computed(() =>
+		this.allBranchesCommitted()
+			? 'All commits are complete.'
+			: `There are ${this.teamWorkflow().branchesToCommitTo.length} branches left to commit to.`
+	);
 
-	openCommitManager() {
-		this.teamWorkflow$
-			.pipe(
-				take(1),
-				switchMap((teamWf) =>
-					this.dialog
-						.open(CommitManagerDialogComponent, {
-							data: teamWf,
-							minWidth: '60%',
-							width: '60%',
-						})
-						.afterClosed()
-				)
-			)
-			.subscribe();
+	private readonly dialog = inject(MatDialog);
+
+	protected openCommitManager() {
+		this.dialog.open(CommitManagerDialogComponent, {
+			data: this.teamWorkflow(),
+			minWidth: '60%',
+			width: '60%',
+		});
 	}
 }

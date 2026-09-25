@@ -20,6 +20,8 @@ import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
 import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
+import { SseEventService } from '@osee/shared/services/network';
+import { sseEventServiceMock } from '@osee/shared/testing';
 
 import { ElementService } from './element.service';
 import { transactionMock } from '@osee/transactions/testing';
@@ -44,6 +46,7 @@ describe('ElementService', () => {
 				},
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
+				{ provide: SseEventService, useValue: sseEventServiceMock },
 			],
 		});
 		service = TestBed.inject(ElementService);

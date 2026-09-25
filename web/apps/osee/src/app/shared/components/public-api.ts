@@ -36,3 +36,4 @@ export * from './help-drawer/help-topic-registry.service';
 export * from './help-drawer/help-anchor.directive';
 export * from './help-drawer/help-button.component';
 export * from './split-button/split-button.component';
+export * from './presence-avatars/presence-avatars.component';

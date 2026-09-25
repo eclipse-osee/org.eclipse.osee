@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeImageLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -171,15 +172,43 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
    @Override
    public void handleArtifactTopicEvent(ArtifactTopicEvent artifactEvent, Sender sender) {
       if (sender.isRemote() && artifactEvent.isHasEvent(getArtifact())) {
-         load();
+         reloadFromRemoteEvent();
       }
    }
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       if (sender.isRemote() && artifactEvent.isHasEvent(getArtifact())) {
-         load();
+         reloadFromRemoteEvent();
       }
+   }
+
+   /**
+    * Refreshes the editor content in response to a remote change (web or another desktop client).
+    * Must run on the display thread because the reload touches the SWT {@link XText} widget. The
+    * artifact is reloaded first because {@link #load()} re-reads the cached value, which is only
+    * updated when the event carries the attribute change.
+    */
+   private void reloadFromRemoteEvent() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (editXText == null || !Widgets.isAccessible(editXText.getStyledText())) {
+               return;
+            }
+            Artifact artifact = getArtifact();
+            // Do not clobber the user's in-progress local edits with the remote value.
+            if (artifact == null || artifact.isDeleted() || artifact.isDirty()) {
+               return;
+            }
+            try {
+               artifact.reloadAttributesAndRelations();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+            load();
+         }
+      });
    }
 
    @Override

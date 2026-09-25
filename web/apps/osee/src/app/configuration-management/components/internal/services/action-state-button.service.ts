@@ -28,7 +28,7 @@ import {
 	CurrentActionService,
 } from '@osee/configuration-management/services';
 import { CommitBranchService } from '@osee/commit/services';
-import { branch } from '@osee/shared/types';
+import { branch, getTransitionFailureReasons } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -60,8 +60,11 @@ export class ActionStateButtonService {
 					)
 					.pipe(
 						tap((response) => {
-							if (response.results.length > 0) {
-								this.uiService.ErrorText = response.results[0];
+							const failures =
+								getTransitionFailureReasons(response);
+							if (failures.length > 0) {
+								this.uiService.ErrorText =
+									failures.join('\n\n');
 							} else if (
 								branchActions.length > 0 &&
 								branchActions[0].id === action.id
@@ -99,13 +102,17 @@ export class ActionStateButtonService {
 
 	public transition(state: teamWorkflowState, action: action) {
 		return this.transitionValidate(state, action).pipe(
-			switchMap((validation) =>
-				iif(
-					() => validation.results.length === 0,
-					this.performTransition(state, action),
-					of()
-				)
-			)
+			switchMap((validation) => {
+				const failures = getTransitionFailureReasons(validation);
+				if (failures.length > 0) {
+					// Surface why the transition is blocked (e.g. an open working branch) rather
+					// than silently no-op'ing. Validation failures come back on the per-work-item
+					// results, not the top-level results array.
+					this.uiService.ErrorText = failures.join('\n\n');
+					return of();
+				}
+				return this.performTransition(state, action);
+			})
 		);
 	}
 
@@ -189,8 +196,9 @@ export class ActionStateButtonService {
 											switchMap((validateObs) =>
 												iif(
 													() =>
-														validateObs.results
-															.length === 0,
+														getTransitionFailureReasons(
+															validateObs
+														).length === 0,
 													this.actionService
 														.transitionAction(
 															new transitionAction(
@@ -205,14 +213,18 @@ export class ActionStateButtonService {
 																(
 																	transitionResponse
 																) => {
+																	const failures =
+																		getTransitionFailureReasons(
+																			transitionResponse
+																		);
 																	if (
-																		transitionResponse
-																			.results
-																			.length >
+																		failures.length >
 																		0
 																	) {
 																		this.uiService.ErrorText =
-																			transitionResponse.results[0];
+																			failures.join(
+																				'\n\n'
+																			);
 																	} else {
 																		this.uiService.updated =
 																			true;

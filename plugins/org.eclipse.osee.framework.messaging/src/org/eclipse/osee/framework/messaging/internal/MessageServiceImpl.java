@@ -31,8 +31,6 @@ import org.eclipse.osee.framework.messaging.NodeInfo;
  * @author Roberto E. Escobar
  */
 public class MessageServiceImpl implements MessageService {
-   private static final String VM_URI = "vm://localhost?broker.persistent=false";
-
    private final NodeInfo defaultNode;
    private final Map<NodeInfo, ConnectionNode> connectionNodes;
    private final ConnectionNodeFactory factory;
@@ -40,34 +38,39 @@ public class MessageServiceImpl implements MessageService {
    public MessageServiceImpl(ConnectionNodeFactory factory) {
       this.connectionNodes = new ConcurrentHashMap<>();
       this.factory = factory;
-      defaultNode = new NodeInfo("osee-jms", getDefaultURI());
+      defaultNode = createDefaultNode();
    }
 
-   private URI getDefaultURI() {
-      URI defaultURI = null;
+   /**
+    * Builds the default connection node from the {@code osee.default.broker.uri} system property.
+    * Returns {@code null} when no broker URI is configured (or it is malformed): OSEE connects to
+    * an EXTERNAL ActiveMQ broker and never hosts one. Without a URI there is no broker to reach, so
+    * {@link #getDefault()} yields {@code null} and messaging degrades gracefully (real-time cross
+    * client/server events are disabled; local operation is unaffected). Historically this fell back
+    * to an in-VM {@code vm://} broker, which silently embedded a broker in the client/server JVM --
+    * that behavior has been removed. Demo/dev embed a broker by explicitly setting a {@code vm:} URI.
+    */
+   private NodeInfo createDefaultNode() {
       String uri = OseeProperties.getOseeDefaultBrokerUri();
-      if (uri == null) {
-         uri = VM_URI;
+      if (uri == null || uri.trim().isEmpty()) {
+         OseeLog.log(MessageServiceImpl.class, Level.INFO,
+            "No osee.default.broker.uri configured -- ActiveMQ messaging disabled (no remote events).");
+         return null;
       }
       try {
-         defaultURI = new URI(uri);
+         return new NodeInfo("osee-jms", new URI(uri));
       } catch (URISyntaxException ex) {
-         try {
-            defaultURI = new URI(VM_URI);
-         } catch (URISyntaxException ex1) {
-            OseeLog.log(MessageServiceImpl.class, Level.SEVERE, ex1);
-         }
+         OseeLog.logf(MessageServiceImpl.class, Level.SEVERE,
+            "Invalid osee.default.broker.uri [%s] -- ActiveMQ messaging disabled: %s", uri, ex.getMessage());
+         return null;
       }
-      String message = "Default URI is null";
-      if (defaultURI != null) {
-         message = defaultURI.toASCIIString();
-      }
-      OseeLog.logf(Activator.class, Level.FINER, "Default URI for message Service [%s]", message);
-      return defaultURI;
    }
 
    @Override
    public ConnectionNode getDefault() {
+      if (defaultNode == null) {
+         return null;
+      }
       return get(defaultNode);
    }
 

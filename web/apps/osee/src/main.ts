@@ -12,9 +12,11 @@
  **********************************************************************/
 import {
 	enableProdMode,
+	ErrorHandler,
 	importProvidersFrom,
 	provideZoneChangeDetection,
 } from '@angular/core';
+import { GlobalErrorHandler } from './app/global-error-handler';
 
 import { environment, UserHeaderService } from '@osee/environments';
 import { AppComponent } from './app/app.component';
@@ -43,6 +45,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
 	providers: [
+		{ provide: ErrorHandler, useClass: GlobalErrorHandler },
 		provideZoneChangeDetection(),
 		importProvidersFrom(...extra_auth_deps),
 		{ provide: UserHeaderService, useClass: environment.headerService },

@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.rest.internal.health;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,12 +27,16 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -81,6 +86,32 @@ public final class HealthEndpointImpl {
    @Produces(MediaType.APPLICATION_JSON)
    public HealthStatus getHealthStatus() {
       return new HealthStatus(getJdbcClient(), orcsApi);
+   }
+
+   /**
+    * Readiness probe: 200 when the server can commit, 503 otherwise.
+    */
+   @GET
+   @Path("ready")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getReadiness() {
+      boolean ready = isDataLayerReady();
+      Status httpStatus = ready ? Status.OK : Status.SERVICE_UNAVAILABLE;
+      return Response.status(httpStatus).entity(new ReadinessStatus(ready)).build();
+   }
+
+   /** Verifies the query, user, and type subsystems a commit depends on are available. */
+   private boolean isDataLayerReady() {
+      try {
+         boolean branchReady = orcsApi.getQueryFactory().branchQuery().andId(
+            CoreBranches.SYSTEM_ROOT).getResultsAsId().size() == 1;
+         boolean userReady = orcsApi.userService().getUser().isValid();
+         boolean typesReady = !orcsApi.tokenService().getArtifactTypes().isEmpty();
+         return branchReady && userReady && typesReady;
+      } catch (Exception ex) {
+         OseeLog.log(HealthEndpointImpl.class, Level.FINE, ex);
+         return false;
+      }
    }
 
    @GET

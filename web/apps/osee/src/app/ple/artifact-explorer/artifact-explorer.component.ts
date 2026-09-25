@@ -32,7 +32,7 @@ import { ArtifactTabGroupComponent } from './lib/components/artifact-tab-group/a
 import { ArtifactExplorerSidebarComponent } from './lib/components/hierarchy/artifact-explorer-sidebar/artifact-explorer-sidebar.component';
 import { HierarchySection } from './lib/components/hierarchy/artifact-explorer-sidebar/artifact-explorer-sidebar.component';
 import { ArtifactExplorerTabService } from './lib/services/artifact-explorer-tab.service';
-import { ArtifactEditorDirtyService } from './lib/services/artifact-editor-dirty.service';
+import { EditorDirtyService } from '@osee/shared/conflict-resolution';
 
 @Component({
 	selector: 'osee-artifact-explorer',
@@ -50,7 +50,7 @@ export class ArtifactExplorerComponent {
 	/** Route param for the active sidebar panel. */
 	panel = input<string>('');
 
-	private dirtyService = inject(ArtifactEditorDirtyService);
+	private dirtyService = inject(EditorDirtyService);
 	private tabService = inject(ArtifactExplorerTabService);
 	private destroyRef = inject(DestroyRef);
 	private router = inject(Router);

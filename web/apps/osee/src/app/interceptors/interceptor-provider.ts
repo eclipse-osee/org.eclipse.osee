@@ -13,10 +13,12 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { HttpTimeoutExtensionInterceptor } from './http-timeout-extension.interceptor';
 import { LoadingIndicatorInterceptor } from './loading-indicator.interceptor';
+import { OriginIdInterceptor } from './origin-id.interceptor';
 import { OseeAuthInterceptor } from './osee-auth-header.interceptor';
 
 export const GlobalHttpInterceptors: HttpInterceptorFn[] = [
 	LoadingIndicatorInterceptor,
 	HttpTimeoutExtensionInterceptor,
 	OseeAuthInterceptor,
+	OriginIdInterceptor,
 ];

@@ -15,6 +15,7 @@
 @import '@fontsource/material-icons-round/index.css';
 @import '@fontsource/material-icons-sharp/index.css';
 @import '@fontsource/material-icons-two-tone/index.css';
+@import '@fontsource/material-symbols-outlined/index.css';
 
 .material-icons {
 	font-family: 'Material Icons', sans-serif;
@@ -44,4 +45,22 @@
 	font-family: 'Material Icons Two Tone', sans-serif;
 	font-size: 24px;
 	line-height: 1;
+}
+
+.material-symbols-outlined {
+	font-family: 'Material Symbols Outlined', sans-serif;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	font-variation-settings:
+		'FILL' 0,
+		'wght' 400,
+		'GRAD' 0,
+		'opsz' 24;
 }

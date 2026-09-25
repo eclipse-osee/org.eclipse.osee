@@ -153,6 +153,21 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return getDisplayHints().contains(DisplayHint.SingleLine);
    }
 
+   /** True if this attribute's stored value is a user's artifact id. */
+   default boolean isUserArtId() {
+      return getDisplayHints().contains(DisplayHint.UserArtId);
+   }
+
+   /** True if this attribute's stored value is a user's UserId string. */
+   default boolean isUserId() {
+      return getDisplayHints().contains(DisplayHint.UserId);
+   }
+
+   /** True if this attribute's stored value references a user (either encoding). */
+   default boolean isUserReference() {
+      return isUserArtId() || isUserId();
+   }
+
    default boolean isString() {
       return false;
    }

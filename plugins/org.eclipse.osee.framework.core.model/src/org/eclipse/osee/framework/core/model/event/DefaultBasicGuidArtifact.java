@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements HasBranchId {
    private final BranchId branch;
    private ArtifactTypeToken artifactType;
+   private long artId;
 
    public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeToken artifactType, String artGuid) {
       super(artGuid);
@@ -43,6 +44,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
 
    public DefaultBasicGuidArtifact(BranchId branch, ArtifactToken artifact) {
       this(branch, artifact.getArtifactType(), artifact.getGuid());
+      this.artId = artifact.getId();
    }
 
    @Override
@@ -64,21 +66,53 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
    }
 
    /**
-    * Note: DefaultBasicGuidArtifact class does not implement the hashCode, but instead uses the one implemented by
-    * Identity. It can not use the branch uuid due to the need for IArtifactTokens to match Artifact instances. In
-    * addition, the event system requires that the DefaultBasicGuidArtifact and Artifact hashcode matches.
+    * Must stay consistent with {@link #equals}: when artId is set, equality is by artId,
+    * so the hash must be too (and it then matches {@code Artifact.hashCode()}, which is
+    * id-based). Falls back to the GUID hash for legacy objects without an artId.
+    */
+   @Override
+   public int hashCode() {
+      if (artId > 0) {
+         return Long.hashCode(artId);
+      }
+      return super.hashCode();
+   }
+
+   /**
+    * Prefers artId comparison when both sides have it (new path); otherwise falls back to
+    * GUID + type comparison (legacy path). Always requires the same branch.
     */
    @Override
    public boolean equals(Object obj) {
-      boolean equals = super.equals(obj);
-      if (equals && obj instanceof DefaultBasicGuidArtifact) {
+      if (obj instanceof DefaultBasicGuidArtifact) {
          DefaultBasicGuidArtifact other = (DefaultBasicGuidArtifact) obj;
-         return other.artifactType.equals(artifactType) && isOnSameBranch(other);
+         // Prefer artId comparison when both have it set (new path)
+         if (this.artId > 0 && other.artId > 0) {
+            return this.artId == other.artId && isOnSameBranch(other);
+         }
+         // Fall back to GUID comparison (legacy path)
+         boolean guidEquals = super.equals(obj);
+         if (guidEquals) {
+            return other.artifactType.equals(artifactType) && isOnSameBranch(other);
+         }
+         return false;
       }
-      return equals;
+      return super.equals(obj);
    }
 
    public void setArtTypeGuid(ArtifactTypeToken artifactType) {
       this.artifactType = artifactType;
+   }
+
+   /**
+    * Numeric artifact ID. New field for transitioning away from GUIDs.
+    * Returns 0 if not set (constructed without an ArtifactToken).
+    */
+   public long getArtId() {
+      return artId;
+   }
+
+   public void setArtId(long artId) {
+      this.artId = artId;
    }
 }

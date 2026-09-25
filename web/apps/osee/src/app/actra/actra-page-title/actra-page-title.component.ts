@@ -18,15 +18,20 @@ import { MatIcon } from '@angular/material/icon';
 	imports: [MatIcon],
 	template: `
 		<div
-			class="tw-flex tw-flex-row tw-gap-4 tw-p-4 tw-text-lg tw-font-bold">
+			class="tw-flex tw-flex-row tw-items-center tw-gap-4 tw-px-4 tw-pb-1 tw-text-lg tw-font-bold">
 			<div class="tw-flex tw-items-center">
 				<mat-icon> {{ icon() }}</mat-icon>
 			</div>
 			<div class="tw-flex tw-items-center">
 				{{ title() }}
 			</div>
+			<!-- Default slot: actions next to the title (left). -->
 			<div class="tw-flex tw-items-center">
 				<ng-content></ng-content>
+			</div>
+			<!-- Right slot: pushed to the far right (e.g., presence indicators). -->
+			<div class="tw-ml-auto tw-flex tw-items-center">
+				<ng-content select="[right-actions]"></ng-content>
 			</div>
 		</div>
 	`,

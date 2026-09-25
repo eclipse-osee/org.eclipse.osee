@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, computed, inject } from '@angular/core';
-import { iif, of } from 'rxjs';
+import { iif, merge, of } from 'rxjs';
 import {
 	filter,
 	map,
@@ -26,7 +26,8 @@ import { branch, branchCategorySentinel } from '@osee/shared/types';
 import { permissionEnum } from '@osee/shared/types';
 import { BranchInfoService } from '../http/branch-info.service';
 import { UiService } from '../ui/ui.service';
-import { BranchCommitEventService } from '../ui/event/branch-commit-event.service';
+import { BranchChangeEventService } from '../ui/event/branch-change-event.service';
+import { MutationService } from '@osee/shared/services/network';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 export class branchImpl implements branch {
@@ -56,7 +57,8 @@ export class branchImpl implements branch {
 export class CurrentBranchInfoService {
 	private _branchService = inject(BranchInfoService);
 	private _uiService = inject(UiService);
-	private eventService = inject(BranchCommitEventService);
+	private branchChangeService = inject(BranchChangeEventService);
+	private mutation = inject(MutationService);
 
 	private readonly _currentBranch = this._uiService.id.pipe(
 		filter((val) => val !== '0'),
@@ -64,7 +66,14 @@ export class CurrentBranchInfoService {
 			iif(
 				() => branchId !== '0' && branchId !== '',
 				this._branchService.getBranch(branchId).pipe(
-					repeatWhen((_) => this._uiService.update),
+					// Re-fetch branch info on a change to this branch OR on SSE resync (reconnect),
+					// since a branch change may have been missed during the disconnect window.
+					repeatWhen((_) =>
+						merge(
+							this.branchChangeService.forBranch(branchId),
+							this.branchChangeService.resync$
+						)
+					),
 					share()
 				),
 				of(new branchImpl())
@@ -110,13 +119,22 @@ export class CurrentBranchInfoService {
 					this._branchService
 						.commitBranch(detail.id, detail.parentBranch.id, body)
 						.pipe(
+							this.mutation.withLocalNotify((val) =>
+								val.success
+									? {
+											type: 'branch',
+											branchId: detail.id,
+											changeType: 'committed' as const,
+										}
+									: null
+							),
 							tap((val) => {
 								if (!val.success) {
 									this._uiService.ErrorText =
 										'Error committing branch';
-								} else {
-									this.eventService.sendEvent(detail.id);
 								}
+								// On success, the SSE `committed` branch event (emitted by
+								// withLocalNotify above) drives all refresh + tab-close consumers.
 							})
 						),
 

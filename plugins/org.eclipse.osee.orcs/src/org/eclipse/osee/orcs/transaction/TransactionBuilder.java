@@ -302,6 +302,11 @@ public interface TransactionBuilder {
    public List<ArtifactReadable> getTxDataReadables();
 
    /**
+    * Returns the IDs of all artifacts modified (but not created) in this transaction.
+    */
+   public List<ArtifactId> getTxDataWriteableIds();
+
+   /**
     * @return writable artifact or sentinal
     */
    ArtifactToken getWriteable(ArtifactId artifact);

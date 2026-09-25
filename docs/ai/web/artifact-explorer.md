@@ -39,7 +39,7 @@ Root component. Manages:
 - Activity bar with `toggleSection(section)` — VS Code-style collapse/switch
 - `panelCollapsed` / `panelWidthPercent` / `activeSection` signals
 - Accessible resizable divider (`role="separator"`, `aria-orientation="vertical"`, keyboard ArrowLeft/ArrowRight) using `fromEvent` pattern
-- `window:beforeunload` guard via `ArtifactEditorDirtyService`
+- `window:beforeunload` guard via `EditorDirtyService` (`@osee/shared/conflict-resolution`)
 - Branch/view routing from `@Input()` setters → `UiService`
 
 #### Panel state lives in the `:panel` route param
@@ -150,7 +150,7 @@ Signal-based tree expansion tracking:
 ### Service: `ArtifactExplorerTabService`
 
 Manages open editor tabs:
-- `tabs` — `linkedSignal` that auto-clears tabs for committed branches (listens to `BranchCommitEventService`)
+- `tabs` — a `signal<tab[]>`. A `branchChanges$` subscription (`BranchChangeEventService`) closes tabs on branches that are `committed`/`deleted`/`purged` (`removeTabsByBranchId`) and re-points them on `rebaselined` (`repointTabsToBranch`) — all via the SSE branch-event path (GET-on-notify)
 - `addArtifactTab(artifact)` — deduplicates by artifact ID + branch; focuses existing tab if already open
 - `removeTab(index)` / `removeTabByArtifactId(id)` — close tabs
 - `updateTabTitle(artifactId, newTitle)` — syncs tab title when artifact name is edited
@@ -222,11 +222,13 @@ currentTxService.modifyArtifactAndMutate(comment, artifactId, applicability, {
 
 Guards against redundant saves via `previousValue` signal (skips if value unchanged).
 
-### Dirty Tracking: `ArtifactEditorDirtyService`
+### Dirty Tracking: `EditorDirtyService` (from `@osee/shared/conflict-resolution`)
 
 - `markDirty(key)` / `markClean(key)` — tracks editors with unsaved input
 - `hasDirtyEditors()` — used by `window:beforeunload` and tab close guard
-- Key format: `${artifactId}-${typeId}`
+- `hasDirtyEditorsForEntity(id)` — prefix match on `${id}-`; used to skip reload-while-dirty
+- Key format: `${artifactId}-${attributeId}`
+- Shared, root-provided. (The former artifact-explorer `ArtifactEditorDirtyService` facade was removed in favor of this shared service.)
 - `PersistedArtifactAttributeEditorComponent` calls `markDirty` on focus-in/input and `markClean` after successful save or on `ngOnDestroy`
 
 ## Relations Editor

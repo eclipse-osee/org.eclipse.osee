@@ -11,31 +11,70 @@
  *     Boeing - initial API and implementation
  -->
 @if (workDef() && twAttributeTypes()) {
-	<!-- Title -->
-	<osee-actra-page-title
-		icon="device_hub"
-		[title]="wf.Name">
-		<!-- Save Button Row -->
-		<div class="tw-flex tw-items-center">
-			<button
-				mat-icon-button
-				[disabled]="!hasChanges()"
-				(click)="saveChanges()"
+	<!-- Sticky header region: title + conflict banner stick together at the top of
+	     the scroll container (mat-sidenav-content), mirroring the artifact editor. -->
+	<div
+		class="tw-sticky tw-top-0 tw-z-10 tw-bg-[var(--mat-sidenav-content-background-color)]">
+		<!-- Title -->
+		<osee-actra-page-title
+			icon="device_hub"
+			[title]="wf.Name">
+			<!-- Save Button (stays next to the title on the left) -->
+			<span
 				[matTooltip]="
-					hasChanges() ? 'Save changes' : 'No changes to save'
-				"
-				class="hover:tw-shadow-md">
-				<mat-icon
-					[class]="
-						hasChanges()
-							? 'tw-text-osee-blue-7 dark:tw-text-osee-blue-10'
-							: ''
+					!serverReady()
+						? 'Reconnecting to server, changes cannot be saved yet.'
+						: conflict.conflicted()
+							? 'Resolve the conflict below before saving.'
+							: hasChanges()
+								? 'Save Changes'
+								: 'No changes to save.'
+				">
+				<button
+					mat-icon-button
+					[disabled]="
+						!hasChanges() ||
+						!serverReady() ||
+						conflict.conflicted() ||
+						conflict.resolving()
 					"
-					>save</mat-icon
-				>
-			</button>
-		</div>
-	</osee-actra-page-title>
+					(click)="saveChanges()"
+					aria-label="Save Changes"
+					[class]="
+						conflict.conflicted()
+							? '[--mdc-icon-button-disabled-icon-color:var(--osee-red-28)] hover:tw-shadow-md'
+							: 'hover:tw-shadow-md'
+					">
+					<mat-icon
+						[class]="
+							conflict.conflicted()
+								? 'tw-text-warning'
+								: hasChanges()
+									? 'tw-text-primary'
+									: ''
+						"
+						>save</mat-icon
+					>
+				</button>
+			</span>
+			<!-- Presence indicators (right-aligned for consistency) -->
+			@if (presence.users().length > 0) {
+				<osee-presence-avatars
+					right-actions
+					[users]="presence.users()" />
+			}
+		</osee-actra-page-title>
+
+		@if (conflict.conflicted()) {
+			<div class="tw-px-4 tw-pb-2">
+				<osee-conflict-resolution-banner
+					message="Another user changed this workflow while you were editing. Resolve the differences to continue."
+					[resolving]="conflict.resolving()"
+					(resolve)="conflict.resolve()"
+					(discard)="conflict.discard()" />
+			</div>
+		}
+	</div>
 
 	<div class="tw-flex tw-flex-col tw-gap-4">
 		<!-- Workflow Details -->
@@ -89,8 +128,7 @@
 				<span class="tw-text-lg tw-font-bold">Current State:</span>
 				<osee-action-dropdown
 					[teamWorkflow]="wf"
-					[commitAllowed]="false"
-					(update)="updateWorkflow()" />
+					[commitAllowed]="false" />
 			</div>
 
 			@if (wf.currentState.committable || wf.workingBranch.id !== '-1') {
@@ -98,13 +136,11 @@
 					<osee-create-working-branch-from-workflow-button
 						[teamWorkflow]="wf" />
 				} @else {
-					<div class="tw-flex tw-items-center tw-gap-2">
-						<osee-commit-manager-button
-							[teamWorkflowId]="wf.artifact.id" />
+					<div class="tw-flex tw-flex-wrap tw-items-center tw-gap-2">
+						<osee-commit-manager-button [teamWorkflow]="wf" />
 
 						<osee-update-from-parent-button
-							[workingBranch]="wf.workingBranch"
-							(updated)="updateWorkflow()" />
+							[workingBranch]="wf.workingBranch" />
 
 						<osee-change-report-button
 							[inputBranchId]="wf.workingBranch.id"
@@ -117,16 +153,18 @@
 									: 'Branch is not editable'
 							">
 							<a
-								[routerLink]="
-									'/ple/artifact/explorer/working/' +
-									wf.workingBranch.id
-								"
-								[queryParams]="{ panel: 'Artifacts' }"
+								routerLink="/ple/artifact/explorer"
+								[queryParams]="{
+									branchId: wf.workingBranch.id,
+									branchType: 'working',
+									panel: 'Artifacts',
+								}"
 								target="_blank">
 								<button
-									mat-raised-button
+									mat-flat-button
+									class="tw-flex tw-justify-center tw-bg-primary tw-text-background [&_*]:tw-m-0"
 									[disabled]="!wf.branchEditable"
-									class="tw-flex tw-justify-center tw-bg-osee-blue-7 tw-text-background dark:tw-bg-osee-blue-10 [&_*]:tw-m-0">
+									aria-label="Open branch in Artifact Explorer">
 									<mat-icon>padding</mat-icon>
 								</button>
 							</a>

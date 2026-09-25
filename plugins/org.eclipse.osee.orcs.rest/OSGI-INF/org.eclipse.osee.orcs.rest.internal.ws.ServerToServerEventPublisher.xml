@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" deactivate="deactivate" immediate="true" name="org.eclipse.osee.orcs.rest.internal.ws.ServerToServerEventPublisher">
+   <property name="event.topics" value="org/eclipse/osee/transaction/COMMITTED"/>
+   <property name="component.name" value="ServerToServerEventPublisher"/>
+   <service>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+   </service>
+   <reference cardinality="1..1" field="messageService" interface="org.eclipse.osee.framework.messaging.MessageService" name="messageService"/>
+   <implementation class="org.eclipse.osee.orcs.rest.internal.ws.ServerToServerEventPublisher"/>
+</scr:component>

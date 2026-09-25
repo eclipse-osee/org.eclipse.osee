@@ -51,6 +51,7 @@ import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProviders;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpService;
 
 /**
@@ -59,6 +60,7 @@ import org.osgi.service.http.HttpService;
 public final class CxfJaxRsFactory implements JaxRsFactory {
    private Log logger;
    private HttpService httpService;
+   private BundleContext bundleContext;
    private List<Feature> features;
    private List<? extends Object> providers;
    private Map<String, Object> properties;
@@ -77,7 +79,8 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       this.orcsApi = orcsApi;
    }
 
-   public void start(Map<String, Object> props) {
+   public void start(BundleContext ctx, Map<String, Object> props) {
+      this.bundleContext = ctx;
       logger.debug("Starting [%s]...", getClass().getSimpleName());
 
       // Ensure CXF JAX-RS implementation is loaded
@@ -157,7 +160,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
    @Override
    public JaxRsContainer newJaxRsContainer(String contextName) {
       Dictionary<String, Object> props = new Hashtable<>();
-      CxfJaxRsContainer container = new CxfJaxRsContainer(logger, httpService, props);
+      CxfJaxRsContainer container = new CxfJaxRsContainer(logger, bundleContext, props);
       container.setServletContext(contextName);
       logger.trace("Create - [%s]", container);
       return container;
@@ -213,8 +216,8 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
    private final class CxfJaxRsContainer extends AbstractJaxRsContainer<CXFNonSpringServlet, CxfJaxRsApplicationContainer, JaxRsProvider> {
 
-      public CxfJaxRsContainer(Log logger, HttpService httpService, Dictionary<String, Object> props) {
-         super(logger, httpService, props);
+      public CxfJaxRsContainer(Log logger, BundleContext bundleContext, Dictionary<String, Object> props) {
+         super(logger, bundleContext, props);
       }
 
       @Override

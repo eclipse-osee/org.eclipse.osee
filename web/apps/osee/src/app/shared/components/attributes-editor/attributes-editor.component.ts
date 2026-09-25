@@ -15,6 +15,7 @@ import {
 	Component,
 	Output,
 	computed,
+	effect,
 	input,
 	output,
 	signal,
@@ -142,6 +143,37 @@ export class AttributesEditorComponent {
 		attribute<string, ATTRIBUTETYPEID>[]
 	>([]);
 
+	/**
+	 * Baseline value captured per attribute instance the first time it is seen.
+	 * The editor mutates `attribute.value` in place via `[(ngModel)]`, so the
+	 * only stable per-instance identity is the object reference. Keyed by
+	 * reference so duplicate/new instances (which share id `-1`) stay distinct.
+	 * Used by `emitUpdatedAttributes()` to emit only genuinely-changed values.
+	 */
+	private readonly baselineValues = new WeakMap<object, string>();
+
+	constructor() {
+		// Snapshot the baseline value of each instance before the user edits.
+		// Runs after the input is set; new instances added later (e.g. via the
+		// create dialog) are captured on their first appearance and are never
+		// overwritten, so subsequent edits compare against the original value.
+		effect(() => {
+			for (const attr of this.attributes() ?? []) {
+				if (!this.baselineValues.has(attr)) {
+					this.baselineValues.set(attr, this.formatValue(attr));
+				}
+			}
+		});
+	}
+
+	/** Normalizes an attribute's value to the string form used on the wire. */
+	private formatValue(attribute: attribute<string, ATTRIBUTETYPEID>): string {
+		if (attribute.storeType === 'Date' && attribute.value) {
+			return `${new Date(attribute.value).getTime()}`;
+		}
+		return String(attribute.value ?? '');
+	}
+
 	// Track native content changes separately so they aren't lost
 	// when standard fields re-emit.
 	private nativeContentChanges: attribute<string, ATTRIBUTETYPEID>[] = [];
@@ -169,24 +201,25 @@ export class AttributesEditorComponent {
 					if (nativeChangeTypeIds.has(attribute.typeId)) {
 						return null;
 					}
-					const formattedAttribute = { ...attribute, value: '' };
 
-					if (attribute.storeType === 'Date' && attribute.value) {
-						const dateValue = new Date(attribute.value);
-						formattedAttribute.value = `${dateValue.getTime()}`;
-					} else {
-						formattedAttribute.value = String(
-							attribute.value ?? ''
-						);
+					const currentValue = this.formatValue(attribute);
+					// Emit only instances whose value differs from the baseline
+					// captured when the attribute was first shown. Unchanged
+					// attributes must not be swept into the transaction.
+					// A value cleared back to empty is still a change (it
+					// expresses removal), so empty is not filtered out here.
+					const baseline = this.baselineValues.get(attribute);
+					if (baseline !== undefined && baseline === currentValue) {
+						return null;
 					}
 
-					return formattedAttribute;
+					return { ...attribute, value: currentValue };
 				})
 				.filter(
 					(
 						attribute
 					): attribute is attribute<string, ATTRIBUTETYPEID> =>
-						attribute !== null && attribute.value !== ''
+						attribute !== null
 				);
 
 		this.updatedAttributes.next([

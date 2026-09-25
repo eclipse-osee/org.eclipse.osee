@@ -204,7 +204,19 @@ jms.activemq.launch
 
 - License: The Apache License, Version 2.0
 
-jms.libraries
+org.apache.activemq.osgi
+
+- License: The Apache License, Version 2.0
+
+org.apache.geronimo.specs.geronimo-jms_1.1_spec
+
+- License: The Apache License, Version 2.0
+
+org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec
+
+- License: The Apache License, Version 2.0
+
+org.fusesource.hawtbuf.hawtbuf
 
 - License: The Apache License, Version 2.0
 

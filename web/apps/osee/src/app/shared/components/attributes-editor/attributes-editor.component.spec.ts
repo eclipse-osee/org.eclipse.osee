@@ -219,6 +219,115 @@ describe('AttributesEditorComponent', () => {
 		).toBeNull();
 	});
 
+	describe('emitUpdatedAttributes (emit only changed)', () => {
+		const emit = () =>
+			(
+				component as unknown as {
+					emitUpdatedAttributes: () => void;
+				}
+			).emitUpdatedAttributes();
+
+		const makeAttr = (
+			overrides: Partial<attribute<string, ATTRIBUTETYPEID>>
+		): attribute<string, ATTRIBUTETYPEID> =>
+			({
+				name: 'Attr',
+				value: '',
+				typeId: '100' as ATTRIBUTETYPEID,
+				id: '2000',
+				gammaId: '2000',
+				storeType: 'String',
+				...overrides,
+			}) as attribute<string, ATTRIBUTETYPEID>;
+
+		// The effect that snapshots the baseline runs during change detection, so
+		// each test sets the attributes, flushes, then mutates the live object
+		// (mirroring how ngModel mutates attribute.value in the template).
+		const setBaseline = async (
+			attrs: attribute<string, ATTRIBUTETYPEID>[]
+		) => {
+			fixture.componentRef.setInput('attributes', attrs);
+			fixture.detectChanges();
+			await fixture.whenStable();
+			fixture.detectChanges();
+		};
+
+		it('emits nothing when no value changed from the baseline', async () => {
+			const a = makeAttr({ value: 'keep' });
+			await setBaseline([a]);
+
+			let emitted: attribute<string, ATTRIBUTETYPEID>[] | undefined;
+			component.updatedAttributes.subscribe((v) => (emitted = v));
+
+			emit();
+			expect(emitted).toEqual([]);
+		});
+
+		it('emits only the attribute whose value changed', async () => {
+			const changed = makeAttr({
+				value: 'before',
+				typeId: '100' as ATTRIBUTETYPEID,
+			});
+			const unchanged = makeAttr({
+				value: 'stable',
+				typeId: '200' as ATTRIBUTETYPEID,
+				id: '3000',
+				gammaId: '3000',
+			});
+			await setBaseline([changed, unchanged]);
+
+			let emitted: attribute<string, ATTRIBUTETYPEID>[] | undefined;
+			component.updatedAttributes.subscribe((v) => (emitted = v));
+
+			// Simulate the user editing only the first field.
+			changed.value = 'after';
+			emit();
+
+			expect(emitted?.length).toBe(1);
+			expect(emitted?.[0].typeId).toBe('100');
+			expect(emitted?.[0].value).toBe('after');
+		});
+
+		it('emits a value cleared back to empty (removal is a change)', async () => {
+			const a = makeAttr({ value: 'had-value' });
+			await setBaseline([a]);
+
+			let emitted: attribute<string, ATTRIBUTETYPEID>[] | undefined;
+			component.updatedAttributes.subscribe((v) => (emitted = v));
+
+			a.value = '';
+			emit();
+
+			expect(emitted?.length).toBe(1);
+			expect(emitted?.[0].value).toBe('');
+		});
+
+		it('emits a toggled boolean and nothing else', async () => {
+			const bool = makeAttr({
+				value: 'false',
+				storeType: 'Boolean',
+				typeId: '300' as ATTRIBUTETYPEID,
+			});
+			const other = makeAttr({
+				value: 'text',
+				typeId: '400' as ATTRIBUTETYPEID,
+				id: '5000',
+				gammaId: '5000',
+			});
+			await setBaseline([bool, other]);
+
+			let emitted: attribute<string, ATTRIBUTETYPEID>[] | undefined;
+			component.updatedAttributes.subscribe((v) => (emitted = v));
+
+			bool.value = 'true';
+			emit();
+
+			expect(emitted?.length).toBe(1);
+			expect(emitted?.[0].typeId).toBe('300');
+			expect(emitted?.[0].value).toBe('true');
+		});
+	});
+
 	it('binds independent values for multiple instances of the same type', async () => {
 		// Two instances of the same String type must render two independent
 		// textareas (unique form-control names) so their values do not collide.

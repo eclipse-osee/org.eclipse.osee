@@ -16,10 +16,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { tab } from '../../../types/artifact-explorer';
 import { artifactWithRelationsMock } from '@osee/artifact-with-relations/testing';
+import { artifactWithRelations } from '@osee/artifact-with-relations/types';
 import {
+	HttpResourceRef,
 	provideHttpClient,
 	withInterceptorsFromDi,
 } from '@angular/common/http';
+import { signal } from '@angular/core';
 
 describe('AttributesEditorPanelComponent', () => {
 	let component: AttributesEditorPanelComponent;
@@ -45,9 +48,18 @@ describe('AttributesEditorPanelComponent', () => {
 			viewId: '0',
 		};
 
+		// Minimal stub of the parent's shared resource: the component reads
+		// artifactResource().value(); seed it with the mock artifact.
+		const artifactResourceStub = {
+			value: signal<artifactWithRelations | undefined>(
+				artifactWithRelationsMock
+			),
+		} as unknown as HttpResourceRef<artifactWithRelations | undefined>;
+
 		fixture = TestBed.createComponent(AttributesEditorPanelComponent);
 		component = fixture.componentInstance;
 		fixture.componentRef.setInput('tab', tabMock);
+		fixture.componentRef.setInput('artifactResource', artifactResourceStub);
 		fixture.detectChanges();
 	});
 

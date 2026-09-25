@@ -183,7 +183,6 @@
 								<plugin id="org.apache.xml.serializer" />
 								<plugin id="org.apache.axis" />
 								<plugin id="org.aopalliance" />
-								<plugin id="jms.libraries" />
 								<plugin id="org.eclipse.wst.xml.ui" />
 								<plugin id="org.eclipse.wst.common.emf" />
 								<plugin id="org.eclipse.jem.util" />

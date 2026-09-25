@@ -23,6 +23,8 @@ import {
 } from '@angular/common/http';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
+import { SseEventService } from '@osee/shared/services/network';
+import { sseEventServiceMock } from '@osee/shared/testing';
 import type { structure } from '@osee/messaging/shared/types';
 import { structuresMock3 } from '@osee/messaging/shared/testing';
 import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
@@ -46,6 +48,7 @@ describe('StructuresService', () => {
 				},
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
+				{ provide: SseEventService, useValue: sseEventServiceMock },
 			],
 		});
 		service = TestBed.inject(StructuresService);

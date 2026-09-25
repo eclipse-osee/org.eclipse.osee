@@ -31,10 +31,7 @@ describe('CommitManagerButtonComponent', () => {
 
 		fixture = TestBed.createComponent(CommitManagerButtonComponent);
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput(
-			'teamWorkflowId',
-			teamWorkflowDetailsMock.id
-		);
+		fixture.componentRef.setInput('teamWorkflow', teamWorkflowDetailsMock);
 		fixture.detectChanges();
 	});
 

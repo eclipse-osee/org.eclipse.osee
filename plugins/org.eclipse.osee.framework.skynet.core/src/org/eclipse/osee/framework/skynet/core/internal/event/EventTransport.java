@@ -221,12 +221,19 @@ public class EventTransport implements Transport, IFrameworkEventListener {
                if (remoteEvent != null) {
                   if (remoteEvent.getNetworkSender() != null) {
                      Sender sender = Sender.createSender(remoteEvent.getNetworkSender());
+                     EventUtil.eventLog("IEM: RemoteEvent - onEvent type[%s] sender[%s] isLocal[%s]",
+                        remoteEvent.getClass().getSimpleName(), sender, sender.isLocal());
 
                      // If the sender's sessionId is the same as this client, then this event was
                      // created in this client and returned by remote event manager; ignore and continue
                      if (!sender.isLocal()) {
                         handleEvent(sender, remoteEvent);
+                     } else {
+                        EventUtil.eventLog("IEM: Skipping local event [%s]", remoteEvent.getClass().getSimpleName());
                      }
+                  } else {
+                     EventUtil.eventLog("IEM: RemoteEvent has null networkSender [%s]",
+                        remoteEvent.getClass().getSimpleName());
                   }
                }
             } catch (Throwable th) {

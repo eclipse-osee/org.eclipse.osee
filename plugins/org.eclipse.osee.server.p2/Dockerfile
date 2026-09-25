@@ -38,6 +38,11 @@ WORKDIR ${OSEE_HOME}
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=1m --retries=5 CMD curl -I -f --max-time 5 http://localhost:8089 || exit 1
 
+# External ActiveMQ broker URI. Empty by default: server runs web-only and never
+# hosts a broker. Set OSEE_BROKER_URI=tcp://<host>:61616 (hosted broker) to enable
+# desktop<->web relay and server-to-server events.
+ENV OSEE_BROKER_URI=""
+
 # Comment when debugging with entrypoint below
-ENTRYPOINT java -server  -Xmx3G -Dorg.osgi.service.http.port=8089 -Dlogback.configurationFile=logback-dev.xml -Djava.util.logging.config.file=etc/logging.properties -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 -Dcm.config.uri=etc/osee.postgresql.json -Dosee.authentication.protocol=loginId -Dosee.application.server.data="demo/binary_data" -jar plugins/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar -console -consoleLog -data workspace 2>&1
+ENTRYPOINT java -server  -Xmx3G -Dorg.osgi.service.http.port=8089 -Dlogback.configurationFile=logback-dev.xml -Djava.util.logging.config.file=etc/logging.properties -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 -Dcm.config.uri=etc/osee.postgresql.json -Dosee.authentication.protocol=loginId -Dosee.application.server.data="demo/binary_data" -Dosee.default.broker.uri=${OSEE_BROKER_URI} -jar plugins/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar -console -consoleLog -data workspace 2>&1
 
