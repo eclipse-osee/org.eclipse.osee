@@ -169,6 +169,20 @@ export class ConflictResolutionService {
 	 * subscription).
 	 */
 	resolve(config: conflictResolutionConfig): void {
+		this.resolveAttempt(config, 0);
+	}
+
+	/**
+	 * Cap on automatic re-resolves after optimistic-concurrency (stale-gamma)
+	 * rejections. Without a bound, two clients racing the same attribute could
+	 * re-fetch/re-open forever; on reaching the cap we surface an error and stop.
+	 */
+	private static readonly MAX_STALE_GAMMA_RETRIES = 10;
+
+	private resolveAttempt(
+		config: conflictResolutionConfig,
+		attempt: number
+	): void {
 		config.setResolving?.(true);
 		config
 			.fetchServerAttrs()
@@ -176,7 +190,7 @@ export class ConflictResolutionService {
 			.subscribe({
 				next: (serverAttrs) => {
 					config.setResolving?.(false);
-					this.categorizeAndResolve(config, serverAttrs);
+					this.categorizeAndResolve(config, serverAttrs, attempt);
 				},
 				error: (err) => {
 					config.setResolving?.(false);
@@ -191,7 +205,8 @@ export class ConflictResolutionService {
 
 	private categorizeAndResolve(
 		config: conflictResolutionConfig,
-		serverAttrs: readonly attribute<string, ATTRIBUTETYPEID>[]
+		serverAttrs: readonly attribute<string, ATTRIBUTETYPEID>[],
+		attempt: number
 	): void {
 		const categorization = categorizeConflicts(
 			config.baseAttrs,
@@ -206,10 +221,14 @@ export class ConflictResolutionService {
 		// never touched the edited attrs and did not add the staged types). Converged
 		// edits are intentionally NOT committed -- the server already holds that value.
 		if (conflicts.length === 0) {
-			this.commitAndRefresh(config, {
-				set: autoSaveAttrs,
-				add: stagedAddAttrs,
-			});
+			this.commitAndRefresh(
+				config,
+				{
+					set: autoSaveAttrs,
+					add: stagedAddAttrs,
+				},
+				attempt
+			);
 			return;
 		}
 
@@ -327,10 +346,14 @@ export class ConflictResolutionService {
 						stagedAddAttrs: freshStagedAdds,
 					} = latest.getValue();
 					latest.complete();
-					this.commitAndRefresh(config, {
-						set: [...freshAutoSave, ...set],
-						add: [...freshStagedAdds, ...add],
-					});
+					this.commitAndRefresh(
+						config,
+						{
+							set: [...freshAutoSave, ...set],
+							add: [...freshStagedAdds, ...add],
+						},
+						attempt
+					);
 				}
 			);
 	}
@@ -347,7 +370,8 @@ export class ConflictResolutionService {
 
 	private commitAndRefresh(
 		config: conflictResolutionConfig,
-		ops: resolutionOperations
+		ops: resolutionOperations,
+		attempt: number
 	): void {
 		// Nothing to persist (e.g. all take-theirs): the server is already
 		// authoritative, so clear local state and refresh.
@@ -370,11 +394,22 @@ export class ConflictResolutionService {
 					// re-categorizes, and re-opens the dialog). Preserves the user's
 					// pending edits so nothing is silently lost.
 					if (outcome.staleGammas.length > 0) {
+						// Stop after the retry cap rather than loop; preserve local edits.
+						if (
+							attempt + 1 >=
+							ConflictResolutionService.MAX_STALE_GAMMA_RETRIES
+						) {
+							config.onError(
+								'This keeps changing while you resolve it. Please reload ' +
+									'and try again once things settle.'
+							);
+							return;
+						}
 						config.onError(
 							'Someone else changed this while you were resolving. ' +
 								'Re-checking against the latest version...'
 						);
-						this.resolve(config);
+						this.resolveAttempt(config, attempt + 1);
 						return;
 					}
 

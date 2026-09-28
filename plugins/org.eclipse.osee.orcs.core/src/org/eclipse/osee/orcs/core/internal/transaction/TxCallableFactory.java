@@ -383,8 +383,18 @@ public class TxCallableFactory {
          properties.put(TransactionCommitTopic.CHANGED_ATTRIBUTE_TYPE_IDS,
             attrChanges.changedAttributeTypeIdsJson);
          properties.put(TransactionCommitTopic.CHANGE_TYPES, eventData.changeTypes.toArray(new String[0]));
-         properties.put(TransactionCommitTopic.RELATION_CHANGES,
-            MAPPER.writeValueAsString(eventData.relationChanges));
+         // Serialize relation changes in isolation with an "[]" fallback (mirroring how
+         // collectAttributeChanges guards its payloads) so a single bad relation payload
+         // degrades to "no relation changes" rather than suppressing the entire commit
+         // notification -- clients must still receive the artifact-level change event.
+         String relationChangesJson;
+         try {
+            relationChangesJson = MAPPER.writeValueAsString(eventData.relationChanges);
+         } catch (Exception ex) {
+            logger.warn(ex, "Failed to serialize relation changes for commit notification");
+            relationChangesJson = "[]";
+         }
+         properties.put(TransactionCommitTopic.RELATION_CHANGES, relationChangesJson);
 
          // Capture the request-scoped origin id here, on the request thread (commit runs
          // synchronously). EventAdmin dispatch below is async, so the value must travel in the

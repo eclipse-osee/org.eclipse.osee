@@ -66,9 +66,20 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
    }
 
    /**
-    * Must stay consistent with {@link #equals}: when artId is set, equality is by artId,
-    * so the hash must be too (and it then matches {@code Artifact.hashCode()}, which is
-    * id-based). Falls back to the GUID hash for legacy objects without an artId.
+    * Hashes by artId when set (the identity we are transitioning to), falling back to the GUID hash
+    * only for legacy instances that carry no artId. artId is the key the primary path relies on:
+    * a web-originated event's GUID field holds a numeric-id placeholder that differs from the cached
+    * artifact's real GUID, so those two match only by artId -- and to match in a `HashSet` (e.g.
+    * `ArtifactEvent.isModified()` -> `HashSet.contains`) they must also hash alike, by artId.
+    *
+    * The mixed-pair case (a new artId-bearing instance vs a legacy artId-less one, same real GUID)
+    * is largely eliminated by the receiver: FrameworkEventUtil derives the artId from the GUID via
+    * an in-memory cache lookup when a legacy sender omitted it, so both sides normally carry artId
+    * and hash alike. It can only remain for an artifact NOT in the cache -- which is never displayed,
+    * so no HashSet-gated UI reload depends on the match, and the cache delta-apply path resolves it
+    * by field lookup regardless. The GUID equals/hash fallback is thus a rarely-hit safety net; it
+    * (and this artId-vs-GUID split) goes away once every producer emits artId and the fallback is
+    * removed (see the migration plan in docs/ai/web/sse-real-time.md).
     */
    @Override
    public int hashCode() {
@@ -79,8 +90,9 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
    }
 
    /**
-    * Prefers artId comparison when both sides have it (new path); otherwise falls back to
-    * GUID + type comparison (legacy path). Always requires the same branch.
+    * Prefers artId comparison when both sides have it (the identity we are moving to); otherwise
+    * falls back to GUID + type comparison so legacy artId-less events (old desktop clients) still
+    * match. Always requires the same branch.
     */
    @Override
    public boolean equals(Object obj) {

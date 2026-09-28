@@ -218,8 +218,6 @@ describe('ConflictResolutionService', () => {
 			subscriber.next(closeCount === 1 ? conflictResult : undefined);
 			subscriber.complete();
 		});
-		const resolveSpy = vi.spyOn(service, 'resolve');
-
 		const config = baseConfig({
 			commit: commit as unknown as conflictResolutionConfig['commit'],
 			fetchServerAttrs: () => of([makeAttr('a1', 'theirs')]),
@@ -232,8 +230,49 @@ describe('ConflictResolutionService', () => {
 		);
 		// Local state preserved; the flow re-runs against fresh server state.
 		expect(clearLocalState).not.toHaveBeenCalled();
-		// resolve() called again: initial call + the re-resolve triggered by stale gammas.
-		expect(resolveSpy).toHaveBeenCalledTimes(2);
+		// The flow re-ran: the dialog was opened a second time (initial + re-resolve
+		// triggered by the stale-gamma rejection) before the user cancelled.
+		expect(dialogOpen).toHaveBeenCalledTimes(2);
+	});
+
+	it('stops re-resolving after the stale-gamma retry cap and reports a settle-down error', () => {
+		// commit ALWAYS reports stale gammas, so every re-resolve would loop. The bounded
+		// cap must stop it and surface a distinct "reload and try again" error rather than
+		// spinning forever.
+		commit = vi.fn(() => of({ staleGammas: ['9'] }));
+		const conflictResult: attributeConflictResolutionDialogResult = {
+			resolutions: [
+				{
+					conflict: {
+						baseAttr: makeAttr('a1', 'orig'),
+						localValue: 'mine',
+						serverAttr: makeAttr('a1', 'theirs'),
+						serverDeleted: false,
+						allowsMultiple: false,
+					},
+					action: 'take-yours',
+					resolvedValues: ['mine'],
+				} as resolvedConflict,
+			],
+		};
+		// Always return the resolution so every re-resolve commits (and re-triggers).
+		afterClosed = new Observable((subscriber) => {
+			subscriber.next(conflictResult);
+			subscriber.complete();
+		});
+
+		const config = baseConfig({
+			commit: commit as unknown as conflictResolutionConfig['commit'],
+			fetchServerAttrs: () => of([makeAttr('a1', 'theirs')]),
+		});
+		service.resolve(config);
+
+		// Capped at MAX_STALE_GAMMA_RETRIES (10) commit attempts, then stops.
+		expect(commit).toHaveBeenCalledTimes(10);
+		expect(onError).toHaveBeenCalledWith(
+			expect.stringContaining('keeps changing')
+		);
+		expect(clearLocalState).not.toHaveBeenCalled();
 	});
 
 	it('commits the auto-save edit with the freshest gamma after a live re-categorize', () => {

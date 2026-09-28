@@ -246,7 +246,15 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
 
          RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
          remoteEvent.setBranchGuid(BranchId.valueOf(branchId));
-         remoteEvent.setTransactionId(Integer.parseInt(transactionId));
+         // Legacy desktop wire format (RemotePersistEvent1) carries the transaction id as an int.
+         // Parse defensively: a malformed id should not abort relaying the whole commit.
+         Integer parsedTxId = parseIntOrNull(transactionId);
+         if (parsedTxId == null) {
+            OseeLog.logf(ActiveMqSseBridge.class, Level.WARNING,
+               "Skipping web commit relay: non-numeric transaction id '%s'", transactionId);
+            return;
+         }
+         remoteEvent.setTransactionId(parsedTxId);
 
          String attrChangesJson = (String) event.getProperty(TransactionCommitTopic.ATTRIBUTE_CHANGES);
          Map<String, List<AttrChangeInfo>> attrChangesByArtifact = parseAttributeChanges(attrChangesJson);
@@ -255,9 +263,21 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
          String[] artifactTypeIdsArray = (String[]) event.getProperty(TransactionCommitTopic.ARTIFACT_TYPE_IDS);
          String[] artifactModTypesArray = (String[]) event.getProperty(TransactionCommitTopic.ARTIFACT_MOD_TYPES);
          for (int i = 0; i < artifactIdsArray.length; i++) {
+            // Parse per element so a single malformed id skips only that artifact rather
+            // than aborting the whole relay to desktop clients.
+            Long artId = parseLongOrNull(artifactIdsArray[i]);
+            if (artId == null) {
+               OseeLog.logf(ActiveMqSseBridge.class, Level.WARNING,
+                  "Skipping artifact in web commit relay: non-numeric id '%s'", artifactIdsArray[i]);
+               continue;
+            }
+
             long artTypeGuid = 0;
             if (artifactTypeIdsArray != null && i < artifactTypeIdsArray.length) {
-               artTypeGuid = Long.parseLong(artifactTypeIdsArray[i]);
+               Long parsedType = parseLongOrNull(artifactTypeIdsArray[i]);
+               if (parsedType != null) {
+                  artTypeGuid = parsedType;
+               }
             }
 
             RemoteBasicGuidArtifact1 art = new RemoteBasicGuidArtifact1();
@@ -269,7 +289,7 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
             art.setModTypeGuid(modTypeGuid);
             art.setBranch(BranchId.valueOf(branchId));
             art.setArtGuid(artifactIdsArray[i]);
-            art.setArtId(Long.parseLong(artifactIdsArray[i]));
+            art.setArtId(artId);
             art.setArtTypeGuid(artTypeGuid);
 
             List<AttrChangeInfo> attrChanges = attrChangesByArtifact.get(artifactIdsArray[i]);
@@ -297,6 +317,10 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
             for (RelChangeInfo rel : relChanges) {
                RemoteBasicGuidRelation1 remRel = new RemoteBasicGuidRelation1();
                remRel.setRelTypeGuid(rel.relTypeId);
+               // The legacy desktop wire type (RemoteBasicGuidRelation1) stores these ids as
+               // ints; the narrowing casts are required by that fixed protocol. Modern long
+               // ids that exceed the int range cannot be represented for legacy relay -- an
+               // accepted constraint of bridging to the legacy event model.
                remRel.setRelationId((int) rel.relId);
                remRel.setArtAId((int) rel.artIdA);
                remRel.setArtBId((int) rel.artIdB);
@@ -560,6 +584,30 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
             return RelationEventGuids.MODIFIED_RATIONALE;
          default:
             return RelationEventGuids.ADDED;
+      }
+   }
+
+   /** Parses an int, returning null (rather than throwing) for null or non-numeric input. */
+   private static Integer parseIntOrNull(String value) {
+      if (value == null) {
+         return null;
+      }
+      try {
+         return Integer.parseInt(value);
+      } catch (NumberFormatException ex) {
+         return null;
+      }
+   }
+
+   /** Parses a long, returning null (rather than throwing) for null or non-numeric input. */
+   private static Long parseLongOrNull(String value) {
+      if (value == null) {
+         return null;
+      }
+      try {
+         return Long.parseLong(value);
+      } catch (NumberFormatException ex) {
+         return null;
       }
    }
 

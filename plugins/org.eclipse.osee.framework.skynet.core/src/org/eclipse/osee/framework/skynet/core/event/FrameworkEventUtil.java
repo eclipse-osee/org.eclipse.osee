@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent.ArtifactEventType;
@@ -329,7 +330,7 @@ public final class FrameworkEventUtil {
       RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
       EventBasicGuidArtifact result = new EventBasicGuidArtifact(modType, remGuidArt.getBranch(),
          safeGetArtifactType(remGuidArt.getArtTypeGuid(), tokenService), remGuidArt.getArtGuid());
-      result.setArtId(remGuidArt.getArtId());
+      applyArtId(result, remGuidArt);
       return result;
    }
 
@@ -337,7 +338,7 @@ public final class FrameworkEventUtil {
       RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
       EventChangeTypeBasicGuidArtifact result = new EventChangeTypeBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
          safeGetArtifactType(remGuidArt.getToArtTypeGuid(), tokenService), remGuidArt.getArtGuid());
-      result.setArtId(remGuidArt.getArtId());
+      applyArtId(result, remGuidArt);
       return result;
    }
 
@@ -349,7 +350,7 @@ public final class FrameworkEventUtil {
       }
       EventModifiedBasicGuidArtifact result = new EventModifiedBasicGuidArtifact(remGuidArt.getBranch(),
          safeGetArtifactType(remGuidArt.getArtTypeGuid(), tokenService), remGuidArt.getArtGuid(), attributeChanges);
-      result.setArtId(remGuidArt.getArtId());
+      applyArtId(result, remGuidArt);
       return result;
    }
 
@@ -372,8 +373,29 @@ public final class FrameworkEventUtil {
       OrcsTokenService tokenService) {
       DefaultBasicGuidArtifact result = new DefaultBasicGuidArtifact(remGuidArt.getBranch(),
          safeGetArtifactType(remGuidArt.getArtTypeGuid(), tokenService), remGuidArt.getArtGuid());
-      result.setArtId(remGuidArt.getArtId());
+      applyArtId(result, remGuidArt);
       return result;
+   }
+
+   /**
+    * Stamps the numeric artId onto a received event artifact so identity is single-key (artId)
+    * wherever possible. Prefers the artId carried on the wire; when a legacy sender omitted it
+    * (artId == 0) but the artifact is already cached, derives it from the GUID via an in-memory
+    * cache lookup ({@link ArtifactCache#getActive(String, BranchId)}, no server round trip). This
+    * makes {@link DefaultBasicGuidArtifact#equals}/{@code hashCode} agree on artId for both sides of
+    * a comparison, closing the artId/GUID "mixed pair" HashSet gap for any cached artifact. If the
+    * artifact is not cached the id stays 0 and the GUID fallback in equals still applies -- harmless
+    * since an uncached artifact is not displayed, so no UI reload depends on the match.
+    */
+   private static void applyArtId(DefaultBasicGuidArtifact result, RemoteBasicGuidArtifact1 remGuidArt) {
+      if (remGuidArt.getArtId() > 0) {
+         result.setArtId(remGuidArt.getArtId());
+         return;
+      }
+      Artifact cached = ArtifactCache.getActive(remGuidArt.getArtGuid(), remGuidArt.getBranch());
+      if (cached != null) {
+         result.setArtId(cached.getId());
+      }
    }
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid,

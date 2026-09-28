@@ -85,6 +85,8 @@ Only `TopicEventAdmin` is registered as PRIORITY (bridges TopicEvents to OSGi Ev
      RemotePersistEvent1 → ArtifactRemoteEventHandler.handle()
 3. ArtifactRemoteEventHandler.handle():
    a. Convert: FrameworkEventUtil.getPersistEvent(remotePersistEvent) → ArtifactEvent
+      (stamps artId from the wire; for legacy artId-less senders, derives it from the GUID via an
+      in-memory ArtifactCache lookup so identity is single-key by artId when the artifact is cached)
    b. Update cache: updateModifiedArtifact() — apply attribute data to cached artifacts
    c. Update cache: updateRelations() — update relation links
    d. transport.send(sender, artifactEvent) → dispatches locally (same as step 3 above, minus sendRemote)
@@ -217,6 +219,14 @@ objects without an artId fall back to the GUID hash.
 This ensures both new (web→desktop) and legacy (old desktop→desktop) events match
 correctly, including in hash-based lookups where the web-originated event's GUID field
 holds a numeric-id placeholder that differs from the cached artifact's real GUID.
+
+The GUID fallback is kept small on purpose: on receipt, `FrameworkEventUtil.applyArtId`
+stamps the artId from the wire, and when a legacy sender omitted it (artId == 0) but the
+artifact is cached, derives it from the GUID via an in-memory `ArtifactCache` lookup. So
+both sides of a comparison normally carry artId and the GUID hash path is only reached for
+an artifact that is not cached — which is never displayed, so no `HashSet`-gated UI reload
+depends on it. This narrows the artId/GUID "mixed pair" gap to the unobservable case and
+lets the whole dual path be removed once every producer emits artId.
 
 ## ActiveMQ Message Types
 

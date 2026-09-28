@@ -1,8 +1,8 @@
 ---
 ---
-summary: "Reusable attribute conflict-resolution for SSE-enabled editors: detect remote-change-while-dirty, resolve via dialog, apply + refresh"
-tags: [web, conflict-resolution, sse, editors, attributes]
-fileMatch: "**/conflict-resolution/**,**/attribute-conflict**,**/conflict-resolution-banner**"
+summary: "Reusable attribute conflict-resolution for SSE-enabled editors: detect remote-change-while-dirty, resolve via dialog, apply + refresh, stage new attributes while conflicted"
+tags: [web, conflict-resolution, sse, editors, attributes, staging]
+fileMatch: "**/conflict-resolution/**,**/attribute-conflict**,**/conflict-resolution-banner**,**/staged-attribute**,**/categorize-conflicts**"
 ---
 
 # Attribute Conflict Resolution
@@ -23,14 +23,24 @@ parts are pure and testable and the page supplies only what is page-specific.
 
 | Piece | Kind | Responsibility |
 |---|---|---|
-| `categorizeConflicts` | pure fn | base + server + pending -> `{ conflicts, autoSaveAttrs }`. Models the server-deleted case. |
+| `categorizeConflicts` | pure fn | base + server + pending (+ optional staged adds) -> `{ conflicts, autoSaveAttrs, stagedAddAttrs, convergedAttrs }`. Models the server-deleted and staged-add-collision cases. |
 | `mapResolutionsToOperations` | pure fn | `resolvedConflict[]` -> `{ set, add }` attribute operations. |
 | `EditorDirtyService` | root service | tracks which editors are dirty, keyed `${entityId}-${attributeId}`. |
 | `PendingAttributeValuesService` | component service | per-editor map of unsaved values (for editors that track edits continuously). |
-| `AttributeConflictResolutionDialogComponent` | component | resolution dialog: interactive card per true conflict + read-only "Your Other Changes" for non-conflicting edits. |
+| `StagedAttributeService` | component service | per-editor store of new attribute instances added *while conflicted*, staged (not committed) until resolution. See "Staging new attributes". |
+| `AttributeConflictResolutionDialogComponent` | component | resolution dialog: interactive card per true conflict + read-only "Uncontested Changes" and "Already In Sync" sections. |
 | `ConflictResolutionBannerComponent` | component | presentation-only banner (message + resolve/discard). Page owns placement/stickiness. |
 | `ConflictResolutionService` | root service | orchestrates fetch -> categorize -> dialog -> apply -> commit -> **refresh**. |
 | `ConflictController` | per-editor object | bundles detection (`conflicted`/`resolving` signals) + `resolve()`/`discard()`. **Preferred entry point.** |
+
+`categorizeConflicts` sorts every pending edit into exactly one bucket:
+
+- **conflicts** — both sides diverged (or the server deleted an attribute you edited, or the server
+  added an instance of a type you staged). Interactive; the user chooses.
+- **autoSaveAttrs** — you edited it, the server did not touch it. Saved without prompting.
+- **stagedAddAttrs** — a new instance you staged that the server did not also add. Added without
+  prompting.
+- **convergedAttrs** — you and another user independently set the *same* value. Nothing to save.
 
 ### The refresh guarantee
 
@@ -40,6 +50,46 @@ its own local SSE echo while dirty (to protect in-progress edits), so the echo
 cannot refresh the acting view. Without the guaranteed refresh, the acting tab
 would show stale local state after resolving (e.g. a manual value would appear for
 other users but not for the user who entered it).
+
+This is the one place conflict resolution departs from the normal acting-tab refresh
+model. Normally the acting tab refreshes from its own mutation response via
+`MutationService` (see `docs/ai/web/sse-real-time.md`, principle 3 "Actor refreshes
+from its own response"); the resolution commit routes through the service's own
+`commit`/`refresh` instead, because the dialog — not the raw mutation — is what
+completes the edit.
+
+## Staging new attributes during conflict
+
+Adding a new attribute normally commits immediately. But while the editor is
+conflicted, an immediate commit would bypass the resolution dialog and apply a
+change made in a conflict state. So a page that supports adding attributes stages
+them instead: hold the new instance locally, ring it, and reconcile it through the
+same categorize -> dialog -> apply pipeline.
+
+`StagedAttributeService` (component-provided, alongside `PendingAttributeValuesService`)
+holds these. The mechanics that make it work:
+
+- **Stage instead of commit while conflicted.** The page's add path checks the
+  conflict flag: not conflicted -> commit as before; conflicted -> stage.
+- **Client temp key.** Every unpersisted instance shares the transaction layer's
+  `-1` id/gamma, so a staged instance is keyed by a generated `TEMP-<n>` key
+  (`nextKey()`). The panel exposes that key as the instance `id` in the *rendered*
+  list, so dirty flags, pending values, and the amber ring key uniquely per staged
+  instance. The stored instance keeps `-1` so it still commits as an `add`.
+- **Base excludes staged.** The `baseAttrs` passed to resolution must be the real
+  server-backed attributes only — never include staged instances, or the base-vs-server
+  instance counts used to detect a server-side add of the same type are corrupted.
+- **Reconciliation.** Pass the staged instances (overlaid with their latest pending
+  value) as `stagedAdds` to `resolve`/the controller. `categorizeConflicts` then
+  either applies each as a safe add (`stagedAddAttrs`) or, when the server also added
+  an instance of the same type, surfaces a collision `conflict` (take-server's, or
+  take-both when the type allows multiples).
+- **Clear on resolve/discard.** Clear the staged store alongside dirty flags and
+  pending values in `clearLocalState`.
+
+A page that never adds attributes while conflicted ignores all of this: `stagedAdds`
+is optional everywhere and defaults to empty. See the artifact-explorer panel
+(`attributes-editor-panel.component.ts`) for the reference implementation.
 
 ## Presentation semantics (colors + what the dialog shows)
 
@@ -52,12 +102,16 @@ Keep these consistent across pages so the affordances don't mislead:
   the dialog fetches server state. Reserve red for the confirmed conflicts shown in
   the dialog.
 - **The dialog shows every changed field, not just conflicts.** True conflicts are
-  interactive cards; non-conflicting edits (server untouched, from
-  `categorizeConflicts`' `autoSaveAttrs`) are listed read-only under "Your Other
-  Changes" so the count the user sees matches the fields flagged in the editor.
-  This avoids the "I had N rings but the dialog shows fewer -- did I lose changes?"
-  confusion. No extra server request: `categorizeConflicts` already returns both
-  buckets from the single on-demand fetch.
+  interactive cards; everything else is listed read-only so the count the user sees
+  matches the fields flagged in the editor (avoiding the "I had N rings but the
+  dialog shows fewer -- did I lose changes?" confusion). No extra server request:
+  `categorizeConflicts` returns all buckets from the single on-demand fetch. The
+  read-only sections are:
+  - **Uncontested Changes** — `autoSaveAttrs` (edits the server did not touch) plus
+    `stagedAddAttrs` (new instances the server did not also add, tagged "Added").
+    These save/create on resolve.
+  - **Already In Sync** — `convergedAttrs`, where you and another user set the same
+    value. Nothing is applied; shown only so the still-ringed field is accounted for.
 - **An aggregate "must resolve" control may be red.** A whole-entity blocked
   control (e.g. the workflow's disabled Save button) is correctly red -- it is a
   single "there is a conflict to resolve" signal, not a per-field claim. To show a
@@ -83,10 +137,12 @@ protected readonly conflict = this.conflictResolution.controller(
     // 2. What to compare.
     entityName: () => this.entity().name,
     entityId: () => `${this.entity().id}`,
-    baseAttrs: () => this.entity().attributes,
+    baseAttrs: () => this.entity().attributes, // server-backed only, no staged adds
     fetchServerAttrs: () => this.fetchLatest().pipe(map((e) => e.attributes)),
     pendingValues: () => this.buildPendingMap(),
     keyOptions: { keyOf: (a) => a.id }, // default; see key contract below
+    // Optional: only if the page stages new attributes while conflicted.
+    // stagedAdds: () => this.buildStagedAdds(),
 
     // 3. How to persist + refresh.
     commit: (ops) => this.persist(ops),      // return the mutation observable
@@ -137,6 +193,16 @@ matches how your edits are keyed.
   component's `providers` so each open editor has its own pending-value map. Only
   needed if you track pending values continuously (instance-id strategy). Editors
   that reconstruct the pending map at resolve time (typeId strategy) don't need it.
+- `StagedAttributeService` is **not** root-provided either; add it to the editor's
+  `providers` only if the page stages new attributes while conflicted.
+
+## Optimistic-concurrency retry cap
+
+If a commit is rejected because another commit moved an attribute between the dialog
+opening and the apply (stale gammas), the service automatically re-fetches, re-opens
+the dialog, and lets the user re-decide against the current value. This auto-retry is
+bounded (`MAX_STALE_GAMMA_RETRIES`); if two clients keep racing the same attribute past
+the cap, the service reports a "reload and try again" error and stops rather than looping.
 
 ## When to use `resolve()` directly instead of the controller
 

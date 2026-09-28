@@ -23,7 +23,10 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { attribute } from '@osee/attributes/types';
-import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+import {
+	ATTRIBUTETYPEID,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/attributes/constants';
 import {
 	FocusLostInputComponent,
 	MarkdownEditorComponent,
@@ -91,7 +94,7 @@ import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 				</mat-form-field>
 			}
 			@default {
-				@if (attr().name === 'Markdown Content') {
+				@if (isMarkdown()) {
 					<osee-markdown-editor
 						class="tw-block"
 						[mdContent]="value()"
@@ -122,6 +125,12 @@ export class AttributeValueEditorComponent {
 	/** The edited value (two-way bindable). */
 	value = model<string>('');
 
-	/** Inverse of disabled, for readability in templates that need it. */
-	protected editable = computed(() => !this.disabled());
+	/**
+	 * Whether to render the markdown editor. Keyed off the attribute type id
+	 * (immutable) rather than the display name (configurable), so the widget stays
+	 * correct even if the "Markdown Content" attribute is renamed.
+	 */
+	protected isMarkdown = computed(
+		() => this.attr().typeId === ATTRIBUTETYPEIDENUM.MARKDOWNCONTENT
+	);
 }

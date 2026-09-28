@@ -304,19 +304,14 @@ export class AttributesEditorPanelComponent {
 	});
 
 	/**
-	 * Computed that returns the current attributes sorted by typeId.
-	 * Intentionally caches the last known good value in `_lastAttributes` as a side effect
-	 * so that the UI does not flash empty while the resource is refetching.
-	 */
-	/**
 	 * The artifact's real, server-backed attributes (sorted), WITHOUT any locally
-	 * staged additions. This is the base set for conflict detection: staged adds
-	 * are reconciled separately via their own channel, so mixing them in here would
-	 * corrupt base-vs-server comparisons (e.g. inflating per-type instance counts
-	 * used to detect a server-side add of the same type).
+	 * staged additions. This is the base set for conflict detection: staged adds are
+	 * reconciled separately, so mixing them in here would corrupt base-vs-server
+	 * comparisons (e.g. inflating per-type instance counts used to detect a
+	 * server-side add of the same type).
 	 *
-	 * Caches the last known good value in `_lastAttributes` as a side effect so the
-	 * UI does not flash empty while the resource is refetching.
+	 * Caches the last known good value in `_lastAttributes` so the UI does not flash
+	 * empty while the resource is refetching.
 	 */
 	protected serverBackedAttributes = computed<
 		attribute<string, ATTRIBUTETYPEID>[]
@@ -628,11 +623,9 @@ export class AttributesEditorPanelComponent {
 			return;
 		}
 
-		// A staged (not-yet-persisted) instance was never sent to the server, so
-		// "deleting" it is purely local: drop it from the staged store and clear its
-		// local edit state. It must NOT issue a delete mutation (there is nothing to
-		// delete server-side) -- doing so while conflicted would round-trip the
-		// server, shift the conflict base, and silently drop the pending conflict.
+		// A staged instance was never persisted, so "deleting" it is purely local: drop
+		// it from the staged store. Issuing a delete mutation would round-trip the server
+		// mid-conflict, shift the base, and drop the pending conflict.
 		if (this.stagedAttributeService.has(attr.id)) {
 			this.discardStagedAttribute(attr.id);
 			return;
@@ -651,10 +644,8 @@ export class AttributesEditorPanelComponent {
 	}
 
 	/**
-	 * Discards a locally-staged addition: removes it from the staged store and
-	 * clears the dirty flag and pending value tracked under its client key. When no
-	 * staged adds or other edits remain, the conflict banner is dismissed so the
-	 * editor returns to a clean state.
+	 * Discards a locally-staged addition: removes it from the staged store and clears
+	 * the dirty flag and pending value tracked under its client key.
 	 */
 	private discardStagedAttribute(stagedKey: string) {
 		this.stagedAttributeService.remove(stagedKey);

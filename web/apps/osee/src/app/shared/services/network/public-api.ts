@@ -14,5 +14,6 @@ export * from './http-loading.service';
 export * from './mutation.service';
 export * from './origin-id.service';
 export * from './origin-aware-event-stream';
+export * from './resync-refetch';
 export * from './sse-event.service';
 export * from './web-locks.service';

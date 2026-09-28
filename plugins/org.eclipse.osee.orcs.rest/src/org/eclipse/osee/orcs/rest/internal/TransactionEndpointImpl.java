@@ -33,6 +33,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -118,11 +119,14 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       result.setTx(token);
       XResultData resultData = new XResultData();
       resultData.setTxId(token.getIdString());
-      List<String> artifactIds =
-         tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList());
-      // Also include modified artifacts (writeables) -- getTxDataReadables only returns created artifacts
+      // Created artifacts appear in getTxDataReadables(); modified artifacts appear in
+      // getTxDataWriteableIds(). A created artifact is BOTH (it is also a writeable), so
+      // collect into a LinkedHashSet to dedup while preserving insertion order before
+      // returning the affected artifact ids to the client.
+      LinkedHashSet<String> artifactIds = new LinkedHashSet<>();
+      tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).forEach(artifactIds::add);
       tx.getTxDataWriteableIds().stream().map(id -> id.getIdString()).forEach(artifactIds::add);
-      resultData.setIds(artifactIds);
+      resultData.setIds(new ArrayList<>(artifactIds));
       result.setResults(resultData);
       result.setFailedGammas(tx.getGammaIdsFailed());
 

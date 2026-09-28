@@ -3,7 +3,6 @@
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
- *
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
@@ -38,6 +37,14 @@ import { waitForNetworkIdleIgnoringSse } from '../../../shared/sse-helpers';
  */
 
 let workflowId: string;
+
+/**
+ * ATS attribute type ids asserted against the raw save payload. Named here so the
+ * magic numbers have a single documented home (playwright specs run under their own
+ * tsconfig and do not import the app's `@osee/*` attribute-type barrels).
+ */
+const ATTR_TYPE_ID_VALIDATION_REQUIRED = '1152921504606847146';
+const ATTR_TYPE_ID_DESCRIPTION = '1152921504606847196';
 
 /** First editable text attribute in the workflow's state panels. */
 function firstAttributeTextarea(page: Page) {
@@ -213,8 +220,8 @@ test.describe('Actra workflow editor real-time (SSE, two users)', () => {
 					// the unchanged Description attribute (the original bug's tell).
 					const body = await saveWorkflowAndCaptureTx(joe);
 					const payload = JSON.stringify(body);
-					expect(payload).toContain('1152921504606847146'); // ats.Validation Required
-					expect(payload).not.toContain('1152921504606847196'); // ats.Description (unchanged)
+					expect(payload).toContain(ATTR_TYPE_ID_VALIDATION_REQUIRED);
+					expect(payload).not.toContain(ATTR_TYPE_ID_DESCRIPTION); // unchanged
 
 					// After the save + refetch the toggled value sticks (does not revert).
 					await expect(booleanSelect(joe, boolLabel)).toHaveText(

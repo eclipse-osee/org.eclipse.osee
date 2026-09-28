@@ -55,6 +55,12 @@ export type conflictCategorization = {
  * persisted instances). Editors whose edits are keyed by attribute `typeId`
  * (e.g. batched, type-definition-sourced forms where instances may not yet
  * exist) should pass `{ keyOf: (a) => a.typeId }`.
+ *
+ * IMPORTANT: `typeId` keying assumes at most one edited instance per type. Base and
+ * server attributes are indexed first-wins per key, so a type with multiple instances
+ * would collapse to only its first instance and the rest would be silently ignored.
+ * Only use `typeId` keying for single-instance attribute types; multi-instance types
+ * must use the default instance-`id` keying.
  */
 export type conflictKeyOptions = {
 	keyOf?: (attr: attribute<string, ATTRIBUTETYPEID>) => string;
@@ -178,15 +184,11 @@ export function categorizeConflicts(
 		});
 	}
 
-	// Locally-staged new instances (created while the artifact was conflicted). A
-	// staged add is safe to apply unless the server ALSO added an instance of the
-	// same type in the meantime -- then the two additions must be reconciled, so we
-	// surface a conflict letting the user keep one or both. A "server-side add" is a
-	// server instance of the type whose id was NOT present at base; this identifies
-	// the actual new instance regardless of the order the server returns instances
-	// in (a count-plus-position scheme would depend on that order). Each server add
-	// is consumed once, so multiple staged adds of the same type pair with distinct
-	// server adds and any surplus staged add falls through as a safe add.
+	// Locally-staged new instances. A staged add is safe unless the server also added
+	// an instance of the same type; then the two must be reconciled as a conflict. The
+	// server-side add is matched by id-set difference (server ids not present at base),
+	// so it is found regardless of instance order. Each server add is consumed once, so
+	// multiple staged adds of a type pair with distinct server adds; any surplus is safe.
 	if (stagedAdds && stagedAdds.length > 0) {
 		const serverAddsByType = serverAddsNotAtBase(baseAttrs, serverAttrs);
 
@@ -244,7 +246,10 @@ function indexByKey(
 ): Map<string, attribute<string, ATTRIBUTETYPEID>> {
 	const map = new Map<string, attribute<string, ATTRIBUTETYPEID>>();
 	for (const attr of attrs) {
-		// First-wins: keep the earliest instance for a key.
+		// First-wins: keep the earliest instance for a key. Under the default
+		// instance-id keying every instance has a unique key, so nothing is lost.
+		// Under typeId keying (single-instance types only -- see conflictKeyOptions)
+		// this intentionally keeps the single instance of each type.
 		if (!map.has(keyOf(attr))) {
 			map.set(keyOf(attr), attr);
 		}

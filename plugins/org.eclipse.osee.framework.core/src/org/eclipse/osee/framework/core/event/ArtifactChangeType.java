@@ -17,8 +17,6 @@ package org.eclipse.osee.framework.core.event;
  * Change type constants for artifact/relation events sent over SSE and ActiveMQ.
  * These values must match the TypeScript {@code artifactChangeType} union in
  * {@code web/apps/osee/src/app/shared/services/network/sse-event.service.ts}.
- *
- * @author AI Agent
  */
 public final class ArtifactChangeType {
 

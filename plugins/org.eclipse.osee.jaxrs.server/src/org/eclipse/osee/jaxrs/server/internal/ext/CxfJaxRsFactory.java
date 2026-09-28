@@ -52,14 +52,12 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.http.HttpService;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class CxfJaxRsFactory implements JaxRsFactory {
    private Log logger;
-   private HttpService httpService;
    private BundleContext bundleContext;
    private List<Feature> features;
    private List<? extends Object> providers;
@@ -69,10 +67,6 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
    public void setLogger(Log logger) {
       this.logger = logger;
-   }
-
-   public void setHttpService(HttpService httpService) {
-      this.httpService = httpService;
    }
 
    public void setOrcsApi(OrcsApi orcsApi) {

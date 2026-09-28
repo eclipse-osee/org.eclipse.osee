@@ -36,7 +36,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `
 		<div
-			role="alert"
+			role="status"
 			class="tw-flex tw-items-center tw-gap-2 tw-rounded-md tw-border tw-border-solid tw-border-warning tw-px-3 tw-py-1 tw-text-sm">
 			<mat-icon
 				class="tw-shrink-0 tw-text-warning"

@@ -48,8 +48,8 @@ import {
 	retry,
 	shareReplay,
 	switchMap,
-	timer,
 } from 'rxjs';
+import { resyncRefetchConfig } from '@osee/shared/services/network';
 import { ActraWorldHttpService } from '../services/actra-world-http.service';
 import { MatButton } from '@angular/material/button';
 import { ActraPageTitleComponent } from '../actra-page-title/actra-page-title.component';
@@ -68,14 +68,6 @@ import { CreateActionButtonComponent } from '../../configuration-management/comp
  * Used only as the branch context for downstream navigation/customizations.
  */
 const ATS_BRANCH_ID = COMMON_BRANCH_ID;
-
-/**
- * Bounded retry for reconnect-driven refetches while the server warms up. Small and capped: a
- * genuine, persistent server error should surface after a few attempts, not retry forever.
- */
-const RESYNC_REFETCH_RETRIES = 4;
-const RESYNC_REFETCH_BASE_DELAY_MS = 500;
-const RESYNC_REFETCH_MAX_DELAY_MS = 5_000;
 
 @Component({
 	selector: 'osee-actra-world',
@@ -152,19 +144,7 @@ export class ActraWorldComponent implements OnInit {
 				// with backoff, then swallow the error so it never escapes into `repeat`/`toSignal`
 				// (an escaping error kills the stream and breaks change detection / CDK overlays).
 				// Keeping the last-known data avoids a blank view during recovery.
-				retry({
-					count: RESYNC_REFETCH_RETRIES,
-					// `attempt` is 1-based (first retry = 1), so subtract 1 for the exponent to
-					// make the first retry wait the base delay (500ms), then 1s, 2s, ... capped.
-					delay: (_err, attempt) =>
-						timer(
-							Math.min(
-								RESYNC_REFETCH_MAX_DELAY_MS,
-								RESYNC_REFETCH_BASE_DELAY_MS *
-									2 ** (attempt - 1)
-							)
-						),
-				}),
+				retry(resyncRefetchConfig()),
 				catchError(() => of(worldDataEmpty))
 			);
 			// Re-fetch only on ATS-branch changes relevant to this user (see
@@ -215,15 +195,15 @@ export class ActraWorldComponent implements OnInit {
 
 	/**
 	 * Artifact ids of work items currently displayed — used to detect remote changes to items
-	 * already in my list. The row's artifact id is under the `Id` key (capital I; same key the
-	 * template uses for the workflow routerLink), NOT `id` — matching keeps this in sync with
-	 * `inv.artifactId`.
+	 * already in my list. Reads the reserved lowercase `id` cell the server sets specifically for
+	 * event matching (see AtsWorldEndpointImpl), NOT the capital `Id` display column (which is
+	 * column-configurable). This keeps the set aligned with `inv.artifactId`.
 	 */
 	private currentRowIds = computed(
 		() =>
 			new Set(
 				this.rows()
-					.map((row) => row['Id'])
+					.map((row) => row['id'])
 					.filter((id) => !!id)
 			)
 	);

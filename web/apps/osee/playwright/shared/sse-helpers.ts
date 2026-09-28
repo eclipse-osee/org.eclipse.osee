@@ -18,10 +18,12 @@ import { Page, Request, expect } from '@ngx-playwright/test';
  * so they must be excluded from any network-idle calculation.
  *
  * OSEE opens its SSE stream via `fetchEventSource` (see `SseEventService`); the connection URL
- * contains `/events`. Presence traffic rides the same real-time channel and should likewise not
- * gate "the page finished loading".
+ * contains `/events`. Presence traffic rides the same real-time channel under `/sse/presence`
+ * and should likewise not gate "the page finished loading". The presence keyword is anchored to
+ * that path so it cannot accidentally match an unrelated discrete request that merely contains
+ * the word "presence".
  */
-const REALTIME_URL_KEYWORDS: readonly string[] = ['/events', 'presence'];
+const REALTIME_URL_KEYWORDS: readonly string[] = ['/events', '/sse/presence'];
 
 const isRealtime = (url: string): boolean =>
 	REALTIME_URL_KEYWORDS.some((keyword) => url.includes(keyword));

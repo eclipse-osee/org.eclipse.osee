@@ -18,8 +18,6 @@ package org.eclipse.osee.framework.core.event;
  * client-side {@code BranchEventType} enum (skynet.core) and server-side event bridging
  * (orcs.rest), which cannot depend on skynet.core. These strings are persisted in event
  * wire formats, so they must never change.
- *
- * @author AI Agent
  */
 public final class BranchEventGuids {
 

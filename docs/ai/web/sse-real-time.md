@@ -1109,7 +1109,8 @@ EventTransport.onEvent() -- checks sender.isLocal() to avoid processing own even
   v
 ArtifactRemoteEventHandler.handle():
   1. FrameworkEventUtil.getPersistEvent() converts RemoteBasicGuidArtifact1 -> EventModifiedBasicGuidArtifact
-     - Sets artId from remGuidArt.getArtId()
+     - Sets artId from remGuidArt.getArtId(); if a legacy sender omitted it, derives artId from the
+       GUID via an in-memory ArtifactCache lookup (so identity is single-key by artId when cached)
      - Extracts attribute changes from RemoteAttributeChange1 entries
   2. updateModifiedArtifact() -- ArtifactCache.getActive(guidArt) finds cached artifact via artIdBranchCache
      - Iterates attribute changes, calls attribute.getAttributeDataProvider().loadData(data)
@@ -1172,10 +1173,22 @@ Desktop client receives RemotePersistEvent1 with full attribute data
 - `artId` field added to `RemoteBasicGuidArtifact1` (JAXB -- backward compatible).
 - `artIdBranchCache` added to `ArtifactIdCache` (populated alongside existing maps).
 - `ArtifactCache.getActive()` methods try `artIdBranchCache` first, fall back to `guidCache`.
-- `DefaultBasicGuidArtifact.equals()` uses artId when both have it, falls back to GUID; `hashCode()`
-  hashes on artId when set (consistent with `equals()` and `Artifact.hashCode()`) so hash-based event
-  matching works web->desktop.
-- `FrameworkEventUtil` propagates artId from `RemoteBasicGuidArtifact1` into event objects.
+- `DefaultBasicGuidArtifact.equals()` uses artId when both have it, falls back to GUID (so legacy
+  artId-less desktop events still match). `hashCode()` hashes by **artId when set**, else by GUID:
+  a web-originated event's GUID field is a numeric-id placeholder that differs from the cached
+  artifact's real GUID, so those match only by artId -- and to match in a `HashSet` they must also
+  hash by artId. The mixed-pair risk (a new artId-bearing instance vs a legacy artId-less one, same
+  real GUID, hashing differently) is closed on the **receiver**: `FrameworkEventUtil` derives the
+  artId from the GUID via an in-memory cache lookup (`ArtifactCache.getActive(guid, branch)`, no
+  server call) when a legacy sender omitted it, so both sides normally carry artId and hash alike.
+  It can only remain for an artifact **not in the cache** -- which is never displayed, so no
+  `HashSet`-gated UI reload depends on the match, and the cache delta-apply path resolves it by
+  field lookup regardless. The GUID equals/hash fallback is thus a rarely-hit safety net that goes
+  away once every producer emits artId and the fallback is removed (see Future cleanup below).
+- `FrameworkEventUtil` propagates artId from `RemoteBasicGuidArtifact1` into event objects, and for
+  a legacy sender that omitted it, derives artId from the GUID via an in-memory cache lookup so
+  received event objects carry artId whenever the artifact is cached (desktop-only; `FrameworkEventUtil`
+  and `ArtifactCache` are both in `skynet.core`, never loaded on the server).
 - `ActiveMqSseBridge` sends artId (from commit data) + numeric string as artGuid (placeholder).
 - Old clients (release N-1) continue working -- they ignore artId, use artGuid as before.
 - No data migration needed -- artId is in the DB already, always was.
@@ -1211,10 +1224,10 @@ Desktop client receives RemotePersistEvent1 with full attribute data
 | `framework.skynet.core/event/model/BranchEventType.java` | Enum now references `BranchEventGuids` constants instead of inline GUID literals |
 | `orcs.rest/internal/ws/SseBroadcastService.java` | SSE broadcast utility; exposes a `BranchChangeRelay` hook, and `broadcastBranchChangeFromRemoteClient()` for desktop-originated changes (SSE only, no re-relay) |
 | `orcs.rest/META-INF/MANIFEST.MF` | Added `com.fasterxml.jackson.core.type` import |
-| `framework.core.model/event/DefaultBasicGuidArtifact.java` | `equals()` supports artId-based comparison; `hashCode()` hashes on artId when set, fixing `HashSet`-based event matching web->desktop |
+| `framework.core.model/event/DefaultBasicGuidArtifact.java` | `equals()` prefers artId, falls back to GUID for legacy artId-less events; `hashCode()` hashes by artId when set (else GUID), so `HashSet`-based event matching works web->desktop where GUIDs differ but artIds match |
 | `framework.skynet.core/artifact/cache/ArtifactIdCache.java` | Added `artIdBranchCache` (CompositeKeyHashMap<Long,Long>) + `getByArtId()` |
 | `framework.skynet.core/artifact/ArtifactCache.java` | `getActive()` methods try artId path first via `artIdBranchCache` |
-| `framework.skynet.core/event/FrameworkEventUtil.java` | Propagates `artId`; `safeGetArtifactType()` handles unknown types; uses shared `EventModType` |
+| `framework.skynet.core/event/FrameworkEventUtil.java` | Propagates `artId` and, for legacy artId-less senders, derives it from the GUID via an in-memory `ArtifactCache` lookup (`applyArtId`) so received event objects are single-key by artId when cached; `safeGetArtifactType()` handles unknown types; uses shared `EventModType` |
 | `framework.ui.skynet/artifact/editor/parts/AttributeFormPart.java` | `refresh()` detects structural changes (add/delete attributes) and rebuilds widget list |
 | `skynet.core/event/model/EventModType.java` | Deleted -- replaced by `framework.core.event.EventModType` |
 | `transactions/services/current-transaction.service.ts` | Simplified -- `performMutation()` only adds `uiService.updated = true` for backward compat |

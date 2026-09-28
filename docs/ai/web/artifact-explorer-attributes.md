@@ -160,13 +160,14 @@ When a conflict exists, the warning banner offers a **Resolve** button (`merge_t
   - **Enum dropdown / boolean toggle** are atomic — dirty at the moment of selection/toggle (`ngModelChange`), which is also when the save fires. They are intentionally *not* dirty on open (browsing isn't an edit) and not deferred to after save (that would miss the in-flight and conflict-blocked windows).
 - **`trackPendingEdit()` (efficiency + correctness)**: All change handlers funnel through this helper. It always updates the pending value (a plain `Map` write, no reactivity — the dialog needs the newest value), but only touches the dirty signal on an actual clean↔dirty transition (guarded by `isDirty()`), avoiding `Set` rebuilds and subscriber churn on every keystroke. If the value is edited back to the persisted value, it cleans the field (clears dirty + pending).
 - **Shared orchestration**: The detect → fetch → categorize → dialog → apply → commit → **refresh** flow lives in `@osee/shared/conflict-resolution` (`ConflictResolutionService`), not in the panel. The panel calls `conflictResolution.resolve({...})` supplying only its page-specific bits (fetch via `getartifactWithRelations`, commit via `modifyArtifactAndMutate`, refresh via `artifactResource().reload()`). The canonical description of the shared module lives in `docs/ai/web/conflict-resolution.md`; the artifact-explorer-specific notes are below.
-- **On-demand server fetch + categorization**: Opening the dialog fetches current server state (the shared resource was deliberately not reloaded) and runs the pure `categorizeConflicts(base, server, pending)`:
-  - **Converged** (server value === local value): skipped.
-  - **Server unchanged** (server value === base value): safe edit — saved with the server's fresh gamma, no decision needed.
+- **On-demand server fetch + categorization**: Opening the dialog fetches current server state (the shared resource was deliberately not reloaded) and runs the pure `categorizeConflicts(base, server, pending, keyOptions?, stagedAdds?)`, which sorts each edit into one bucket:
+  - **Server unchanged** (server value === base value): safe edit — saved with the server's fresh gamma, no decision needed (`autoSaveAttrs`).
   - **True conflict** (server and local diverge and differ): presented in the dialog.
   - **Server-deleted** (attribute gone from server while edited locally): a delete conflict (re-add vs accept-deletion).
-  - If there are no true conflicts, safe edits are committed silently without showing the dialog.
-- **Dialog shows every changed field**: true conflicts are interactive cards; non-conflicting safe edits are listed read-only under **"Your Other Changes"** so the field count the user sees matches the fields flagged in the editor (avoids "I had N rings but fewer dialog items — did I lose changes?"). No extra request — `categorizeConflicts` returns both buckets from the one fetch.
+  - **Converged** (server value === local value): surfaced read-only (`convergedAttrs`) so the still-ringed field is explained; nothing is applied.
+  - **Staged add** (a new instance staged while conflicted): applied without prompting (`stagedAddAttrs`), or surfaced as a collision conflict if the server also added an instance of the same type. See "Adding/deleting while conflicted" below.
+  - If there are no true conflicts, the safe edits and staged adds are committed silently without showing the dialog.
+- **Dialog shows every changed field**: true conflicts are interactive cards; everything else is read-only so the field count matches the editor's rings. **Uncontested Changes** lists safe edits plus staged adds (tagged "Added"); **Already In Sync** lists converged edits. No extra request — `categorizeConflicts` returns all buckets from the one fetch.
 - **Resolution actions** (per attribute):
   - `take-theirs` / `accept-deletion` — discard the local edit; server state stays authoritative.
   - `take-yours` / `manual` — overwrite the server value using its **fresh gamma** for concurrency.
@@ -175,6 +176,21 @@ When a conflict exists, the warning banner offers a **Resolve** button (`merge_t
   - `manual` — edit the resolved value with `AttributeValueEditorComponent`, a presentational (non-persisting) editor rendering the same widget as the attribute's store type.
 - **Apply mapping**: `mapResolutionsToOperations(resolvedConflict[]) -> { set, add }` (pure, shared) turns the dialog's choices into transaction operations; the panel batches `set`/`add` (plus the safe edits) into one `modifyArtifactAndMutate`, then reloads. This mapping is shared with the workflow editor so both apply resolutions identically.
 - **Reusability**: The dialog, types, categorizer, mapper, and services are all in `@osee/shared/conflict-resolution` and used by both the artifact editor and the ACTRA workflow editor.
+
+### Adding / deleting attributes while conflicted
+
+Add and delete normally commit immediately, but doing so mid-conflict would bypass the
+resolution dialog. So while `remoteChangeWhileDirty()` is true:
+
+- **Add** stages the new instance in `StagedAttributeService` (panel-provided) instead of
+  committing. Staged instances render with the amber ring, are editable in place, and are
+  reconciled through the dialog as `stagedAdds` (applied as an `add`, or surfaced as a
+  collision conflict if the server also added the same type). See the "Staging new
+  attributes during conflict" section in `docs/ai/web/conflict-resolution.md`.
+- **Delete** of a *staged* (unpersisted) instance just discards it locally — no transaction.
+  Delete of a *persisted* instance is blocked with a message telling the user to resolve
+  first (an immediate delete would bypass resolution and shift the base).
+- Staged adds are cleared alongside dirty flags and pending values on resolve/discard.
 
 ## Server endpoints used
 

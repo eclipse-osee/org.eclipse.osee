@@ -63,6 +63,10 @@ import org.eclipse.osee.orcs.rest.internal.health.operations.RemoteHealthTop;
 @Path("")
 @Swagger
 public final class HealthEndpointImpl {
+   // ObjectMapper is thread-safe once configured; reuse a single instance rather than
+   // allocating one per request.
+   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
    private final IApplicationServerManager applicationServerManager;
    private final IAuthenticationManager authManager;
    private final ActivityLog activityLog;
@@ -207,8 +211,7 @@ public final class HealthEndpointImpl {
          jsonMap.put(key, values.size() == 1 ? values.get(0) : values);
       });
       try {
-         ObjectMapper objectMapper = new ObjectMapper();
-         return objectMapper.writeValueAsString(jsonMap);
+         return OBJECT_MAPPER.writeValueAsString(jsonMap);
       } catch (Exception e) {
          return e.getMessage();
       }

@@ -302,7 +302,10 @@ public interface TransactionBuilder {
    public List<ArtifactReadable> getTxDataReadables();
 
    /**
-    * Returns the IDs of all artifacts modified (but not created) in this transaction.
+    * Returns the IDs of all writeable artifacts in this transaction. This includes both created and
+    * modified artifacts (a created artifact is also a writeable), so the result can overlap with
+    * {@link #getTxDataReadables()}, which returns the created artifacts. Callers combining the two
+    * should dedup.
     */
    public List<ArtifactId> getTxDataWriteableIds();
 

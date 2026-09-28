@@ -130,9 +130,10 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
       if (listeners != null) {
          for (ResMessages messageID : listeners.keySet()) {
             Collection<OseeMessagingListener> listernerList = listeners.getValues(messageID);
-            if (listernerList != null) {
+            ConnectionNode node = getConnectionNode();
+            if (listernerList != null && node != null) {
                for (OseeMessagingListener listener : listernerList) {
-                  getConnectionNode().unsubscribe(messageID, listener, this);
+                  node.unsubscribe(messageID, listener, this);
                }
             }
          }

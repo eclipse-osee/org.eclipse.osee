@@ -40,7 +40,6 @@ import {
 	Subject,
 	switchMap,
 	take,
-	timer,
 } from 'rxjs';
 import {
 	ArtifactChangeNotificationService,
@@ -50,7 +49,10 @@ import {
 	UiService,
 	UserPresenceService,
 } from '@osee/shared/services';
-import { SseEventService } from '@osee/shared/services/network';
+import {
+	SseEventService,
+	resyncRefetchConfig,
+} from '@osee/shared/services/network';
 import {
 	AttributesEditorComponent,
 	PresenceAvatarsComponent,
@@ -88,14 +90,6 @@ import { ChangeReportButtonComponent } from '../../ple/artifact-explorer/lib/com
  * Used for both the workflow-detail branch context and the SSE change filter.
  */
 const ATS_BRANCH_ID = COMMON_BRANCH_ID;
-
-/**
- * Bounded retry for reconnect-driven refetches while the server warms up. Small and capped: a
- * genuine, persistent server error should surface after a few attempts, not retry forever.
- */
-const RESYNC_REFETCH_RETRIES = 4;
-const RESYNC_REFETCH_BASE_DELAY_MS = 500;
-const RESYNC_REFETCH_MAX_DELAY_MS = 5_000;
 
 @Component({
 	selector: 'osee-actra-workflow-editor',
@@ -191,16 +185,7 @@ export class ActraWorkflowEditorComponent implements OnInit {
 					// times with backoff, then swallow the error so it never escapes into
 					// `repeat`/`toSignal` (an escaping error kills the stream and breaks change
 					// detection / CDK overlays). Keep the last-known workflow to avoid flashing empty.
-					retry({
-						count: RESYNC_REFETCH_RETRIES,
-						delay: (_err, attempt) =>
-							timer(
-								Math.min(
-									RESYNC_REFETCH_MAX_DELAY_MS,
-									RESYNC_REFETCH_BASE_DELAY_MS * 2 ** attempt
-								)
-							),
-					}),
+					retry(resyncRefetchConfig()),
 					catchError(() => of(new teamWorkflowDetailsImpl())),
 					repeat({
 						// Refetch when the workflow artifact changes (edits, transitions -- via the

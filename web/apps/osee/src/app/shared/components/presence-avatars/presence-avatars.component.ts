@@ -77,7 +77,10 @@ const AVATAR_ICONS: readonly string[] = [
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `
 		@if (users().length > 0) {
-			<div class="tw-flex tw-items-center">
+			<div
+				role="group"
+				[attr.aria-label]="groupLabel()"
+				class="tw-flex tw-items-center">
 				@for (avatar of visibleAvatars(); track avatar.user.userId) {
 					<span
 						class="-tw-ml-3 tw-flex tw-size-6 tw-items-center tw-justify-center tw-rounded-full tw-border-2 tw-border-background-background tw-bg-primary tw-text-background-background first:tw-ml-0"
@@ -118,6 +121,18 @@ export class PresenceAvatarsComponent {
 	protected overflowCount = computed(() =>
 		Math.max(0, this.users().length - this.maxVisible())
 	);
+
+	/**
+	 * Accessible group label announcing how many other users are present. Gives
+	 * screen readers a meaningful summary of the avatar stack (whose per-avatar
+	 * tooltips are pointer-only) and lets tests target the group by role+name.
+	 */
+	protected groupLabel = computed(() => {
+		const count = this.users().length;
+		return count === 1
+			? '1 other person viewing this'
+			: `${count} other people viewing this`;
+	});
 
 	/** Max overflow names to spell out in the tooltip before summarizing the remainder. */
 	private static readonly MAX_TOOLTIP_NAMES = 10;

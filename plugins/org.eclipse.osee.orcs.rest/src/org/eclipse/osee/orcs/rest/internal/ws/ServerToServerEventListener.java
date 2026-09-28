@@ -54,6 +54,13 @@ public class ServerToServerEventListener {
    public void activate() {
       try {
          connectionNode = messageService.getDefault();
+         // getDefault() returns null when no broker URI is configured (messaging disabled).
+         // Skip subscribing rather than NPE; server-to-server events are simply unavailable.
+         if (connectionNode == null) {
+            OseeLog.log(ServerToServerEventListener.class, Level.INFO,
+               "ServerToServerEventListener: No messaging broker configured -- server-to-server events disabled");
+            return;
+         }
          listener = new S2SMessagingListener();
          connectionNode.subscribe(ServerToServerMessageId.INSTANCE, listener);
          OseeLog.log(ServerToServerEventListener.class, Level.INFO,
