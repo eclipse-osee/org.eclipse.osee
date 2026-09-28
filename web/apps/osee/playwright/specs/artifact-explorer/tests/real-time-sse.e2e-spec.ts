@@ -164,6 +164,15 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 			await openArtifact(joe, branchName, artifact);
 			await openArtifact(jason, branchName, artifact);
 
+			// Presence rides the SSE stream: a tab only heartbeats its context (and only
+			// receives the other's) once its own stream is connected. Assert the avatars only
+			// after BOTH tabs are settled + SSE-connected, or a tab can miss the other's
+			// presence window and the avatar never appears.
+			await Promise.all([
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
+			]);
+
 			// The current user is filtered out of presence, so an avatar appears
 			// only because the other viewer is a DIFFERENT user. Avatars are generic
 			// id-derived icons (not name initials), so a visible avatar circle is the

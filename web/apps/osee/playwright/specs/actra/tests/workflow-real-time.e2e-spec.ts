@@ -17,7 +17,7 @@ import {
 	createWorkflowViaUi,
 	openWorkflow,
 } from '../utils/helpers';
-import { waitForNetworkIdleIgnoringSse } from '../../../shared/sse-helpers';
+import { waitForPageReadyForSse } from '../../../shared/sse-helpers';
 
 /**
  * Real-time (SSE) behavior for the ACTRA workflow editor with two distinct demo
@@ -157,6 +157,14 @@ test.describe('Actra workflow editor real-time (SSE, two users)', () => {
 		try {
 			await openWorkflow(joe, workflowId);
 			await openWorkflow(jason, workflowId);
+
+			// Both editors must be settled + SSE-connected before any cross-user step:
+			// presence and attribute/state propagation all ride the SSE stream, so a tab
+			// that acts or asserts before its own stream is live misses the event.
+			await Promise.all([
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
+			]);
 
 			await test.step('presence shows each user the other viewer', async () => {
 				// Presence context is `workflow/<id>` (globally unique, not branch-scoped),
@@ -327,6 +335,10 @@ test.describe('Actra workflow editor branch creation (SSE, two users)', () => {
 
 		try {
 			await openWorkflow(joe, branchWorkflowId);
+			// Let Joe's editor finish loading (SSE connected + details fetch settled) before
+			// asserting the state actions -- the Endorse button is part of the state-actions
+			// region that renders after the details load, not with the page title.
+			await waitForPageReadyForSse(joe);
 
 			// The Create Branch button only appears in the committable Implement state; a
 			// SAW Systems workflow can transition there directly from its start state. Drive
@@ -355,15 +367,15 @@ test.describe('Actra workflow editor branch creation (SSE, two users)', () => {
 			await expect(joeCreate).toBeEnabled({ timeout: 20000 });
 			await expect(jasonCreate).toBeVisible({ timeout: 20000 });
 
-			// Both editors must finish their in-flight loads before Joe clicks: the transition
+			// Both editors must be settled AND SSE-connected before Joe clicks: the transition
 			// triggers a details refetch on Joe, and Jason just opened — clicking while either
-			// is still fetching means that editor isn't fully wired into the SSE mesh yet and
-			// misses the branch-created event this test asserts propagates. Plain
-			// `networkidle` can't be used on an SSE page (the stream never lets it settle), so
-			// use the shared SSE-safe idle wait that ignores the real-time stream.
+			// is still fetching or not yet subscribed means that editor isn't wired into the SSE
+			// mesh yet and misses the branch-created event this test asserts propagates.
+			// waitForPageReadyForSse gates on both the SSE-connected status and (SSE-safe) network
+			// idle, since plain `networkidle` never settles on an SSE page.
 			await Promise.all([
-				waitForNetworkIdleIgnoringSse(joe),
-				waitForNetworkIdleIgnoringSse(jason),
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
 			]);
 
 			// Click Create Branch; require the create POST + the artifact-explorer popup it
