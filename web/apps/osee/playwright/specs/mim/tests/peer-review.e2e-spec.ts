@@ -46,7 +46,10 @@ test('create working branches', async ({ page }) => {
 			(res) =>
 				res.url() === `${APP_BASE}/orcs/txs` && res.status() === 200
 		),
-		MessageDescriptionTextbox.press('Tab'),
+		// Blur via evaluate() rather than keyboard Tab: in headless mode Tab does not reliably move
+		// focus off the field, so the blur-save may never fire and the txs POST never comes (the
+		// source of this test's flakiness). blur() commits the focus-lost save deterministically.
+		MessageDescriptionTextbox.evaluate((el: HTMLElement) => el.blur()),
 	]);
 
 	await page.getByRole('link', { name: 'working' }).click();
@@ -70,7 +73,8 @@ test('create working branches', async ({ page }) => {
 			(res) =>
 				res.url() === `${APP_BASE}/orcs/txs` && res.status() === 200
 		),
-		SubmsgDescriptionTextbox.press('Tab'),
+		// Blur via evaluate() rather than keyboard Tab (see above): deterministic focus-lost save.
+		SubmsgDescriptionTextbox.evaluate((el: HTMLElement) => el.blur()),
 	]);
 
 	await page.getByRole('link', { name: 'working' }).click();
@@ -243,6 +247,22 @@ test('commit branches', async ({ page }) => {
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
 	await page.getByRole('button', { name: 'Review', exact: true }).click();
 	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
-	await page.getByRole('button', { name: 'Close Peer Review' }).click();
+
+	// Wait for the second branch's commit to actually complete before closing the review. The
+	// commit is asynchronous: the branch row flips to a disabled "Committed" button once done, and
+	// "Close Peer Review" only enables when every included branch is committed. Clicking Close
+	// immediately after "Commit Branch" races that commit and finds the button still disabled.
+	await expect(
+		page
+			.getByRole('listbox')
+			.locator('div')
+			.filter({ hasText: 'Add an Element' })
+			.getByRole('button', { name: 'Committed' })
+	).toBeVisible({ timeout: 60000 });
+	const closePeerReview = page.getByRole('button', {
+		name: 'Close Peer Review',
+	});
+	await expect(closePeerReview).toBeEnabled({ timeout: 60000 });
+	await closePeerReview.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 });

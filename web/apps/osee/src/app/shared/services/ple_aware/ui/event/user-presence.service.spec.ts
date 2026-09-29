@@ -39,6 +39,13 @@ import { UserPresenceService } from './user-presence.service';
  */
 
 const HEARTBEAT_URL = `${apiURL}/orcs/sse/presence/heartbeat`;
+/**
+ * Pull-on-connect roster GET. The leader issues this once per watched context the moment it is
+ * server-ready with a live sinkId (alongside the first real heartbeat), to render users already
+ * present without waiting for a change-driven push. It carries the context(s) as query params, so
+ * match by URL prefix rather than exact URL.
+ */
+const ROSTER_URL_PREFIX = `${apiURL}/orcs/sse/presence/roster`;
 const TAB_LOCK_PREFIX = 'osee-presence-tab-';
 /** Mirrors the service's HEARTBEAT_INTERVAL_MS. */
 const HEARTBEAT_INTERVAL_MS = 15_000;
@@ -100,6 +107,9 @@ describe('UserPresenceService', () => {
 			isConnectionLeader: signal(isLeader),
 			sseConnectionId: '7',
 			presenceUpdates$: presenceUpdates$,
+			// The pull-on-connect roster GET feeds its result here; the real service fans it out to
+			// the presence pipeline. Tests assert the GET itself, so a no-op sink is sufficient.
+			injectPresenceRoster: () => undefined,
 		};
 
 		TestBed.configureTestingModule({
@@ -137,6 +147,13 @@ describe('UserPresenceService', () => {
 	afterEach(() => {
 		// Drain any heartbeats a test didn't explicitly assert on, then verify none leaked.
 		http.match(HEARTBEAT_URL).forEach((r) => r.flush({}));
+		// Drain the pull-on-connect roster GET(s) too: whenever the leader heartbeats a real
+		// context it also pulls that context's roster once, so tests that trigger a heartbeat also
+		// produce a roster request that must be satisfied. Match by URL prefix (query carries the
+		// contexts) and answer with an empty roster.
+		http.match((req) => req.url.startsWith(ROSTER_URL_PREFIX)).forEach(
+			(r) => r.flush([])
+		);
 		http.verify();
 		vi.useRealTimers();
 	});
@@ -163,6 +180,36 @@ describe('UserPresenceService', () => {
 		).toContain('branchA/artifact1');
 		expect((last.request.body as { sinkId: number }).sinkId).toBe(7);
 		reqs.forEach((r) => r.flush({}));
+	});
+
+	it('leader pulls the roster once per watched context on connect', () => {
+		// Pull-on-connect resync: when the leader is server-ready with a live sinkId, it GETs the
+		// current roster for each watched context (feeding the same render path as an SSE push), so
+		// a freshly connected tab sees users already present instead of waiting for the next change.
+		configure(true);
+		const service = injectService();
+		const ctx = signal('branchA/artifact1');
+		service.watchContext(ctx, destroyRefStub());
+		TestBed.tick();
+
+		vi.advanceTimersByTime(1000);
+		// Drain heartbeats (asserted elsewhere) so only the roster GET remains to assert here.
+		http.match(HEARTBEAT_URL).forEach((r) => r.flush({}));
+
+		const rosterReqs = http.match((req) =>
+			req.url.startsWith(ROSTER_URL_PREFIX)
+		);
+		expect(rosterReqs.length).toBe(1);
+		expect(rosterReqs[0].request.method).toBe('GET');
+		expect(rosterReqs[0].request.params.getAll('context')).toEqual([
+			'branchA/artifact1',
+		]);
+		rosterReqs.forEach((r) => r.flush([]));
+
+		// A second heartbeat tick must NOT re-pull the same context (guarded once-per-context).
+		vi.advanceTimersByTime(HEARTBEAT_INTERVAL_MS);
+		http.match(HEARTBEAT_URL).forEach((r) => r.flush({}));
+		http.expectNone((req) => req.url.startsWith(ROSTER_URL_PREFIX));
 	});
 
 	it('a follower does NOT send a heartbeat', () => {

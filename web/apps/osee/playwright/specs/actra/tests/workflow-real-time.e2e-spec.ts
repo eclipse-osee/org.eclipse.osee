@@ -132,6 +132,38 @@ function stateButton(page: Page, currentState: string) {
 }
 
 /**
+ * The current-state dropdown trigger, WITHOUT assuming which state it names. The action dropdown
+ * renders exactly one button whose label is the current state; matching by region rather than by a
+ * hardcoded state name means the helper does not depend on the workflow's start state (the demo
+ * work def can start in Endorse or, depending on config/data, another working state).
+ */
+function currentStateButton(page: Page) {
+	return page.locator('osee-action-dropdown button').first();
+}
+
+/**
+ * Transitions the workflow to `toState` from WHATEVER its current state is, and waits for the
+ * transition to commit. Opens the current-state menu (label-agnostic) and clicks
+ * "Transition to <toState>". Prefer this over {@link transitionTo} when the source state is not
+ * guaranteed -- it is robust to the workflow starting in a different state than expected.
+ */
+async function transitionToState(page: Page, toState: string) {
+	await expect(currentStateButton(page)).toBeVisible({ timeout: 20000 });
+	await currentStateButton(page).click();
+	await Promise.all([
+		page.waitForResponse(
+			(res) =>
+				res.url().includes('/ats/action/transition') &&
+				!res.url().includes('transitionValidate') &&
+				res.status() === 200
+		),
+		page
+			.getByRole('menuitem', { name: `Transition to ${toState}` })
+			.click(),
+	]);
+}
+
+/**
  * Transitions the workflow from `fromState` to `toState` via the action dropdown
  * menu and waits for the transition to commit. Opens the menu from the current
  * state button; the menu item reads "Transition to <state>".
@@ -365,17 +397,16 @@ test.describe('Actra workflow editor branch creation (SSE, two users)', () => {
 		try {
 			await openWorkflow(joe, branchWorkflowId);
 			// Let Joe's editor finish loading (SSE connected + details fetch settled) before
-			// asserting the state actions -- the Endorse button is part of the state-actions
-			// region that renders after the details load, not with the page title.
+			// asserting the state actions -- the current-state action renders after the details
+			// load, not with the page title.
 			await waitForPageReadyForSse(joe);
 
-			// The Create Branch button only appears in the committable Implement state; a
-			// SAW Systems workflow can transition there directly from its start state. Drive
-			// Joe there, then open Jason (loads already in Implement, branchless).
-			await expect(stateButton(joe, 'Endorse')).toBeVisible({
-				timeout: 20000,
-			});
-			await transitionTo(joe, 'Endorse', 'Implement');
+			// The Create Branch button only appears in the committable Implement state. The demo
+			// work def (WorkDefTeamDemoReq) reaches Implement in a single transition from its
+			// working start state (both Endorse and Analyze list Implement as a direct toState), so
+			// transition to Implement from WHATEVER the current state is rather than assuming the
+			// start state name. Then open Jason (loads already in Implement, branchless).
+			await transitionToState(joe, 'Implement');
 			await expect(stateButton(joe, 'Implement')).toBeVisible({
 				timeout: 20000,
 			});

@@ -80,6 +80,35 @@ export class UserDataAccountService {
 			},
 		],
 	});
+
+	/**
+	 * DEV auth resolution. Normally DEV returns the hardcoded {@link _devUser} with no server call,
+	 * which keeps single-user local/e2e runs authenticated without any setup. BUT when
+	 * `osee.account.id` is seeded in localStorage (Playwright's `newUserPage` does this to run a
+	 * context AS a specific demo user), fetch THAT user from the server instead, so multi-user
+	 * flows -- presence, "changed by another user" -- exercise genuinely distinct identities rather
+	 * than collapsing every browser context onto the single hardcoded dev user. The headers mirror
+	 * what the auth interceptor sends (raw numeric id in Authorization + osee.account.id), which the
+	 * server's AuthenticationRequestFilter resolves to that user. On failure it falls back to the
+	 * hardcoded dev user so a bad/misseeded id never wedges the app.
+	 */
+	private get _devAuthUser(): Observable<user> {
+		const seededAccountId =
+			typeof localStorage !== 'undefined'
+				? localStorage.getItem('osee.account.id')
+				: null;
+		if (!seededAccountId) {
+			return this._devUser;
+		}
+		return this.http
+			.get<user>(OSEEAuthURL, {
+				headers: {
+					Authorization: seededAccountId,
+					'osee.account.id': seededAccountId,
+				},
+			})
+			.pipe(catchError(() => this._devUser));
+	}
 	private _fetchFromApi = iif(
 		() => this.userHeaderService.useCustomHeaders,
 		this.http.get<user>(OSEEAuthURL, {
@@ -101,7 +130,7 @@ export class UserDataAccountService {
 			: of<user>();
 
 	private _devAuth =
-		environment.authScheme === 'DEV' ? this._devUser : this._noneAuth;
+		environment.authScheme === 'DEV' ? this._devAuthUser : this._noneAuth;
 
 	private _forcedSSOAuth =
 		environment.authScheme === 'FORCED_SSO'
