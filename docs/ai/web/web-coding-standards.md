@@ -522,6 +522,7 @@ npx playwright show-report
 - **Test programmatic state via `page.evaluate()`** when no visible indicator exists — e.g., reading selection ranges, scroll positions, or computed values from the DOM.
 - **Use `locator.filter({ hasText })` for icon-only buttons** — buttons with only an icon and no label often lack accessible names. Filter by the icon's text content.
 - **Scope locators to reduce ambiguity** — prefer `page.locator('section button')` over `page.getByRole('button')` when multiple buttons share similar names across different page regions.
+- **Opening a `mat-select` can swallow a single click** — when the element just rendered or reflowed, one `.click()` may not open the overlay (`aria-expanded` stays `"false"`). Re-drive the open until it reports expanded, capped so it can't spin forever: `await expect(async () => { if ((await select.getAttribute('aria-expanded')) !== 'true') await select.click(); await expect(select).toHaveAttribute('aria-expanded', 'true', { timeout: 2000 }); }).toPass({ timeout: 15000 });`. The `if` guard avoids re-clicking an already-open select (which would toggle it shut). This is more robust than padding a fixed timeout before the click.
 
 ### Testing auto-save (focus-lost) editors
 
