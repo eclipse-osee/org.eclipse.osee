@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.sysml.WorkflowExportData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -128,29 +129,50 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    @Test
-   // /ats/action/{programId}/sysml/config
-   public void testGetSysmlConfig() {
-      String sysml = actionEp.getSysmlConfig(DemoArtifactToken.SAW_PL_Program);
-      Assert.assertNotNull(sysml);
-      Assert.assertFalse("Export should not return an error comment", sysml.startsWith("// Error"));
-      Assert.assertTrue("Should declare a config package", sysml.contains("_Config {"));
-      Assert.assertTrue("Should define Program part", sysml.contains("part def Program {"));
-      Assert.assertTrue("Should define TeamDefinition part", sysml.contains("part def TeamDefinition {"));
+   // POST /ats/action/sysml/export (program only)
+   public void testExportSysml() {
+      WorkflowExportData exportData = new WorkflowExportData();
+      exportData.setProgramId(DemoArtifactToken.SAW_PL_Program);
+
+      WorkflowExportData result = actionEp.exportSysml(exportData);
+
+      Assert.assertNotNull(result);
+      Assert.assertTrue(result.getResults().toString(), result.getResults().isSuccess());
+
+      String configSysml = result.getConfigSysml();
+      Assert.assertNotNull(configSysml);
+      Assert.assertTrue("Should declare a config package", configSysml.contains("_Config {"));
+      Assert.assertTrue("Should define Program part", configSysml.contains("part def Program {"));
+      Assert.assertTrue("Should define TeamDefinition part", configSysml.contains("part def TeamDefinition {"));
       Assert.assertTrue("Should include TeamActionableItem connection def",
-         sysml.contains("connection def TeamActionableItem {"));
+         configSysml.contains("connection def TeamActionableItem {"));
+
+      String workflowSysml = result.getWorkflowSysml();
+      Assert.assertNotNull(workflowSysml);
+      Assert.assertTrue("Should declare a workflows package", workflowSysml.contains("_Workflows {"));
+      Assert.assertTrue("Should import the config package", workflowSysml.contains("import "));
+      Assert.assertTrue("Should define TeamWorkflow part", workflowSysml.contains("part def TeamWorkflow {"));
+      Assert.assertTrue("Should include ActionToWorkflow connection def",
+         workflowSysml.contains("connection def ActionToWorkflow {"));
    }
 
    @Test
-   // /ats/action/{programId}/sysml/workflows
-   public void testGetSysmlWorkflows() {
-      String sysml = actionEp.getSysmlWorkflows(DemoArtifactToken.SAW_PL_Program);
-      Assert.assertNotNull(sysml);
-      Assert.assertFalse("Export should not return an error comment", sysml.startsWith("// Error"));
-      Assert.assertTrue("Should declare a workflows package", sysml.contains("_Workflows {"));
-      Assert.assertTrue("Should import the config package", sysml.contains("import "));
-      Assert.assertTrue("Should define TeamWorkflow part", sysml.contains("part def TeamWorkflow {"));
-      Assert.assertTrue("Should include ActionToWorkflow connection def",
-         sysml.contains("connection def ActionToWorkflow {"));
+   // POST /ats/action/sysml/export (program + artifact type filter)
+   public void testExportSysmlWithArtifactTypeFilter() {
+      WorkflowExportData exportData = new WorkflowExportData();
+      exportData.setProgramId(DemoArtifactToken.SAW_PL_Program);
+      exportData.setArtifactType(TeamWorkflow);
+
+      WorkflowExportData result = actionEp.exportSysml(exportData);
+
+      Assert.assertNotNull(result);
+      Assert.assertTrue(result.getResults().toString(), result.getResults().isSuccess());
+      // Config is always the full program config regardless of workflow filters
+      Assert.assertTrue("Should declare a config package", result.getConfigSysml().contains("_Config {"));
+      Assert.assertTrue("Should declare a workflows package", result.getWorkflowSysml().contains("_Workflows {"));
+      // The chosen filter should be logged into the results
+      Assert.assertTrue("Results should log the artifact type filter",
+         result.getResults().toString().contains("Artifact Type"));
    }
 
    @Test

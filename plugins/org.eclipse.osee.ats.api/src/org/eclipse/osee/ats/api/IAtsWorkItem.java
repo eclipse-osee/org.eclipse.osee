@@ -227,6 +227,10 @@ public interface IAtsWorkItem extends IAtsObject {
 
    IStateToken getCurrentState();
 
+   default StateDefinition getCurrentStateDef() {
+      return getWorkDefinition().getStateByName(getCurrentStateName());
+   }
+
    public List<AtsUser> getAssignees();
 
    public Collection<AtsUser> getImplementers();

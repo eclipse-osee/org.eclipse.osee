@@ -67,6 +67,7 @@ public class AtsBranchCommitOperation {
             }
          }
       }
+
       BranchToken workingBranch = atsApi.getBranchService().getBranch(teamWf);
       try {
 
@@ -82,9 +83,24 @@ public class AtsBranchCommitOperation {
             rd.errorf("Exception commiting branch [%s]", Lib.exceptionToString(ex));
             return rd;
          }
+
       } catch (Exception ex) {
          rd.errorf("Exception committing branch %s", Lib.exceptionToString(ex));
       }
+
+      try {
+         // Notify extension points of commit
+         for (IAtsWorkItemHook item : atsApi.getWorkItemService().getWorkItemHooks()) {
+            item.committed(teamWf, rd);
+            if (rd.isErrors()) {
+               return rd;
+            }
+         }
+      } catch (Exception ex) {
+         rd.errorf("Exception notifying of committed branch [%s]", Lib.exceptionToString(ex));
+         return rd;
+      }
+
       return rd;
    }
 }

@@ -303,4 +303,5 @@ public class WorkDefinition extends AbstractWorkDefItem {
    public void setWorkDefToken(AtsWorkDefinitionToken workDefToken) {
       this.workDefToken = workDefToken;
    }
+
 }

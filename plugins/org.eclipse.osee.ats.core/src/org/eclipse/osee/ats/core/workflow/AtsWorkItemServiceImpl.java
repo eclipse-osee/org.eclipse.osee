@@ -72,7 +72,7 @@ import org.eclipse.osee.ats.core.workflow.hooks.AtsArchiveBranchWhenCompleteHook
 import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsWaitStateReturnHook;
-import org.eclipse.osee.ats.core.workflow.hooks.AtsWriteDiffWhenCompleteHook;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsWriteDiffWhenCommittedHook;
 import org.eclipse.osee.ats.core.workflow.hooks.ConfirmPlarbApprovalHook;
 import org.eclipse.osee.ats.core.workflow.note.AtsStateNoteServiceImpl;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
@@ -271,7 +271,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          transitionHooks.add(new AtsForceAssigneesToTeamLeadsWorkItemHook());
          transitionHooks.add(new AtsPeerToPeerReviewReviewWorkItemHook());
          transitionHooks.add(new AtsArchiveBranchWhenCompleteHook());
-         transitionHooks.add(new AtsWriteDiffWhenCompleteHook());
+         transitionHooks.add(new AtsWriteDiffWhenCommittedHook());
          transitionHooks.add(new AtsWaitStateReturnHook());
       }
       return transitionHooks;
@@ -563,6 +563,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public Collection<IAtsWorkItemHook> getWorkItemHooks() {
       if (workflowHooks.isEmpty()) {
          workflowHooks.add(new ConfirmPlarbApprovalHook());
+         workflowHooks.add(new AtsWriteDiffWhenCommittedHook());
       }
       return workflowHooks;
    }

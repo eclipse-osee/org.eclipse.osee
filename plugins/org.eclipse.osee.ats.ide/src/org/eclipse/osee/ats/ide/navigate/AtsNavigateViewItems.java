@@ -344,6 +344,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new ShowWorldColumnTokens());
          items.add(new ImportWorkflowApplicabilities());
          items.add(new ExportProgramToSysmlNavigateItem());
+         items.add(new ExportProgramToJsonNavigateItem());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
