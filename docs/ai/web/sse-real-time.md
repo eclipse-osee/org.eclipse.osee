@@ -649,6 +649,22 @@ Architecture:
   connection-close callback in the CXF stack, so this explicit client signal is the prompt path.
 - A heartbeat whose `sinkId` differs from the stored lease (reconnect/leadership handoff)
   re-broadcasts the context roster to the new connection, so a rejoining tab sees existing users.
+- **Pull-on-connect resync.** Presence delivery is broadcast-on-change: the server pushes a
+  `presenceUpdate` only when a lease changes, and only to the sinks leased on that context at that
+  moment. There is no server-initiated resync when a new sink subscribes, so a tab that connects
+  *after* another user's last change would not learn of that user until the next change (worst case
+  a full 15s heartbeat interval later) -- and an early push can be missed entirely because
+  `presenceUpdates$` is a plain `Subject` (no replay). To close this, the moment the leader is
+  server-ready with a live numeric `sinkId` (the same gate `doSendHeartbeat` clears), it **pulls**
+  the current roster once per watched context via `GET /orcs/sse/presence/roster?context=...`
+  (`PresenceRegistry.rostersForContexts`, read-only -- no leases created) and feeds the result
+  through `SseEventService.injectPresenceRoster`, i.e. the identical render path as a push. "Pull"
+  (client asks "who is here now?") rather than "push" (wait to be told of the next change); "on
+  connect" (once, right after connecting); "resync" (catch up on state that already exists).
+  Tracked per-context (`rosterPulledContexts`) so steady-state heartbeats don't re-pull, cleared on
+  leadership loss so a reconnect re-pulls, and un-marked on request failure so a later heartbeat
+  retries. This makes two tabs converge independently, without either depending on the other
+  heartbeating again after it subscribed.
 
 ### `PresenceAvatarsComponent` (`@osee/shared/components`)
 
@@ -710,7 +726,7 @@ type presenceUser = {
 
 | Class | Location | Role |
 |-------|----------|------|
-| `OseeSseEndpoint` | `orcs.rest/internal/ws/` | Thin SSE transport: sink registry, `events`/`presence/heartbeat`/`presence/leave` endpoints, `broadcast()`. Delegates all presence state to `PresenceRegistry` |
+| `OseeSseEndpoint` | `orcs.rest/internal/ws/` | Thin SSE transport: sink registry, `events`/`presence/heartbeat`/`presence/leave`/`presence/roster` endpoints, `broadcast()`. Delegates all presence state to `PresenceRegistry` |
 | `PresenceRegistry` | `orcs.rest/internal/ws/` | Owns presence: local leases + peer-reported presence, context indexes, reaper, cross-server merge + relay hook. One per JVM |
 | `SseBroadcastService` | `orcs.rest/internal/ws/` | Static utility for broadcasting artifact + branch events; exposes `BranchChangeRelay`/`CrossServerBranchRelay` hooks |
 | `SseTransactionCommitHandler` | `orcs.rest/internal/ws/` | OSGi EventHandler on commit topic -> broadcasts SSE notifications (incl. `associatedUsers`) |
@@ -747,6 +763,9 @@ transport that delegates to it and supplies a `LocalPresenceNotifier` for SSE de
 - `POST /presence/leave` -- authenticated; removes the caller's leases on the reported `sinkId`
   (`dropSinkForUser`, scoped to the authenticated user so a guessed sinkId can't evict anyone
   else). Sent by the leader's keepalive fetch on unload.
+- `GET /presence/roster?context=...` -- authenticated, read-only; returns the current merged roster
+  (`rostersForContexts`) for the requested contexts as `presenceUpdate`-shaped entries. The client's
+  pull-on-connect resync (see UserPresenceService above); creates no leases.
 - Background reaper thread (every 15s) -- expires local leases older than 45s (and stale peer
   presence).
 - `presenceUpdate` SSE event sent to local sinks with leases in affected contexts.

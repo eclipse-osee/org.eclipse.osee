@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import {
 	Injectable,
 	Signal,
@@ -27,6 +27,7 @@ import { apiURL, environment } from '@osee/environments';
 import {
 	SseEventService,
 	WebLocksService,
+	presenceUpdate,
 	presenceUser,
 } from '@osee/shared/services/network';
 import { UserDataAccountService } from '@osee/auth';
@@ -442,6 +443,9 @@ export class UserPresenceService {
 		// Reset the idle gate so a later re-promotion doesn't send a spurious "clear" heartbeat
 		// before it has reported anything.
 		this.lastHeartbeatHadContexts = false;
+		// Forget which contexts we've pulled rosters for, so a re-promotion / reconnect pulls a
+		// fresh roster (presence may have changed while we weren't the leader / were disconnected).
+		this.rosterPulledContexts.clear();
 	}
 
 	private handlePresenceChannelMessage(msg: presenceChannelMessage): void {
@@ -485,6 +489,17 @@ export class UserPresenceService {
 	 * page nobody watches never POSTs, but a real "everyone left" still clears promptly.
 	 */
 	private lastHeartbeatHadContexts = false;
+
+	/**
+	 * Contexts for which this leader has already pulled the current roster (see
+	 * {@link pullRosterForNewContexts}). Presence delivery is broadcast-on-change with no
+	 * server-initiated resync, so on connect we actively pull the current occupants for each watched
+	 * context ONCE rather than wait for the next change-driven push (which may never come, or may
+	 * have already fired before this tab subscribed). Tracked per-context so a newly opened context
+	 * is pulled too, while steady-state heartbeats don't re-pull. Cleared on leadership loss so a
+	 * reconnect re-pulls a fresh roster.
+	 */
+	private readonly rosterPulledContexts = new Set<string>();
 
 	/**
 	 * Schedules a heartbeat to fire after the debounce window. Only the presence leader sends
@@ -592,6 +607,13 @@ export class UserPresenceService {
 		const sinkId = parsedSinkId;
 		this.lastHeartbeatHadContexts = hasContexts;
 
+		// Pull-on-connect resync: we are now leader, server-ready, and hold a live sinkId -- the
+		// exact moment we can talk to the server. For any context we haven't pulled yet this
+		// session, fetch its current roster once so this tab renders the users already present,
+		// rather than depending on a future change-driven push (which may not come). The ongoing
+		// broadcast-on-change path still delivers subsequent changes.
+		this.pullRosterForNewContexts(allContexts);
+
 		this.http
 			.post(
 				`${apiURL}/orcs/sse/presence/heartbeat`,
@@ -603,5 +625,49 @@ export class UserPresenceService {
 			)
 			.pipe(take(1))
 			.subscribe();
+	}
+
+	/**
+	 * Pulls the current roster for any context in {@code contexts} not already pulled this session,
+	 * and feeds the result into the same presence-render path as an SSE push. This is the
+	 * pull-on-connect resync that closes the join race (see {@link rosterPulledContexts}). Guarded
+	 * per-context so it fires once per newly watched context; the caller ({@link doSendHeartbeat})
+	 * has already confirmed we are the leader, server-ready, and hold a live sinkId, so this only
+	 * runs when the request can actually succeed.
+	 */
+	private pullRosterForNewContexts(contexts: Set<string>): void {
+		const toPull = [...contexts].filter(
+			(ctx) => !this.rosterPulledContexts.has(ctx)
+		);
+		if (toPull.length === 0) {
+			return;
+		}
+		// Mark as pulled up front so a rapid second heartbeat within the request window doesn't
+		// issue a duplicate GET; a failed pull is retried via the interval only after a leadership
+		// reset clears the set (a genuine reconnect), which is the case where a re-pull matters.
+		for (const ctx of toPull) {
+			this.rosterPulledContexts.add(ctx);
+		}
+		let params = new HttpParams();
+		for (const ctx of toPull) {
+			params = params.append('context', ctx);
+		}
+		this.http
+			.get<presenceUpdate[]>(`${apiURL}/orcs/sse/presence/roster`, {
+				params,
+				context: new HttpContext().set(SKIP_LOADING, true),
+			})
+			.pipe(take(1))
+			.subscribe({
+				next: (rosters) =>
+					this.sseEventService.injectPresenceRoster(rosters),
+				error: () => {
+					// Best-effort: if the pull fails, drop the pulled-marks for these contexts so a
+					// later heartbeat re-attempts. The change-driven push remains the backstop.
+					for (const ctx of toPull) {
+						this.rosterPulledContexts.delete(ctx);
+					}
+				},
+			});
 	}
 }

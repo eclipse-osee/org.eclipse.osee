@@ -20,11 +20,20 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const config: PlaywrightTestConfig = {
 	workers: process.env['CI'] ? 3 : undefined,
 	timeout: process.env['CI'] ? 45000 : 30000,
+	// Retry in CI so a genuinely flaky test is retried (and reported as "flaky" rather than
+	// "failed"), which both stabilizes the pipeline and surfaces which tests are non-deterministic.
+	// No retries locally, so a local failure is always a real failure.
+	retries: process.env['CI'] ? 2 : 0,
 	use: {
 		channel: 'chromium',
 		headless: true,
 		baseURL: APP_BASE,
 		screenshot: 'only-on-failure',
+		// Capture a full Playwright trace and a video on the first retry (not the initial attempt,
+		// to keep passing runs cheap). A failure that only reproduces in CI can then be replayed
+		// step-by-step from the uploaded trace artifact via `npx playwright show-trace`.
+		trace: 'on-first-retry',
+		video: 'on-first-retry',
 	},
 
 	testDir: join(__dirname, 'playwright/specs'),

@@ -986,4 +986,25 @@ export class SseEventService implements OnDestroy {
 			);
 		}
 	}
+
+	/**
+	 * Feeds a presence roster obtained out-of-band (the pull-on-connect roster GET) into the same
+	 * distribution path as a server-pushed presenceUpdate: emit locally and mirror to this browser's
+	 * follower tabs. This lets a freshly connected tab render the current occupants immediately
+	 * instead of waiting for the next change-driven push, without the presence service needing its
+	 * own channel/emit plumbing. Ignores empty entries so a malformed roster item cannot clear a
+	 * context's avatars.
+	 */
+	injectPresenceRoster(rosters: presenceUpdate[]): void {
+		for (const update of rosters) {
+			if (!update || !update.context || !update.users) {
+				continue;
+			}
+			this._presenceUpdates.next(update);
+			this.channel?.postMessage({
+				type: 'presenceUpdate',
+				payload: update,
+			} as sseChannelMessage);
+		}
+	}
 }

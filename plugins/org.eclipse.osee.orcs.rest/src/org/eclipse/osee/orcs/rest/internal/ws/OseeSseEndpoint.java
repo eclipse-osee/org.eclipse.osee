@@ -25,6 +25,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -126,6 +127,30 @@ public class OseeSseEndpoint {
 
       PRESENCE.dropSinkForUser(user.getIdString(), request.getSinkId());
       return Response.ok().build();
+   }
+
+   /**
+    * Roster: a freshly connected tab pulls the current occupants for the contexts it is watching,
+    * instead of waiting for the next change-driven {@code presenceUpdate} push. This closes the
+    * join race -- presence is broadcast-on-change with no server-initiated resync, so a tab that
+    * connects after another user's last change would otherwise not see them until the next 15s
+    * heartbeat interval. The response uses the same {@link PresenceRegistry.PresenceUpdate} shape as
+    * the SSE push, so the client feeds it through the identical rendering path. Read-only (no
+    * leases created), and authenticated like the other presence endpoints. Contexts are passed as
+    * repeated {@code context} query params; an empty/absent set yields an empty list.
+    */
+   @GET
+   @Path("presence/roster")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response roster(@QueryParam("context") List<String> contexts) {
+      ArtifactToken user = orcsApi.userService().getUser();
+      if (!user.isValid()) {
+         return Response.status(Response.Status.UNAUTHORIZED).build();
+      }
+      if (contexts == null || contexts.isEmpty()) {
+         return Response.ok(List.of()).build();
+      }
+      return Response.ok(PRESENCE.rostersForContexts(Set.copyOf(contexts))).build();
    }
 
    // --- Cross-server presence entry points (used by the server-to-server bus) --

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.internal.ws;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -249,6 +250,27 @@ public final class PresenceRegistry {
          indexAdd(remoteByContext, context, key);
       }
       broadcastToLocalSinks(context);
+   }
+
+   // --- Queries (read-only) ---
+
+   /**
+    * Returns the current merged roster for each requested context, as {@link PresenceUpdate}s that
+    * match exactly what a client would receive over the SSE {@code presenceUpdate} push. This is
+    * the pull-on-connect path: a freshly connected tab asks "who is here now?" for the contexts it
+    * watches instead of waiting for the next change-driven broadcast, which closes the join race
+    * where a tab connects after the other's last change and would otherwise not learn of it until
+    * the next heartbeat interval. Read-only: no leases are created or mutated, so it cannot perturb
+    * the broadcast-on-change economics. A context with no present users yields an empty user list
+    * (the client renders no avatars), so the caller gets an authoritative answer for every asked
+    * context.
+    */
+   public List<PresenceUpdate> rostersForContexts(Set<String> contexts) {
+      List<PresenceUpdate> rosters = new ArrayList<>();
+      for (String context : contexts) {
+         rosters.add(new PresenceUpdate(context, getUsersForContext(context)));
+      }
+      return rosters;
    }
 
    // --- Reaper ---
