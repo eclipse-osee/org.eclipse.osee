@@ -22,7 +22,10 @@ import {
 	searchAndOpenArtifact,
 	switchEditorSection,
 } from '../utils/helpers';
-import { waitForPageReadyForSse } from '../../../shared/sse-helpers';
+import {
+	waitForPageReadyForSse,
+	waitForPresenceHeartbeat,
+} from '../../../shared/sse-helpers';
 
 /**
  * Real-time (SSE) behavior for the artifact editor, exercised with two distinct
@@ -132,6 +135,15 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 			await openArtifact(joe, branchName, artifact);
 			await openArtifact(jason, branchName, artifact);
 
+			// Both tabs must be settled AND SSE-connected before Joe mutates: this is
+			// GET-on-notify, so if Jason's stream isn't subscribed when Joe's save fires, the
+			// attribute_modified notify is never delivered to Jason (there is no replay) and the
+			// assertion below can only time out. Gate on readiness, don't act early.
+			await Promise.all([
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
+			]);
+
 			const renamed = artifact + ' Renamed';
 			await editNameAndSave(joe, renamed);
 
@@ -161,24 +173,31 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 		const joe = await newUserPage(browser, DEMO_USERS.joe);
 		const jason = await newUserPage(browser, DEMO_USERS.jason);
 		try {
+			// Start listening for each tab's presence heartbeat BEFORE opening the editor, so we
+			// can't miss a heartbeat that fires during/right after open (it goes out ~500ms after
+			// the editor registers its watch context, gated on serverReady).
+			const joeHeartbeat = waitForPresenceHeartbeat(joe);
+			const jasonHeartbeat = waitForPresenceHeartbeat(jason);
+
 			await openArtifact(joe, branchName, artifact);
 			await openArtifact(jason, branchName, artifact);
 
-			// Presence rides the SSE stream: a tab only heartbeats its context (and only
-			// receives the other's) once its own stream is connected. Assert the avatars only
-			// after BOTH tabs are settled + SSE-connected, or a tab can miss the other's
-			// presence window and the avatar never appears.
+			// The avatar only appears once the OTHER tab's presence has been published to the
+			// server and pushed back over SSE. Gate on both tabs (a) being SSE-connected/idle and
+			// (b) having actually completed their presence heartbeat POST — the concrete "presence
+			// advertised" signal. Waiting on the heartbeat (not just a longer avatar timeout) is
+			// what makes this deterministic under CI load.
 			await Promise.all([
 				waitForPageReadyForSse(joe),
 				waitForPageReadyForSse(jason),
+				joeHeartbeat,
+				jasonHeartbeat,
 			]);
 
-			// The current user is filtered out of presence, so an avatar appears
-			// only because the other viewer is a DIFFERENT user. Avatars are generic
-			// id-derived icons (not name initials), so a visible avatar circle is the
-			// presence signal. A single retrying visibility assertion handles the
-			// heartbeat latency. Assert both sides concurrently so one side's wait
-			// doesn't serialize onto the other.
+			// The current user is filtered out of presence, so an avatar appears only because the
+			// other viewer is a DIFFERENT user. Avatars are generic id-derived icons (not name
+			// initials), so a visible avatar circle is the presence signal. Assert both sides
+			// concurrently so one side's wait doesn't serialize onto the other.
 			await Promise.all([
 				expect(
 					joe.locator('osee-presence-avatars mat-icon').first()
@@ -205,6 +224,14 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 		try {
 			await openArtifact(joe, branchName, artifact);
 			await openArtifact(jason, branchName, artifact);
+
+			// Both tabs must be settled AND SSE-connected before either acts: Jason only raises
+			// the conflict banner if he receives Joe's remote attribute_modified over SSE, and
+			// GET-on-notify has no replay for an event that arrived before Jason subscribed.
+			await Promise.all([
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
+			]);
 
 			const joeValue = artifact + ' - Joe saved';
 

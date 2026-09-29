@@ -147,3 +147,29 @@ export async function waitForPageReadyForSse(
 	await waitForRealtimeConnected(page, { timeoutMs: options.timeoutMs });
 	await waitForNetworkIdleIgnoringSse(page, options);
 }
+
+/**
+ * Waits until this page's tab has advertised its presence to the server — i.e. a
+ * `POST /orcs/sse/presence/heartbeat` has completed successfully. Presence is heartbeat-driven
+ * and leader-aggregated with a debounce (and a 15s interval fallback), so `waitForPageReadyForSse`
+ * (SSE connected + idle) does NOT guarantee the heartbeat has gone out yet. Asserting the other
+ * viewer's avatar before BOTH tabs have heartbeated is the source of the presence-test flake under
+ * load: the server can't push a presence update it hasn't received.
+ *
+ * Waiting on the heartbeat's completion is the concrete precondition ("this tab has published its
+ * presence"), which is robust regardless of CI speed — unlike a longer avatar-visibility timeout.
+ * Returns a promise; when awaiting several pages, kick this off (or await concurrently) so one
+ * page's wait does not serialize onto another's.
+ */
+export function waitForPresenceHeartbeat(
+	page: Page,
+	{ timeoutMs = 30000 }: { timeoutMs?: number } = {}
+): Promise<unknown> {
+	return page.waitForResponse(
+		(res) =>
+			res.url().includes('/orcs/sse/presence/heartbeat') &&
+			res.request().method() === 'POST' &&
+			res.ok(),
+		{ timeout: timeoutMs }
+	);
+}

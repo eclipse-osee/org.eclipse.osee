@@ -465,6 +465,8 @@ Tests live in `web/apps/osee/playwright/specs/` organized by feature area (e.g.,
 
 All commands run from `web/apps/osee/`. The OSEE backend (port 8089) and Angular dev server (port 4200) must be running. Always pass `--config playwright.config.ng.ts` to use the correct project configuration.
 
+**Serve the frontend with plain `ng serve` (DEV mode) for e2e — not a `demo`/`none`/`prod` configuration.** DEV mode authenticates every browser context as a built-in user, which is what the default-`page` tests expect (and what CI serves). Other configurations require an account to be seeded per context, so plain-`page` tests fail with `401 Unauthorized` on their first API call.
+
 ```bash
 # Run all tests (includes setup)
 npx playwright test --config playwright.config.ng.ts
@@ -506,6 +508,8 @@ npx playwright show-report
   - `waitForNetworkIdleIgnoringSse(page)` — resolves when the page's discrete data calls have gone quiet, ignoring the real-time stream (`/events`, presence). The SSE-safe equivalent of `networkidle`.
   - `waitForRealtimeConnected(page)` — resolves when the SSE stream is live (the toolbar's "Real-time sync active." status). A tab must be connected before it can receive cross-user events.
   - `waitForPageReadyForSse(page)` — both of the above. **Call this on every participating page after navigation before any two-user cross-user step.** Acting before a page is settled can no-op the action; asserting before the other tab is connected misses the event. This gate is what makes two-user SSE tests deterministic (both the actra and artifact-explorer real-time specs rely on it). Prefer a concrete web assertion when one cleanly captures readiness; reach for these when no single UI signal does.
+  - `waitForPresenceHeartbeat(page)` — resolves when the tab has completed its `POST /orcs/sse/presence/heartbeat`. Presence is heartbeat-driven with a debounce, so `waitForPageReadyForSse` (connected + idle) does NOT guarantee the heartbeat has gone out. Before asserting a presence avatar, start this listener BEFORE opening the editor (so a heartbeat firing during open is not missed) and await both tabs' heartbeats. Waiting on the heartbeat POST is deterministic; a longer avatar-visibility timeout is not.
+- **In GET-on-notify flows, the observing tab must be connected BEFORE the acting tab mutates.** OSEE delivers cross-user changes as a notify that triggers a refetch — there is no replay of a notify that fired before a tab subscribed. So a mutation committed while the other tab is still connecting is lost to that tab permanently, and no assertion timeout can recover it. Gate BOTH tabs through `waitForPageReadyForSse` *before* the acting user saves/transitions/creates — not merely before the assertion. This is the sharp, irreversible form of "don't act too early."
 - **Keep tests independent.** Each test should set up its own state. Use `test.beforeEach` for shared navigation, not shared mutable state between tests.
 - **Use `test.describe` blocks** to group related tests and share setup via `beforeEach`.
 - **Assert on outcomes, not implementation.** Check that the user sees the right content — don't assert internal class names or DOM structure that could change.

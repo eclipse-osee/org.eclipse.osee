@@ -40,15 +40,25 @@ export const selectBranch = async (
 		name: 'Select a Branch',
 	});
 	// Wait for combobox to be enabled (disabled while no type selected)
-	await expect(branchCombobox).toBeEnabled({ timeout: 5000 });
-	await branchCombobox.click({ force: true });
-	await branchCombobox.fill(branchName);
-	// Wait for the matching option to appear and click it.
-	// Using a single locator.click() which retries internally if the element
-	// detaches (e.g., autocomplete re-renders between debounced searches).
-	await page
+	await expect(branchCombobox).toBeEnabled({ timeout: 15000 });
+
+	const option = page
 		.locator('mat-option')
 		.filter({ hasText: branchName })
-		.first()
-		.click({ timeout: 15000 });
+		.first();
+
+	// The branch picker is a mat-autocomplete whose options come from a debounced search driven by
+	// the input's valueChanges. Type per-character with `pressSequentially` rather than `.fill()`:
+	// `.fill()` sets the value in one shot and emits a single input event, which the debounce
+	// pipeline can coalesce or mis-time so the search never re-fires and the listbox stays empty.
+	// Per-character input drives valueChanges the way the control expects, so the query reliably
+	// runs. (`pressSequentially` is the non-deprecated replacement for `locator.type()`.)
+	await branchCombobox.click({ force: true });
+	await branchCombobox.fill('');
+	await branchCombobox.pressSequentially(branchName);
+
+	// Assert the option is present before clicking so a failure points here (search never
+	// populated) rather than at a downstream step.
+	await expect(option).toBeVisible({ timeout: 15000 });
+	await option.click();
 };

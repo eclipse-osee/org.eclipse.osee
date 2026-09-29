@@ -17,7 +17,10 @@ import {
 	createWorkflowViaUi,
 	openWorkflow,
 } from '../utils/helpers';
-import { waitForPageReadyForSse } from '../../../shared/sse-helpers';
+import {
+	waitForPageReadyForSse,
+	waitForPresenceHeartbeat,
+} from '../../../shared/sse-helpers';
 
 /**
  * Real-time (SSE) behavior for the ACTRA workflow editor with two distinct demo
@@ -68,9 +71,25 @@ async function booleanValue(page: Page, label: string): Promise<string> {
 
 /** Opens a boolean select and picks the given option, waiting for the overlay to close. */
 async function setBoolean(page: Page, label: string, value: 'true' | 'false') {
-	await booleanSelect(page, label).click();
+	const select = booleanSelect(page, label);
+	// Ensure the select is interactive before driving it.
+	await expect(select).toBeEnabled({ timeout: 15000 });
+
+	// A single mat-select click can be swallowed when the element just rendered/reflowed (the
+	// overlay never opens and aria-expanded stays "false") — a known Material flake under load.
+	// Re-drive the open until the select reports expanded, rather than assuming one click takes
+	// or padding a fixed timeout. `toPass` retries the click+check as a unit.
+	await expect(async () => {
+		if ((await select.getAttribute('aria-expanded')) !== 'true') {
+			await select.click();
+		}
+		await expect(select).toHaveAttribute('aria-expanded', 'true', {
+			timeout: 2000,
+		});
+	}).toPass({ timeout: 15000 });
+
 	const listbox = page.getByRole('listbox');
-	await expect(listbox).toBeVisible();
+	await expect(listbox).toBeVisible({ timeout: 10000 });
 	await listbox.getByRole('option', { name: value, exact: true }).click();
 	await expect(listbox).toHaveCount(0);
 }
@@ -155,6 +174,11 @@ test.describe('Actra workflow editor real-time (SSE, two users)', () => {
 		const joe = await newUserPage(browser, DEMO_USERS.joe);
 		const jason = await newUserPage(browser, DEMO_USERS.jason);
 		try {
+			// Start listening for each tab's presence heartbeat BEFORE opening the editor so a
+			// heartbeat that fires during/right after open is not missed.
+			const joeHeartbeat = waitForPresenceHeartbeat(joe);
+			const jasonHeartbeat = waitForPresenceHeartbeat(jason);
+
 			await openWorkflow(joe, workflowId);
 			await openWorkflow(jason, workflowId);
 
@@ -167,11 +191,16 @@ test.describe('Actra workflow editor real-time (SSE, two users)', () => {
 			]);
 
 			await test.step('presence shows each user the other viewer', async () => {
-				// Presence context is `workflow/<id>` (globally unique, not branch-scoped),
-				// so both users share it. The current user is filtered out, so an avatar
-				// appears only because the other viewer is a DIFFERENT user. Avatars are
-				// generic id-derived icons (not name initials), so assert the avatar circle
-				// with its icon is shown rather than matching specific text.
+				// Presence context is `workflow/<id>` (globally unique, not branch-scoped), so both
+				// users share it. The avatar only appears once the OTHER tab's presence has been
+				// published to the server and pushed back over SSE, so first wait for BOTH tabs to
+				// have completed their presence heartbeat POST (the concrete "presence advertised"
+				// signal) rather than relying on a longer avatar-visibility timeout.
+				await Promise.all([joeHeartbeat, jasonHeartbeat]);
+
+				// The current user is filtered out, so an avatar appears only because the other
+				// viewer is a DIFFERENT user. Avatars are generic id-derived icons (not name
+				// initials), so assert the avatar circle with its icon is shown.
 				await expect(
 					joe.locator('osee-presence-avatars mat-icon').first()
 				).toBeVisible({ timeout: 20000 });
