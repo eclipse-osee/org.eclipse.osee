@@ -123,6 +123,7 @@ import {
 						<osee-focus-lost-input
 							[disabled]="disabled()"
 							[value]="displayValue()"
+							[suppressCommit]="conflicted()"
 							(valueChange)="onValueChange($event)"
 							(liveInput)="onLiveInput($event)"
 							[label]="showLabel() ? (attr().name ?? '') : ''"
@@ -291,6 +292,15 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	}
 
 	onValueChange(newValue: string) {
+		// Drop a stale commit. FocusLostInputComponent debounces its blur commit ~500ms, so a
+		// commit can land AFTER the field was cleaned by conflict resolution (which discarded this
+		// edit and reloaded the server value). A genuine edit always marks the field dirty via
+		// onLiveInput keystrokes before its blur commit; a clean field here means this commit is the
+		// debounced tail of a pre-resolution edit, which must not resurrect/re-save the discarded
+		// value over the resolved server value.
+		if (!this.dirtyService.isDirty(this.editorKey())) {
+			return;
+		}
 		if (newValue !== this.previousValue()) {
 			this.trackPendingEdit(newValue);
 			this.saveAttribute(newValue);

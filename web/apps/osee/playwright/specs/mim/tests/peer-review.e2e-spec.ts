@@ -90,41 +90,37 @@ test('create working branches', async ({ page }) => {
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure 1' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
-	await page.getByLabel('Name').fill('New Element', { force: true });
+	const elementName = page.getByLabel('Name');
+	await expect(elementName).toBeVisible();
+	await elementName.fill('New Element');
 
-	// The Platform Type dropdown only fetches its options (GET types/filter) after its INPUT
-	// receives focus: focusin -> autoCompleteOpened -> (debounced) types/filter. Clicking the
-	// <mat-label> ("Platform Type" text) does not reliably focus the input under CI load, so the
-	// fetch never fires and the waitForResponse below hangs. Click the combobox input itself to
-	// guarantee focusin, then wait for the fetch.
+	// Click the combobox input to focus it (focusin triggers the debounced types/filter fetch), then
+	// wait for the option to render. Asserting the option -- not the network response -- is what
+	// matters: it auto-waits for the fetch to complete AND survives the fetch having already fired,
+	// where a waitForResponse would hang forever.
 	const platformTypeCombobox = page
 		.getByLabel('2Define element')
 		.getByRole('combobox', { name: 'Platform Type' });
-	await expect(platformTypeCombobox).toBeVisible({ timeout: 20000 });
-	await Promise.all([
-		page.waitForResponse((res) => res.url().includes('types/filter'), {
-			timeout: 60000,
-		}),
-		platformTypeCombobox.click(),
-	]);
-	// Assert the option is present before clicking it, rather than racing the options render.
+	await expect(platformTypeCombobox).toBeVisible();
+	await platformTypeCombobox.click();
 	const floatOption = page
 		.locator('mat-option')
 		.filter({ hasText: 'Float' })
 		.first();
 	await expect(floatOption).toBeVisible({ timeout: 60000 });
 	await floatOption.click();
-	// Next is gated on the Define-element form being valid (Platform Type is required); assert it
-	// is enabled before clicking so we don't click a still-disabled button and time out.
+	// Next is gated on the form being valid (Platform Type required); assert enabled before click.
 	const defineElementNext = page.getByRole('button', { name: 'Next' });
-	await expect(defineElementNext).toBeEnabled({ timeout: 20000 });
+	await expect(defineElementNext).toBeEnabled();
 	await defineElementNext.click();
 
+	const submitBtn = page.getByTestId('submit-btn');
+	await expect(submitBtn).toBeEnabled();
 	await Promise.all([
 		page.waitForResponse(
 			(res) => res.url().includes('structures') && res.status() === 200
 		),
-		page.getByTestId('submit-btn').click({ force: true, timeout: 40000 }),
+		submitBtn.click(),
 	]);
 });
 
@@ -146,10 +142,15 @@ test('peer review branch', async ({ page }) => {
 	await page.getByLabel('Title').fill('MIM Peer Review');
 	await page.getByLabel('Actionable Item').click();
 	await page.getByRole('combobox', { name: 'Actionable Item' }).fill('mim');
-	await page.getByText('SAW PL MIM').click();
+	// Assert the option rendered before clicking (dropdown options arrive async after the filter).
+	const aiOption = page.getByRole('option', { name: 'SAW PL MIM' });
+	await expect(aiOption).toBeVisible();
+	await aiOption.click();
 	await page.getByLabel('Description').fill('Peer review');
 	await page.getByLabel('Change Type').locator('span').click();
-	await page.getByText('Improvement').click();
+	const changeTypeOption = page.getByRole('option', { name: 'Improvement' });
+	await expect(changeTypeOption).toBeVisible();
+	await changeTypeOption.click();
 
 	let requestPromise = page.waitForResponse((response) =>
 		response.url().startsWith(`${APP_BASE}/ats/ple/branches/pr`)

@@ -38,7 +38,7 @@ let nextUniqueId = 0;
 	template: ` <mat-form-field
 		[appearance]="appearance()"
 		(focusin)="focus.set(true)"
-		(focusout)="focus.set(false)"
+		(focusout)="onFocusOut()"
 		[subscriptSizing]="subscriptSizing()"
 		class="tw-w-full tw-bg-inherit [&>.mdc-text-field--filled]:tw-bg-inherit">
 		@if (label() !== '') {
@@ -70,18 +70,33 @@ export class FocusLostInputComponent<T> {
 	appearance = input<'outline' | 'fill'>('outline');
 
 	subscriptSizing = input<SubscriptSizing>('dynamic');
+	/** When true (sampled at blur), the debounced commit is dropped instead of emitted. */
+	suppressCommit = input(false);
 	focus = signal(false);
 	type = input('text');
 	tooltip = input<string>('');
 	placeholder = input<string>('');
 	maxlength = input<string | number | null>(null);
+
+	// Snapshot at blur, not emission: the commit fires ~500ms later, by which time suppressCommit
+	// may have cleared (e.g. the conflict was resolved) -- reading it then would reopen the race.
+	private _suppressAtBlur = false;
+	protected onFocusOut() {
+		this._suppressAtBlur = this.suppressCommit();
+		this.focus.set(false);
+	}
+
 	private _focus$ = toObservable(this.focus);
 	private _focus = this._focus$.pipe(
 		debounceTime(500),
 		filter((v) => !v)
 	);
 	private _value$ = toObservable(this.value);
-	private _value = this._value$.pipe(debounceTime(500), sample(this._focus));
+	private _value = this._value$.pipe(
+		debounceTime(500),
+		sample(this._focus),
+		filter(() => !this._suppressAtBlur)
+	);
 	valueChange = outputFromObservable(this._value);
 
 	/**
