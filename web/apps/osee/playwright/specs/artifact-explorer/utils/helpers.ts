@@ -259,6 +259,11 @@ export const DEMO_USERS = {
  * app boots makes each context a distinct real user -- so presence ("who ELSE is
  * viewing") and "changed by another user" flows are genuinely exercised, each
  * context holding its own SSE connection.
+ *
+ * No video here: this is used for short-lived setup pages (create a workflow/branch, then close)
+ * whose recording adds no debug value and would not be failure-gated. The two-user test contexts
+ * that DO need retain-on-failure video use the `userPage` fixture in
+ * `playwright/shared/two-user-fixtures.ts` instead.
  */
 export const newUserPage = async (
 	browser: Browser,

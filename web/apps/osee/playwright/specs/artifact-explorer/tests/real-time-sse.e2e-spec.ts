@@ -10,8 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { test, expect, Browser, Page } from '@ngx-playwright/test';
+import { Browser, Page } from '@ngx-playwright/test';
 import { APIRequestContext } from '@playwright/test';
+import { test, expect } from '../../../shared/two-user-fixtures';
 import {
 	DEMO_USERS,
 	newUserPage,
@@ -126,11 +127,12 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 	test('an attribute edit by one user propagates to another without a manual refresh', async ({
 		browser,
 		request,
+		userPage,
 	}) => {
 		const { branchId, branchName, artifact } =
 			await setupBranchWithArtifact(browser, request, 'Propagation');
-		const joe = await newUserPage(browser, DEMO_USERS.joe);
-		const jason = await newUserPage(browser, DEMO_USERS.jason);
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
 		try {
 			await openArtifact(joe, branchName, artifact);
 			await openArtifact(jason, branchName, artifact);
@@ -155,8 +157,7 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 					.first()
 			).toBeVisible({ timeout: 20000 });
 		} finally {
-			await joe.context().close();
-			await jason.context().close();
+			// joe/jason contexts are closed (video retained-on-failure) by the userPage fixture.
 			await purgeBranchViaApi(request, branchId);
 		}
 	});
@@ -164,14 +165,15 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 	test('presence shows each user the other viewer of the same artifact', async ({
 		browser,
 		request,
+		userPage,
 	}) => {
 		// Presence is heartbeat-driven (eventually consistent) and each side is
 		// asserted, so give the whole test a larger budget than the 30s default.
 		test.setTimeout(60000);
 		const { branchId, branchName, artifact } =
 			await setupBranchWithArtifact(browser, request, 'Presence');
-		const joe = await newUserPage(browser, DEMO_USERS.joe);
-		const jason = await newUserPage(browser, DEMO_USERS.jason);
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
 		try {
 			// Start listening for each tab's presence heartbeat BEFORE opening the editor, so we
 			// can't miss a heartbeat that fires during/right after open (it goes out ~500ms after
@@ -207,8 +209,7 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 				).toBeVisible({ timeout: 25000 }),
 			]);
 		} finally {
-			await joe.context().close();
-			await jason.context().close();
+			// joe/jason contexts are closed (video retained-on-failure) by the userPage fixture.
 			await purgeBranchViaApi(request, branchId);
 		}
 	});
@@ -216,11 +217,12 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 	test('a concurrent edit raises the conflict banner and can be resolved via the dialog', async ({
 		browser,
 		request,
+		userPage,
 	}) => {
 		const { branchId, branchName, artifact } =
 			await setupBranchWithArtifact(browser, request, 'Conflict');
-		const joe = await newUserPage(browser, DEMO_USERS.joe);
-		const jason = await newUserPage(browser, DEMO_USERS.jason);
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
 		try {
 			await openArtifact(joe, branchName, artifact);
 			await openArtifact(jason, branchName, artifact);
@@ -273,8 +275,7 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 				});
 			});
 		} finally {
-			await joe.context().close();
-			await jason.context().close();
+			// joe/jason contexts are closed (video retained-on-failure) by the userPage fixture.
 			await purgeBranchViaApi(request, branchId);
 		}
 	});
@@ -282,6 +283,7 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 	test('attribute add, delete, and history updates by one user propagate to another', async ({
 		browser,
 		request,
+		userPage,
 	}) => {
 		// These behaviors share one setup (a branch + artifact + two open editors) and chain
 		// on the same artifact (add an attribute, delete it, observe history grow), so they
@@ -293,8 +295,8 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 		// substring-matches, and the artifact-name button would otherwise also match.
 		const { branchId, branchName, artifact } =
 			await setupBranchWithArtifact(browser, request, 'Log');
-		const joe = await newUserPage(browser, DEMO_USERS.joe);
-		const jason = await newUserPage(browser, DEMO_USERS.jason);
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
 		try {
 			await openArtifact(joe, branchName, artifact);
 			await openArtifact(jason, branchName, artifact);
@@ -334,8 +336,7 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 					.toBeGreaterThan(initialCount);
 			});
 		} finally {
-			await joe.context().close();
-			await jason.context().close();
+			// joe/jason contexts are closed (video retained-on-failure) by the userPage fixture.
 			await purgeBranchViaApi(request, branchId);
 		}
 	});

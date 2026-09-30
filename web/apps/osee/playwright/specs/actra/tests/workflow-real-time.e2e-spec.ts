@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { test, expect, Page } from '@ngx-playwright/test';
+import { Page } from '@ngx-playwright/test';
+import { test, expect } from '../../../shared/two-user-fixtures';
 import {
 	DEMO_USERS,
 	newUserPage,
@@ -198,6 +199,7 @@ test.describe('Actra workflow editor real-time (SSE, two users)', () => {
 	// restores what it changed so the steps stay order-independent in intent.
 	test('real-time behaviors propagate between two editors of one workflow', async ({
 		browser,
+		userPage,
 	}) => {
 		test.setTimeout(120000);
 		const title = `E2E SSE Workflow ${Date.now()}`;
@@ -205,8 +207,9 @@ test.describe('Actra workflow editor real-time (SSE, two users)', () => {
 		workflowId = await createWorkflowViaUi(setupPage, title);
 		await setupPage.context().close();
 
-		const joe = await newUserPage(browser, DEMO_USERS.joe);
-		const jason = await newUserPage(browser, DEMO_USERS.jason);
+		// userPage contexts are auto-closed at teardown; their video is kept only if the test fails.
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
 		try {
 			// Start listening for each tab's presence heartbeat BEFORE opening the editor so a
 			// heartbeat that fires during/right after open is not missed.
@@ -353,8 +356,7 @@ test.describe('Actra workflow editor real-time (SSE, two users)', () => {
 				}
 			});
 		} finally {
-			await joe.context().close();
-			await jason.context().close();
+			// contexts are closed (and video retained-on-failure) by the userPage fixture teardown.
 		}
 	});
 });
@@ -382,7 +384,7 @@ test.describe('Actra workflow editor branch creation (SSE, two users)', () => {
 	});
 
 	test('a working-branch creation by one user propagates to another editor', async ({
-		browser,
+		userPage,
 	}) => {
 		// Branch creation writes only the branch row (its associated_art_id points at this
 		// workflow); it does not touch the workflow artifact on Common. The editor keys the
@@ -391,8 +393,9 @@ test.describe('Actra workflow editor branch creation (SSE, two users)', () => {
 		// workflow, so Joe creating the branch drops the "Create Branch" button in his own
 		// editor (its local branch-created emit) and in Jason's (the branch-created SSE).
 		test.setTimeout(90000);
-		const joe = await newUserPage(browser, DEMO_USERS.joe);
-		const jason = await newUserPage(browser, DEMO_USERS.jason);
+		// userPage contexts are auto-closed at teardown; their video is kept only if the test fails.
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
 
 		try {
 			await openWorkflow(joe, branchWorkflowId);
@@ -469,8 +472,7 @@ test.describe('Actra workflow editor branch creation (SSE, two users)', () => {
 				joe.getByRole('button', { name: 'Open Commit Manager' })
 			).toBeVisible({ timeout: 30000 });
 		} finally {
-			await joe.context().close();
-			await jason.context().close();
+			// contexts are closed (and video retained-on-failure) by the userPage fixture teardown.
 		}
 	});
 });

@@ -20,27 +20,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const config: PlaywrightTestConfig = {
 	workers: process.env['CI'] ? 3 : undefined,
 	timeout: process.env['CI'] ? 45000 : 30000,
-	// Retry in CI so a genuinely flaky test is retried (and reported as "flaky" rather than
-	// "failed"), which both stabilizes the pipeline and surfaces which tests are non-deterministic.
-	// No retries locally, so a local failure is always a real failure.
-	retries: process.env['CI'] ? 2 : 0,
+	// No retries: every test runs once, so a failure is captured on its first (and only) attempt
+	// with artifacts reflecting the actual failing state -- not a retry that ran against
+	// already-mutated state.
+	retries: 0,
 	use: {
 		channel: 'chromium',
 		headless: true,
 		baseURL: APP_BASE,
-		// Optional debug slow-motion: set PW_SLOWMO=<ms> to watch a headed run step-by-step.
-		// No effect when unset (normal/CI runs), so this is safe to leave in.
-		launchOptions: {
-			slowMo: process.env['PW_SLOWMO']
-				? Number(process.env['PW_SLOWMO'])
-				: undefined,
-		},
+		// Capture full diagnostics on the first-run failure (no retries), so a CI failure is
+		// debuggable from its actual failing attempt: screenshot, video, and a replayable trace
+		// (`npx playwright show-trace <trace.zip>`). Retained only on failure to keep passing
+		// runs cheap.
 		screenshot: 'only-on-failure',
-		// Capture a full Playwright trace and a video on the first retry (not the initial attempt,
-		// to keep passing runs cheap). A failure that only reproduces in CI can then be replayed
-		// step-by-step from the uploaded trace artifact via `npx playwright show-trace`.
-		trace: 'on-first-retry',
-		video: 'on-first-retry',
+		trace: 'retain-on-failure',
+		video: 'retain-on-failure',
 	},
 
 	testDir: join(__dirname, 'playwright/specs'),
