@@ -92,21 +92,33 @@ test('create working branches', async ({ page }) => {
 	await page.getByRole('button', { name: 'Create new Element' }).click();
 	await page.getByLabel('Name').fill('New Element', { force: true });
 
+	// The Platform Type dropdown only fetches its options (GET types/filter) after its INPUT
+	// receives focus: focusin -> autoCompleteOpened -> (debounced) types/filter. Clicking the
+	// <mat-label> ("Platform Type" text) does not reliably focus the input under CI load, so the
+	// fetch never fires and the waitForResponse below hangs. Click the combobox input itself to
+	// guarantee focusin, then wait for the fetch.
+	const platformTypeCombobox = page
+		.getByLabel('2Define element')
+		.getByRole('combobox', { name: 'Platform Type' });
+	await expect(platformTypeCombobox).toBeVisible({ timeout: 20000 });
 	await Promise.all([
 		page.waitForResponse((res) => res.url().includes('types/filter'), {
 			timeout: 60000,
 		}),
-		page
-			.getByLabel('2Define element')
-			.getByText('Platform Type')
-			.click({ force: true }),
+		platformTypeCombobox.click(),
 	]);
-	await page
+	// Assert the option is present before clicking it, rather than racing the options render.
+	const floatOption = page
 		.locator('mat-option')
 		.filter({ hasText: 'Float' })
-		.first()
-		.click({ timeout: 60000 });
-	await page.getByRole('button', { name: 'Next' }).click();
+		.first();
+	await expect(floatOption).toBeVisible({ timeout: 60000 });
+	await floatOption.click();
+	// Next is gated on the Define-element form being valid (Platform Type is required); assert it
+	// is enabled before clicking so we don't click a still-disabled button and time out.
+	const defineElementNext = page.getByRole('button', { name: 'Next' });
+	await expect(defineElementNext).toBeEnabled({ timeout: 20000 });
+	await defineElementNext.click();
 
 	await Promise.all([
 		page.waitForResponse(

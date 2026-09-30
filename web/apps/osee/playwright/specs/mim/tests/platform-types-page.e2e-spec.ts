@@ -44,6 +44,8 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByLabel('Name').click();
 	await page.getByLabel('Name').fill('Distance');
+	// Commit Name (updateOn: 'blur') before moving on so the required/async-unique validation runs.
+	await page.getByLabel('Name').blur();
 	await page.getByLabel('Bit Size').click();
 	await page.getByLabel('Bit Size').fill('32');
 	await page.getByLabel('Description').click();
@@ -56,13 +58,17 @@ test('test', async ({ page }) => {
 	await page.getByRole('option', { name: 'Meters', exact: true }).click();
 	await page.getByLabel('Default Value').click();
 	await page.getByLabel('Default Value').fill('0');
+	await page.getByLabel('Default Value').blur();
 
 	await page.screenshot({
 		path: 'screenshots/platform-types-page/create-platform-type.png',
 		animations: 'disabled',
 	});
 
-	await page.getByRole('button', { name: 'Next' }).click();
+	// Gate on the step-2 Next being enabled (form valid + async uniqueness settled) before clicking.
+	const intTypeNext = page.getByTestId('type-form-next');
+	await expect(intTypeNext).toBeEnabled({ timeout: 20000 });
+	await intTypeNext.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page.locator('mat-row:nth-child(3) > mat-cell:nth-child(2)').click();
 	await page.locator('osee-platform-types-fab').locator('button').click();
@@ -73,9 +79,16 @@ test('test', async ({ page }) => {
 		.click();
 	await page.getByText('Enumeration', { exact: true }).click();
 	await page.getByRole('button', { name: 'Next' }).click();
+	// The Name input commits on blur (ngModelOptions updateOn: 'blur') and runs an async
+	// uniqueness validator; until the value commits, the step-2 form group is invalid and Next
+	// stays disabled. Building the enum set below replaces the shared platformType object on every
+	// edit, so only COMMITTED fields carry forward -- an uncommitted Name is lost. Fill Name, then
+	// blur it (Tab is unreliable in headless) so the value is committed before touching the enum set.
 	await page.getByLabel('Name').fill('Decision');
+	await page.getByLabel('Name').blur();
 	await page.getByLabel('Bit Size').click();
 	await page.getByLabel('Bit Size').fill('32');
+	await page.getByLabel('Bit Size').blur();
 
 	await page.screenshot({
 		path: 'screenshots/platform-types-page/select-enumeration-set.png',
@@ -135,14 +148,20 @@ test('test', async ({ page }) => {
 		.nth(2)
 		.click();
 	await page.getByLabel('Enter a name').nth(2).fill('Maybe');
-	// Blur the input to commit the value
-	await page.getByLabel('Enter a name').nth(2).press('Tab');
+	// Blur the input to commit the value (Tab does not reliably move focus in headless).
+	await page.getByLabel('Enter a name').nth(2).blur();
 
 	await page.screenshot({
 		path: 'screenshots/platform-types-page/added-enums.png',
 		animations: 'disabled',
 	});
 
-	await page.getByRole('button', { name: 'Next' }).click();
+	// Next is gated on the step-2 form group being valid AND not pending: the Name and Enumeration
+	// Set Name are required, and async uniqueness validators run on blur. Assert the button is
+	// enabled (which waits out the in-flight async validators) before clicking, rather than clicking
+	// a still-disabled button and timing out.
+	const enumTypeNext = page.getByTestId('type-form-next');
+	await expect(enumTypeNext).toBeEnabled({ timeout: 20000 });
+	await enumTypeNext.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 });
