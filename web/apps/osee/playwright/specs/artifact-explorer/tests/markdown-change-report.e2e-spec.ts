@@ -84,8 +84,11 @@ test.describe('Markdown Change Report', () => {
 
 		await expect(page.getByText(BRANCH)).toBeVisible({ timeout: 15000 });
 
-		// Summary table shows the created markdown artifacts.
-		const table = page.locator('osee-markdown-diff table');
+		// Summary table shows the created markdown artifacts. Scope to the Material summary table
+		// (`table[mat-table]`): `osee-markdown-diff table` alone also matches the per-entry diff
+		// tables (plain <table> inside each osee-markdown-diff-entry), which is a strict-mode
+		// violation. Only the summary is a mat-table.
+		const table = page.locator('osee-markdown-diff table[mat-table]');
 		await expect(table).toBeVisible();
 		await expect(
 			page.getByText('MD Report Artifact One').first()

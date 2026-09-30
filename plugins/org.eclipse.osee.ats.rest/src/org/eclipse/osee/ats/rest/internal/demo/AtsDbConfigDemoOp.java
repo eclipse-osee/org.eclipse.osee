@@ -53,6 +53,18 @@ public class AtsDbConfigDemoOp {
 
       rd = new XResultData();
 
+      // Mark this as the demo database and rebuild the work-definition cache BEFORE configuring
+      // teams/AIs. The demo work-definition provider (AtsWorkDefinitionProviderDemo) only
+      // contributes the WorkDefTeamDemo* definitions when isDemoDatabase() is true
+      // (System property osee.db == "orgdemo"). Without this, demo team defs like CIS Code resolve
+      // to their assigned WorkDefTeamDemoCode token, find it missing from the cache, and fall back
+      // to WorkDefTeamDefault -- whose start state is "Analyze" instead of the intended "Endorse".
+      // The full populate op sets this same property; setting it here makes a lightly-initialized
+      // server (e.g. the Playwright setup, which does not run the full populate) resolve demo work
+      // definitions -- and therefore workflow start states -- identically to a full demo database.
+      System.setProperty("osee.db", "orgdemo");
+      atsApi.getWorkDefinitionService().internalClearCaches();
+
       setBranchFavorites();
 
       (new AtsDbConfigAIsAndTeamsDemoOp(atsApi)).run();
