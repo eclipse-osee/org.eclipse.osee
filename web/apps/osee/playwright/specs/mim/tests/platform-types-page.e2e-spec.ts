@@ -41,11 +41,13 @@ test('test', async ({ page }) => {
 		animations: 'disabled',
 	});
 
-	await page.getByRole('button', { name: 'Next' }).click();
+	// Wait for the step-2 fields to render (two-phase; see below) before filling.
+	await Promise.all([
+		page.waitForResponse((res) => res.url().includes('/mim/logicalType/')),
+		page.getByRole('button', { name: 'Next' }).click(),
+	]);
 	await page.getByLabel('Name').click();
 	await page.getByLabel('Name').fill('Distance');
-	// Commit Name (updateOn: 'blur') before moving on so the required/async-unique validation runs.
-	await page.getByLabel('Name').blur();
 	await page.getByLabel('Bit Size').click();
 	await page.getByLabel('Bit Size').fill('32');
 	await page.getByLabel('Description').click();
@@ -78,17 +80,16 @@ test('test', async ({ page }) => {
 		.getByTestId('logical-type-selector')
 		.click();
 	await page.getByText('Enumeration', { exact: true }).click();
-	await page.getByRole('button', { name: 'Next' }).click();
-	// The Name input commits on blur (ngModelOptions updateOn: 'blur') and runs an async
-	// uniqueness validator; until the value commits, the step-2 form group is invalid and Next
-	// stays disabled. Building the enum set below replaces the shared platformType object on every
-	// edit, so only COMMITTED fields carry forward -- an uncommitted Name is lost. Fill Name, then
-	// blur it (Tab is unreliable in headless) so the value is committed before touching the enum set.
+	// Step 2 renders in two phases: a minimal form first, then the real fields once
+	// GET /mim/logicalType/<id> resolves. Filling before that fetch lands writes into inputs that
+	// the second render replaces, silently dropping the value. Wait for the fetch before filling.
+	await Promise.all([
+		page.waitForResponse((res) => res.url().includes('/mim/logicalType/')),
+		page.getByRole('button', { name: 'Next' }).click(),
+	]);
 	await page.getByLabel('Name').fill('Decision');
-	await page.getByLabel('Name').blur();
 	await page.getByLabel('Bit Size').click();
 	await page.getByLabel('Bit Size').fill('32');
-	await page.getByLabel('Bit Size').blur();
 
 	await page.screenshot({
 		path: 'screenshots/platform-types-page/select-enumeration-set.png',

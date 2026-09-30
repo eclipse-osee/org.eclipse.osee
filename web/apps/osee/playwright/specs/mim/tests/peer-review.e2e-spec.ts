@@ -19,7 +19,11 @@ import { selectBranch } from '../../../shared/branch-helpers';
 test.describe.configure({ mode: 'serial' });
 
 test('create working branches', async ({ page }) => {
-	page.setDefaultTimeout(60000);
+	// This test creates three working branches and edits each before adding an element, so the
+	// default 45s test timeout is too tight under CI load (the flow reached the final dropdown with
+	// no budget left). Raise the ceiling and bound each action so a slow step fails at its own line.
+	test.setTimeout(120000);
+	page.setDefaultTimeout(20000);
 	await page.goto('/ple');
 
 	// Commit MIM Demo branch to create baseline
@@ -94,15 +98,20 @@ test('create working branches', async ({ page }) => {
 	await expect(elementName).toBeVisible();
 	await elementName.fill('New Element');
 
-	// Click the combobox input to focus it (focusin triggers the debounced types/filter fetch), then
-	// wait for the option to render. Asserting the option -- not the network response -- is what
-	// matters: it auto-waits for the fetch to complete AND survives the fetch having already fired,
-	// where a waitForResponse would hang forever.
+	// Open the Platform Type autocomplete and load its options. A bare click focuses the input but
+	// does not reliably fire the type-ahead query (the options fetch is driven by the input value
+	// stream), so the panel can stay empty. Typing a filter value drives that stream, opens the
+	// panel, and narrows to the option we want. Then assert the option before clicking it.
 	const platformTypeCombobox = page
 		.getByLabel('2Define element')
 		.getByRole('combobox', { name: 'Platform Type' });
 	await expect(platformTypeCombobox).toBeVisible();
-	await platformTypeCombobox.click();
+	// Type per-character (not fill): the options come from a debounced search on the input's
+	// valueChanges; fill emits a single coalesced event the debounce can mis-time so the query never
+	// fires and the listbox stays empty. pressSequentially drives valueChanges as the control expects.
+	await platformTypeCombobox.click({ force: true });
+	await platformTypeCombobox.fill('');
+	await platformTypeCombobox.pressSequentially('Float');
 	const floatOption = page
 		.locator('mat-option')
 		.filter({ hasText: 'Float' })

@@ -459,27 +459,22 @@ test('create elements', async ({ page }) => {
 		.locator('span')
 		.click();
 	await page.getByText('Enumeration').click();
-	await page
-		.getByLabel('1Select a logical type')
-		.getByRole('button', { name: 'Next' })
-		.click();
-	await page
-		.getByLabel('2Fill out type information')
-		.getByLabel('Name')
-		.click();
+	// Step 2 renders in two phases: a minimal form, then the real fields once
+	// GET /mim/logicalType/<id> resolves. Filling before that fetch lands writes into inputs the
+	// second render replaces, dropping the value. Wait for the fetch before filling.
+	await Promise.all([
+		page.waitForResponse((res) => res.url().includes('/mim/logicalType/')),
+		page
+			.getByLabel('1Select a logical type')
+			.getByRole('button', { name: 'Next' })
+			.click(),
+	]);
 	await page
 		.getByLabel('2Fill out type information')
 		.getByLabel('Name')
 		.fill('Demo Fault');
-	// Name/Bit Size commit on blur; the enum set below rebuilds the form object, dropping any
-	// uncommitted field and leaving Next disabled. Blur to commit before building the enum set.
-	await page
-		.getByLabel('2Fill out type information')
-		.getByLabel('Name')
-		.blur();
 	await page.getByLabel('Bit Size').click();
 	await page.getByLabel('Bit Size').fill('32');
-	await page.getByLabel('Bit Size').blur();
 	await page.getByTestId('create-enum-set').click();
 	await page.getByTestId('enum-set-name-field').click();
 	await page.getByTestId('enum-set-name-field').fill('Demo Fault');
@@ -504,11 +499,11 @@ test('create elements', async ({ page }) => {
 		.getByRole('row', { name: 'Enter a name Enter an ordinal' })
 		.getByLabel('Enter a name')
 		.fill('Info');
-	// Commit the last enum literal, then gate on Next enabling (form valid + async unique settled).
-	await page
-		.getByRole('row', { name: 'Enter a name Enter an ordinal' })
-		.getByLabel('Enter a name')
-		.blur();
+	// Commit the last enum literal by blurring the focused input. Blur the currently-focused
+	// element rather than re-resolving the row by name: filling the row changes its accessible name
+	// (it no longer contains the "Enter a name" placeholder), so a name-based re-lookup finds nothing.
+	await page.locator(':focus').blur();
+	// Gate on Next enabling (form valid + async unique settled).
 	const enumTypeNext = page.getByTestId('type-form-next');
 	await expect(enumTypeNext).toBeEnabled();
 	await enumTypeNext.click();
@@ -654,19 +649,19 @@ async function createElement(
 		.locator('span')
 		.click();
 	await page.getByRole('option', { name: logicalType, exact: true }).click();
-	await page
-		.getByLabel('1Select a logical type')
-		.getByRole('button', { name: 'Next' })
-		.click();
+	// Step 2 renders in two phases; wait for GET /mim/logicalType/<id> before filling so the value
+	// is not dropped by the second render.
+	await Promise.all([
+		page.waitForResponse((res) => res.url().includes('/mim/logicalType/')),
+		page
+			.getByLabel('1Select a logical type')
+			.getByRole('button', { name: 'Next' })
+			.click(),
+	]);
 	await page
 		.getByLabel('2Fill out type information')
 		.getByLabel('Name')
 		.fill(platformTypeName, { timeout: 60000 });
-	// Commit Name (updateOn: 'blur') so validation runs before gating on Next.
-	await page
-		.getByLabel('2Fill out type information')
-		.getByLabel('Name')
-		.blur();
 	await page.getByLabel('Bit Size').fill(bitSize);
 
 	if (min !== '') {
