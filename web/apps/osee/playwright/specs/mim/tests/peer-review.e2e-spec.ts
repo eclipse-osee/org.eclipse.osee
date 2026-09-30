@@ -218,9 +218,18 @@ test('commit branches', async ({ page }) => {
 		.filter({ hasText: 'Edit Message' })
 		.getByRole('button')
 		.click();
+	// Same async transition->render->commit sequence as the second branch below: wait for each
+	// control before clicking so the "Review" click can't fire before the transition re-render.
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
-	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
+	const tw16Review = page.getByRole('button', {
+		name: 'Review',
+		exact: true,
+	});
+	await expect(tw16Review).toBeVisible({ timeout: 60000 });
+	await tw16Review.click();
+	const tw16Commit = page.getByRole('menuitem', { name: 'Commit Branch' });
+	await expect(tw16Commit).toBeVisible({ timeout: 60000 });
+	await tw16Commit.click();
 
 	await expect(
 		page.getByText('Branches included in this PR have been committed')
@@ -244,21 +253,29 @@ test('commit branches', async ({ page }) => {
 		.filter({ hasText: 'Add an Element' })
 		.getByRole('button')
 		.click();
+	// Transitioning to Review is an async server round-trip; the branch's action control then
+	// re-renders as a "Review" dropdown. Wait for each control to actually be present before
+	// clicking it, rather than assuming the previous async step has finished:
+	//  1. click "Transition to Review",
+	//  2. wait for the resulting "Review" dropdown button, then open it,
+	//  3. wait for the "Commit Branch" item, then click it.
+	// Skipping these waits is what makes the second commit flaky under load (the "Review" click
+	// fires before the transition re-render, so the dropdown never opens and Commit Branch is
+	// never clicked, leaving the branch stuck in Review).
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
-	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
+	const tw19Review = page.getByRole('button', {
+		name: 'Review',
+		exact: true,
+	});
+	await expect(tw19Review).toBeVisible({ timeout: 60000 });
+	await tw19Review.click();
+	const tw19Commit = page.getByRole('menuitem', { name: 'Commit Branch' });
+	await expect(tw19Commit).toBeVisible({ timeout: 60000 });
+	await tw19Commit.click();
 
-	// Wait for the second branch's commit to actually complete before closing the review. The
-	// commit is asynchronous: the branch row flips to a disabled "Committed" button once done, and
-	// "Close Peer Review" only enables when every included branch is committed. Clicking Close
-	// immediately after "Commit Branch" races that commit and finds the button still disabled.
-	await expect(
-		page
-			.getByRole('listbox')
-			.locator('div')
-			.filter({ hasText: 'Add an Element' })
-			.getByRole('button', { name: 'Committed' })
-	).toBeVisible({ timeout: 60000 });
+	// "Close Peer Review" is disabled until every applied branch is committed
+	// (completedCommitting()). Assert it becomes enabled before clicking, so we wait on the real
+	// precondition (all commits finished) rather than racing the async second commit.
 	const closePeerReview = page.getByRole('button', {
 		name: 'Close Peer Review',
 	});

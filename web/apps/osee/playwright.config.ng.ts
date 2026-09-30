@@ -28,6 +28,13 @@ const config: PlaywrightTestConfig = {
 		channel: 'chromium',
 		headless: true,
 		baseURL: APP_BASE,
+		// Optional debug slow-motion: set PW_SLOWMO=<ms> to watch a headed run step-by-step.
+		// No effect when unset (normal/CI runs), so this is safe to leave in.
+		launchOptions: {
+			slowMo: process.env['PW_SLOWMO']
+				? Number(process.env['PW_SLOWMO'])
+				: undefined,
+		},
 		screenshot: 'only-on-failure',
 		// Capture a full Playwright trace and a video on the first retry (not the initial attempt,
 		// to keep passing runs cheap). A failure that only reproduces in CI can then be replayed

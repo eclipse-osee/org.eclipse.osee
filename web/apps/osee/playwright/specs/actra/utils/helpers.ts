@@ -11,8 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { expect, Page } from '@ngx-playwright/test';
-import { APIRequestContext } from '@playwright/test';
-import { API_BASE, AUTH_HEADER } from '../../../shared/test-config';
 
 // Re-export the shared two-user demo-auth helpers so actra specs use one source.
 export { DEMO_USERS, newUserPage } from '../../artifact-explorer/utils/helpers';
@@ -20,18 +18,18 @@ export { DEMO_USERS, newUserPage } from '../../artifact-explorer/utils/helpers';
 /**
  * Creates a real ATS team workflow through the Create Action UI flow (the same
  * flow the MIM/Zenith/PLConfig specs use, proven to work against the demo DB),
- * then resolves the new workflow's artifact id by searching for its unique title.
+ * and returns the new workflow's artifact id read from the tab the app opens.
  *
- * We drive the UI rather than raw REST because the demo server's create-action
- * REST response does not reliably return the created workflow id, whereas the UI
- * flow completes deterministically (it waits on the branch-create response) and
- * the workflow is then findable via the standard team-workflow search.
+ * On submit the create-action page opens the new workflow in a new tab at
+ * `/actra/workflow?id=<newWfId>` (the id comes straight from the create response,
+ * resp.teamWfs.at(0)). We capture that tab and read its id, which is the
+ * authoritative id of the workflow just created — no title search, so it can
+ * never resolve to a stale same-named workflow from an earlier run.
  *
  * @returns the created workflow's artifact id (for `/actra/workflow?id=<id>`)
  */
 export const createWorkflowViaUi = async (
 	page: Page,
-	request: APIRequestContext,
 	title: string,
 	options?: { actionableItem?: string; workType?: string }
 ): Promise<string> => {
@@ -119,31 +117,34 @@ export const createWorkflowViaUi = async (
 	const submit = page.getByRole('button', { name: 'Create Action' });
 	await expect(submit).toBeEnabled({ timeout: 15000 });
 
-	// The action + team workflow is created server-side on submit.
-	await Promise.all([
+	// Submit. On success the create-action page opens the NEW workflow in a new tab via
+	// window.open('/actra/workflow?id=<newWfId>') (see actra-create-action-page.component: it reads
+	// resp.teamWfs.at(0)). Capture that popup and read its id from the URL — this is the
+	// authoritative id of the workflow we just created. We deliberately do NOT resolve via
+	// teamwf/search: that search is substring/tokenized and test workflows are never purged, so a
+	// title query can match earlier runs' workflows and return a STALE one in a different state.
+	const [popup] = await Promise.all([
+		page.context().waitForEvent('page'),
 		page.waitForResponse(
 			(res) => res.url().includes('/ats/action') && res.status() === 200
 		),
 		submit.click(),
 	]);
 
-	// Resolve the workflow's artifact id via the standard team-workflow search
-	// (poll briefly: the workflow may take a moment to be indexed after create).
-	const deadline = Date.now() + 20000;
-	while (Date.now() < deadline) {
-		const res = await request.get(`${API_BASE}/ats/teamwf/search`, {
-			params: { search: title },
-			headers: { ...AUTH_HEADER, Accept: 'application/json' },
-		});
-		if (res.status() === 200) {
-			const wfs = (await res.json()) as { id: string }[];
-			if (wfs.length > 0 && wfs[0].id) {
-				return wfs[0].id;
-			}
-		}
-		await page.waitForTimeout(1000);
+	// The popup URL is /actra/workflow?id=<newWfId>. Wait until the id query param is present
+	// (the tab may briefly open about:blank before the app sets the URL), then read it.
+	await popup
+		.waitForURL(/\/actra\/workflow\?.*id=\d+/, { timeout: 20000 })
+		.catch(() => undefined);
+	const workflowId = new URL(popup.url()).searchParams.get('id');
+	void popup.close().catch(() => undefined);
+
+	if (!workflowId) {
+		throw new Error(
+			`Create Action did not open a workflow tab with an id (popup url: ${popup.url()})`
+		);
 	}
-	throw new Error(`Created workflow "${title}" was not found via search`);
+	return workflowId;
 };
 
 /** Navigates to a workflow editor and waits for it to finish loading. */

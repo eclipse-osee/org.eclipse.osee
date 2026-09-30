@@ -49,9 +49,15 @@ let workflowId: string;
 const ATTR_TYPE_ID_VALIDATION_REQUIRED = '1152921504606847146';
 const ATTR_TYPE_ID_DESCRIPTION = '1152921504606847196';
 
-/** First editable text attribute in the workflow's state panels. */
+/**
+ * First editable text attribute in the workflow's CURRENT (expanded) state panel. Each state has
+ * its own collapsible panel with its own osee-attributes-editor; only the current state's panel is
+ * expanded, so the others' textareas exist in the DOM but are hidden. Filtering to `:visible`
+ * targets the shown panel's field regardless of which state the workflow is in (e.g. Analyze vs
+ * Endorse), rather than `.first()` which returns the first DOM match — often a collapsed panel.
+ */
 function firstAttributeTextarea(page: Page) {
-	return page.locator('osee-attributes-editor textarea').first();
+	return page.locator('osee-attributes-editor textarea:visible').first();
 }
 
 /**
@@ -196,11 +202,7 @@ test.describe('Actra workflow editor real-time (SSE, two users)', () => {
 		test.setTimeout(120000);
 		const title = `E2E SSE Workflow ${Date.now()}`;
 		const setupPage = await newUserPage(browser, DEMO_USERS.joe);
-		workflowId = await createWorkflowViaUi(
-			setupPage,
-			setupPage.request,
-			title
-		);
+		workflowId = await createWorkflowViaUi(setupPage, title);
 		await setupPage.context().close();
 
 		const joe = await newUserPage(browser, DEMO_USERS.joe);
@@ -372,12 +374,10 @@ test.describe('Actra workflow editor branch creation (SSE, two users)', () => {
 		test.setTimeout(90000);
 		const title = `E2E SSE ARB Workflow ${Date.now()}`;
 		const page = await newUserPage(browser, DEMO_USERS.joe);
-		branchWorkflowId = await createWorkflowViaUi(
-			page,
-			page.request,
-			title,
-			{ workType: 'Systems', actionableItem: 'SAW Systems' }
-		);
+		branchWorkflowId = await createWorkflowViaUi(page, title, {
+			workType: 'Systems',
+			actionableItem: 'SAW Systems',
+		});
 		await page.context().close();
 	});
 
