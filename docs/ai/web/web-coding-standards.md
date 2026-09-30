@@ -606,6 +606,25 @@ Page navigation is the primary time cost (~5s per test). Minimize it:
 - **Keep `beforeEach` minimal.** Only include shared navigation. Dialog-specific setup (opening the table dialog) belongs in individual tests or a nested describe's own `beforeEach`.
 - **Never let one test mutate state that another test depends on.** If a test renames an artifact, edits data, or changes configuration, either undo the change at the end of that test or consolidate the dependent steps into a single test. Tests that rely on execution order or shared mutable state are fragile in parallel runs. When multiple sequential steps share state (e.g., rename → verify → close), combine them into one test with labeled steps rather than splitting across separate tests.
 
+### Debugging failing tests
+
+When a test fails — locally or in CI — read the captured artifacts before changing any code. A timeout on `waitForResponse` or `toBeVisible` tells you *where* the test stopped, not *why*; the artifacts almost always show the real cause (wrong state, a validation error toast, an element that never rendered). Guessing from the error line alone leads to patching the symptom (bumping a timeout) instead of the cause.
+
+The config runs with `retries: 0`, `trace: 'retain-on-failure'`, and `video: 'retain-on-failure'`, so a failing test always leaves a full first-run record and a passing one leaves nothing. Artifacts land in `web/apps/osee/test-results/<test-dir>/` (per test) and are uploaded by CI on failure. For each failure, check them in this order:
+
+- **`error-context.md`** — the accessibility snapshot of the page at the moment of failure. This is the fastest signal: it shows the actual rendered state (current workflow state, field values, which buttons exist) and any visible error/toast text. A failing transition that "hung" often has a `[Field] is required for transition` alert sitting right there in the snapshot — the transition was rejected, not slow.
+- **`test-failed-*.png`** — the failure screenshot(s). Confirms visually what the snapshot describes and catches purely visual issues (overlay covering a button, wrong tab focused).
+- **`*.webm` / `attachments/user-video-*.webm`** — the video. Watch it to see how the page reached the failing state. For two-user tests the `userPage` fixture attaches one video per user (`user-video-0` = first user created, `user-video-1` = second); compare them to see which side missed an event.
+- **`trace.zip`** — open with `npx playwright show-trace trace.zip` for the full timeline: every action, network request, and DOM snapshot. Use it to confirm whether an expected request fired at all (e.g. filter for `/ats/action/transition`) and what it returned. A `waitForResponse(... status === 200)` that hangs usually means the request happened but returned a non-200 — the trace shows the real status and body.
+
+Reproduce locally with the same filters CI used, `--headed` to watch it, and `page.pause()` to freeze at a step and inspect the live DOM:
+
+```bash
+npx playwright test --config playwright.config.ng.ts --project "Setup" --project "Actra Tests" --grep "branch creation" --headed --workers 1
+```
+
+Fix the root cause the artifacts point to — a wrong start state, an unfilled required field, a race where a tab acted before it was SSE-connected — rather than widening a timeout. If the artifacts show the page in a state the test did not expect (e.g. a workflow born in a different state than assumed), the cause may be on the server/demo-data side, not in the test.
+
 ## After development checklist
 
 Before presenting changes as complete, **ask the user** if you should run through these steps. Do not perform them automatically during development — only when the user approves or at the end of a development chunk.
