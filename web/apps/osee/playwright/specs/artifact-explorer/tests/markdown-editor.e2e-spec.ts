@@ -97,18 +97,18 @@ test.describe('Markdown Editor', () => {
 		// Use a wide viewport so all toolbar sections remain expanded
 		await page.setViewportSize({ width: 1600, height: 900 });
 
-		// Intercept transaction (save) requests to prevent auto-save-on-blur
-		// from persisting test content to the backend. These tests validate
-		// client-side editor behavior, not backend persistence.
-		await page.route('**/orcs/txs', (route) => {
+		// These tests validate client-side editor behavior, not persistence, on a shared artifact.
+		// Abort saves so no edit persists (and, since the local reload notification only fires on a
+		// successful commit, aborting also prevents a reload wiping the editor), and abort the SSE
+		// stream so no remote change can refetch over the in-DOM content under test.
+		await page.route('**/orcs/txs*', (route) => {
 			if (route.request().method() === 'POST') {
-				// Intentionally not calling route.fulfill(), route.abort(), or
-				// route.continue(). The request hangs, which is harmless for
-				// these tests since we never assert on save behavior.
+				route.abort();
 				return;
 			}
 			route.continue();
 		});
+		await page.route('**/orcs/sse/events*', (route) => route.abort());
 
 		// Retry navigation once if ERR_ABORTED (parallel worker contention)
 		try {

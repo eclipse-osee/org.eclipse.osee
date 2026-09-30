@@ -18,7 +18,7 @@ import {
 	combineLatest,
 	debounceTime,
 	filter,
-	repeat,
+	startWith,
 	switchMap,
 	tap,
 } from 'rxjs';
@@ -49,16 +49,20 @@ export class PeerReviewUiService {
 		switchMap((id) => this.branchInfoService.getBranch(id))
 	);
 
+	// Refetch on filter/PR change AND on every update poke (e.g. a branch commit). The update
+	// signal is a trigger in combineLatest -- so it stays subscribed for the pipeline's lifetime --
+	// rather than a `repeat({ delay })` notifier, which only re-subscribes between fetches and so
+	// dropped an update that fired in that gap (a second commit's refresh was lost, leaving the PR
+	// list stale and "Close Peer Review" disabled).
 	workingBranches = combineLatest([
 		this._workingBranchFilter$,
 		this._prBranchId$,
+		this.uiService.update.pipe(startWith(true)),
 	]).pipe(
 		debounceTime(250),
 		filter(([_, id]) => id !== '-1'),
 		switchMap(([filter, id]) =>
-			this.prService
-				.getWorkingBranches(id, '0', '3', 'MIM', filter, 0, 0)
-				.pipe(repeat({ delay: () => this.uiService.update }))
+			this.prService.getWorkingBranches(id, '0', '3', 'MIM', filter, 0, 0)
 		)
 	);
 
