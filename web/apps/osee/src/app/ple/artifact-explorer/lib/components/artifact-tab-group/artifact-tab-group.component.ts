@@ -16,7 +16,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ArtifactExplorerTabService } from '../../services/artifact-explorer-tab.service';
-import { ArtifactEditorDirtyService } from '../../services/artifact-editor-dirty.service';
+import { EditorDirtyService } from '@osee/shared/conflict-resolution';
 import { tab } from '../../types/artifact-explorer';
 import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-editor.component';
 
@@ -51,7 +51,7 @@ import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-edit
 })
 export class ArtifactTabGroupComponent {
 	private tabService = inject(ArtifactExplorerTabService);
-	private dirtyService = inject(ArtifactEditorDirtyService);
+	private dirtyService = inject(EditorDirtyService);
 
 	tabs = this.tabService.Tabs;
 

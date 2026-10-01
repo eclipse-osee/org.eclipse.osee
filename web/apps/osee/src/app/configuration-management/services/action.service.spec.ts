@@ -36,7 +36,9 @@ import {
 	testDataTransitionResponse,
 	testDataVersion,
 	MockXResultData,
+	sseEventServiceMock,
 } from '@osee/shared/testing';
+import { SseEventService } from '@osee/shared/services/network';
 import { CreateNewActionInterface } from '@osee/configuration-management/types';
 import { newActionResponseMock } from '@osee/configuration-management/testing';
 
@@ -71,6 +73,7 @@ describe('ActionService', () => {
 			providers: [
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
+				{ provide: SseEventService, useValue: sseEventServiceMock },
 			],
 		});
 		service = TestBed.inject(ActionService);

@@ -104,11 +104,36 @@ public class AttributeFormPart extends AbstractFormPart {
 
    @Override
    public void refresh() {
-      super.refresh();//<--This method resets the dirty bits on all widgets, but does not implicitly revert their values. (see below)
+      super.refresh();
+
+      // Detect structural changes (attributes added/removed remotely) and rebuild if needed
+      try {
+         Artifact artifact = editor.getEditorInput().getArtifact();
+         List<AttributeTypeToken> currentTypes = AttributeTypeUtil.getTypesWithData(artifact);
+         java.util.Set<AttributeTypeToken> displayedTypes = new java.util.HashSet<>(xWidgetsMap.keySet());
+         java.util.Set<AttributeTypeToken> currentTypeSet = new java.util.HashSet<>(currentTypes);
+
+         // Find removed attributes (displayed but no longer in artifact)
+         java.util.Set<AttributeTypeToken> removed = new java.util.HashSet<>(displayedTypes);
+         removed.removeAll(currentTypeSet);
+         if (!removed.isEmpty()) {
+            removeWidgetForAttributeType(removed);
+         }
+
+         // Find added attributes (in artifact but not displayed)
+         java.util.Set<AttributeTypeToken> added = new java.util.HashSet<>(currentTypeSet);
+         added.removeAll(displayedTypes);
+         if (!added.isEmpty()) {
+            addWidgetForAttributeType(new ArrayList<>(added));
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Error detecting attribute structural changes", ex);
+      }
+
       decorator.refresh();
       getManagedForm().getForm().getBody().layout(true, true);
 
-      //Revert any unsaved changes in the widgets.
+      // Revert any unsaved changes in the widgets to reflect current in-memory values
       List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
       for (XWidget xWidget : widgets) {
          if (xWidget.isEditable()) {

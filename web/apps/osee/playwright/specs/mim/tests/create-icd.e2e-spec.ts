@@ -22,7 +22,7 @@ test('create action', async ({ page }) => {
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await selectBranch(page, 'Baseline', 'SAW PL Hardening Branch');
-	await page.waitForTimeout(500);
+	await expect(page.getByText('SAW PL Hardening Branch')).toBeVisible();
 
 	await page.screenshot({
 		animations: 'disabled',
@@ -72,6 +72,8 @@ test('create nodes', async ({ page }) => {
 	});
 
 	await page.getByRole('menuitem', { name: 'Create New Node' }).click();
+	// Wait for the dialog before filling.
+	await expect(page.getByLabel('Add name', { exact: true })).toBeVisible();
 	await page.getByLabel('Add name', { exact: true }).fill('Node A');
 	await page.getByText('Add node number').click();
 	await page.getByLabel('Add node number').fill('A');
@@ -87,6 +89,8 @@ test('create nodes', async ({ page }) => {
 		button: 'right',
 	});
 	await page.getByRole('menuitem', { name: 'Create New Node' }).click();
+	// Wait for the dialog before filling.
+	await expect(page.getByLabel('Add name', { exact: true })).toBeVisible();
 	await page.getByLabel('Add name', { exact: true }).fill('Node B');
 	await page.getByLabel('Add node number').fill('B');
 	await page.getByRole('button', { name: 'Ok' }).click();
@@ -117,7 +121,8 @@ test('create enum list artifacts', async ({ page }) => {
 		.click();
 	await page.getByLabel('Measurement').fill('time');
 	await page.getByRole('button', { name: 'Ok' }).click();
-	await page.waitForTimeout(500);
+	// Wait for the dialog to close before adding the next unit.
+	await expect(page.locator('mat-dialog-container')).toBeHidden();
 	await page.locator('button').filter({ hasText: /^add$/ }).click();
 	await page.getByLabel('Name').fill('meters');
 	await page
@@ -127,13 +132,13 @@ test('create enum list artifacts', async ({ page }) => {
 		.click();
 	await page.getByLabel('Measurement').fill('distance');
 	await page.getByRole('button', { name: 'Ok' }).click();
-	await page.waitForTimeout(500);
+	await expect(page.locator('mat-dialog-container')).toBeHidden();
 	await page.locator('button').filter({ hasText: /^add$/ }).click();
 	await page.getByLabel('Name').fill('hertz');
 	await page.getByLabel('Measurement').click();
 	await page.getByLabel('Measurement').fill('frequency');
 	await page.getByRole('button', { name: 'Ok' }).click();
-	await page.waitForTimeout(500);
+	await expect(page.locator('mat-dialog-container')).toBeHidden();
 	await page.getByRole('button', { name: 'Units' }).click();
 	await page.getByRole('button', { name: 'Rates' }).click();
 	await page.getByRole('button', { name: 'Add New Rates' }).click();
@@ -203,6 +208,8 @@ test('create transport type', async ({ page }) => {
 	await page.getByRole('link', { name: 'Transport Types' }).click();
 	await selectBranch(page, 'Working', branchName);
 	await page.locator('button').filter({ hasText: 'add' }).click();
+	// Wait for the dialog before filling.
+	await expect(page.getByLabel('Name')).toBeVisible();
 	await page.getByLabel('Name').fill('Ethernet');
 	await page.getByLabel('Byte Align Validation', { exact: true }).click();
 	await page.getByLabel('Byte Align Validation Size').click();
@@ -273,6 +280,8 @@ test('create connection', async ({ page }) => {
 		button: 'right',
 	});
 	await page.getByRole('menuitem', { name: 'Create New Connection' }).click();
+	// Wait for the dialog before filling.
+	await expect(page.getByLabel('Add a Name')).toBeVisible();
 	await page.getByLabel('Add a Name').fill('Connection A-B');
 	await page.getByLabel('Select a Transport Type').locator('span').click();
 	await page.getByText('Ethernet').click();
@@ -301,6 +310,8 @@ test('create message and submessage', async ({ page }) => {
 	});
 
 	await page.locator('button').filter({ hasText: 'add' }).click();
+	// Wait for the dialog before filling.
+	await expect(page.getByLabel('Name')).toBeVisible();
 	await page.getByLabel('Name').fill('Message 1');
 	await page.getByPlaceholder('Rates').click();
 	await page.getByRole('option', { name: '5', exact: true }).click();
@@ -343,6 +354,8 @@ test('create message and submessage', async ({ page }) => {
 	});
 
 	await page.getByRole('button', { name: 'Create new Submessage' }).click();
+	// Wait for the dialog before filling.
+	await expect(page.getByLabel('Name')).toBeVisible();
 	await page.getByLabel('Name').fill('Submessage 1');
 	await page.getByText('Sub Message Number', { exact: true }).click();
 	await page.getByLabel('Sub Message Number').fill('1');
@@ -355,7 +368,6 @@ test('create message and submessage', async ({ page }) => {
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 
-	await page.waitForTimeout(500);
 	await expect(
 		page.getByTestId('sub-message-table-row-Submessage 1')
 	).toBeVisible();
@@ -376,7 +388,8 @@ test('create structure', async ({ page }) => {
 	await page.getByTestId('add-structure').waitFor({ state: 'visible' });
 	await page.getByTestId('add-structure').click();
 	await page.getByRole('button', { name: 'Create new Structure' }).click();
-	await page.getByLabel('Name', { exact: true }).click();
+	// Wait for the dialog before filling.
+	await expect(page.getByLabel('Name', { exact: true })).toBeVisible();
 	await page.getByLabel('Name', { exact: true }).fill('Structure 1');
 	await page.getByText('Max Simultaneity', { exact: true }).click();
 	await page.getByLabel('Max Simultaneity').fill('1');
@@ -395,7 +408,10 @@ test('create structure', async ({ page }) => {
 });
 
 test('create elements', async ({ page }) => {
-	test.setTimeout(600000);
+	// Loose ceiling for the ~3.2m sequential runtime; per-action timeouts below catch stuck steps.
+	test.setTimeout(300000);
+	// Bound every action so a stuck step fails at its own line, not after the whole test budget.
+	page.setDefaultTimeout(20000);
 	await page.goto('/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
@@ -431,11 +447,7 @@ test('create elements', async ({ page }) => {
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
-	await page
-		.locator('div')
-		.filter({ hasText: /^Name$/ })
-		.nth(2)
-		.click();
+	await expect(page.getByLabel('Name')).toBeVisible();
 	await page.getByLabel('Name').fill('Demo Fault');
 	await page
 		.locator('osee-platform-type-dropdown')
@@ -447,14 +459,16 @@ test('create elements', async ({ page }) => {
 		.locator('span')
 		.click();
 	await page.getByText('Enumeration').click();
-	await page
-		.getByLabel('1Select a logical type')
-		.getByRole('button', { name: 'Next' })
-		.click();
-	await page
-		.getByLabel('2Fill out type information')
-		.getByLabel('Name')
-		.click();
+	// Step 2 renders in two phases: a minimal form, then the real fields once
+	// GET /mim/logicalType/<id> resolves. Filling before that fetch lands writes into inputs the
+	// second render replaces, dropping the value. Wait for the fetch before filling.
+	await Promise.all([
+		page.waitForResponse((res) => res.url().includes('/mim/logicalType/')),
+		page
+			.getByLabel('1Select a logical type')
+			.getByRole('button', { name: 'Next' })
+			.click(),
+	]);
 	await page
 		.getByLabel('2Fill out type information')
 		.getByLabel('Name')
@@ -485,8 +499,14 @@ test('create elements', async ({ page }) => {
 		.getByRole('row', { name: 'Enter a name Enter an ordinal' })
 		.getByLabel('Enter a name')
 		.fill('Info');
-	await page.waitForTimeout(500);
-	await page.getByTestId('type-form-next').click();
+	// Commit the last enum literal by blurring the focused input. Blur the currently-focused
+	// element rather than re-resolving the row by name: filling the row changes its accessible name
+	// (it no longer contains the "Enter a name" placeholder), so a name-based re-lookup finds nothing.
+	await page.locator(':focus').blur();
+	// Gate on Next enabling (form valid + async unique settled).
+	const enumTypeNext = page.getByTestId('type-form-next');
+	await expect(enumTypeNext).toBeEnabled();
+	await enumTypeNext.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
@@ -581,7 +601,8 @@ test('add array element', async ({ page }) => {
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
-	await page.getByLabel('Name', { exact: true }).click();
+	// Wait for the dialog before filling.
+	await expect(page.getByLabel('Name', { exact: true })).toBeVisible();
 	await page.getByLabel('Name', { exact: true }).fill('Test Char');
 
 	await page.screenshot({
@@ -614,7 +635,10 @@ async function createElement(
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
-	await page.getByLabel('Name').fill(name);
+	// Wait for the dialog to render before filling.
+	const elementName = page.getByLabel('Name');
+	await expect(elementName).toBeVisible();
+	await elementName.fill(name);
 	await page
 		.locator('osee-platform-type-dropdown')
 		.getByRole('button')
@@ -625,10 +649,15 @@ async function createElement(
 		.locator('span')
 		.click();
 	await page.getByRole('option', { name: logicalType, exact: true }).click();
-	await page
-		.getByLabel('1Select a logical type')
-		.getByRole('button', { name: 'Next' })
-		.click();
+	// Step 2 renders in two phases; wait for GET /mim/logicalType/<id> before filling so the value
+	// is not dropped by the second render.
+	await Promise.all([
+		page.waitForResponse((res) => res.url().includes('/mim/logicalType/')),
+		page
+			.getByLabel('1Select a logical type')
+			.getByRole('button', { name: 'Next' })
+			.click(),
+	]);
 	await page
 		.getByLabel('2Fill out type information')
 		.getByLabel('Name')
@@ -647,10 +676,12 @@ async function createElement(
 		await page.getByRole('combobox', { name: 'Units' }).click();
 		await page.getByRole('option', { name: units }).click();
 	}
-	await page
+	// Gate on Next enabling (form valid + async unique settled) before clicking.
+	const page2Next = page
 		.getByLabel('2Fill out type information')
-		.getByRole('button', { name: 'Next' })
-		.click();
+		.getByRole('button', { name: 'Next' });
+	await expect(page2Next).toBeEnabled();
+	await page2Next.click();
 	await page.getByRole('button', { name: 'Ok' }).click({ force: true });
 	await page.getByRole('button', { name: 'Next' }).click({ force: true });
 	await expect(page.getByTestId('submit-btn')).toBeVisible({

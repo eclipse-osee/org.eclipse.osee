@@ -1,5 +1,9 @@
 # AI Contributing Guide
 
+## Communication
+
+Be succinct and direct. Lead with the answer, cut preamble and filler, and prefer the shortest response that fully addresses the request. Scale detail to the task — brief for simple things, thorough only when complexity warrants.
+
 ## Code quality standards
 
 Before implementing, evaluate whether your approach is the simplest correct solution that works WITH the framework/library, not against it. If you're fighting the tool, step back and find the idiomatic path.
@@ -12,7 +16,11 @@ Do not make blind changes. If you lack enough context to confidently implement a
 2. **Investigate.** Read the relevant code, trace the data flow, check logs, or add temporary instrumentation (console output, breakpoints, test assertions) to confirm your hypothesis before changing production code.
 3. **State your assumptions.** If you must proceed with incomplete information, explicitly call out what you're assuming and why — so it can be corrected early.
 
-Never guess at root causes or apply speculative fixes. A wrong fix wastes more time than the investigation would have taken.
+Never guess at root causes or apply speculative fixes. When something doesn't work as expected, add instrumentation to observe the actual behavior before attempting a fix. A wrong fix wastes more time than the investigation would have taken.
+
+### Design for quality
+
+Do not cut corners. Research industry best practices before implementing infrastructure, architecture, or patterns that will be long-lived. Use the best architecture — not the quickest one to type. If multiple approaches exist, compare them honestly and choose based on correctness, performance, and maintainability — not implementation speed.
 
 ### Requirements for all code output
 

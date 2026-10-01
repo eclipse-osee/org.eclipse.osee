@@ -46,6 +46,8 @@
 		"@fontsource/material-icons-round": "^5.0.11",
 		"@fontsource/material-icons-sharp": "^5.0.11",
 		"@fontsource/material-icons-two-tone": "^5.0.11",
+		"@fontsource/material-symbols-outlined": "^5.3.4",
+		"@microsoft/fetch-event-source": "^2.0.1",
 		"@okta/okta-angular": "^6.3.2",
 		"@okta/okta-auth-js": "^7.5.0",
 		"@swimlane/ngx-graph": "^8.2.1",

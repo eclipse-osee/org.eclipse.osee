@@ -21,6 +21,10 @@ ENV DEBIAN_FRONTEND="noninteractive"
 ENV WEB_URI=${WEB_URI}
 ENV CM_CONFIG_URI=${CM_CONFIG_URI}
 ENV APPLICATION_SERVER_DATA=${APPLICATION_SERVER_DATA}
+# External ActiveMQ broker URI. Empty by default: the server runs web-only (no
+# desktop<->web relay or server-to-server events) and never hosts a broker. Set
+# to tcp://<host>:61616 (a hosted broker) to enable cross-client/server messaging.
+ENV OSEE_BROKER_URI=""
 
 USER root
 
@@ -42,4 +46,4 @@ WORKDIR ${OSEE_HOME}
 
 HEALTHCHECK --interval=10s --start-period=1m --retries=5 CMD curl -I -f --max-time 5 http://localhost:8089/health/http/headers || exit 1
 
-ENTRYPOINT java -server -Xmx3G -Dorg.osgi.service.http.port=8089 -Dlogback.configurationFile=logback-dev.xml -Djava.util.logging.config.file=etc/logging.properties -Dosee.application.server.web.uri=${WEB_URI} -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 -Dcm.config.uri=${CM_CONFIG_URI} -Dosee.authentication.protocol=loginId -Dosee.application.server.data=${APPLICATION_SERVER_DATA} -jar plugins/org.eclipse.equinox.launcher_1.7.0.v20250519-0528.jar -console -consoleLog -data workspace 2>&1
+ENTRYPOINT java -server -Xmx3G -Dorg.osgi.service.http.port=8089 -Dlogback.configurationFile=logback-dev.xml -Djava.util.logging.config.file=etc/logging.properties -Dosee.application.server.web.uri=${WEB_URI} -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 -Dcm.config.uri=${CM_CONFIG_URI} -Dosee.authentication.protocol=loginId -Dosee.application.server.data=${APPLICATION_SERVER_DATA} -Dosee.default.broker.uri=${OSEE_BROKER_URI} -jar plugins/org.eclipse.equinox.launcher_1.7.0.v20250519-0528.jar -console -consoleLog -data workspace 2>&1

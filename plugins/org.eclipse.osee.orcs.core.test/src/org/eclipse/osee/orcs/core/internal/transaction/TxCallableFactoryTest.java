@@ -138,16 +138,28 @@ public class TxCallableFactoryTest {
    @Test
    public void testCommitErrorDuringRollback() throws Exception {
       TxDataManager manager = mock(TxDataManager.class);
-
       TxCallableFactory factory = new TxCallableFactory(logger, txDataStore, manager);
 
-      Exception exception = new IllegalStateException("onCommit Exception");
+      // Commit fails, then the rollback triggered by that failure ALSO fails. The original commit
+      // exception must propagate (wrapped) with the rollback failure attached as a suppressed
+      // exception, so neither is lost when diagnosing a failed commit+rollback.
+      IllegalStateException commitFailure = new IllegalStateException("onCommit Exception");
+      OseeCoreException rollbackFailure = new OseeCoreException("rollback Exception");
+      TransactionData changes = mock(TransactionData.class);
+      when(manager.createChangeData(data)).thenReturn(changes);
+      @SuppressWarnings("unchecked")
+      Callable<TransactionResult> commitCallable = mock(Callable.class);
+      when(commitCallable.call()).thenThrow(commitFailure);
+      when(txDataStore.commitTransaction(eq(data.getSession()), eq(changes))).thenReturn(commitCallable);
+      doThrow(rollbackFailure).when(manager).rollbackTx(data);
 
-      doThrow(exception).when(manager).txCommitSuccess(data);
-      doThrow(OseeCoreException.class).when(manager).rollbackTx(data);
-
-      thrown.expect(OseeCoreException.class);
-      thrown.expectMessage("Exception during rollback and commit");
-      factory.createTx(data).call();
+      try {
+         factory.createTx(data).call();
+         Assert.fail("Expected the commit failure to propagate");
+      } catch (Exception thrownException) {
+         assertEquals(commitFailure, thrownException);
+         assertEquals(1, thrownException.getSuppressed().length);
+         assertEquals(rollbackFailure, thrownException.getSuppressed()[0]);
+      }
    }
 }

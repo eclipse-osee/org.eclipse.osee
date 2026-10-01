@@ -316,6 +316,18 @@
 								}
 							]
 						},
+						"demo_local_debug_server2": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.demo.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.server2.ts"
+								}
+							]
+						},
 						"demo_local_release": {
 							"fileReplacements": [
 								{
@@ -579,6 +591,11 @@
 						"demo_local_debug": {
 							"proxyConfig": "src/environments/proxy.conf.json",
 							"buildTarget": "osee-web:build:demo_local_debug"
+						},
+						"demo_local_debug_server2": {
+							"port": 4201,
+							"proxyConfig": "src/environments/proxy.conf.server2.json",
+							"buildTarget": "osee-web:build:demo_local_debug_server2"
 						},
 						"demo_local_release": {
 							"proxyConfig": "src/environments/proxy.conf.json",

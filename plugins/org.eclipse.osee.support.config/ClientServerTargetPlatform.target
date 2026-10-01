@@ -42,7 +42,10 @@
 	<plugin id="javax.xml"/>
 	<plugin id="javax.xml.stream"/>
 	<plugin id="jms.activemq.launch"/>
-	<plugin id="jms.libraries"/>
+	<plugin id="org.apache.activemq.osgi"/>
+	<plugin id="org.apache.geronimo.specs.geronimo-jms_1.1_spec"/>
+	<plugin id="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec"/>
+	<plugin id="org.fusesource.hawtbuf.hawtbuf"/>
 	<plugin id="net.bytebuddy.byte-buddy"/>
 	<plugin id="net.bytebuddy.byte-buddy-agent"/>
 	<plugin id="net.i2p.crypto.eddsa"/>

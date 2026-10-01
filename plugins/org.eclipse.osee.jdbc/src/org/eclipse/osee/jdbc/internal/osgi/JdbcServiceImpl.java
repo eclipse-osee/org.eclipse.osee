@@ -19,10 +19,12 @@ import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_POOL__MAX_IDLE_CONNECTION
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_SERVER__DB_DATA_PATH;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_SERVER__HOST;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_SERVER__PORT;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__CONNECTION_URI;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__CONNECTION_USERNAME;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -51,15 +53,19 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Roberto E. Escobar
  */
+// Embedded-HSQLDB server defaults are applied by withDefaults() only when no db config is supplied,
+// not as static component properties -- the latter would merge into a supplied client config and start
+// a phantom HSQLDB.
 @Component(configurationPid = "OseeJdbc", factory = "org.eclipse.osee.jdbc.JdbcService", property = {
-   JDBC_SERVER__HOST + "=127.0.0.1",
-   JDBC_SERVER__PORT + "=8088",
-   JDBC_SERVER__DB_DATA_PATH + "=file:demo/hsql/osee.hsql.db",
    JDBC__CONNECTION_USERNAME + "=public",
    JDBC_POOL__ENABLED + "=true",
    JDBC_POOL__MAX_ACTIVE_CONNECTIONS + "=100",
    JDBC_POOL__MAX_IDLE_CONNECTIONS + "=100"})
 public class JdbcServiceImpl implements JdbcService {
+
+   private static final String DEFAULT_EMBEDDED_DB_HOST = "127.0.0.1";
+   private static final String DEFAULT_EMBEDDED_DB_PORT = "8088";
+   private static final String DEFAULT_EMBEDDED_DB_DATA_PATH = "file:demo/hsql/osee.hsql.db";
 
    private final AtomicReference<JdbcServer> serverRef = new AtomicReference<>();
    private final AtomicReference<JdbcClient> clientRef = new AtomicReference<>();
@@ -99,12 +105,13 @@ public class JdbcServiceImpl implements JdbcService {
 
    @Modified
    void modified(Map<String, Object> props) {
-      this.config = props;
+      Map<String, Object> effectiveProps = withDefaults(props);
+      this.config = effectiveProps;
       synchronized (clientRef) {
-         JdbcServer server = newServer(props);
+         JdbcServer server = newServer(effectiveProps);
 
-         JdbcClientBuilder builder = JdbcClientBuilder.newBuilder(props);
-         if (hasServerConfig(props)) {
+         JdbcClientBuilder builder = JdbcClientBuilder.newBuilder(effectiveProps);
+         if (hasServerConfig(effectiveProps)) {
             Objects.requireNonNull(server, "Server can not be null");
             JdbcServerConfig serverConfig = server.getConfig();
             if (!Strings.isValid(builder.getDbUri())) {
@@ -185,6 +192,22 @@ public class JdbcServiceImpl implements JdbcService {
    public boolean isServerAlive(long waitTime) {
       JdbcServer server = getServer();
       return server != null ? server.isAlive(waitTime) : false;
+   }
+
+   /**
+    * Adds the embedded-HSQLDB defaults only when no database config was supplied (no client
+    * {@code db.uri} and no {@code jdbc.server.*} key); otherwise returns props unchanged.
+    */
+   private static Map<String, Object> withDefaults(Map<String, Object> props) {
+      boolean hasClientUri = Strings.isValid(JdbcUtil.get(props, JDBC__CONNECTION_URI, null));
+      if (hasClientUri || hasServerConfig(props)) {
+         return props;
+      }
+      Map<String, Object> withDefaults = new HashMap<>(props);
+      withDefaults.put(JDBC_SERVER__HOST, DEFAULT_EMBEDDED_DB_HOST);
+      withDefaults.put(JDBC_SERVER__PORT, DEFAULT_EMBEDDED_DB_PORT);
+      withDefaults.put(JDBC_SERVER__DB_DATA_PATH, DEFAULT_EMBEDDED_DB_DATA_PATH);
+      return withDefaults;
    }
 
    private static boolean hasServerConfig(Map<String, Object> props) {

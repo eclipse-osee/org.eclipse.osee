@@ -20,11 +20,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const config: PlaywrightTestConfig = {
 	workers: process.env['CI'] ? 3 : undefined,
 	timeout: process.env['CI'] ? 45000 : 30000,
+	// No retries: every test runs once, so a failure is captured on its first (and only) attempt
+	// with artifacts reflecting the actual failing state -- not a retry that ran against
+	// already-mutated state.
+	retries: 0,
 	use: {
 		channel: 'chromium',
 		headless: true,
 		baseURL: APP_BASE,
+		// Capture full diagnostics on the first-run failure (no retries), so a CI failure is
+		// debuggable from its actual failing attempt: screenshot, video, and a replayable trace
+		// (`npx playwright show-trace <trace.zip>`). Retained only on failure to keep passing
+		// runs cheap.
 		screenshot: 'only-on-failure',
+		trace: 'retain-on-failure',
+		video: 'retain-on-failure',
 	},
 
 	testDir: join(__dirname, 'playwright/specs'),
@@ -119,6 +129,12 @@ const config: PlaywrightTestConfig = {
 			name: 'Artifact Explorer Tests',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/artifact-explorer/tests',
+			dependencies: ['Setup'],
+		},
+		{
+			name: 'Actra Tests',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/actra/tests',
 			dependencies: ['Setup'],
 		},
 	],

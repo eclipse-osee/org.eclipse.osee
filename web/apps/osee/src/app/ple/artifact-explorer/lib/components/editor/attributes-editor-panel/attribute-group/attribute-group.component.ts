@@ -55,6 +55,7 @@ const COLLAPSE_LIMIT = 5;
 							[artifactId]="artifactId()"
 							[artifactApplicability]="artifactApplicability()"
 							[disabled]="disabled()"
+							[conflicted]="conflicted()"
 							[showLabel]="false" />
 					</div>
 					@if (deleteMode()) {
@@ -92,6 +93,8 @@ export class AttributeGroupComponent {
 	artifactApplicability = input.required<applic>();
 	/** Whether editing is disabled. */
 	disabled = input(false);
+	/** Whether a remote conflict exists (blocks auto-save). */
+	conflicted = input(false);
 	/** Whether delete mode is active. */
 	deleteMode = input(false);
 	/** All attributes on the artifact (needed for multiplicity checks). */

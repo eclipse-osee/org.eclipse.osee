@@ -30,6 +30,7 @@ import { RouterLink } from '@angular/router';
 			target="_blank">
 			<button
 				mat-flat-button
+				class="tw-bg-primary tw-text-background"
 				(click)="opensDialog() ? addAction() : null">
 				<mat-icon>add</mat-icon>Create Action
 			</button>
@@ -88,6 +89,18 @@ export class CreateActionButtonComponent {
 										type: _branchType,
 										id: resp.workingBranchId.id,
 									};
+								} else if (!resp.results.success) {
+									// The action endpoint returns HTTP 200 even on failure.
+									// Surface the server's reason and do NOT route (an invalid
+									// branch id would resolve to COMMON).
+									const reasons =
+										resp.results.results?.filter(
+											(r) => !!r
+										) ?? [];
+									this.uiService.ErrorText =
+										reasons.length > 0
+											? reasons.join('; ')
+											: 'Failed to create action.';
 								}
 							})
 						)

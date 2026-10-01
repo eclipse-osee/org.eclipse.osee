@@ -41,7 +41,11 @@ test('test', async ({ page }) => {
 		animations: 'disabled',
 	});
 
-	await page.getByRole('button', { name: 'Next' }).click();
+	// Wait for the step-2 fields to render (two-phase; see below) before filling.
+	await Promise.all([
+		page.waitForResponse((res) => res.url().includes('/mim/logicalType/')),
+		page.getByRole('button', { name: 'Next' }).click(),
+	]);
 	await page.getByLabel('Name').click();
 	await page.getByLabel('Name').fill('Distance');
 	await page.getByLabel('Bit Size').click();
@@ -56,13 +60,17 @@ test('test', async ({ page }) => {
 	await page.getByRole('option', { name: 'Meters', exact: true }).click();
 	await page.getByLabel('Default Value').click();
 	await page.getByLabel('Default Value').fill('0');
+	await page.getByLabel('Default Value').blur();
 
 	await page.screenshot({
 		path: 'screenshots/platform-types-page/create-platform-type.png',
 		animations: 'disabled',
 	});
 
-	await page.getByRole('button', { name: 'Next' }).click();
+	// Gate on the step-2 Next being enabled (form valid + async uniqueness settled) before clicking.
+	const intTypeNext = page.getByTestId('type-form-next');
+	await expect(intTypeNext).toBeEnabled({ timeout: 20000 });
+	await intTypeNext.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page.locator('mat-row:nth-child(3) > mat-cell:nth-child(2)').click();
 	await page.locator('osee-platform-types-fab').locator('button').click();
@@ -72,7 +80,13 @@ test('test', async ({ page }) => {
 		.getByTestId('logical-type-selector')
 		.click();
 	await page.getByText('Enumeration', { exact: true }).click();
-	await page.getByRole('button', { name: 'Next' }).click();
+	// Step 2 renders in two phases: a minimal form first, then the real fields once
+	// GET /mim/logicalType/<id> resolves. Filling before that fetch lands writes into inputs that
+	// the second render replaces, silently dropping the value. Wait for the fetch before filling.
+	await Promise.all([
+		page.waitForResponse((res) => res.url().includes('/mim/logicalType/')),
+		page.getByRole('button', { name: 'Next' }).click(),
+	]);
 	await page.getByLabel('Name').fill('Decision');
 	await page.getByLabel('Bit Size').click();
 	await page.getByLabel('Bit Size').fill('32');
@@ -135,14 +149,20 @@ test('test', async ({ page }) => {
 		.nth(2)
 		.click();
 	await page.getByLabel('Enter a name').nth(2).fill('Maybe');
-	// Blur the input to commit the value
-	await page.getByLabel('Enter a name').nth(2).press('Tab');
+	// Blur the input to commit the value (Tab does not reliably move focus in headless).
+	await page.getByLabel('Enter a name').nth(2).blur();
 
 	await page.screenshot({
 		path: 'screenshots/platform-types-page/added-enums.png',
 		animations: 'disabled',
 	});
 
-	await page.getByRole('button', { name: 'Next' }).click();
+	// Next is gated on the step-2 form group being valid AND not pending: the Name and Enumeration
+	// Set Name are required, and async uniqueness validators run on blur. Assert the button is
+	// enabled (which waits out the in-flight async validators) before clicking, rather than clicking
+	// a still-disabled button and timing out.
+	const enumTypeNext = page.getByTestId('type-form-next');
+	await expect(enumTypeNext).toBeEnabled({ timeout: 20000 });
+	await enumTypeNext.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 });

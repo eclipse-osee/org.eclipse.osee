@@ -16,6 +16,8 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '@osee/environments';
+import { SseEventService } from '@osee/shared/services/network';
+import { sseEventServiceMock } from '@osee/shared/testing';
 
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { platformTypesMock } from '@osee/messaging/shared/testing';
@@ -42,6 +44,7 @@ describe('TypesService', () => {
 				},
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
+				{ provide: SseEventService, useValue: sseEventServiceMock },
 			],
 		});
 		service = TestBed.inject(TypesService);

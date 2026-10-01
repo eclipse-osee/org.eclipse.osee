@@ -18,6 +18,7 @@ import { ciConfigSentinel } from '../../../types/ci-config';
 import { FormsModule } from '@angular/forms';
 import { filter, repeat, switchMap, take, tap } from 'rxjs';
 import { UiService } from '@osee/shared/services';
+import { COMMON_BRANCH_ID } from '@osee/shared/types';
 import { MatButton } from '@angular/material/button';
 import { DashboardService } from '../../../services/dashboard.service';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -59,7 +60,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 						[value]="ciConfig().testResultsToKeep"
 						[disabled]="isDisabled()"
 						label="Number of results to keep"
-						matTooltip="Number of test results that will be kept per test script per CI Set. When the number of results exceeds this limit, 
+						matTooltip="Number of test results that will be kept per test script per CI Set. When the number of results exceeds this limit,
 						the oldest results are deleted. Values of 0 or lower indicate all results should be kept."
 						data-testid="results-to-keep"></osee-persisted-number-attribute-input>
 				</form>
@@ -85,7 +86,7 @@ export class CiAdminConfigComponent {
 
 	branchType = toSignal(this.uiService.type);
 
-	commonBranch = '570';
+	commonBranch = COMMON_BRANCH_ID;
 
 	ciConfig = toSignal(
 		this.uiService.id.pipe(

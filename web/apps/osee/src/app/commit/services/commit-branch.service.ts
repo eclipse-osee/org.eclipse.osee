@@ -18,11 +18,8 @@ import {
 	CreateMergeBranchDetails,
 	mergeData,
 } from '@osee/commit/types';
-import {
-	BranchCommitEventService,
-	BranchInfoService,
-	UiService,
-} from '@osee/shared/services';
+import { BranchInfoService, UiService } from '@osee/shared/services';
+import { MutationService } from '@osee/shared/services/network';
 import { branch } from '@osee/shared/types';
 import { TransactionService } from '@osee/transactions/services';
 import {
@@ -39,7 +36,7 @@ export class CommitBranchService {
 	private uiService = inject(UiService);
 	private branchInfoService = inject(BranchInfoService);
 	private accountService = inject(UserDataAccountService);
-	private eventService = inject(BranchCommitEventService);
+	private mutation = inject(MutationService);
 
 	private _updatedMergeData = new Subject();
 
@@ -139,12 +136,21 @@ export class CommitBranchService {
 						archive: 'false',
 					})
 					.pipe(
+						// Emit the local `committed` branch event so the acting tab's refresh +
+						// tab-close consumers react immediately (SSE echo is ignored via originId).
+						this.mutation.withLocalNotify((commitResp) =>
+							commitResp.success
+								? {
+										type: 'branch' as const,
+										branchId,
+										changeType: 'committed' as const,
+									}
+								: null
+						),
 						tap((commitResp) => {
 							if (!commitResp.success) {
 								this.uiService.ErrorText =
 									'Error committing branch';
-							} else {
-								this.eventService.sendEvent(branchId);
 							}
 						})
 					)

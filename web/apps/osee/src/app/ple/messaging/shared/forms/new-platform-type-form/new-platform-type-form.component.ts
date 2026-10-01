@@ -12,7 +12,7 @@
  **********************************************************************/
 import { AsyncPipe, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
 import { Component, input, model, inject } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatLabel } from '@angular/material/form-field';
 import { applic } from '@osee/applicability/types';
@@ -36,6 +36,7 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	filter,
+	shareReplay,
 	switchMap,
 	tap,
 } from 'rxjs';
@@ -74,19 +75,14 @@ export class NewPlatformTypeFormComponent {
 		idIntValue: 0,
 	});
 	private _logicalType = toObservable(this.logicalType);
-	private _formInfo = this._logicalType.pipe(
-		filter((val) => val.id !== '-1'),
-		debounceTime(0),
-		distinctUntilChanged(),
-		debounceTime(500),
-		switchMap((type) => this.typesService.getLogicalTypeFormDetail(type.id))
-	);
-	protected formInfo = toSignal(this._formInfo, {
-		initialValue: { ...this.logicalType(), fields: [] },
-	});
+	// Single source for the logical-type form detail. Keyed on the type id (not object identity, which
+	// changes as platformType rebuilds) so re-emissions of the same type do not refetch, and shared so
+	// the template's async pipe drives exactly one HTTP call. Previously two separate pipelines
+	// (_formInfo + __formInfo) each fetched this, and object-identity re-emissions fetched again --
+	// every extra response re-rendered/repopulated the form and could wipe an in-progress edit.
 	__formInfo = this._logicalType.pipe(
 		filter((val) => val.id !== '-1'),
-		distinctUntilChanged(),
+		distinctUntilChanged((a, b) => a.id === b.id),
 		debounceTime(500),
 		switchMap((type) =>
 			this.typesService.getLogicalTypeFormDetail(type.id)
@@ -101,7 +97,8 @@ export class NewPlatformTypeFormComponent {
 						f.defaultValue
 					);
 				});
-		})
+		}),
+		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	platformType = model.required<PlatformType>();

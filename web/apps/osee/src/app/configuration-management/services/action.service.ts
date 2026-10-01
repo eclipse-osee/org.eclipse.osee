@@ -16,11 +16,13 @@ import { map, Observable } from 'rxjs';
 import { user } from '@osee/shared/types/auth';
 import { apiURL } from '@osee/environments';
 import {
+	COMMON_BRANCH_ID,
 	HttpParamsType,
 	NamedId,
 	XResultData,
 	transitionResponse,
 } from '@osee/shared/types';
+import { MutationService } from '@osee/shared/services/network';
 import {
 	actionableItem,
 	teamWorkflow,
@@ -50,6 +52,7 @@ import {
 })
 export class ActionService {
 	private http = inject(HttpClient);
+	private mutation = inject(MutationService);
 
 	public get users(): Observable<user[]> {
 		return this.http.get<user[]>(apiURL + '/ats/user?active=Active');
@@ -78,7 +81,9 @@ export class ActionService {
 		return this.http.get<action[]>(apiURL + '/ats/action/' + artifactId);
 	}
 
-	public getTeamWorkflowDetails(artifactId: string | number) {
+	public getTeamWorkflowDetails(
+		artifactId: string | number
+	): Observable<teamWorkflowDetails> {
 		return this.http.get<teamWorkflowDetails>(
 			apiURL + '/ats/teamwf/details/' + artifactId
 		);
@@ -207,9 +212,30 @@ export class ActionService {
 		);
 	}
 	public transitionAction(body: transitionAction) {
-		return this.http.post<transitionResponse>(
-			apiURL + '/ats/action/transition',
-			body
+		return this.mutation.mutateAndNotify(
+			this.http.post<transitionResponse>(
+				apiURL + '/ats/action/transition',
+				body
+			),
+			(res) => {
+				const txId = res.transaction?.id;
+				// workItemIds are ArtifactToken objects ({ id, name }), not bare ids.
+				const ids = (res.workItemIds ?? [])
+					.map((w) => w?.id)
+					.filter((id): id is string => !!id)
+					.map(String);
+				if (txId && txId !== '0' && txId !== '-1' && ids.length > 0) {
+					return {
+						type: 'artifact',
+						branchId: res.transaction.branchId ?? COMMON_BRANCH_ID,
+						artifactIds: ids,
+						transactionId: txId,
+						// A transition modifies the workflow's state/assignee attributes.
+						changeTypes: ['attribute_modified'],
+					};
+				}
+				return null;
+			}
 		);
 	}
 	public getVersions(arbId: string): Observable<targetedVersion[]> {

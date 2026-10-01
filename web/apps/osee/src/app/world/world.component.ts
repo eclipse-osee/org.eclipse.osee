@@ -38,7 +38,15 @@ import {
 	MatTableDataSource,
 } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs';
+import {
+	distinctUntilChanged,
+	filter,
+	map,
+	shareReplay,
+	switchMap,
+	take,
+	tap,
+} from 'rxjs';
 import { WorldHttpService } from './services/world-http.service';
 import { worldRow, worldRowWithDiffs, worldWithDiffs } from './world';
 import { NgClass, Location } from '@angular/common';
@@ -78,7 +86,15 @@ class WorldComponent implements AfterViewInit {
 				custId: value.get('custId') || '',
 				diff: value.get('diff') || '',
 			};
-		})
+		}),
+		// queryParamMap can emit duplicates on initial navigation; dedup by value so the (three)
+		// downstream switchMap fetches run once per distinct query, not per emission.
+		distinctUntilChanged(
+			(a, b) =>
+				a.collId === b.collId &&
+				a.custId === b.custId &&
+				a.diff === b.diff
+		)
 	);
 	paramsSignal = toSignal(this.params);
 	showDiffs = computed(() => this.paramsSignal()?.diff);

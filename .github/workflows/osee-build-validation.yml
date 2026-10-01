@@ -361,6 +361,18 @@ jobs:
         if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
         run: pnpm -r run playwright
 
+      - name: Upload Playwright artifacts on failure
+        if: ${{ failure() && (needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            web/apps/osee/test-results/
+            web/apps/osee/playwright-report/
+            web/apps/osee/results/
+          retention-days: 7
+          if-no-files-found: ignore
+
       - name: Write report to gha comment
         if: ${{ (needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true') && !cancelled() }}
         uses: daun/playwright-report-summary@v3

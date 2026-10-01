@@ -199,20 +199,22 @@ test.describe('Attribute Editing (Auto-Save)', () => {
 			.locator('osee-focus-lost-input')
 			.first()
 			.getByRole('textbox');
-		await renameAndSave(
-			page,
-			nameInput2,
-			'AE Attr Test Art',
-			'AE Attr Dirty Test'
-		);
+		// Rename to a unique value derived from the CURRENT name. Using a unique target guarantees
+		// the fill is a real change (so the focus-lost auto-save actually fires and renameAndSave's
+		// orcs/txs wait resolves), and reading the current value first makes this robust to leftover
+		// state from a prior attempt (the serial suite reuses one artifact and does not reset it).
+		const currentName =
+			(await nameInput2.inputValue()) || 'AE Attr Test Art';
+		const dirtyTestName = `AE Attr Dirty Test ${Date.now()}`;
+		await renameAndSave(page, nameInput2, currentName, dirtyTestName);
 		await page.getByLabel('Close tab').first().click();
-		await expect(tabGroup.getByText('AE Attr Dirty Test')).not.toBeVisible({
+		await expect(tabGroup.getByText(dirtyTestName)).not.toBeVisible({
 			timeout: 10000,
 		});
 		expect(dialogText, 'no unsaved-changes dialog expected').toBeNull();
 
 		// --- Step 3: focus the markdown editor and leave it unchanged, close ---
-		await searchAndOpenArtifact(page, 'AE Attr Dirty Test');
+		await searchAndOpenArtifact(page, dirtyTestName);
 		await switchEditorSection(page, 'Attributes');
 		const markdownEditor = page.locator('osee-markdown-editor textarea');
 		await expect(markdownEditor).toBeVisible({ timeout: 10000 });
@@ -225,7 +227,7 @@ test.describe('Attribute Editing (Auto-Save)', () => {
 		await nameInput3.click();
 		await nameInput3.evaluate((el) => (el as HTMLElement).blur());
 		await page.getByLabel('Close tab').first().click();
-		await expect(tabGroup.getByText('AE Attr Dirty Test')).not.toBeVisible({
+		await expect(tabGroup.getByText(dirtyTestName)).not.toBeVisible({
 			timeout: 10000,
 		});
 		expect(dialogText, 'no unsaved-changes dialog expected').toBeNull();

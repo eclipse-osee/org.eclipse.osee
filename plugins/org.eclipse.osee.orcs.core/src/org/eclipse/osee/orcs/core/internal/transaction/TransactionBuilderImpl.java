@@ -860,6 +860,15 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       return list;
    }
 
+   @Override
+   public List<ArtifactId> getTxDataWriteableIds() {
+      List<ArtifactId> list = new ArrayList<>();
+      for (Artifact art : txData.getAllWriteables()) {
+         list.add(ArtifactId.valueOf(art.getId()));
+      }
+      return list;
+   }
+
    private void checkAreOnDifferentBranches(TxData txData, BranchId sourceBranch) {
       boolean isOnSameBranch = txData.isOnBranch(sourceBranch);
       Conditions.checkExpressionFailOnTrue(isOnSameBranch, "Source branch is same branch as transaction branch[%s]",

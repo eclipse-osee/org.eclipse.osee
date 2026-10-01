@@ -19,8 +19,13 @@ The attributes editor panel (`osee-attributes-editor-panel`) displays and edits 
 
 ```
 ArtifactEditorComponent (artifact-editor)
+├── Owns shared artifactResource (httpResource, includeRelations=true)
+├── Subscribes to ArtifactChangeNotificationService.forArtifact(branchId, artifactId) for this artifact
+├── Passes artifactResource + remoteChangeCount (attributes panel) + changeCount (history panel) to children
 ├── Toolbar: section tabs + add/delete buttons (sticky)
 └── AttributesEditorPanelComponent (attributes-editor-panel)
+    ├── Reads from parent's artifactResource (input)
+    ├── Conflict detection (state owned here; warning rendered in the editor toolbar)
     ├── Native content editor (conditional)
     ├── Name attribute (always first)
     ├── Applicability dropdown (PLE branches only)
@@ -126,6 +131,66 @@ editor per instance:
 | `groupedAttrs` | Attributes grouped by typeId into `{name, attrs[]}` entries |
 | `otherAttrs` | Attributes minus Name, Native Content, and Extension |
 | `deleteMode` | Input from parent — controls visibility of delete icons |
+| `remoteChangeCount` | Input from parent — incremented when a remote SSE change is detected |
+| `remoteChangeWhileDirty` | Public signal — true when remote change arrived while user has unsaved edits (read by the parent toolbar warning) |
+| `resolvingConflict` | Public signal — true while the on-demand server fetch for the resolution dialog is in flight (disables the toolbar Resolve/Discard buttons) |
+| `artifactResource` | Input from parent — shared `httpResource` (includes relations), no local fetch |
+
+## Real-time change awareness
+
+The attributes panel participates in the SSE real-time notification system:
+
+- **Data source**: Reads from parent's shared `artifactResource` (passed as input). Does NOT create its own `httpResource`.
+- **Remote change detection**: Uses `remoteChangeCount` input + `effect()` to detect when the parent signals a remote change.
+- **Conflict handling**: If `EditorDirtyService.hasDirtyEditors()` is true when a remote change arrives, shows a warning banner and blocks auto-save.
+- **Preserving local edits (critical)**: When a remote change arrives and the user has unsaved edits for this artifact, the parent `ArtifactEditorComponent` **skips** `artifactResource.reload()` (via `dirtyService.hasDirtyEditorsForEntity(artifactId)`). Reloading would overwrite the in-progress edits and clear the ring. The latest server state is instead fetched on demand when the resolution dialog opens.
+- **Save blocking**: `PersistedArtifactAttributeEditorComponent` has a `conflicted` input. When true, `saveAttribute()` returns early without saving. Because the text input's blur commit is debounced ~500ms, that runtime guard alone had a hole: a blur during conflict could emit its commit *after* resolution cleared `conflicted`, re-saving the discarded value over the resolved one. So `conflicted` is also passed to `FocusLostInputComponent` as `suppressCommit`, which snapshots it at blur and drops any commit whose blur happened while suppressed — blocking the stale commit at the source, not just at the save.
+- **Visual indicator**: Dirty fields blocked by a pending remote change show an **amber** ring (`tw-ring-osee-yellow-10 dark:tw-ring-osee-amber-9`) via host class binding (the `blockedUnsaved` computed). Amber means "unsaved, blocked — resolve to save"; it does **not** claim this specific field conflicts (per-field conflict truth is only known after the dialog's server fetch). Red is reserved for the confirmed conflicts shown in the dialog. The editor's dirty key is `${artifactId}-${attributeId}` (immutable across edits — intentionally excludes `gammaId` so the ring survives a gamma bump).
+- **Warning location**: The conflict warning (with Resolve and Discard actions) is a full-width row rendered below the button row inside the `ArtifactEditorComponent` sticky toolbar container, not in the panel. The panel owns the state (`remoteChangeWhileDirty`, `resolvingConflict`) and the actions (`openConflictResolutionDialog()`, `dismissAndRefresh()`); the parent reads them through the `#attrPanel` template reference (which shadows the `attrPanel` viewChild in template scope, so it is used as an instance — `attrPanel.remoteChangeWhileDirty()`, not `attrPanel()`). Living inside the sticky container keeps the warning pinned without a fragile manual `top` offset, and the dedicated row avoids truncating the message.
+- **Dismiss & Refresh**: The toolbar refresh button calls the panel's `dismissAndRefresh()`, which clears dirty state and reloads the parent resource, discarding local edits.
+
+## Conflict resolution dialog
+
+When a conflict exists, the warning banner offers a **Resolve** button (`merge_type` icon) that opens `AttributeConflictResolutionDialogComponent`.
+
+- **Pending value tracking**: `PendingAttributeValuesService` (provided at the panel level, not root — one scope per panel) records each editor's unsaved value keyed by attribute instance ID. Editors register on change (`set`) and clear on save/revert (`remove`).
+- **Dirty tracking timing per widget**: Conflict detection requires a field to be marked dirty *before* the remote change arrives.
+  - **Text / single-line** (`FocusLostInputComponent`) commits/saves only on blur, so it also exposes a `liveInput` output that fires on every keystroke. `PersistedArtifactAttributeEditorComponent.onLiveInput()` uses it so a remote change arriving mid-typing (before blur) is still caught as a conflict instead of overwriting the in-progress text.
+  - **Markdown** marks dirty as the user types (its `onMarkdownChange`).
+  - **Enum dropdown / boolean toggle** are atomic — dirty at the moment of selection/toggle (`ngModelChange`), which is also when the save fires. They are intentionally *not* dirty on open (browsing isn't an edit) and not deferred to after save (that would miss the in-flight and conflict-blocked windows).
+- **`trackPendingEdit()` (efficiency + correctness)**: All change handlers funnel through this helper. It always updates the pending value (a plain `Map` write, no reactivity — the dialog needs the newest value), but only touches the dirty signal on an actual clean↔dirty transition (guarded by `isDirty()`), avoiding `Set` rebuilds and subscriber churn on every keystroke. If the value is edited back to the persisted value, it cleans the field (clears dirty + pending).
+- **Shared orchestration**: The detect → fetch → categorize → dialog → apply → commit → **refresh** flow lives in `@osee/shared/conflict-resolution` (`ConflictResolutionService`), not in the panel. The panel calls `conflictResolution.resolve({...})` supplying only its page-specific bits (fetch via `getartifactWithRelations`, commit via `modifyArtifactAndMutate`, refresh via `artifactResource().reload()`). The canonical description of the shared module lives in `docs/ai/web/conflict-resolution.md`; the artifact-explorer-specific notes are below.
+- **On-demand server fetch + categorization**: Opening the dialog fetches current server state (the shared resource was deliberately not reloaded) and runs the pure `categorizeConflicts(base, server, pending, keyOptions?, stagedAdds?)`, which sorts each edit into one bucket:
+  - **Server unchanged** (server value === base value): safe edit — saved with the server's fresh gamma, no decision needed (`autoSaveAttrs`).
+  - **True conflict** (server and local diverge and differ): presented in the dialog.
+  - **Server-deleted** (attribute gone from server while edited locally): a delete conflict (re-add vs accept-deletion).
+  - **Converged** (server value === local value): surfaced read-only (`convergedAttrs`) so the still-ringed field is explained; nothing is applied.
+  - **Staged add** (a new instance staged while conflicted): applied without prompting (`stagedAddAttrs`), or surfaced as a collision conflict if the server also added an instance of the same type. See "Adding/deleting while conflicted" below.
+  - If there are no true conflicts, the safe edits and staged adds are committed silently without showing the dialog.
+- **Dialog shows every changed field**: true conflicts are interactive cards; everything else is read-only so the field count matches the editor's rings. **Uncontested Changes** lists safe edits plus staged adds (tagged "Added"); **Already In Sync** lists converged edits. No extra request — `categorizeConflicts` returns all buckets from the one fetch.
+- **Resolution actions** (per attribute):
+  - `take-theirs` / `accept-deletion` — discard the local edit; server state stays authoritative.
+  - `take-yours` / `manual` — overwrite the server value using its **fresh gamma** for concurrency.
+  - `re-add` — re-create a server-deleted attribute with the local value.
+  - `take-both` — keep the server value and add the local value as a **new instance** (only offered when multiplicity is `ANY` or `AT_LEAST_ONE`).
+  - `manual` — edit the resolved value with `AttributeValueEditorComponent`, a presentational (non-persisting) editor rendering the same widget as the attribute's store type.
+- **Apply mapping**: `mapResolutionsToOperations(resolvedConflict[]) -> { set, add }` (pure, shared) turns the dialog's choices into transaction operations; the panel batches `set`/`add` (plus the safe edits) into one `modifyArtifactAndMutate`, then reloads. This mapping is shared with the workflow editor so both apply resolutions identically.
+- **Reusability**: The dialog, types, categorizer, mapper, and services are all in `@osee/shared/conflict-resolution` and used by both the artifact editor and the ACTRA workflow editor.
+
+### Adding / deleting attributes while conflicted
+
+Add and delete normally commit immediately, but doing so mid-conflict would bypass the
+resolution dialog. So while `remoteChangeWhileDirty()` is true:
+
+- **Add** stages the new instance in `StagedAttributeService` (panel-provided) instead of
+  committing. Staged instances render with the amber ring, are editable in place, and are
+  reconciled through the dialog as `stagedAdds` (applied as an `add`, or surfaced as a
+  collision conflict if the server also added the same type). See the "Staging new
+  attributes during conflict" section in `docs/ai/web/conflict-resolution.md`.
+- **Delete** of a *staged* (unpersisted) instance just discards it locally — no transaction.
+  Delete of a *persisted* instance is blocked with a message telling the user to resolve
+  first (an immediate delete would bypass resolution and shift the base).
+- Staged adds are cleared alongside dirty flags and pending values on resolve/discard.
 
 ## Server endpoints used
 
@@ -140,6 +205,7 @@ editor per instance:
 | `artifactId` | `` `${number}` `` | required | Owning artifact ID |
 | `artifactApplicability` | `applic` | required | Artifact's applicability |
 | `disabled` | `boolean` | `false` | Disables editing |
+| `conflicted` | `boolean` | `false` | Blocks auto-save when a remote conflict exists |
 | `showLabel` | `boolean` | `true` | Controls mat-label visibility (false in grouped mode) |
 
 ## Creating artifacts (create-child dialog)
@@ -231,6 +297,22 @@ actra consumers:
   to its `deleteMode` toggle so deletes only appear in delete mode.
 - `deleteAttribute = output<attribute>()` — emits the attribute to remove.
 - Opt-in (default off) so the three other consumers are unchanged.
+
+#### `updatedAttributes` output emits only changed instances
+
+`AttributesEditorComponent` has two distinct output paths, and only one is emit-only-changed:
+
+- The **create dialog** reads `visibleAttributes()` directly via `snapshotData()` (above) — every
+  visible attribute is submitted, unchanged or not. This is unaffected by the below.
+- The **`updatedAttributes` output** (used by the actra workflow editor and merge-manager) emits only
+  the attributes whose value the user actually changed. On first render the component snapshots each
+  instance's baseline value into a `WeakMap` keyed by object reference (the only stable per-instance
+  identity, since `[(ngModel)]` mutates `attribute.value` in place and new/duplicate instances share
+  id `-1`); `emitUpdatedAttributes()` then emits an instance only when its current value differs from
+  that baseline. Clearing a value back to empty still counts as a change (removal), so empty is not
+  filtered out — the earlier `value !== ''` filter was removed. This stops a single edit from sweeping
+  every non-empty attribute into a consumer's transaction. (See `docs/ai/web/actra.md` for how the
+  workflow editor then splits emitted edits into `set`/`add`.)
 
 **`canDelete()` is per-instance, not per-type.** It gates on `allowDelete()` then
 delegates to the shared `isAttributeInstanceDeletable(attr, this.attributes())`

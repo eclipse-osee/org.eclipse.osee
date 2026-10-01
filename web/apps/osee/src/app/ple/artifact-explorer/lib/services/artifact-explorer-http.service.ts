@@ -52,8 +52,7 @@ export class ArtifactExplorerHttpService {
 			const artifact = artifactId();
 			const view = viewId();
 			if (!branch || !artifact) return undefined;
-			this.uiService.updateCount();
-			return `${apiURL}/orcs/branch/${branch}/artifact/${artifact}/related/direct?viewId=${view}&includeRelations=false`;
+			return `${apiURL}/orcs/branch/${branch}/artifact/${artifact}/related/direct?viewId=${view}&includeRelations=true`;
 		});
 	}
 
@@ -241,7 +240,6 @@ export class ArtifactExplorerHttpService {
 			const page = pageNum();
 			const size = count();
 			if (!branch || !artifact || artifact === '-1') return undefined;
-			this.uiService.updateCount();
 			return `${apiURL}/orcs/branch/${branch}/artifact/${artifact}/history?pageNum=${page}&count=${size}`;
 		});
 	}

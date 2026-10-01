@@ -33,6 +33,7 @@ import org.eclipse.osee.orcs.rest.internal.types.TypesEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.user.UserEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.user.preferences.UserPreferencesEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.writer.OrcsWriterEndpointImpl;
+import org.eclipse.osee.orcs.rest.internal.ws.OseeSseEndpoint;
 import org.osgi.service.event.EventAdmin;
 
 /**
@@ -112,6 +113,7 @@ public class OrcsApplication extends Application {
       singletons.add(new UserPreferencesEndpointImpl(orcsApi));
       singletons.add(new UserEndpointImpl(orcsApi));
       singletons.add(new KeyValueEndpointImpl(orcsApi));
+      singletons.add(new OseeSseEndpoint(orcsApi));
    }
 
    public void stop() {

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
+import org.eclipse.osee.framework.core.event.EventModType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**

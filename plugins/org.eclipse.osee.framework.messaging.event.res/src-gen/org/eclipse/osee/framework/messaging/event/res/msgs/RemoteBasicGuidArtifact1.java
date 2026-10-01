@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
    "branchGuid",
    "artTypeGuid",
    "artGuid",
+   "artId",
    "attributes",
    "toArtTypeGuid"})
 public class RemoteBasicGuidArtifact1 extends RemoteEvent {
@@ -74,6 +75,7 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
    @XmlElement(required = true)
    protected List<RemoteAttributeChange1> attributes;
    protected long toArtTypeGuid;
+   protected long artId;
    @XmlTransient
    private BranchId branch;
 
@@ -199,6 +201,21 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
     */
    public void setToArtTypeGuid(long value) {
       this.toArtTypeGuid = value;
+   }
+
+   /**
+    * Gets the numeric artifact ID. New field for transitioning away from GUIDs.
+    * Returns 0 if not set (old sender).
+    */
+   public long getArtId() {
+      return artId;
+   }
+
+   /**
+    * Sets the numeric artifact ID.
+    */
+   public void setArtId(long value) {
+      this.artId = value;
    }
 
 }

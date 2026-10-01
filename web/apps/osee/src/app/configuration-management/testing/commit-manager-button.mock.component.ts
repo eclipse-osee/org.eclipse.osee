@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, input } from '@angular/core';
+import { teamWorkflowDetails } from '@osee/shared/types/configuration-management';
 
 @Component({
 	selector: 'osee-commit-manager-button',
@@ -18,5 +19,5 @@ import { Component, input } from '@angular/core';
 	standalone: true,
 })
 export class CommitManagerButtonStub {
-	teamWorkflowId = input.required<`${number}`>();
+	teamWorkflow = input.required<teamWorkflowDetails>();
 }

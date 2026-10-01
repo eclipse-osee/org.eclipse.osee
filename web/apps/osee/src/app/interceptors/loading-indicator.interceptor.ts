@@ -15,17 +15,26 @@ import {
 	HttpHandlerFn,
 	HttpResponse,
 	HttpErrorResponse,
+	HttpContextToken,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { finalize, tap } from 'rxjs';
 import { HttpLoadingService } from '@osee/shared/services/network';
 import { UiService } from '@osee/shared/services';
 
+/** Set this to true in HttpContext to skip the loading indicator for a request. */
+export const SKIP_LOADING = new HttpContextToken<boolean>(() => false);
+
 const requests: HttpRequest<unknown>[] = [];
 export const LoadingIndicatorInterceptor = (
 	req: HttpRequest<unknown>,
 	next: HttpHandlerFn
 ) => {
+	// Skip loading indicator for background/infrastructure requests
+	if (req.context.get(SKIP_LOADING)) {
+		return next(req);
+	}
+
 	requests.push(req);
 	const loadingService = inject(HttpLoadingService);
 	const uiService = inject(UiService);

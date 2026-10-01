@@ -19,12 +19,25 @@ test('test', async ({ page }) => {
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
 	await selectBranch(page, 'Working', 'MIM Demo');
+
+	// Drive the branch In Work -> Review, waiting for each state control to render before
+	// opening its menu so a click never lands before the prior transition applied.
 	await page.getByRole('button', { name: 'In Work' }).click();
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
+	const reviewButton = page.getByRole('button', {
+		name: 'Review',
+		exact: true,
+	});
+	await expect(reviewButton).toBeVisible({ timeout: 15000 });
+	await reviewButton.click();
 	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
 
-	await expect(page.getByText('SAW Product Line')).toBeVisible();
+	// Commit opens the commit-manager flow against the parent PL, which is a server
+	// round-trip; wait on the concrete "SAW Product Line" target label with a budget that
+	// covers the commit load rather than the 5s default.
+	await expect(page.getByText('SAW Product Line')).toBeVisible({
+		timeout: 20000,
+	});
 
 	await page.goto('/ple/messaging/connections');
 	await createWorkingBranchFromPL(page, 'MIM Demo');

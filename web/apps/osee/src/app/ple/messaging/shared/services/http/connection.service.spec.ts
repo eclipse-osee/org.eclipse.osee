@@ -18,6 +18,8 @@ import { TestBed } from '@angular/core/testing';
 import { transactionMock } from '@osee/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
+import { SseEventService } from '@osee/shared/services/network';
+import { sseEventServiceMock } from '@osee/shared/testing';
 
 import { ConnectionService } from './connection.service';
 import {
@@ -36,6 +38,7 @@ describe('ConnectionService', () => {
 			providers: [
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
+				{ provide: SseEventService, useValue: sseEventServiceMock },
 			],
 		});
 		service = TestBed.inject(ConnectionService);

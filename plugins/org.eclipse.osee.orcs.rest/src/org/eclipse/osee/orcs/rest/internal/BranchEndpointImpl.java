@@ -70,6 +70,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.core.event.OriginContext;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -93,6 +94,7 @@ import org.eclipse.osee.orcs.data.CommitBranchUtil;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.internal.branch.UpdateBranchOperation;
+import org.eclipse.osee.orcs.rest.internal.ws.SseBroadcastService;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
@@ -125,6 +127,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
       this.orcsApi = orcsApi;
       this.activityLog = activityLog;
       this.branchOps = orcsApi.getBranchOps();
+   }
+
+   /**
+    * Returns the client-minted origin id bound for this request (from the {@code X-Origin-Id}
+    * header via {@link OriginContext}), echoed on branch change broadcasts so the originating tab
+    * recognizes and ignores its own event (client-side self-dedup). Null for non-web callers.
+    */
+   private String getOriginId() {
+      return OriginContext.get();
    }
 
    public HttpHeaders getHeaders() {
@@ -563,6 +574,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          branchData.getResults().addRaw(
             "Updated branch from " + BranchToken.getShortName(updateData.getParentBranchName()));
 
+         broadcastRebaselined(branchId, branchData.getNewBranchId());
          return branchData;
       }
 
@@ -610,7 +622,22 @@ public class BranchEndpointImpl implements BranchEndpoint {
       branchData.getResults().addRaw(
          "Updated branch from " + BranchToken.getShortName(updateData.getParentBranchName()));
 
+      broadcastRebaselined(branchId, branchData.getNewBranchId());
       return branchData;
+   }
+
+   /**
+    * Broadcasts a {@code rebaselined} SSE event for an update-from-parent swap: the working branch
+    * moved from {@code oldBranchId} (now deleted/rebaselined) to {@code newBranchId}. No-op if the
+    * new branch id is missing/invalid.
+    */
+   private void broadcastRebaselined(BranchId oldBranchId, BranchId newBranchId) {
+      if (newBranchId == null || newBranchId.isInvalid()) {
+         return;
+      }
+      String userId = orcsApi.userService().getUser().getIdString();
+      SseBroadcastService.broadcastBranchRebaselined(oldBranchId.getIdString(), newBranchId.getIdString(), userId,
+         getOriginId());
    }
 
    private BranchId createBranch(CreateBranchData createData, NewBranch data) {
@@ -625,6 +652,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }
+
+      // SSE 'created' is broadcast by the ORCS branch layer (OrcsBranchImpl.createBranch) via
+      // BranchChangeTopic, so every create path (REST, ATS, internal) notifies uniformly -- no
+      // per-endpoint broadcast here.
 
       return result;
    }
@@ -678,6 +709,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
          tr.getResults().errorf("Exception logging activity [%s]", Lib.exceptionToString(ex));
          return tr;
       }
+
+      // SSE 'committed' (source + destination) and 'archived' (on archive-on-commit) are broadcast
+      // by the ORCS branch layer via BranchChangeTopic, so ATS-initiated commits (which bypass this
+      // endpoint) notify too -- no per-endpoint broadcast here.
+
       return tr;
    }
 
@@ -705,6 +741,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
+         // SSE 'archived' broadcast by OrcsBranchImpl.archiveBranch via BranchChangeTopic.
       }
       return asResponse(modified);
    }
@@ -763,6 +800,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
+         // SSE 'unarchived' broadcast by OrcsBranchImpl.unarchiveBranch via BranchChangeTopic.
       }
       return asResponse(modified);
    }
@@ -801,6 +839,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
+         // SSE 'renamed' broadcast by OrcsBranchImpl.changeBranchName via BranchChangeTopic.
       }
       return asResponse(modified);
    }
@@ -820,12 +859,14 @@ public class BranchEndpointImpl implements BranchEndpoint {
          }
          branchOps.changeBranchType(branch, newType);
          modified = true;
+         // SSE 'type_changed' broadcast by OrcsBranchImpl.changeBranchType via BranchChangeTopic.
       }
       return asResponse(modified);
    }
 
    @Override
    public Response setBranchState(BranchId branchId, BranchState newState) {
+      // SSE 'deleted'/'state_changed' broadcast by OrcsBranchImpl.setBranchState via BranchChangeTopic.
       boolean modified = branchOps.setBranchState(branchId, newState);
       return asResponse(modified);
    }
@@ -924,6 +965,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          }
          activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format("Branch Operation Purge Branch {branchId: %s}", branchId));
+         // SSE 'purged' broadcast by OrcsBranchImpl.purgeBranch via BranchChangeTopic.
       }
       return asResponse(modified);
    }

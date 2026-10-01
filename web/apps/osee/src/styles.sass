@@ -211,6 +211,10 @@ html
 
       .error-button
         @include mat.button-color(theme.$light-theme, $color-variant: error)
+        // Match dark mode: white label on the red destructive fill for consistent, high contrast.
+        // (The icon inherits currentColor from the label, so it turns white too.)
+        --mat-button-filled-label-text-color: white
+        --mat-button-protected-label-text-color: white
 
       .tertiary-button
         @include mat.button-color(theme.$light-theme,$color-variant: tertiary)
@@ -295,6 +299,12 @@ html
 
       .error-button
         @include mat.button-color(theme.$dark-theme, $color-variant: error)
+        // The M3 error variant maps the label to on-error, which renders as low-contrast dark text
+        // on the red fill in dark mode. Force white — the conventional, WCAG-safe label on a red
+        // destructive fill. Tokens are namespaced `--mat-button-*` (filled = mat-flat, protected =
+        // mat-raised — both variants error-button is used on). The icon inherits currentColor.
+        --mat-button-filled-label-text-color: white
+        --mat-button-protected-label-text-color: white
 
       .tertiary-button
         @include mat.button-color(theme.$dark-theme,$color-variant: tertiary)

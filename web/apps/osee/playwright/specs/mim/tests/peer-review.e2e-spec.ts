@@ -19,7 +19,11 @@ import { selectBranch } from '../../../shared/branch-helpers';
 test.describe.configure({ mode: 'serial' });
 
 test('create working branches', async ({ page }) => {
-	page.setDefaultTimeout(60000);
+	// This test creates three working branches and edits each before adding an element, so the
+	// default 45s test timeout is too tight under CI load (the flow reached the final dropdown with
+	// no budget left). Raise the ceiling and bound each action so a slow step fails at its own line.
+	test.setTimeout(120000);
+	page.setDefaultTimeout(20000);
 	await page.goto('/ple');
 
 	// Commit MIM Demo branch to create baseline
@@ -46,7 +50,10 @@ test('create working branches', async ({ page }) => {
 			(res) =>
 				res.url() === `${APP_BASE}/orcs/txs` && res.status() === 200
 		),
-		MessageDescriptionTextbox.press('Tab'),
+		// Blur via evaluate() rather than keyboard Tab: in headless mode Tab does not reliably move
+		// focus off the field, so the blur-save may never fire and the txs POST never comes (the
+		// source of this test's flakiness). blur() commits the focus-lost save deterministically.
+		MessageDescriptionTextbox.evaluate((el: HTMLElement) => el.blur()),
 	]);
 
 	await page.getByRole('link', { name: 'working' }).click();
@@ -70,7 +77,8 @@ test('create working branches', async ({ page }) => {
 			(res) =>
 				res.url() === `${APP_BASE}/orcs/txs` && res.status() === 200
 		),
-		SubmsgDescriptionTextbox.press('Tab'),
+		// Blur via evaluate() rather than keyboard Tab (see above): deterministic focus-lost save.
+		SubmsgDescriptionTextbox.evaluate((el: HTMLElement) => el.blur()),
 	]);
 
 	await page.getByRole('link', { name: 'working' }).click();
@@ -86,29 +94,42 @@ test('create working branches', async ({ page }) => {
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure 1' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
-	await page.getByLabel('Name').fill('New Element', { force: true });
+	const elementName = page.getByLabel('Name');
+	await expect(elementName).toBeVisible();
+	await elementName.fill('New Element');
 
-	await Promise.all([
-		page.waitForResponse((res) => res.url().includes('types/filter'), {
-			timeout: 60000,
-		}),
-		page
-			.getByLabel('2Define element')
-			.getByText('Platform Type')
-			.click({ force: true }),
-	]);
-	await page
+	// Open the Platform Type autocomplete and load its options. A bare click focuses the input but
+	// does not reliably fire the type-ahead query (the options fetch is driven by the input value
+	// stream), so the panel can stay empty. Typing a filter value drives that stream, opens the
+	// panel, and narrows to the option we want. Then assert the option before clicking it.
+	const platformTypeCombobox = page
+		.getByLabel('2Define element')
+		.getByRole('combobox', { name: 'Platform Type' });
+	await expect(platformTypeCombobox).toBeVisible();
+	// Type per-character (not fill): the options come from a debounced search on the input's
+	// valueChanges; fill emits a single coalesced event the debounce can mis-time so the query never
+	// fires and the listbox stays empty. pressSequentially drives valueChanges as the control expects.
+	await platformTypeCombobox.click({ force: true });
+	await platformTypeCombobox.fill('');
+	await platformTypeCombobox.pressSequentially('Float');
+	const floatOption = page
 		.locator('mat-option')
 		.filter({ hasText: 'Float' })
-		.first()
-		.click({ timeout: 60000 });
-	await page.getByRole('button', { name: 'Next' }).click();
+		.first();
+	await expect(floatOption).toBeVisible({ timeout: 60000 });
+	await floatOption.click();
+	// Next is gated on the form being valid (Platform Type required); assert enabled before click.
+	const defineElementNext = page.getByRole('button', { name: 'Next' });
+	await expect(defineElementNext).toBeEnabled();
+	await defineElementNext.click();
 
+	const submitBtn = page.getByTestId('submit-btn');
+	await expect(submitBtn).toBeEnabled();
 	await Promise.all([
 		page.waitForResponse(
 			(res) => res.url().includes('structures') && res.status() === 200
 		),
-		page.getByTestId('submit-btn').click({ force: true, timeout: 40000 }),
+		submitBtn.click(),
 	]);
 });
 
@@ -130,10 +151,15 @@ test('peer review branch', async ({ page }) => {
 	await page.getByLabel('Title').fill('MIM Peer Review');
 	await page.getByLabel('Actionable Item').click();
 	await page.getByRole('combobox', { name: 'Actionable Item' }).fill('mim');
-	await page.getByText('SAW PL MIM').click();
+	// Assert the option rendered before clicking (dropdown options arrive async after the filter).
+	const aiOption = page.getByRole('option', { name: 'SAW PL MIM' });
+	await expect(aiOption).toBeVisible();
+	await aiOption.click();
 	await page.getByLabel('Description').fill('Peer review');
 	await page.getByLabel('Change Type').locator('span').click();
-	await page.getByText('Improvement').click();
+	const changeTypeOption = page.getByRole('option', { name: 'Improvement' });
+	await expect(changeTypeOption).toBeVisible();
+	await changeTypeOption.click();
 
 	let requestPromise = page.waitForResponse((response) =>
 		response.url().startsWith(`${APP_BASE}/ats/ple/branches/pr`)
@@ -214,9 +240,18 @@ test('commit branches', async ({ page }) => {
 		.filter({ hasText: 'Edit Message' })
 		.getByRole('button')
 		.click();
+	// Same async transition->render->commit sequence as the second branch below: wait for each
+	// control before clicking so the "Review" click can't fire before the transition re-render.
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
-	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
+	const tw16Review = page.getByRole('button', {
+		name: 'Review',
+		exact: true,
+	});
+	await expect(tw16Review).toBeVisible({ timeout: 60000 });
+	await tw16Review.click();
+	const tw16Commit = page.getByRole('menuitem', { name: 'Commit Branch' });
+	await expect(tw16Commit).toBeVisible({ timeout: 60000 });
+	await tw16Commit.click();
 
 	await expect(
 		page.getByText('Branches included in this PR have been committed')
@@ -240,9 +275,33 @@ test('commit branches', async ({ page }) => {
 		.filter({ hasText: 'Add an Element' })
 		.getByRole('button')
 		.click();
+	// Transitioning to Review is an async server round-trip; the branch's action control then
+	// re-renders as a "Review" dropdown. Wait for each control to actually be present before
+	// clicking it, rather than assuming the previous async step has finished:
+	//  1. click "Transition to Review",
+	//  2. wait for the resulting "Review" dropdown button, then open it,
+	//  3. wait for the "Commit Branch" item, then click it.
+	// Skipping these waits is what makes the second commit flaky under load (the "Review" click
+	// fires before the transition re-render, so the dropdown never opens and Commit Branch is
+	// never clicked, leaving the branch stuck in Review).
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
-	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
-	await page.getByRole('button', { name: 'Close Peer Review' }).click();
+	const tw19Review = page.getByRole('button', {
+		name: 'Review',
+		exact: true,
+	});
+	await expect(tw19Review).toBeVisible({ timeout: 60000 });
+	await tw19Review.click();
+	const tw19Commit = page.getByRole('menuitem', { name: 'Commit Branch' });
+	await expect(tw19Commit).toBeVisible({ timeout: 60000 });
+	await tw19Commit.click();
+
+	// "Close Peer Review" is disabled until every applied branch is committed
+	// (completedCommitting()). Assert it becomes enabled before clicking, so we wait on the real
+	// precondition (all commits finished) rather than racing the async second commit.
+	const closePeerReview = page.getByRole('button', {
+		name: 'Close Peer Review',
+	});
+	await expect(closePeerReview).toBeEnabled({ timeout: 60000 });
+	await closePeerReview.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 });

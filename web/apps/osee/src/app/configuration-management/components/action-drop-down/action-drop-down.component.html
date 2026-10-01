@@ -13,7 +13,7 @@
 <button
 	mat-flat-button
 	[matMenuTriggerFor]="stateMenu"
-	class="tw-flex tw-justify-between">
+	class="tw-flex tw-justify-between tw-bg-primary tw-text-background">
 	{{ currentStateName() }}<mat-icon iconPositionEnd>expand_more</mat-icon>
 </button>
 
@@ -62,8 +62,17 @@
 				class="tw-grid tw-grid-cols-[2fr_1fr_2fr] tw-items-center tw-gap-2">
 				<span>Transition to</span>
 				<mat-icon>east</mat-icon>
+				<!--
+					State pill: semantic tokens where a semantic meaning exists (primary =
+					Completed, warning = Cancelled, accent = Review). The default (ordinary
+					transition) state has no semantic color; it uses the neutral grey slots
+					(osee-neutral-35 fill / osee-neutral-100 text in light mode) intentionally --
+					there is no neutral "inverted surface" semantic token, and this mirrors the
+					app's established neutral-control pattern (e.g. cancel buttons in the
+					attachment dialogs). Neutral greys are theme-independent by design.
+				-->
 				<span
-					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-background dark:tw-text-foreground"
+					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-osee-neutral-100 dark:tw-text-foreground"
 					[ngClass]="{
 						'tw-bg-primary dark:tw-bg-primary-700':
 							ctx.state.state === 'Completed',
@@ -71,7 +80,7 @@
 							ctx.state.state === 'Cancelled',
 						'tw-bg-accent-800 dark:tw-bg-accent-700':
 							ctx.state.state === 'Review',
-						'tw-bg-foreground dark:tw-bg-background':
+						'tw-bg-osee-neutral-35 dark:tw-bg-background':
 							ctx.state.state !== 'Completed' &&
 							ctx.state.state !== 'Cancelled' &&
 							ctx.state.state !== 'Review',
@@ -100,12 +109,12 @@
 							ctx.state.state === 'Cancelled',
 						'tw-bg-accent-800 dark:tw-bg-accent-700':
 							ctx.state.state === 'Review',
-						'tw-bg-foreground dark:tw-bg-background':
+						'tw-bg-osee-neutral-35 dark:tw-bg-background':
 							ctx.state.state !== 'Completed' &&
 							ctx.state.state !== 'Cancelled' &&
 							ctx.state.state !== 'Review',
 					}"
-					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-background dark:tw-text-foreground"
+					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-osee-neutral-100 dark:tw-text-foreground"
 					>{{ ctx.state.state }}</span
 				>
 			</div>
@@ -130,12 +139,12 @@
 							ctx.state.state === 'Cancelled',
 						'tw-bg-accent-800 dark:tw-bg-accent-700':
 							ctx.state.state === 'Review',
-						'tw-bg-foreground dark:tw-bg-background':
+						'tw-bg-osee-neutral-35 dark:tw-bg-background':
 							ctx.state.state !== 'Completed' &&
 							ctx.state.state !== 'Cancelled' &&
 							ctx.state.state !== 'Review',
 					}"
-					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-background dark:tw-text-foreground"
+					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-osee-neutral-100 dark:tw-text-foreground"
 					>{{ ctx.state.state }}</span
 				>
 			</div>

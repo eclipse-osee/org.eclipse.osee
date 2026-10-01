@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.event.OriginContext;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -65,7 +66,13 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
    @Override
    public void filter(ContainerRequestContext requestContext) {
 
+      // Bind the client-minted origin id (browser tab) for this request thread so change-broadcast
+      // capture points (tx commit, branch endpoints) can tag outgoing events. Read only on the
+      // request thread; carried in the event payload across async/server boundaries.
+      OriginContext.set(requestContext.getHeaderString("X-Origin-Id"));
+
       String path = requestContext.getUriInfo().getRequestUri().getPath();
+
       boolean exceptionList = path.startsWith("/ide/session") //
          || path.startsWith("/orcs/datastore/initialize") //
          || (requestContext.getRequest().getMethod().equals(
@@ -122,6 +129,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
       } catch (Exception ex) {
          orcsApi.getActivityLog().createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
       }
+
       if (!exceptionList && orcsApi.userService().getUser().isInvalid()) {
          unauthorized(requestContext);
       }

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.core.event.EventModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.junit.Assert;
 import org.junit.Rule;
