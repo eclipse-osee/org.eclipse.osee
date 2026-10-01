@@ -1,0 +1,110 @@
+:root {
+  --bg: #eef1f4;
+  --surface: #ffffff;
+  --ink: #1c2430;
+  --muted: #5c6b7a;
+  --line: #d5dde6;
+  --blue: #0b5cab;
+  --green: #1f7a4d;
+  --green-soft: #e5f6ee;
+  --red: #9b2335;
+  --red-soft: #fdecee;
+  --amber: #8a5a00;
+  --amber-soft: #fff4d6;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.top {
+  padding: 16px 28px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: flex; flex-direction: column; gap: 2px; }
+.brand strong { font-size: 18px; }
+.brand span { color: var(--muted); font-size: 13px; }
+
+main { padding: 20px 28px 40px; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.panel h2 { margin: 0 0 12px; font-size: 14px; }
+
+.form-grid { display: grid; gap: 12px; }
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.check { flex-direction: row; align-items: center; }
+
+input, button { font: inherit; }
+
+input {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+input:focus, button:focus { outline: 2px solid var(--blue); outline-offset: 1px; }
+
+.button-row { display: flex; gap: 8px; }
+
+button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+button.primary { background: var(--blue); color: white; border-color: var(--blue); }
+
+.hint, .field-error { font-size: 12px; font-weight: 400; }
+.hint { color: var(--muted); }
+.field-error { min-height: 16px; color: var(--red); }
+
+.status-list { display: grid; gap: 12px; margin: 0; }
+.status-list div { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.status-list dt { color: var(--muted); }
+.status-list dd { margin: 0; text-align: right; }
+
+.badge {
+  border-radius: 99px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-ready { background: var(--green-soft); color: var(--green); }
+.badge-not_configured { background: var(--amber-soft); color: var(--amber); }
+.badge-error { background: var(--red-soft); color: var(--red); }
+
+@media (max-width: 800px) {
+  .layout { grid-template-columns: 1fr; }
+}

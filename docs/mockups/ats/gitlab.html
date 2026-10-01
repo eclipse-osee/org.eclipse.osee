@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GitLab configuration</title>
+  <link rel="stylesheet" href="gitlab.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <strong>GitLab configuration</strong>
+    </div>
+  </header>
+  <main class="layout">
+    <section class="panel">
+      <h2>Setup</h2>
+      <form id="form" class="form-grid">
+        <label>GitLab URL
+          <input id="baseUrl" name="baseUrl" type="text" value="https://gitlab.example" required>
+          <span class="field-error" id="url-error"></span>
+        </label>
+        <label>Project
+          <input id="projectId" name="projectId" value="osee/ats" required>
+          <span class="field-error" id="project-error"></span>
+        </label>
+        <label>Access token
+          <input id="token" name="token" type="password" autocomplete="off" placeholder="Token saved on server">
+          <span class="field-error" id="token-error"></span>
+        </label>
+        <label class="check"><input id="enabled" type="checkbox" checked> Enable sync for this team</label>
+        <div class="button-row">
+          <button class="primary" type="submit">Save settings</button>
+          <button type="button" id="test">Test connection</button>
+        </div>
+        <p class="hint" id="form-note">A token is already stored for this team. Leave the field blank to keep it.</p>
+      </form>
+    </section>
+    <aside class="panel">
+      <h2>Status</h2>
+      <dl class="status-list">
+        <div><dt>Sync state</dt><dd id="sync-badge"><span class="badge badge-ready">Ready</span></dd></div>
+        <div><dt>Last sync</dt><dd id="last-sync">Oct 1, 2026, 9:14 AM</dd></div>
+        <div><dt>Token</dt><dd id="token-state">Stored on server</dd></div>
+        <div><dt>Project</dt><dd id="project-state">osee/ats</dd></div>
+      </dl>
+      <p class="field-error" id="status-error"></p>
+    </aside>
+  </main>
+  <script>
+    const state = {
+      baseUrl: "https://gitlab.example",
+      projectId: "osee/ats",
+      tokenStored: true,
+      enabled: true,
+      sync: "ready",
+      lastSync: "Oct 1, 2026, 9:14 AM",
+      error: ""
+    };
+    const labels = { ready: "Ready", error: "Error", not_configured: "Not configured" };
+
+    function render() {
+      document.getElementById("sync-badge").innerHTML = `<span class="badge badge-${state.sync}">${labels[state.sync]}</span>`;
+      document.getElementById("last-sync").textContent = state.lastSync || "Never";
+      document.getElementById("token-state").textContent = state.tokenStored ? "Stored on server" : "Not stored";
+      document.getElementById("project-state").textContent = state.projectId || "\u2014";
+      document.getElementById("status-error").textContent = state.error;
+    }
+
+    function clearErrors() {
+      ["url-error", "project-error", "token-error"].forEach((id) => { document.getElementById(id).textContent = ""; });
+    }
+
+    function readForm() {
+      clearErrors();
+      const baseUrl = document.getElementById("baseUrl").value.trim();
+      const projectId = document.getElementById("projectId").value.trim();
+      const token = document.getElementById("token").value.trim();
+      const enabled = document.getElementById("enabled").checked;
+      let valid = true;
+      if (!/^https?:\/\/.+/i.test(baseUrl)) {
+        document.getElementById("url-error").textContent = "Enter an http or https GitLab URL.";
+        valid = false;
+      }
+      if (!projectId) {
+        document.getElementById("project-error").textContent = "Enter a project id or group/project path.";
+        valid = false;
+      }
+      if (!state.tokenStored && token.length < 8) {
+        document.getElementById("token-error").textContent = "Enter the access token. It is stored on the server.";
+        valid = false;
+      }
+      return { valid, baseUrl, projectId, token, enabled };
+    }
+
+    document.getElementById("form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const form = readForm();
+      if (!form.valid) return;
+      const credentialsChanged = form.baseUrl !== state.baseUrl || form.projectId !== state.projectId || form.token.length > 0;
+      state.baseUrl = form.baseUrl;
+      state.projectId = form.projectId;
+      state.enabled = form.enabled;
+      if (form.token) {
+        state.tokenStored = true;
+        document.getElementById("token").value = "";
+      }
+      if (!form.enabled || !state.tokenStored) {
+        state.sync = "not_configured";
+        state.lastSync = "";
+        state.error = form.enabled ? "" : "";
+      } else if (credentialsChanged) {
+        state.sync = "not_configured";
+        state.lastSync = "";
+        state.error = "";
+      }
+      document.getElementById("form-note").textContent = "Settings saved. The token remains on the server.";
+      render();
+    });
+
+    document.getElementById("test").addEventListener("click", () => {
+      const form = readForm();
+      if (!form.valid || !form.enabled) {
+        state.sync = "not_configured";
+        state.error = "GitLab is not configured for this team.";
+        render();
+        return;
+      }
+      if (form.token.toLowerCase() === "invalid") {
+        state.sync = "error";
+        state.error = "GitLab rejected the access token.";
+        render();
+        return;
+      }
+      state.baseUrl = form.baseUrl;
+      state.projectId = form.projectId;
+      state.sync = "ready";
+      state.error = "";
+      state.lastSync = new Date().toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+      if (form.token) {
+        state.tokenStored = true;
+        document.getElementById("token").value = "";
+      }
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
