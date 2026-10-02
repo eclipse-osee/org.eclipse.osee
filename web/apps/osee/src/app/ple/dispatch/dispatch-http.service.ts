@@ -54,6 +54,19 @@ export class DispatchHttpService {
 			);
 	}
 
+	executePut(url: string): Observable<string> {
+		return this.http
+			.put(url, null, {
+				responseType: 'text' as const,
+			})
+			.pipe(
+				catchError((error) => {
+					this.uiService.ErrorText = `Request failed: ${error.message}`;
+					return throwError(() => error);
+				})
+			);
+	}
+
 	executePostWithFiles(
 		url: string,
 		body: FormState,
