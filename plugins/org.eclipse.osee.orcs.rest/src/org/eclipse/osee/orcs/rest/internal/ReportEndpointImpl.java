@@ -108,8 +108,13 @@ public final class ReportEndpointImpl implements ReportEndpoint {
             throw new OseeArgumentException("Failed to create publish directory: %s", publishDir.getAbsolutePath());
          }
          File reportFile = new File(publishDir, fileName);
-         String serverAddress = OseeClient.getOseeApplicationServer();
-         String downloadLink = String.format("%s/orcs/resources/publish?path=%s", serverAddress, fileName);
+         var resourcesOperations = orcsApi.getResourcesOperations().get();
+         if (resourcesOperations == null) {
+            throw new OseeArgumentException("Publishing resources are not available");
+         }
+         String downloadLink = resourcesOperations.getPublishingDownloadUrl() //
+            .map(downloadUrlRoot -> downloadUrlRoot + fileName)
+            .orElseThrow(() -> new OseeArgumentException("Publishing download URL is not configured"));
 
          executorAdmin.submit("Async " + format.extension().toUpperCase(Locale.US) + " Report Generator", () -> {
             try {
