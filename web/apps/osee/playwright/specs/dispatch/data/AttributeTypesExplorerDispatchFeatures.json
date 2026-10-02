@@ -5,8 +5,8 @@
 		{
 			"key": "dispatch-features",
 			"label": "Dispatch Feature Coverage",
-			"description": "Exercises checkboxes, static dropdowns, file inputs, view selector, and email selector.",
-			"instructions": "1. Select a branch.\n2. Select a view.\n3. Fill in the required file.\n4. Click Get Attribute Types.",
+			"description": "Exercises checkboxes, static dropdowns, text inputs, file inputs, view selector, and email selector.",
+			"instructions": "1. Select a branch.\n2. Select a view.\n3. Optionally enter notes.\n4. Fill in the required file.\n5. Click Get Attribute Types.",
 			"dropdowns": [
 				{
 					"key": "branch",
@@ -55,6 +55,13 @@
 					"key": "includeDeprecated",
 					"label": "Include Deprecated",
 					"default": false
+				}
+			],
+			"textInputs": [
+				{
+					"key": "notes",
+					"label": "Notes",
+					"placeholder": "Enter optional notes"
 				}
 			],
 			"fileInputs": [

@@ -248,6 +248,7 @@ type DispatchTabConfig = {
   instructions: string;    // Markdown string rendered as HTML
   dropdowns: TabDropdown[];
   checkboxes: TabCheckbox[];
+  textInputs?: TabTextInput[];
   fileInputs?: TabFileInput[];
   targetApi: TargetApi;
   artifact?: string;       // Artifact ID for URL template substitution
@@ -306,6 +307,20 @@ Populated via: static options, API-fetched, or registered component.
 type TabCheckbox = { key: string; label: string; default?: boolean; };
 ```
 
+### Text Inputs
+
+```typescript
+type TabTextInput = {
+  key: string;
+  label: string;
+  required?: boolean;
+  placeholder?: string;
+};
+```
+
+Text-input values can be substituted into target API URL placeholders, such as
+`{artifactId}`.
+
 ### File Inputs
 
 ```typescript
@@ -322,7 +337,7 @@ type TabFileInput = {
 ### Target API
 
 ```typescript
-type TargetApi = { method: 'GET' | 'POST'; url: string; button?: string; };
+type TargetApi = { method: 'GET' | 'POST' | 'PUT'; url: string; button?: string; };
 ```
 
 URL placeholders (`{key}`) are substituted from dropdown keys, component values, and branch/artifact IDs.
