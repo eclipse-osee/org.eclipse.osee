@@ -185,6 +185,32 @@ const URL_PLACEHOLDER = /\{([^}]+)\}/g;
 				}
 			}
 
+			@for (
+				textInput of tabConfig.textInputs ?? [];
+				track textInput.key
+			) {
+				<mat-form-field
+					appearance="outline"
+					subscriptSizing="dynamic"
+					class="tw-w-full">
+					<mat-label>{{ textInput.label }}</mat-label>
+					<input
+						type="text"
+						matInput
+						[field]="$any(publishForm[textInput.key])"
+						[placeholder]="textInput.placeholder ?? ''" />
+					@if (
+						textInput.required &&
+						publishForm[textInput.key]?.()?.touched() &&
+						hasFieldError(textInput.key)
+					) {
+						<mat-error>
+							Please enter a {{ textInput.label.toLowerCase() }}
+						</mat-error>
+					}
+				</mat-form-field>
+			}
+
 			@for (checkbox of tabConfig.checkboxes; track checkbox.key) {
 				<mat-checkbox [field]="$any(publishForm[checkbox.key])">
 					{{ checkbox.label }}
@@ -363,6 +389,10 @@ export class DispatchTabComponent {
 		)
 	);
 
+	protected readonly requiredTextInputs = computed(() =>
+		(this.tab().textInputs ?? []).filter((input) => input.required)
+	);
+
 	private readonly formModel = signal<FormState>({});
 
 	protected readonly publishForm = form(this.formModel, (path) => {
@@ -384,6 +414,22 @@ export class DispatchTabComponent {
 					);
 				}
 			}
+			for (const textInput of this.requiredTextInputs()) {
+				const value = formValue[textInput.key];
+				if (
+					value === null ||
+					value === undefined ||
+					String(value).trim() === ''
+				) {
+					errors.push(
+						customError({
+							kind: 'required',
+							message: `Please enter a ${textInput.label.toLowerCase()}`,
+							key: textInput.key,
+						})
+					);
+				}
+			}
 			return errors.length > 0 ? errors : null;
 		});
 	});
@@ -400,6 +446,10 @@ export class DispatchTabComponent {
 
 		for (const checkbox of tabConfig.checkboxes) {
 			model[checkbox.key] = checkbox.default ?? false;
+		}
+
+		for (const textInput of tabConfig.textInputs ?? []) {
+			model[textInput.key] = '';
 		}
 
 		this.formModel.set(model);
@@ -542,6 +592,12 @@ export class DispatchTabComponent {
 				} else if (!this.isDropdownRequired(dropdown)) {
 					replacements[dropdown.key] = '-1';
 				}
+			}
+		}
+		for (const textInput of this.tab().textInputs ?? []) {
+			const value = formValue[textInput.key];
+			if (value !== null && value !== undefined && String(value).trim()) {
+				replacements[textInput.key] = String(value).trim();
 			}
 		}
 		return replacements;
@@ -694,6 +750,8 @@ export class DispatchTabComponent {
 		this.publishing.set(true);
 		if (tabConfig.targetApi.method === 'GET') {
 			this.executeGetRequest(targetUrl, tabConfig, formValue);
+		} else if (tabConfig.targetApi.method === 'PUT') {
+			this.executePutRequest(targetUrl);
 		} else if (hasFiles && this.getRawFileInput()) {
 			this.executePostRawFileRequest(targetUrl);
 		} else if (hasFiles) {
@@ -748,6 +806,10 @@ export class DispatchTabComponent {
 		this.httpService
 			.executePost(url, body)
 			.subscribe(this.resultObserver());
+	}
+
+	private executePutRequest(url: string): void {
+		this.httpService.executePut(url).subscribe(this.resultObserver());
 	}
 
 	private executePostWithFilesRequest(
