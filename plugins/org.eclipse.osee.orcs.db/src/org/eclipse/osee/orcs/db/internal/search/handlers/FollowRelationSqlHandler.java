@@ -97,7 +97,7 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       writer.writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
       writer.writeTxBranchFilter(relTxsAlias, includeDeletedRelations);
       String artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
-      if (criteria.isTerminalFollow() && typeSide.getRelationType().isValid()) {
+      if (typeSide.getRelationType().isValid()) {
          writer.writeAnd();
          writer.writeEquals(relAlias, toArtField, artAlias, "art_id");
       } else {
