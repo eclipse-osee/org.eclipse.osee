@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -113,10 +112,9 @@ public final class ReportEndpointImpl implements ReportEndpoint {
          if (resourcesOperations == null) {
             throw new OseeArgumentException("Publishing resources are not available");
          }
-         // The download link is best-effort: when the server's web URI is not configured the report is still
-         // generated and emailed, just without a download link.
-         Optional<String> downloadLink = resourcesOperations.getPublishingDownloadUrl() //
-            .map(downloadUrlRoot -> downloadUrlRoot + fileName);
+         String downloadLink = resourcesOperations.getPublishingDownloadUrl() //
+            .map(downloadUrlRoot -> downloadUrlRoot + fileName)
+            .orElseThrow(() -> new OseeArgumentException("Publishing download URL is not configured"));
 
          executorAdmin.submit("Async " + format.extension().toUpperCase(Locale.US) + " Report Generator", () -> {
             try {
@@ -125,13 +123,10 @@ public final class ReportEndpointImpl implements ReportEndpoint {
                   report.write(fos);
                }
 
-               String downloadSection = downloadLink //
-                  .map(link -> String.format("%n%nDownload your report here:%n%s", link)) //
-                  .orElse("");
                String subject = "Report Generation Complete";
                String body = String.format(
-                  "Your %s report has been generated successfully.%n%nFile: %s%nBranch: %s%nView: %s%nTemplate: %s%s",
-                  format.extension().toUpperCase(Locale.US), fileName, branch, view, templateArt, downloadSection);
+                  "Your %s report has been generated successfully.%n%nFile: %s%nBranch: %s%nView: %s%nTemplate: %s%n%nDownload your report here:%n%s",
+                  format.extension().toUpperCase(Locale.US), fileName, branch, view, templateArt, downloadLink);
 
                IOseeEmail emailMessage = orcsApi.getEmailService().create(
                   Collections.singletonList(emailRecipient), emailRecipient, emailRecipient, subject, body,
@@ -164,7 +159,7 @@ public final class ReportEndpointImpl implements ReportEndpoint {
             "view", view.toString(),
             "template", templateArt.toString(),
             "emailRecipient", emailRecipient,
-            "downloadLink", downloadLink.orElse("")));
+            "downloadLink", downloadLink));
       } catch (Exception ex) {
          String errorJson = toJson(Map.of("error", String.valueOf(ex.getMessage())));
          return Response.serverError().entity(errorJson).type(MediaType.APPLICATION_JSON).build();
