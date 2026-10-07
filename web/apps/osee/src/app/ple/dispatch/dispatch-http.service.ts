@@ -10,11 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import {
+	HttpClient,
+	HttpParams,
+	httpResource,
+	HttpResourceRef,
+} from '@angular/common/http';
+import { Injectable, Signal, inject } from '@angular/core';
 import { UiService } from '@osee/shared/services';
 import { Observable, catchError, throwError } from 'rxjs';
-import type { FormState } from './dispatch.types';
+import { apiURL } from '@osee/environments';
+import type { DropdownApiItem, FormState } from './dispatch.types';
 
 @Injectable({
 	providedIn: 'root',
@@ -22,6 +28,32 @@ import type { FormState } from './dispatch.types';
 export class DispatchHttpService {
 	private readonly http = inject(HttpClient);
 	private readonly uiService = inject(UiService);
+
+	/**
+	 * Resource that converts a tab's markdown instructions to preview HTML.
+	 * Read-only text endpoint — exposed as a resource so the component can bind
+	 * to its value signal without touching HttpClient/httpResource directly.
+	 */
+	getInstructionsPreviewResource(
+		markdown: Signal<string>
+	): HttpResourceRef<string | undefined> {
+		return httpResource.text(() => ({
+			url: apiURL + '/define/word/convertMarkdownToHtmlPreview',
+			method: 'POST' as const,
+			body: markdown(),
+			headers: { 'Content-Type': 'text/plain' },
+		}));
+	}
+
+	/**
+	 * Fetches dropdown options from a fully-resolved content API URL.
+	 * Used by the tab's multi-dropdown loader, which fans out over a dynamic
+	 * number of these calls, so this returns a plain typed Observable rather
+	 * than a resource.
+	 */
+	getDropdownOptions(url: string): Observable<DropdownApiItem[]> {
+		return this.http.get<DropdownApiItem[]>(url);
+	}
 
 	executeGet(url: string, params: HttpParams): Observable<string> {
 		return this.http

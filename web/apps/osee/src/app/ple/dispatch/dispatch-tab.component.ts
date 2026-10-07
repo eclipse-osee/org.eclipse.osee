@@ -21,8 +21,7 @@ import {
 	signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { httpResource } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -51,7 +50,6 @@ import {
 } from './dispatch-result-dialog.component';
 import type {
 	DispatchTabConfig,
-	DropdownApiItem,
 	DropdownOption,
 	FilterState,
 	FormState,
@@ -261,7 +259,7 @@ const URL_PLACEHOLDER = /\{([^}]+)\}/g;
 							@if (
 								fileInput.required &&
 								!hasFiles(fileInput.key) &&
-								publishing()
+								submitAttempted()
 							) {
 								<p
 									class="tw-mt-1 tw-text-sm tw-text-red-600 dark:tw-text-red-400">
@@ -297,7 +295,6 @@ export class DispatchTabComponent {
 	readonly branchType = input<string>('');
 
 	private readonly dialog = inject(MatDialog);
-	private readonly http = inject(HttpClient);
 	private readonly httpService = inject(DispatchHttpService);
 	private readonly viewsService = inject(ViewsRoutedUiService);
 	private readonly sanitizer = inject(DomSanitizer);
@@ -311,6 +308,13 @@ export class DispatchTabComponent {
 		Readonly<Record<string, readonly File[]>>
 	>({});
 	protected readonly publishing = signal(false);
+	/**
+	 * Set true the first time the user presses the publish button. Gates the
+	 * inline "please upload a file" messages so they appear only after a submit
+	 * attempt — unlike publishing(), which never flips while a required file is
+	 * still missing (publishDisabled() short-circuits executePublish()).
+	 */
+	protected readonly submitAttempted = signal(false);
 	protected readonly emailValue = signal<string>('');
 
 	/** Generic state for registered components keyed by dropdown key. */
@@ -320,12 +324,14 @@ export class DispatchTabComponent {
 
 	protected readonly dropdowns = computed(() => this.tab().dropdowns);
 
-	private readonly instructionsResource = httpResource.text(() => ({
-		url: apiURL + '/define/word/convertMarkdownToHtmlPreview',
-		method: 'POST' as const,
-		body: this.tab().instructions || '',
-		headers: { 'Content-Type': 'text/plain' },
-	}));
+	private readonly instructionsMarkdown = computed(
+		() => this.tab().instructions || ''
+	);
+
+	private readonly instructionsResource =
+		this.httpService.getInstructionsPreviewResource(
+			this.instructionsMarkdown
+		);
 
 	// Trust boundary: the instructions markdown comes from DispatchConfig
 	// artifacts, which are authored on the common branch by privileged users
@@ -503,8 +509,9 @@ export class DispatchTabComponent {
 		}
 	});
 
-	// resource() with HttpClient.get is used here instead of httpResource
-	// because each tab has a dynamic number of dropdown APIs to fetch in a single loader.
+	// resource() with a service Observable is used here (rather than an
+	// httpResource) because each tab has a dynamic number of dropdown APIs to
+	// fetch in a single loader.
 	private readonly dropdownResource = resource({
 		params: () => {
 			const tab = this.tab();
@@ -548,7 +555,7 @@ export class DispatchTabComponent {
 						);
 					try {
 						const items = await firstValueFrom(
-							this.http.get<DropdownApiItem[]>(url)
+							this.httpService.getDropdownOptions(url)
 						);
 						result[dropdown.key] = items.map((item) => ({
 							id: item.id,
@@ -674,10 +681,6 @@ export class DispatchTabComponent {
 		);
 	}
 
-	shouldShowFilter(dropdownKey: string): boolean {
-		return this.getOptions(dropdownKey).length > 10;
-	}
-
 	/** Returns the display label for the currently selected option, or the filter text if typing. */
 	getDisplayValue(dropdownKey: string): string {
 		const filterText = this.getFilter(dropdownKey);
@@ -737,6 +740,8 @@ export class DispatchTabComponent {
 
 	executePublish(): void {
 		const tabConfig = this.tab();
+
+		this.submitAttempted.set(true);
 
 		if (this.publishDisabled()) {
 			return;

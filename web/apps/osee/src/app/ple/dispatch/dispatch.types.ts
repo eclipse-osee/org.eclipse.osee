@@ -106,10 +106,6 @@ export type DropdownApiItem = {
 
 export type FormState = Record<string, unknown>;
 
-export type DropdownState = Readonly<
-	Record<string, Readonly<Record<string, readonly DropdownOption[]>>>
->;
-
 export type FilterState = Readonly<
 	Record<string, Readonly<Record<string, string>>>
 >;
