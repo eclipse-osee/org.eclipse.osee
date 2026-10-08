@@ -455,7 +455,23 @@ Run all commands from `web/apps/osee/`.
 - **Prettier** (format changed files): `npx prettier --write <file1> <file2> ...`
 - **ESLint** (lint changed files): `npx eslint <file1> <file2> ...`
 
-Always run prettier and eslint on changed files before committing. Use relative paths from `web/apps/osee/`. Do not run these automatically during development — only run when explicitly requested or at the end of a development session.
+**Defer formatting and linting to the very end.** Do **not** run prettier or
+eslint after each edit or between steps while implementing a change. Keep editing
+and verifying behavior first; formatting/linting is a single final pass, not an
+inner-loop step.
+
+- Run them **once, at the end** of a development session (or when the user
+  explicitly asks) — as a single batch across **all** files changed during the
+  session, not file-by-file as you go.
+- This also avoids repeated slow `npx` startups mid-task and keeps the diff
+  focused on behavior until the work is otherwise complete.
+- Use relative paths from `web/apps/osee/`.
+
+```bash
+# Final pass — batch all changed files together
+npx prettier --write <file1> <file2> ...
+npx eslint <file1> <file2> ...
+```
 
 ## Playwright E2E tests
 
