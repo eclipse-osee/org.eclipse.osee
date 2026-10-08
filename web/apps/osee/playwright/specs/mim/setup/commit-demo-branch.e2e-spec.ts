@@ -30,7 +30,14 @@ test('test', async ({ page }) => {
 	});
 	await expect(reviewButton).toBeVisible({ timeout: 15000 });
 	await reviewButton.click();
-	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
+	// Gate on enabled, not just visible: during the Review re-render the Commit Branch item can
+	// render briefly disabled, and a click on a disabled menuitem is silently dropped — leaving the
+	// branch stuck at Review and the commit never starting. This mirrors the guard in
+	// peer-review.e2e-spec.ts and matters more here because this is a setup spec the MIM suite
+	// depends on.
+	const commitBranch = page.getByRole('menuitem', { name: 'Commit Branch' });
+	await expect(commitBranch).toBeEnabled({ timeout: 15000 });
+	await commitBranch.click();
 
 	// Commit opens the commit-manager flow against the parent PL, which is a server
 	// round-trip; wait on the concrete "SAW Product Line" target label with a budget that

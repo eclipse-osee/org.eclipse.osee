@@ -29,8 +29,9 @@ Do not cut corners. Research industry best practices before implementing infrast
 3. **Performance-aware.** Avoid unnecessary allocations, redundant computations, and O(n²) where O(n) exists. Call out performance-sensitive decisions explicitly.
 4. **Maintainable structure.** Single responsibility. No god functions. Minimal coupling between components. If something is reused, extract it. If it's not, don't prematurely abstract.
 5. **No dead code or duplication.** If you find yourself copying logic, refactor. If code isn't reachable, remove it.
-6. **Self-critique before presenting.** Review your output for fragility, duplication, missing error handling, and unnecessary complexity. Fix problems rather than noting them as acceptable tradeoffs.
-7. **Be direct.** If a premise in the request is wrong or suboptimal, say so with reasoning. Do not agree to be agreeable.
+6. **Succinct comments.** Keep comments short and to the point by default — explain *why*, not *what* the code already says. Expand to multiple sentences only when the extra length adds genuine value (a non-obvious race, a subtle invariant, a hard-won gotcha). Summarizing surrounding logic in a comment can help, but only when the complexity warrants it — don't pad a comment to look thorough, and don't restate the code.
+7. **Self-critique before presenting.** Review your output for fragility, duplication, missing error handling, and unnecessary complexity. Fix problems rather than noting them as acceptable tradeoffs.
+8. **Be direct.** If a premise in the request is wrong or suboptimal, say so with reasoning. Do not agree to be agreeable.
 
 ### When presenting code
 
