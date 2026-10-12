@@ -31,10 +31,13 @@ test('test', async ({ page }) => {
 		.first()
 		.click();
 
-	await page
-		.getByRole('option', { name: 'Integer', exact: true })
-		.locator('span')
-		.click();
+	// Logical-type options load async; wait for the option before clicking.
+	const integerOption = page.getByRole('option', {
+		name: 'Integer',
+		exact: true,
+	});
+	await expect(integerOption).toBeVisible({ timeout: 60000 });
+	await integerOption.locator('span').click();
 
 	await page.screenshot({
 		path: 'screenshots/platform-types-page/select-logical-type.png',
@@ -57,7 +60,13 @@ test('test', async ({ page }) => {
 	await page.getByLabel('Maxval').click();
 	await page.getByLabel('Maxval').fill('2000');
 	await page.getByPlaceholder('Units').click();
-	await page.getByRole('option', { name: 'Meters', exact: true }).click();
+	// Options load async; wait for the option before clicking.
+	const metersOption = page.getByRole('option', {
+		name: 'Meters',
+		exact: true,
+	});
+	await expect(metersOption).toBeVisible({ timeout: 60000 });
+	await metersOption.click();
 	await page.getByLabel('Default Value').click();
 	await page.getByLabel('Default Value').fill('0');
 	await page.getByLabel('Default Value').blur();

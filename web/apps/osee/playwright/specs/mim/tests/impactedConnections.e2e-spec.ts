@@ -29,7 +29,10 @@ test('test', async ({ page }) => {
 	await page.waitForTimeout(500);
 	await page.getByRole('combobox', { name: 'Rates' }).click();
 	await page.getByRole('combobox', { name: 'Rates' }).fill('10');
-	await page.getByRole('option', { name: '10' }).click();
+	// Options arrive async after the filter; wait for the option before clicking.
+	const rateOption = page.getByRole('option', { name: '10' });
+	await expect(rateOption).toBeVisible({ timeout: 60000 });
+	await rateOption.click();
 	await page.getByRole('button').filter({ hasText: 'menu' }).click();
 	await page.getByText('Product Line Engineering').click();
 	await page.getByText('MIM').click();
