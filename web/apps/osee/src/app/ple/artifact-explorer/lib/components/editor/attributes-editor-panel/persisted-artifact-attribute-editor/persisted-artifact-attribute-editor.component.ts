@@ -72,14 +72,29 @@ import {
 	template: `
 		@switch (attr().storeType) {
 			@case ('Boolean') {
-				<mat-slide-toggle
-					[ngModel]="displayValue() === 'true'"
-					name="persisted-attr-boolean"
-					[disabled]="disabled()"
-					(ngModelChange)="onBooleanChange($event)"
-					class="primary-slide-toggle">
-					{{ displayValue() === 'true' ? 'True' : 'False' }}
-				</mat-slide-toggle>
+				<div class="tw-flex tw-flex-col tw-gap-1">
+					@if (showLabel()) {
+						<span
+							class="tw-text-xs tw-text-[color:var(--mat-sys-on-surface-variant)]"
+							[id]="'persisted-attr-boolean-label-' + attr().id">
+							{{ attr().name ?? '' }}
+						</span>
+					}
+					<mat-slide-toggle
+						[ngModel]="displayValue() === 'true'"
+						name="persisted-attr-boolean"
+						[disabled]="disabled()"
+						(ngModelChange)="onBooleanChange($event)"
+						[attr.aria-label]="attr().name ?? 'Boolean attribute'"
+						[attr.aria-labelledby]="
+							showLabel()
+								? 'persisted-attr-boolean-label-' + attr().id
+								: null
+						"
+						class="primary-slide-toggle">
+						{{ displayValue() === 'true' ? 'True' : 'False' }}
+					</mat-slide-toggle>
+				</div>
 			}
 			@case ('Enumeration') {
 				<mat-form-field

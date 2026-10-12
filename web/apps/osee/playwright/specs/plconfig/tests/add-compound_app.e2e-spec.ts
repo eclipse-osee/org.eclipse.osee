@@ -95,13 +95,36 @@ test('test', async ({ page }) => {
 		.first()
 		.click();
 	await page.getByRole('button', { name: 'Confirm' }).click();
+
+	// Drive the branch In Work -> Review -> (approve) -> Commit, waiting for each state control to
+	// render before clicking the next. Each transition is an async server round-trip that
+	// re-renders the action control, so a back-to-back click can fire before the re-render and be
+	// silently dropped, stalling the flow. Gate each click on its own target (the per-element form
+	// of "wait for state, not time").
 	await page.getByRole('button', { name: 'In Work' }).click();
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	await page.getByRole('button', { name: 'Review' }).click();
-	await page.getByRole('menuitem', { name: 'Approve Transition to' }).click();
-	await page.getByRole('button', { name: 'Review' }).click();
-	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
+
+	const reviewAfterTransition = page.getByRole('button', { name: 'Review' });
+	await expect(reviewAfterTransition).toBeVisible({ timeout: 60000 });
+	await reviewAfterTransition.click();
+	const approveTransition = page.getByRole('menuitem', {
+		name: 'Approve Transition to',
+	});
+	await expect(approveTransition).toBeEnabled({ timeout: 60000 });
+	await approveTransition.click();
+
+	const reviewAfterApprove = page.getByRole('button', { name: 'Review' });
+	await expect(reviewAfterApprove).toBeVisible({ timeout: 60000 });
+	await reviewAfterApprove.click();
+	const commitBranch = page.getByRole('menuitem', { name: 'Commit Branch' });
+	// Gate on enabled, not just visible: during the Review re-render the Commit Branch item can
+	// render briefly disabled, and a click on a disabled menuitem is silently dropped.
+	await expect(commitBranch).toBeEnabled({ timeout: 60000 });
+	await commitBranch.click();
+
+	// Committing is an async server round-trip; wait on the resulting config cell with a budget
+	// that covers the commit load rather than the 5s default.
 	await expect(
 		page.getByRole('cell', { name: 'JHU_CONTROLLER = Included &' })
-	).toBeVisible();
+	).toBeVisible({ timeout: 60000 });
 });

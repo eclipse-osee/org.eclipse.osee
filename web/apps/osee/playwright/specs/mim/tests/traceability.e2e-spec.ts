@@ -46,7 +46,12 @@ test('set up relations', async ({ page }) => {
 	await page
 		.getByRole('combobox', { name: 'Artifact Types' })
 		.fill('element');
-	await page.getByText('Interface DataElement', { exact: true }).click();
+	// Options arrive async after the filter; wait for the option before clicking.
+	const dataElementOption = page.getByText('Interface DataElement', {
+		exact: true,
+	});
+	await expect(dataElementOption).toBeVisible({ timeout: 60000 });
+	await dataElementOption.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page
 		.locator('osee-artifact-search button')
@@ -70,10 +75,12 @@ test('set up relations', async ({ page }) => {
 	const typeInput = page.getByRole('combobox', { name: 'Artifact Type' });
 	await typeInput.click();
 	await typeInput.fill('software requirement');
-	await page
+	// Options arrive async after the filter; wait for the option before clicking.
+	const softwareReqOption = page
 		.getByRole('option', { name: 'Software Requirement', exact: true })
-		.first()
-		.click();
+		.first();
+	await expect(softwareReqOption).toBeVisible({ timeout: 60000 });
+	await softwareReqOption.click();
 	await page.getByRole('button', { name: 'Create', exact: true }).click();
 
 	// Relate requirement to element

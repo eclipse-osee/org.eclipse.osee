@@ -250,12 +250,18 @@ test('commit branches', async ({ page }) => {
 	await expect(tw16Review).toBeVisible({ timeout: 60000 });
 	await tw16Review.click();
 	const tw16Commit = page.getByRole('menuitem', { name: 'Commit Branch' });
-	await expect(tw16Commit).toBeVisible({ timeout: 60000 });
+	// Gate on enabled, not just visible: during the Review re-render the item can render briefly
+	// disabled, and a click on a disabled menuitem is silently dropped — leaving the branch stuck
+	// at "Review" and the success banner never shown (the failure this guard fixes).
+	await expect(tw16Commit).toBeEnabled({ timeout: 60000 });
 	await tw16Commit.click();
 
+	// Committing a branch is an async server round-trip (commit + SSE refresh) that can exceed the
+	// default 5s assertion timeout under CI load, so wait on the real completion signal (the
+	// success banner) with a generous timeout rather than racing the commit.
 	await expect(
 		page.getByText('Branches included in this PR have been committed')
-	).toBeVisible();
+	).toBeVisible({ timeout: 60000 });
 
 	await page.screenshot({
 		animations: 'disabled',
@@ -292,7 +298,9 @@ test('commit branches', async ({ page }) => {
 	await expect(tw19Review).toBeVisible({ timeout: 60000 });
 	await tw19Review.click();
 	const tw19Commit = page.getByRole('menuitem', { name: 'Commit Branch' });
-	await expect(tw19Commit).toBeVisible({ timeout: 60000 });
+	// Same enabled-gate as the first branch: a disabled-at-click Commit Branch item would be
+	// silently dropped and leave this branch stuck at Review.
+	await expect(tw19Commit).toBeEnabled({ timeout: 60000 });
 	await tw19Commit.click();
 
 	// "Close Peer Review" is disabled until every applied branch is committed
