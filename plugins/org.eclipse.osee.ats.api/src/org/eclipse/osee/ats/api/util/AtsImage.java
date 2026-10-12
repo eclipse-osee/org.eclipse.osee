@@ -46,6 +46,8 @@ public class AtsImage extends OseeImage {
    public static final AtsImage CONTEXT_CHANGE_REPORT = new AtsImage("contextChangeReport.gif");
    public static final AtsImage COPY_TO_CLIPBOARD = new AtsImage("copyToClipboard.gif");
    public static final AtsImage CUSTOMIZE = new AtsImage("customize.gif");
+   public static final AtsImage DEFECT = new AtsImage("defect.gif");
+   public static final AtsImage DEFECT_COMPLETE = new AtsImage("defectDone.gif");
    public static final AtsImage DECISION_REVIEW = new AtsImage("decision_review.gif");
    public static final AtsImage DOWN_TRIANGLE = new AtsImage("downTriangle.gif");
    public static final AtsImage DROP_HERE_TO_ADD_BACKGROUND = new AtsImage("dropHereToAddBackground.gif");

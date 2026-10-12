@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
 import org.eclipse.osee.ats.api.reqts.icd.AtsIcdEndpointApi;
+import org.eclipse.osee.ats.api.review.AtsReviewEndpointApi;
 import org.eclipse.osee.ats.api.store.AtsRelationEndpointApi;
 import org.eclipse.osee.ats.api.store.AtsStoreEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
@@ -85,6 +86,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsRelationEndpointApi relEp;
    private BranchEndpoint brchEp;
    private AtsIcdEndpointApi icdEp;
+   private AtsReviewEndpointApi reviewEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -339,6 +341,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          icdEp = jaxRsApi.newProxy("ats", AtsIcdEndpointApi.class);
       }
       return icdEp;
+   }
+
+   @Override
+   public AtsReviewEndpointApi getReviewEp() {
+      if (reviewEp == null) {
+         reviewEp = jaxRsApi.newProxy("ats", AtsReviewEndpointApi.class);
+      }
+      return reviewEp;
    }
 
 }

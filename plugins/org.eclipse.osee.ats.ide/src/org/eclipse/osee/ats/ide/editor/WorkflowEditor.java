@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -768,6 +769,20 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       editArtifact((Artifact) workItem.getStoreObject());
    }
 
+   public static void editAndSelectDefect(IAtsWorkItem workItem, ReviewDefectItem defect) {
+      AbstractWorkflowArtifact workflow = (AbstractWorkflowArtifact) workItem.getStoreObject();
+      Displays.ensureInDisplayThread(() -> {
+         IWorkbenchPage page = AWorkbench.getActivePage();
+         try {
+            WorkflowEditor editor = (WorkflowEditor) page.openEditor(new WfeInput(workflow), EDITOR_ID);
+            editor.openDefect(defect);
+            RecentlyVisitedNavigateItems.addVisited(workflow);
+         } catch (PartInitException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      });
+   }
+
    public static Composite createCommonPageComposite(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
       GridLayout layout = new GridLayout(1, false);
@@ -811,6 +826,13 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
    public WfeBitTab getBitTab() {
       return bitTab;
+   }
+
+   public void openDefect(ReviewDefectItem defect) {
+      if (defectsTab != null) {
+         setActivePage(defectsTab.getIndex());
+         defectsTab.selectDefect(defect);
+      }
    }
 
    public WfeMembersTab getMembersTab() {
