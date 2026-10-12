@@ -528,6 +528,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new XNavigateItemFolder(REVIEW.getName(), AtsImage.REVIEW, XNavItemCat.MID_BOT));
 
       items.add(new SearchNavigateItem(new MyReviewSearchItem(), REVIEW));
+      items.add(new MyOpenDefectItemsNavigateItem());
+      items.add(new UsersOpenDefectItemsNavigateItem());
       items.add(new SearchNavigateItem(new AtsSearchReviewSearchItem(), REVIEW));
       items.add(new XNavigateItemAction(new OpenWorkflowByIdAction("Open Review by ID"), AtsImage.REVIEW, REVIEW));
       items.add(new SearchNavigateItem(

@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -49,7 +50,9 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
       ReviewDefectItem defectItem = (ReviewDefectItem) element;
-      if (dCol.equals(PeerReviewDefectXViewerColumns.Severity_Col)) {
+      if (dCol.equals(PeerReviewDefectXViewerColumns.DefectId_Col)) {
+         return ImageManager.getImage(defectItem.isClosed() ? AtsImage.DEFECT_COMPLETE : AtsImage.DEFECT);
+      } else if (dCol.equals(PeerReviewDefectXViewerColumns.Severity_Col)) {
          return DefectSeverityToImage.getImage(defectItem.getSeverity());
       } else if (dCol.equals(PeerReviewDefectXViewerColumns.Injection_Activity_Col)) {
          return ImageManager.getImage(CoreImage.INFO_SM);
