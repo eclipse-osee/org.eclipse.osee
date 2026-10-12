@@ -14,7 +14,7 @@
 export type BranchType = 'working' | 'baseline' | '';
 
 export type TargetApi = {
-	readonly method: 'GET' | 'POST';
+	readonly method: 'GET' | 'POST' | 'PUT';
 	readonly url: string;
 	readonly button?: string;
 };
@@ -35,6 +35,14 @@ export type TabCheckbox = {
 	readonly default?: boolean;
 };
 
+/** A single-line free-text form field. */
+export type TabTextInput = {
+	readonly key: string;
+	readonly label: string;
+	readonly required?: boolean;
+	readonly placeholder?: string;
+};
+
 export type TabFileInput = {
 	readonly key: string;
 	readonly label: string;
@@ -51,6 +59,7 @@ export type DispatchTabConfig = {
 	readonly instructions: string;
 	readonly dropdowns: readonly TabDropdown[];
 	readonly checkboxes: readonly TabCheckbox[];
+	readonly textInputs?: readonly TabTextInput[];
 	readonly fileInputs?: readonly TabFileInput[];
 	readonly targetApi: TargetApi;
 	readonly artifact?: string;
@@ -96,10 +105,6 @@ export type DropdownApiItem = {
 };
 
 export type FormState = Record<string, unknown>;
-
-export type DropdownState = Readonly<
-	Record<string, Readonly<Record<string, readonly DropdownOption[]>>>
->;
 
 export type FilterState = Readonly<
 	Record<string, Readonly<Record<string, string>>>

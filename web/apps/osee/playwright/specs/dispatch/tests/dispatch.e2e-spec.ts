@@ -629,6 +629,17 @@ test.describe('Dispatch Feature Coverage', () => {
 		await expect(chip).not.toBeVisible();
 	});
 
+	test('text input renders when defined in the config', async ({ page }) => {
+		const notesInput = page.getByRole('textbox', {
+			name: 'Notes',
+		});
+		await expect(notesInput).toBeVisible();
+		await expect(notesInput).toHaveAttribute(
+			'placeholder',
+			'Enter optional notes'
+		);
+	});
+
 	test('required file input blocks publish until a file is provided', async ({
 		page,
 	}) => {

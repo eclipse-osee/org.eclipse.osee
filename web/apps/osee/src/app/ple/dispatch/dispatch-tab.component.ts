@@ -21,8 +21,7 @@ import {
 	signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { httpResource } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -51,7 +50,6 @@ import {
 } from './dispatch-result-dialog.component';
 import type {
 	DispatchTabConfig,
-	DropdownApiItem,
 	DropdownOption,
 	FilterState,
 	FormState,
@@ -185,6 +183,32 @@ const URL_PLACEHOLDER = /\{([^}]+)\}/g;
 				}
 			}
 
+			@for (
+				textInput of tabConfig.textInputs ?? [];
+				track textInput.key
+			) {
+				<mat-form-field
+					appearance="outline"
+					subscriptSizing="dynamic"
+					class="tw-w-full">
+					<mat-label>{{ textInput.label }}</mat-label>
+					<input
+						type="text"
+						matInput
+						[field]="$any(publishForm[textInput.key])"
+						[placeholder]="textInput.placeholder ?? ''" />
+					@if (
+						textInput.required &&
+						publishForm[textInput.key]?.()?.touched() &&
+						hasFieldError(textInput.key)
+					) {
+						<mat-error>
+							Please enter a {{ textInput.label.toLowerCase() }}
+						</mat-error>
+					}
+				</mat-form-field>
+			}
+
 			@for (checkbox of tabConfig.checkboxes; track checkbox.key) {
 				<mat-checkbox [field]="$any(publishForm[checkbox.key])">
 					{{ checkbox.label }}
@@ -235,7 +259,7 @@ const URL_PLACEHOLDER = /\{([^}]+)\}/g;
 							@if (
 								fileInput.required &&
 								!hasFiles(fileInput.key) &&
-								publishing()
+								submitAttempted()
 							) {
 								<p
 									class="tw-mt-1 tw-text-sm tw-text-red-600 dark:tw-text-red-400">
@@ -271,7 +295,6 @@ export class DispatchTabComponent {
 	readonly branchType = input<string>('');
 
 	private readonly dialog = inject(MatDialog);
-	private readonly http = inject(HttpClient);
 	private readonly httpService = inject(DispatchHttpService);
 	private readonly viewsService = inject(ViewsRoutedUiService);
 	private readonly sanitizer = inject(DomSanitizer);
@@ -285,6 +308,13 @@ export class DispatchTabComponent {
 		Readonly<Record<string, readonly File[]>>
 	>({});
 	protected readonly publishing = signal(false);
+	/**
+	 * Set true the first time the user presses the publish button. Gates the
+	 * inline "please upload a file" messages so they appear only after a submit
+	 * attempt — unlike publishing(), which never flips while a required file is
+	 * still missing (publishDisabled() short-circuits executePublish()).
+	 */
+	protected readonly submitAttempted = signal(false);
 	protected readonly emailValue = signal<string>('');
 
 	/** Generic state for registered components keyed by dropdown key. */
@@ -294,12 +324,14 @@ export class DispatchTabComponent {
 
 	protected readonly dropdowns = computed(() => this.tab().dropdowns);
 
-	private readonly instructionsResource = httpResource.text(() => ({
-		url: apiURL + '/define/word/convertMarkdownToHtmlPreview',
-		method: 'POST' as const,
-		body: this.tab().instructions || '',
-		headers: { 'Content-Type': 'text/plain' },
-	}));
+	private readonly instructionsMarkdown = computed(
+		() => this.tab().instructions || ''
+	);
+
+	private readonly instructionsResource =
+		this.httpService.getInstructionsPreviewResource(
+			this.instructionsMarkdown
+		);
 
 	// Trust boundary: the instructions markdown comes from DispatchConfig
 	// artifacts, which are authored on the common branch by privileged users
@@ -363,6 +395,10 @@ export class DispatchTabComponent {
 		)
 	);
 
+	protected readonly requiredTextInputs = computed(() =>
+		(this.tab().textInputs ?? []).filter((input) => input.required)
+	);
+
 	private readonly formModel = signal<FormState>({});
 
 	protected readonly publishForm = form(this.formModel, (path) => {
@@ -384,6 +420,22 @@ export class DispatchTabComponent {
 					);
 				}
 			}
+			for (const textInput of this.requiredTextInputs()) {
+				const value = formValue[textInput.key];
+				if (
+					value === null ||
+					value === undefined ||
+					String(value).trim() === ''
+				) {
+					errors.push(
+						customError({
+							kind: 'required',
+							message: `Please enter a ${textInput.label.toLowerCase()}`,
+							key: textInput.key,
+						})
+					);
+				}
+			}
 			return errors.length > 0 ? errors : null;
 		});
 	});
@@ -400,6 +452,10 @@ export class DispatchTabComponent {
 
 		for (const checkbox of tabConfig.checkboxes) {
 			model[checkbox.key] = checkbox.default ?? false;
+		}
+
+		for (const textInput of tabConfig.textInputs ?? []) {
+			model[textInput.key] = '';
 		}
 
 		this.formModel.set(model);
@@ -453,8 +509,9 @@ export class DispatchTabComponent {
 		}
 	});
 
-	// resource() with HttpClient.get is used here instead of httpResource
-	// because each tab has a dynamic number of dropdown APIs to fetch in a single loader.
+	// resource() with a service Observable is used here (rather than an
+	// httpResource) because each tab has a dynamic number of dropdown APIs to
+	// fetch in a single loader.
 	private readonly dropdownResource = resource({
 		params: () => {
 			const tab = this.tab();
@@ -498,7 +555,7 @@ export class DispatchTabComponent {
 						);
 					try {
 						const items = await firstValueFrom(
-							this.http.get<DropdownApiItem[]>(url)
+							this.httpService.getDropdownOptions(url)
 						);
 						result[dropdown.key] = items.map((item) => ({
 							id: item.id,
@@ -542,6 +599,12 @@ export class DispatchTabComponent {
 				} else if (!this.isDropdownRequired(dropdown)) {
 					replacements[dropdown.key] = '-1';
 				}
+			}
+		}
+		for (const textInput of this.tab().textInputs ?? []) {
+			const value = formValue[textInput.key];
+			if (value !== null && value !== undefined && String(value).trim()) {
+				replacements[textInput.key] = String(value).trim();
 			}
 		}
 		return replacements;
@@ -618,10 +681,6 @@ export class DispatchTabComponent {
 		);
 	}
 
-	shouldShowFilter(dropdownKey: string): boolean {
-		return this.getOptions(dropdownKey).length > 10;
-	}
-
 	/** Returns the display label for the currently selected option, or the filter text if typing. */
 	getDisplayValue(dropdownKey: string): string {
 		const filterText = this.getFilter(dropdownKey);
@@ -682,6 +741,8 @@ export class DispatchTabComponent {
 	executePublish(): void {
 		const tabConfig = this.tab();
 
+		this.submitAttempted.set(true);
+
 		if (this.publishDisabled()) {
 			return;
 		}
@@ -694,6 +755,8 @@ export class DispatchTabComponent {
 		this.publishing.set(true);
 		if (tabConfig.targetApi.method === 'GET') {
 			this.executeGetRequest(targetUrl, tabConfig, formValue);
+		} else if (tabConfig.targetApi.method === 'PUT') {
+			this.executePutRequest(targetUrl);
 		} else if (hasFiles && this.getRawFileInput()) {
 			this.executePostRawFileRequest(targetUrl);
 		} else if (hasFiles) {
@@ -748,6 +811,10 @@ export class DispatchTabComponent {
 		this.httpService
 			.executePost(url, body)
 			.subscribe(this.resultObserver());
+	}
+
+	private executePutRequest(url: string): void {
+		this.httpService.executePut(url).subscribe(this.resultObserver());
 	}
 
 	private executePostWithFilesRequest(
