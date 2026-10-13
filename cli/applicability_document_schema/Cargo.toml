@@ -12,7 +12,7 @@
  ######################################################################
 [package]
 name = "applicability_document_schema"
-version = "1.1.13"
+version = "1.1.15"
 edition = "2024"
 license.workspace = true
 
@@ -22,6 +22,7 @@ applicability_lexer_document_structure = { path = "../applicability_lexer_docume
 applicability_lexer_config_markdown = { path = "../applicability_lexer_config_markdown"}
 applicability_lexer_config_cpp_like = { path = "../applicability_lexer_config_cpp_like"}
 applicability_lexer_config_build_file = { path = "../applicability_lexer_config_build_file"}
+applicability_lexer_config_conf = { path = "../applicability_lexer_config_conf"}
 applicability_lexer_config_rust = { path = "../applicability_lexer_config_rust"}
 applicability_lexer_config_latex = { path = "../applicability_lexer_config_latex"}
 applicability_lexer_config_plantuml = { path = "../applicability_lexer_config_plantuml"}

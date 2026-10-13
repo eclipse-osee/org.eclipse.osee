@@ -244,6 +244,16 @@ where
                                         x
                                     })
                                     .parse_complete(remaining),
+                                applicability_document_schema::DocTypeConfig::Conf(
+                                    applicability_conf_lexer_config,
+                                ) => tokenize_others_parser(&applicability_conf_lexer_config)
+                                    .map(|mut x| {
+                                        x.insert(0, language_tag_insert.to_owned());
+                                        x.insert(0, start_tag.to_owned());
+                                        x.push(end_insert.to_owned());
+                                        x
+                                    })
+                                    .parse_complete(remaining),
                                 applicability_document_schema::DocTypeConfig::Rust(
                                     applicability_rust_lexer_config,
                                 ) => tokenize_others_parser(&applicability_rust_lexer_config)
