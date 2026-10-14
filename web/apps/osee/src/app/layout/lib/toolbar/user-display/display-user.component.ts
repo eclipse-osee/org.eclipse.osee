@@ -20,9 +20,11 @@ import {
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 import { RouterOutlet } from '@angular/router';
 import { UserDataAccountService } from '@osee/auth';
+import { SseEventService } from '@osee/shared/services/network';
 import { environment } from '@osee/environments';
 import { user } from '@osee/shared/types/auth';
 import { Observable } from 'rxjs';
@@ -53,12 +55,28 @@ import { OktaSignComponent } from '../okta-sign/okta-sign.component';
 		MatMenuTrigger,
 		MatIcon,
 		MatMenu,
+		MatMenuItem,
+		MatTooltip,
 	],
 })
 export class DisplayUserComponent {
 	private accountService = inject(UserDataAccountService);
+	private sseEventService = inject(SseEventService);
 
 	userInfo: Observable<user> = this.accountService.user;
 	opened = false;
 	authScheme = environment.authScheme;
+
+	/** True when the user could not be resolved (auth failed / server unavailable). */
+	protected isSignedOut(u: user | null | undefined): boolean {
+		return !u || u.id === '-1';
+	}
+
+	/** SSE connection state for badge and dropdown display. */
+	protected connectionState = this.sseEventService.connectionState;
+
+	/** Manually forces an immediate SSE reconnect attempt (leader-routed inside the service). */
+	protected reconnectNow() {
+		this.sseEventService.reconnectNow();
+	}
 }

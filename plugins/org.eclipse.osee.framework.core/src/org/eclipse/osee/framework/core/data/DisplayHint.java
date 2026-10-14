@@ -30,6 +30,12 @@ public class DisplayHint extends NamedIdBase {
    public static final DisplayHint IndexBased = new DisplayHint(7L, "IndexBased Search");
    public static final DisplayHint DisplaySizeLimited = new DisplayHint(8L, "Display Size Limited");
    public static final DisplayHint InOrder = new DisplayHint(9L, "In-Order");
+   // Attribute whose stored value is a user's artifact id. Domain-neutral so any bundle
+   // (ATS, MIM, core, future) can mark a user-valued attribute and have generic code
+   // (e.g. change-event enrichment) recognize it without a domain dependency.
+   public static final DisplayHint UserArtId = new DisplayHint(85L, "User ArtId Attr");
+   // Attribute whose stored value is a user's UserId string.
+   public static final DisplayHint UserId = new DisplayHint(86L, "User UserId Attr");
 
    protected DisplayHint(Long id, String name) {
       super(id, name);

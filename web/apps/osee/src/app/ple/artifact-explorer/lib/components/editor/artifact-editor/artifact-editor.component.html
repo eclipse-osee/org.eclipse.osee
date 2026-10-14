@@ -71,6 +71,12 @@
 			</button>
 		</div>
 		<div class="tw-flex-1"></div>
+		<!-- Presence: other users viewing this artifact -->
+		@if (presence.users().length > 0) {
+			<osee-presence-avatars
+				[users]="presence.users()"
+				class="tw-pr-2" />
+		}
 		@if (activeSection() === 'attributes' && tab().artifact.editable) {
 			<div
 				class="tw-flex tw-items-center tw-gap-1"
@@ -85,6 +91,19 @@
 			</div>
 		}
 	</div>
+	<!-- Remote change conflict warning: sits within the sticky toolbar region so
+	     it stays visible while scrolling. Placement/stickiness is owned here (the
+	     page), not by the banner. -->
+	@if (attrPanel.remoteChangeWhileDirty()) {
+		<div
+			class="tw-border-t tw-border-solid tw-border-background-hover tw-px-4 tw-py-2">
+			<osee-conflict-resolution-banner
+				message="This artifact was modified by another user. You have unsaved changes."
+				[resolving]="attrPanel.resolvingConflict()"
+				(resolve)="attrPanel.openConflictResolutionDialog()"
+				(discard)="attrPanel.dismissAndRefresh()" />
+		</div>
+	}
 </div>
 <!-- Section content (hidden/shown to preserve state) -->
 <div>
@@ -95,6 +114,8 @@
 			#attrPanel
 			[tab]="tab()"
 			[deleteMode]="deleteMode()"
+			[remoteChangeCount]="remoteChangeCount()"
+			[artifactResource]="artifactResource"
 			oseeHelpAnchor="attr-panel" />
 	</div>
 	<div [class.tw-hidden]="activeSection() !== 'relations'">
@@ -102,12 +123,15 @@
 			[editable]="tab().artifact.editable"
 			[artifactId]="tab().artifact.id"
 			[branchId]="tab().branchId"
-			[viewId]="tab().viewId" />
+			[viewId]="tab().viewId"
+			[artifactResource]="artifactResource" />
 	</div>
 	<div
 		class="tw-p-2"
 		[class.tw-hidden]="activeSection() !== 'history'">
-		<osee-artifact-history-panel [tab]="tab()" />
+		<osee-artifact-history-panel
+			[tab]="tab()"
+			[changeCount]="anyChangeCount()" />
 	</div>
 	<div
 		class="tw-p-2"

@@ -13,6 +13,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { filter, map } from 'rxjs';
 import { SideNavService } from '@osee/shared/services/layout';
+import {
+	ArtifactChangeNotificationService,
+	BranchChangeEventService,
+	SelectedBranchLifecycleService,
+	UserPresenceService,
+} from '@osee/shared/services';
 import { NavContainerComponent } from '@osee/layout/container';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SnackbarWrapperComponent } from '@osee/shared/components';
@@ -30,6 +36,10 @@ export class AppComponent {
 	private matIconRegistry = inject(MatIconRegistry);
 	private domSanitizer = inject(DomSanitizer);
 	private router = inject(Router);
+	private changeNotification = inject(ArtifactChangeNotificationService);
+	private branchChangeEvent = inject(BranchChangeEventService);
+	private selectedBranchLifecycle = inject(SelectedBranchLifecycleService);
+	private userPresence = inject(UserPresenceService);
 
 	rightSideNavOpened = this.sideNavService.rightSideNavOpened;
 	leftSideNavOpened = this.sideNavService.leftSideNav.pipe(
@@ -47,7 +57,16 @@ export class AppComponent {
 			this.domSanitizer.bypassSecurityTrustHtml(osee_logo)
 		);
 
-		// Also update on navigation in case of late detection
+		// Start the always-on notification streams and the selected-branch lifecycle reactions
+		// (rebaseline re-point, deleted/purged navigate-away + notice).
+		this.changeNotification.initialize();
+		this.branchChangeEvent.initialize();
+		this.selectedBranchLifecycle.initialize();
+		// Presence must run in every tab (not just presence-watching pages): the heartbeat is sent
+		// by the SSE-connection leader, which may be on a page that never watches a context.
+		this.userPresence.initialize();
+
+		// Detect popup routes late (in case of a redirect) so the shell is hidden.
 		this.router.events
 			.pipe(
 				filter((e) => e instanceof NavigationEnd),

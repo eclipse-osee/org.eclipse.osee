@@ -16,4 +16,5 @@ import { transactionToken } from '@osee/transactions/types';
 export type transactionResult = {
 	tx: transactionToken;
 	results: XResultData;
+	failedGammas: string[];
 };

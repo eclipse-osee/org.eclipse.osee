@@ -14,11 +14,14 @@
 package org.eclipse.osee.jaxrs.server.internal.applications;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.servlet.Servlet;
 import javax.servlet.http.HttpServlet;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response.Status;
@@ -28,7 +31,8 @@ import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitor;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegistry.JaxRsContainer;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
-import org.osgi.service.http.HttpService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Roberto E. Escobar
@@ -36,7 +40,7 @@ import org.osgi.service.http.HttpService;
 public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends AbstractJaxRsApplicationContainer, F extends JaxRsProvider> implements JaxRsContainer, JaxRsVisitable, JaxRsProviders {
 
    private final Log logger;
-   private final HttpService httpService;
+   private final BundleContext bundleContext;
    private final Dictionary<String, Object> props;
 
    private final ConcurrentHashMap<String, C> applications = new ConcurrentHashMap<>();
@@ -47,16 +51,17 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
    private final AtomicBoolean isRegistered = new AtomicBoolean(false);
 
    private volatile H baseJaxsRsServlet;
+   private volatile ServiceRegistration<Servlet> servletRegistration;
 
-   public AbstractJaxRsContainer(Log logger, HttpService httpService, Dictionary<String, Object> props) {
+   public AbstractJaxRsContainer(Log logger, BundleContext bundleContext, Dictionary<String, Object> props) {
       super();
       this.logger = logger;
-      this.httpService = httpService;
+      this.bundleContext = bundleContext;
       this.props = props;
    }
 
-   protected HttpService getHttpService() {
-      return httpService;
+   protected BundleContext getBundleContext() {
+      return bundleContext;
    }
 
    protected Dictionary<String, Object> getServletProperties() {
@@ -221,7 +226,21 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
          logger.trace("Register Servlet - [%s] - [%s]", this, baseJaxsRsServlet);
          try {
             String contextName = getServletContext();
-            getHttpService().registerServlet(contextName, baseJaxsRsServlet, props, null);
+            // Register via OSGi HTTP Whiteboard with async support enabled
+            Dictionary<String, Object> whiteboardProps = new Hashtable<>();
+            String pattern = contextName.endsWith("/") ? contextName + "*" : contextName + "/*";
+            whiteboardProps.put("osgi.http.whiteboard.servlet.pattern", pattern);
+            whiteboardProps.put("osgi.http.whiteboard.servlet.name", "org.apache.cxf.transport.servlet.CXFNonSpringServlet");
+            whiteboardProps.put("osgi.http.whiteboard.servlet.asyncSupported", Boolean.TRUE);
+            // Copy any additional init params
+            if (props != null) {
+               Enumeration<String> keys = props.keys();
+               while (keys.hasMoreElements()) {
+                  String key = keys.nextElement();
+                  whiteboardProps.put("servlet.init." + key, props.get(key));
+               }
+            }
+            servletRegistration = bundleContext.registerService(Servlet.class, baseJaxsRsServlet, whiteboardProps);
          } catch (Exception ex) {
             throw new OseeWebApplicationException(ex, Status.INTERNAL_SERVER_ERROR, "Error registering servlet [%s] ",
                servletContextName);
@@ -231,9 +250,11 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
 
    private void stopServlet() {
       if (isRegistered.getAndSet(false)) {
-         String contextName = getServletContext();
          logger.trace("De-register Servlet - [%s] - [%s]", this, baseJaxsRsServlet);
-         getHttpService().unregister(contextName);
+         if (servletRegistration != null) {
+            servletRegistration.unregister();
+            servletRegistration = null;
+         }
          baseJaxsRsServlet = null;
       }
    }

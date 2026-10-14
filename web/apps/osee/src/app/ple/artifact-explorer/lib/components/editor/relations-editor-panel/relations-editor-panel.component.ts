@@ -12,8 +12,15 @@
  **********************************************************************/
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	inject,
+	input,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { HttpResourceRef } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatList } from '@angular/material/list';
@@ -23,11 +30,9 @@ import { CurrentTransactionService } from '@osee/transactions/services';
 import { RELATIONTYPEID } from '@osee/shared/types/constants';
 import {
 	BehaviorSubject,
-	combineLatest,
 	filter,
 	iif,
 	of,
-	repeat,
 	shareReplay,
 	switchMap,
 	take,
@@ -54,6 +59,7 @@ import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relatio
 		MatList,
 		ExpandIconComponent,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './relations-editor-panel.component.html',
 })
 export class RelationsEditorPanelComponent {
@@ -68,36 +74,19 @@ export class RelationsEditorPanelComponent {
 	branchId = input.required<string>();
 	viewId = input.required<string>();
 	editable = input.required<boolean>();
-
-	private artifactId$ = toObservable(this.artifactId);
-	private branchId$ = toObservable(this.branchId);
-	private viewId$ = toObservable(this.viewId);
+	/** Shared artifact resource from parent (includes relations). */
+	artifactResource =
+		input.required<HttpResourceRef<artifactWithRelations | undefined>>();
 
 	private _hierarchyEditable = computed(() => this.editable());
 
-	artWithRelation$ = combineLatest([
-		this.branchId$,
-		this.viewId$,
-		this.artifactId$,
-	]).pipe(
+	/** Derived from parent's shared resource — no separate HTTP call. */
+	artWithRelation$ = toObservable(
+		computed(() => this.artifactResource().value())
+	).pipe(
 		filter(
-			([branch, _view, artifact]) =>
-				branch !== '-1' &&
-				branch !== '0' &&
-				branch !== '' &&
-				artifact !== '-1'
-		),
-		switchMap(([branch, view, artifact]) =>
-			this.artExpHttpService
-				.getartifactWithRelations(branch, artifact, view, true)
-				.pipe(
-					repeat({
-						delay: () =>
-							this.uiService.updateArtifact.pipe(
-								filter((id) => id === artifact)
-							),
-					})
-				)
+			(art): art is artifactWithRelations =>
+				art !== undefined && art !== null
 		),
 		shareReplay({ bufferSize: 1, refCount: true }),
 		takeUntilDestroyed()

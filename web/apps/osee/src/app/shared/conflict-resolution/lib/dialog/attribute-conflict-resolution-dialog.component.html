@@ -1,0 +1,301 @@
+<!--
+ * Copyright (c) 2026 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>
+	<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+		<mat-icon class="tw-text-warning">sync_problem</mat-icon>
+		Resolve Attribute Conflicts
+	</div>
+</h1>
+<mat-dialog-content class="tw-flex tw-flex-col tw-gap-4 tw-pt-2">
+	<p class="tw-my-0 tw-text-sm tw-opacity-70">
+		Another user modified
+		<strong>{{ data.entityName }}</strong>
+		while you had unsaved changes. Choose how to resolve each conflicting
+		attribute.
+	</p>
+
+	@for (
+		conflict of conflicts();
+		track conflict.conflictKey ?? conflict.baseAttr.id;
+		let i = $index
+	) {
+		<div
+			class="tw-rounded-md tw-border tw-border-solid tw-border-foreground-divider tw-p-3">
+			<!-- Attribute name header -->
+			<div class="tw-mb-2 tw-flex tw-items-center tw-gap-2">
+				<mat-icon class="tw-text-base tw-opacity-60"
+					>text_fields</mat-icon
+				>
+				<span class="tw-text-sm tw-font-medium">{{
+					conflict.baseAttr.name ?? conflict.baseAttr.typeId
+				}}</span>
+			</div>
+
+			<!-- Live-change notice: the server value updated again while resolving, so this
+			     row was reset to the safe default and must be re-decided. -->
+			@if (getState(i).serverChanged) {
+				<div
+					class="tw-mb-2 tw-flex tw-items-center tw-gap-1 tw-text-xs tw-text-warning">
+					<mat-icon class="tw-text-sm">sync_problem</mat-icon>
+					<span
+						>The server value changed again while you were
+						resolving. This choice was reset — please review.</span
+					>
+				</div>
+			}
+
+			<!-- Value comparison -->
+			<div class="tw-mb-3 tw-grid tw-grid-cols-2 tw-gap-2 tw-text-xs">
+				<div class="tw-rounded tw-bg-background-hover tw-p-2">
+					<span class="tw-block tw-font-medium tw-opacity-60"
+						>Your Value</span
+					>
+					@if (conflict.localValue) {
+						<span
+							class="tw-mt-1 tw-block tw-max-h-[30vh] tw-overflow-auto tw-whitespace-pre-wrap tw-break-words">
+							{{ conflict.localValue }}
+						</span>
+					} @else {
+						<span class="tw-mt-1 tw-block tw-italic tw-opacity-50"
+							>(empty)</span
+						>
+					}
+				</div>
+				<div class="tw-rounded tw-bg-background-hover tw-p-2">
+					<span class="tw-block tw-font-medium tw-opacity-60"
+						>Server Value</span
+					>
+					@if (conflict.serverDeleted) {
+						<span
+							class="tw-mt-1 tw-block tw-italic tw-text-warning tw-opacity-80"
+							>(deleted by another user)</span
+						>
+					} @else if (conflict.serverAttr?.value) {
+						<span
+							class="tw-mt-1 tw-block tw-max-h-[30vh] tw-overflow-auto tw-whitespace-pre-wrap tw-break-words">
+							{{ conflict.serverAttr?.value }}
+						</span>
+					} @else {
+						<span class="tw-mt-1 tw-block tw-italic tw-opacity-50"
+							>(empty)</span
+						>
+					}
+				</div>
+			</div>
+
+			<!-- Resolution options -->
+			@if (conflict.serverDeleted) {
+				<mat-radio-group
+					[ngModel]="getState(i).action"
+					(ngModelChange)="setAction(i, $event)"
+					[name]="'conflict-resolution-' + i"
+					class="tw-flex tw-flex-col tw-gap-1">
+					<mat-radio-button value="re-add">
+						<span class="tw-text-sm">Keep Mine</span>
+						<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+							>Re-add the attribute with your value.</span
+						>
+					</mat-radio-button>
+					<mat-radio-button value="accept-deletion">
+						<span class="tw-text-sm">Accept Deletion</span>
+						<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+							>Discard your edit and accept the removal.</span
+						>
+					</mat-radio-button>
+				</mat-radio-group>
+			} @else if (conflict.stagedAdd) {
+				<!-- Staged add colliding with a server-side add of the same type. There is
+				     no existing instance to overwrite, so only discard-mine and (when the
+				     type allows multiples) keep-both are offered. -->
+				<mat-radio-group
+					[ngModel]="getState(i).action"
+					(ngModelChange)="setAction(i, $event)"
+					[name]="'conflict-resolution-' + i"
+					class="tw-flex tw-flex-col tw-gap-1">
+					<mat-radio-button value="take-theirs">
+						<span class="tw-text-sm">Take Server's</span>
+						<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+							>Keep the attribute the other user added, discard
+							yours.</span
+						>
+					</mat-radio-button>
+					@if (conflict.allowsMultiple) {
+						<mat-radio-button value="take-both">
+							<span class="tw-text-sm">Take Both</span>
+							<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+								>Keep the other user's and add yours as a
+								separate instance.</span
+							>
+						</mat-radio-button>
+					}
+				</mat-radio-group>
+			} @else {
+				<mat-radio-group
+					[ngModel]="getState(i).action"
+					(ngModelChange)="setAction(i, $event)"
+					[name]="'conflict-resolution-' + i"
+					class="tw-flex tw-flex-col tw-gap-1">
+					<mat-radio-button value="take-yours">
+						<span class="tw-text-sm">Take Yours</span>
+						<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+							>Keep your local value, discard server change.</span
+						>
+					</mat-radio-button>
+					<mat-radio-button value="take-theirs">
+						<span class="tw-text-sm">Take Server's</span>
+						<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+							>Accept server value, discard your edit.</span
+						>
+					</mat-radio-button>
+					@if (conflict.allowsMultiple) {
+						<mat-radio-button value="take-both">
+							<span class="tw-text-sm">Take Both</span>
+							<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+								>Keep server value and add yours as a new
+								instance.</span
+							>
+						</mat-radio-button>
+					}
+					<mat-radio-button value="manual">
+						<span class="tw-text-sm">Manual Resolution</span>
+						<span class="tw-ml-1 tw-text-xs tw-opacity-50"
+							>Enter a custom value.</span
+						>
+					</mat-radio-button>
+				</mat-radio-group>
+
+				<!-- Manual resolution input (shown when manual is selected) -->
+				@if (getState(i).action === 'manual' && conflict.serverAttr) {
+					<div class="tw-mt-2 tw-pl-6">
+						<osee-attribute-value-editor
+							[attr]="conflict.serverAttr"
+							[artifactId]="data.entityId"
+							[value]="getState(i).manualValue"
+							(valueChange)="setManualValue(i, $event)" />
+					</div>
+				}
+			}
+		</div>
+	}
+
+	<!-- Non-conflicting changes, shown read-only so the user sees a complete account
+	     of what will be saved: value edits the server did not touch, plus new
+	     instances staged while conflicted that the server did not also add. Added
+	     attributes are tagged so both kinds live in one section. -->
+	@if (otherChanges().length > 0) {
+		<div
+			class="tw-rounded-md tw-border tw-border-solid tw-border-foreground-divider tw-p-3">
+			<div class="tw-mb-2 tw-flex tw-items-center tw-gap-2">
+				<mat-icon
+					class="tw-text-base tw-text-success"
+					fontSet="material-icons-outlined"
+					>check_circle</mat-icon
+				>
+				<span class="tw-text-sm tw-font-medium"
+					>Uncontested Changes</span
+				>
+			</div>
+			<p class="tw-my-0 tw-mb-2 tw-text-xs tw-opacity-60">
+				The other user did not touch these, so they save without a
+				decision.
+			</p>
+			<div class="tw-flex tw-flex-col tw-gap-2">
+				@for (change of otherChanges(); track change.name) {
+					<div
+						class="tw-grid tw-grid-cols-2 tw-items-start tw-gap-2 tw-text-xs">
+						<span
+							class="tw-flex tw-items-center tw-gap-1 tw-font-medium tw-opacity-60">
+							{{ change.name }}
+							@if (change.added) {
+								<span
+									class="tw-rounded tw-bg-background-hover tw-px-1 tw-py-0.5 tw-text-[10px] tw-uppercase tw-tracking-wide tw-text-success">
+									Added
+								</span>
+							}
+						</span>
+						@if (change.localValue) {
+							<span
+								class="tw-block tw-max-h-[20vh] tw-overflow-auto tw-whitespace-pre-wrap tw-break-words">
+								{{ change.localValue }}
+							</span>
+						} @else {
+							<span class="tw-block tw-italic tw-opacity-50"
+								>(empty)</span
+							>
+						}
+					</div>
+				}
+			</div>
+		</div>
+	}
+
+	<!-- Converged edits: the user and another user independently set the same value.
+	     Nothing to save or decide, but shown so the field (which still rings in the
+	     editor) is accounted for and the match is explained. -->
+	@if (converged().length > 0) {
+		<div
+			class="tw-rounded-md tw-border tw-border-solid tw-border-foreground-divider tw-p-3">
+			<div class="tw-mb-2 tw-flex tw-items-center tw-gap-2">
+				<mat-icon
+					class="tw-text-base tw-opacity-60"
+					fontSet="material-icons-outlined"
+					>done_all</mat-icon
+				>
+				<span class="tw-text-sm tw-font-medium">Already In Sync</span>
+			</div>
+			<p class="tw-my-0 tw-mb-2 tw-text-xs tw-opacity-60">
+				You and the other user set these to the same value, so there is
+				nothing to apply.
+			</p>
+			<div class="tw-flex tw-flex-col tw-gap-2">
+				@for (change of converged(); track change.name) {
+					<div
+						class="tw-grid tw-grid-cols-2 tw-items-start tw-gap-2 tw-text-xs">
+						<span class="tw-font-medium tw-opacity-60">{{
+							change.name
+						}}</span>
+						@if (change.localValue) {
+							<span
+								class="tw-block tw-max-h-[20vh] tw-overflow-auto tw-whitespace-pre-wrap tw-break-words">
+								{{ change.localValue }}
+							</span>
+						} @else {
+							<span class="tw-block tw-italic tw-opacity-50"
+								>(empty)</span
+							>
+						}
+					</div>
+				}
+			</div>
+		</div>
+	}
+</mat-dialog-content>
+<div
+	mat-dialog-actions
+	align="end"
+	class="tw-gap-2">
+	<button
+		mat-stroked-button
+		class="tw-text-foreground-text"
+		(click)="onCancel()">
+		Cancel
+	</button>
+	<button
+		mat-stroked-button
+		[disabled]="!allResolved()"
+		(click)="onSubmit()">
+		{{
+			conflicts().length === 1 ? 'Apply Resolution' : 'Apply Resolutions'
+		}}
+	</button>
+</div>

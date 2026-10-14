@@ -88,6 +88,12 @@ importers:
       '@fontsource/material-icons-two-tone':
         specifier: ^5.0.11
         version: 5.2.6
+      '@fontsource/material-symbols-outlined':
+        specifier: ^5.3.4
+        version: 5.3.5
+      '@microsoft/fetch-event-source':
+        specifier: ^2.0.1
+        version: 2.0.1
       '@okta/okta-angular':
         specifier: ^6.3.2
         version: 6.5.1(@angular/common@21.0.6(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/router@21.0.6(@angular/common@21.0.6(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@21.0.6(@angular/animations@21.0.6(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@21.0.6(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@21.0.6(@angular/compiler@21.0.6)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2))(@okta/okta-auth-js@7.14.0(encoding@0.1.13))(rxjs@7.8.2)
@@ -372,6 +378,7 @@ packages:
   '@angular/animations@21.0.6':
     resolution: {integrity: sha512-dSxhkh/ZlljdglZ0rriSy7GdC1Y3rGaagkx6oAzF5XqAoBbFmiVFEBZPxssSeQ+O0izmAw3GwsUnz3E/1JYsbA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    deprecated: '@angular/animations is deprecated. Use `animate.enter` and `animate.leave` instead. For more information see: https://v22.angular.dev/guide/animations.'
     peerDependencies:
       '@angular/core': 21.0.6
 
@@ -490,6 +497,7 @@ packages:
   '@angular/platform-browser-dynamic@21.0.6':
     resolution: {integrity: sha512-7mvlvEx66C1cwbAbaeTnbfw1EeZwK5eRCT55pGW+Fsx+vg/8TVF/6NPEbYO65earwIp9Xqt9mGGtq+fPopsbSA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    deprecated: '@angular/platform-browser-dynamic is deprecated. Use `@angular/platform-browser` instead.'
     peerDependencies:
       '@angular/common': 21.0.6
       '@angular/compiler': 21.0.6
@@ -1280,6 +1288,9 @@ packages:
   '@fontsource/material-icons@5.2.5':
     resolution: {integrity: sha512-9k0LBRVgResIeD+vC/epYmm/awN2k2L8twwEtUWQ3FHluMi+7PbISOpXqksvfqPn9FJy4/KEeWOhFTR/SrbhNw==}
 
+  '@fontsource/material-symbols-outlined@5.3.5':
+    resolution: {integrity: sha512-E0r+sqwMe75Pfu98PzO5n5od56rukib6cVnhktVmJtKzFxvQ0pbFbQKM4QrLmRbxR9g7xG23UzP56JlQRtFjiA==}
+
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
     engines: {node: '>=18.18.0'}
@@ -1643,6 +1654,9 @@ packages:
 
   '@mdx-js/mdx@3.1.0':
     resolution: {integrity: sha512-/QxEhPAvGwbQmy1Px8F899L5Uc2KZ6JtXwlCgJmjSTBedwOZkByYcBG4GceIGPXRDsmfxhHazuS+hlOShRLeDw==}
+
+  '@microsoft/fetch-event-source@2.0.1':
+    resolution: {integrity: sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA==}
 
   '@modelcontextprotocol/sdk@1.24.0':
     resolution: {integrity: sha512-D8h5KXY2vHFW8zTuxn2vuZGN0HGrQ5No6LkHwlEA9trVgNdPL3TF1dSqKA7Dny6BbBYKSW/rOBDXdC8KJAjUCg==}
@@ -7624,6 +7638,8 @@ snapshots:
 
   '@fontsource/material-icons@5.2.5': {}
 
+  '@fontsource/material-symbols-outlined@5.3.5': {}
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -7954,6 +7970,8 @@ snapshots:
     transitivePeerDependencies:
       - acorn
       - supports-color
+
+  '@microsoft/fetch-event-source@2.0.1': {}
 
   '@modelcontextprotocol/sdk@1.24.0(zod@4.1.13)':
     dependencies:

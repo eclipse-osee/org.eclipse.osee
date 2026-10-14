@@ -353,11 +353,37 @@
             version="0.0.0"
             unpack="false"/>
 
+      <!-- ActiveMQ single vendor OSGi bundle (replaces the legacy fat
+           jms.libraries activemq-all-5.14.0). One bundle for client + embedded
+           broker; the raw client/broker Maven jars split-package and do not
+           compose as separate OSGi bundles. -->
       <plugin
-            id="jms.libraries"
+            id="org.apache.activemq.osgi"
             download-size="0"
             install-size="0"
-            version="0.0.0"/>
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.geronimo.specs.geronimo-jms_1.1_spec"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.fusesource.hawtbuf.hawtbuf"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
       <plugin
             id="javax.xml"

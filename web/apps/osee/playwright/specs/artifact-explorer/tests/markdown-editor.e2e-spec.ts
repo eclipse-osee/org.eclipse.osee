@@ -97,18 +97,18 @@ test.describe('Markdown Editor', () => {
 		// Use a wide viewport so all toolbar sections remain expanded
 		await page.setViewportSize({ width: 1600, height: 900 });
 
-		// Intercept transaction (save) requests to prevent auto-save-on-blur
-		// from persisting test content to the backend. These tests validate
-		// client-side editor behavior, not backend persistence.
-		await page.route('**/orcs/txs', (route) => {
+		// These tests validate client-side editor behavior, not persistence, on a shared artifact.
+		// Abort saves so no edit persists (and, since the local reload notification only fires on a
+		// successful commit, aborting also prevents a reload wiping the editor), and abort the SSE
+		// stream so no remote change can refetch over the in-DOM content under test.
+		await page.route('**/orcs/txs*', (route) => {
 			if (route.request().method() === 'POST') {
-				// Intentionally not calling route.fulfill(), route.abort(), or
-				// route.continue(). The request hangs, which is harmless for
-				// these tests since we never assert on save behavior.
+				route.abort();
 				return;
 			}
 			route.continue();
 		});
+		await page.route('**/orcs/sse/events*', (route) => route.abort());
 
 		// Retry navigation once if ERR_ABORTED (parallel worker contention)
 		try {
@@ -690,7 +690,6 @@ test.describe('Markdown Editor', () => {
 			page.getByRole('heading', { name: /Insert Table/i })
 		).toBeVisible({ timeout: 5000 });
 
-		const dialog = page.locator('mat-dialog-container');
 		const rowInput = page.getByRole('spinbutton', { name: 'Row count' });
 		const colInput = page.getByRole('spinbutton', { name: 'Column count' });
 
@@ -844,8 +843,16 @@ test.describe('Markdown Editor', () => {
 			await textarea.fill(
 				'| Span1 ||| Span2 |\n| :-- | :-- | :-- | :-- |\n| a | b | c | d |'
 			);
-			await textarea.click();
-			await textarea.press('Home');
+			// Place the caret deterministically INSIDE the first table row via selectionStart
+			// rather than click()+Home. The toolbar's table_chart button opens "Edit Table" only
+			// when the caret is detected on a table line; a click lands the caret at an ambiguous
+			// spot and Home moves within whatever line that was, so it could sit off the table and
+			// the button would instead open the "Insert Table" (new table) dialog -- the source of
+			// this test's flakiness. Offset 3 is within "| Span1" on the first table line.
+			await textarea.evaluate((el: HTMLTextAreaElement) => {
+				el.focus();
+				el.setSelectionRange(3, 3);
+			});
 			await getToolbarButton(page, 'table_chart').click();
 			await expect(
 				page.getByRole('heading', { name: /Edit Table/i })

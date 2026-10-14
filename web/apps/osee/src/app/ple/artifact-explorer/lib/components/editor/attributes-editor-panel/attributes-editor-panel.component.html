@@ -41,7 +41,8 @@
 					[attr]="name"
 					[artifactId]="artifactId()"
 					[artifactApplicability]="applicability()"
-					[disabled]="!editable()" />
+					[disabled]="!editable()"
+					[conflicted]="remoteChangeWhileDirty()" />
 			</div>
 			@if (deleteMode()) {
 				<osee-attribute-delete-button
@@ -81,7 +82,8 @@
 						[attr]="group.attrs[0]"
 						[artifactId]="artifactId()"
 						[artifactApplicability]="applicability()"
-						[disabled]="!editable()" />
+						[disabled]="!editable()"
+						[conflicted]="remoteChangeWhileDirty()" />
 				</div>
 				@if (deleteMode()) {
 					<osee-attribute-delete-button
@@ -98,6 +100,7 @@
 				[artifactId]="artifactId()"
 				[artifactApplicability]="applicability()"
 				[disabled]="!editable()"
+				[conflicted]="remoteChangeWhileDirty()"
 				[deleteMode]="deleteMode()"
 				[allAttributes]="attributes()"
 				(deleteAttribute)="deleteInlineAttribute($event)" />

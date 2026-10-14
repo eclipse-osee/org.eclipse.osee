@@ -92,7 +92,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.core.event.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;

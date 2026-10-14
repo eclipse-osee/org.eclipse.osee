@@ -11,13 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Injectable, inject, linkedSignal, signal } from '@angular/core';
+import { DestroyRef, Injectable, inject, signal } from '@angular/core';
 import {
-	BranchCommitEventService,
+	BranchChangeEventService,
 	CurrentBranchInfoService,
 	UiService,
 } from '@osee/shared/services';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { tab } from '../types/artifact-explorer';
 import { ArtifactIconService } from './artifact-icon.service';
 import { artifactWithRelations } from '@osee/artifact-with-relations/types';
@@ -27,24 +27,12 @@ import { map } from 'rxjs';
 	providedIn: 'root',
 })
 export class ArtifactExplorerTabService {
-	private eventService = inject(BranchCommitEventService);
+	private branchChangeEvent = inject(BranchChangeEventService);
 	private artifactIconService = inject(ArtifactIconService);
 	private currentBranchService = inject(CurrentBranchInfoService);
+	private destroyRef = inject(DestroyRef);
 
-	private _events = toSignal(this.eventService.events);
-
-	private tabs = linkedSignal<string | undefined, tab[]>({
-		source: this._events,
-		computation: (event, previous) => {
-			if (previous === undefined) {
-				return [];
-			}
-			if (event === undefined) {
-				return previous.value;
-			}
-			return previous.value.filter((tab) => tab.branchId !== event);
-		},
-	});
+	private tabs = signal<tab[]>([]);
 	private _selectedIndex = signal<number>(0);
 
 	private uiService = inject(UiService);
@@ -56,6 +44,44 @@ export class ArtifactExplorerTabService {
 		{ initialValue: '' }
 	);
 	viewId = toSignal(this.uiService.viewId, { initialValue: '' });
+
+	constructor() {
+		this.branchChangeEvent.branchChanges$
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((event) => {
+				// Rebaseline (update-from-parent): the old branch is retired and its artifacts
+				// live on the new working branch. Re-point open tabs to the new branch so they
+				// reload against the live branch instead of a deleted one.
+				if (event.changeType === 'rebaselined' && event.newBranchId) {
+					this.repointTabsToBranch(event.branchId, event.newBranchId);
+					return;
+				}
+				// Committed/deleted/purged: the branch is no longer a live working branch to edit
+				// (gone, or its changes are now on the parent). Close any tabs opened on it.
+				if (
+					event.changeType === 'committed' ||
+					event.changeType === 'deleted' ||
+					event.changeType === 'purged'
+				) {
+					this.removeTabsByBranchId(event.branchId);
+				}
+			});
+	}
+
+	private removeTabsByBranchId(branchId: string) {
+		this.tabs.update((rows) => rows.filter((t) => t.branchId !== branchId));
+		if (this._selectedIndex() >= this.tabs().length) {
+			this._selectedIndex.set(Math.max(0, this.tabs().length - 1));
+		}
+	}
+
+	private repointTabsToBranch(oldBranchId: string, newBranchId: string) {
+		this.tabs.update((rows) =>
+			rows.map((t) =>
+				t.branchId === oldBranchId ? { ...t, branchId: newBranchId } : t
+			)
+		);
+	}
 
 	generateTabId() {
 		return (performance.now() * Math.random()).toString();

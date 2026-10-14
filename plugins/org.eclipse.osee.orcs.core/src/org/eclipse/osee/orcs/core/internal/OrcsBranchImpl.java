@@ -17,7 +17,9 @@ import static org.eclipse.osee.framework.core.data.CoreActivityTypes.BRANCH_OPER
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.InterfaceMessagesFolder;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -36,6 +38,9 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.event.BranchChangeTopic;
+import org.eclipse.osee.framework.core.event.OriginContext;
+import org.eclipse.osee.framework.core.event.WebBranchChangeType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -52,6 +57,8 @@ import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
@@ -65,8 +72,9 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final OrcsTokenService tokenService;
    private final QueryFactory queryFactory;
    private final UserService userService;
+   private final EventAdmin eventAdmin;
 
-   public OrcsBranchImpl(OrcsApi orcsApi, Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory) {
+   public OrcsBranchImpl(OrcsApi orcsApi, Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, EventAdmin eventAdmin) {
       this.orcsApi = orcsApi;
       this.logger = logger;
       this.session = session;
@@ -75,6 +83,52 @@ public class OrcsBranchImpl implements OrcsBranch {
       this.tokenService = orcsApi.tokenService();
       this.queryFactory = queryFactory;
       userService = orcsApi.userService();
+      this.eventAdmin = eventAdmin;
+   }
+
+   /**
+    * Fires a {@link BranchChangeTopic} event so {@code orcs.rest} listeners fan the change out to
+    * SSE web clients, peer web servers, and desktop clients. This is the single server-side branch
+    * broadcast chokepoint (mirrors the transaction commit topic for artifacts). {@code originId}
+    * must be captured from {@link OriginContext} on the request thread and carried in the payload
+    * (EventAdmin dispatch is async, so the subscriber must not read the ThreadLocal itself).
+    *
+    * @param changeType a web-facing branch change type value (see {@code WebBranchChangeType})
+    */
+   private void postBranchChangeEvent(BranchId branch, String changeType) {
+      postBranchChangeEvent(branch, changeType, OriginContext.get(), null);
+   }
+
+   private void postBranchChangeEvent(BranchId branch, String changeType, String originId) {
+      postBranchChangeEvent(branch, changeType, originId, null);
+   }
+
+   /**
+    * @param associatedArtifactId the branch's associated artifact id, or null when not readily
+    * available. Pass it only when the full {@code Branch} is already in hand (create, state change)
+    * so this stays query-free; consumers that don't track the branch by id use it to match.
+    */
+   private void postBranchChangeEvent(BranchId branch, String changeType, String originId,
+      ArtifactId associatedArtifactId) {
+      EventAdmin admin = this.eventAdmin;
+      if (admin == null || branch == null || branch.isInvalid()) {
+         return;
+      }
+      try {
+         Map<String, Object> properties = new HashMap<>();
+         properties.put(BranchChangeTopic.BRANCH_ID, branch.getIdString());
+         properties.put(BranchChangeTopic.CHANGE_TYPE, changeType);
+         properties.put(BranchChangeTopic.USER_ID, userService.getUser().getIdString());
+         if (originId != null) {
+            properties.put(BranchChangeTopic.ORIGIN_ID, originId);
+         }
+         if (associatedArtifactId != null && associatedArtifactId.isValid()) {
+            properties.put(BranchChangeTopic.ASSOCIATED_ARTIFACT_ID, associatedArtifactId.getIdString());
+         }
+         admin.postEvent(new Event(BranchChangeTopic.TOPIC, properties));
+      } catch (Exception ex) {
+         logger.warn(ex, "Failed to post branch change event for branch [%s] type [%s]", branch, changeType);
+      }
    }
 
    @Override
@@ -117,7 +171,12 @@ public class OrcsBranchImpl implements OrcsBranch {
          // Reset to CREATED since inheriting branch category does not qualify as MODIFIED
          orcsApi.getBranchOps().setBranchState(branchData.getBranch(), BranchState.CREATED);
       }
-      return queryFactory.branchQuery().andId(branchData.getNewBranch()).getResults().getExactlyOne();
+      Branch newBranch =
+         queryFactory.branchQuery().andId(branchData.getNewBranch()).getResults().getExactlyOne();
+      // Every create path (REST, ATS, MIM, program) converges here -- broadcast 'created' once.
+      postBranchChangeEvent(newBranch, WebBranchChangeType.CREATED.getWebValue(), OriginContext.get(),
+         newBranch.getAssociatedArtifact());
+      return newBranch;
    }
 
    @Override
@@ -147,28 +206,62 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public XResultData archiveBranch(BranchId branch) {
-      return branchStore.archiveBranch(session, branch);
+      XResultData rd = branchStore.archiveBranch(session, branch);
+      if (rd.isSuccess()) {
+         postBranchChangeEvent(branch, WebBranchChangeType.ARCHIVED.getWebValue());
+      }
+      return rd;
    }
 
    @Override
    public XResultData unarchiveBranch(BranchId branch) {
-      return branchStore.unArchiveBranch(session, branch);
+      XResultData rd = branchStore.unArchiveBranch(session, branch);
+      if (rd.isSuccess()) {
+         postBranchChangeEvent(branch, WebBranchChangeType.UNARCHIVED.getWebValue());
+      }
+      return rd;
    }
 
    @Override
    public XResultData deleteBranch(BranchId branch) {
-      return branchStore.deleteBranch(session, branch);
+      // branchStore.deleteBranch is a composite (changeBranchState(DELETED) + archiveBranch) at the
+      // DB layer that bypasses this class, so broadcast 'deleted' here rather than relying on the
+      // verb methods above.
+      XResultData rd = branchStore.deleteBranch(session, branch);
+      if (rd.isSuccess()) {
+         postBranchChangeEvent(branch, WebBranchChangeType.DELETED.getWebValue());
+      }
+      return rd;
    }
 
    @Override
    public Callable<List<BranchId>> purgeBranch(BranchId branch, boolean recurse) {
-      return new PurgeBranchCallable(logger, session, branchStore, branch, recurse, queryFactory);
+      Callable<List<BranchId>> delegate =
+         new PurgeBranchCallable(logger, session, branchStore, branch, recurse, queryFactory);
+      // Purge runs when the caller executes the callable (still on the request thread), so capture
+      // originId now and broadcast 'purged' after it succeeds -- from this chokepoint, not per-endpoint.
+      String originId = OriginContext.get();
+      return () -> {
+         List<BranchId> purged = delegate.call();
+         postBranchChangeEvent(branch, WebBranchChangeType.PURGED.getWebValue(), originId);
+         return purged;
+      };
    }
 
    @Override
    public Callable<TransactionToken> commitBranch(ArtifactId committer, BranchId source, BranchId destination) {
-      return new CommitBranchCallable(logger, session, branchStore, orcsApi, committer, source, destination,
-         tokenService);
+      Callable<TransactionToken> delegate = new CommitBranchCallable(logger, session, branchStore, orcsApi, committer,
+         source, destination, tokenService);
+      // Commit runs when the caller executes the callable (still on the request thread), so capture
+      // originId now and broadcast 'committed' for both branches after it succeeds -- from this
+      // chokepoint, so ATS-initiated commits (which bypass BranchEndpointImpl) notify too.
+      String originId = OriginContext.get();
+      return () -> {
+         TransactionToken tx = delegate.call();
+         postBranchChangeEvent(source, WebBranchChangeType.COMMITTED.getWebValue(), originId);
+         postBranchChangeEvent(destination, WebBranchChangeType.COMMITTED.getWebValue(), originId);
+         return tx;
+      };
    }
 
    @Override
@@ -202,12 +295,20 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public XResultData changeBranchType(BranchId branch, BranchType branchType) {
-      return branchStore.changeBranchType(session, branch, branchType);
+      XResultData rd = branchStore.changeBranchType(session, branch, branchType);
+      if (rd.isSuccess()) {
+         postBranchChangeEvent(branch, WebBranchChangeType.TYPE_CHANGED.getWebValue());
+      }
+      return rd;
    }
 
    @Override
    public XResultData changeBranchName(BranchId branch, String branchName) {
-      return branchStore.changeBranchName(session, branch, branchName);
+      XResultData rd = branchStore.changeBranchName(session, branch, branchName);
+      if (rd.isSuccess()) {
+         postBranchChangeEvent(branch, WebBranchChangeType.RENAMED.getWebValue());
+      }
+      return rd;
    }
 
    @Override
@@ -345,6 +446,23 @@ public class OrcsBranchImpl implements OrcsBranch {
          orcsApi.getActivityLog().createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format("Branch Operation Branch State Changed {branchId: %s prevState: %s newState: %s}", branchId,
                branch.getBranchType(), newState));
+         // Broadcast only terminal, web-actionable states. Transient in-progress states
+         // (*_IN_PROGRESS) and the internal post-create CREATED reset are notification noise -- the
+         // web is GET-on-notify and has nothing to fetch mid-operation. A DELETED move is the
+         // distinct 'deleted' type; MODIFIED is 'state_changed'. (COMMITTED/REBASELINED/PURGED are
+         // broadcast from their own operations, not here.)
+         String changeType = null;
+         if (newState == BranchState.DELETED) {
+            // NOTE: the public deleteBranch() path broadcasts DELETED itself (via the composite
+            // branchStore.deleteBranch). This branch covers a direct setBranchState(DELETED) only.
+            // Do not route deleteBranch() through here as well, or clients get two DELETED events.
+            changeType = WebBranchChangeType.DELETED.getWebValue();
+         } else if (newState == BranchState.MODIFIED) {
+            changeType = WebBranchChangeType.STATE_CHANGED.getWebValue();
+         }
+         if (changeType != null) {
+            postBranchChangeEvent(branchId, changeType, OriginContext.get(), branch.getAssociatedArtifact());
+         }
          return true;
       }
       return false;

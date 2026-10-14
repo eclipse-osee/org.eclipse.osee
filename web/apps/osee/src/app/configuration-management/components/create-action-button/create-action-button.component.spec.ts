@@ -12,28 +12,49 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateActionButtonComponent } from './create-action-button.component';
-import { createActionServiceMock } from '@osee/configuration-management/testing';
+import {
+	actResultMock,
+	createActionServiceMock,
+} from '@osee/configuration-management/testing';
 import { CreateActionService } from '@osee/configuration-management/services';
-import { BranchRoutedUIService } from '@osee/shared/services';
+import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 import { branchRoutedUiServiceMock } from '@osee/shared/testing';
+import { actionResult } from '@osee/shared/types/configuration-management';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
 describe('CreateActionButtonComponent', () => {
 	let component: CreateActionButtonComponent;
 	let fixture: ComponentFixture<CreateActionButtonComponent>;
+	let createActionResult: actionResult;
+	let branchRouter: { position: unknown };
 
 	beforeEach(async () => {
+		createActionResult = actResultMock;
+		branchRouter = { ...branchRoutedUiServiceMock, position: 'unset' };
+
 		await TestBed.configureTestingModule({
 			imports: [CreateActionButtonComponent],
 			providers: [
 				{
 					provide: CreateActionService,
-					useValue: createActionServiceMock,
+					useValue: {
+						...createActionServiceMock,
+						createAction: () => of(createActionResult),
+					},
 				},
 				{
 					provide: BranchRoutedUIService,
-					useValue: branchRoutedUiServiceMock,
+					useValue: branchRouter,
+				},
+				{
+					provide: MatDialog,
+					useValue: {
+						open: () => ({
+							afterClosed: () => of({ description: 'x' }),
+						}),
+					},
 				},
 				{
 					provide: ActivatedRoute,
@@ -51,5 +72,27 @@ describe('CreateActionButtonComponent', () => {
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
+	});
+
+	it('surfaces the failure reason and does not route on a 200-with-failure', () => {
+		createActionResult = {
+			...actResultMock,
+			results: {
+				...actResultMock.results,
+				success: false,
+				failed: true,
+				results: ['Error: Invalid Parent Branch -1'],
+			},
+		};
+		const uiService = TestBed.inject(UiService);
+		const errorSpy = vi.spyOn(uiService, 'ErrorText', 'set');
+
+		component.addAction();
+
+		expect(errorSpy).toHaveBeenCalledWith(
+			'Error: Invalid Parent Branch -1'
+		);
+		// Did not route to a (possibly invalid) branch.
+		expect(branchRouter.position).toBe('unset');
 	});
 });

@@ -224,11 +224,16 @@ export class CurrentTransactionService {
 	performMutation() {
 		return pipe<
 			Observable<Required<transaction>>,
-			Observable<Required<transactionResult>>,
 			Observable<Required<transactionResult>>
 		>(
-			switchMap((tx) => this._txService.performMutation(tx)),
-			tap(() => (this._uiService.updated = true))
+			switchMap((tx) =>
+				this._txService.performMutation(tx).pipe(
+					tap(() => {
+						// Backward compat: keep global update for non-migrated parts of the app
+						this._uiService.updated = true;
+					})
+				)
+			)
 		);
 	}
 }

@@ -14,16 +14,20 @@ import { TestBed } from '@angular/core/testing';
 
 import { ArtifactExplorerTabService } from './artifact-explorer-tab.service';
 import {
-	BranchCommitEventService,
+	BranchChangeEventService,
 	CurrentBranchInfoService,
 } from '@osee/shared/services';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { testBranchInfo } from '@osee/shared/testing';
 import { tab } from '../types/artifact-explorer';
+import { branchChangeEvent } from '@osee/shared/services/network';
 
 describe('ArtifactExplorerTabService', () => {
 	let service: ArtifactExplorerTabService;
-	let eventService: BranchCommitEventService;
+	const branchChanges = new Subject<branchChangeEvent>();
+	/** Simulates a branch commit arriving via the SSE branch-change stream. */
+	const commitBranch = (branchId: string) =>
+		branchChanges.next({ branchId, changeType: 'committed' });
 	const tab1: tab = {
 		tabId: '1',
 		tabTitle: 'Test',
@@ -92,10 +96,13 @@ describe('ArtifactExplorerTabService', () => {
 					provide: CurrentBranchInfoService,
 					useValue: { currentBranch: of(testBranchInfo) },
 				},
+				{
+					provide: BranchChangeEventService,
+					useValue: { branchChanges$: branchChanges.asObservable() },
+				},
 			],
 		});
 		service = TestBed.inject(ArtifactExplorerTabService);
-		eventService = TestBed.inject(BranchCommitEventService);
 	});
 
 	it('should be created', () => {
@@ -114,25 +121,25 @@ describe('ArtifactExplorerTabService', () => {
 		it('Empty tabs and branch committed', () => {
 			service.Tabs.set([]);
 			expect(service.Tabs()).toEqual([]);
-			eventService.sendEvent('12345');
+			commitBranch('12345');
 			expect(service.Tabs()).toEqual([]);
 		});
 		it('Existing tabs and branch committed that is not in tab list', () => {
 			service.Tabs.set([tab1, tab2]);
 			expect(service.Tabs()).toEqual([tab1, tab2]);
-			eventService.sendEvent('234');
+			commitBranch('234');
 			expect(service.Tabs()).toEqual([tab1, tab2]);
 		});
 		it('Existing tabs and branch committed that is in tab list(1st)', () => {
 			service.Tabs.set([tab1, tab2]);
 			expect(service.Tabs()).toEqual([tab1, tab2]);
-			eventService.sendEvent('12345');
+			commitBranch('12345');
 			expect(service.Tabs()).toEqual([tab2]);
 		});
 		it('Existing tabs and branch committed that is in tab list(2nd)', () => {
 			service.Tabs.set([tab1, tab2]);
 			expect(service.Tabs()).toEqual([tab1, tab2]);
-			eventService.sendEvent('6789');
+			commitBranch('6789');
 			expect(service.Tabs()).toEqual([tab1]);
 		});
 		it('Existing tabs and no branch committed', () => {

@@ -12,8 +12,22 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { combineLatest, from, iif, Observable, of } from 'rxjs';
-import { concatMap, reduce, shareReplay, take } from 'rxjs/operators';
+import {
+	BehaviorSubject,
+	combineLatest,
+	from,
+	iif,
+	Observable,
+	of,
+} from 'rxjs';
+import {
+	catchError,
+	concatMap,
+	reduce,
+	shareReplay,
+	switchMap,
+	take,
+} from 'rxjs/operators';
 import { user, UserRoles } from '@osee/shared/types/auth';
 import {
 	UserHeaderService,
@@ -66,6 +80,35 @@ export class UserDataAccountService {
 			},
 		],
 	});
+
+	/**
+	 * DEV auth resolution. Normally DEV returns the hardcoded {@link _devUser} with no server call,
+	 * which keeps single-user local/e2e runs authenticated without any setup. BUT when
+	 * `osee.account.id` is seeded in localStorage (Playwright's `newUserPage` does this to run a
+	 * context AS a specific demo user), fetch THAT user from the server instead, so multi-user
+	 * flows -- presence, "changed by another user" -- exercise genuinely distinct identities rather
+	 * than collapsing every browser context onto the single hardcoded dev user. The headers mirror
+	 * what the auth interceptor sends (raw numeric id in Authorization + osee.account.id), which the
+	 * server's AuthenticationRequestFilter resolves to that user. On failure it falls back to the
+	 * hardcoded dev user so a bad/misseeded id never wedges the app.
+	 */
+	private get _devAuthUser(): Observable<user> {
+		const seededAccountId =
+			typeof localStorage !== 'undefined'
+				? localStorage.getItem('osee.account.id')
+				: null;
+		if (!seededAccountId) {
+			return this._devUser;
+		}
+		return this.http
+			.get<user>(OSEEAuthURL, {
+				headers: {
+					Authorization: seededAccountId,
+					'osee.account.id': seededAccountId,
+				},
+			})
+			.pipe(catchError(() => this._devUser));
+	}
 	private _fetchFromApi = iif(
 		() => this.userHeaderService.useCustomHeaders,
 		this.http.get<user>(OSEEAuthURL, {
@@ -87,7 +130,7 @@ export class UserDataAccountService {
 			: of<user>();
 
 	private _devAuth =
-		environment.authScheme === 'DEV' ? this._devUser : this._noneAuth;
+		environment.authScheme === 'DEV' ? this._devAuthUser : this._noneAuth;
 
 	private _forcedSSOAuth =
 		environment.authScheme === 'FORCED_SSO'
@@ -110,9 +153,59 @@ export class UserDataAccountService {
 				throw new Error('Auth Configuration not defined somehow?');
 		}
 	}
-	private _user = this.getAuthConfig().pipe(
-		shareReplay({ bufferSize: 1, refCount: true })
+	// refCount: false so the auth result (success OR error) is fetched at most once and replayed to
+	// all subscribers. With refCount: true, an error drops the subscriber count to zero, discards
+	// the cached result, and the next subscriber re-triggers the request — which on a down server
+	// produces a tight infinite retry storm on /orcs/datastore/user (every consumer + the auth
+	// interceptor resubscribing). Fetching once and replaying the outcome removes the storm.
+	/**
+	 * Sentinel emitted when the auth request fails. Its id is the invalid sentinel ('-1') so
+	 * consumers that gate on a valid user (e.g. the SSE connect) correctly treat it as "not
+	 * authenticated" rather than acting on it.
+	 */
+	private readonly _invalidUser: user = {
+		id: '-1',
+		name: '',
+		guid: null,
+		active: false,
+		description: null,
+		workTypes: [],
+		tags: [],
+		userId: '',
+		email: '',
+		loginIds: [],
+		savedSearches: [],
+		userGroups: [],
+		artifactId: '',
+		idString: '-1',
+		idIntValue: -1,
+		uuid: -1,
+		roles: [],
+	};
+
+	/** Emit to re-run the auth fetch (e.g. after the server recovers from being down at startup). */
+	private readonly _refresh = new BehaviorSubject<void>(undefined);
+
+	// Trigger-driven so refresh() can re-fetch after a failed startup, but each fetch resolves via
+	// catchError to a value (never a terminal error). On error shareReplay does NOT cache the
+	// error — it re-runs the source for every new subscriber, which with eager consumers + the auth
+	// interceptor produces an infinite request storm on /orcs/datastore/user when the server is
+	// down. Completing each attempt with a value and replaying it removes the storm; a new attempt
+	// happens only when refresh() fires.
+	private _user = this._refresh.pipe(
+		switchMap(() =>
+			this.getAuthConfig().pipe(catchError(() => of(this._invalidUser)))
+		),
+		shareReplay({ bufferSize: 1, refCount: false })
 	);
+
+	/**
+	 * Re-fetches the authenticated user. Use after the server was unavailable at startup (which
+	 * cached the invalid-user sentinel) so the app can recover without a full page reload.
+	 */
+	public refresh(): void {
+		this._refresh.next();
+	}
 
 	public userHasRoles(roles: UserRoles[]) {
 		return combineLatest([this.user, from(roles)]).pipe(

@@ -51,17 +51,29 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
-	await page
-		.getByLabel('Add Element to Structure')
-		.getByText('Name', { exact: true })
-		.click();
+	await expect(page.getByLabel('Name')).toBeVisible();
 	await page.getByLabel('Name').fill('New Element');
-	await page.getByLabel('2Define element').getByText('Platform Type').click();
-	const integerOption = page.getByText('Integer', { exact: true });
-	await expect(integerOption).toBeVisible();
-	await expect(integerOption).toBeEnabled();
+	// Open the Platform Type autocomplete by typing into it (a bare click focuses the input but does
+	// not reliably fire the type-ahead options fetch), then assert the option before clicking.
+	const platformTypeCombobox = page
+		.getByLabel('2Define element')
+		.getByRole('combobox', { name: 'Platform Type' });
+	await expect(platformTypeCombobox).toBeVisible();
+	// Type per-character (not fill): options come from a debounced search on the input's
+	// valueChanges; fill emits a single coalesced event the debounce can mis-time so the query never
+	// fires. pressSequentially drives valueChanges as the control expects.
+	await platformTypeCombobox.click({ force: true });
+	await platformTypeCombobox.fill('');
+	await platformTypeCombobox.pressSequentially('Integer');
+	const integerOption = page
+		.locator('mat-option')
+		.filter({ hasText: 'Integer' })
+		.first();
+	await expect(integerOption).toBeVisible({ timeout: 60000 });
 	await integerOption.click();
-	await page.getByRole('button', { name: 'Next' }).click();
+	const defineElementNext = page.getByRole('button', { name: 'Next' });
+	await expect(defineElementNext).toBeEnabled();
+	await defineElementNext.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 
 	// Go to difference report

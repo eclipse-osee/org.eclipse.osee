@@ -501,6 +501,60 @@
 									<source>true</source>
 								</artifact>
 
+								<!-- ActiveMQ as the single vendor OSGi bundle (activemq-osgi).
+								     This is exactly what Apache's own activemq-client Karaf feature uses for
+								     a client-only OSGi deployment: activemq-client/activemq-broker are plain
+								     Maven jars that SPLIT-PACKAGE org.apache.activemq.broker/.transport and do
+								     NOT compose as separate OSGi bundles. activemq-osgi is one bundle (BSN
+								     org.apache.activemq.osgi) with a correct manifest and all transport service
+								     resources, so client and (embedded) broker both work. Whether a broker is
+								     hosted is decided by osee.default.broker.uri (tcp:// = connect only;
+								     vm:broker: = embedded), NOT by which bundle ships. Replaces fat
+								     jms.libraries (5.14.0). Its only non-optional third-party import is
+								     javax.transaction.xa, which it requests at version [1.0.0,3.0.0); on
+								     Java 21 Equinox the JRE exports javax.transaction.xa unversioned (0.0.0),
+								     so we relax that one import range (all other activemq-osgi imports are
+								     resolution:=optional and are left untouched via *). -->
+								<artifact>
+									<id>org.apache.geronimo.specs:geronimo-jms_1.1_spec:jar:1.1.1</id>
+									<transitive>false</transitive>
+									<source>true</source>
+								</artifact>
+
+								<artifact>
+									<id>org.apache.geronimo.specs:geronimo-j2ee-management_1.1_spec:jar:1.0.1</id>
+									<transitive>false</transitive>
+									<source>true</source>
+								</artifact>
+
+								<artifact>
+									<id>org.fusesource.hawtbuf:hawtbuf:jar:1.11</id>
+									<transitive>false</transitive>
+									<source>true</source>
+								</artifact>
+
+								<artifact>
+									<id>org.apache.activemq:activemq-osgi:jar:5.17.0</id>
+									<transitive>false</transitive>
+									<source>true</source>
+									<override>true</override>
+									<instructions>
+										<!-- Stock activemq-osgi is built for a Karaf container and hard-imports
+										     packages this Equinox/OSEE target platform does NOT provide (camel,
+										     spring, blueprint, rome/rometools RSS feeds, zookeeper, jetty, asm,
+										     jaxb [2,3), ...). Those back optional ActiveMQ FEATURES (routing,
+										     XBean XML config, RSS, master/slave, web console) that OSEE never
+										     uses. OSEE only exercises the JMS OpenWire/TCP client and the demo
+										     vm broker, whose deps are javax.jms + JDK packages (JRE-provided)
+										     + activemq's own in-bundle packages. So make every computed import
+										     optional (missing feature deps -> that feature simply stays inert)
+										     and pin javax.transaction.xa to any version (Java 21 Equinox exports
+										     it unversioned). -->
+										<Import-Package>javax.transaction.xa;version="0.0.0",*;resolution:=optional</Import-Package>
+										<_reproducible>true</_reproducible>
+									</instructions>
+								</artifact>
+
 							</artifacts>
 						</configuration>
 						<goals>

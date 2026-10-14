@@ -29,3 +29,4 @@ export * from './views-routed-ui.service.mock';
 export * from './branch-routed-ui.service.mock';
 export * from './mat-icon.mock';
 export * from './current-branch-info.service.service.mock';
+export * from './sse-event.service.mock';

@@ -17,3 +17,4 @@ export * from './create-action-button/create-action-dialog/create-action-dialog.
 export * from './manage-action-button/manage-action-button.component';
 export * from './commit-manager-button/commit-manager-button.component';
 export * from './create-action-button/create-action-form/create-action-form.component';
+export * from './create-working-branch-from-workflow-button/create-working-branch-from-workflow-button';

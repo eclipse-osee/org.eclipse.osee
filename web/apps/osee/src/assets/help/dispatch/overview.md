@@ -41,8 +41,9 @@ The `Dispatch Config Json` attribute is multi-valued, so a single artifact can h
       "instructions": "Markdown string rendered as formatted text.",
       "dropdowns": [...],
       "checkboxes": [...],
+      "textInputs": [...],
       "fileInputs": [...],
-      "targetApi": { "method": "GET|POST", "url": "/path/{placeholder}", "button": "Button Label" },
+      "targetApi": { "method": "GET|POST|PUT", "url": "/path/{placeholder}", "button": "Button Label" },
       "artifact": "optional-artifact-id",
       "downloadFileName": "optional-filename.xml"
     }
@@ -69,6 +70,14 @@ A dropdown provides a selectable value substituted into the target API URL.
 ```json
 { "key": "includeDrafts", "label": "Include Drafts", "default": false }
 ```
+
+## Text Inputs
+
+```json
+{ "key": "artifactId", "label": "Root Artifact ID", "required": true, "placeholder": "Enter an artifact ID" }
+```
+
+Text-input values can be used in target API URLs as `{artifactId}`.
 
 ## File Inputs
 

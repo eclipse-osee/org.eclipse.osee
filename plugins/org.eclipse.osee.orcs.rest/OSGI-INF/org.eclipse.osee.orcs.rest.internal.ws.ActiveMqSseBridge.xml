@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" deactivate="deactivate" immediate="true" name="org.eclipse.osee.orcs.rest.internal.ws.ActiveMqSseBridge">
+   <property name="event.topics" value="org/eclipse/osee/transaction/COMMITTED"/>
+   <service>
+      <provide interface="org.osgi.service.event.EventHandler"/>
+   </service>
+   <reference cardinality="1..1" field="messagingService" interface="org.eclipse.osee.framework.messaging.event.res.IOseeCoreModelEventService" name="messagingService"/>
+   <reference cardinality="1..1" field="tokenService" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="tokenService"/>
+   <implementation class="org.eclipse.osee.orcs.rest.internal.ws.ActiveMqSseBridge"/>
+</scr:component>

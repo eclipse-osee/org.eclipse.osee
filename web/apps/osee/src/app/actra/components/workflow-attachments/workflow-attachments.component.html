@@ -21,10 +21,11 @@
 			[matTooltipDisabled]="loadingGlobal() === 'false'"
 			matTooltipShowDelay="300">
 			<button
-				mat-raised-button
-				class="tw-bg-osee-blue-7 tw-text-background-background hover:tw-bg-osee-neutral-87 dark:tw-bg-osee-blue-10"
+				mat-flat-button
+				class="primary-button"
 				(click)="openAddDialog()"
 				[disabled]="loadingGlobal() === 'true'">
+				<mat-icon>attach_file</mat-icon>
 				Add Attachments
 			</button>
 		</div>
@@ -39,12 +40,13 @@
 			"
 			matTooltipShowDelay="300">
 			<button
-				mat-raised-button
-				class="tw-bg-osee-blue-7 tw-text-background-background hover:tw-bg-osee-neutral-87 disabled:tw-bg-background-selected-disabled-button dark:tw-bg-osee-blue-10"
+				mat-flat-button
+				class="error-button"
 				(click)="deleteSelected()"
 				[disabled]="
 					loadingGlobal() === 'true' || selectedCount() === 0
 				">
+				<mat-icon>delete</mat-icon>
 				Delete Selected
 			</button>
 		</div>
@@ -52,9 +54,11 @@
 </div>
 
 @if (loadingAttachments()) {
-	<span class="tw-text-osee-neutral-50">Loading...</span>
+	<span class="tw-p-4 tw-text-sm tw-opacity-50">Loading...</span>
 } @else if (isEmpty()) {
-	<span class="tw-text-osee-neutral-50">No attachments yet.</span>
+	<span class="tw-p-4 tw-text-sm tw-opacity-50">
+		No attachments yet. Use Add Attachments to upload files.
+	</span>
 }
 
 @if (!isEmpty()) {

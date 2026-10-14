@@ -11,15 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	ChangeDetectionStrategy,
 	Component,
 	computed,
 	inject,
 	input,
-	output,
 	signal,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -32,36 +32,44 @@ import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-update-from-parent-button',
-	imports: [MatIconButton, MatTooltip, MatIcon],
+	imports: [MatButton, MatTooltip, MatIcon],
 	template: `<div
-		[matTooltip]="loading() ? 'Disabled while loading.' : disabledMessage()"
-		[matTooltipDisabled]="!disabledOrLoading()">
+		[matTooltip]="
+			loading()
+				? 'Disabled while loading.'
+				: disabledOrLoading()
+					? disabledMessage()
+					: 'Update Branch From Parent'
+		">
 		<button
-			mat-icon-button
+			mat-flat-button
+			class="primary-button tw-flex tw-justify-center [&_*]:tw-m-0"
 			(click)="updateFromParent()"
 			[disabled]="disabledOrLoading()"
-			matTooltip="Update Branch From Parent">
+			aria-label="Update Branch From Parent">
 			<mat-icon [class.tw-animate-spin]="loading()">sync</mat-icon>
 		</button>
 	</div>`,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UpdateFromParentButtonComponent {
 	workingBranch = input.required<Pick<branch, 'id' | 'branchState'>>();
 	disabled = input(false);
 	disabledMessage = input<string>('Update Blocked');
-	updated = output();
 
-	workingBranch$ = toObservable(this.workingBranch);
+	protected readonly workingBranch$ = toObservable(this.workingBranch);
 
-	commitBranchService = inject(CommitBranchService);
-	branchedRouter = inject(BranchRoutedUIService);
-	uiService = inject(UiService);
-	dialog = inject(MatDialog);
-	snackbar = inject(MatSnackBar);
+	private readonly commitBranchService = inject(CommitBranchService);
+	private readonly branchedRouter = inject(BranchRoutedUIService);
+	private readonly uiService = inject(UiService);
+	private readonly dialog = inject(MatDialog);
+	private readonly snackbar = inject(MatSnackBar);
 
-	loading = signal(false);
+	protected readonly loading = signal(false);
 
-	disabledOrLoading = computed(() => this.disabled() || this.loading());
+	protected readonly disabledOrLoading = computed(
+		() => this.disabled() || this.loading()
+	);
 
 	updateFromParent() {
 		this.workingBranch$
@@ -128,7 +136,6 @@ export class UpdateFromParentButtonComponent {
 															res.newBranchId
 																.id !== '-1'
 														) {
-															this.updated.emit();
 															this.branchedRouter.position =
 																{
 																	type: 'working',
@@ -158,7 +165,6 @@ export class UpdateFromParentButtonComponent {
 											}
 										);
 										if (res.newBranchId.id !== '-1') {
-											this.updated.emit();
 											this.branchedRouter.position = {
 												type: 'working',
 												id: res.newBranchId.id,

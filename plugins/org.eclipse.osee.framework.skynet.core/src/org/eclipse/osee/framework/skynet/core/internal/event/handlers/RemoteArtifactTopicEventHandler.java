@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.core.event.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicAttributeChangeTransfer;
 import org.eclipse.osee.framework.skynet.core.event.model.EventTopicRelationTransfer;

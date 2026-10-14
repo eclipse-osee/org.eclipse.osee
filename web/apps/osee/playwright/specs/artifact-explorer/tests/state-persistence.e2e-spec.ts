@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
+import { waitForNetworkIdleIgnoringSse } from '../../../shared/sse-helpers';
 import {
 	createBranchViaApi,
 	purgeBranchViaApi,
@@ -72,7 +73,11 @@ test.describe('State Persistence', () => {
 		});
 
 		await page.goto('/ple/messaging/connections');
-		await page.waitForLoadState('networkidle');
+		// `/ple/messaging/connections` is an SSE-connected page, so plain
+		// `waitForLoadState('networkidle')` never settles (the stream stays in flight) and
+		// times out. Use the SSE-safe idle wait to let the away-navigation's data loads quiesce
+		// before navigating back.
+		await waitForNetworkIdleIgnoringSse(page);
 
 		await navigateToArtifactExplorer(page);
 		await selectBranch(page, 'Working', BRANCH);

@@ -1,6 +1,6 @@
 ---
-summary: "Java coding standards for OSEE: file headers, encoding, naming, JavaDoc policy, and style rules"
-tags: [java, coding-standards, javadoc, style]
+summary: "Java coding standards for OSEE (server, desktop, and all plugins): file headers, encoding, JavaDoc policy, imports, JSON, constants, OSGi, error handling, artifact identity, naming, style, and performance"
+tags: [java, server, desktop, coding-standards, javadoc, style]
 fileMatch: "**/*.java"
 ---
 
@@ -28,29 +28,16 @@ Every Java file must start with the Eclipse Public License 2.0 header block with
 - Use the current year for new files.
 - Do not change the year on existing files unless performing a substantial rewrite.
 
-## Author Tag
-
-Every top-level type (class, interface, enum) must have an `@author` JavaDoc tag:
-
-```java
-/**
- * @author First Last
- */
-public class MyClass {
-```
-
-- Use your real name (first and last).
-- Multiple authors are allowed if multiple people made substantial contributions.
-
 ## Character Encoding
 
 - All Java source files must be UTF-8 encoded.
 - **Use only ASCII characters (U+0000 to U+007F) in source code and comments.**
   - No box-drawing characters (U+2500 range)
-  - No arrows (->  not  U+2192)
-  - No em dashes (-- not U+2014)
-  - No smart quotes (" and ' not U+201C/U+201D)
+  - No arrows (use `->` not U+2192)
+  - No em dashes (use `--` not U+2014)
+  - No smart quotes (use `"` and `'` not U+201C/U+201D)
 - String literals may contain non-ASCII when the runtime value requires it (e.g., user-facing display text), but comments and identifiers must be pure ASCII.
+- HTML entities that render as arrows/dashes (e.g. `&harr;`, `&rarr;`, `&mdash;`) are acceptable in contexts that are meant to render HTML (JavaDoc), because they are themselves pure ASCII. Do not use them in plain `//` comments or identifiers, where they would appear literally as `&harr;` rather than render.
 
 ## JavaDoc Policy
 
@@ -135,12 +122,45 @@ public void deleteBranch(BranchId branch) {
 }
 ```
 
-## Import Style
+## Imports
 
+- Always use proper `import` statements. Never use fully-qualified class names inline unless there is a genuine name collision that cannot be resolved with imports.
 - Use specific imports when fewer than 5 imports come from the same package.
 - Use wildcard imports (`import foo.*`) when 5 or more imports come from the same package.
-- Organize imports alphabetically within groups: `java.*`, `javax.*`, `org.*`, `com.*`.
+- Organize imports alphabetically within groups: `java.*`/`javax.*`, `org.*`, `com.*`.
 - Remove unused imports.
+
+## JSON Handling
+
+- Use `com.fasterxml.jackson.databind.ObjectMapper` for all JSON serialization and deserialization. Jackson is available in both server (`orcs.core`, `orcs.rest`) and client bundles.
+- Never hand-roll JSON with `StringBuilder` or string concatenation. Jackson handles escaping, null safety, and edge cases correctly.
+- For deserialization with generics, use `com.fasterxml.jackson.core.type.TypeReference`.
+- Build `Map<String, Object>` or `List<Map<String, Object>>` structures and serialize with `mapper.writeValueAsString()`.
+- `ObjectMapper` is thread-safe and expensive to construct. Reuse a single `private static final ObjectMapper` instance rather than allocating one per call, especially in hot paths.
+
+## Constants and Magic Values
+
+- No magic strings. Define constants in a shared location accessible to all bundles that need them.
+- String constants shared between Java and TypeScript must be defined in Java (in `org.eclipse.osee.framework.core`) and documented as the source of truth. The TypeScript side uses union types that must match.
+- Enum-like GUID strings (e.g., `EventModType`, `RelationEventType`) must be referenced via their enum/constant class, never as inline string literals.
+
+## OSGi and Bundles
+
+- Place shared types (enums, constants, interfaces) in `org.eclipse.osee.framework.core` so both server and client bundles can access them.
+- If a class is used by multiple bundles, it belongs in the lowest common dependency, not duplicated.
+- Use DS annotations (`@Component`, `@Reference`, `@Activate`) for service registration.
+
+## Error Handling
+
+- Use `try/catch` with specific exception types. Don't swallow exceptions silently -- at minimum log them.
+- For event/notification code paths that must not break the main flow (e.g., post-commit event dispatch), catch `Exception` and log, but don't let it propagate to the caller.
+
+## Artifact Identity
+
+- GUIDs are legacy. Use numeric artifact IDs for all new code (lookups, event matching, cache keys, wire formats).
+- Existing GUID-based code paths are kept only for backward compatibility during the migration period. New code must not introduce GUID-based logic.
+- When both GUID and artifact ID are available, prefer the artifact ID.
+- Names containing "Guid" in existing code (e.g., `artTypeGuid`, `DefaultBasicGuidArtifact`) are historical -- the values stored are often numeric IDs despite the name. Do not propagate this naming convention.
 
 ## Naming
 
@@ -159,6 +179,12 @@ public void deleteBranch(BranchId branch) {
 - Do not merge `TODO` or `TBD` comments. Remove them before merging and track the improvement in the issue tracking system instead.
 - Intentionally empty blocks (empty catch, no-op branch, empty anonymous body) must contain a `// do nothing` comment so it is clear the emptiness is deliberate, not an oversight.
 - Do not add `/* EOF */` or similar end-of-file trailer comments. They add no value and drift out of sync.
+
+## Performance
+
+- Avoid redundant iteration. If multiple pieces of data are needed from the same collection, extract them in a single pass.
+- Use appropriate data structures: `HashMap` for O(1) lookup, `LinkedHashSet` for ordered deduplication, `HashSet` for membership testing.
+- Don't create unnecessary object allocations in hot paths (event processing, cache lookups).
 
 ## Testing
 

@@ -48,3 +48,41 @@ When an artifact has multiple instances of the same attribute type, they are gro
 - **Collapse**: Groups with more than 5 instances show only the first 5 by default. A "Show N more..." link at the bottom expands to reveal all instances.
 - **Expand**: Click "Show less" to collapse back to 5.
 - **Delete mode**: In delete mode, each visible instance shows its own delete icon. Expand the group first to access instances beyond the initial 5.
+
+## Working with Others in Real Time
+
+The editor is collaborative. When other people open the same artifact, or make changes to it, you see that live — no manual refresh needed.
+
+> **Scope:** Presence, live updates, and conflict detection are per **branch**. You only see people viewing — and changes made to — the *same artifact on the same branch* you're on. The same artifact open on a different branch is treated separately, so you won't see those users or their edits here.
+
+### Who else is here
+
+When someone else is viewing the same artifact, their avatar appears in the toolbar (top right). Hover over an avatar to see the person's name. If more than a few people are present, the extras are summarized as "+N".
+
+### Live updates
+
+When another user saves a change to this artifact and you have no unsaved edits of your own, the editor updates automatically to show their latest values. If the artifact is deleted by someone else, its tab closes and a brief notice appears.
+
+### Conflicts
+
+A conflict happens when someone else saves a change to the same artifact while you have your own unsaved edits. When this occurs:
+
+- Your unsaved edits are **kept** — they are not overwritten.
+- The affected fields show a red outline, and auto-save is paused so your work isn't lost.
+- A warning appears below the toolbar: *"This artifact was modified by another user. You have unsaved changes."* with two actions:
+
+| Icon | Action |
+| :-- | :-- |
+| <span class="material-icons" style="font-size:14px;vertical-align:middle">merge_type</span> | **Resolve** — open the conflict resolution dialog to choose what to keep. |
+| <span class="material-icons" style="font-size:14px;vertical-align:middle">refresh</span> | **Discard & Refresh** — throw away your unsaved edits and load the latest version. |
+
+### Resolving a conflict
+
+The resolution dialog lists each attribute where your value and the server's value differ, showing both side by side. For each one, choose:
+
+- **Take Yours** — keep your value and overwrite the server's change.
+- **Take Server's** — accept the server's value and discard your edit.
+- **Take Both** — keep the server's value and add yours as an additional instance (only for attributes that allow multiple values).
+- **Manual Resolution** — enter a custom value using the normal editor for that field type.
+
+Click **Apply** to save your choices. Attributes you changed that the other user didn't touch are saved automatically without prompting.

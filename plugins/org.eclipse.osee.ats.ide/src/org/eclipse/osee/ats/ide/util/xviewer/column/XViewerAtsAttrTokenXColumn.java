@@ -26,7 +26,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnUtil;
 import org.eclipse.osee.ats.api.column.AtsCoreAttrTokColumnToken;
-import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -125,7 +124,7 @@ public class XViewerAtsAttrTokenXColumn extends XViewerAtsColumn implements IXVi
          }
          if (element instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
-            if (attributeType.hasDisplayHint(AtsDisplayHint.UserArtId)) {
+            if (attributeType.hasDisplayHint(DisplayHint.UserArtId)) {
                List<String> names = new ArrayList<>();
                for (String userArtId : awa.getAttributesToStringList(attributeType)) {
                   if (Strings.isNumeric(userArtId)) {

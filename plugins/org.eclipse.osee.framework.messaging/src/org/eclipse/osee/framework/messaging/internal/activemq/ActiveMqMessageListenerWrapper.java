@@ -121,8 +121,9 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
                }
             }
 
-            if (activeMqUtil.translateMessage(message, listener.getClazz()) != null) {
-               listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
+            Object translated = activeMqUtil.translateMessage(message, listener.getClazz());
+            if (translated != null) {
+               listener.process(translated, headers, replyConnection);
                OseeLog.log(Activator.class, Level.FINE, String.format("recieved message %s - %s",
                   message.getJMSDestination().toString(), message.toString()));
             }

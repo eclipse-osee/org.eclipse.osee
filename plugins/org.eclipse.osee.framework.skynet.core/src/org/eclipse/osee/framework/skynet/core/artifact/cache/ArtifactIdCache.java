@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryMa
 public class ArtifactIdCache {
    private final ConcurrentHashMap<ArtifactToken, Object> idCache;
    private final CompositeKeyHashMap<String, BranchId, Object> guidCache;
+   private final CompositeKeyHashMap<Long, Long, Object> artIdBranchCache;
 
    private static enum FilterType {
       ONLY_DIRTIES,
@@ -40,10 +41,15 @@ public class ArtifactIdCache {
    public ArtifactIdCache(int initialCapacity) {
       idCache = new ConcurrentHashMap<>(initialCapacity);
       guidCache = new CompositeKeyHashMap<>(initialCapacity, true);
+      artIdBranchCache = new CompositeKeyHashMap<>(initialCapacity, true);
    }
 
    public Artifact getById(ArtifactToken artifact) {
       return asArtifact(idCache.get(artifact));
+   }
+
+   public Artifact getByArtId(long artId, long branchId) {
+      return asArtifact(artIdBranchCache.get(artId, branchId));
    }
 
    public Artifact getByGuid(String artGuid, BranchId branch) {
@@ -54,12 +60,14 @@ public class ArtifactIdCache {
       Object object = asCacheObject(artifact);
       idCache.put(artifact, object);
       guidCache.put(artifact.getGuid(), artifact.getBranch(), object);
+      artIdBranchCache.put(artifact.getId(), artifact.getBranch().getId(), object);
       return object;
    }
 
    public void deCache(Artifact artifact) {
       idCache.remove(artifact);
       guidCache.removeAndGet(artifact.getGuid(), artifact.getBranch());
+      artIdBranchCache.removeAndGet(artifact.getId(), artifact.getBranch().getId());
    }
 
    public Collection<Artifact> getAll() {

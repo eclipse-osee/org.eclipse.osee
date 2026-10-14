@@ -38,6 +38,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { ManageActionButtonComponent } from '@osee/configuration-management/components';
 import { BranchInfoService, UiService } from '@osee/shared/services';
+import { MutationService } from '@osee/shared/services/network';
 import { ConfirmDialogComponent } from '@osee/shared/dialogs';
 import { RouterLink } from '@angular/router';
 
@@ -67,6 +68,7 @@ import { RouterLink } from '@angular/router';
 export class PeerReviewDialogComponent {
 	private prUIService = inject(PeerReviewUiService);
 	private branchInfoService = inject(BranchInfoService);
+	private mutation = inject(MutationService);
 	private uiService = inject(UiService);
 	private dialog = inject(MatDialog);
 	private dialogRef =
@@ -160,6 +162,15 @@ export class PeerReviewDialogComponent {
 							of(),
 							this.branchInfoService.archiveBranch(branchId).pipe(
 								take(1),
+								this.mutation.withLocalNotify((resp) =>
+									resp.ok
+										? {
+												type: 'branch',
+												branchId,
+												changeType: 'archived' as const,
+											}
+										: null
+								),
 								tap((resp) => {
 									if (resp.ok) {
 										this.prUIService.PRBranchId = '-1';

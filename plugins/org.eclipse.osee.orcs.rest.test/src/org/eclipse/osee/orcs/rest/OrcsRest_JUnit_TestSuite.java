@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.rest;
 
 import org.eclipse.osee.orcs.rest.internal.ReportTestSuite;
+import org.eclipse.osee.orcs.rest.internal.ws.SseWsTestSuite;
 import org.eclipse.osee.orcs.rest.writer.OrcsRestWriterSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,7 +23,7 @@ import org.junit.runners.Suite;
  * @author John R. Misinco
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OrcsRestWriterSuite.class, ReportTestSuite.class})
+@Suite.SuiteClasses({OrcsRestWriterSuite.class, ReportTestSuite.class, SseWsTestSuite.class})
 public class OrcsRest_JUnit_TestSuite {
    // Test Suite
 }

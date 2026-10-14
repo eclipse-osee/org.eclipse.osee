@@ -16,9 +16,12 @@ import { RelationsEditorPanelComponent } from './relations-editor-panel.componen
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
+	HttpResourceRef,
 	provideHttpClient,
 	withInterceptorsFromDi,
 } from '@angular/common/http';
+import { signal } from '@angular/core';
+import { artifactWithRelations } from '@osee/artifact-with-relations/types';
 
 describe('RelationsEditorPanelComponent', () => {
 	let component: RelationsEditorPanelComponent;
@@ -37,6 +40,12 @@ describe('RelationsEditorPanelComponent', () => {
 		fixture.componentRef.setInput('branchId', '8');
 		fixture.componentRef.setInput('viewId', '-1');
 		fixture.componentRef.setInput('editable', true);
+		// Minimal stub of the parent's shared resource: the component only reads
+		// artifactResource().value(); start it empty (undefined is filtered out).
+		const artifactResourceStub = {
+			value: signal<artifactWithRelations | undefined>(undefined),
+		} as unknown as HttpResourceRef<artifactWithRelations | undefined>;
+		fixture.componentRef.setInput('artifactResource', artifactResourceStub);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

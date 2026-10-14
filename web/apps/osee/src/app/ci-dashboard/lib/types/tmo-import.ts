@@ -39,6 +39,7 @@ export const tmoImportResultSentinel: TmoImportResult = {
 			warningCount: 0,
 		},
 		tx: { id: '0', branchId: '-1' },
+		failedGammas: [],
 	},
 	workflows: [],
 };

@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.zenith;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -169,13 +170,13 @@ public class ScriptPurgeEndpointTest {
 
       ScriptDefToken script = new ScriptDefToken(123L, scriptName);
       script.setFullScriptName(scriptName);
-      txData.getCreateArtifacts().add(script.createArtifact(script.getArtifactId().getIdString()));
+      txData.getCreateArtifacts().add(script.createArtifact("script"));
 
       TransactionResult txResult = sendTx(txData);
-      assertEquals(1, txResult.getResults().getIds().size());
-      ArtifactId scriptId = ArtifactId.valueOf(txResult.getResults().getIds().get(0));
-
-      return scriptId;
+      // The server assigns the id (the token id is not used), and the result lists created
+      // artifacts first followed by modified ones, so the created script is the first id.
+      assertFalse("No created artifact returned from transaction", txResult.getResults().getIds().isEmpty());
+      return ArtifactId.valueOf(txResult.getResults().getIds().get(0));
    }
 
    private ArtifactId createScriptSetArtifact(BranchId branch, String scriptSetName) {
@@ -189,10 +190,10 @@ public class ScriptPurgeEndpointTest {
       art.setId(CISETID);
       txData.getCreateArtifacts().add(art);
       TransactionResult txResult = sendTx(txData);
-      assertEquals(1, txResult.getResults().getIds().size());
-      ArtifactId scriptSetId = ArtifactId.valueOf(txResult.getResults().getIds().get(0));
+      assertTrue("Created script set artifact not found in transaction result",
+         txResult.getResults().getIds().contains(CISETID));
 
-      return scriptSetId;
+      return ArtifactId.valueOf(CISETID);
    }
 
    private void createScriptResults(BranchId branch, String scriptName, ArtifactId scriptId, int numResults,
@@ -215,7 +216,6 @@ public class ScriptPurgeEndpointTest {
 
       Date executionDate = cal.getTime();
       Long id = 5555L;
-
       for (int i = 0; i < numResults; i++) {
          ScriptResultToken result = new ScriptResultToken(id, scriptName);
          result.setFileUrl("");
@@ -235,7 +235,10 @@ public class ScriptPurgeEndpointTest {
       }
 
       TransactionResult txResult = sendTx(txData);
-      assertEquals(numResults, txResult.getResults().getIds().size());
+      // Server assigns result ids; ids list holds created artifacts first then modified ones,
+      // so the created results are covered by asserting at least numResults ids came back.
+      assertTrue("Expected at least " + numResults + " created script results in the transaction result",
+         txResult.getResults().getIds().size() >= numResults);
    }
 
    private TransactionResult sendTx(TransactionBuilderData txData) {

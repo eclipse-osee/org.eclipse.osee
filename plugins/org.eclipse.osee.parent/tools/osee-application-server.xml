@@ -83,6 +83,7 @@
 				<sysproperty key="osee.check.tag.queue.on.startup" value="false" />
 				<sysproperty key="osgi.noShutdown" value="true" />
 				<sysproperty key="org.osgi.service.http.port" value="${xserver-port}" />
+				<sysproperty key="osee.application.server.web.uri" value="http://localhost:${xserver-port}" />
 				<sysproperty key="osee.application.server.data" value="${osee.application.server.data}" />
 				<sysproperty key="osee.authentication.protocol" value="${xserver-authentication}" />
 				<sysproperty key="logback.configurationFile" value="${xserver-log-config}" />

@@ -1,0 +1,6 @@
+---
+inclusion: manual
+description: "Runs ESLint and Prettier on all files changed during development. Uses git diff to identify changed .ts and .html files and runs both tools from web/apps/osee/."
+---
+
+Find all changed web files by running `git diff --name-only origin/main -- "*.ts" "*.html" "*.scss" "*.css"` from the workspace root. Convert the paths to be relative to `web/apps/osee/` (strip the `web/apps/osee/` prefix). Then from the `web/apps/osee/` directory, run `npx prettier --write` on all those relative paths, followed by `npx eslint` on just the `.ts` and `.html` files. Report any lint errors that need manual fixing.
