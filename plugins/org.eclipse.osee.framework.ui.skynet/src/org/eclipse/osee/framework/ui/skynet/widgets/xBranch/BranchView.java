@@ -52,9 +52,9 @@ import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionPr
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchViewerWidget.IBranchWidgetMenuListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.actions.SetAsFavoriteAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.swt.SWT;
@@ -79,7 +79,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
    private final Clipboard clipboard = new Clipboard(null);
 
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
-   protected XBranchWidget xBranchWidget;
+   protected XBranchViewerWidget xBranchWidget;
    private final AtomicBoolean refreshNeeded = new AtomicBoolean(false);
    private final AtomicBoolean processEvents = new AtomicBoolean(false);
    private XViewerCustomMenu customMenu;
@@ -123,7 +123,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
 
          new BranchLoadComposite(this, parent, SWT.NONE);
 
-         xBranchWidget = new XBranchWidget(this);
+         xBranchWidget = new XBranchViewerWidget(this);
          xBranchWidget.setDisplayLabel(false);
          xBranchWidget.setBranchData(branchData);
          xBranchWidget.createWidgets(parent, 1);
@@ -226,7 +226,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
       }
    }
 
-   public XBranchWidget getXBranchWidget() {
+   public XBranchViewerWidget getXBranchWidget() {
       return xBranchWidget;
    }
 

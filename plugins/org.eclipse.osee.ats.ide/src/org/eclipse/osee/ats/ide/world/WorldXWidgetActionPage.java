@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.ide.actions.WorldViewColumnReport;
 import org.eclipse.osee.ats.ide.column.ToggleXViewerColumnLoadingDebug;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
@@ -70,15 +71,13 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -106,7 +105,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Donald G. Dunne
  */
 public class WorldXWidgetActionPage extends FormPage {
-   protected SwtXWidgetRenderer swtXWidgetRenderer;
+   protected XWidgetSwtRenderer xWidgetSwtRenderer;
    protected final XFormToolkit toolkit;
    private Composite parametersContainer;
    private Section parameterSection;
@@ -114,7 +113,7 @@ public class WorldXWidgetActionPage extends FormPage {
    protected Section resultsSection;
    protected ScrolledForm scrolledForm;
    private String title;
-   private String xWidgetXml;
+   private XWidgetBuilderAts wba;
    public static final String ID = "org.eclipse.osee.ats.ide.actionPage";
    public static final String MENU_GROUP_PRE = "world.menu.group.pre";
    private final WorldEditor worldEditor;
@@ -148,10 +147,9 @@ public class WorldXWidgetActionPage extends FormPage {
       return worldEditor.isDirty() ? new Result("Changes un-saved. Save first.") : Result.TrueResult;
    }
 
-   public String getXWidgetsXml() {
+   public XWidgetBuilderAts getXWidgetBuilderAts() {
       if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
-         String xml = ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getParameterXWidgetXml();
-         return xml;
+         return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getWidgetBuilderAts();
       }
       return null;
    }
@@ -172,9 +170,9 @@ public class WorldXWidgetActionPage extends FormPage {
       body.setLayout(ALayout.getZeroMarginLayout(1, true));
       body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
 
-      xWidgetXml = getXWidgetsXml();
+      wba = getXWidgetBuilderAts();
       try {
-         if (Strings.isValid(xWidgetXml)) {
+         if (wba != null) {
             Section createParametersSection = createParametersSection(managedForm, body);
             managedForm.addPart(new SectionPart(createParametersSection));
          }
@@ -183,8 +181,6 @@ public class WorldXWidgetActionPage extends FormPage {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-
-      XWidgetUtility.setLabelFontsBold(allXWidgets);
 
       createToolBar();
       managedForm.refresh();
@@ -246,16 +242,16 @@ public class WorldXWidgetActionPage extends FormPage {
       rightParamComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       List<XWidgetData> widDatas = null;
-      swtXWidgetRenderer = new SwtXWidgetRenderer(getDynamicWidgetLayoutListener());
+      xWidgetSwtRenderer = new XWidgetSwtRenderer(getXWidgetSwtRendererListener());
       try {
-         widDatas = XWidgetParser.extractWidgetDatas(xWidgetXml);
+         widDatas = wba.getXWidgetDatas();
          if (widDatas != null && !widDatas.isEmpty()) {
-            swtXWidgetRenderer.addXWidgetDatas(widDatas);
-            swtXWidgetRenderer.createBody(managedForm, rightParamComp, null, null, true);
-            allXWidgets.addAll(swtXWidgetRenderer.getXWidgets());
+            xWidgetSwtRenderer.addXWidgetDatas(widDatas);
+            xWidgetSwtRenderer.createBody(managedForm, rightParamComp, null, null, true);
+            allXWidgets.addAll(xWidgetSwtRenderer.getXWidgets());
             parametersContainer.layout();
             parametersContainer.getParent().layout();
-            for (XWidget widget : swtXWidgetRenderer.getXWidgets()) {
+            for (XWidget widget : xWidgetSwtRenderer.getXWidgets()) {
                if (widget instanceof WorldEditorWidget) {
                   ((WorldEditorWidget) widget).setEditor(worldEditor);
                }
@@ -300,9 +296,9 @@ public class WorldXWidgetActionPage extends FormPage {
       buttonComp.layout();
    }
 
-   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
+   public XWidgetSwtRendererListener getXWidgetSwtRendererListener() {
       if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
-         return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getDynamicWidgetLayoutListener();
+         return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getXWidgetSwtRendererListener();
       }
       return null;
    }

@@ -21,12 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -39,32 +36,33 @@ import org.eclipse.osee.ats.ide.search.widget.ActionableItemSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.AttributeValuesSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.ChangeTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.HoldStateSearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.ParamSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.PrioritySearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.ReviewTypeSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.ReviewFormalTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.StateNameSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.StateTypeSearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.TeamDefListener;
 import org.eclipse.osee.ats.ide.search.widget.TeamDefinitionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.TitleSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.UserSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.UserTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.VersionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.WorkItemTypeSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.base.ParamSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.base.TeamDefListener;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -73,14 +71,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Donald G. Dunne
  */
 public abstract class WorldEditorParameterSearchItem extends WorldSearchItem implements //
-   IWorldEditorConsumer, IWorldEditorParameterProvider, IDynamicWidgetLayoutListener {
+   IWorldEditorConsumer, IWorldEditorParameterProvider, XWidgetSwtRendererListener {
 
    private TableLoadOption[] tableLoadOptions;
    protected final Map<String, XWidget> xWidgets = new HashMap<>();
-   protected StringBuilder xmlSb;
-   private final Pattern displayName = Pattern.compile("displayName=\"(.*?)\"");
+   protected XWidgetBuilderAts wba;
    private String shortName = "";
-   private final List<String> widgetOrder = new LinkedList<>();
    private static List<WorkItemType> GOAL_SPRINT_BACKLOG_WORKITEMTYPES =
       Arrays.asList(WorkItemType.AgileBacklog, WorkItemType.AgileSprint, WorkItemType.Goal);
    private static List<WorkItemType> TEAM_DEF_WORKITEMTYPES = null;
@@ -95,11 +91,11 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private ChangeTypeSearchWidget changeTypeWidget;
    private PrioritySearchWidget priorityWidget;
    private UserTypeSearchWidget userTypeWidget;
-   private ReviewTypeSearchWidget reviewTypeWidget;
+   private ReviewFormalTypeSearchWidget reviewTypeWidget;
    private HoldStateSearchWidget holdStateWidget;
    private AttributeValuesSearchWidget attrValuesWidget;
    protected WorldEditor worldEditor;
-   private final Map<String, ParamSearchWidget> labelToParamSearchWidgets = new HashMap<>();
+   public final Map<String, ParamSearchWidget> labelToParamSearchWidgets = new HashMap<>();
 
    public WorldEditorParameterSearchItem(String name, AtsImage oseeImage) {
       super(name, LoadView.WorldEditor, oseeImage);
@@ -109,15 +105,9 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       super(worldSearchItem, oseeImage);
    }
 
-   @Override
-   public String getParameterXWidgetXml() {
-      String xml = xmlSb.toString() + "</xWidgets>";
-      return xml;
-   }
-
    public Result isParameterSelectionValid() {
       try {
-         if (getUserTypeWidget() != null && getUserTypeWidget().getSingle() == AtsSearchUserType.Assignee) {
+         if (getUserTypeWidget() != null && getUserTypeWidget().getSelectedFirst() == AtsSearchUserType.Assignee) {
             if (getAiWidget() != null && getAiWidget().get() != null && !getAiWidget().get().isEmpty() && getTeamDefWidget() != null && getTeamDefWidget().get() != null && !getTeamDefWidget().get().isEmpty()) {
                return new Result("Actionable Item(s) and Team Definition(s) are not compatible selections.");
             }
@@ -152,13 +142,16 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
          }
          if (userTypeWidget != null) {
-            AtsSearchUserType type = userTypeWidget.getSingle();
-            AtsUser selUser = userWidget.getSingle();
-            if (type != null && type != AtsSearchUserType.None && selUser == null) {
-               return new Result("You must select User when User Type is selected.");
-            }
-            if (selUser != null && (type == null || type == AtsSearchUserType.None)) {
-               return new Result("You must select User Type when User is selected.");
+            AtsSearchUserType type = userTypeWidget.getSelectedFirst();
+            UserToken selUserTok = userWidget.getSelectedFirst();
+            if (selUserTok.isValid()) {
+               AtsUser selUser = atsApi.getUserService().getUserById(selUserTok);
+               if (type != null && type != AtsSearchUserType.None && selUser == null) {
+                  return new Result("You must select User when User Type is selected.");
+               }
+               if (selUser != null && (type == null || type == AtsSearchUserType.None)) {
+                  return new Result("You must select User Type when User is selected.");
+               }
             }
          }
          return new Result(true);
@@ -219,35 +212,16 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       // do nothing
    }
 
-   public void checkOrStartXmlSb() {
-      if (xmlSb == null) {
-         xmlSb = new StringBuilder("<xWidgets>");
+   @Override
+   public XWidgetBuilderAts getWidgetBuilderAts() {
+      if (wba == null) {
+         wba = new XWidgetBuilderAts();
       }
-   }
-
-   public void addWidgetXml(String widgetXml) {
-      checkOrStartXmlSb();
-      xmlSb.append(widgetXml);
-      String displayName = getDisplayName(widgetXml);
-      xWidgets.put(displayName, null);
-      widgetOrder.add(displayName);
-   }
-
-   public void addWidgetXml(String widgetXml, ParamSearchWidget paramSrchWidget) {
-      addWidgetXml(widgetXml);
-      labelToParamSearchWidgets.put(paramSrchWidget.getName(), paramSrchWidget);
-   }
-
-   private String getDisplayName(String widgetXml) {
-      Matcher matcher = displayName.matcher(widgetXml);
-      if (matcher.find()) {
-         return matcher.group(1);
-      }
-      throw new OseeArgumentException("WidgetXml must include displayName; Not found in [%s]", widgetXml);
+      return wba;
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
       XModifiedListener modListener, boolean isEditable) {
       xWidgets.put(widget.getLabel(), widget);
       ParamSearchWidget paramSearchWidget = labelToParamSearchWidgets.get(widget.getLabel());
@@ -274,7 +248,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
       XModifiedListener xModListener, boolean isEditable) {
       ParamSearchWidget paramSearchWidget = labelToParamSearchWidgets.get(widget.getLabel());
       if (paramSearchWidget != null) {
@@ -291,7 +265,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
+   public XWidgetSwtRendererListener getXWidgetSwtRendererListener() {
       return null;
    }
 
@@ -306,15 +280,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    @Override
    public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
       // do nothing
-   }
-
-   public String getBeginComposite(int beginComposite) {
-      if (beginComposite > 0) {
-         return String.format(" beginComposite=\"%d\" ", beginComposite);
-      } else if (beginComposite < 0) {
-         return String.format(" endComposite=\"true\" ");
-      }
-      return "";
    }
 
    public Map<String, XWidget> getxWidgets() {
@@ -357,10 +322,10 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    /**
     * @return selected Team Definitions or computed Team Definitions from selected AIs
     */
-   public Collection<TeamDefinition> getTeamDefs() {
-      Collection<TeamDefinition> teamDefs = new HashSet<>();
+   public Collection<IAtsTeamDefinition> getTeamDefs() {
+      Collection<IAtsTeamDefinition> teamDefs = new HashSet<>();
       if (teamDefWidget != null) {
-         teamDefs.addAll(teamDefWidget.get());
+         teamDefs.addAll(teamDefWidget.getSelected());
       }
       if (teamDefs.isEmpty() && aiWidget != null) {
          for (IAtsActionableItem ai : aiWidget.get()) {
@@ -429,9 +394,9 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return userTypeWidget;
    }
 
-   public ReviewTypeSearchWidget getReviewTypeWidget() {
+   public ReviewFormalTypeSearchWidget getReviewTypeWidget() {
       if (reviewTypeWidget == null) {
-         reviewTypeWidget = new ReviewTypeSearchWidget(this);
+         reviewTypeWidget = new ReviewFormalTypeSearchWidget(this);
       }
       return reviewTypeWidget;
    }
@@ -464,21 +429,21 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    protected void reportWidgetSelections(XResultData rd) {
       rd.logf("Search Parameters: \n---------------------------------------------\n\n");
-      rd.logf("Title: [%s]\n", getTitleWidget().getWidget().get());
-      rd.logf("Team(s): [%s]\n", teamDefWidget.getWidget().getSelectedTeamDefintions());
+      rd.logf("Title: [%s]\n", getTitleWidget().getWidget().getSelectedFirst());
+      rd.logf("Team(s): [%s]\n", teamDefWidget.getWidget().getSelectedFirst());
       Object ver = versionWidget.getWidget().getSelected();
       rd.logf("Version: [%s]\n", ver == null ? "" : versionWidget.getWidget().getSelected());
-      if (getStateTypeWidget() != null && !getStateTypeWidget().get().isEmpty()) {
-         rd.logf("State Type: %s\n", getStateTypeWidget().get());
+      if (getStateTypeWidget() != null && !getStateTypeWidget().getSelected().isEmpty()) {
+         rd.logf("State Type: %s\n", getStateTypeWidget().getSelectedFirst());
       }
-      if (getStateNameWidget() != null && getStateNameWidget().get().size() > 0) {
-         rd.logf("State Name: [%s]\n", getStateNameWidget().get());
+      if (getStateNameWidget() != null && getStateNameWidget().isSelected()) {
+         rd.logf("State Name: [%s]\n", getStateNameWidget().getSelectedFirst());
       }
-      rd.logf("Change Type: %s\n", getChangeTypeWidget().get() == null ? "" : getChangeTypeWidget().get());
-      String priority = getPriorityWidget().get();
-      rd.logf("Priority: [%s]\n", (Strings.isValid(priority) && !Widgets.NOT_SET.equals(priority)) ? priority : "");
+      rd.logf("Change Type: %s\n", getChangeTypeWidget().isSelected() ? "" : getChangeTypeWidget().getSelectedFirst());
+      String priority = getPriorityWidget().getSelectedFirst();
+      rd.logf("Priority: [%s]\n", Strings.isValid(priority) ? priority : "");
       rd.logf("Hold State: [%s]\n",
-         getHoldStateWidget().getSingle() == null ? "" : getHoldStateWidget().getSingle().name());
+         getHoldStateWidget().getSelectedFirst() == null ? "" : getHoldStateWidget().getSelectedFirst());
       if (getAttrValuesWidget().get().isEmpty()) {
          rd.logf("Attribute Value(s): []\n");
       } else {
@@ -491,6 +456,25 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    public Collection<? extends SearchEngine> getSearchEngines() {
       return java.util.Collections.emptyList();
+   }
+
+   public void addWidget(String label, WidgetId widgetId, int beginComposite, ParamSearchWidget srchWidget) {
+      wba.andWidget(label, widgetId);
+      wba.startComp(beginComposite);
+      if (srchWidget != null) {
+         labelToParamSearchWidgets.put(label, srchWidget);
+      }
+   }
+
+   public void addWidget(String label, WidgetId widgetId, ParamSearchWidget srchWidget) {
+      wba.andWidget(label, widgetId);
+      if (srchWidget != null) {
+         labelToParamSearchWidgets.put(label, srchWidget);
+      }
+   }
+
+   public void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel, int beginComposite) {
+      addWidget(blankLabel, WidgetId.XXLabelWidget, beginComposite, null);
    }
 
 }

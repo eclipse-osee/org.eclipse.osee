@@ -13,22 +13,29 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ProposedResolution;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Resolution;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ValidationRequired;
+import static org.eclipse.osee.framework.core.widget.XOption.REQUIRED;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefTeamSimple extends AbstractWorkDef {
 
    public WorkDefTeamSimple() {
@@ -39,28 +46,26 @@ public class WorkDefTeamSimple extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
-      bld.andHeader() //
-         .andLayout(getChangeTypeComposite(), //
-            new WidgetDef("Work Package", "XHyperlinkWorkPackageDam" //
-            ) //
+      bld.andCustomHeader() //
+         .andLayout(bld.getChangeTypeComposite(), //
+            new AttrWidgetDef(AtsAttributeTypes.WorkPackage) //
          ) //
-         .isShowMetricsHeader(false); //
+         .showMetricsHeader(false); //
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.InWork, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
-         .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", RFT, FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"));
+            new AttrWidgetDef(Description).set(REQUIRED), //
+            new AttrWidgetDef(ProposedResolution), //
+            new AttrWidgetDef(ValidationRequired));
 
       bld.andState(2, "InWork", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new AttrWidgetDef(Resolution));
 
       bld.andState(3, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //

@@ -14,22 +14,31 @@
 package org.eclipse.osee.ats.ide.util.Import;
 
 import java.io.File;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.util.Import.action.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.OseeInf;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class ImportAgileActionsViaSpreadsheetBlam extends ImportActionsViaSpreadsheetBlam {
 
-   @Override
-   public String getName() {
-      return "Import Agile Actions Via Spreadsheet";
+   private static final String BLAM_NAME = "Import Agile Actions Via Spreadsheet";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public ImportAgileActionsViaSpreadsheetBlam() {
+      super(BLAM_NAME, CoreImage.IMPORT);
    }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
    @Override
    protected boolean includeGoalWidget() {
@@ -39,16 +48,6 @@ public class ImportAgileActionsViaSpreadsheetBlam extends ImportActionsViaSpread
    @Override
    public File getSampleSpreadsheetFile() throws Exception {
       return OseeInf.getResourceAsFile("atsImport/Agile_Action_Import.xml", getClass());
-   }
-
-   @Override
-   public Image getImage() {
-      return ImageManager.getImage(CoreImage.IMPORT);
-   }
-
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(CoreImage.IMPORT);
    }
 
 }

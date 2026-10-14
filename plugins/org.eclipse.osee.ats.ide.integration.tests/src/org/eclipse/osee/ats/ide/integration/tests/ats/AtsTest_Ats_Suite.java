@@ -47,7 +47,7 @@ import org.junit.runners.Suite;
    AtsTest_Notify_Suite.class,
    AtsTest_Workflow_Suite.class,
    AtsTest_Access_Suite.class,
-   // Note: AtsTest_Action_Suite in parent suite
+   // Note: AtsTest_Action_Suite in parent suite - CodeReview.IgnoreLine
    AtsTest_Agile_Suite.class,
    AtsTest_Branch_Suite.class,
    AtsTest_Column_Suite.class,
@@ -56,7 +56,7 @@ import org.junit.runners.Suite;
    AtsTest_Editor_Suite.class,
    AtsTest_Health_Suite.class,
    AtsTest_Navigate_Suite.class,
-   // AtsTest_Notify_Suite.class, - See note above
+   // AtsTest_Notify_Suite.class, - See note above - CodeReview.IgnoreLine
    AtsTest_Operation_Suite.class,
    AtsTest_Renderer_Suite.class,
    AtsTest_Report_Suite.class,
@@ -65,9 +65,9 @@ import org.junit.runners.Suite;
    AtsTest_Users_Suite.class,
    AtsTest_Util_Suite.class,
    AtsTest_WorkDef_Suite.class,
-   // AtsTest_Workflow_Suite.class, - See note above
+   // AtsTest_Workflow_Suite.class, - See note above - CodeReview.IgnoreLine
    AtsTest_World_Suite.class,
-   // AtsTest_World_Search_Suite.class, Moved to AtsTest_Query_Suite to run first
+   // AtsTest_World_Search_Suite.class, Moved to AtsTest_Query_Suite to run first - CodeReview.IgnoreLine
    AtsTest_Version_Search_Suite.class,
    ProblemReportTest.class, // Last cause this adds workflows
 })

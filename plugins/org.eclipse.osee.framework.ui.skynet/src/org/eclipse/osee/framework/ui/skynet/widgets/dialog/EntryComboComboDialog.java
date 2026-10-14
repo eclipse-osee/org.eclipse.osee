@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -34,7 +34,7 @@ public class EntryComboComboDialog extends EntryComboDialog {
    private List<Object> options2 = new ArrayList<>();
    private Object defaultSelection2 = null;
    private Object selection2 = "";
-   private XCombo combo2;
+   private XXStringsWidget combo2;
    private boolean combo2Required = false;
 
    public EntryComboComboDialog(String dialogTitle, String dialogMessage, String comboMessage, String comboMessage2) {
@@ -46,7 +46,7 @@ public class EntryComboComboDialog extends EntryComboDialog {
    protected void createExtendedArea(Composite parent) {
       super.createExtendedArea(parent);
 
-      combo2 = new XCombo(comboMessage2);
+      combo2 = new XXStringsWidget(comboMessage2);
       combo2.setFillHorizontally(true);
       combo2.setFocus();
       combo2.setRequiredEntry(combo2Required);
@@ -57,9 +57,9 @@ public class EntryComboComboDialog extends EntryComboDialog {
       List<String> names = new ArrayList<>();
       names.addAll(nameToObjectMap.keySet());
       Collections.sort(names);
-      combo2.setDataStrings(names.toArray(new String[names.size()]));
+      combo2.setSelectable(names);
       if (defaultSelection2 != null) {
-         combo2.setDataStrings(new String[] {defaultSelection2.toString()});
+         combo2.setSelected(defaultSelection2.toString());
       }
       combo2.createWidgets(parent, 2);
 
@@ -68,7 +68,7 @@ public class EntryComboComboDialog extends EntryComboDialog {
          @Override
          public void widgetModified(XWidget widget) {
             handleModified();
-            selection2 = nameToObjectMap.get(combo2.get());
+            selection2 = nameToObjectMap.get(combo2.getSelectedFirst());
          }
       };
       combo2.addXModifiedListener(listener);
@@ -76,12 +76,12 @@ public class EntryComboComboDialog extends EntryComboDialog {
 
    @Override
    public void handleModified() {
-      entryText = text.get();
+      entryText = textWidget.get();
       if (Strings.isInValid(entryText)) {
          updateErrorLabel(true, "");
          return;
       } else if (combo2 != null) {
-         String combo2Selection = combo2.get();
+         String combo2Selection = combo2.getSelectedFirst();
          if (!Strings.isValid(combo2Selection)) {
             updateErrorLabel(true, String.format("Must Select [%s]", comboMessage2));
             return;

@@ -20,7 +20,10 @@ import {
 	OnInit,
 	signal,
 } from '@angular/core';
-import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
+import {
+	teamWorkflowDetailsImpl,
+	workDefinitonLayoutItem,
+} from '@osee/shared/types/configuration-management';
 import { COMMON_BRANCH_ID } from '@osee/shared/types';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -374,18 +377,19 @@ export class ActraWorkflowEditorComponent implements OnInit {
 			return states;
 		}
 		this.workflow().previousStates.forEach((state) => {
-			const attrIds = this.workDef()
-				?.states.find((s) => s.name === state.state)
-				?.layoutItems.filter(
-					(item) =>
-						item.attributeType !== null &&
-						item.attributeType !== '-1'
-				)
-				.map((item) => item.attributeType);
+			const layoutItems = this.workDef()?.states.find(
+				(s) => s.name === state.state
+			)?.layoutItems;
 
-			if (!attrIds) {
+			if (!layoutItems) {
 				return;
 			}
+
+			// Walk the layout tree, not just the top level: a CompositeLayoutItem has
+			// no attributeType of its own and nests its attribute-backed widgets under
+			// layoutItems (e.g. the Endorse "Validation Required"/"Work Package" row).
+			// A flat filter dropped those, so they never rendered.
+			const attrIds = this.collectAttributeTypeIds(layoutItems);
 
 			const attributes: attribute<string, ATTRIBUTETYPEID>[] = [];
 			attrIds.forEach((attrId) => {
@@ -409,6 +413,26 @@ export class ActraWorkflowEditorComponent implements OnInit {
 
 		return states;
 	});
+
+	/**
+	 * Collect every attribute-type id in a state's layout, descending into composite
+	 * items. Composites carry their widgets in a nested `layoutItems` and have no
+	 * `attributeType` of their own, so a flat scan misses them.
+	 */
+	private collectAttributeTypeIds(
+		items: workDefinitonLayoutItem[]
+	): `${number}`[] {
+		const ids: `${number}`[] = [];
+		for (const item of items) {
+			if (item.attributeType !== null && item.attributeType !== '-1') {
+				ids.push(item.attributeType);
+			}
+			if (item.layoutItems && item.layoutItems.length > 0) {
+				ids.push(...this.collectAttributeTypeIds(item.layoutItems));
+			}
+		}
+		return ids;
+	}
 
 	handleUpdatedAttributes(
 		updatedAttributes: attribute<string, ATTRIBUTETYPEID>[]

@@ -159,7 +159,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andWorkDef(AtsWorkDefinitionTokens.WorkDefTeamSimple);
 
       // Tools Actionable Items
-      IAtsConfigTxActionableItem toolsTeamAI = topActionableItem.createChildActionableItem(DemoArtifactToken.Tools_Ai) //
+      IAtsConfigTxActionableItem toolsTeamAI = topActionableItem.createChildActionableItem(DemoArtifactToken.Tools_AI) //
          .andActionable(true) //
          .andTeamDef(DemoArtifactToken.Tools_Team);
 
@@ -172,7 +172,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
       toolsTeamAI.createChildActionableItem(DemoArtifactToken.Timesheet_AI) //
          .andActionable(true);
 
-      toolsTeamAI.createChildActionableItem("Website") //
+      toolsTeamAI.createChildActionableItem(DemoArtifactToken.Website_AI) //
          .andActionable(true) //
          .andTeamDef(DemoArtifactToken.Website_Team);
 

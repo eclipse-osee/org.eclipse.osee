@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.ide.actions.newaction.CreateNewActionAtLocactionBlam;
+import org.eclipse.osee.ats.ide.actions.newaction.CreateNewActionAtLocationBlam;
 import org.eclipse.osee.ats.ide.editor.tab.members.IMemberProvider;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
@@ -75,7 +75,7 @@ public class NewActionToGoalAction extends Action {
             }
          }
       }
-      CreateNewActionAtLocactionBlam blam = new CreateNewActionAtLocactionBlam(memberProvider, ais, dropTarget);
+      CreateNewActionAtLocationBlam blam = new CreateNewActionAtLocationBlam(memberProvider, ais, dropTarget);
       BlamEditor.edit(blam);
    }
 

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
@@ -99,7 +100,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
                   OseeLog.logf(Activator.class, Level.SEVERE, "State null for %s",
                      ((IAtsWorkItem) element).toStringWithId());
                } else {
-                  return Displays.getSystemColor(StateColorToSwtColor.convert(state.getColor()));
+                  return Displays.getSystemColor(StateColorToSwtColor.convert(TeamState.resolveStateColor(state)));
                }
             }
          }

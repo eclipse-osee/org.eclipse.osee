@@ -115,6 +115,15 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
       setToDefaultValue();
    }
 
+   /**
+    * @return the fully-resolved {@link AttributeTypeGeneric} for this attribute (from the token service), which
+    * exposes the value conversion/validation methods used to guard writes.
+    */
+   @SuppressWarnings("unchecked")
+   protected AttributeTypeGeneric<T> getFullAttributeType() {
+      return (AttributeTypeGeneric<T>) tokenService.getAttributeType(getAttributeType().getId());
+   }
+
    private void setToDefaultValue() {
       AttributeTypeGeneric<?> attributeType = tokenService.getAttributeType(getAttributeType().getId());
       T defaultValue = (T) containerReference.get().getArtifactType().getAttributeDefault(attributeType);

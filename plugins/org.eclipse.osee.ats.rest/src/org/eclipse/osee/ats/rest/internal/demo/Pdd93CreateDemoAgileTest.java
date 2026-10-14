@@ -61,8 +61,14 @@ public class Pdd93CreateDemoAgileTest extends AbstractPopulateDemoDatabaseTest {
             assertEquals(true, sprint.isActive());
             numFound++;
          }
+         if (sprint.getId().equals(DemoArtifactToken.SAW_Sprint_3.getId())) {
+            assertEquals(DemoArtifactToken.SAW_Agile_Team.getId(), Long.valueOf(sprint.getTeamId()));
+            assertEquals(DemoArtifactToken.SAW_Sprint_3.getName(), sprint.getName());
+            assertEquals(true, sprint.isActive());
+            numFound++;
+         }
       }
-      assertEquals(2, numFound);
+      assertEquals(3, numFound);
 
       DemoUtil.setPopulateDbSuccessful(true);
    }

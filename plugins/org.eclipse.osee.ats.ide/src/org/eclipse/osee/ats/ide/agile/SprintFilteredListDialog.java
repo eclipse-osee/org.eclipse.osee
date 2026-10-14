@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -59,7 +59,7 @@ public class SprintFilteredListDialog extends FilteredTreeDialog {
 
    private void createCheckbox(Composite parent) {
 
-      final XCheckBox checkbox = new XCheckBox("Remove from Sprint");
+      final XXCheckBoxWidget checkbox = new XXCheckBoxWidget("Remove from Sprint");
       checkbox.setFillHorizontally(true);
       checkbox.setFocus();
       checkbox.setDisplayLabel(false);

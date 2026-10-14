@@ -26,15 +26,15 @@ import org.eclipse.ui.IMemento;
 public class BlamEditorInputFactory implements IElementFactory {
 
    public final static String ID = "org.eclipse.osee.framework.ui.skynet.blam.BlamEditorInputFactory"; //$NON-NLS-1$
-   private static final String BLAM_ID = "org.eclipse.osee.framework.ui.skynet.blam.id"; //$NON-NLS-1$;
+   private static final String BLAM_CLASS_NAME = "org.eclipse.osee.framework.ui.skynet.blam.class.name"; //$NON-NLS-1$;
 
    @Override
    public IAdaptable createElement(IMemento memento) {
       try {
-         String blamId = memento.getString(BLAM_ID);
-         if (Strings.isValid(blamId)) {
-            for (AbstractBlam blam : BlamNavigateViewItems.getBlamOperations()) {
-               if (blam.getName().equals(blamId)) {
+         String blamClassName = memento.getString(BLAM_CLASS_NAME);
+         if (Strings.isValid(blamClassName)) {
+            for (AbstractBlam blam : BlamService.getBlams()) {
+               if (blam.getClass().getSimpleName().equals(blamClassName)) {
                   return new BlamEditorInput(blam);
                }
 
@@ -47,8 +47,8 @@ public class BlamEditorInputFactory implements IElementFactory {
    }
 
    public static void saveState(IMemento memento, BlamEditorInput input) {
-      String id = input.getBlamOperation().getName();
-      memento.putString(BLAM_ID, id);
+      String id = input.getBlamOperation().getClass().getSimpleName();
+      memento.putString(BLAM_CLASS_NAME, id);
    }
 
 }

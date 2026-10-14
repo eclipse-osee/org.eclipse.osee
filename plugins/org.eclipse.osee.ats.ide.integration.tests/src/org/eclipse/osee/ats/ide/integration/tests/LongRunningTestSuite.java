@@ -28,7 +28,10 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({BranchPurgeTest.class, BranchStateTest.class, PublishingTestSuite.class})
+@Suite.SuiteClasses({
+   BranchPurgeTest.class, //
+   BranchStateTest.class, //
+   PublishingTestSuite.class})
 public class LongRunningTestSuite {
 
    @BeforeClass

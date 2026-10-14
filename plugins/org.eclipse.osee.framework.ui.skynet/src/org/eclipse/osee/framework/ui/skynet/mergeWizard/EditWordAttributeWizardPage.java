@@ -191,8 +191,8 @@ public class EditWordAttributeWizardPage extends WizardPage {
       mergeComp.setLayout(new GridLayout(1, false));
       mergeComp.setLayoutData(new GridData());
 
-      mergeButton = createButton(mergeComp, ImageManager.getImage(CoreImage.MERGE_MERGED),
-         "Generate Three Way Merge", "Use the new inline merging");
+      mergeButton = createButton(mergeComp, ImageManager.getImage(CoreImage.MERGE_MERGED), "Generate Three Way Merge",
+         "Use the new inline merging");
    }
 
    private Composite createSourceDestButtons(Composite mainComp) {
@@ -200,10 +200,10 @@ public class EditWordAttributeWizardPage extends WizardPage {
       sourceDestComp.setLayout(new GridLayout(2, false));
       sourceDestComp.setLayoutData(new GridData());
 
-      sourceButton = createButton(sourceDestComp, ImageManager.getImage(CoreImage.MERGE_SOURCE),
-         "Use Source Value", "Initialize the Document with Source Values");
-      destButton = createButton(sourceDestComp, ImageManager.getImage(CoreImage.MERGE_DEST),
-         "Use Destination Value", "Initialize the Document with Destination Values");
+      sourceButton = createButton(sourceDestComp, ImageManager.getImage(CoreImage.MERGE_SOURCE), "Use Source Value",
+         "Initialize the Document with Source Values");
+      destButton = createButton(sourceDestComp, ImageManager.getImage(CoreImage.MERGE_DEST), "Use Destination Value",
+         "Initialize the Document with Destination Values");
       return sourceDestComp;
    }
 

@@ -77,7 +77,10 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
          // Don't want to load artifacts on client.  Request from server.
          if (atsApi.isIde()) {
             ai = atsApi.getServerEndpoints().getConfigEndpoint().getActionableItem(ArtifactId.valueOf(aiId.getId()));
-            ai.setAtsApi(atsApi);
+            // Server returns null when the id is not a configured AI; return null rather than NPE.
+            if (ai != null) {
+               ai.setAtsApi(atsApi);
+            }
          } else {
             ArtifactToken aiArt = atsApi.getQueryService().getArtifact(aiId);
             // Return null if not found else add new

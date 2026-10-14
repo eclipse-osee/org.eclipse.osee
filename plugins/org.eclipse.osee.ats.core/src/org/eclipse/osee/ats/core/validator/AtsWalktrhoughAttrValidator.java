@@ -16,12 +16,12 @@ package org.eclipse.osee.ats.core.validator;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.XOption;
 
 /**
  * @author Donald G. Dunne
@@ -32,8 +32,7 @@ public class AtsWalktrhoughAttrValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDef widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      if (widgetDef.getOptions().contains(WidgetOption.WALKTHROUGH) && widgetDef.getOptions().contains(
-         WidgetOption.RFT)) {
+      if (widgetDef.is(XOption.WALKTHROUGH) && widgetDef.is(XOption.REQUIRED)) {
          AttributeTypeToken attrType = widgetDef.getAttributeType();
          if (atsApi.getAttributeResolver().getAttributeCount(workItem, attrType) == 0) {
             result = new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition to [%s]",

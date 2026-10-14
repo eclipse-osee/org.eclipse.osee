@@ -49,7 +49,7 @@ public class ActionableItemCheckboxStateDialog extends EntryDialog implements Is
    @Override
    protected void createExtendedArea(Composite parent) {
 
-      text.dispose();
+      textWidget.dispose();
 
       Composite comboComp = new Composite(parent, SWT.NONE);
       comboComp.setLayout(new GridLayout(6, false));

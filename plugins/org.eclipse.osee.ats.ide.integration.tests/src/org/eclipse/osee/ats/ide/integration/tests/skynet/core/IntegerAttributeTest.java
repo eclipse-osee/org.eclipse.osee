@@ -55,16 +55,6 @@ public class IntegerAttributeTest {
       BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
    }
 
-   @Test(expected = ClassCastException.class)
-   public void testSetIntegerAttributeFail() {
-      Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, workingBranch);
-      newArtifact.setSoleAttributeValue(CoreAttributeTypes.CircuitBreakerId, "50");
-      TransactionId txId = newArtifact.persist(getClass().getSimpleName());
-      List<AttributeId> attrIds = newArtifact.getAttributeIds(CoreAttributeTypes.CircuitBreakerId);
-      String output = ServiceUtil.getOseeClient().loadAttributeValue(attrIds.get(0), txId, newArtifact);
-      Assert.assertTrue(output.equals("50"));
-   }
-
    @Test
    public void testSetIntegerAttributeSucceed() {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, workingBranch);

@@ -35,4 +35,10 @@ public class ExecuteBlamOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       blamOperation.runOperation(variableMap, monitor);
    }
+
+   @Override
+   public boolean isPend() {
+      return blamOperation.isPend();
+   }
+
 }
