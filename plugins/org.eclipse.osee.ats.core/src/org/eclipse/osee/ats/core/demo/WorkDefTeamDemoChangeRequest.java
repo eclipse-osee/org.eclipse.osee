@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_HORZ;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.VALIDATE_DATE;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.framework.core.widget.XOption.REQUIRED;
+import static org.eclipse.osee.framework.core.widget.XOption.VALIDATE_DATE;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.GroupCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
@@ -29,10 +26,14 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
    public WorkDefTeamDemoChangeRequest() {
@@ -45,44 +46,37 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
 
       bld.andWorkDefOption(WorkDefOption.IsChangeRequest);
 
-      addCompositeHeader(bld);
+      bld.addCompositeHeader();
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
-         .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.ExternalReference, "XTextDam", SAVE), //
+            new AttrWidgetDef(ExternalReference), //
 
-            new WidgetDef("Create/Open Great Escape Workflow", "XCreateEscapeDemoWfXButton"), //
+            new WidgetDef(XXCreateEscapeDemoWfButtonWidget), //
+            new AttrWidgetDef(Description).set(REQUIRED), //
+            new AttrWidgetDef(NeedBy), //
 
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT, SAVE), //
-
-            new WidgetDef(AtsAttributeTypes.NeedBy, "XHyperlinkLabelDateDam"), //
-
-            new CompositeLayoutItem(4,
-               new WidgetDef(AtsAttributeTypes.HowToReproduceProblem, "XTextDam", FILL_VERT),
-               new WidgetDef(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERT) //
+            new CompositeLayoutItem(4, //
+               new AttrWidgetDef(HowToReproduceProblem), //
+               new AttrWidgetDef(Workaround) //
             ), //
 
-            new WidgetDef(AtsAttributeTypes.CrashOrBlankDisplay, "XHyperlinkTriStateBooleanDam",
-               WidgetOption.HORZ_LABEL, RFT, LABEL_AFTER, SAVE),
+            new AttrWidgetDef(CrashOrBlankDisplay).set(REQUIRED), new AttrWidgetDef(ImpactToMissionOrCrew), //
 
-            new WidgetDef(AtsAttributeTypes.ImpactToMissionOrCrew, "XTextDam", FILL_VERT, SAVE), //
-
-            new GroupCompositeLayoutItem(1, "Build Impact(s)",
-               new CompositeLayoutItem(4, new WidgetDef("Feature(s) Impacted",
-                  AtsAttributeTypes.FeatureImpactReference, "XHyperlinkFeatureDam", FILL_HORZ) //
+            new GroupCompositeLayoutItem(1, "Build Impact(s)", //
+               new CompositeLayoutItem(4, //
+                  new WidgetDef(XXPleFeatureWidget) //
                ) //
             ), //
 
             new GroupCompositeLayoutItem(1, "Environment Configuration", new CompositeLayoutItem(4, //
-               new WidgetDef("Found-In Version", "XFoundInVersionWithPersistWidget"), //
-               new WidgetDef("Introduced-In Version", "XIntroducedInVersionWithPersistWidget") //
+               new WidgetDef(XXFoundInVersionWidget), //
+               new WidgetDef(XXIntroducedInVersionWidget) //
             )), //
 
             new GroupCompositeLayoutItem(1, "Estimates and Funding", //
-               new WidgetDef(AtsAttributeTypes.ProblemFirstObserved, "XHyperlinkLabelValueSelectionDam",
-                  VALIDATE_DATE) //
+               new AttrWidgetDef(ProblemFirstObserved).set(VALIDATE_DATE) //
             ) //
          );
 
@@ -90,50 +84,53 @@ public class WorkDefTeamDemoChangeRequest extends AbstractWorkDef {
          .andToStates(StateToken.Authorize, StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef("Create/Open Great Escape Workflow", "XCreateEscapeDemoWfXButton"), //
+            new WidgetDef(XXCreateEscapeDemoWfButtonWidget), //
 
             new CompositeLayoutItem(8, //
-               new WidgetDef(AtsAttributeTypes.RiskAnalysis, "XHyperlinkLabelValueSelectionDam"), //
-               new WidgetDef("Found-In Version", "XFoundInVersionWithPersistWidget"), //
-               new WidgetDef("Introduced-In Version", "XIntroducedInVersionWithPersistWidget"), //
-               new WidgetDef(AtsAttributeTypes.RevisitDate, "XHyperlinkLabelValueSelectionDam") //
+               new AttrWidgetDef(RiskAnalysis), //
+               new WidgetDef(XXFoundInVersionWidget), //
+               new WidgetDef(XXIntroducedInVersionWidget), //
+               new AttrWidgetDef(RevisitDate) //
             ), //
 
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT, SAVE), //
-            new WidgetDef(AtsAttributeTypes.Workaround, "XTextDam", FILL_VERT, SAVE), //
+            new AttrWidgetDef(Description).set(REQUIRED), //
+            new AttrWidgetDef(Workaround), //
             new CompositeLayoutItem(4, //
-               new WidgetDef(AtsAttributeTypes.RootCause, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT, SAVE) //
+               new AttrWidgetDef(RootCause), //
+               new AttrWidgetDef(ProposedResolution) //
             ), //
 
-            new WidgetDef("Task Estimating Manager", "XTaskEstDemoWidget") //
+            new WidgetDef(XTaskEstDemoWidget) //
 
          );
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-         .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.RevisitDate, "XHyperlinkLabelValueSelectionDam", VALIDATE_DATE), //
-            new WidgetDef("Task Estimating Manager", "XTaskEstDemoWidget"), //
-            new WidgetDef("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget"));
+            new AttrWidgetDef(RevisitDate).set(VALIDATE_DATE), //
+            new WidgetDef(XTaskEstDemoWidget), //
+            new WidgetDef(XTaskEstSiblingWorldDemoWidget));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef("Task Estimating Manager", "XTaskEstDemoWidget"), //
-            new WidgetDef("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget"));
+            new WidgetDef(XTaskEstDemoWidget), //
+            new WidgetDef(XTaskEstSiblingWorldDemoWidget));
 
       bld.andState(5, "Completed", StateType.Completed) //
-         .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDef("Sibling Workflows", "XTaskEstSiblingWorldDemoWidget") //
+            new WidgetDef(XTaskEstSiblingWorldDemoWidget) //
          );
 
       bld.andState(6, "Cancelled", StateType.Cancelled) //
          .andColor(StateColor.DARK_GREEN);
 
       return bld.getWorkDefinition();
+   }
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
    }
 }

@@ -18,8 +18,6 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 
 public interface IAtsWorkDefinitionProviderService {
 
-   void addWorkDefinitionProvider(IAtsWorkDefinitionProvider workDefProvider);
-
    WorkDefinition getWorkDefinition(Long id);
 
    Collection<WorkDefinition> getAll();

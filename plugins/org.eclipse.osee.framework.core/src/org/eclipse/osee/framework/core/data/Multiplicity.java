@@ -57,6 +57,15 @@ public class Multiplicity extends BaseId {
       return token;
    }
 
+   public boolean is(Multiplicity... multToks) {
+      for (Multiplicity tok : multToks) {
+         if (this.equals(tok)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    public static class MultiplicityToken extends NamedIdBase {
 
       public MultiplicityToken() {

@@ -13,23 +13,28 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
+import static org.eclipse.osee.framework.core.widget.XOption.HORZ_LABEL;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 
 /**
  * @author Donald G. Dunne
  */
+
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefSprint extends AbstractWorkDef {
 
    public WorkDefSprint() {
@@ -44,28 +49,28 @@ public class WorkDefSprint extends AbstractWorkDef {
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new AttrWidgetDef(Description), //
             new CompositeLayoutItem(4, //
-               new WidgetDef(AtsAttributeTypes.StartDate, "XDateDam", HORZ_LABEL), //
-               new WidgetDef(AtsAttributeTypes.EndDate, "XDateDam", HORZ_LABEL) //
+               new AttrWidgetDef(StartDate).set(HORZ_LABEL), //
+               new AttrWidgetDef(EndDate).set(HORZ_LABEL) //
             ), //
-            new WidgetDef(AtsAttributeTypes.Holiday, "XDateDam"), //
-            new WidgetDef(AtsAttributeTypes.KanbanStoryName, "XTextDam", FILL_VERT), //
+            new AttrWidgetDef(Holiday), //
+            new AttrWidgetDef(KanbanStoryName), //
             new CompositeLayoutItem(4, //
-               new WidgetDef(AtsAttributeTypes.PlannedPoints, "XIntegerDam"), //
-               new WidgetDef(AtsAttributeTypes.UnplannedPoints, "XIntegerDam") //
-            ), //
-            new CompositeLayoutItem(4, //
-               new WidgetDef("Open Sprint Summary", "XOpenSprintSummaryButton"), //
-               new WidgetDef("Open Sprint Data Table", "XOpenSprintDataTableButton") //
+               new AttrWidgetDef(PlannedPoints), //
+               new AttrWidgetDef(UnplannedPoints) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDef("Open Sprint Burn-Down", "XOpenSprintBurndownButton"), //
-               new WidgetDef("Open Sprint Burn-Up", "XOpenSprintBurnupButton") //
+               new WidgetDef("Open Sprint Summary", XXOpenSprintSummaryArtWidget), //
+               new WidgetDef("Open Sprint Data Table", XXOpenSprintDataTableArtWidget) //
             ), //
             new CompositeLayoutItem(4, //
-               new WidgetDef("Store Snapshot of Sprint Reports", "XStoreSprintReportsButton"), //
-               new WidgetDef("Open Stored Sprint Reports", "XOpenStoredSprintReportsButton") //
+               new WidgetDef("Open Sprint Burn-Down", XXOpenSprintBurndownArtWidget), //
+               new WidgetDef("Open Sprint Burn-Up", XXOpenSprintBurnupArtWidget) //
+            ), //
+            new CompositeLayoutItem(4, //
+               new WidgetDef("Store Snapshot of Sprint Reports", XXStoreSprintReportsArtWidget), //
+               new WidgetDef("Open Stored Sprint Reports", XXOpenStoredSprintReportsArtWidget) //
             ));
 
       bld.andState(2, "Completed", StateType.Completed) //

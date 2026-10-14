@@ -13,36 +13,37 @@
 package org.eclipse.osee.ats.core.demo;
 
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.LABEL_AFTER;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.*;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.model.ChangeTypeWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.EnumeratedArtifactWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.EnumArtWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.GroupCompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.PriorityWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.model.SpaceWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.SignDateWidgetDef;
+import org.eclipse.osee.ats.api.workdef.model.SpaceWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.xx.ChangeTypeWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.xx.PriorityWidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 import org.eclipse.osee.framework.core.data.conditions.EnableIfAttrValueCondition;
-import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne
  */
+
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
 
    public WorkDefTeamDemoProblemReport() {
@@ -55,69 +56,70 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
 
       bld.andWorkDefOption(WorkDefOption.NoTargetedVersion, WorkDefOption.IsProblemReport);
 
-      bld.andHeader() //
+      bld.andCustomHeader() //
          .andLayout( //
 
             new CompositeLayoutItem(6, //
-               new EnumeratedArtifactWidgetDefinition(true, AtsAttributeTypes.CogPriority,
-                  AtsArtifactToken.CogPriorityConfigArt), //
-               new SpaceWidgetDefinition(), //
-               new PriorityWidgetDefinition(true), //
-               new SpaceWidgetDefinition(), //
-               new WidgetDef(CrewImpact, "XHyperlinkTriStateBooleanDam", RFT, LABEL_AFTER, SAVE) //
+               new EnumArtWidgetDef(CogPriority, AtsArtifactToken.CogPriorityConfigArt), //
+               new SpaceWidgetDef(), //
+               new PriorityWidgetDefinition(), //
+               new SpaceWidgetDef(), //
+               new AttrWidgetDef(CrewImpact) //
             ),
 
-            new ChangeTypeWidgetDefinition(true, ChangeTypes.Problem, ChangeTypes.Improvement, ChangeTypes.Support,
+            new ChangeTypeWidgetDefinition(ChangeTypes.Problem, ChangeTypes.Improvement, ChangeTypes.Support,
                ChangeTypes.Refinement).andRequired() //
 
          ) //
-         .isShowMetricsHeader(false); //
+         .showMetricsHeader(false); //
 
       bld.andState(1, "Open", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyzed, StateToken.Closed, StateToken.Cancelled) //
          .andToWaitStates(StateToken.Monitor) //
-         .andColor(StateColor.BLACK) //
+
          .andLayout( //
 
-            new GroupCompositeLayoutItem(1, "Problem", new WidgetDef(Description, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDef(HowFound, "XTextDam", FILL_VERT, SAVE) //
+            new GroupCompositeLayoutItem(1, "Problem", new AttrWidgetDef(Description), //
+               new AttrWidgetDef(HowFound) //
             ),
 
             new GroupCompositeLayoutItem(1, "Build Impact(s)",
 
                new CompositeLayoutItem(6, //
-                  new WidgetDef(Ship, "XTextDam", SAVE), new WidgetDef(TestNumber, "XTextDam", SAVE),
-                  new WidgetDef(FlightNumber, "XTextDam", SAVE)), //
+                  new AttrWidgetDef(Ship), //
+                  new AttrWidgetDef(TestNumber), //
+                  new AttrWidgetDef(FlightNumber)//
+               ), //
 
                new CompositeLayoutItem(4, //
-                  new WidgetDef(TestDate, "XHyperlinkLabelDateDam"),
-                  new WidgetDef(CrashOrBlankDisplay, "XHyperlinkTriStateBoolean")),
+                  new AttrWidgetDef(TestDate), //
+                  new AttrWidgetDef(CrashOrBlankDisplay) //
+               ),
 
-               new CompositeLayoutItem(4,
-                  new WidgetDef("Found-In Version", AtsRelationTypes.TeamWorkflowToFoundInVersion_Version,
-                     "XFoundInVersionWithPersistWidget").andWidgetHint(WidgetHint.SortAscending),
-                  new WidgetDef("Introduced-In Version", AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version,
-                     "XIntroducedInVersionWithPersistWidget").andWidgetHint(WidgetHint.SortAscending)), //
+               new CompositeLayoutItem(4, //
+                  new WidgetDef(XXFoundInVersionWidget).set(XOption.SORT_ASC), //
+                  new WidgetDef(XXIntroducedInVersionWidget).set(XOption.SORT_ASC)//
+               ), //
 
-               new WidgetDef("Open Build Impacts", "XHyperlinkOpenBitTab") //
+               new WidgetDef("Open Build Impacts", XXHyperlinkOpenBitTabWidget) //
 
             ), //
 
-            new GroupCompositeLayoutItem(1, "Analysis",
-               new CompositeLayoutItem(4, new WidgetDef("Applicability", "XHyperlinkApplicabilityWidgetDam", SAVE), //
-                  new WidgetDef("Feature(s) Impacted", FeatureImpactReference, "XHyperlinkFeatureDam", SAVE) //
-               ), new WidgetDef(SystemAnalysis, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDef(SoftwareAnalysis, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDef(ProposedResolution, "XTextDam", FILL_VERT, SAVE), //
-               new WidgetDef(ProposedResolutionDate, "XHyperlinkLabelValueSelectionDam") //
+            new GroupCompositeLayoutItem(1, "Analysis", new CompositeLayoutItem(4, //
+               new WidgetDef(XXWorkflowApplicWidget), //
+               new WidgetDef(XXPleFeatureWidget) //
+            ), //
+
+               new AttrWidgetDef(SystemAnalysis), //
+               new AttrWidgetDef(SoftwareAnalysis), //
+               new AttrWidgetDef(ProposedResolution), //
+               new AttrWidgetDef(ProposedResolutionDate) //
             ),
 
-            new WidgetDef(CustomerDescriptionLock, "XCheckBoxDam", LABEL_AFTER, SAVE), //
-            new WidgetDef(CustomerDescription, "XTextDam", FILL_VERT, SAVE).andCondition(
-               new EnableCustomerDescriptionIfNotLock()), //
+            new AttrWidgetDef(CustomerDescriptionLock), //
+            new AttrWidgetDef(CustomerDescription).andCondition(new EnableCustomerDescriptionIfNotLock()), //
 
-            new SignByAndDateWidgetDefinition("Manager Signoff", ManagerSignedOffBy,
-               AtsAttributeTypes.ManagerSignedOffByDate).andRequired()
+            new SignDateWidgetDef("Manager Signoff", ManagerSignedOffBy, ManagerSignedOffByDate).set(XOption.REQUIRED)
 
          ); //
 
@@ -131,8 +133,7 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
          .andToStates(StateToken.Closed, StateToken.Analyzed, StateToken.Open, StateToken.Cancelled) //
          .andColor(StateColor.DARK_GREEN);
 
-      bld.andState(4, "Closed", StateType.Completed) //
-         .andColor(StateColor.DARK_GREEN);
+      bld.andState(4, "Closed", StateType.Completed);
 
       bld.andState(5, "Cancelled", StateType.Cancelled) //
          .andColor(StateColor.DARK_GREEN);
@@ -143,8 +144,13 @@ public class WorkDefTeamDemoProblemReport extends AbstractWorkDef {
    public class EnableCustomerDescriptionIfNotLock extends EnableIfAttrValueCondition {
 
       public EnableCustomerDescriptionIfNotLock() {
-         super(AtsAttributeTypes.CustomerDescriptionLock, "false", "");
+         super(CustomerDescriptionLock, "false", "");
       }
 
    };
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
+   }
 }

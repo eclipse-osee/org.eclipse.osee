@@ -12,103 +12,108 @@
  **********************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.details;
 
+import java.util.Arrays;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.header.ArtEdBaseTab;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXButtonViaActionWidget;
 import org.eclipse.osee.framework.ui.swt.FontManager;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Donald G. Dunne
  */
-public class ArtEdDetailsTab extends FormPage {
-   private ScrolledForm scrolledForm;
+public class ArtEdDetailsTab extends ArtEdBaseTab {
+
    public final static String ID = "art.editor.details.tab";
-   private Browser browser;
-   private final ArtifactEditor editor;
-   private Composite bodyComp;
-   private final Artifact artifact;
-   private IManagedForm managedForm;
+   private Composite detailsComp;
+   private FormToolkit toolkit;
 
    public ArtEdDetailsTab(ArtifactEditor editor, Artifact artifact) {
       super(editor, ID, "Details");
-      this.editor = editor;
-      this.artifact = artifact;
    }
 
    @Override
-   protected void createFormContent(IManagedForm managedForm) {
-      this.managedForm = managedForm;
-      super.createFormContent(managedForm);
+   protected String getTabName() {
+      return "Details";
+   }
 
-      scrolledForm = managedForm.getForm();
+   @Override
+   protected void createTabBody(Composite parent, FormToolkit toolkit) {
+      this.toolkit = toolkit;
 
-      bodyComp = scrolledForm.getBody();
       GridLayout gridLayout = new GridLayout(2, true);
-      bodyComp.setLayout(gridLayout);
-      GridData gd = new GridData(SWT.LEFT, SWT.LEFT, true, true);
-      bodyComp.setLayoutData(gd);
+      gridLayout.marginWidth = 5;
+      gridLayout.marginHeight = 5;
+      parent.setLayout(gridLayout);
 
-      browser = new Browser(bodyComp, SWT.NONE);
-      browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      // Left side: artifact details as XXLabelValueWidgets
+      detailsComp = toolkit.createComposite(parent, SWT.NONE);
+      GridLayout detailsLayout = new GridLayout(2, false);
+      detailsLayout.marginWidth = 5;
+      detailsLayout.marginHeight = 5;
+      detailsLayout.verticalSpacing = 4;
+      detailsLayout.horizontalSpacing = 10;
+      detailsComp.setLayout(detailsLayout);
+      detailsComp.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true));
 
-      createOperationsSection(bodyComp);
-      refresh();
+      createDetailsWidgets();
+
+      // Right side: operations
+      createOperationsSection(parent);
    }
 
-   private void createOperationsSection(Composite parent) {
-      Composite composite = new Composite(parent, SWT.NONE);
-      composite.setLayout(new GridLayout(1, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      managedForm.getToolkit().adapt(composite);
+   private void createDetailsWidgets() {
+      Artifact artifact = getArtifact();
+      Map<String, String> details = Artifacts.getDetailsKeyValues(artifact);
+      String[] keys = details.keySet().toArray(new String[0]);
+      Arrays.sort(keys);
 
-      Label opsLabel = new Label(composite, SWT.BOLD);
-      opsLabel.setFont(FontManager.getDefaultLabelFont());
-      opsLabel.setText("Operations");
-      opsLabel.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+      for (String key : keys) {
+         Label keyLabel = toolkit.createLabel(detailsComp, key + ":", SWT.NONE);
+         keyLabel.setFont(FontManager.getDefaultLabelFont());
+         keyLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 
-      XButtonViaAction accessButton = new XButtonViaAction(new AccessControlDetails(artifact));
-      accessButton.setToolkit(managedForm.getToolkit());
-      accessButton.createWidgets(composite, 1);
-      accessButton.getLabelWidget().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
-
-   }
-
-   public void refresh() {
-      if (Widgets.isAccessible(browser)) {
-
-         try {
-            FontData systemFont = browser.getDisplay().getSystemFont().getFontData()[0];
-            String html = getArtifactDetailsHtml(artifact, systemFont);
-            browser.setText(html);
-         } catch (Exception ex) {
-            browser.setText(Lib.exceptionToString(ex));
-         }
-         browser.refresh();
-         bodyComp.layout(true);
-         managedForm.reflow(true);
+         org.eclipse.swt.widgets.Text valueText =
+            new org.eclipse.swt.widgets.Text(detailsComp, SWT.READ_ONLY | SWT.SINGLE);
+         valueText.setText(Strings.isValid(details.get(key)) ? details.get(key) : "");
+         valueText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+         toolkit.adapt(valueText, true, true);
       }
    }
 
-   public static String getArtifactDetailsHtml(Artifact artifact, FontData systemFont) {
-      Map<String, String> smaDetails = Artifacts.getDetailsKeyValues(artifact);
-      String html = Artifacts.getDetailsFormText(smaDetails, systemFont.getName(), systemFont.getHeight());
-      return html;
+   private void createOperationsSection(Composite parent) {
+      Composite composite = toolkit.createComposite(parent, SWT.NONE);
+      composite.setLayout(new GridLayout(1, false));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+
+      Label opsLabel = toolkit.createLabel(composite, "Operations", SWT.NONE);
+      opsLabel.setFont(FontManager.getDefaultLabelFont());
+
+      XXButtonViaActionWidget accessButton = new XXButtonViaActionWidget(new AccessControlDetails(getArtifact()));
+      accessButton.setToolkit(toolkit);
+      accessButton.createWidgets(composite, 1);
+      toolkit.adapt(accessButton.getLabelLinkWidget(), true, true);
    }
 
+   @Override
+   protected void refreshTabBody() {
+      if (detailsComp != null && !detailsComp.isDisposed()) {
+         for (org.eclipse.swt.widgets.Control child : detailsComp.getChildren()) {
+            child.dispose();
+         }
+         createDetailsWidgets();
+         detailsComp.layout(true);
+         detailsComp.getParent().layout(true);
+      }
+   }
 }

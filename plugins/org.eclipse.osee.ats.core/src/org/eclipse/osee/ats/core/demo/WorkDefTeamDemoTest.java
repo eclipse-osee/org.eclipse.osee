@@ -13,25 +13,29 @@
 
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.NO_SELECT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XXListRelationWidget;
+import static org.eclipse.osee.framework.core.widget.XOption.REQUIRED;
+import static org.eclipse.osee.framework.core.widget.XOption.VAL_NO_SEL;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
-import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefTeamDemoTest extends AbstractWorkDef {
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
+public class WorkDefTeamDemoTest extends AbstractDemoWorkDef {
 
    public WorkDefTeamDemoTest() {
       super(DemoWorkDefinitions.WorkDefTeamDemoTest);
@@ -41,59 +45,54 @@ public class WorkDefTeamDemoTest extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
-      bld.andPointsAttributeType(AtsAttributeTypes.PointsEnum);
-      bld.andHeader() //
-         .andLayout( //
-            getChangeTypeComposite(), //
-            new WidgetDef("Work Package", "XHyperlinkWorkPackageDam" //
-            )) //
-         .isShowMetricsHeader(true); //
+      bld.andPointsAttributeType(PointsEnum, "1", "2", "3", "Epic");
+      addDemoCustomHeader(bld);
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDef("Related Tasks", AtsRelationTypes.TeamWfToTask_Task, "XListRelationWidget", NO_SELECT), //
-            new WidgetDef(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"));
+            new AttrWidgetDef(Description).set(REQUIRED), //
+            new AttrWidgetDef(ProposedResolution), //
+            new WidgetDef("Related Tasks", AtsRelationTypes.TeamWfToTask_Task, XXListRelationWidget, VAL_NO_SEL), //
+            new AttrWidgetDef(ValidationRequired), //
+            new AttrWidgetDef(WorkPackage));
 
       bld.andState(2, "Analyze", StateType.Working) //
          .andToStates(StateToken.Authorize, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDef(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new AttrWidgetDef(WorkPackage), //
+            new AttrWidgetDef(Problem), //
+            new AttrWidgetDef(ProposedResolution), //
+            new AttrWidgetDef(EstimatedHours));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"));
+            new AttrWidgetDef(WorkPackage), //
+            new AttrWidgetDef(EstimatedCompletionDate));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andRules(RuleDefinitionOption.RequireStateHourSpentPrompt) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new WidgetDef(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new AttrWidgetDef(WorkPackage), //
+            new AttrWidgetDef(EstimatedCompletionDate), //
+            new AttrWidgetDef(Resolution));
 
-      bld.andState(6, "Cancelled", StateType.Cancelled) //
-         .andColor(StateColor.BLACK);
-
-      bld.andState(5, "Completed", StateType.Completed) //
-         .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
-         .andColor(StateColor.BLACK);
+      addCancelledState(bld, 6);
+      addCompletedState(bld, 5);
 
       return bld.getWorkDefinition();
+   }
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
    }
 }

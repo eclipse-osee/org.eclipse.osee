@@ -28,6 +28,7 @@ public class DemoWorkDefinitions {
    public static AtsWorkDefinitionToken WorkDefTeamDemoTest = new AtsWorkDefinitionToken(2892554L, "WorkDefTeamDemoTest");
    public static AtsWorkDefinitionToken WorkDefTeamDemoReq = new AtsWorkDefinitionToken(46891154L, "WorkDefTeamDemoReq");
    public static AtsWorkDefinitionToken WorkDefTeamDemoReqSimple = new AtsWorkDefinitionToken(25391621L, "WorkDefTeamDemoReqSimple");
+   public static AtsWorkDefinitionToken WorkDefTeamXDemoWidgetTest = new AtsWorkDefinitionToken(2313652444L, "WorkDefTeamXDemoWidgetTest");
 
    public static AtsWorkDefinitionToken WorkDefReviewPeerDemoSwDesign = new AtsWorkDefinitionToken(2342662L, "WorkDefReviewPeerDemoSwDesign");
 

@@ -54,17 +54,6 @@ public class CreateTasksDefinition extends NamedIdBase {
       this.asUser = asUser;
    }
 
-   public String getCommitComment() {
-      if (Strings.isInValid(commitComment)) {
-         return String.format("Create task from Task Set [%s] and rule [%s]", getName(), ruleEvent.name());
-      }
-      return commitComment;
-   }
-
-   public void setCommitComment(String commitComment) {
-      this.commitComment = commitComment;
-   }
-
    public RuleEventType getRuleEvent() {
       return ruleEvent;
    }
@@ -106,6 +95,17 @@ public class CreateTasksDefinition extends NamedIdBase {
 
    public void andHelper(IAtsTaskSetDefinitionHelper helper) {
       this.helper = helper;
+   }
+
+   public String getCommitComment() {
+      if (Strings.isInValid(commitComment)) {
+         return String.format("Create task from Task Set [%s] and rule [%s]", getName(), ruleEvent.name());
+      }
+      return commitComment;
+   }
+
+   public void setCommitComment(String commitComment) {
+      this.commitComment = commitComment;
    }
 
 }

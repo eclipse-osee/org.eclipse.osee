@@ -34,7 +34,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
 
    private StateType StateType;
    private int ordinal = 0;
-   private List<LayoutItem> stateItems = new ArrayList<>(5);
+   private List<LayoutItem> layoutItems = new ArrayList<>(5);
    @JsonIgnore
    private final RuleManager ruleMgr = new RuleManager();
    @JsonIgnore
@@ -61,7 +61,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
    }
 
    public List<LayoutItem> getLayoutItems() {
-      return stateItems;
+      return layoutItems;
    }
 
    @Override
@@ -97,8 +97,8 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
       return getStateType().isCompletedOrCancelled();
    }
 
-   public void setLayoutItems(List<LayoutItem> layoutToSet) {
-      this.stateItems = layoutToSet;
+   public void setLayoutItems(List<LayoutItem> layoutItems) {
+      this.layoutItems = layoutItems;
    }
 
    public void setStateType(StateType StateType) {

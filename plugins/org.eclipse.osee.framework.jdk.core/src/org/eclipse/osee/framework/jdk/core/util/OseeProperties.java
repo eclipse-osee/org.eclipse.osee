@@ -40,6 +40,7 @@ public class OseeProperties {
    private static final String OSEE_DB_CONNECTION_POOL_CONFIG_URI = "osee.db.connection.pool.config.uri";
    public static final String OSEE_SHOW_TOKEN_FOR_CHANGE_NAME = "osee.show.token.for.change.name";
    public static final String OSEE_DB = "osee.db";
+   public static final String WIDGET_DEBUG = "widget.debug";
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
    public static final String OSEE_IS_IN_DB_INIT = "osee.is.in.db.init";
    private static final String JWT_LOGIN_KEY = "jwt.login.key";
@@ -262,5 +263,13 @@ public class OseeProperties {
     */
    public static String getJwtLoginKey() {
       return System.getProperty(JWT_LOGIN_KEY);
+   }
+
+   public static boolean isWidgetDebug() {
+      return Boolean.valueOf(System.getProperty(WIDGET_DEBUG, "false"));
+   }
+
+   public static void setWidgetDebug(boolean toggledTo) {
+      System.setProperty(WIDGET_DEBUG, String.valueOf(toggledTo));
    }
 }

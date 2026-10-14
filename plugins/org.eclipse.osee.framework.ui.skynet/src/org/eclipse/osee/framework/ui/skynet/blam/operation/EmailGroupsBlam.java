@@ -14,6 +14,9 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubscriptionGroup;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.AbridgedEmail;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Email;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GeneralStringData;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,10 +36,11 @@ import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.client.AccountClient.UnsubscribeInfo;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.SendEmailRequest;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -44,6 +48,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
@@ -51,57 +56,111 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXArtifactListWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXButtonPushWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Ryan D. Brooks
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class EmailGroupsBlam extends AbstractBlam {
-   private XArtifactList templateList, groupsList;
-   private XText bodyTextBox;
-   private XText subjectTextBox, replyToAddressTextBox;
-   private XCheckBox isBodyHtmlCheckbox;
-   private XCheckBox certifyNoSensitiveDataCheckbox;
+
+   private static final String BLAM_NAME = "Email Groups";
+   static final String GROUPS = "Groups";
+   static final String TEMPLATE = "Template";
+   static final String BODY = "Body";
+   static final String BODY_IS_HTML = "Body is HTML";
+   static final String SUBJECT = "Subject";
+   static final String REPLYTO_ADDRESS = "Reply-To Address";
+   static final String PREVIEW_MESSAGE = "Preview Message";
+
+   private XXArtifactListWidget templateList, groupsList;
+   private XXTextWidget bodyTextBox;
+   private XXCheckBoxWidget certifyNoSensitiveDataCheckbox;
+   private XXTextWidget subjectTextBox, replyToAddressTextBox;
+   private XXCheckBoxWidget isBodyHtmlCheckbox;
    private ExecutorService emailTheadPool;
    private final Collection<Future<String>> futures = new ArrayList<>(300);
    private final XModifiedListener listener = new ModificationListerner();
 
-   @Override
-   public String getName() {
-      return "Email Groups";
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public EmailGroupsBlam() {
+      super(BLAM_NAME, CoreImage.GEAR);
    }
 
-   private EmailGroupsData getEmailGroupsData() {
-      final EmailGroupsData data = new EmailGroupsData();
-      Displays.pendInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            data.setSubject(subjectTextBox.get());
-            data.setReplyToAddress(replyToAddressTextBox.get());
-            data.setFromAddress(OseeApiService.user().getEmail());
-            data.setBody(bodyTextBox.get());
-            data.setBodyIsHtml(isBodyHtmlCheckbox.isChecked());
-            Collection<Artifact> groups = groupsList.getSelectedArtifacts();
-            data.getGroups().addAll(groups);
-         }
-      });
-      return data;
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andCheckBoxWidget("I certify the subject lines do not contain restricted or sensitive data.").andDefault(
+         false).andRequired();
+      wb.andWidget(GROUPS, WidgetId.XXArtifactListWidget).andValueMultiSelect();
+      wb.andWidget(TEMPLATE, WidgetId.XXArtifactListWidget);
+      wb.andTextWidget(REPLYTO_ADDRESS);
+      wb.andTextWidget(SUBJECT);
+      wb.andLabelWidget("      - WARNING: Email subject lines are NOT encrypted.");
+      wb.andLabelWidget(
+         "      - Do NOT include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " in the subject line.");
+      wb.andLabelWidget(
+         "      - If emails are sent to abridged recipients, they will use this same sanitized subject line.");
+      wb.andCheckBoxWidget(BODY_IS_HTML).andDefault(true);
+      wb.andTextWidget(BODY).fillVert();
+      wb.andButtonPushWidget(PREVIEW_MESSAGE);
+      return wb.getXWidgetDatas();
    }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
+      XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, xWidgetSwtRenderer, modListener, isEditable);
+      if (xWidget.getLabel().equals(PREVIEW_MESSAGE)) {
+         XXButtonPushWidget button = (XXButtonPushWidget) xWidget;
+         button.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               handlePreviewMessage();
+            }
+         });
+      }
+      if (xWidget.getLabel().equals(BODY)) {
+         XXTextWidget xText = (XXTextWidget) xWidget;
+         GridData data1 = new GridData(SWT.FILL, SWT.FILL, true, true);
+         data1.heightHint = 300;
+         data1.widthHint = 300;
+         xText.getStyledText().setLayoutData(data1);
+      }
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
       EmailGroupsData data = getEmailGroupsData();
       Result result = data.isValid();
       if (result.isFalse()) {
@@ -121,6 +180,27 @@ public class EmailGroupsBlam extends AbstractBlam {
       ArtifactQuery.reloadArtifacts(data.getGroups());
       data.clearUserToGroupMapCache();
       sendEmailViaThreadPool(data);
+   }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
+   private EmailGroupsData getEmailGroupsData() {
+      final EmailGroupsData data = new EmailGroupsData();
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            data.setSubject(subjectTextBox.get());
+            data.setReplyToAddress(replyToAddressTextBox.get());
+            data.setFromAddress(OseeApiService.user().getEmail());
+            data.setBody(bodyTextBox.get());
+            data.setBodyIsHtml(isBodyHtmlCheckbox.isChecked());
+            Collection<Artifact> groups = groupsList.getSelectedArtifacts();
+            data.getGroups().addAll(groups);
+         }
+      });
+      return data;
    }
 
    private void sendEmailViaThreadPool(EmailGroupsData data) throws Exception {
@@ -154,10 +234,10 @@ public class EmailGroupsBlam extends AbstractBlam {
 
    private void sendEmailTo(EmailGroupsData data, final Artifact user, List<UnsubscribeInfo> unsubscribeInfos) {
       if (user.isOfType(CoreArtifactTypes.User)) {
-         String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
+         String emailAddress = user.getSoleAttributeValue(Email, "");
          if (EmailUtil.isEmailValid(emailAddress)) {
             Collection<String> abridgedAddresses = Collections.emptyList();
-            String abridgedEmail = user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null);
+            String abridgedEmail = user.getSoleAttributeValue(AbridgedEmail, null);
 
             if (EmailUtil.isEmailValid(abridgedEmail)) {
                abridgedAddresses = Arrays.asList(abridgedEmail);
@@ -198,12 +278,12 @@ public class EmailGroupsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
       XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreating(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
-      if (xWidget.getLabel().equals("Groups")) {
-         groupsList = (XArtifactList) xWidget;
-         XArtifactList listViewer = (XArtifactList) xWidget;
+      super.widgetCreating(xWidget, toolkit, art, xWidgetSwtRenderer, modListener, isEditable);
+      if (xWidget.getLabel().equals(GROUPS)) {
+         groupsList = (XXArtifactListWidget) xWidget;
+         XXArtifactListWidget listViewer = (XXArtifactListWidget) xWidget;
 
          List<Artifact> groups = new ArrayList<>();
          for (Artifact group : ArtifactQuery.getArtifactListFromType(SubscriptionGroup, COMMON)) {
@@ -212,49 +292,26 @@ public class EmailGroupsBlam extends AbstractBlam {
             }
          }
          Collections.sort(groups);
-         listViewer.setInputArtifacts(groups);
+         listViewer.setSelectableArts(groups);
          listViewer.addXModifiedListener(listener);
-      } else if (xWidget.getLabel().equals("Template")) {
-         templateList = (XArtifactList) xWidget;
+      } else if (xWidget.getLabel().equals(TEMPLATE)) {
+         templateList = (XXArtifactListWidget) xWidget;
          templateList.addXModifiedListener(listener);
-      } else if (xWidget.getLabel().equals("Body")) {
-         bodyTextBox = (XText) xWidget;
-      } else if (xWidget.getLabel().equals("Body is HTML")) {
-         isBodyHtmlCheckbox = (XCheckBox) xWidget;
-      } else if (xWidget.getLabel().equals("Subject")) {
-         subjectTextBox = (XText) xWidget;
-      } else if (xWidget.getLabel().equals("Reply-To Address")) {
-         replyToAddressTextBox = (XText) xWidget;
+      } else if (xWidget.getLabel().equals(BODY)) {
+         bodyTextBox = (XXTextWidget) xWidget;
+      } else if (xWidget.getLabel().equals(BODY_IS_HTML)) {
+         isBodyHtmlCheckbox = (XXCheckBoxWidget) xWidget;
+      } else if (xWidget.getLabel().equals(SUBJECT)) {
+         subjectTextBox = (XXTextWidget) xWidget;
+      } else if (xWidget.getLabel().equals(REPLYTO_ADDRESS)) {
+         replyToAddressTextBox = (XXTextWidget) xWidget;
          replyToAddressTextBox.set(OseeApiService.user().getEmail());
       } else if (xWidget.getLabel().equals(
          "I certify the subject lines do not contain restricted or sensitive data.")) {
-         certifyNoSensitiveDataCheckbox = (XCheckBox) xWidget;
-      } else if (xWidget.getLabel().equals("Preview Message")) {
-         XButtonPush button = (XButtonPush) xWidget;
+         certifyNoSensitiveDataCheckbox = (XXCheckBoxWidget) xWidget;
+      } else if (xWidget.getLabel().equals(PREVIEW_MESSAGE)) {
+         XXButtonPushWidget button = (XXButtonPushWidget) xWidget;
          button.setDisplayLabel(false);
-      }
-   }
-
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
-      XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
-      if (xWidget.getLabel().equals("Preview Message")) {
-         XButtonPush button = (XButtonPush) xWidget;
-         button.addXModifiedListener(new XModifiedListener() {
-
-            @Override
-            public void widgetModified(XWidget widget) {
-               handlePreviewMessage();
-            }
-         });
-      }
-      if (xWidget.getLabel().equals("Body")) {
-         XText xText = (XText) xWidget;
-         GridData data1 = new GridData(SWT.FILL, SWT.FILL, true, true);
-         data1.heightHint = 300;
-         data1.widthHint = 300;
-         xText.getStyledText().setLayoutData(data1);
       }
    }
 
@@ -288,31 +345,6 @@ public class EmailGroupsBlam extends AbstractBlam {
       }).schedule();
    }
 
-   @Override
-   public List<XWidgetData> getXWidgetItems() {
-      XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andXCheckbox("I certify the subject lines do not contain restricted or sensitive data.").andDefault(
-         false).andHorizLabel().andLabelAfter().andRequired().endWidget();
-      wb.andWidget("Groups", "XArtifactList").andMultiSelect().endWidget();
-      wb.andWidget("Template", "XArtifactList").endWidget();
-      wb.andXText("Reply-To Address").endWidget();
-      wb.andXText("Subject").endWidget();
-      wb.andXLabel("      - WARNING: Email subject lines are NOT encrypted.").endWidget();
-      wb.andXLabel(
-         "      - Do NOT include " + EmailUtil.SUBJECT_LINE_PROHIBITED_CLASSIFICATIONS + " in the subject line.").endWidget();
-      wb.andXLabel(
-         "      - If emails are sent to abridged recipients, they will use this same sanitized subject line.").endWidget();
-      wb.andXCheckbox("Body is HTML").andDefault(true).andHorizLabel().andLabelAfter().endWidget();
-      wb.andXText("Body").andFillVertically().endWidget();
-      wb.andXButtonPush("Preview Message").endWidget();
-      return wb.getXWidgetDatas();
-   }
-
-   @Override
-   public String getDescriptionUsage() {
-      return "Send individual emails to everyone in the selected groups with an unsubscribe option";
-   }
-
    private class ModificationListerner implements XModifiedListener {
 
       @Override
@@ -321,15 +353,15 @@ public class EmailGroupsBlam extends AbstractBlam {
             if (xWidget == templateList) {
                Artifact template = (Artifact) templateList.getSelected().iterator().next();
                subjectTextBox.set(template.getName());
-               String body = template.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
+               String body = template.getSoleAttributeValue(GeneralStringData);
                bodyTextBox.set(body);
             } else {
-               XArtifactList groupList = (XArtifactList) xWidget;
+               XXArtifactListWidget groupList = (XXArtifactListWidget) xWidget;
                Collection<Artifact> templates = new ArrayList<>();
                for (Object group : groupList.getSelected()) {
                   templates.addAll(((Artifact) group).getChildren());
                }
-               templateList.setInputArtifacts(templates);
+               templateList.setSelectableArts(templates);
             }
          } catch (OseeCoreException ex) {
             log(ex);
@@ -337,9 +369,18 @@ public class EmailGroupsBlam extends AbstractBlam {
       }
    }
 
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
    @Override
    public Collection<XNavItemCat> getCategories() {
       return Arrays.asList(XNavigateItem.EMAIL_NOTIFICATIONS);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Send individual emails to everyone in the selected groups with an unsubscribe option";
    }
 
 }

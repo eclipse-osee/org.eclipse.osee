@@ -16,10 +16,13 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,21 +37,44 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.Workbench;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
 @SuppressWarnings("restriction")
+@Component(service = AbstractBlam.class, immediate = true)
 public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
 
-   @Override
-   public String getName() {
-      return "Set Workbench Override Icon";
+   private static final String BLAM_NAME = "Set Workbench Override Icon";
+   static final String IMAGE_FILENAME = "Image Filename";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public SetWorkbenchOverrideIconBlam() {
+      super(BLAM_NAME, CoreImage.GEAR);
    }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andFileSelWidget(IMAGE_FILENAME).andLabelAfter().andHorizLabel();
+      return wb.getXWidgetDatas();
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      final String filename = variableMap.getString("Image Filename");
+      final String filename = variableMap.getString(IMAGE_FILENAME);
       Display.getDefault().asyncExec(new Runnable() {
          @Override
          public void run() {
@@ -72,15 +98,9 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
       });
    }
 
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.UTILITY);
-   }
-
-   @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XFileSelectionDialog\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Image Filename\" /></xWidgets>";
-   }
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
    public static void reloadOverrideImage() {
       try {
@@ -106,6 +126,15 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
             }
          });
       }
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.UTILITY);
    }
 
    @Override

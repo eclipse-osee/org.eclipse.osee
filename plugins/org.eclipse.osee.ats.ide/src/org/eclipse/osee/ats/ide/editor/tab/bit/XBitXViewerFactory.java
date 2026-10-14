@@ -41,7 +41,8 @@ public class XBitXViewerFactory extends XViewerFactory {
 
    public XBitXViewerFactory() {
       this(NAMESPACE);
-      registerColumns(Program_Col, Build_Col, Config_Col, State_Col, Id_Col, Cr_State_Col, Cr_Type_Col, Cr_Version_Col, Cr_Title_Col);
+      registerColumns(Program_Col, Build_Col, Config_Col, State_Col, Id_Col, Cr_State_Col, Cr_Type_Col, Cr_Version_Col,
+         Cr_Title_Col);
    }
 
    public XBitXViewerFactory(String namespace) {

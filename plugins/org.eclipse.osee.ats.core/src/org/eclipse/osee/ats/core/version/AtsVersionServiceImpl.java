@@ -106,7 +106,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
             version.setAtsApi(atsApi);
          } else {
             ArtifactToken verArt = atsApi.getQueryService().getArtifact(versionId);
-            if (verArt.isValid()) {
+            if (verArt != null && verArt.isValid()) {
                Version version2 = createVersion(verArt);
                atsApi.getConfigService().getConfigurations().addVersion(version2);
                version = version2;
@@ -134,8 +134,9 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
          atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.VersionLocked, false));
       version.setNextVersion(
          atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.NextVersion, false));
-      version.setBaselineBranch(BranchId.valueOf(
-         atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.BaselineBranchId, "-1")));
+      BranchId branchId = atsApi.getAttributeResolver().getSoleAttributeValue(verArt,
+         AtsAttributeTypes.BaselineBranchId, BranchId.SENTINEL);
+      version.setBaselineBranch(branchId);
       for (String workTypeStr : atsApi.getAttributeResolver().getAttributesToStringList(verArt,
          AtsAttributeTypes.WorkType)) {
          WorkType workType = WorkType.valueOfOrNone(workTypeStr);
@@ -175,6 +176,21 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
+   public IAtsVersion getIntroducedInVersion(IAtsWorkItem workItem) {
+      try {
+         ArtifactId artId = atsApi.getRelationResolver().getRelatedOrNull(workItem,
+            AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version);
+         if (artId != null && artId.isValid()) {
+            IAtsVersion introducedInVersion = getVersionById(artId);
+            return introducedInVersion;
+         }
+         return null;
+      } catch (Exception e) {
+         return null;
+      }
+   }
+
+   @Override
    public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) {
       if (team == null) {
          throw new OseeArgumentException("Team Workflow can not be null %s", team);
@@ -195,6 +211,12 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
       changes.unrelateAll(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+   }
+
+   @Override
+   public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, ArtifactToken version, IAtsChangeSet changes) {
+      IAtsVersion ver = atsApi.getVersionService().getVersion(version);
+      return setTargetedVersion(teamWf, ver, changes);
    }
 
    @Override
@@ -295,12 +317,8 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public BranchId getBranch(IAtsVersion version) {
-      String branchId =
-         atsApi.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchId, "");
-      if (branchId == null || branchId.isEmpty()) {
-         return BranchId.SENTINEL;
-      }
-      return BranchId.valueOf(branchId);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchId,
+         BranchId.SENTINEL);
    }
 
    @Override

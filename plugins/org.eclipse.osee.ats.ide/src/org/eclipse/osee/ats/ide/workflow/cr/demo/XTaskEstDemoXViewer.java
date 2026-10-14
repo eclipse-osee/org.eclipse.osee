@@ -14,8 +14,8 @@ package org.eclipse.osee.ats.ide.workflow.cr.demo;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.ide.workflow.cr.taskest.XAbstractTaskEstWidget;
 import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstViewer;
-import org.eclipse.osee.ats.ide.workflow.cr.taskest.XTaskEstWidget;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Composite;
 
@@ -29,7 +29,7 @@ public class XTaskEstDemoXViewer extends XTaskEstViewer {
    }
 
    @Override
-   protected XTaskEstWidget getXTaskEstWidget() {
+   protected XAbstractTaskEstWidget getXTaskEstWidget() {
       XTaskEstDemoWidget estWidget = new XTaskEstDemoWidget();
       return estWidget;
    }

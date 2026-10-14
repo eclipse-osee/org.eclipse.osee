@@ -103,6 +103,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
+   // For performance reasons, don't add anything to title that could slow this method
    public String getEditorTitle() {
       return getAtsId() + " - " + getArtifactType() + ": " + getName();
    }

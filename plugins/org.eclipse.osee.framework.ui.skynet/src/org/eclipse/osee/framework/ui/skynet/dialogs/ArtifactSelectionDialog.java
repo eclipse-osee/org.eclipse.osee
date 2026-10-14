@@ -34,15 +34,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
@@ -55,7 +55,7 @@ import org.eclipse.ui.dialogs.SelectionStatusDialog;
  */
 public class ArtifactSelectionDialog extends SelectionStatusDialog {
 
-   private final XBranchSelectWidget branchSelect;
+   private final XXBranchSelWidget branchWidget;
    private TreeViewer treeViewer;
    private Object input;
    private int fWidth = 60;
@@ -68,7 +68,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
 
    public ArtifactSelectionDialog(Shell parent) {
       super(parent);
-      branchSelect = new XBranchSelectWidget("");
+      branchWidget = new XXBranchSelWidget();
       contentProvider = new ArtifactContentProvider(null);
       labelProvider = new ArtifactLabelProvider();
    }
@@ -78,11 +78,11 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
    }
 
    public void setBranch(BranchToken branch) {
-      branchSelect.setSelection(branch);
+      branchWidget.setSelected(branch);
    }
 
    public BranchId getBranch() {
-      return branchSelect.getData();
+      return branchWidget.getSelectedFirst();
    }
 
    @Override
@@ -197,14 +197,14 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
    }
 
    private void createBranchSelectArea(Composite parent) {
-      branchSelect.setDisplayLabel(false);
-      branchSelect.createWidgets(parent, 1);
-      branchSelect.addListener(new Listener() {
+      branchWidget.setDisplayLabel(false);
+      branchWidget.createWidgets(parent, 1);
+      branchWidget.addXModifiedListener(new XModifiedListener() {
+
          @Override
-         public void handleEvent(Event event) {
+         public void widgetModified(XWidget widget) {
             refreshItems();
          }
-
       });
    }
 

@@ -347,19 +347,23 @@ public class OrcsTypeTokens {
     * Methods for creating BranchId AttributeType
     */
    public @NonNull AttributeTypeBranchId createBranchId(Long id, String name, String mediaType, String description,
-      TaggerTypeToken taggerType) {
+      TaggerTypeToken taggerType, DisplayHint... displayHints) {
       validateString(name);
-      return attributeTypes.addAndReturn(
+      AttributeTypeBranchId type = attributeTypes.addAndReturn(
          new AttributeTypeBranchId(id, namespace, name, mediaType, description, taggerType));
+      for (DisplayHint hint : displayHints) {
+         type.addDisplayHint(hint);
+      }
+      return type;
    }
 
    public @NonNull AttributeTypeBranchId createBranchId(Long id, String name, String mediaType, String description) {
       return createBranchId(id, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   public @NonNull AttributeTypeBranchId createBranchIdNoTag(Long id, String name, String mediaType,
-      String description) {
-      return createBranchId(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   public @NonNull AttributeTypeBranchId createBranchIdNoTag(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
+      return createBranchId(id, name, mediaType, description, TaggerTypeToken.SENTINEL, displayHints);
    }
 
    /**
@@ -766,4 +770,5 @@ public class OrcsTypeTokens {
       orcsTypeJoins.add(typeJoin);
       return typeJoin;
    }
+
 }

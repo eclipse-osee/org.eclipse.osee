@@ -32,7 +32,7 @@ public class CheckBoxStateTreeLabelProvider extends LabelProvider {
    public Image getImage(Object element) {
       Image image = CheckBoxStateImageCache.getImage("chkbox_unchecked.gif");
       if (isEnabled(element)) {
-         if (treeViewer.isChecked(element)) {
+         if (treeViewer != null && treeViewer.isChecked(element)) {
             image = CheckBoxStateImageCache.getImage("chkbox_checked.gif");
          }
       } else {

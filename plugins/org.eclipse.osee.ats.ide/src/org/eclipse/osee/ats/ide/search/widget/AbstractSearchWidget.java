@@ -14,10 +14,17 @@
 package org.eclipse.osee.ats.ide.search.widget;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.ide.search.widget.base.ParamSearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.base.TeamDefListener;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXAbstractBaseXWidget;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -41,21 +48,49 @@ public abstract class AbstractSearchWidget<SrchXWidget extends XWidget, ObjectTy
       return srchWidget.getName();
    }
 
-   public void addWidget() {
-      addWidget(0);
+   public boolean isSelected() {
+      return getWidget().isEmpty();
    }
 
-   public void addWidget(int beginComposite) {
-      String xml = String.format("<XWidget xwidgetType=\"%s\" displayName=\"%s\" horizontalLabel=\"true\" %s />",
-         srchWidget.getWidgetName(), srchWidget.getName(), searchItem.getBeginComposite(beginComposite));
-      searchItem.addWidgetXml(xml, this);
+   @SuppressWarnings("unchecked")
+   public ObjectType getSelectedFirst() {
+      if (getWidget() instanceof XXAbstractBaseXWidget) {
+         return ((XXAbstractBaseXWidget<ObjectType>) getWidget()).getSelectedFirst();
+      }
+      return null;
    }
 
-   public void addWidgetEndComposite() {
-      String xml = String.format(
-         "<XWidget xwidgetType=\"%s()\" displayName=\"%s\" horizontalLabel=\"true\" endComposite=\"true\" />",
-         srchWidget.getWidgetName(), srchWidget.getName());
-      searchItem.addWidgetXml(xml, this);
+   @SuppressWarnings("unchecked")
+   public Collection<ObjectType> getSelected() {
+      if (getWidget() instanceof XXAbstractBaseXWidget) {
+         return ((XXAbstractBaseXWidget<ObjectType>) getWidget()).getSelected();
+      }
+      return ((XXAbstractBaseXWidget<ObjectType>) getWidget()).getSelected();
+   }
+
+   public void addWidget(XWidgetBuilderAts wba, XOption... options) {
+      addWidget(wba, 0, options);
+   }
+
+   public void addWidget(XWidgetBuilderAts wba, int beginComposite, XOption... options) {
+      createWidgetInBuilder(wba, beginComposite, options);
+      wba.startComp(beginComposite);
+      searchItem.labelToParamSearchWidgets.put(getName(), this);
+   }
+
+   private void createWidgetInBuilder(XWidgetBuilderAts wba, int beginComposite, XOption... options) {
+      Conditions.assertNotNullOrEmpty(srchWidget.getName(), "Search Widget must have a Name [%s]",
+         srchWidget.toStringWithId());
+      Conditions.assertTrue(srchWidget.getWidgetId().isValid(), "Search Widget must have a valid WidgetId [%s]",
+         srchWidget.toStringWithId());
+      wba.andWidget(srchWidget.getName(), srchWidget.getWidgetId());
+      wba.and(options);
+      wba.andHorizLabel();
+   }
+
+   public void addWidgetEndComposite(XWidgetBuilderAts wba) {
+      createWidgetInBuilder(wba, 0);
+      wba.endComp();
    }
 
    @SuppressWarnings("unchecked")
@@ -66,7 +101,7 @@ public abstract class AbstractSearchWidget<SrchXWidget extends XWidget, ObjectTy
    /**
     * @return selected Team Definitions or computed Team Definitions from selected AIs
     */
-   public Collection<TeamDefinition> getTeamDefs() {
+   public Collection<IAtsTeamDefinition> getTeamDefs() {
       return searchItem.getTeamDefs();
    }
 
@@ -88,8 +123,8 @@ public abstract class AbstractSearchWidget<SrchXWidget extends XWidget, ObjectTy
                }
 
             });
-         } else if (Widgets.isAccessible(getWidget().getLabelHyperlink())) {
-            getWidget().getLabelHyperlink().addMouseListener(new MouseAdapter() {
+         } else if (Widgets.isAccessible(getWidget().getLabelLinkWidget())) {
+            getWidget().getLabelLinkWidget().addMouseListener(new MouseAdapter() {
 
                @Override
                public void mouseUp(MouseEvent e) {
@@ -113,7 +148,7 @@ public abstract class AbstractSearchWidget<SrchXWidget extends XWidget, ObjectTy
    public void clear() {
       if (getWidget() != null) {
          XWidget widget = getWidget();
-         widget.clear();
+         widget.handleClear();
       }
    }
 

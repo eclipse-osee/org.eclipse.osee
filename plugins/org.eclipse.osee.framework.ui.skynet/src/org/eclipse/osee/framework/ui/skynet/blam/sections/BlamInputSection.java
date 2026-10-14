@@ -16,6 +16,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.sections;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,8 +26,8 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -41,7 +43,6 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class BlamInputSection extends BaseBlamSection {
 
-   private final Collection<XWidgetData> widDatas = new ArrayList<>();
    private XWidgetPage widgetPage;
    private final List<XWidget> blamWidgets = new ArrayList<>();
 
@@ -62,8 +63,9 @@ public class BlamInputSection extends BaseBlamSection {
    }
 
    public VariableMap getData() {
-      VariableMap blamVariableMap = new VariableMap();
       List<XWidget> xWidgets = XWidgetUtility.findXWidgetsInControl(getSection());
+      VariableMap blamVariableMap = new VariableMap();
+      blamVariableMap.setxWidgets(xWidgets);
       for (XWidget xWidget : xWidgets) {
          blamVariableMap.setValue(xWidget.getLabel(), xWidget.getData());
       }
@@ -101,7 +103,6 @@ public class BlamInputSection extends BaseBlamSection {
          widgetPage.createBody(getManagedForm(), parent, null, null, true);
          abstractBlam.createWidgets(parent, getManagedForm(), getSection(), widgetPage);
          blamWidgets.addAll(widgetPage.getSwtXWidgetRenderer().getXWidgets());
-         XWidgetUtility.setLabelFontsBold(widgetPage.getSwtXWidgetRenderer().getXWidgets());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -116,10 +117,13 @@ public class BlamInputSection extends BaseBlamSection {
    }
 
    private List<XWidgetData> getDynamicXWidgetLayouts() throws Exception {
-      List<XWidgetData> itemsToReturn = new ArrayList<>();
-      itemsToReturn.addAll(getAbstractBlam().getXWidgetDatas());
-      itemsToReturn.addAll(widDatas);
-      return itemsToReturn;
+      List<XWidgetData> widDatas = getAbstractBlam().getXWidgetItems();
+      for (XWidgetData widData : widDatas) {
+         if (widData.is(XOption.WRAP_VALUES)) {
+            widData.set(XOption.VALUE_WRAP);
+         }
+      }
+      return widDatas;
    }
 
    @Override
@@ -131,8 +135,8 @@ public class BlamInputSection extends BaseBlamSection {
       return widgetPage.getSwtXWidgetRenderer().getXWidgets();
    }
 
-   public XWidget getXWidget(XWidgetData widData) {
-      return widgetPage.getXWidget(widData);
+   public XWidget getXWidget(WidgetId widgetId) {
+      return widgetPage.getXWidget(widgetId);
    }
 
 }

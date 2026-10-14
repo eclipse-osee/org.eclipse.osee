@@ -25,13 +25,11 @@ import org.junit.runners.Suite;
    RuleDefinitionOptionTest.class,
    ReviewBlockTypeTest.class,
    AbstractWorkDefItemTest.class,
-   CompositeStateItemTest.class,
+   CompositeLayoutItemTest.class,
    DecisionReviewDefinitionTest.class,
    DecisionReviewOptionTest.class,
    PeerReviewDefinitionTest.class,
    StateDefinitionTest.class,
-   WidgetOptionHandlerTest.class,
-   WidgetOptionTest.class,
    WidgetDefinitionTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)

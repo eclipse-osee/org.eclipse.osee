@@ -16,10 +16,8 @@ package org.eclipse.osee.framework.ui.skynet.panels;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -54,7 +52,6 @@ public class SearchComposite extends Composite implements Listener {
    private static final String SEARCH_COMBO_TOOLTIP =
       "Enter word(s) to search for or select historical value from pull-down on the right.";
 
-   private final Set<Listener> listeners;
    private Combo searchArea;
    private Button executeSearch;
    private Button clear;
@@ -66,10 +63,10 @@ public class SearchComposite extends Composite implements Listener {
    private Composite checkOptionsComp;
    private Button byIdCheckbox;
    private Button incDeletedCheckbox;
+   private Listener searchListener;
 
    public SearchComposite(Composite parent, int style, String buttonText, String groupBoxText, QuickSearchView quickSearch, boolean isAttributeComposite) {
       super(parent, style);
-      this.listeners = new HashSet<>();
       this.entryChanged = false;
       this.buttonText = buttonText;
       this.groupBoxText = groupBoxText;
@@ -123,7 +120,7 @@ public class SearchComposite extends Composite implements Listener {
                   sendEvent.widget = event.widget;
                   sendEvent.character = event.character;
                   sendEvent.type = SWT.KeyUp;
-                  notifyListener(sendEvent);
+                  searchListener.handleEvent(sendEvent);
                }
             }
          }
@@ -247,27 +244,7 @@ public class SearchComposite extends Composite implements Listener {
    @Override
    public void handleEvent(Event event) {
       updateWidgetEnablements();
-      notifyListener(event);
-   }
-
-   public void addListener(Listener listener) {
-      synchronized (listeners) {
-         this.listeners.add(listener);
-      }
-   }
-
-   public void removeListener(Listener listener) {
-      synchronized (listeners) {
-         this.listeners.remove(listener);
-      }
-   }
-
-   private void notifyListener(Event event) {
-      synchronized (listeners) {
-         for (Listener listener : listeners) {
-            listener.handleEvent(event);
-         }
-      }
+      searchListener.handleEvent(event);
    }
 
    public String[] getQueryHistory() {
@@ -413,6 +390,10 @@ public class SearchComposite extends Composite implements Listener {
 
    public boolean isById() {
       return byIdCheckbox.getSelection();
+   }
+
+   public void addSearchListener(Listener searchListener) {
+      this.searchListener = searchListener;
    }
 
 }

@@ -99,6 +99,9 @@ public class WfeReloadTab extends FormPage {
             reloadButton = new Button(buttonComp, SWT.PUSH);
             reloadButton.setText("Reload");
             reloadButton.setImage(ImageManager.getImage(CoreImage.REFRESH));
+            GridData reloadGd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+            reloadGd.widthHint = 100; // Accommodate "Reloading..." text
+            reloadButton.setLayoutData(reloadGd);
             reloadButton.addSelectionListener(new SelectionAdapter() {
 
                @Override
@@ -116,6 +119,9 @@ public class WfeReloadTab extends FormPage {
             reloadAllButton.setText("Reload All");
             reloadAllButton.setImage(ImageManager.getImage(CoreImage.REFRESH));
             reloadAllButton.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+            GridData reloadAllGd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+            reloadAllGd.widthHint = 100; // Accommodate "Reloading..." text
+            reloadAllButton.setLayoutData(reloadAllGd);
             reloadAllButton.addSelectionListener(new SelectionAdapter() {
 
                @Override
@@ -231,12 +237,13 @@ public class WfeReloadTab extends FormPage {
                   return;
                }
                final Artifact artifact = (Artifact) workItem.getStoreObject();
-               try {
-                  // Cause access policy to be loaded if not already
-                  artifact.isReadOnly();
-               } catch (Exception ex) {
-                  // do nothing
-               }
+
+               //               try {
+               //                  // Cause access policy to be loaded if not already
+               //                  artifact.isReadOnly();
+               //               } catch (Exception ex) {
+               //                  // do nothing
+               //               }
 
                final IAtsWorkItem fWorkItem = workItem;
                Displays.ensureInDisplayThread(new Runnable() {
@@ -247,6 +254,7 @@ public class WfeReloadTab extends FormPage {
                      editor.disposeTabs();
                      editor.loadPages();
                      editor.setPage(currentPage);
+                     editor.refreshOutline();
                      RecentlyVisitedNavigateItems.addVisited(fWorkItem);
                   }
                });

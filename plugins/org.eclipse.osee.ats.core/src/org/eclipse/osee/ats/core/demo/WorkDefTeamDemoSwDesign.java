@@ -13,27 +13,35 @@
 
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XCommitManagerWfeWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XXWorkingBranchWfeWidget;
+import static org.eclipse.osee.framework.core.widget.XOption.REQUIRED;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.xx.PointsNumericWidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.DecisionReviewDefinitionBuilder;
 import org.eclipse.osee.ats.core.workdef.builder.PeerReviewDefinitionBuilder;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne
  */
+
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
 
    public WorkDefTeamDemoSwDesign() {
@@ -44,9 +52,9 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
-      bld.andHeader() //
+      bld.andCustomHeader() //
          .isShowSiblingLinks(false) //
-         .isShowMetricsHeader(false); //
+         .showMetricsHeader(false); //
 
       DecisionReviewDefinitionBuilder analyzeTransitionToDecRev = bld.createDecisionReview("Analyze.None.TransitionTo") //
          .andTitle(
@@ -89,45 +97,42 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //
-
-         .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", RFT, FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"));
+            new AttrWidgetDef(Description).set(REQUIRED), //
+            new AttrWidgetDef(ProposedResolution), //
+            new AttrWidgetDef(ValidationRequired), //
+            new AttrWidgetDef(WorkPackage), //
+            new PointsNumericWidgetDefinition("Estimated Points") //
+         );
 
       bld.andState(2, "Analyze", StateType.Working) //
          .andToStates(StateToken.Authorize, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andDecisionReviewBuilder(analyzeTransitionToDecRev) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDef(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new AttrWidgetDef(WorkPackage), //
+            new AttrWidgetDef(Problem), //
+            new AttrWidgetDef(ProposedResolution), //
+            new AttrWidgetDef(EstimatedHours));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
-
-         .andColor(StateColor.BLACK) //
          .andPeerReviewBuilder(authorizeTransitionTo) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"));
+            new AttrWidgetDef(WorkPackage), //
+            new AttrWidgetDef(EstimatedCompletionDate));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andDecisionReviewBuilder(implementCreateBranch) //
          .andPeerReviewBuilder(implementCommitBranch) //
          .andLayout( //
-            getWorkingBranchWidgetComposite(), new WidgetDef("Commit Manager", "XCommitManager"), //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new WidgetDef(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDef(XXWorkingBranchWfeWidget), //
+            new WidgetDef(XCommitManagerWfeWidget), //
+            new AttrWidgetDef(WorkPackage), //
+            new AttrWidgetDef(EstimatedCompletionDate), //
+            new AttrWidgetDef(Resolution));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
@@ -137,5 +142,10 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
          .andColor(StateColor.BLACK);
 
       return bld.getWorkDefinition();
+   }
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
    }
 }

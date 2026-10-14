@@ -15,14 +15,23 @@ package org.eclipse.osee.ats.core.demo;
 
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefReviewPeerToPeer;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefReviewPeerDemoSwDesign extends WorkDefReviewPeerToPeer {
 
    public WorkDefReviewPeerDemoSwDesign() {
       super(DemoWorkDefinitions.WorkDefReviewPeerDemoSwDesign);
    }
 
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
+   }
 }

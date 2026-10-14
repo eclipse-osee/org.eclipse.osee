@@ -104,7 +104,7 @@ void run() {
 
 - Build work definitions with the `WorkDefBuilder` / `StateDefBuilder` fluent API in a `build()` method; extend `AbstractWorkDef` (or `AbstractDemoWorkDef` for demo Code/Req/Test).
 - Reference states with `StateToken` constants in `andToStates(...)` / `andToWaitStates(...)`, not raw strings.
-- Register new work defs through the appropriate `IAtsWorkDefinitionProvider` (e.g. `AtsWorkDefinitionProviderDemo`).
+- Register a new work def by annotating the concrete class `@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)` and adding its `OSGI-INF/<fqcn>.xml` descriptor (like BLAMs/XWidgets). No provider/central-list edit. Demo/test work defs override `isApplicable()` to return `DemoUtil.isDemoDatabase()`.
 - Put new transition-gating logic in `TransitionManager` rather than new transition hooks; hooks are for non-`ats.core` bundles or extension behavior (see the note in `AtsWorkItemServiceImpl.getTransitionHooks()`).
 
 ## Transitions
@@ -119,7 +119,43 @@ void run() {
 - After an out-of-band change, `reloadAttributesAndRelations()` before asserting on the artifact.
 - JUnit 4 (`org.junit.Test`, `Assert`), EPL-2.0 header, `@author`.
 
-## General
+### Code-review & clean tooling
 
-- Follow the ATS bundle layering: pure interfaces/model/tokens in `ats.api`; shared logic in `ats.core`; REST in `ats.rest`; Eclipse UI in `ats.ide`; demo data in `ats.core.demo`. Do not introduce IDE/UI dependencies into `ats.core` or `ats.api`.
-- Access services through the `AtsApi` facade (`getTeamDefinitionService()`, `getWorkItemService()`, `getWorkDefinitionService()`, etc.) rather than reaching into implementations.
+The `...ats.ide.integration.tests.coderev` package holds durable standards tooling; open a class's Javadoc/source for
+details (full map in `ide-xxwidget-architecture.md`):
+- **CodeReview** (read-only, base `AbstractCodeReview`) — runs in the integration suite and flags standards
+  violations (`CodeReviewXWidgets`/`Blams`/`OsgiXml`/`General`, aggregated by `CodeReviewAll`). Add new cross-cutting
+  checks to `CodeReviewGeneral`.
+- **CodeClean** (mutating, base `AbstractCodeClean`) — standalone-only (never in a suite); reorganizes/formats/reverts
+  source. Every op defaults `changeFiles=false` (report-only). Reports go to `~/CodeReviewOutput/` and
+  `~/CodeCleanOutput/`.
+
+## Bundle layering and where logic + tests belong
+
+ATS is layered by bundle. Put logic as low in the stack as it can go, and test it at the lowest tier that can exercise it.
+
+| Bundle | Role | Test bundle |
+|--------|------|-------------|
+| `ats.api` | Model: interfaces, tokens, enums, data objects. No behavior that needs services. | `ats.core.test` |
+| `ats.core` | Business logic (services, validators, work-def builders, transition logic). No IDE/UI, no server deps. | `ats.core.test` (standalone JUnit) |
+| `ats.rest` | Server-side REST endpoints and server-only logic. | integration suite |
+| `ats.ide` | Eclipse client / UI (XWidgets, editors, navigate items). | integration suite |
+| `ats.core.demo` | Demo data / demo work defs. | integration suite |
+
+**Push logic toward `ats.api` and `ats.core`.** The more business logic lives in `ats.core`, the more of it can be covered by fast standalone JUnit in `ats.core.test`. When a useful piece of logic is stuck in `ats.ide`/`ats.rest` only because of where it was written, prefer moving it to `ats.core` so it can be unit-tested — but weigh that move against blast radius (see below). Do not introduce IDE/UI or server dependencies into `ats.core` or `ats.api`.
+
+Access services through the `AtsApi` facade (`getTeamDefinitionService()`, `getWorkItemService()`, `getWorkDefinitionService()`, etc.) rather than reaching into implementations.
+
+### Test tiers
+
+- **`<bundle>.test`** (e.g. `ats.core.test`) is plain JUnit for that bundle: no database, no server, no OSGi runtime. Fast, and where the bulk of business-logic testing belongs. (Bundle names aren't always perfectly consistent, but `.test` = standalone JUnit for the named bundle.)
+- **The ATS Integration Test Suite** runs with a full server, client, and database — even for a test that doesn't need all of it. Anything under an `*integration*` bundle pays that cost. Use it only for behavior that genuinely needs the running datastore, widget registry, or wired services.
+- Corollary: a *pure* test (one that only calls model/logic with no DB/registry) does **not** belong in an integration bundle just because the code under test happens to live in `ats.ide`/`ats.rest`. Either the logic moves to `ats.core` (so a `.test` JUnit can reach it), or the standalone test is deferred. Never wire a no-DB test into the integration suite as a shortcut.
+
+### Blast radius
+
+This is a deep, layered, generic workflow engine; a change that looks local can have wide reach. Before changing shared code (work-def build/load, transition validation, `AtsApi` services), trace **where it executes and what it can take down**:
+
+- Prefer the smallest change that is correct. When a real improvement requires moving logic across tiers, do it deliberately and only when the blast radius is acceptable; otherwise defer it and leave a note.
+- Know the failure mode. Example: a check added to `WorkDefBuilder.getWorkDefinition()` isn't local — `AtsWorkDefinitionProviderService` throws `OseeArgumentException` when a work def's `@Component` builder binds with errors, so a false positive there takes down **all of ATS at startup**. High blast radius from a "small" check.
+- "Not visible from this layer" ≠ "doesn't exist." A validation that flags an absence (e.g. "REQUIRED widget is never enforced") must account for every enforcement path — server-side attribute validators, a registered `AtsXWidgetValidator`, the client `XWidget.isValid()`, and domain-specific transition logic — or it will false-positive. If a check can only be correct with runtime facts (the actual `XWidget`), it belongs in a runtime operation, not the build-time builder.

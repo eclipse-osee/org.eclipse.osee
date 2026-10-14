@@ -12,11 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.publishing.markdown;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -437,8 +433,7 @@ public class PublishingMarkdownAsHtmlTest {
          // Check if the table is wrapped by a paragraph
          Element nextElement = table.parent();
          assertNotNull("The table should not have a null parent.", nextElement);
-         assertTrue("The table should be wrapped in a paragraph.",
-            nextElement.tagName().equals("p"));
+         assertTrue("The table should be wrapped in a paragraph.", nextElement.tagName().equals("p"));
 
          // Table is wrapped in <p> and followed by an anchor and caption, so three siblings ahead will be a data right marking.
          nextElement = nextElement.nextElementSibling().nextElementSibling().nextElementSibling();
@@ -509,8 +504,7 @@ public class PublishingMarkdownAsHtmlTest {
          String style = img.attr("style");
          if (style.contains("max-width:50%")) {
             foundSizedImage = true;
-            assertTrue("Sized image should have height:auto in style",
-               style.contains("height:auto"));
+            assertTrue("Sized image should have height:auto in style", style.contains("height:auto"));
             break;
          }
       }

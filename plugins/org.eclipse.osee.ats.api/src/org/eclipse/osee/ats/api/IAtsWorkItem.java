@@ -22,6 +22,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -59,6 +60,20 @@ public interface IAtsWorkItem extends IAtsObject {
    String getAtsId();
 
    IAtsTeamWorkflow getParentTeamWorkflow();
+
+   public default IAtsTeamWorkflow getTeamWf() {
+      return getParentTeamWorkflow();
+   }
+
+   // Get parent Team Workflow's Team Definition
+   public default IAtsTeamDefinition getTeamDef() {
+      IAtsTeamDefinition teamDef = null;
+      IAtsTeamWorkflow parentTeamWorkflow = getParentTeamWorkflow();
+      if (parentTeamWorkflow != null) {
+         teamDef = parentTeamWorkflow.getTeamDefinition();
+      }
+      return teamDef;
+   }
 
    IAtsLog getLog();
 

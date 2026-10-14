@@ -111,7 +111,7 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
             @Override
             public void connected(ConnectionNode node) {
                connected = true;
-               OseeLog.log(ActiveMqSseBridge.class, Level.INFO,
+               OseeLog.log(ActiveMqSseBridge.class, Level.FINE,
                   "ActiveMqSseBridge: Connected to ActiveMQ broker");
             }
 
@@ -124,7 +124,7 @@ public class ActiveMqSseBridge implements EventHandler, IFrameworkEventListener 
          });
          // Relay web-originated branch changes to desktop clients (web -> desktop).
          SseBroadcastService.setBranchChangeRelay(this::relayBranchChangeToDesktop);
-         OseeLog.logf(ActiveMqSseBridge.class, Level.INFO,
+         OseeLog.logf(ActiveMqSseBridge.class, Level.FINE,
             "ActiveMqSseBridge: Activated -- listening for desktop and server events (broker=%s)", brokerUri);
       } catch (Exception ex) {
          OseeLog.logf(ActiveMqSseBridge.class, Level.SEVERE,

@@ -25,66 +25,14 @@ public class XOptionHandler {
    private final Set<XOption> xOptions = new HashSet<>();
 
    public XOptionHandler(XOption... xOption) {
+      XOption.ensureLoaded();
       set(xOption);
    }
 
    public void add(XOption xOption) {
-      switch (xOption) {
-         case NO_SELECT:
-            xOptions.remove(XOption.MULTI_SELECT);
-            xOptions.remove(XOption.SINGLE_SELECT);
-            break;
-         case ALIGN_CENTER:
-         case ALIGN_LEFT:
-         case ALIGN_RIGHT:
-            xOptions.remove(XOption.ALIGN_CENTER);
-            xOptions.remove(XOption.ALIGN_LEFT);
-            xOptions.remove(XOption.ALIGN_RIGHT);
-            break;
-         case HORIZONTAL_LABEL:
-            xOptions.remove(XOption.VERTICAL_LABEL);
-            break;
-         case EDITABLE:
-            xOptions.remove(XOption.NOT_EDITABLE);
-            break;
-         case NOT_EDITABLE:
-            xOptions.remove(XOption.EDITABLE);
-            break;
-         case NOT_REQUIRED:
-            xOptions.remove(XOption.REQUIRED);
-            break;
-         case REQUIRED:
-            xOptions.remove(XOption.NOT_REQUIRED);
-            break;
-         case AUTO_SAVE:
-            xOptions.remove(XOption.NOT_AUTO_SAVE);
-            break;
-         case NOT_AUTO_SAVE:
-            xOptions.remove(XOption.AUTO_SAVE);
-            break;
-         case NOT_REQUIRED_FOR_COMPLETION:
-            xOptions.remove(XOption.REQUIRED_FOR_COMPLETION);
-            break;
-         case REQUIRED_FOR_COMPLETION:
-            xOptions.remove(XOption.NOT_REQUIRED_FOR_COMPLETION);
-            break;
-         case NOT_ENABLED:
-            xOptions.remove(XOption.ENABLED);
-            break;
-         case ENABLED:
-            xOptions.remove(XOption.NOT_ENABLED);
-            break;
-         case FILL_NONE:
-            xOptions.remove(XOption.FILL_HORIZONTALLY);
-            xOptions.remove(XOption.FILL_VERTICALLY);
-            break;
-         case VERTICAL_LABEL:
-            xOptions.remove(XOption.HORIZONTAL_LABEL);
-            break;
-         default:
-            break;
-      }
-
+      // Remove the opposing options
+      xOptions.removeAll(xOption.getRemoveOpts());
+      // Add this option
       xOptions.add(xOption);
    }
 
@@ -94,25 +42,30 @@ public class XOptionHandler {
       }
    }
 
-   public void add(Collection<XOption> xOption) {
-      add(xOption.toArray(new XOption[0]));
+   public void remove(XOption... xOption) {
+      for (XOption xOpt : xOption) {
+         remove(xOpt);
+      }
+   }
+
+   public void add(Collection<XOption> xOptions) {
+      // Use add so the remove / add options happen
+      for (XOption opt : xOptions) {
+         add(opt);
+      }
    }
 
    public boolean contains(XOption xOption) {
       return xOptions.contains(xOption);
    }
 
-   /**
-    * @return the xOptions
-    */
+   // Do not getXOptions and addAll, adds must go through add method
    public Set<XOption> getXOptions() {
       return xOptions;
    }
 
    /**
     * Must go through the add method to ensure values set properly
-    *
-    * @param options the xOptions to set
     */
    public void set(Set<XOption> options) {
       xOptions.clear();
@@ -121,8 +74,6 @@ public class XOptionHandler {
 
    /**
     * Must go through the add method to ensure values set properly
-    *
-    * @param options the xOptions to set
     */
    public void set(XOption[] options) {
       xOptions.clear();
@@ -136,5 +87,41 @@ public class XOptionHandler {
 
    public void remove(XOption option) {
       xOptions.remove(option);
+   }
+
+   public boolean is(XOption option) {
+      return contains(option);
+   }
+
+   /**
+    * Run as a java application to see the XOption and their opposites
+    */
+   public static void main(String[] args) {
+      new XOptionHandler(); // This ensures all is loaded
+
+      for (XOption opt : XOption.values()) {
+         System.out.println(String.format("XOption [%s] - Opposite(s) [%s]", opt, opt.getRemoveOpts()));
+      }
+   }
+
+   public boolean hasValOption() {
+      return contains(XOption.VAL_MULTI_SEL) || contains(XOption.VAL_SINGLE_SEL) //
+         || contains(XOption.VAL_MULTI_TEXT) || contains(XOption.VAL_SINGLE_TEXT);
+   }
+
+   public XOption getValOption() {
+      if (contains(XOption.VAL_MULTI_SEL)) {
+         return XOption.VAL_MULTI_SEL;
+      }
+      if (contains(XOption.VAL_SINGLE_SEL)) {
+         return XOption.VAL_SINGLE_SEL;
+      }
+      if (contains(XOption.VAL_MULTI_TEXT)) {
+         return XOption.VAL_MULTI_TEXT;
+      }
+      if (contains(XOption.VAL_SINGLE_TEXT)) {
+         return XOption.VAL_SINGLE_TEXT;
+      }
+      return null;
    }
 }

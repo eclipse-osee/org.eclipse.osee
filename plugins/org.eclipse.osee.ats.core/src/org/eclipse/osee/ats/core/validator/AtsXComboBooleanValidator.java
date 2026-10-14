@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 
 /**
  * @author Donald G. Dunne
@@ -37,7 +38,8 @@ public class AtsXComboBooleanValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDef widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      if ("XComboBooleanDam".equals(widgetDef.getXWidgetName())) {
+      WidgetId widgetId = widgetDef.getWidgetId();
+      if (widgetId.equals(WidgetId.XXBooleanWidget)) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, fromStateDef);
          if (!result.isSuccess()) {
             return result;

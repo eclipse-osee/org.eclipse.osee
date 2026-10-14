@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionListener;
@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class EntryDialogWithBranchSelect extends MessageDialog {
 
-   XText text;
+   XXTextWidget text;
    Composite c;
    String entryText = "";
    String validationRegularExpression = null;
@@ -88,7 +88,7 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
       errorLabel.setSize(errorLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
       errorLabel.setText("");
 
-      text = new XText();
+      text = new XXTextWidget();
       text.setFillHorizontally(true);
       text.setFocus();
       text.setDisplayLabel(false);
@@ -101,14 +101,13 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
       }
       text.createWidgets(c, 2);
 
-      ModifyListener modifyListener = new ModifyListener() {
+      text.addXModifiedListener(new XModifiedListener() {
 
          @Override
-         public void modifyText(ModifyEvent e) {
+         public void widgetModified(XWidget widget) {
             handleModified();
          }
-      };
-      text.addModifyListener(modifyListener);
+      });
 
       branchSelect = new BranchSelectComposite(c, SWT.NONE, false);
       branchSelect.setDefaultSelectedBranch(BranchManager.getLastBranch());
@@ -167,7 +166,7 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
 
    /**
     * override this method to make own checks on entry this will be called with every keystroke
-    * 
+    *
     * @return true if entry is valid
     */
    public boolean isEntryValid() {

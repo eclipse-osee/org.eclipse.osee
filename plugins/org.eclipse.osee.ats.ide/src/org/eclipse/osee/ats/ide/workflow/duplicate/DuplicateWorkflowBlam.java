@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
@@ -27,48 +26,97 @@ import org.eclipse.osee.ats.api.util.IValidatingOperation;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAsIsOperation;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAtStartStateOperation;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXListArtifactDropWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class DuplicateWorkflowBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class DuplicateWorkflowBlam extends AbstractAtsBlam {
 
-   private final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
+   private static final String BLAM_NAME = "Duplicate Workflow";
+   final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private final static String DUPLICATE_WORKFLOW =
       "Duplicate Workflow - creates carbon copy with all fields and assignees intact.";
    private final static String CREATE_NEW_WORFLOW_IN_START_STATE =
       "Create new Workflow - creates new workflow in start state with current assignees.";
-   private final static String DUPLICATE_TASKS = "Duplicate Tasks - only valid for Duplicate Workflow";
-   private final static String DUPLICATE_METHOD = "Duplicate Method";
-   private final static String TITLE = "New Title (blank for same title or for multiple workflows)";
+   final static String DUPLICATE_TASKS = "Duplicate Tasks - only valid for Duplicate Workflow";
+   final static String DUPLICATE_METHOD = "Duplicate Method";
+   final static String TITLE = "New Title (blank for same title or for multiple workflows)";
+
    private Collection<? extends TeamWorkFlowArtifact> defaultTeamWorkflows;
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public DuplicateWorkflowBlam() {
+      super(BLAM_NAME, AtsImage.WORKFLOW);
+   }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andListDropWidget(TEAM_WORKFLOW);
+      wb.andStringsSelWidget(DUPLICATE_METHOD,
+         Arrays.asList(CREATE_NEW_WORFLOW_IN_START_STATE, DUPLICATE_WORKFLOW)).andHorizLabel().andRequired();
+      wb.andCheckBoxWidget(DUPLICATE_TASKS).andDefault("false");
+      wb.andTextWidget(TITLE).andHorizLabel().andDefault(getDefaultTitle());
+      return wb.getXWidgetDatas();
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
+      XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, xWidgetSwtRenderer, modListener, isEditable);
+      if (xWidget.getLabel().equals(TEAM_WORKFLOW) && defaultTeamWorkflows != null) {
+         XXListArtifactDropWidget viewer = (XXListArtifactDropWidget) xWidget;
+         viewer.setSelected(Collections.castAll(defaultTeamWorkflows));
+      }
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -128,6 +176,10 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       });
    }
 
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
    private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) {
       AtsUser user = AtsApiService.get().getUserService().getCurrentUser();
 
@@ -184,29 +236,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       }
    }
 
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
-      if (xWidget.getLabel().equals(TEAM_WORKFLOW) && defaultTeamWorkflows != null) {
-         XListDropViewer viewer = (XListDropViewer) xWidget;
-         viewer.setInput(defaultTeamWorkflows);
-      }
-   }
-
-   @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
-      //
-         "<XWidget xwidgetType=\"XCombo(" + CREATE_NEW_WORFLOW_IN_START_STATE + "," + DUPLICATE_WORKFLOW + ")\" required=\"true\" displayName=\"" + DUPLICATE_METHOD + "\" horizontalLabel=\"true\" />" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
-         //
-         "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
-         //
-         "</xWidgets>";
-   }
-
    /**
     * Return "Copy of"-title if all titles of workflows are the same, else ""
     */
@@ -216,11 +245,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       } else {
          return "";
       }
-   }
-
-   @Override
-   public String getDescriptionUsage() {
-      return "Duplicate team workflow(s) as a carbon copy (all fields/states/assignees will be exactly as they are) or as new workflows in start state.";
    }
 
    /**
@@ -237,10 +261,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       this.defaultTeamWorkflows = defaultTeamWorkflows;
    }
 
-   @Override
-   public String getName() {
-      return "Duplicate Workflow";
-   }
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
 
    @Override
    public Collection<XNavItemCat> getCategories() {
@@ -248,13 +271,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    @Override
-   public Image getImage() {
-      return ImageManager.getImage(AtsImage.WORKFLOW);
-   }
-
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.WORKFLOW);
+   public String getDescriptionUsage() {
+      return "Duplicate team workflow(s) as a carbon copy (all fields/states/assignees will be exactly as they are) or as new workflows in start state.";
    }
 
 }
