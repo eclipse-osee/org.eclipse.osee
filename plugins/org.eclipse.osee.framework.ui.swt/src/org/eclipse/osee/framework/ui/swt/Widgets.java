@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class Widgets {
    private static Composite targetContainer;
-   public static String NOT_SET = "Not Set";
 
    public static abstract class IntegerTextEntryHandler implements FocusListener, VerifyListener, TraverseListener {
       private static final Pattern NEGATIVE_PATTERN = Pattern.compile("\\-?|\\-?\\d+");
@@ -812,12 +811,13 @@ public final class Widgets {
       return widget != null && !widget.isDisposed();
    }
 
-   // Checks for != null, not empty and not "Not Set"
+   public static boolean isNotAccessible(Widget widget) {
+      return !isAccessible(widget);
+   }
+
+   // Checks for != null, not empty
    public static boolean isValidSelection(String selection) {
-      if (Widgets.NOT_SET.equals(selection)) {
-         return false;
-      }
-      return (selection != null) && !selection.isEmpty();
+      return selection != null && selection.length() > 0;
    }
 
    public static boolean isInValidSelection(String selection) {

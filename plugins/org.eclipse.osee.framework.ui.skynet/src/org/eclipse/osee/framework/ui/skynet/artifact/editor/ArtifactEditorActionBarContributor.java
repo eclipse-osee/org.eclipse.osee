@@ -26,11 +26,14 @@ import org.eclipse.osee.framework.core.access.AccessControlUtil;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -53,9 +56,11 @@ import org.eclipse.ui.PlatformUI;
 public class ArtifactEditorActionBarContributor implements IActionContributor, ISelectedArtifacts {
 
    private final Artifact artifact;
+   private final ArtifactEditor artEditor;
 
-   public ArtifactEditorActionBarContributor(Artifact artifact) {
+   public ArtifactEditorActionBarContributor(Artifact artifact, ArtifactEditor artEditor) {
       this.artifact = artifact;
+      this.artEditor = artEditor;
    }
 
    @Override
@@ -79,6 +84,40 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
       if (ServiceUtil.accessControlService().isOseeAdmin()) {
          manager.add(new DirtyReportAction(artifact));
          manager.add(new ArtifactValidityReportAction(artifact));
+         manager.add(new ToggleWidgetDebug());
+         manager.add(new Separator());
+      }
+      manager.add(new RefreshAction());
+   }
+
+   private final class ToggleWidgetDebug extends Action {
+
+      public ToggleWidgetDebug() {
+         super();
+         setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.BUG));
+         setToolTipText("Toggle XWidget Debug; Toggle and refresh/open editor.");
+      }
+
+      @Override
+      public void run() {
+         boolean widgetDebug = OseeProperties.isWidgetDebug();
+         boolean toggledTo = !widgetDebug;
+         OseeProperties.setWidgetDebug(toggledTo);
+         AWorkbench.popup("Widget Debug: " + toggledTo + "\n\n" + "Refresh or re-open editor.");
+      }
+   }
+
+   private final class RefreshAction extends Action {
+
+      public RefreshAction() {
+         super();
+         setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
+         setToolTipText("Refresh Editor");
+      }
+
+      @Override
+      public void run() {
+         artEditor.reloadEditor();
       }
    }
 

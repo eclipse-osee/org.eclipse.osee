@@ -13,14 +13,23 @@
 
 package org.eclipse.osee.ats.ide.internal;
 
+import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.access.AtsBranchAccessManager;
+import org.eclipse.osee.ats.ide.workdef.ValidateWorkDefXWidgetOperation;
 import org.eclipse.osee.ats.ide.workflow.AtsActionRemoteTopicEventHandler;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemRemoteTopicEventHandler;
 import org.eclipse.osee.framework.core.client.AccessTopicEvent;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.ui.IStartup;
 import org.osgi.framework.BundleContext;
@@ -53,6 +62,34 @@ public class Activator extends OseeActivator implements IStartup {
    @Override
    public void earlyStartup() {
       XConsoleLogger.out("\nOSEE Workbench Started\n");
+      validateWorkDefXWidgetsInBackground();
+   }
+
+   /**
+    * Runs the client-side work definition XWidget validation once the workbench is up, off the UI thread. Any error
+    * is logged SEVERE to the Error Log so a developer sees it immediately during development and fixes it (fail
+    * fast). Validation problems must not disrupt startup, so failures here are only logged, never thrown.
+    */
+   private void validateWorkDefXWidgetsInBackground() {
+      Job job = new Job("Validate ATS Work Definition XWidgets") {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               AtsApi atsApi = AtsApiService.get();
+               XResultData rd = new ValidateWorkDefXWidgetOperation(atsApi).run();
+               if (rd.isErrors()) {
+                  OseeLog.log(Activator.class, Level.SEVERE,
+                     "ATS Work Definition XWidget validation found errors that must be fixed:\n" + rd.toString());
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      job.setUser(false);
+      job.setSystem(true);
+      job.schedule();
    }
 
 }

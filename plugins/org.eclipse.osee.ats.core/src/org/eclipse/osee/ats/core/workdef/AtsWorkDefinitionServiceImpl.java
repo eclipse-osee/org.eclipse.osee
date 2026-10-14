@@ -202,8 +202,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
             logOnce.add(workItem);
          }
          // Tasks should never be needed once a database is converted to store work def as attribute
-         if (workItem instanceof IAtsTask && ((IAtsTask) workItem).getParentTeamWorkflow() != null) {
-            workDef = computedWorkDefinitionForTaskNotYetCreated(((IAtsTask) workItem).getParentTeamWorkflow());
+         if (workItem instanceof IAtsTask && workItem.getParentTeamWorkflow() != null) {
+            workDef = computedWorkDefinitionForTaskNotYetCreated(workItem.getParentTeamWorkflow());
          }
          if (workDef == null) {
             // Check extensions for definition handling
@@ -235,8 +235,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
                   workDef = atsApi.getWorkDefinitionService().getWorkDefinition(
                      AtsWorkDefinitionTokens.WorkDefReviewPeerToPeer);
                } else if (workItem instanceof IAtsDecisionReview) {
-                  workDef = atsApi.getWorkDefinitionService().getWorkDefinition(
-                     AtsWorkDefinitionTokens.WorkDefReviewDecision);
+                  workDef =
+                     atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefReviewDecision);
                }
             }
          }
@@ -330,9 +330,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    /**
-    * Recursively decend StateItems and grab all widgetDefs.<br>
+    * Recursively decend LayoutItems and grab all widgetDefs.<br>
     * <br>
-    * Note: Modifing this list will not affect the state widgets. Use addStateItem().
+    * Note: Modifing this list will not affect the state widgets.
     */
    @Override
    public List<WidgetDef> getWidgetsFromLayoutItems(StateDefinition stateDef) {
@@ -348,8 +348,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       return widgets;
    }
 
-   private static void getWidgets(StateDefinition stateDef, List<WidgetDef> widgets,
-      List<LayoutItem> layoutItems) {
+   private static void getWidgets(StateDefinition stateDef, List<WidgetDef> widgets, List<LayoutItem> layoutItems) {
       for (LayoutItem lItem : layoutItems) {
          if (lItem instanceof CompositeLayoutItem) {
             getWidgets(stateDef, widgets, ((CompositeLayoutItem) lItem).getLayoutItems());
@@ -359,8 +358,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       }
    }
 
-   private static void getWidgets(HeaderDefinition headerDef, List<WidgetDef> widgets,
-      List<LayoutItem> layoutItems) {
+   private static void getWidgets(HeaderDefinition headerDef, List<WidgetDef> widgets, List<LayoutItem> layoutItems) {
       for (LayoutItem lItem : layoutItems) {
          if (lItem instanceof CompositeLayoutItem) {
             getWidgets(headerDef, widgets, ((CompositeLayoutItem) lItem).getLayoutItems());
@@ -426,7 +424,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          if (workItem instanceof IAtsTeamWorkflow) {
             teamWf = (IAtsTeamWorkflow) workItem;
          } else if (workItem instanceof IAtsAbstractReview) {
-            teamWf = ((IAtsAbstractReview) workItem).getParentTeamWorkflow();
+            teamWf = workItem.getParentTeamWorkflow();
          }
          if (teamWf != null) {
             hasRule = atsApi.getTeamDefinitionService().hasRule(teamWf.getTeamDefinition(), option.name());

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.Import;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
@@ -53,7 +55,8 @@ public class ImportWorkflowApplicabilities extends XNavigateItemAction {
    private Map<String, ApplicabilityToken> applicNameToTok;
 
    public ImportWorkflowApplicabilities() {
-      super("Import Workflow Applicabilities from Branch", CoreImage.IMPORT, AtsNavigateViewItems.ATS_IMPORT);
+      super("Import Workflow Applicabilities from Branch", CoreImage.IMPORT, Arrays.asList(AtsUserGroups.AtsAdmin),
+         AtsNavigateViewItems.ATS_IMPORT);
    }
 
    @Override

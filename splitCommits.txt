@@ -1,0 +1,30 @@
+feature: Create osgi files (AUTO-GEN, IRNORE) | *.xml 
+feature: Update steering and docs (REVIEW) | *.md
+feature: Update Work Definitions (REVIEW IN PACKET) | *WorkDef*.java | *workdef/model* | *ats/ide/workdef*
+feature: Add or Cleanup images (IGNORE) | *.gif | *Image*.java
+feature: Cleanup Skynet Blams (REVIEW IN PACKET) | *blam* | *traceability* | *ats/ide/operation*
+feature: Update ATS API (REVIEW) | *ats/api* 
+feature: Update ATS Config Version (REVIEW) | *ats/ide/config* 
+feature: Update Tests (REVIEW) | *ats/core/test* | *ats/ide/integration*
+feature: ATS WFE (REVIEW) | *ats/ide/editor*
+feature: Update ATS Core (REVIEW) | *ats/core* | *ats/workflow* | *workflow/cr* | *ats/ide/workflow*
+feature: Update OSEE Navigator (REVIEW) | *navigate* | *NavigateItem*
+feature: Update ATS Agile (REVIEW) | *ats/ide/agile*
+feature: Update ATS World Editor (REVIEW) | *ats/ide/world*
+feature: ATS Search (REVIEW) | *ats/ide/search*
+feature: Update Artifact Editor (REVIEW) | *artifact/editor*
+feature: Update Markdown Editor (REVIEW) | *skynet/mde*
+feature: ATS Actions (REVIEW) | *ats/ide/action*
+feature: Update Dialogs (REVIEW) | *Dialog*.java
+feature: Explorer (REVIEW) | *skynet/explorer*
+feature: Commit Manager (REVIEW) | *commit*
+feature: Merge Manager (REVIEW) | *merge*
+feature: ATS Defect Viewer (REVIEW) | *defect*
+feature: MANIFEST plugin config (IGNORE) | *.MF | *plugin.xml
+feature: Framework jdk and core (REVIEW) | *framework/core* | *framework/jdk*
+feature: Widgets (REVIEW) | *ats/ide/util/widgets* | *skynet/widgets* | *Dam.java
+feature: ATS Change Request (REVIEW) | *change*
+feature: Quick Search (REVIEW) | *skynet/search*
+feature: Skywalker (REVIEW) | *skynet/skywalker*
+feature: REST (REVIEW) | *rest*
+feature: Misc (REVIEW)

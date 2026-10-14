@@ -13,22 +13,31 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.EstimatedHours;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.WorkPackage;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XCommitManagerWfeWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XXValidateReqChangesButtonWfeWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XXWorkingBranchWfeWidget;
+import static org.eclipse.osee.framework.core.widget.XOption.REQUIRED;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 
 /**
  * @author Donald G. Dunne
  */
+
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefTeamSimpleAnalyze extends AbstractWorkDef {
 
    public WorkDefTeamSimpleAnalyze() {
@@ -41,27 +50,27 @@ public class WorkDefTeamSimpleAnalyze extends AbstractWorkDef {
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new AttrWidgetDef(Description).set(REQUIRED), //
             new CompositeLayoutItem(4, //
-               new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam") //
+               new AttrWidgetDef(EstimatedHours), //
+               new AttrWidgetDef(WorkPackage) //
             ));
 
       bld.andState(2, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new AttrWidgetDef(Description).set(REQUIRED), //
+            new CompositeLayoutItem(6, //
+               new WidgetDef(XXWorkingBranchWfeWidget), //
+               new WidgetDef(XXValidateReqChangesButtonWfeWidget), //
+               new WidgetDef(XCommitManagerWfeWidget) //
+            ), //
             new CompositeLayoutItem(4, //
-               getWorkingBranchWidgetComposite(), //
-               new WidgetDef("Validate Requirement Changes", "XValidateReqChangesButton"), //
-               new WidgetDef("Commit Manager", "XCommitManager"), //
-               new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
-               new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam") //
+               new AttrWidgetDef(EstimatedHours), //
+               new AttrWidgetDef(WorkPackage) //
             ));
 
       bld.andState(3, "Completed", StateType.Completed) //

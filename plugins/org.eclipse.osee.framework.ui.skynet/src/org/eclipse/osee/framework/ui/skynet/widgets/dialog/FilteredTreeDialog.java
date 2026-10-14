@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
@@ -38,6 +39,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -60,6 +63,9 @@ public class FilteredTreeDialog extends MessageDialog {
    List<Object> selected = new ArrayList<>();
    private final boolean withClear;
    protected boolean clearSelected = false;
+   private String descUrl;
+   private FilteredTreeListener filteredTreeListener;
+   protected boolean okSelected = false;
 
    public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
@@ -157,8 +163,10 @@ public class FilteredTreeDialog extends MessageDialog {
          @Override
          public void doubleClick(DoubleClickEvent event) {
             updateSelected();
+            okSelected = true;
             dialog.okPressed();
          }
+
       });
       treeViewer.getFilterControl().addModifyListener(new ModifyListener() {
 
@@ -175,12 +183,31 @@ public class FilteredTreeDialog extends MessageDialog {
       if (!getSelectable().isEmpty()) {
          treeViewer.getViewer().setInput(getSelectable());
       }
+      if (filteredTreeListener != null) {
+         filteredTreeListener.treeViewerCreated(treeViewer);
+      }
       if (input != null) {
          treeViewer.getViewer().setInput(input);
       }
       if (initialSelections != null) {
          setInitialSelections(initialSelections);
       }
+
+      if (Strings.isValid(descUrl)) {
+         Composite composite = new Composite(parent, SWT.None);
+         composite.setLayout(new GridLayout());
+         composite.setLayoutData(new GridData());
+
+         final Button button = new Button(composite, SWT.PUSH);
+         button.setText("Show Descriptions");
+         button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               Program.launch(descUrl);
+            }
+         });
+      }
+
       updateStatusLabel();
 
       return parent;
@@ -228,6 +255,12 @@ public class FilteredTreeDialog extends MessageDialog {
       Control c = super.createButtonBar(parent);
       okButton = getButton(0);
       okButton.setEnabled(false);
+      okButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            okSelected = true;
+         }
+      });
       if (withClear) {
          Button clearButton = getButton(2);
          clearButton.addSelectionListener(new SelectionAdapter() {
@@ -254,6 +287,10 @@ public class FilteredTreeDialog extends MessageDialog {
       this.multiSelect = multiSelect;
    }
 
+   public void setSingleSelect() {
+      this.multiSelect = false;
+   }
+
    public void setPatternFilter(PatternFilter patternFilter) {
       this.patternFilter = patternFilter;
    }
@@ -272,6 +309,18 @@ public class FilteredTreeDialog extends MessageDialog {
 
    public boolean isWithClear() {
       return withClear;
+   }
+
+   public void setDescUrl(String descUrl) {
+      this.descUrl = descUrl;
+   }
+
+   public void setFilteredTreeListener(FilteredTreeListener filteredTreeListener) {
+      this.filteredTreeListener = filteredTreeListener;
+   }
+
+   public boolean isOkSelected() {
+      return okSelected;
    }
 
 }

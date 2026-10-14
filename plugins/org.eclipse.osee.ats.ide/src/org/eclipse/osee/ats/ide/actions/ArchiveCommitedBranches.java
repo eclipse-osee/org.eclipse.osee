@@ -82,7 +82,6 @@ public class ArchiveCommitedBranches extends AbstractAtsAction {
             for (Branch branch : toCommit) {
                AtsApiService.get().getBranchService().archiveBranch(branch);
                rd.logf("\nArchived: %s", branch.toStringWithId());
-               System.err.println("\nArchived: " + branch.toStringWithId());
                try {
                   // Delay to not overwhelm database
                   Thread.sleep(1 * 60 * 1000);

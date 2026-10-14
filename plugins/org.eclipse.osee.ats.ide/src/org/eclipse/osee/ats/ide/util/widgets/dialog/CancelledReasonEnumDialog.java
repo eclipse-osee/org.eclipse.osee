@@ -13,16 +13,14 @@
 
 package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
-import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,7 +33,7 @@ import org.eclipse.swt.widgets.Control;
 public class CancelledReasonEnumDialog extends EntryDialog {
 
    private String selection = "";
-   private XComboDam reasonCombo;
+   private XXStringsWidget reasonCombo;
 
    public CancelledReasonEnumDialog(String dialogTitle, String dialogMessage) {
       super(dialogTitle, dialogMessage);
@@ -64,40 +62,38 @@ public class CancelledReasonEnumDialog extends EntryDialog {
       return this.selection;
    }
 
-   private String[] getCancelledReasonValues() {
+   private List<String> getCancelledReasonValues() {
       List<String> values = AtsAttributeTypes.CancelledReasonEnum.getEnumStrValues();
-      String[] valueArray = values.toArray(new String[values.size()]);
-      Arrays.sort(valueArray);
-      return valueArray;
+      return values;
    }
 
    public String getCancelledDetails() {
-      return text.get();
+      return textWidget.get();
    }
 
    public void controlEnabled() {
-      this.selection = this.reasonCombo.get();
+      this.selection = this.reasonCombo.getSelectedFirst();
       if (this.selection.contains("Other")) {
-         if (this.text.get().equals("")) {
-            ok.setEnabled(false);
-            text.getLabelWidget().setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+         if (this.textWidget.get().equals("")) {
+            okButton.setEnabled(false);
+            textWidget.setLabelFgColor(SWT.COLOR_RED);
          } else {
-            ok.setEnabled(true);
-            text.getLabelWidget().setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+            okButton.setEnabled(true);
+            textWidget.setLabelFgColor(SWT.COLOR_BLACK);
          }
       } else if (this.selection.equals("")) {
-         ok.setEnabled(false);
+         okButton.setEnabled(false);
       } else {
-         ok.setEnabled(true);
+         okButton.setEnabled(true);
       }
    }
 
    @Override
    protected void createExtendedArea(Composite parent) {
-      this.reasonCombo = new XComboDam("Cancellation Reason");
+      this.reasonCombo = new XXStringsWidget("Cancellation Reason");
       this.reasonCombo.setFillHorizontally(true);
       this.reasonCombo.setFocus();
-      this.reasonCombo.setDataStrings(getCancelledReasonValues());
+      this.reasonCombo.setSelectable(getCancelledReasonValues());
       this.reasonCombo.createWidgets(parent, 2);
       XModifiedListener listener = new XModifiedListener() {
          @Override
@@ -110,28 +106,26 @@ public class CancelledReasonEnumDialog extends EntryDialog {
 
    @Override
    protected void createTextBox() {
-      text = new XTextDam("Cancelled Details");
-      text.setFillHorizontally(true);
-      text.setFocus();
-      text.setDisplayLabel(true);
+      textWidget = new XXTextWidget("Cancelled Details");
+      textWidget.setFocus();
       if (fillVertically) {
-         text.setFillVertically(true);
-         text.setHeight(textHeight == null ? 200 : textHeight);
-         text.setFont(getFont());
+         textWidget.setFillVertically(true);
+         textWidget.setHeight(textHeight == null ? 200 : textHeight);
+         textWidget.setFont(getFont());
       }
-      text.createWidgets(areaComposite, 2);
-      text.setFocus();
+      textWidget.createWidgets(areaComposite, 2);
+      textWidget.setFocus();
       if (Strings.isValid(entryText)) {
-         text.set(entryText);
-         text.selectAll();
+         textWidget.setSelected(entryText);
+         textWidget.selectAll();
       }
-      text.addXModifiedListener(new XModifiedListener() {
+      textWidget.addXModifiedListener(new XModifiedListener() {
          @Override
          public void widgetModified(XWidget widget) {
             controlEnabled();
          }
       });
-      addContextMenu(text.getStyledText());
+      addContextMenu(textWidget.getStyledText());
    }
 
 }

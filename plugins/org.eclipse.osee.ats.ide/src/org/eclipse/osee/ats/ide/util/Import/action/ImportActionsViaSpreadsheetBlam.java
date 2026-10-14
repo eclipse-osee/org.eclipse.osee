@@ -18,111 +18,78 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXButtonPushWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class ImportActionsViaSpreadsheetBlam extends AbstractAtsBlam {
 
-   private static final String OPEN_EXCEL_SPREADSHEET = "Open Excel Import Example Spreadsheet";
-   public static final String NAME = "Import Actions Via Spreadsheet";
+   public static final String BLAM_NAME = "Import Actions Via Spreadsheet";
+   static final String EXCEL_SPREADSHEET_SAVED_AS_XML = "Excel Spreadsheet saved as xml";
+   static final String EMAIL_POCS = "Email POCs";
+   static final String PERSIST = "Persist";
+   static final String OPEN_EXCEL_SPREADSHEET = "Open Excel Import Example Spreadsheet";
 
-   public static enum ImportOption {
-      EMAIL_POCS,
-      POPUP_ERROR_REPORT,
-      PERSIST,
-      NONE
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public ImportActionsViaSpreadsheetBlam() {
+      this(BLAM_NAME, CoreImage.IMPORT);
    }
 
-   @Override
-   public String getName() {
-      return NAME;
+   public ImportActionsViaSpreadsheetBlam(String name) {
+      this(name, CoreImage.IMPORT);
    }
 
-   protected boolean includeGoalWidget() {
-      return true;
+   public ImportActionsViaSpreadsheetBlam(String name, OseeImage image) {
+      super(name, image);
    }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
 
    @Override
    public List<XWidgetData> getXWidgetItems() {
-      XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andXButtonPush(OPEN_EXCEL_SPREADSHEET).andDisplayLabel(false).endWidget();
-      wb.andWidget("Excel Spreadsheet saved as xml", "XFileTextWithSelectionDialog").endWidget();
-      wb.andXCheckbox("Email POCs");
-      wb.andXCheckbox("Persist");
-      wb.andWidget("Add to Goal", "XGoalCombo").andHorizLabel().andLabelAfter().endWidget();
+      createWidgetBuilder();
+      wb.andButtonPushWidget(OPEN_EXCEL_SPREADSHEET).noLabel();
+      wb.andFileSelWidget(EXCEL_SPREADSHEET_SAVED_AS_XML);
+      wb.andCheckBoxWidget(EMAIL_POCS);
+      wb.andCheckBoxWidget(PERSIST);
       return wb.getXWidgetDatas();
    }
 
    @Override
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      try {
-         String path = variableMap.getString("Excel Spreadsheet saved as xml");
-         File file = new File(path);
-         boolean isValid = Strings.isValid(path) && path.endsWith(".xml") && file.isFile();
-         if (!isValid) {
-            AWorkbench.popup("File is not a valid xml file");
-            return;
-         }
-         boolean emailPocs = variableMap.getBoolean("Email POCs");
-         boolean persist = variableMap.getBoolean("Persist");
-
-         try {
-            importActions(file, null, ImportOption.POPUP_ERROR_REPORT, //
-               (emailPocs ? ImportOption.EMAIL_POCS : ImportOption.NONE), //
-               (persist ? ImportOption.PERSIST : ImportOption.NONE));
-         } catch (Exception ex) {
-            log(ex);
-         }
-
-      } finally {
-         monitor.subTask("Done");
-      }
-   }
-
-   public XResultData importActions(File file, IAtsGoal toGoal, ImportOption... importOption) throws Exception {
-      boolean emailPocs = Arrays.asList(importOption).contains(ImportOption.EMAIL_POCS);
-      boolean persist = Arrays.asList(importOption).contains(ImportOption.PERSIST);
-      boolean popupReport = Arrays.asList(importOption).contains(ImportOption.POPUP_ERROR_REPORT);
-      ImportActionsOperation op = new ImportActionsOperation(file, emailPocs, toGoal, persist, NAME);
-      XResultData rd = op.run();
-      if (rd.isErrors()) {
-         if (popupReport) {
-            XResultDataUI.report(rd, getName());
-         }
-      }
-      return rd;
-   }
-
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
+      XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, xWidgetSwtRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(OPEN_EXCEL_SPREADSHEET)) {
-         XButtonPush button = (XButtonPush) xWidget;
+         XXButtonPushWidget button = (XXButtonPushWidget) xWidget;
          button.addXModifiedListener(new XModifiedListener() {
 
             @Override
@@ -138,8 +105,96 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
       }
    }
 
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
+
+   @Override
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
+      try {
+         String path = variableMap.getString(EXCEL_SPREADSHEET_SAVED_AS_XML);
+         File file = new File(path);
+         boolean isValid = Strings.isValid(path) && path.endsWith(".xml") && file.isFile();
+         if (!isValid) {
+            AWorkbench.popup("File is not a valid xml file");
+            return;
+         }
+         boolean emailPocs = variableMap.getBoolean(EMAIL_POCS);
+         boolean persist = variableMap.getBoolean(PERSIST);
+
+         try {
+            importActions(file, ImportOption.POPUP_ERROR_REPORT,
+               (emailPocs ? ImportOption.EMAIL_POCS : ImportOption.NONE), //
+               (persist ? ImportOption.PERSIST : ImportOption.NONE));
+         } catch (Exception ex) {
+            log(ex);
+         }
+
+      } finally {
+         monitor.subTask("Done");
+      }
+   }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
+   public static enum ImportOption {
+      EMAIL_POCS,
+      POPUP_ERROR_REPORT,
+      PERSIST,
+      NONE
+   }
+
+   protected boolean includeGoalWidget() {
+      return true;
+   }
+
+   public XResultData importActions(File file, IAtsGoal toGoal, ImportOption... importOption) throws Exception {
+      boolean emailPocs = Arrays.asList(importOption).contains(ImportOption.EMAIL_POCS);
+      boolean persist = Arrays.asList(importOption).contains(ImportOption.PERSIST);
+      boolean popupReport = Arrays.asList(importOption).contains(ImportOption.POPUP_ERROR_REPORT);
+      ImportActionsOperation op = new ImportActionsOperation(file, emailPocs, toGoal, persist, BLAM_NAME);
+      XResultData rd = op.run();
+      if (rd.isErrors()) {
+         if (popupReport) {
+            XResultDataUI.report(rd, getName());
+         }
+      }
+      return rd;
+   }
+
+   public XResultData importActions(File file, ImportOption... importOption) throws Exception {
+      boolean emailPocs = Arrays.asList(importOption).contains(ImportOption.EMAIL_POCS);
+      boolean persist = Arrays.asList(importOption).contains(ImportOption.PERSIST);
+      boolean popupReport = Arrays.asList(importOption).contains(ImportOption.POPUP_ERROR_REPORT);
+      ImportActionsOperation op = new ImportActionsOperation(file, emailPocs, null, persist, BLAM_NAME);
+      XResultData rd = op.run();
+      if (rd.isErrors()) {
+         if (popupReport) {
+            XResultDataUI.report(rd, getName());
+         }
+      }
+      return rd;
+   }
+
    public File getSampleSpreadsheetFile() throws Exception {
       return OseeInf.getResourceAsFile("atsImport/Action_Import.xml", getClass());
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AtsNavigateViewItems.ATS_IMPORT);
    }
 
    @Override
@@ -149,21 +204,6 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
          + "this BLAM and Run.  Titles that are the same are placed under the same action." //
          + "  After \"Estimated Hours\", remaining columns will attempt to match " //
          + "column name with valid attribute type name add that to Task.";
-   }
-
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(AtsNavigateViewItems.ATS_IMPORT);
-   }
-
-   @Override
-   public Image getImage() {
-      return ImageManager.getImage(CoreImage.IMPORT);
-   }
-
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(CoreImage.IMPORT);
    }
 
 }

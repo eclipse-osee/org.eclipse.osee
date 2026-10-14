@@ -15,11 +15,12 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.note;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNoteType;
-import org.eclipse.osee.framework.ui.skynet.widgets.XList;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXListWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,9 +30,9 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class NewStateNotePage extends WizardPage {
-   public XList typeList;
-   public XText noteText;
-   public XList stateList;
+   public XXListWidget typeList;
+   public XXTextWidget noteText;
+   public XXListWidget stateList;
    private final NewStateNoteWizard wizard;
 
    public NewStateNotePage(NewStateNoteWizard wizard) {
@@ -55,14 +56,12 @@ public class NewStateNotePage extends WizardPage {
       gd.heightHint = 300;
       topCLeft.setLayoutData(gd);
 
-      typeList = new XList("Type");
+      typeList = new XXListWidget("Type");
       typeList.setRequiredEntry(true);
-      typeList.setGrabHorizontal(true);
-      typeList.setRequiredSelected(1, 1);
-      typeList.add(AtsStateNoteType.getNames());
+      typeList.setSelectable(AtsStateNoteType.getNames());
       typeList.setVerticalLabel(true);
       typeList.createWidgets(topCLeft, 2);
-      typeList.addSelectionListener(new SelectionAdapter() {
+      typeList.getSwtList().addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent event) {
@@ -74,15 +73,13 @@ public class NewStateNotePage extends WizardPage {
       topCRight.setLayout(new GridLayout());
       topCRight.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      stateList = new XList("Against State");
+      stateList = new XXListWidget("Against State");
       stateList.setVerticalLabel(true);
       stateList.setRequiredEntry(true);
-      stateList.setGrabHorizontal(true);
-      stateList.setRequiredSelected(1, 1);
-      stateList.add(wizard.getStateNames());
+      stateList.setSelectable(wizard.getStateNames());
       stateList.createWidgets(topCRight, 2);
-      stateList.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      stateList.addSelectionListener(new SelectionAdapter() {
+      stateList.getSwtList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      stateList.getSwtList().addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent event) {
@@ -91,21 +88,22 @@ public class NewStateNotePage extends WizardPage {
       });
       GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
       gridData.widthHint = 300;
-      stateList.getList().setLayoutData(gridData);
+      stateList.getSwtList().setLayoutData(gridData);
 
       Composite bottomC = new Composite(composite, SWT.NONE);
       bottomC.setLayout(new GridLayout());
       bottomC.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      noteText = new XText("Note");
+      noteText = new XXTextWidget("Note");
       noteText.setRequiredEntry(true);
       noteText.setVerticalLabel(true);
       noteText.setFillHorizontally(true);
       noteText.setFillVertically(true);
       noteText.createWidgets(bottomC, 2);
-      noteText.addModifyListener(new ModifyListener() {
+      noteText.addXModifiedListener(new XModifiedListener() {
+
          @Override
-         public void modifyText(org.eclipse.swt.events.ModifyEvent event) {
+         public void widgetModified(XWidget widget) {
             update();
          };
       });

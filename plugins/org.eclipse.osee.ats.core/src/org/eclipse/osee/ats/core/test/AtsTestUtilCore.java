@@ -745,7 +745,7 @@ public class AtsTestUtilCore {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("configureVer1ForWorkingBranch");
       changes.setSoleAttributeValue(version, AtsAttributeTypes.AllowCreateBranch, true);
       changes.setSoleAttributeValue(version, AtsAttributeTypes.AllowCommitBranch, true);
-      changes.setSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
+      changes.setSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1);
       changes.setRelations(version, AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow,
          Arrays.asList(teamWf));
       changes.execute();

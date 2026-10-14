@@ -529,9 +529,8 @@ public class AtsHealthCheckOperation {
       @Override
       public boolean checkBefore(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
          for (ArtifactToken teamDefArt : cache.getTeamDefinitions()) {
-            String branchId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt,
-               AtsAttributeTypes.BaselineBranchId, "-1");
-            BranchId branch = BranchId.valueOf(branchId);
+            BranchId branch = atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt,
+               AtsAttributeTypes.BaselineBranchId, BranchId.SENTINEL);
             if (branch.isValid()) {
                BranchToken branch2 = atsApi.getBranchService().getBranch(branch);
                if (branch2 == null) {
@@ -601,9 +600,8 @@ public class AtsHealthCheckOperation {
             IAtsVersion version = atsApi.getVersionService().getVersionById(verArt);
 
             // Baseline Branch Id valid and Baseline
-            String branchId =
-               atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.BaselineBranchId, "-1");
-            BranchId branch = BranchId.valueOf(branchId);
+            BranchId branch = atsApi.getAttributeResolver().getSoleAttributeValue(verArt,
+               AtsAttributeTypes.BaselineBranchId, BranchId.SENTINEL);
             if (branch.isValid()) {
                BranchToken branch2 = null;
                try {

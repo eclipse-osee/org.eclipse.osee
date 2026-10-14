@@ -23,9 +23,8 @@ import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttrDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -50,14 +49,11 @@ public class AtsPeerToPeerReviewPrepareWorkItemHookIde implements IAtsWorkItemHo
             art.isOfType(AtsArtifactTypes.PeerToPeerReview) && //
             stateDefinition.getName().equals(PeerToPeerReviewState.Prepare.getName()) && //
             ReviewManager.cast(art).getParentAWA() == null && //
-            widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
-            if (widget instanceof XComboDam decisionComboDam) {
-               decisionComboDam.setEnabled(false);
-               decisionComboDam.setRequiredEntry(false);
-            } else if (widget instanceof XHyperlinkWfdForEnumAttrDam decisionComboDam) {
-               decisionComboDam.setEditable(false);
-               decisionComboDam.setRequiredEntry(false);
-            }
+            widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName()) &&
+            widget instanceof XXStringsWidget) {
+            XXStringsWidget decisionComboDam = (XXStringsWidget) widget;
+            decisionComboDam.setEnabled(false);
+            decisionComboDam.setRequiredEntry(false);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

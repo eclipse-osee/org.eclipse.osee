@@ -494,14 +494,6 @@ public class ImportActionsOperation {
       return null;
    }
 
-   private IAgileBacklog getAgileBacklog(String agileTeamName) {
-      IAgileTeam aTeam = atsApi.getAgileService().getAgileTeamByName(agileTeamName);
-      if (aTeam != null) {
-         return atsApi.getAgileService().getAgileBacklog(aTeam);
-      }
-      return null;
-   }
-
    private void addToGoal(ActionData aData, NewActionData data) {
       if (toGoal != null) {
          GoalArtifact goal = (GoalArtifact) atsApi.getQueryService().getArtifact(toGoal);
@@ -510,6 +502,14 @@ public class ImportActionsOperation {
          }
          data.andRelation(AtsRelationTypes.Goal_Goal, goal);
       }
+   }
+
+   private IAgileBacklog getAgileBacklog(String agileTeamName) {
+      IAgileTeam aTeam = atsApi.getAgileService().getAgileTeamByName(agileTeamName);
+      if (aTeam != null) {
+         return atsApi.getAgileService().getAgileBacklog(aTeam);
+      }
+      return null;
    }
 
    public Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> getTeamDefToAias(

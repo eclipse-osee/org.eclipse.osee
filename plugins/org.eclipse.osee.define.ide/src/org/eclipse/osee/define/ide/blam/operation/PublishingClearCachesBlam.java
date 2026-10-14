@@ -20,9 +20,11 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.client.OseeClient;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -35,6 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * BLAM to clear the Publishing Template Manager and Data Rights Manager caches.
@@ -42,224 +45,51 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Loren K. Ashley
  */
 
+@Component(service = AbstractBlam.class, immediate = true)
 public class PublishingClearCachesBlam extends AbstractBlam {
 
-   /**
-    * Enumeration of the caches that need to be cleared.
-    */
-
-   private enum Target {
-
-      //@formatter:off
-      /**
-       * Parameters for clearing the Data Rights Manager cache.
-       */
-
-      DATARIGHTS_MANAGER
-         (
-            ( oseeClient ) -> oseeClient.getTemplateManagerEndpoint().deleteCache(),
-            "/define/datarights"
-         ),
-
-      /**
-       * Parameters for clean the Template Manager cache.
-       */
-
-      TEMPLATE_MANAGER
-         (
-            ( oseeClient ) -> oseeClient.getDataRightsEndpoint().deleteCache(),
-            "/define/templatemanager"
-         );
-      //@formatter:on
-
-      /**
-       * Saves a {@link Consumer} implementation that clears the server cache of the connected server. This method is
-       * used when the property {@link OseeProperties#OSEE_HEALTH_SERVERS_KEY} is not set.
-       */
-
-      private Consumer<OseeClient> attachedServerClear;
-
-      /**
-       * Saves the server URL path for clearing the cache. The URL tail is used when the property
-       * {@link OseeProperties#OSEE_HEALTH_SERVERS_KEY} is set.
-       */
-
-      private String urlTail;
-
-      /**
-       * Creates the enumeration member and saves the cache clear parameters.
-       *
-       * @param attachedServerClear a {@link Consumer} implementation to clear the cache of the connected server.
-       * @param urlTail the server URL path for clearing the cache.
-       */
-
-      private Target(Consumer<OseeClient> attachedServerClear, String urlTail) {
-         this.attachedServerClear = attachedServerClear;
-         this.urlTail = urlTail;
-      }
-
-      /**
-       * Gets the REST API end point class for clearing the cache.
-       *
-       * @return the {@link Class} implementing the REST API end point for clearing the cache.
-       */
-
-      void clearAttachedServerCache(OseeClient oseeClient) {
-         this.attachedServerClear.accept(oseeClient);
-      }
-
-      /**
-       * Gets the URL path for clearing the server's cache.
-       *
-       * @return gets the server's URL path for clearing the cache.
-       */
-
-      String getUrlTail() {
-         return this.urlTail;
-      }
-   }
-
-   /**
-    * Description string for the BLAM
-    */
-
-   private static String blamDescription =
+   private static final String BLAM_NAME = "Publishing Clear Caches";
+   private static final String BLAM_DESC =
       "Clears the Publishing Template and Datarights Configuration caches on all servers.";
 
-   /**
-    * Name string for the BLAM
-    */
-
-   private static String blamName = "Publishing Clear Caches BLAM";
-
-   /**
-    * Creates a new {@link PublishingClearCachesBlam} for clearing publishing configuration caches.
-    */
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
 
    public PublishingClearCachesBlam() {
-      super(PublishingClearCachesBlam.blamName, PublishingClearCachesBlam.blamDescription, null);
+      super(BLAM_NAME, CoreImage.GEAR);
    }
 
-   /**
-    * Clears the <code>target</code> cache on the <code>server</code>.
-    *
-    * @param jaxRsApi {@link JaxRsApi} used to create the {@link WebTarget} used to send the cache clear request.
-    * @param target the {@link PublishingClearCachesBlam.Target} for the cache to be cleared.
-    * @param server the URL of the server to be cleared.
-    * @param xResultData status message are written to the {@link XResultData} object.
-    */
-
-   private void clearServerCache(JaxRsApi jaxRsApi, Target target, String server, XResultData xResultData,
-      String userAuthId) {
-
-      try {
-
-         var webTarget = jaxRsApi.newTargetUrl(String.format("%s%s", server, target.getUrlTail()));
-
-         var response = webTarget.request().delete();
-
-         var responseStatus = response.getStatus();
-
-         //@formatter:off
-         if(    ( responseStatus == HttpURLConnection.HTTP_NO_CONTENT )
-             || ( responseStatus == HttpURLConnection.HTTP_OK         )
-             || ( responseStatus == HttpURLConnection.HTTP_ACCEPTED   ) ) {
-         //@formatter:on
-            xResultData.logf("\n\nServer %s cache clear was successful.", server);
-
-         } else {
-
-            var statusType = response.getStatusInfo();
-
-            xResultData.logf("\n\nERROR: Server %s cache clear was not successful.", server);
-            xResultData.logf("\nResponse: %d - %s", statusType.getStatusCode(), statusType.getReasonPhrase());
-
-         }
-
-      } catch (Exception e) {
-
-         //@formatter:off
-         xResultData.logf
-            (
-               "\n\nERROR: Server %s cache clear exception %s.\n",
-               server,
-               e.getLocalizedMessage()
-            );
-         //@formatter:on
-      }
-
-   }
-
-   /**
-    * Set the OSEE Navigator menu location for the BLAM.
-    */
-
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.DEFINE_HEALTH);
-   }
-
-   /**
-    * The BLAM has no options.
-    *
-    * @return an empty list.
-    */
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
 
    @Override
    public List<XWidgetData> getXWidgetItems() {
       return List.of();
    }
 
-   /**
-    * The BLAM has no options.
-    *
-    * @return an empty "xWdigets" XML element.
-    * @implNote This override is necessary to prevent the base class for defaulting to a branch selector for the
-    * parameters box.
-    */
-
-   @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets/>";
-   }
-
-   /**
-    * When the property {@link OseeProperties#OSEE_HEALTH_SERVERS_KEY} contains a list of servers a JaxRS
-    * {@link WebTarget} is used to request the remote server to clear it's caches. When the property is not set REST API
-    * end points are used to clear the caches of the connected server.
-    */
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
-      monitor.beginTask(PublishingClearCachesBlam.blamName, IProgressMonitor.UNKNOWN);
+      monitor.beginTask(BLAM_NAME, IProgressMonitor.UNKNOWN);
 
-      var oseeClient = OsgiUtil.getService(this.getClass(), OseeClient.class);
-      var jaxRsApi = oseeClient.jaxRsApi();
-      var xResultData = new XResultData();
-      var userAuthId = oseeClient.userService().getUser().getLoginIds().get(0);
+      OseeClient oseeClient = OsgiUtil.getService(this.getClass(), OseeClient.class);
+      JaxRsApi jaxRsApi = oseeClient.jaxRsApi();
+      XResultData xResultData = new XResultData();
+      String userAuthId = oseeClient.userService().getUser().getLoginIds().get(0);
 
       xResultData.log("Clear Publishing Template and Data Rights Configuration Caches All Servers");
 
-      //@formatter:off
-      var serverCount =
-      Arrays
-         .stream
-            (
-               OseeInfo
-                  .getValue(OseeProperties.OSEE_HEALTH_SERVERS_KEY)
-                  .replaceAll( " ", "")
-                  .split(",")
-            )
-         .filter( Predicate.not(Strings::isInvalidOrBlank) )
-         .peek
-            (
-               ( server ) -> Arrays
-                                .stream( Target.values() )
-                                .forEach( ( target ) -> this.clearServerCache( jaxRsApi, target, server, xResultData, userAuthId ) )
-            )
-         .count();
-      //@formatter:on
+      long serverCount =
+         Arrays.stream(OseeInfo.getValue(OseeProperties.OSEE_HEALTH_SERVERS_KEY).replaceAll(" ", "").split(",")).filter(
+            Predicate.not(Strings::isInvalidOrBlank)).peek(
+               (server) -> Arrays.stream(Target.values()).forEach(
+                  (target) -> this.clearServerCache(jaxRsApi, target, server, xResultData, userAuthId))).count();
 
       if (serverCount == 0) {
 
@@ -271,17 +101,81 @@ public class PublishingClearCachesBlam extends AbstractBlam {
          xResultData.logf("Connected server caches cleared.");
       }
 
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            XResultDataUI.report(xResultData, "Cache Clear Results");
-         }
-      });
+      Displays.ensureInDisplayThread(() -> XResultDataUI.report(xResultData, "Cache Clear Results"));
 
       monitor.done();
 
    }
 
-}
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
-/* EOF */
+   private enum Target {
+
+      DATARIGHTS_MANAGER((oseeClient) -> oseeClient.getTemplateManagerEndpoint().deleteCache(), "/define/datarights"),
+
+      TEMPLATE_MANAGER((oseeClient) -> oseeClient.getDataRightsEndpoint().deleteCache(), "/define/templatemanager");
+
+      private final Consumer<OseeClient> attachedServerClear;
+      private final String urlTail;
+
+      private Target(Consumer<OseeClient> attachedServerClear, String urlTail) {
+         this.attachedServerClear = attachedServerClear;
+         this.urlTail = urlTail;
+      }
+
+      void clearAttachedServerCache(OseeClient oseeClient) {
+         this.attachedServerClear.accept(oseeClient);
+      }
+
+      String getUrlTail() {
+         return this.urlTail;
+      }
+   }
+
+   private void clearServerCache(JaxRsApi jaxRsApi, Target target, String server, XResultData xResultData,
+      String userAuthId) {
+
+      try {
+
+         WebTarget webTarget = jaxRsApi.newTargetUrl(String.format("%s%s", server, target.getUrlTail()));
+
+         Response response = webTarget.request().delete();
+
+         int responseStatus = response.getStatus();
+
+         if ((responseStatus == HttpURLConnection.HTTP_NO_CONTENT) || (responseStatus == HttpURLConnection.HTTP_OK) || (responseStatus == HttpURLConnection.HTTP_ACCEPTED)) {
+            xResultData.logf("\n\nServer %s cache clear was successful.", server);
+
+         } else {
+
+            Response.StatusType statusType = response.getStatusInfo();
+
+            xResultData.logf("\n\nERROR: Server %s cache clear was not successful.", server);
+            xResultData.logf("\nResponse: %d - %s", statusType.getStatusCode(), statusType.getReasonPhrase());
+
+         }
+
+      } catch (Exception e) {
+
+         xResultData.logf("\n\nERROR: Server %s cache clear exception %s.\n", server, e.getLocalizedMessage());
+      }
+
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.DEFINE_HEALTH);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return BLAM_DESC;
+   }
+
+}

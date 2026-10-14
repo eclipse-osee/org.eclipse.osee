@@ -27,7 +27,9 @@ public class AtsUserGroups {
    public static IUserGroupArtifactToken AtsTempAdmin = UserGroupArtifactToken.valueOf(5367074L, "ATS Temp Admin");
    public static IUserGroupArtifactToken AtsDeleteWorkflowAdmin =
       UserGroupArtifactToken.valueOf(11200216L, "ATS Delete Workflow Admin");
-   public static IUserGroupArtifactToken peerReviewCreationNotify =
+   public static IUserGroupArtifactToken PeerReviewCreationNotify =
       UserGroupArtifactToken.valueOf(8742803L, "Peer Review Creation");
+   public static IUserGroupArtifactToken AtsWfeDebugUser =
+      UserGroupArtifactToken.valueOf(82947561L, "ATS WFE Debug User");
 
 }

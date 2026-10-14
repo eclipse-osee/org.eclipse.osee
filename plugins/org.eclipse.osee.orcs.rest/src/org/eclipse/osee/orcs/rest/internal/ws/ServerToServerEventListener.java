@@ -63,7 +63,7 @@ public class ServerToServerEventListener {
          }
          listener = new S2SMessagingListener();
          connectionNode.subscribe(ServerToServerMessageId.INSTANCE, listener);
-         OseeLog.log(ServerToServerEventListener.class, Level.INFO,
+         OseeLog.log(ServerToServerEventListener.class, Level.FINE,
             "ServerToServerEventListener: Subscribed to server-to-server events");
       } catch (Exception ex) {
          OseeLog.logf(ServerToServerEventListener.class, Level.WARNING,
