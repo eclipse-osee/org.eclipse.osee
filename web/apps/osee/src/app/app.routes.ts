@@ -27,10 +27,6 @@ export const routes: Routes = [
 		loadChildren: () => import('./actra/actra.routes'),
 	},
 	{
-		path: 'gitlab-agile',
-		loadChildren: () => import('./gitlab-agile-board/gitlab-agile-board.routes'),
-	},
-	{
 		path: 'profile',
 		loadChildren: () => import('./profile/profile.routes'),
 	},
