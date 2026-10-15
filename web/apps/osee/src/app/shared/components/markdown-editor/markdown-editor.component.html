@@ -381,6 +381,17 @@
 		class="tw-relative tw-flex tw-min-h-0 tw-bg-osee-neutral-100 dark:tw-bg-osee-neutral-6"
 		[class.tw-flex-1]="isFullscreen()"
 		[style.height]="isFullscreen() ? null : height()"
+		cdkDropList
+		[id]="dropListId()"
+		[cdkDropListDisabled]="!acceptArtifactDrops()"
+		[cdkDropListSortingDisabled]="true"
+		[cdkDropListEnterPredicate]="acceptArtifactDrag"
+		(cdkDropListEntered)="onArtifactDragEntered($event)"
+		(cdkDropListExited)="onArtifactDragExited()"
+		(cdkDropListDropped)="onArtifactDropped($event)"
+		[class.tw-ring-2]="artifactDragOver()"
+		[class.tw-ring-inset]="artifactDragOver()"
+		[class.tw-ring-osee-blue-6]="artifactDragOver()"
 		(dragover)="onEditorDragOver($event)"
 		(dragenter)="onEditorDragEnter($event)"
 		(dragleave)="onEditorDragLeave($event)"
@@ -396,6 +407,67 @@
 					Drop Image Here
 				</span>
 			</div>
+		}
+		@if (artifactDragOver()) {
+			@if (artifactDragIsImage()) {
+				<!-- Image drag: offer a CHOICE. Top half embeds the image inline
+				     (image-link); bottom half inserts a plain reference (artifact-link).
+				     The active half is driven by pointer POSITION (pointermove), not
+				     mouseenter: CDK's pointer-based drag suppresses mouse enter/move on
+				     the overlay, but pointermove still fires, so we compute the half from
+				     the pointer's Y relative to the container midpoint. The drop lands on
+				     the editor body's cdkDropList underneath regardless of which half, and
+				     the intent decides the tag. -->
+				<div
+					class="tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-overflow-hidden tw-rounded-b-lg"
+					(pointermove)="updateDropIntentFromPointer($event)">
+					<div
+						class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-bg-osee-neutral-100/90 tw-transition-opacity dark:tw-bg-osee-neutral-6/90"
+						[class.tw-ring-2]="dropIntent() === 'image'"
+						[class.tw-ring-inset]="dropIntent() === 'image'"
+						[class.tw-ring-osee-blue-6]="dropIntent() === 'image'"
+						[class.tw-opacity-100]="dropIntent() === 'image'"
+						[class.tw-opacity-40]="dropIntent() !== 'image'">
+						<mat-icon
+							class="tw-size-10 tw-text-4xl tw-leading-[40px] tw-text-osee-blue-6">
+							image
+						</mat-icon>
+						<span
+							class="tw-text-base tw-font-medium tw-text-osee-blue-6">
+							Drop to Embed Image
+						</span>
+					</div>
+					<!-- Prominent divider between the two choices. -->
+					<div class="tw-h-0.5 tw-shrink-0 tw-bg-osee-blue-6"></div>
+					<div
+						class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-bg-osee-neutral-100/90 tw-transition-opacity dark:tw-bg-osee-neutral-6/90"
+						[class.tw-ring-2]="dropIntent() === 'link'"
+						[class.tw-ring-inset]="dropIntent() === 'link'"
+						[class.tw-ring-osee-blue-6]="dropIntent() === 'link'"
+						[class.tw-opacity-100]="dropIntent() === 'link'"
+						[class.tw-opacity-40]="dropIntent() !== 'link'">
+						<mat-icon
+							class="tw-size-10 tw-text-4xl tw-leading-[40px] tw-text-osee-blue-6">
+							add_link
+						</mat-icon>
+						<span
+							class="tw-text-base tw-font-medium tw-text-osee-blue-6">
+							Drop to Insert Link
+						</span>
+					</div>
+				</div>
+			} @else {
+				<div
+					class="tw-pointer-events-none tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-rounded-b-lg tw-bg-osee-neutral-100/90 dark:tw-bg-osee-neutral-6/90">
+					<mat-icon
+						class="tw-size-12 tw-text-5xl tw-leading-[48px] tw-text-osee-blue-6">
+						add_link
+					</mat-icon>
+					<span class="tw-text-lg tw-font-medium tw-text-osee-blue-6">
+						Drop to Insert Link
+					</span>
+				</div>
+			}
 		}
 
 		<div
@@ -444,18 +516,28 @@
 			</div>
 
 			@if (showImages()) {
+				<!-- The (click) is event DELEGATION over sanitized [innerHtml]: the
+				     interactive elements are the rendered <a> anchors, which are natively
+				     focusable and keyboard-activatable (Enter fires a click that bubbles
+				     here). A region-level key handler would be dead code — the keyboard
+				     path already works through the anchors — so the a11y rule is a false
+				     positive for this delegation pattern. -->
+				<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events -->
 				<div
 					class="tw-h-full tw-min-h-0 tw-min-w-0 tw-flex-1 tw-overflow-auto tw-p-4"
 					role="region"
 					aria-label="Markdown preview with images"
 					oseeHelpAnchor="md-editor-preview"
+					(click)="onPreviewClick($event)"
 					[innerHtml]="imagePreviewHtml()"></div>
 			} @else {
+				<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events -->
 				<div
 					class="tw-h-full tw-min-h-0 tw-min-w-0 tw-flex-1 tw-overflow-auto tw-p-4"
 					role="region"
 					aria-label="Markdown preview"
 					oseeHelpAnchor="md-editor-preview"
+					(click)="onPreviewClick($event)"
 					[innerHtml]="mdPreview()"></div>
 			}
 		}

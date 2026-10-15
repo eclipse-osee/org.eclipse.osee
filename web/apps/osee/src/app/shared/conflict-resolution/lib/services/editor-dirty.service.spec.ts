@@ -64,4 +64,25 @@ describe('EditorDirtyService', () => {
 		service.markClean('12-1');
 		expect(service.hasDirtyEditors()).toBe(false);
 	});
+
+	describe('edit generation', () => {
+		it('bumps only on clearAll (bulk invalidation), not on per-field mark/clean', () => {
+			const start = service.generation();
+
+			// Per-field dirty/clean must NOT bump the generation: a normal save of one
+			// field cannot invalidate another field's in-flight deferred commit.
+			service.markDirty('12-1');
+			service.markClean('12-1');
+			expect(service.generation()).toBe(start);
+
+			// A bulk clear (conflict resolve/discard/forced refresh) bumps it so any
+			// in-flight deferred commit from before this point is recognized as stale.
+			service.markDirty('12-1');
+			service.clearAll();
+			expect(service.generation()).toBe(start + 1);
+
+			service.clearAll();
+			expect(service.generation()).toBe(start + 2);
+		});
+	});
 });
