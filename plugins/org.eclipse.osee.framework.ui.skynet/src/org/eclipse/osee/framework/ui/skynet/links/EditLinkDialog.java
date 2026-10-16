@@ -16,10 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.links;
 import org.eclipse.osee.account.rest.model.Link;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class EditLinkDialog extends EntryCheckDialog {
 
-   private XText urlTextWidget, tagTextWidget;
+   private XXTextWidget urlTextWidget, tagTextWidget;
    private String nameText, urlText = "", tagText = "";
    private final String label2;
    private Listener okListener;
@@ -55,12 +55,12 @@ public class EditLinkDialog extends EntryCheckDialog {
 
    @Override
    protected void createExtendedArea(Composite parent) {
-      text.getLabelWidget().addMouseListener(new MouseAdapter() {
+      textWidget.addLabelWidgetListener(new MouseAdapter() {
 
          @Override
          public void mouseUp(MouseEvent e) {
             if (e.button == 3) {
-               text.setText("Google");
+               textWidget.setSelected("Google");
                urlTextWidget.setText("http://www.google.com");
                tagTextWidget.setText("Search");
             }
@@ -68,41 +68,41 @@ public class EditLinkDialog extends EntryCheckDialog {
 
       });
 
-      urlTextWidget = new XText(label2);
+      urlTextWidget = new XXTextWidget(label2);
       urlTextWidget.setFillHorizontally(true);
       if (isFillVertically()) {
          urlTextWidget.setFillVertically(true);
          urlTextWidget.setHeight(100);
-         text.setHeight(100);
+         textWidget.setHeight(100);
          urlTextWidget.setFont(getFont());
       }
       urlTextWidget.set(urlText);
       urlTextWidget.createWidgets(parent, 1);
 
-      urlTextWidget.addModifyListener(new ModifyListener() {
+      urlTextWidget.addXModifiedListener(new XModifiedListener() {
 
          @Override
-         public void modifyText(ModifyEvent e) {
+         public void widgetModified(XWidget widget) {
             handleModified();
             urlText = urlTextWidget.get();
          }
       });
 
-      tagTextWidget = new XText("Enter Search Tags (comma sperated)");
+      tagTextWidget = new XXTextWidget("Enter Search Tags (comma sperated)");
       tagTextWidget.setFillHorizontally(true);
       if (isFillVertically()) {
          tagTextWidget.setFillVertically(true);
          tagTextWidget.setHeight(100);
-         text.setHeight(100);
+         textWidget.setHeight(100);
          tagTextWidget.setFont(getFont());
       }
       tagTextWidget.set(tagText);
       tagTextWidget.createWidgets(parent, 1);
 
-      tagTextWidget.addModifyListener(new ModifyListener() {
+      tagTextWidget.addXModifiedListener(new XModifiedListener() {
 
          @Override
-         public void modifyText(ModifyEvent e) {
+         public void widgetModified(XWidget widget) {
             handleModified();
             tagText = tagTextWidget.get();
          }

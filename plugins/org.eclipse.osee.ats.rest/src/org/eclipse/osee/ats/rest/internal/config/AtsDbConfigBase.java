@@ -50,8 +50,10 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OseeInf;
@@ -151,7 +153,7 @@ public class AtsDbConfigBase {
       // Create "Peer Review Created" User Group.
       IAtsChangeSet changes = atsApi.createChangeSet("Create Peer Review User Group", COMMON);
       ArtifactToken userGroupArt = atsApi.getQueryService().getArtifact(CoreArtifactTokens.UserGroups, COMMON);
-      ArtifactToken artifact = changes.createArtifact(userGroupArt, AtsUserGroups.peerReviewCreationNotify);
+      ArtifactToken artifact = changes.createArtifact(userGroupArt, AtsUserGroups.PeerReviewCreationNotify);
       changes.addAttribute(artifact, CoreAttributeTypes.Email, "testemail@google.com");
       changes.execute();
    }
@@ -252,6 +254,8 @@ public class AtsDbConfigBase {
          changes.createArtifact(userGroup, AtsUserGroups.AtsAdmin);
          changes.createArtifact(userGroup, AtsUserGroups.AtsDeleteWorkflowAdmin);
          changes.createArtifact(userGroup, AtsUserGroups.AtsTempAdmin);
+         ArtifactToken wfeDebugUserGroup = changes.createArtifact(userGroup, AtsUserGroups.AtsWfeDebugUser);
+         changes.relate(wfeDebugUserGroup, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
          changes.execute();
       }
    }

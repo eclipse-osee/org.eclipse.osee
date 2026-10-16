@@ -279,6 +279,9 @@ public class Pdd93CreateDemoAgile extends AbstractPopulateDemoDatabase {
       atsApi.getAgileService().createAgileSprint(DemoArtifactToken.SAW_Agile_Team.getId(),
          DemoArtifactToken.SAW_Sprint_2.getName(), DemoArtifactToken.SAW_Sprint_2.getId());
 
+      atsApi.getAgileService().createAgileSprint(DemoArtifactToken.SAW_Agile_Team.getId(),
+         DemoArtifactToken.SAW_Sprint_3.getName(), DemoArtifactToken.SAW_Sprint_3.getId());
+
       // Add items to Sprint
       JaxAgileItem completedItems = new JaxAgileItem();
       completedItems.setSprintId(DemoArtifactToken.SAW_Sprint_1.getId());

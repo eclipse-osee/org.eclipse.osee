@@ -20,22 +20,14 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewOption;
-import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
-import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXDecisionRevWidget;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.Named;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Contributed through OSGI-INF as both workflow and transition hooks
@@ -50,25 +42,7 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
 
    @Override
    public String getDescription() {
-      return "Add decision options to Decision state based on prepare state's entries.";
-   }
-
-   @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art,
-      boolean isEditable) {
-      if (art.isOfType(AtsArtifactTypes.DecisionReview) && stateDefinition.getName().equals(
-         DecisionReviewState.Decision.getName())) {
-         if (xWidget == null) {
-            throw new OseeStateException("Can't retrieve decision review combo widget to set.");
-         }
-         if (xWidget.getLabel().equals(AtsAttributeTypes.Decision.getUnqualifiedName())) {
-            XComboDam decisionComboDam = (XComboDam) xWidget;
-            DecisionReviewOptions xDecOptions =
-               new DecisionReviewOptions((IAtsDecisionReview) art, AtsApiService.get());
-            decisionComboDam.setDataStrings(Named.getNamesArray(xDecOptions.getDecisionOptions()));
-         }
-      }
-      return Result.TrueResult;
+      return "Set override Decision state based on selected decision.";
    }
 
    @Override
@@ -85,11 +59,11 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
             if (editor.getWorkFlowTab().getCurrentStateSection() == null) {
                return null;
             }
-            XWidget xWidget = editor.getWorkFlowTab().getCurrentStateSection().getPage().getWidget(
+            XWidget xWidget = editor.getWorkFlowTab().getCurrentStateSection().getWidget(
                AtsAttributeTypes.Decision.getUnqualifiedName());
-            XComboDam decisionComboDam = (XComboDam) xWidget;
+            XXDecisionRevWidget decisionWidget = (XXDecisionRevWidget) xWidget;
             DecisionReviewArtifact decArt = (DecisionReviewArtifact) workItem;
-            return getOverrideTransitionToStateName(decArt, decisionComboDam);
+            return getOverrideTransitionToStateName(decArt, decisionWidget);
          }
       }
       return null;
@@ -100,8 +74,8 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
          DecisionReviewState.Decision.getName());
    }
 
-   public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboDam decisionComboDam) {
-      DecisionReviewOption decisionOption = getDecisionOption(decArt, decisionComboDam.get());
+   public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XXDecisionRevWidget decisionWidget) {
+      DecisionReviewOption decisionOption = getDecisionOption(decArt, decisionWidget.getSelectedFirst());
       if (decisionOption == null) {
          return null;
       }

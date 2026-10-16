@@ -52,8 +52,8 @@ import org.eclipse.osee.framework.ui.skynet.change.operations.LoadBranchTransact
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchContentProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchViewerWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchViewerWidget.IBranchWidgetMenuListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -72,7 +72,7 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class BranchTransactionPage extends FormPage implements IBranchWidgetMenuListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IOseeTreeReportProvider {
 
-   private XBranchWidget xBranchWidget;
+   private XBranchViewerWidget xBranchWidget;
    private final BranchId branch;
    private final AtomicBoolean refreshNeeded = new AtomicBoolean(false);
    private final AtomicBoolean processEvents = new AtomicBoolean(false);
@@ -110,7 +110,7 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
 
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-         xBranchWidget = new XBranchWidget(new BranchTransactionXViewerFactory(this), this);
+         xBranchWidget = new XBranchViewerWidget(new BranchTransactionXViewerFactory(this), this);
          xBranchWidget.setDisplayLabel(false);
          xBranchWidget.createWidgets(parent, 1);
          xBranchWidget.adaptControls(toolkit);
@@ -178,7 +178,7 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
       public void done(IJobChangeEvent event) {
          super.done(event);
          String message = String.format("Branch Transactions Load completed in [%s]", Lib.getElapseString(startTime));
-         final XBranchWidget fXBranchWidget = xBranchWidget;
+         final XBranchViewerWidget fXBranchWidget = xBranchWidget;
          OseeLog.log(Activator.class, Level.INFO, message);
          Job job = new UIJob("Reload Branch Transactions") {
 

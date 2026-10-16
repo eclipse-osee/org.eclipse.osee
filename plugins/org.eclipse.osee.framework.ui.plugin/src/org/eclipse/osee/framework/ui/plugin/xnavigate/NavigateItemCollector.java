@@ -49,10 +49,11 @@ public class NavigateItemCollector {
 
    public List<XNavigateItem> getComputedNavItems(Collection<? extends ArtifactId> currUserUserGroups) {
       this.currUserUserGroups = currUserUserGroups;
+
       if (compNavItems.isEmpty()) {
          for (XNavigateItemProvider provider : providers) {
             if (provider.isApplicable()) {
-               provider.getNavigateItems(items);
+               provider.getNavigateItemsForCurrentUser(items);
             }
          }
 
@@ -63,6 +64,7 @@ public class NavigateItemCollector {
          }
 
          createCategoryHierarchy();
+
          createChildren();
 
       }
@@ -70,16 +72,14 @@ public class NavigateItemCollector {
    }
 
    private void createChildren() {
-      // All Category and Sub Category items should be removed
+      // Attach remaining items to their parent category folder. All category/sub-category folders were
+      // already placed by createCategoryHierarchy(), so anything left here is a leaf under a known category.
       for (XNavigateItem item : items) {
          for (XNavItemCat itemCat : item.getCategories()) {
             if (itemCat == null) {
-               rd.errorf("XNavItemCat can not be null\n", itemCat);
-               continue;
-            }
-
-            // OSEE_ADMIN is not a category group
-            if (itemCat.equals(XNavItemCat.OSEE_ADMIN)) {
+               rd.errorf(
+                  "Navigator item [%s] has a null category. Fix: give it a valid XNavItemCat in its constructor.\n",
+                  item.getName());
                continue;
             }
 
@@ -89,7 +89,13 @@ public class NavigateItemCollector {
 
             XNavigateItem foundParent = catStrToItem.get(itemCat.getName());
             if (foundParent == null) {
-               rd.errorf("Children: Can't find parent [%s] for item [%s]\n", itemCat.getName(), item.getName());
+               rd.errorf("Navigator item [%s] could not be placed: no parent folder registered for category [%s].\n" //
+                  + "   Likely cause: the parent folder was never added by a provider, or it is gated to a user " //
+                  + "group the current user is not in while this child is not (so the folder was filtered out " //
+                  + "but the child was not).\n" //
+                  + "   Fix: ensure a folder item with category [%s] is added, and gate the child and its parent " //
+                  + "folder with the SAME user group (getUserGroups()).\n", item.getName(), itemCat.getName(),
+                  itemCat.getName());
             } else {
                foundParent.addChild(item);
             }
@@ -111,6 +117,9 @@ public class NavigateItemCollector {
    }
 
    private void createCategoryHierarchy() {
+      rd.log("Building OSEE Navigator tree: registering top-level folders, then nesting sub-category folders, " //
+         + "then attaching leaf items. Errors below indicate items whose parent folder could not be found " //
+         + "(usually a gating mismatch or a missing folder).\n");
       // Create top items
       for (XNavItemCat topCat : XNavItemCat.orderedValues()) {
          for (XNavigateItem item : new ArrayList<XNavigateItem>(items)) {
@@ -121,7 +130,7 @@ public class NavigateItemCollector {
 
             Collection<XNavItemCat> categories = item.getCategories();
             if (categories.contains(topCat)) {
-               rd.logf("Adding Category [%s]\n", item.getName());
+               rd.logf("Registered top-level folder [%s]\n", item.getName());
                // prevent duplicates
                if (!catStrToItem.containsKey(item.getName())) {
                   catStrToItem.put(item.getName(), item);
@@ -145,26 +154,32 @@ public class NavigateItemCollector {
          } else {
             continue;
          }
-         categories.remove(XNavItemCat.OSEE_ADMIN);
 
          for (XNavItemCat itemCat : categories) {
             String catStr = itemCat.getName();
             while (Strings.isValid(catStr) && catStr.contains(".")) {
                XNavigateItem parentItem = catStrToItem.get(catStr);
                if (parentItem == null) {
-                  rd.logf("\nSearching from Category Str [%s]\n", catStr);
+                  // Walk up the dotted category path (e.g. "ATS.Admin.Testing" -> "ATS.Admin" -> "ATS")
+                  // looking for a registered parent folder to attach this sub-category under.
                   catStr = getReducedCat(catStr);
-                  rd.logf("-- Reduced category to [%s]\n", catStr);
                   if (Strings.isValid(catStr)) {
                      parentItem = catStrToItem.get(catStr);
                      if (parentItem != null) {
                         parentItem.addChild(item);
-                        rd.logf("Adding Sub-Category name [%s] id [%s]\n", item.getName(), catStr);
+                        rd.logf("Nested folder [%s] under [%s]\n", item.getName(), catStr);
                         catStrToItem.put(itemCat.getName(), item);
                         items.remove(item);
                         break;
                      } else {
-                        rd.errorf("Sub-Cat: Can't find parent [%s] for item [%s]\n", catStr, item.getName());
+                        rd.errorf(
+                           "Sub-category folder [%s] could not be placed: no parent folder registered for [%s].\n" //
+                              + "   Likely cause: the parent folder [%s] was never added, or it is gated to a user " //
+                              + "group the current user is not in (so it was filtered out before this sub-category " //
+                              + "was processed).\n" //
+                              + "   Fix: add a folder item for category [%s], and gate it with the same user group " //
+                              + "as its children.\n",
+                           item.getName(), catStr, catStr, catStr);
                      }
                   }
                } else {

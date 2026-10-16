@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.rest;
 
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.junit.Assert;
@@ -30,9 +31,9 @@ public class AtsRestCoverageTest {
    @org.junit.Test
    public void test() {
       XResultData rd = AtsApiService.get().getServerEndpoints().getReportEp().getRestCoverageReport();
-      XResultDataUI.reportAndOpen(rd, "ATS REST Test Coverage", "atsCoverage.html");
+      XResultDataUI.reportAndOpen(rd, "ATS REST Test Coverage", OseeData.getPath().toFile(), "atsCoverage.html", true);
 
-      Assert.assertTrue("Percent test coverage too low; See html report in browser.", rd.isSuccess());
+      Assert.assertTrue("Percent test coverage too low; See HTML report in browser.", rd.isSuccess());
    }
 
 }

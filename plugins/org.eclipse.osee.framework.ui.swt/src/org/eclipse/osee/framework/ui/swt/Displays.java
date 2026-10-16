@@ -67,11 +67,6 @@ public final class Displays {
 
    /**
     * Creates a new Color resource. Remember to dispose the resource when done
-    * 
-    * @param red
-    * @param green
-    * @param blue
-    * @return
     */
 
    public static Color getColor(int red, int green, int blue) {

@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.PointsNumeric;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XXWorkPackageEnumArtWidget;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,6 +31,7 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -41,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.type.CountingMap;
  */
 public class WorkDefinition extends AbstractWorkDefItem {
 
+   private AtsWorkDefinitionToken workDefToken = AtsWorkDefinitionToken.SENTINEL;
    private final List<StateDefinition> states = new ArrayList<>(5);
    @JsonIgnore
    private final CountingMap<String> labelCount = new CountingMap<String>();
@@ -61,12 +65,13 @@ public class WorkDefinition extends AbstractWorkDefItem {
    private XResultData results = new XResultData();
    private final List<WorkDefOption> options = new ArrayList<>();
    private final List<ChangeTypes> changeTypes = new ArrayList<>();
-   private AttributeTypeToken pointsAttrType = AtsAttributeTypes.PointsNumeric;
+   private AttributeTypeToken pointsAttrType = PointsNumeric;
    private final List<Priorities> priorities = new ArrayList<>();
    private final List<ReviewRequiredMinimum> reviewRequiredMinimums = new ArrayList<>();
    private List<IAtsTransitionHook> transitionHooks = new ArrayList<>();
    private List<ConditionalRule> conditions = new ArrayList<>();
    private Comparator<String> pcrIdComparator = null;
+   private List<String> pointsEnums = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -119,7 +124,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
       HeaderDefinition defaultHeaderDef = new HeaderDefinition(this);
       defaultHeaderDef.setShowMetricsHeader(true);
       defaultHeaderDef.getLayoutItems().add( //
-         new WidgetDef("Work Package", "XHyperlinkWorkPackageDam") //
+         new AttrWidgetDef(AtsAttributeTypes.WorkPackage, XXWorkPackageEnumArtWidget) //
       );
       return defaultHeaderDef;
    }
@@ -282,5 +287,21 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    public void setPcrIdComparator(Comparator<String> pcrIdComparator) {
       this.pcrIdComparator = pcrIdComparator;
+   }
+
+   public List<String> getPointsEnums() {
+      return pointsEnums;
+   }
+
+   public void setPointEnums(List<String> pointsEnums) {
+      this.pointsEnums = pointsEnums;
+   }
+
+   public AtsWorkDefinitionToken getWorkDefToken() {
+      return workDefToken;
+   }
+
+   public void setWorkDefToken(AtsWorkDefinitionToken workDefToken) {
+      this.workDefToken = workDefToken;
    }
 }

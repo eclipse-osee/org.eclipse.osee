@@ -12,6 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Donald G. Dunne
  */
@@ -30,5 +33,9 @@ public enum BooleanState {
 
    public boolean isNo() {
       return this == BooleanState.No;
+   }
+
+   public static List<String> getStrs() {
+      return Arrays.asList(Yes.name(), No.name(), UnSet.name());
    }
 }

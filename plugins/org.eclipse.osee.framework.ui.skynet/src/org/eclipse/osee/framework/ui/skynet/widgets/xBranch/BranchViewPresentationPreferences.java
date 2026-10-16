@@ -127,7 +127,7 @@ public class BranchViewPresentationPreferences {
    public void loadPreferences() {
       Preferences pref = getViewPreference();
       for (BranchOptionsEnum keyEnum : BranchOptionsEnum.values()) {
-         XBranchWidget branchWidget = branchView.getXBranchWidget();
+         XBranchViewerWidget branchWidget = branchView.getXBranchWidget();
          switch (keyEnum) {
             case FLAT:
                branchWidget.setBranchOptions(pref.getBoolean(keyEnum.name(), true), keyEnum);

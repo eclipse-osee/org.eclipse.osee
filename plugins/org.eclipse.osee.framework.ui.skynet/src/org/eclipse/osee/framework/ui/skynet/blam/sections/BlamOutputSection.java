@@ -16,7 +16,9 @@ package org.eclipse.osee.framework.ui.skynet.blam.sections;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -39,13 +41,14 @@ import org.eclipse.ui.forms.widgets.Section;
 public class BlamOutputSection extends BaseBlamSection {
 
    private Text formText;
-   private final OperationLogger OperationLogger;
+   private OperationLogger operationLogger;
+   private XResultData rd;
    private final Action executBlamAction;
 
    public BlamOutputSection(BlamEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style, Action executBlamAction) {
       super(editor, abstractBlam, parent, toolkit, style);
       this.executBlamAction = executBlamAction;
-      this.OperationLogger = new InternalLogger();
+      this.operationLogger = new InternalLogger();
    }
 
    public void simluateRun() {
@@ -91,6 +94,9 @@ public class BlamOutputSection extends BaseBlamSection {
          public void run() {
             if (Widgets.isAccessible(formText)) {
                formText.append(text);
+               if (rd != null) {
+                  rd.log(text);
+               }
                getManagedForm().reflow(true);
             }
          }
@@ -103,6 +109,9 @@ public class BlamOutputSection extends BaseBlamSection {
          public void run() {
             if (Widgets.isAccessible(formText)) {
                formText.setText(text);
+               if (rd != null) {
+                  rd.log(text);
+               }
                getManagedForm().reflow(true);
             }
          }
@@ -110,7 +119,7 @@ public class BlamOutputSection extends BaseBlamSection {
    }
 
    public OperationLogger getOutput() {
-      return OperationLogger;
+      return operationLogger;
    }
 
    @Override
@@ -135,6 +144,7 @@ public class BlamOutputSection extends BaseBlamSection {
    }
 
    private final class InternalLogger extends OperationLogger {
+
       @Override
       public void log(String... row) {
          appendText(Collections.toString(", ", (Object[]) row) + "\n");
@@ -142,7 +152,24 @@ public class BlamOutputSection extends BaseBlamSection {
 
       @Override
       public void log(Throwable th) {
+         appendText(String.format("\n\nException Running - %s", Lib.exceptionToString(th)));
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, th);
       }
+   }
+
+   public OperationLogger getOperationLogger() {
+      return operationLogger;
+   }
+
+   public void setOperationLogger(OperationLogger operationLogger) {
+      this.operationLogger = operationLogger;
+   }
+
+   public XResultData getResults() {
+      return rd;
+   }
+
+   public void setRd(XResultData rd) {
+      this.rd = rd;
    }
 }

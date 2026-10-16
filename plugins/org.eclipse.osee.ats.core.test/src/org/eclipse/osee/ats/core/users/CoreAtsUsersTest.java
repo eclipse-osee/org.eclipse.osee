@@ -22,11 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test case for {@link SystemUser}<br/>
- * Test case for {@link Anonymous}<br/>
- * Test case for {@link UnAssigned}<br/>
- * Test case for {@link AtsUser}
- *
  * @author Donald G. Dunne
  */
 public class CoreAtsUsersTest {

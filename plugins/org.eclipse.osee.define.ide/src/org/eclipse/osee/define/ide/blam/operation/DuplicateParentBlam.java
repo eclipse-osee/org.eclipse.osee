@@ -23,38 +23,63 @@ import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class DuplicateParentBlam extends AbstractBlam {
+
+   private static final String BLAM_NAME = "Report Artifacts with Duplicate Parent(s)";
 
    BranchId branch = null;
 
-   @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets>" + //
-         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" />" + //
-         "</xWidgets>";
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public DuplicateParentBlam() {
+      super(BLAM_NAME, CoreImage.BLAM);
    }
 
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
    @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.DEFINE_HEALTH);
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andBranchSelWidget();
+      return wb.getXWidgetDatas();
    }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      branch = variableMap.getBranch("Branch");
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
+      branch = variableMap.getBranch(XWidgetLabels.BRANCH);
 
       if (branch == null || branch.isInvalid()) {
          log("Must select valid branch.");
@@ -76,6 +101,20 @@ public class DuplicateParentBlam extends AbstractBlam {
          log("No artifacts found with duplicate parents.");
       }
 
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.DEFINE_HEALTH);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Finds artifacts that have multiple parents in the default hierarchy on the selected branch. Opens results in Mass Artifact Editor for review and correction.";
    }
 
 }

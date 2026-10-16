@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests;
 
+import org.eclipse.osee.ats.ide.integration.tests.coderev.DemoDbCodeReviewTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.define.DefineIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.demo.dbinit.DemoDbInitTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.demo.dbpopulate.DemoDbPopulateSuite;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.ide.integration.tests.framework.access.FrameworkAcce
 import org.eclipse.osee.ats.ide.integration.tests.framework.core.FrameworkCoreSuite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.skynet.core.artifact.SkynetCoreArtifact_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.FrameworkUiSkynetTest_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.XWidgetsTest;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.health.OrcsHealthTest;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.OrcsRestTestSuite;
@@ -49,6 +51,7 @@ import org.junit.runners.Suite;
    DemoDbInitTestSuite.class,
    DemoDbPopulateSuite.class,
    DemoDbServerTestSuite.class,
+   DemoDbCodeReviewTestSuite.class, //
    /**
     * AtsTest_AllAts_Suite suite needs to be right after populate because<br/>
     * search counts are used from populate and need to remain the same.
@@ -70,9 +73,9 @@ import org.junit.runners.Suite;
    DirtyArtifactCacheTest.class,
    FrameworkUiSkynetTest_Suite.class,
    LongRunningTestSuite.class,
+   XWidgetsTest.class,
    ZenithTestSuite.class,
-   OrcsHealthTest.class //
-})
+   OrcsHealthTest.class,})
 public class AtsIdeIntegrationTestSuite {
    // Test Suite
 

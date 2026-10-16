@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;

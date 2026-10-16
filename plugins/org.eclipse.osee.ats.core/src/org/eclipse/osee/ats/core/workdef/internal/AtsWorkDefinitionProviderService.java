@@ -10,81 +10,101 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.ats.core.workdef.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
- * Service to retrieve all work definitions that have been registered. Should not be used by applications, only by the
- * WorkDefinitionService
+ * Collects all OSGI-registered {@link IAtsWorkDefinitionBuilder} services, builds the applicable ones, and
+ * serves the merged set. Should not be used by applications, only by the WorkDefinitionService.
+ * <p>
+ * Builders are retained (not just their built result) so {@link #clearCaches()} can rebuild the applicable set on
+ * demand. This matters because {@link IAtsWorkDefinitionBuilder#isApplicable()} is not constant: the demo builders
+ * gate on {@code DemoUtil.isDemoDatabase()} (system property {@code osee.db == "orgdemo"}), which the demo DB-config
+ * op flips <i>after</i> the builders have already bound. Rebuilding on clear re-evaluates {@code isApplicable()} so a
+ * server that becomes a demo database at runtime (e.g. the CI populate path, which does not launch with
+ * {@code -Dosee.db=orgdemo}) still contributes the demo Work Definitions.
  *
  * @author Donald G. Dunne
  */
+@Component(service = IAtsWorkDefinitionProviderService.class, immediate = true)
 public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProviderService {
 
-   private static Map<Long, WorkDefinition> idToWorkDef = new HashMap<>();
-   private final Collection<IAtsWorkDefinitionProvider> workDefProviders = new ArrayList<>();
-   private final Collection<IAtsWorkDefinitionProvider> workDefProviderProcessed = new ArrayList<>();
-   private AtsWorkDefinitionProvider atsWorkDefProv;
+   /** All bound builders, retained so the applicable set can be rebuilt when caches are cleared. */
+   private static final List<IAtsWorkDefinitionBuilder> builders = new CopyOnWriteArrayList<>();
+   /** WorkDefs added programmatically (tests), kept across rebuilds. */
+   private static final Map<Long, WorkDefinition> added = new ConcurrentHashMap<>();
+   /** The served set: applicable builders' output plus the programmatic adds. Rebuilt lazily. */
+   private static final Map<Long, WorkDefinition> idToWorkDef = new ConcurrentHashMap<>();
+   private static volatile boolean loaded = false;
 
-   @Override
-   public void addWorkDefinitionProvider(final IAtsWorkDefinitionProvider workDefProvider) {
-      this.workDefProviders.add(workDefProvider);
-
-      Thread load = new Thread("Load Work Defs") {
-
-         @Override
-         public void run() {
-            handleProvider(workDefProvider);
-         }
-
-      };
-      load.start();
+   @Reference(service = //
+   IAtsWorkDefinitionBuilder.class, //
+      cardinality = ReferenceCardinality.MULTIPLE, //
+      policy = ReferencePolicy.DYNAMIC, //
+      policyOption = ReferencePolicyOption.GREEDY, //
+      bind = "addWorkDefinitionBuilder", //
+      unbind = "removeWorkDefinitionBuilder" //
+   )
+   public void addWorkDefinitionBuilder(IAtsWorkDefinitionBuilder builder) {
+      builders.add(builder);
+      loaded = false;
    }
 
-   public void ensureLoaded() {
-      // Add default
-      if (!workDefProviderProcessed.contains(atsWorkDefProv)) {
-         atsWorkDefProv = new AtsWorkDefinitionProvider();
-         workDefProviders.add(atsWorkDefProv);
-      }
-      int cacheSize = idToWorkDef.keySet().size();
-      // Add any not processed
-      for (IAtsWorkDefinitionProvider workDefProvider : new CopyOnWriteArrayList<>(workDefProviders)) {
-         handleProvider(workDefProvider);
-      }
-      // Don't process if no new work defs
-      if (cacheSize == idToWorkDef.keySet().size()) {
+   public void removeWorkDefinitionBuilder(IAtsWorkDefinitionBuilder builder) {
+      builders.remove(builder);
+      loaded = false;
+   }
+
+   public AtsWorkDefinitionProviderService() {
+      // for osgi
+   }
+
+   /**
+    * Build the applicable set from the retained builders (re-evaluating {@link IAtsWorkDefinitionBuilder#isApplicable()}
+    * each time) plus any programmatic adds. Enforces unique ids and fails loud on build errors.
+    */
+   private static synchronized void ensureLoaded() {
+      if (loaded) {
          return;
       }
-      XResultData rd = new XResultData();
-      for (WorkDefinition workDef : idToWorkDef.values()) {
+      Map<Long, WorkDefinition> rebuilt = new ConcurrentHashMap<>();
+      for (IAtsWorkDefinitionBuilder builder : builders) {
+         if (!builder.isApplicable()) {
+            continue;
+         }
+         WorkDefinition workDef = builder.build();
+         if (workDef == null) {
+            continue;
+         }
+         WorkDefinition existing = rebuilt.get(workDef.getId());
+         if (existing != null && !existing.getName().equals(workDef.getName())) {
+            throw new OseeArgumentException("Work Definitions must have unique id; duplicate for [%s]-[%s]",
+               workDef.getId(), workDef.getName());
+         }
          if (workDef.getResults().isErrors()) {
-            rd.merge(workDef.getResults());
+            throw new OseeArgumentException("Exception Building WorkDef [%s]: %s", workDef.getName(),
+               workDef.getResults().toString());
          }
+         rebuilt.put(workDef.getId(), workDef);
       }
-      if (rd.isErrors()) {
-         throw new OseeArgumentException("Exception Building WorkDef(s) %s", rd.toString());
-      }
-   }
-
-   private void handleProvider(IAtsWorkDefinitionProvider workDefProvider) {
-      if (!workDefProviderProcessed.contains(workDefProvider)) {
-         for (WorkDefinition workDef : workDefProvider.getWorkDefinitions()) {
-            idToWorkDef.put(workDef.getId(), workDef);
-         }
-         workDefProviderProcessed.add(workDefProvider);
-      }
+      rebuilt.putAll(added);
+      idToWorkDef.clear();
+      idToWorkDef.putAll(rebuilt);
+      loaded = true;
    }
 
    @Override
@@ -101,14 +121,15 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
 
    @Override
    public void addWorkDefinition(WorkDefinition workDef) {
-      ensureLoaded();
-      idToWorkDef.put(workDef.getId(), workDef);
+      added.put(workDef.getId(), workDef);
+      loaded = false;
    }
 
    @Override
    public void clearCaches() {
-      workDefProviderProcessed.clear();
-      idToWorkDef.clear();
+      // Force the applicable set to be rebuilt from the retained builders on next access, re-evaluating
+      // isApplicable(). Required so a server that becomes a demo database at runtime picks up the demo WorkDefs.
+      loaded = false;
    }
 
 }

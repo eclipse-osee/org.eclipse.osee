@@ -83,7 +83,7 @@ public class ImportActionsViaSpreadsheetTest {
       File file = blam.getSampleSpreadsheetFile();
       Assert.assertNotNull(file);
 
-      XResultData rd = blam.importActions(file, null, ImportOption.PERSIST);
+      XResultData rd = blam.importActions(file, ImportOption.PERSIST);
       Assert.assertTrue(rd.toString(), rd.isSuccess());
 
       List<Artifact> arts = ArtifactQuery.getArtifactListFromName(FIRST_ACTION_TITLE, atsApi.getAtsBranch());
@@ -173,7 +173,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertNotNull(file);
 
       // Import actions to backlog and sprint
-      XResultData rd = blam.importActions(file, null, ImportOption.PERSIST);
+      XResultData rd = blam.importActions(file, ImportOption.PERSIST);
       Assert.assertTrue(rd.toString(), rd.isSuccess());
 
       // Two should be added to backlog

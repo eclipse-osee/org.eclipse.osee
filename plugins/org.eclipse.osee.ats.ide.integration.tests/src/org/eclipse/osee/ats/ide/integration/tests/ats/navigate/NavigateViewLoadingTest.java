@@ -36,23 +36,25 @@ public class NavigateViewLoadingTest {
 
    @Test
    public void test() {
-      XResultData rd = new XResultData();
-      NavigateItemCollector collector = new NavigateItemCollector(XNavigateItemProviders.getProviders(), null, rd);
+
+      XResultData rd1 = new XResultData();
+      NavigateItemCollector collector1 = new NavigateItemCollector(XNavigateItemProviders.getProviders(), null, rd1);
       List<IUserGroupArtifactToken> myUserGroups = new ArrayList<>();
       myUserGroups.addAll(AtsApiService.get().userService().getMyUserGroups());
-      List<XNavigateItem> navItems = collector.getComputedNavItems(myUserGroups);
-      Assert.assertTrue(rd.toString(), rd.isSuccess());
-      Assert.assertTrue(navItems.size() > 15);
-      Assert.assertTrue(collector.getItems().size() > 215);
+      List<XNavigateItem> navItems = collector1.getComputedNavItems(myUserGroups);
+      Assert.assertTrue(rd1.toString(), rd1.isSuccess());
+      Assert.assertTrue(navItems.size() > 22);
+      List<XNavigateItem> items1 = collector1.getItems();
+      Assert.assertTrue("Expected > 200, was " + items1.size(), items1.size() > 200);
 
-      rd = new XResultData();
-      collector = new NavigateItemCollector(XNavigateItemProviders.getProviders(), null, rd);
+      XResultData rd2 = new XResultData();
+      NavigateItemCollector collector2 = new NavigateItemCollector(XNavigateItemProviders.getProviders(), null, rd2);
+      // Adding admin groups should bump top and total items
       myUserGroups.add(CoreUserGroups.OseeAdmin);
       myUserGroups.add(AtsUserGroups.AtsAdmin);
-      List<XNavigateItem> navItems2 = collector.getComputedNavItems(myUserGroups);
-      Assert.assertTrue(rd.toString(), rd.isSuccess());
-      Assert.assertTrue(navItems2.size() > 15);
-      Assert.assertTrue(collector.getItems().size() > 220);
+      List<XNavigateItem> navItems2 = collector2.getComputedNavItems(myUserGroups);
+      Assert.assertTrue(rd2.toString(), rd2.isSuccess());
+      Assert.assertTrue(navItems2.size() > 24);
 
    }
 

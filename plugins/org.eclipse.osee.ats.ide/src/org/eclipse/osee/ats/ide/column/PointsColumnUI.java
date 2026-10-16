@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.column;
 
-import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +31,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.validate.XXIntegerValidator;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -110,7 +110,7 @@ public class PointsColumnUI extends XViewerAtsColumn implements IXViewerValueCol
       AtsApi atsApi) {
       if (pointsAttrType == AtsAttributeTypes.PointsNumeric) {
          EntryDialog dialog = new EntryDialog("Enter Points", "Enter Points");
-         dialog.setNumberFormat(NumberFormat.getInstance());
+         dialog.setValidator(XXIntegerValidator.instance);
          if (dialog.open() == Window.OK) {
             String entry = dialog.getEntry();
             if (Strings.isNumeric(entry)) {

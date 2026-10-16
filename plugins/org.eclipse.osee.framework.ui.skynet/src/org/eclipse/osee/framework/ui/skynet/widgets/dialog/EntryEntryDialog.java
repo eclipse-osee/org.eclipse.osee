@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 
@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class EntryEntryDialog extends EntryDialog {
 
-   private XText text2;
+   private XXTextWidget text2;
    private String entryText2 = "";
    private final String text2Label;
    private Listener okListener;
@@ -51,21 +51,21 @@ public class EntryEntryDialog extends EntryDialog {
    @Override
    protected void createExtendedArea(Composite parent) {
 
-      text2 = new XText(text2Label);
+      text2 = new XXTextWidget(text2Label);
       text2.setFillHorizontally(true);
       if (isFillVertically()) {
          text2.setFillVertically(true);
          text2.setHeight(100);
-         text.setHeight(100);
+         textWidget.setHeight(100);
          text2.setFont(getFont());
       }
       text2.set(entryText2);
       text2.createWidgets(customAreaParent, 1);
 
-      text2.addModifyListener(new ModifyListener() {
+      text2.addXModifiedListener(new XModifiedListener() {
 
          @Override
-         public void modifyText(ModifyEvent e) {
+         public void widgetModified(XWidget widget) {
             handleModified();
             entryText2 = text2.get();
          }

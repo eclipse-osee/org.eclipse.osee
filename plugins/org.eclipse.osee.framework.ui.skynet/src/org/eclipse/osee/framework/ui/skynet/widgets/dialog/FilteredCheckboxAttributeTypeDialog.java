@@ -48,6 +48,11 @@ public class FilteredCheckboxAttributeTypeDialog extends FilteredCheckboxTreeDia
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }
 
+   public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends AttributeTypeToken> selectable, ILabelProvider labelProvider, org.eclipse.jface.viewers.ViewerComparator comparator) {
+      super(title, message, new ArrayTreeContentProvider(), labelProvider, comparator);
+      this.selectables.addAll(selectable);
+   }
+
    @SuppressWarnings("ModifyingCollectionWithItself")
    public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends AttributeTypeToken> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
       super(title, message, contentProvider, labelProvider, new AttributeTypeNameComparator());

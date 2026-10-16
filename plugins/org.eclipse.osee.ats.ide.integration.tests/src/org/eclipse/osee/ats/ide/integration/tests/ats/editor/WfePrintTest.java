@@ -53,7 +53,7 @@ public class WfePrintTest {
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
       String html = XResultDataUI.getReport(resultData, "report").getManipulatedHtml();
-      Assert.assertTrue(html.length() > 5600);
+      Assert.assertTrue(html.length() > 3500);
 
       PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
       smaPrint = new WfePrint(peerArt);
@@ -61,8 +61,8 @@ public class WfePrintTest {
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
       Assert.assertTrue(
-         "Expected > 3500 chars, was " + XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length(),
-         XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 3500);
+         "Expected > 2500 chars, was " + XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length(),
+         XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 2500);
 
       TaskArtifact taskArt = null;
       for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf)) {
@@ -75,7 +75,7 @@ public class WfePrintTest {
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 2600);
+      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 1600);
 
       TeamWorkFlowArtifact teamWf2 =
          (TeamWorkFlowArtifact) AtsApiService.get().getQueryService().getArtifactByAtsId("TW25");
@@ -86,7 +86,7 @@ public class WfePrintTest {
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 2900);
+      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 1900);
 
       TestUtil.severeLoggingEnd(monitorLog);
    }

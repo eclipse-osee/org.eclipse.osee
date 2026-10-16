@@ -13,38 +13,47 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.HoldState;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.xx.XXHoldStateWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class HoldStateSearchWidget extends AbstractXHyperlinkWfdSearchWidget<HoldState> {
+public class HoldStateSearchWidget extends AbstractSearchWidget<XXHoldStateWidget, HoldState> {
 
-   public static SearchWidget HoldStateWidget = new SearchWidget(23298234, "Hold State", "XHyperlinkWfdForObject");
+   private static final String LABEL = "Hold State";
+   public static SearchWidget HoldStateWidget = new SearchWidget(23298234, LABEL, WidgetIdAts.XXHoldStateWidget);
 
    public HoldStateSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(HoldStateWidget, searchItem);
    }
 
    @Override
-   public void set(AtsSearchData data) {
-      if (getWidget() != null) {
-         HoldState holdState = data.getHoldState();
-         getWidget().setSelected(holdState);
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      if (xWidget.getLabel().equals(LABEL)) {
+         xWidget.set(XOption.CLEAR);
       }
    }
 
    @Override
-   public Collection<HoldState> getSelectable() {
-      return HoldState.values;
-   }
-
-   @Override
-   boolean isMultiSelect() {
-      return false;
+   public void set(AtsSearchData data) {
+      if (getWidget() != null) {
+         HoldState holdState = data.getHoldState();
+         // AtsSearchData uses null for no Hold State criterion; the XX widget rejects null and uses an empty selected
+         // collection with Not_Set only as its getter sentinel. Normalize both representations to a real clear.
+         if (holdState == null || holdState.isNotSet()) {
+            getWidget().clear();
+         } else {
+            getWidget().setSelected(holdState);
+         }
+      }
    }
 
 }

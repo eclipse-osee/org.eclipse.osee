@@ -270,10 +270,14 @@ public class XResultDataUI {
    }
 
    public static void reportAndOpen(XResultData rd, String title, String filename, boolean open) {
+      reportAndOpen(rd, title, new File(System.getProperty("user.home")), filename, open);
+   }
+
+   /** Same as {@link #reportAndOpen(XResultData, String, String, boolean)} but writes under {@code dir}. */
+   public static void reportAndOpen(XResultData rd, String title, File dir, String filename, boolean open) {
       String html = report(rd, title, Manipulations.ALL, Manipulations.NOUI);
       try {
-         String fName = System.getProperty("user.home") + File.separator + filename;
-         File outFile = new File(fName);
+         File outFile = new File(dir, filename);
          Lib.writeStringToFile(html, outFile);
          if (open) {
             Program.launch(outFile.getAbsolutePath());

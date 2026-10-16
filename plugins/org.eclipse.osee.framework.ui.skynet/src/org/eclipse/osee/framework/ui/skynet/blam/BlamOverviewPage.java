@@ -18,12 +18,13 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamOutputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamUsageSection;
+import org.eclipse.osee.framework.ui.skynet.blam.sections.DetailsBlamSection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -91,6 +92,11 @@ public class BlamOverviewPage extends FormPage {
             managedForm.getToolkit(), sectionStyle, executeBlamAction);
          managedForm.addPart(outputSection);
       }
+
+      // Collapsed-by-default Details section (no EXPANDED bit)
+      int detailsStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
+      managedForm.addPart(new DetailsBlamSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+         managedForm.getToolkit(), detailsStyle));
 
       managedForm.refresh();
       form.layout();
@@ -165,7 +171,20 @@ public class BlamOverviewPage extends FormPage {
       return inputSection.getBlamWidgets();
    }
 
-   public XWidget geXWidget(XWidgetData widData) {
-      return inputSection.getXWidget(widData);
+   public XWidget geXWidget(WidgetId widgetId) {
+      return inputSection.getXWidget(widgetId);
    }
+
+   public BlamInputSection getInputSection() {
+      return inputSection;
+   }
+
+   public BlamOutputSection getOutputSection() {
+      return outputSection;
+   }
+
+   public VariableMap getVariableMap() {
+      return inputSection.getData();
+   }
+
 }

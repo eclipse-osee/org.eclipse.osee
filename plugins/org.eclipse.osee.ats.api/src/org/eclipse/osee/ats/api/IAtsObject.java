@@ -18,6 +18,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.HasArtifactToken;
 import org.eclipse.osee.framework.core.data.HasArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
@@ -26,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends NamedId, HasDescription, HasArtifactType {
+public interface IAtsObject extends NamedId, HasDescription, HasArtifactType, HasArtifactToken {
 
    default ArtifactToken getStoreObject() {
       return null;
@@ -45,6 +46,7 @@ public interface IAtsObject extends NamedId, HasDescription, HasArtifactType {
       return ArtifactId.valueOf(getId());
    }
 
+   @Override
    @JsonIgnore
    default ArtifactToken getArtifactToken() {
       return ArtifactToken.valueOf(getId(), getName(), CoreBranches.COMMON, getArtifactType());

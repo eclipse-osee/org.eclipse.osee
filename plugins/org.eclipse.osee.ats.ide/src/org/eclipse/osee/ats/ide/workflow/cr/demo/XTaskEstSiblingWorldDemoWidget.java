@@ -14,20 +14,32 @@ package org.eclipse.osee.ats.ide.workflow.cr.demo;
 
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
-import org.eclipse.osee.ats.ide.workflow.cr.sibling.taskest.XTaskEstSiblingWorldWidget;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
+import org.eclipse.osee.ats.ide.workflow.cr.sibling.taskest.XAbstractTaskEstSiblingWorldWidget;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class XTaskEstSiblingWorldDemoWidget extends XTaskEstSiblingWorldWidget {
+// CodeReview.IgnoreXxWid
+@Component(service = XWidget.class, immediate = true)
+public class XTaskEstSiblingWorldDemoWidget extends XAbstractTaskEstSiblingWorldWidget {
+
+   public static final WidgetId ID = WidgetIdAts.XTaskEstSiblingWorldDemoWidget;
+
+   public XTaskEstSiblingWorldDemoWidget() {
+      super(ID);
+   }
 
    @Override
    public WorldXViewer createWorldXViewer(Composite tableComp, IXViewerFactory xViewerFactory) {
@@ -37,7 +49,7 @@ public class XTaskEstSiblingWorldDemoWidget extends XTaskEstSiblingWorldWidget {
 
    @Override
    public ToolBar createActionBar(Composite tableComp) {
-      final XTaskEstSiblingWorldWidget fWidget = this;
+      final XAbstractTaskEstSiblingWorldWidget fWidget = this;
       tableComp.addDisposeListener(new DisposeListener() {
 
          @Override

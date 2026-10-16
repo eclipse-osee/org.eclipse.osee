@@ -13,10 +13,17 @@
 
 package org.eclipse.osee.ats.api.review;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Donald G. Dunne
  */
 public enum ReviewFormalType {
+
    InFormal,
-   Formal
+   Formal;
+
+   public static List<ReviewFormalType> ReviewFormalTypes =
+      Arrays.asList(ReviewFormalType.Formal, ReviewFormalType.InFormal);
 };

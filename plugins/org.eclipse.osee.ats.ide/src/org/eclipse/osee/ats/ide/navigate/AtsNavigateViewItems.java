@@ -15,10 +15,10 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat.*;
 import static org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.actions.CreateEnumeratedArtifactAction;
@@ -29,25 +29,21 @@ import org.eclipse.osee.ats.ide.actions.OpenOrphanedActionsAndTeamWorkflows;
 import org.eclipse.osee.ats.ide.actions.OpenOrphanedTasks;
 import org.eclipse.osee.ats.ide.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.ide.actions.ValidatePeerDefectsAction;
-import org.eclipse.osee.ats.ide.branch.CreateAtsBaselineBranchBlam;
 import org.eclipse.osee.ats.ide.column.ToggleXViewerColumnLoadingDebug;
 import org.eclipse.osee.ats.ide.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.ide.config.version.CreateNewVersionItem;
-import org.eclipse.osee.ats.ide.config.version.GenerateFullVersionReportItem;
-import org.eclipse.osee.ats.ide.config.version.GenerateVersionReportItem;
 import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ParallelConfigurationView;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
+import org.eclipse.osee.ats.ide.config.version.TestingXWidgetHierarchyView;
 import org.eclipse.osee.ats.ide.config.wizard.CreateAtsConfiguration;
 import org.eclipse.osee.ats.ide.health.AtsHealthCheckNavigateItem;
 import org.eclipse.osee.ats.ide.health.OseeProductionTestsNavItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.EmailTeamsItem.MemberType;
-import org.eclipse.osee.ats.ide.notify.EmailActionsBlam;
 import org.eclipse.osee.ats.ide.notify.TestOseeEmailSend;
 import org.eclipse.osee.ats.ide.notify.TestWorkItemEmailSend;
-import org.eclipse.osee.ats.ide.operation.ConvertWorkflowStatesBlam;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowAdvSearchItem;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.search.navigate.SavedActionSearchNavigateItem;
@@ -110,7 +106,6 @@ import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
 import org.eclipse.osee.framework.ui.skynet.user.GetOseeUsersFromServer;
 import org.eclipse.osee.framework.ui.skynet.user.OpenUsersInMassEditor;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUserGroups;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
 /**
  * Main ATS Navigate View items for OSEE Navigator. Other XNavigateItems can be provided through similar providers via
@@ -128,7 +123,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    public static final XNavItemCat ATS_IMPORT = new XNavItemCat("ATS.Import");
    public static final XNavItemCat ATS_UTIL = new XNavItemCat("ATS.Utility");
    public static final XNavItemCat ATS_ADMIN = new XNavItemCat("ATS.Admin");
-   public static final XNavItemCat ATS_HEALTH = new XNavItemCat("ATS.Health");
+   public static final XNavItemCat ATS_ADMIN_TESTING = new XNavItemCat("ATS.Admin.Testing");
 
    public static final XNavItemCat ATS_VERSIONS = new XNavItemCat("ATS.Versions");
    public static final XNavItemCat ATS_VERSIONS_ADMIN = new XNavItemCat("ATS.Versions.Admin");
@@ -145,6 +140,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    public static final XNavItemCat REVIEW = new XNavItemCat("Review");
 
    public static boolean debug = false;
+
    private List<XNavigateItem> items;
 
    @Override
@@ -153,8 +149,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
-      this.items = (items == null ? new ArrayList<XNavigateItem>() : items);
+   public List<XNavigateItem> getNavigateItemsForCurrentUser(List<XNavigateItem> items) {
+      this.items = items;
       ElapsedTime time = new ElapsedTime("NVI - addAtsSectionChildren", debug);
       try {
 
@@ -227,23 +223,23 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new XNavigateItemFolder("Admin", CoreImage.USER, adminOrUserMgmt, USER_MANAGEMENT_ADMIN, SUBCAT));
 
       items.add(new XNavigateItemAction(new OpenUsersInMassEditor("Open Active Users", Active.Active),
-         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT));
       items.add(new XNavigateItemAction(new OpenUsersInMassEditor("Open All Users", Active.Both),
-         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT));
 
       items.add(new XNavigateItemAction(new GetOseeUsersFromServer("Get Active Users", Active.Active),
-         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT));
       items.add(new XNavigateItemAction(new GetOseeUsersFromServer("Get All Users", Active.Both),
-         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT, OSEE_ADMIN));
+         CoreImage.ARTIFACT_SEARCH, adminOrUserMgmt, XNavigateItem.USER_MANAGEMENT));
 
       items.add(new CreateNewUsersByNameItem());
 
       items.add(new SearchNavigateItem(
          new UserRelatedToAtsObjectSearch("Admin - Show User Related Objects", null, false, LoadView.WorldEditor),
-         USER_MANAGEMENT_ADMIN, OSEE_ADMIN));
+         Arrays.asList(CoreUserGroups.OseeAdmin), USER_MANAGEMENT_ADMIN));
       items.add(new SearchNavigateItem(
          new UserRelatedToAtsObjectSearch("Show Active User Related Objects", null, true, LoadView.WorldEditor),
-         USER_MANAGEMENT_ADMIN, OSEE_ADMIN));
+         Arrays.asList(CoreUserGroups.OseeAdmin), USER_MANAGEMENT_ADMIN));
 
       time.end();
    }
@@ -253,7 +249,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       try {
          items.add(new XNavigateItemFolder(DEFINE.getName(), CoreImage.LASER, TOP));
          items.add(new XNavigateItemFolder("Health", CoreImage.HEALTH, XNavigateItem.DEFINE_HEALTH, SUBCAT));
-         items.add(new XNavigateItemFolder("Admin", CoreImage.LASER, XNavigateItem.DEFINE_ADMIN, OSEE_ADMIN, SUBCAT));
+         items.add(new XNavigateItemFolder("Admin", CoreImage.LASER, Arrays.asList(AtsUserGroups.AtsAdmin),
+            XNavigateItem.DEFINE_ADMIN, SUBCAT));
          if (AtsApiService.get().getUserService().isAtsAdmin()) {
             items.add(new CreateEnumeratedArtifactAction());
             items.add(new EditEnumeratedArtifact());
@@ -291,15 +288,17 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new XNavigateItemFolder(ATS.getName(), AtsImage.ATS, TOP));
       items.add(new XNavigateItemFolder("Utility", CoreImage.GEAR, ATS_UTIL, SUBCAT));
       items.add(new XNavigateItemFolder("Import", CoreImage.IMPORT, ATS_IMPORT, SUBCAT));
-      items.add(new XNavigateItemFolder("Admin", PluginUiImage.ADMIN, ATS_ADMIN, SUBCAT, OSEE_ADMIN));
+      items.add(new XNavigateItemFolder("Admin", PluginUiImage.ADMIN, Arrays.asList(AtsUserGroups.AtsAdmin), ATS_ADMIN,
+         SUBCAT));
 
       items.add(new AtsConfigResultsEditorNavigateItem());
       // Admin
       items.add(new ClearAtsConfigCache());
       items.add(new ClearAtsConfigCacheAllServers());
-      items.add(
-         new XNavigateItemAction(new OpenOrphanedActionsAndTeamWorkflows(), AtsImage.ACTION, ATS_ADMIN, OSEE_ADMIN));
-      items.add(new XNavigateItemAction(new OpenOrphanedTasks(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
+      items.add(new XNavigateItemAction(new OpenOrphanedActionsAndTeamWorkflows(), AtsImage.ACTION,
+         Arrays.asList(AtsUserGroups.AtsAdmin), ATS_ADMIN));
+      items.add(new XNavigateItemAction(new OpenOrphanedTasks(), AtsImage.TASK, Arrays.asList(AtsUserGroups.AtsAdmin),
+         ATS_ADMIN));
       items.add(new GenerateAtsConfigDatabaseViews());
       items.add(new DuplicateArtifactReport());
 
@@ -314,7 +313,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addHealthItems() {
       ElapsedTime time = new ElapsedTime("NVI - addAtsItems", debug);
       try {
-         items.add(new XNavigateItemFolder("Health", CoreImage.HEALTH, ATS_HEALTH, SUBCAT));
+         items.add(new XNavigateItemFolder("Health", CoreImage.HEALTH, Arrays.asList(AtsUserGroups.AtsAdmin),
+            ATS_ADMIN_TESTING, SUBCAT));
 
          items.add(new AtsHealthCheckNavigateItem());
       } catch (Exception ex) {
@@ -329,7 +329,6 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new XNavigateItemFolder(UTILITY.getName(), CoreImage.GEAR, XNavItemCat.BOT));
 
          items.add(new GenerateIdsAndArtId());
-         items.add(new ValidateOseeTypes());
          items.add(new CommaDelimitLines());
          items.add(new ToggleAccessControlDebug());
          items.add(new ToggleXViewerColumnLoadingDebug());
@@ -391,12 +390,11 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       ElapsedTime time = new ElapsedTime("NVI - admin", debug);
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
 
-         items.add(new XNavigateItemFolder("Admin", PluginUiImage.ADMIN, MID_TOP, OSEE_ADMIN));
+         items.add(
+            new XNavigateItemFolder("Admin", PluginUiImage.ADMIN, Arrays.asList(AtsUserGroups.AtsAdmin), MID_TOP));
 
          items.add(new CreateAtsConfiguration());
-         items.add(new XNavigateItemBlam(new ConvertWorkflowStatesBlam(), TOP_ADMIN));
          items.add(new DisplayCurrentOseeEventListeners());
-         items.add(new XNavigateItemBlam(new CreateAtsBaselineBranchBlam(), TOP_ADMIN));
          items.add(
             new XNavigateItemAction(new OpenChangeReportByTransactionIdAction(), CoreImage.BRANCH_CHANGE, TOP_ADMIN));
          items.add(new XNavigateItemAction(new OpenArtifactEditorById(), CoreImage.ARTIFACT_EDITOR, TOP_ADMIN));
@@ -405,8 +403,10 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new OseeProductionTestsNavItem());
          items.add(new XNavigateItemAction(new GetNextArtifactId(), CoreImage.ADD_GREEN, TOP_ADMIN));
 
-         items.add(new XNavigateItemFolder("Testing", PluginUiImage.ADMIN, ADMIN_TESTING, SUBCAT));
-         items.add(new OpenWorkDefExamplesNavigateItem(ADMIN_TESTING));
+         items.add(new XNavigateItemFolder("Testing", PluginUiImage.ADMIN, TOP_ADMIN_TESTING, SUBCAT));
+         items.add(new TestingValidateOseeTypes());
+         items.add(new TestingOpenWorkflowSamples());
+         items.add(new TestingXWidgetHierarchyView());
       }
       time.end();
    }
@@ -423,7 +423,6 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new EmailUserGroups());
       items.add(new SubscribeByActionableItem());
       items.add(new SubscribeByTeamDefinition());
-      items.add(new XNavigateItemBlam(new EmailActionsBlam(), CoreImage.EMAIL, EMAIL_NOTIFICATIONS));
       time.end();
    }
 
@@ -434,8 +433,6 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addReportItems() {
       ElapsedTime time = new ElapsedTime("NVI - report", debug);
       items.add(new XNavigateItemFolder(REPORTS.getName(), AtsImage.REPORT, MID_BOT));
-
-      items.add(new FirstTimeQualityMetricReportItem());
       time.end();
    }
 
@@ -473,12 +470,15 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       ElapsedTime time = new ElapsedTime("NVI - workDef", debug);
 
       items.add(new XNavigateItemFolder("Work Definition", AtsImage.WORKFLOW_DEFINITION, ATS_WORK_DEFINITION, SUBCAT));
-      items.add(
-         new XNavigateItemFolder("Admin", AtsImage.WORKFLOW_DEFINITION, ATS_WORK_DEFINITION_ADMIN, SUBCAT, OSEE_ADMIN));
+      items.add(new XNavigateItemFolder("Admin", AtsImage.WORKFLOW_DEFINITION, Arrays.asList(AtsUserGroups.AtsAdmin),
+         ATS_WORK_DEFINITION_ADMIN, SUBCAT));
 
       try {
          items.add(new WorkDefinitionViewer(AtsNavigateViewItems.ATS_WORK_DEFINITION));
-         items.add(new ValidateWorkDefinitionNavigateItem(ATS_WORK_DEFINITION_ADMIN));
+         // Admin.Testing category only exists for ATS admins (see addAdminItems), so only add there
+         if (AtsApiService.get().getUserService().isAtsAdmin()) {
+            items.add(new ValidateWorkDefinitionNavigateItem());
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
       }
@@ -490,14 +490,13 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       try {
 
          items.add(new XNavigateItemFolder("Versions", AtsImage.VERSION, ATS_VERSIONS, SUBCAT));
-         items.add(new XNavigateItemFolder("Admin", AtsImage.VERSION, ATS_VERSIONS_ADMIN, SUBCAT, OSEE_ADMIN));
+         items.add(new XNavigateItemFolder("Admin", AtsImage.VERSION, Arrays.asList(AtsUserGroups.AtsAdmin),
+            ATS_VERSIONS_ADMIN, SUBCAT));
 
          items.add(new ParallelConfigurationView());
          items.add(new SearchNavigateItem(new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor),
             ATS_VERSIONS));
          items.add(new SearchNavigateItem(new NextVersionSearchItem(null, LoadView.WorldEditor), ATS_VERSIONS));
-         items.add(new GenerateVersionReportItem());
-         items.add(new GenerateFullVersionReportItem());
          items.add(new MassEditTeamVersionItem("Team Versions", CoreImage.VERSION));
 
          if (AtsApiService.get().getUserService().isAtsAdmin()) {

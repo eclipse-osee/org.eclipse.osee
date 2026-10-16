@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.core.workdef.builder;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.NeedBy;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.PointsEnum;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -29,17 +31,25 @@ import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.SpaceWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.xx.ChangeTypeWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.xx.PointsEmumWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.xx.PointsNumericWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.xx.PriorityWidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -51,7 +61,7 @@ public class WorkDefBuilder {
    XResultData rd;
    List<StateDefBuilder> stateDefBuilders = new ArrayList<>();
    List<Integer> stateOrdinals = new ArrayList<>();
-   private HeaderDefinitionBuilder headerBuilder;
+   private CustomHeaderDefinitionBuilder custHeaderBuilder;
 
    public WorkDefBuilder(AtsWorkDefinitionToken workDefToken) {
       this(workDefToken, null);
@@ -60,6 +70,7 @@ public class WorkDefBuilder {
    public WorkDefBuilder(AtsWorkDefinitionToken workDefToken, ArtifactTypeToken artType) {
       workDef = new WorkDefinition(workDefToken.getId(), workDefToken.getName());
       workDef.setArtType(artType);
+      workDef.setWorkDefToken(workDefToken);
       rd = workDef.getResults();
    }
 
@@ -87,9 +98,31 @@ public class WorkDefBuilder {
       return stateDefBuilder;
    }
 
+   public void addCompositeHeader() {
+
+      andCustomHeader() //
+         .andLayout(getChangeTypeComposite()) //
+         .showMetricsHeader(false); //
+   }
+
+   public CompositeLayoutItem getChangeTypeComposite() {
+      AttributeTypeToken pointsAttrType = workDef.getPointsAttrType();
+      return new CompositeLayoutItem(11, //
+         new ChangeTypeWidgetDefinition().andRequired(), //
+         new SpaceWidgetDef(), //
+         new PriorityWidgetDefinition(), //
+         new SpaceWidgetDef(), //
+         (pointsAttrType.equals(PointsEnum) ? //
+            new PointsEmumWidgetDefinition() : //
+            new PointsNumericWidgetDefinition()), //
+         new SpaceWidgetDef(), //
+         new AttrWidgetDef(NeedBy).andImage(CoreImage.CALENDAR) //
+      );
+   }
+
    public WorkDefinition getWorkDefinition() {
 
-      workDef.setHeaderDefinition(getHeaderDefBuildr().getHeaderDefinition());
+      workDef.setHeaderDefinition(getCustomHeaderDefBuildr().getHeaderDefinition());
 
       // Validate state ordinals
       int numStates = stateDefBuilders.size();
@@ -189,22 +222,22 @@ public class WorkDefBuilder {
       return peerRevBldr;
    }
 
-   public HeaderDefinitionBuilder getHeaderDefBuildr() {
-      if (headerBuilder == null) {
-         headerBuilder = new HeaderDefinitionBuilder(workDef);
+   public CustomHeaderDefinitionBuilder getCustomHeaderDefBuildr() {
+      if (custHeaderBuilder == null) {
+         custHeaderBuilder = new CustomHeaderDefinitionBuilder(workDef);
       }
-      return headerBuilder;
+      return custHeaderBuilder;
    }
 
-   public HeaderDefinitionBuilder andHeader() {
-      return getHeaderDefBuildr();
+   public CustomHeaderDefinitionBuilder andCustomHeader() {
+      return getCustomHeaderDefBuildr();
    }
 
    public void isShowStateMetrics() {
       workDef.setShowStateMetrics(true);
    }
 
-   public void isShowStateMetrics(boolean show) {
+   public void showStateMetrics(boolean show) {
       workDef.setShowStateMetrics(show);
    }
 
@@ -262,8 +295,9 @@ public class WorkDefBuilder {
       return this;
    }
 
-   public void andPointsAttributeType(AttributeTypeToken pointsAttrType) {
+   public void andPointsAttributeType(AttributeTypeToken pointsAttrType, String... pointsEnums) {
       workDef.setPointsAttrType(pointsAttrType);
+      workDef.setPointEnums(Collections.asList(pointsEnums));
    }
 
    public WorkDefBuilder andPriorities(Priorities... priorities) {

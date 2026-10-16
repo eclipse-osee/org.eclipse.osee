@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -42,11 +41,11 @@ import org.eclipse.osee.define.ide.traceability.report.ArtifactTraceCount;
 import org.eclipse.osee.define.ide.traceability.report.ArtifactsWithoutRelations;
 import org.eclipse.osee.define.ide.traceability.report.IReportDataCollector;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.CoreImage;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -55,12 +54,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -68,113 +65,85 @@ import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
-import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
+ * BLAMTESTED
+ *
  * @author Roberto E. Escobar
  */
 @SuppressWarnings("deprecation")
+@Component(service = AbstractBlam.class, immediate = true)
 public class TraceReportBlam extends AbstractBlam {
-   private static final String BRANCH = "Requirements Branch";
+
+   private static final String BLAM_NAME = "Trace Report";
+   static final String EXCEL = "Excel";
+   static final String RESULT_EDITOR = "Result Editor";
+   static final String BRANCH = "Requirements Branch";
+
    private final List<IResultsEditorTab> resultsTabs;
-   private XCombo branchViewWidget;
-   private XBranchSelectWidget branchWidget;
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
 
    public TraceReportBlam() {
+      super(BLAM_NAME, CoreImage.REPORT);
       this.resultsTabs = new ArrayList<>();
    }
 
-   @Override
-   public String getName() {
-      return "Trace Report";
-   }
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
 
    @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.TRACE);
-   }
-
-   @Override
-   public Image getImage() {
-      return ImageManager.getImage(CoreImage.TRACE);
-   }
-
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(CoreImage.TRACE);
-   }
-
-   @Override
-   public String getDescriptionUsage() {
-      return "Generates a trace report by scanning the selected branch for the selected trace unit types.";
-   }
-
-   private String getOperationsCheckBoxes(String value) {
-      StringBuilder builder = new StringBuilder();
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"");
-      builder.append(value);
-      builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      return builder.toString();
-   }
-
-   @Override
-   public String getXWidgetsXml() {
-      StringBuilder builder = new StringBuilder();
-      builder.append("<xWidgets>");
-      //      builder.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"Select UI List File\" />");
-      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" />");
-      builder.append(BRANCH_VIEW_WIDGET);
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Trace Types:\"/>");
+   public java.util.List<org.eclipse.osee.framework.core.widget.XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andBranchAndViewSelWidget(BRANCH);
+      // Select Trace Types label
+      wb.andLabelWidget("Select Trace Types:");
       for (TraceTypeEnum traceType : TraceTypeEnum.values()) {
-         builder.append(getOperationsCheckBoxes(traceType.asLabel()));
+         wb.andCheckBoxWidget(traceType.asLabel());
       }
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Report Output:\"/>");
-      builder.append(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Result Editor\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Excel\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append("</xWidgets>");
-      return builder.toString();
+      wb.andSpaceWidget();
+      // Select Report Output
+      wb.andLabelWidget("Select Report Output:");
+      wb.andCheckBoxWidget(RESULT_EDITOR);
+      wb.andCheckBoxWidget(EXCEL);
+      return wb.getXWidgetDatas();
    }
 
-   private List<TraceTypeEnum> getCheckedTraceItems(VariableMap variableMap) {
-      List<TraceTypeEnum> toReturn = new ArrayList<>();
-      for (TraceTypeEnum traceType : TraceTypeEnum.values()) {
-         if (variableMap.getBoolean(traceType.asLabel())) {
-            toReturn.add(traceType);
-         }
-      }
-      return toReturn;
-   }
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
-      //      String fileName = variableMap.getString("Select UI List File");
-      BranchId branch = variableMap.getBranch("Requirements Branch");
-      if (branch == null) {
-         throw new OseeArgumentException("Branch cannot be null");
+      BranchId branch = variableMap.getBranch();
+      if (branch.isInvalid()) {
+         log("Select Branch\n");
+         return;
       }
-      Object view = variableMap.getValue(BRANCH_VIEW);
+      BranchViewToken view = variableMap.getBranchView();
+      if (view.isInvalid()) {
+         log("Select Branch View\n");
+         return;
+      }
       setViewId(view);
 
       List<TraceTypeEnum> traceTypes = getCheckedTraceItems(variableMap);
       if (traceTypes.isEmpty()) {
-         throw new OseeArgumentException("Please select a trace type");
+         log("Please select a trace type");
+         return;
       }
-      boolean isExcelOutput = variableMap.getBoolean("Excel");
-      boolean isResultEditorOutput = variableMap.getBoolean("Result Editor");
+      boolean isExcelOutput = variableMap.getBoolean(EXCEL);
+      boolean isResultEditorOutput = variableMap.getBoolean(RESULT_EDITOR);
       OutputType output = OutputType.asType(isExcelOutput, isResultEditorOutput);
       if (output == null) {
-         throw new OseeArgumentException("Please select a report output type");
+         log("Please select a report output type");
+         return;
       }
       ISheetWriter writer = null;
       CharBackedInputStream excelInputStream = null;
@@ -244,30 +213,18 @@ public class TraceReportBlam extends AbstractBlam {
       }
    }
 
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener xModListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, xModListener, isEditable);
-      if (xWidget.getLabel().equals(BRANCH)) {
-         branchWidget = (XBranchSelectWidget) xWidget;
-         branchWidget.addXModifiedListener(new XModifiedListener() {
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
-            @Override
-            public void widgetModified(XWidget widget) {
-               if (branchViewWidget != null) {
-                  branchViewWidget.setEditable(true);
-                  BranchId branch = branchWidget.getSelection();
-                  if (branch != null && branch.isValid()) {
-                     branchViews = ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
-                     branchViewWidget.setDataStrings(branchViews.values());
-                  }
-               }
-            }
-         });
-      } else if (xWidget.getLabel().equals(BRANCH_VIEW)) {
-         branchViewWidget = (XCombo) xWidget;
-         branchViewWidget.setEditable(false);
+   private List<TraceTypeEnum> getCheckedTraceItems(VariableMap variableMap) {
+      List<TraceTypeEnum> toReturn = new ArrayList<>();
+      for (TraceTypeEnum traceType : TraceTypeEnum.values()) {
+         if (variableMap.getBoolean(traceType.asLabel())) {
+            toReturn.add(traceType);
+         }
       }
+      return toReturn;
    }
 
    private void executeReports(IProgressMonitor monitor, Map<String, AbstractArtifactRelationReport> reports) {
@@ -446,9 +403,9 @@ public class TraceReportBlam extends AbstractBlam {
       Used_By_Test_Unit_Trace(CoreRelationTypes.Uses_Requirement, CoreRelationTypes.Uses_TestUnit, true),
       Validation_By_TestProcedure(CoreRelationTypes.Validation_Requirement, CoreRelationTypes.Validation_Validator, true);
 
-      private RelationTypeSide toReq;
-      private RelationTypeSide toTraceUnit;
-      private boolean isTestType;
+      private final RelationTypeSide toReq;
+      private final RelationTypeSide toTraceUnit;
+      private final boolean isTestType;
 
       TraceTypeEnum(RelationTypeSide toReq, RelationTypeSide toTraceUnit, boolean isTestType) {
          this.toReq = toReq;
@@ -555,6 +512,20 @@ public class TraceReportBlam extends AbstractBlam {
       public void endTable() {
          resultsTabs.add(new ResultsEditorTableTab(title, columns, rows));
       }
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.TRACE);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Generates a trace report by scanning the selected branch for the selected trace unit types.";
    }
 
 }

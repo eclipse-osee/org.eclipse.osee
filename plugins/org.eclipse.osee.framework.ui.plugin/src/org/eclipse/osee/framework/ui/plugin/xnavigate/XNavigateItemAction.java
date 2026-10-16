@@ -13,14 +13,12 @@
 
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -36,7 +34,6 @@ public class XNavigateItemAction extends XNavigateItem {
 
    private final Action action;
    private boolean promptFirst = false;
-   private Collection<IUserGroupArtifactToken> groups;
 
    public XNavigateItemAction(String name, XNavItemCat... xNavItemCat) {
       this(name, false, (KeyedImage) null, xNavItemCat);
@@ -48,6 +45,11 @@ public class XNavigateItemAction extends XNavigateItem {
 
    public XNavigateItemAction(String name, OseeImage oseeImage, XNavItemCat... xNavItemCat) {
       this(name, false, ImageManager.create(oseeImage), xNavItemCat);
+   }
+
+   public XNavigateItemAction(String name, OseeImage oseeImage, Collection<IUserGroupArtifactToken> groups, XNavItemCat... xNavItemCat) {
+      super(name, ImageManager.create(oseeImage), groups, xNavItemCat);
+      this.action = null;
    }
 
    public XNavigateItemAction(String name, boolean promptFirst, OseeImage oseeImage, XNavItemCat... xNavItemCat) {
@@ -123,17 +125,6 @@ public class XNavigateItemAction extends XNavigateItem {
 
    public void setPromptFirst(boolean promptFirst) {
       this.promptFirst = promptFirst;
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      if (groups != null && !groups.isEmpty()) {
-         return groups;
-      }
-      if (categories.contains(XNavItemCat.OSEE_ADMIN)) {
-         return Arrays.asList(CoreUserGroups.OseeAdmin);
-      }
-      return Arrays.asList(CoreUserGroups.Everyone);
    }
 
 }

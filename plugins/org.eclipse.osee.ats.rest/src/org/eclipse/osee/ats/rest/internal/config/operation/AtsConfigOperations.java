@@ -93,10 +93,6 @@ public class AtsConfigOperations {
       // NOTE: Faster to load individually and allows for easier determination of long loads when debugOn
       for (ArtifactTypeToken artType : Arrays.asList(TeamDefinition, ActionableItem, Version, User, Program)) {
 
-         if (debugOn) {
-            System.err.println("\n");
-         }
-
          ElapsedTime cTime = new ElapsedTime("Load " + artType.getName(), debugOn);
 
          ElapsedTime cTime3 = new ElapsedTime("Search " + artType.getName(), debugOn);
@@ -119,9 +115,6 @@ public class AtsConfigOperations {
 
          cTime.end(Units.MSEC);
 
-      }
-      if (debugOn) {
-         System.err.println("\n");
       }
 
       ElapsedTime time7 = new ElapsedTime("Server ACS - Baseline Branch - query", debugOn);
