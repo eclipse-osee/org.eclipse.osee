@@ -271,7 +271,13 @@ export class ArtifactHistoryDiffDialogComponent {
 				`Reverting attribute change from tx ${this.data.txId}`,
 				this.data.artifactId as `${number}`,
 				applicabilitySentinel,
-				{ set: [attr] }
+				{ set: [attr] },
+				// This dialog is opened at the overlay root, outside the artifact
+				// editor's branch-context subtree, so it does not inherit the scoped
+				// transaction service. Pass the tab's branch explicitly (precedence
+				// tier 1) so the revert targets the artifact's branch, not the global
+				// selector.
+				this.data.branchId
 			)
 			.pipe(take(1))
 			.subscribe(() => {

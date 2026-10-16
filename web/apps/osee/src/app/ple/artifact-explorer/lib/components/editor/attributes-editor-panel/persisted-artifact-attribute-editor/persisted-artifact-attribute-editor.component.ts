@@ -42,6 +42,8 @@ import {
 	EditorDirtyService,
 	PendingAttributeValuesService,
 } from '@osee/shared/conflict-resolution';
+import { ArtifactLinkService } from '../../../../services/artifact-link.service';
+import { MarkdownDropListRegistryService } from '../../../../services/markdown-drop-list-registry.service';
 
 @Component({
 	selector: 'osee-persisted-artifact-attribute-editor',
@@ -108,7 +110,7 @@ import {
 						[disabled]="disabled()"
 						[ngModel]="displayValue()"
 						[name]="'persisted-attr-enum-' + attr().typeId"
-						(ngModelChange)="onValueChange($event)">
+						(ngModelChange)="onEnumChange($event)">
 						@for (opt of attr().enumOptions ?? []; track opt) {
 							<mat-option [value]="opt">{{ opt }}</mat-option>
 						}
@@ -129,8 +131,17 @@ import {
 						class="tw-block"
 						[mdContent]="displayValue()"
 						(mdContentChange)="onMarkdownChange($event)"
+						(mdContentCommitted)="onMarkdownCommitted($event)"
 						[disabled]="!editable()"
 						[artifactId]="artifactId()"
+						[acceptArtifactDrops]="true"
+						[dropListId]="markdownDropListId"
+						[editorBranchId]="branchId()"
+						[artifactLinkNames]="artifactLinkNames()"
+						(artifactLinkIdsChange)="
+							resolveArtifactLinkNames($event)
+						"
+						(artifactLinkClicked)="openArtifactLink($event)"
 						(focusin)="markdownFocused.set(true)"
 						(focusout)="onMarkdownFocusOut($event)" />
 				} @else {
@@ -138,8 +149,7 @@ import {
 						<osee-focus-lost-input
 							[disabled]="disabled()"
 							[value]="displayValue()"
-							[suppressCommit]="conflicted()"
-							(valueChange)="onValueChange($event)"
+							(valueChange)="onTextCommitted($event)"
 							(liveInput)="onLiveInput($event)"
 							[label]="showLabel() ? (attr().name ?? '') : ''"
 							[placeholder]="showLabel() ? '' : 'Enter value...'"
@@ -157,6 +167,20 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	private pendingValuesService = inject(PendingAttributeValuesService);
 	private sseEventService = inject(SseEventService);
 	private destroyRef = inject(DestroyRef);
+	private artifactLinkService = inject(ArtifactLinkService);
+	private dropListRegistry = inject(MarkdownDropListRegistryService);
+
+	/** Resolved display names for `<artifact-link>` ids, used to label preview anchors. */
+	protected readonly artifactLinkNames = signal<Map<string, string>>(
+		new Map()
+	);
+
+	/**
+	 * Unique CDK drop-list id for this editor's markdown drop target, registered
+	 * with {@link MarkdownDropListRegistryService} so the hierarchy drag source can
+	 * connect to it. Registered on construction and removed on destroy.
+	 */
+	protected readonly markdownDropListId = this.dropListRegistry.nextId();
 
 	/** The attribute to edit. */
 	attr = input.required<attribute<string, ATTRIBUTETYPEID>>();
@@ -164,6 +188,18 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	artifactId = input.required<`${number}`>();
 	/** Applicability of the owning artifact. */
 	artifactApplicability = input.required<applic>();
+	/**
+	 * Branch of the owning artifact. Used to resolve `<artifact-link>` targets on
+	 * the same branch as the link (markdown editor), matching desktop behavior.
+	 * Attribute SAVES do not read this: the branch for writes comes from the
+	 * subtree's branch context (see provideBranchContext on ArtifactEditorComponent),
+	 * so a tab keeps writing to its own branch regardless of the global selector.
+	 * Defaults to empty, in which case artifact-link resolution falls back to the
+	 * current UI branch.
+	 */
+	branchId = input<string>('');
+	/** View of the owning artifact, passed through to artifact-link resolution. */
+	viewId = input<string>('');
 	/** Whether the field is disabled. */
 	disabled = input(false);
 	/** Whether a remote conflict exists (blocks auto-save). */
@@ -173,6 +209,11 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 
 	/** Inverse of disabled for components that use editable. */
 	protected editable = computed(() => !this.disabled());
+
+	/** Whether this editor is for the Markdown Content attribute (renders the markdown editor). */
+	protected readonly isMarkdown = computed(
+		() => this.attr().name === 'Markdown Content'
+	);
 
 	/** Whether the markdown editor is currently focused. */
 	protected readonly markdownFocused = signal(false);
@@ -247,6 +288,17 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	private wasServerReady = this.sseEventService.serverReady();
 
 	constructor() {
+		// Register this editor's drop-list id with the hierarchy drag source only
+		// while it is actually rendering the markdown editor; remove it otherwise so
+		// the hierarchy never connects to a non-existent list.
+		effect(() => {
+			if (this.isMarkdown()) {
+				this.dropListRegistry.register(this.markdownDropListId);
+			} else {
+				this.dropListRegistry.unregister(this.markdownDropListId);
+			}
+		});
+
 		effect(() => {
 			if (!this.saving()) {
 				this.previousValue.set(this.displayValue());
@@ -288,6 +340,9 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 			this.pendingValuesService.set(this.attr().id, newValue);
 			if (!this.dirtyService.isDirty(key)) {
 				this.dirtyService.markDirty(key);
+				// Capture the generation this live edit belongs to, so a later deferred
+				// commit can tell whether a resolve/discard invalidated it in between.
+				this.editGeneration = this.dirtyService.generation();
 			}
 		} else if (this.dirtyService.isDirty(key) && !this.conflicted()) {
 			// Value edited back to the persisted value -- clean the field. While a
@@ -295,27 +350,27 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 			// stay tracked so it appears in the resolution dialog and keeps its ring.
 			this.dirtyService.markClean(key);
 			this.pendingValuesService.remove(this.attr().id);
+			this.editGeneration = null;
 		}
 	}
 
-	onBooleanChange(checked: boolean) {
-		const newValue = checked ? 'true' : 'false';
-		if (newValue !== this.previousValue()) {
-			this.trackPendingEdit(newValue);
-			this.saveAttribute(newValue);
-		}
-	}
+	/**
+	 * Generation (from {@link EditorDirtyService}) that this field's current live
+	 * edit was started in, or `null` when there is no live edit. A bulk clear
+	 * (conflict resolve/discard/forced refresh) bumps the service generation; a
+	 * deferred commit whose captured generation no longer matches is a stale echo
+	 * of a discarded edit and must be dropped. See {@link commitDeferred}.
+	 */
+	private editGeneration: number | null = null;
 
-	onValueChange(newValue: string) {
-		// Drop a stale commit. FocusLostInputComponent debounces its blur commit ~500ms, so a
-		// commit can land AFTER the field was cleaned by conflict resolution (which discarded this
-		// edit and reloaded the server value). A genuine edit always marks the field dirty via
-		// onLiveInput keystrokes before its blur commit; a clean field here means this commit is the
-		// debounced tail of a pre-resolution edit, which must not resurrect/re-save the discarded
-		// value over the resolved server value.
-		if (!this.dirtyService.isDirty(this.editorKey())) {
-			return;
-		}
+	/**
+	 * The single authoritative commit path. An edit is persisted only when it is a
+	 * real change AND not blocked by a pending conflict (resolution owns the write
+	 * while conflicted). Used by every widget via {@link commitImmediate} /
+	 * {@link commitDeferred}; those differ only in the staleness check appropriate
+	 * to their timing, not in how they save.
+	 */
+	private commit(newValue: string) {
 		if (newValue !== this.previousValue()) {
 			this.trackPendingEdit(newValue);
 			this.saveAttribute(newValue);
@@ -323,10 +378,62 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	}
 
 	/**
+	 * Commits an edit that happens synchronously at the user's action — boolean
+	 * toggle, enum select, dropped markdown link/image. There is no staleness window
+	 * (the action and the save are in the same tick), so it simply records and saves.
+	 */
+	private commitImmediate(newValue: string) {
+		this.commit(newValue);
+	}
+
+	/**
+	 * Commits an edit reported asynchronously after the user's action — the text
+	 * input's debounced blur (and the markdown blur). Because time passes between
+	 * the edit and this commit, a conflict resolve/discard can land in between.
+	 *
+	 * A deferred commit is only valid if it still represents this field's live edit.
+	 * The authoritative test is value identity against the pending store: live
+	 * keystrokes keep the pending value equal to the latest input, so a genuine
+	 * commit's value matches it. A STALE commit fails this because either:
+	 *   - resolve/discard cleared the pending slot (no pending => dropped), or
+	 *   - the user discarded and then started a NEW edit, so the pending value is
+	 *     now the new text while this echo still carries the OLD text (mismatch =>
+	 *     dropped), which a generation-only check would miss.
+	 * The generation is also checked as a cheap first gate (a bulk clear bumps it),
+	 * but value identity is what makes the retype-after-discard race safe.
+	 */
+	private commitDeferred(newValue: string) {
+		const pending = this.pendingValuesService.get(this.attr().id);
+		const stale =
+			this.editGeneration === null ||
+			this.editGeneration !== this.dirtyService.generation() ||
+			!this.dirtyService.isDirty(this.editorKey()) ||
+			pending !== newValue;
+		if (stale) {
+			return;
+		}
+		this.commit(newValue);
+	}
+
+	onBooleanChange(checked: boolean) {
+		this.commitImmediate(checked ? 'true' : 'false');
+	}
+
+	/** Enum selection is atomic — the select event is both the dirty signal and the commit. */
+	onEnumChange(newValue: string) {
+		this.commitImmediate(newValue);
+	}
+
+	/** Debounced blur commit of the text input. */
+	onTextCommitted(newValue: string) {
+		this.commitDeferred(newValue);
+	}
+
+	/**
 	 * Fires on every keystroke (before blur) for single-line/text inputs so a
 	 * concurrent remote change is detected as a conflict while the user is still
-	 * typing — matching the markdown editor. The actual save still happens on
-	 * blur via `onValueChange`. Dirty-signal churn is avoided by `trackPendingEdit`.
+	 * typing — matching the markdown editor. Records the live edit (dirty + pending
+	 * + generation); the actual save happens on blur via {@link onTextCommitted}.
 	 */
 	onLiveInput(newValue: string) {
 		this.trackPendingEdit(newValue);
@@ -339,6 +446,48 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	onMarkdownChange(newValue: string) {
 		this.pendingMarkdown = newValue;
 		this.trackPendingEdit(newValue);
+	}
+
+	/**
+	 * Called when the markdown editor commits an edit via a non-focus action (a
+	 * dropped artifact link or inserted image). These bypass the textarea focus/blur
+	 * cycle, so `onMarkdownFocusOut` would never fire to persist them — the field
+	 * would stay dirty and block tab close. Save immediately instead (unless a
+	 * conflict is pending, in which case the normal resolution flow applies).
+	 */
+	onMarkdownCommitted(newValue: string) {
+		this.pendingMarkdown = newValue;
+		// While conflicted, keep the edit tracked (dirty + pending) so it surfaces in
+		// the resolution dialog, but do not save -- mirror onMarkdownFocusOut.
+		if (this.conflicted()) {
+			this.trackPendingEdit(newValue);
+			return;
+		}
+		// A drop/image insert is an immediate commit: persist now rather than waiting
+		// for a focusout that never comes.
+		this.commitImmediate(newValue);
+		this.pendingMarkdown = null;
+	}
+
+	/** Resolves display names for the artifact-link ids currently in the content. */
+	protected resolveArtifactLinkNames(ids: string[]) {
+		if (ids.length === 0) {
+			this.artifactLinkNames.set(new Map());
+			return;
+		}
+		this.artifactLinkService
+			.getArtifactNames(ids, this.branchId(), this.viewId())
+			.pipe(take(1))
+			.subscribe((names) => this.artifactLinkNames.set(names));
+	}
+
+	/** Opens an artifact-link clicked in the preview in a new tab on the link's branch. */
+	protected openArtifactLink(artifactId: string) {
+		this.artifactLinkService.openArtifact(
+			artifactId,
+			this.branchId(),
+			this.viewId()
+		);
 	}
 
 	/**
@@ -373,12 +522,16 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 			this.pendingMarkdown !== null &&
 			this.pendingMarkdown !== this.previousValue()
 		) {
-			this.saveAttribute(this.pendingMarkdown);
+			// Blur is a deferred commit (like the text input): route through the
+			// stale-commit guard so a focusout settling after a resolve/discard does
+			// not re-save a discarded value.
+			this.commitDeferred(this.pendingMarkdown);
 			this.pendingMarkdown = null;
 		} else if (this.dirtyService.isDirty(this.editorKey())) {
 			// No net change — clear dirty state (guarded to avoid signal churn).
 			this.dirtyService.markClean(this.editorKey());
 			this.pendingValuesService.remove(this.attr().id);
+			this.editGeneration = null;
 		}
 	}
 
@@ -409,6 +562,7 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 					this.previousValue.set(newValue);
 					this.dirtyService.markClean(this.editorKey());
 					this.pendingValuesService.remove(this.attr().id);
+					this.editGeneration = null;
 					this.saving.set(false);
 				},
 				error: () => {
@@ -426,6 +580,7 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 		// on such a teardown would silently drop an in-progress conflict edit -- the
 		// field would lose its ring and revert to the server value. So while
 		// conflicted we preserve the state; it is cleared wholesale on resolve/dismiss.
+		this.dropListRegistry.unregister(this.markdownDropListId);
 		if (this.conflicted()) {
 			return;
 		}

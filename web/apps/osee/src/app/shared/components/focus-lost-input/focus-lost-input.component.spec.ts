@@ -35,14 +35,18 @@ describe('FocusLostInputComponent', () => {
 		expect(component).toBeTruthy();
 	});
 
-	describe('suppressCommit', () => {
+	describe('commit on blur', () => {
 		const formField = () =>
 			fixture.nativeElement.querySelector('mat-form-field');
 
-		/** Advance past both 500ms debounces (focus-loss sample + value debounce). */
-		const flushDebounces = () => new Promise((r) => setTimeout(r, 1100));
+		/**
+		 * Advance past the single 500ms focus-settle debounce. The value stream is
+		 * no longer debounced (it is blur-gated via `updateOn: 'blur'` and sampled at
+		 * the settled blur), so only the focus debounce needs flushing.
+		 */
+		const flushDebounces = () => new Promise((r) => setTimeout(r, 700));
 
-		it('emits valueChange on blur when commits are not suppressed', async () => {
+		it('emits valueChange with the latest value at the settled blur', async () => {
 			const emitted: unknown[] = [];
 			component.valueChange.subscribe((v) => emitted.push(v));
 
@@ -54,39 +58,54 @@ describe('FocusLostInputComponent', () => {
 			expect(emitted).toContain('typed value');
 		});
 
-		it('does NOT emit valueChange when the blur happened while suppressed', async () => {
-			fixture.componentRef.setInput('suppressCommit', true);
-			fixture.detectChanges();
+		it('commits the LATEST value when it changes more than once before the settled blur', async () => {
 			const emitted: unknown[] = [];
 			component.valueChange.subscribe((v) => emitted.push(v));
 
 			formField().dispatchEvent(new Event('focusin'));
-			component.value.set('typed while conflicted');
+			// The model normally updates on blur; simulate the final blurred value
+			// winning when the bound value settles to its last state.
+			component.value.set('first');
+			component.value.set('final');
 			formField().dispatchEvent(new Event('focusout'));
+			await flushDebounces();
+
+			expect(emitted.at(-1)).toBe('final');
+		});
+
+		it('does NOT commit on a momentary focus flicker (blur then refocus within the debounce window)', async () => {
+			const emitted: unknown[] = [];
+			component.valueChange.subscribe((v) => emitted.push(v));
+
+			formField().dispatchEvent(new Event('focusin'));
+			component.value.set('typed value');
+			// Blur, then refocus well within the 500ms focus-settle window: this is a
+			// flicker (e.g. clicking a toolbar button and returning), not a real commit.
+			formField().dispatchEvent(new Event('focusout'));
+			await new Promise((r) => setTimeout(r, 150));
+			formField().dispatchEvent(new Event('focusin'));
+			// Wait past the window; because focus ended on `true` (focused), no settled
+			// blur emits, so nothing commits.
 			await flushDebounces();
 
 			expect(emitted).toEqual([]);
 		});
 
-		it('honors the suppression state at blur time even if it clears before the debounced emit', async () => {
-			// Suppressed while the field is focused/edited...
-			fixture.componentRef.setInput('suppressCommit', true);
-			fixture.detectChanges();
+		// The component is intentionally "dumb": it reports every settled-blur commit
+		// and does not filter stale ones. Deciding whether a commit is still valid
+		// (e.g. after a conflict resolve/discard) is the consumer's job via its
+		// edit-generation guard -- see PersistedArtifactAttributeEditorComponent. This
+		// keeps a single owner for commit validity rather than splitting it here.
+		it('emits valueChange regardless of conflict state (no suppression here)', async () => {
 			const emitted: unknown[] = [];
 			component.valueChange.subscribe((v) => emitted.push(v));
 
 			formField().dispatchEvent(new Event('focusin'));
-			component.value.set('stale edit');
+			component.value.set('typed value');
 			formField().dispatchEvent(new Event('focusout'));
-
-			// ...then suppression clears (e.g. a conflict is resolved) BEFORE the ~500ms
-			// debounced commit would fire. The commit must still be dropped because the blur
-			// occurred while suppressed -- otherwise it would clobber the resolved value.
-			fixture.componentRef.setInput('suppressCommit', false);
-			fixture.detectChanges();
 			await flushDebounces();
 
-			expect(emitted).toEqual([]);
+			expect(emitted).toContain('typed value');
 		});
 	});
 });

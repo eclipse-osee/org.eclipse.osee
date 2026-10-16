@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -49,7 +50,7 @@ public class XTextOseeLinkListener implements ModifyListener {
    private final XText xText;
    private final Set<OseeLinkWord> links = new HashSet<>();
    private Integer maxLength = 50000;
-   public static Pattern oseeLinkPattern = Pattern.compile("<artifact-link>(\\d+)</artifact-link>");
+   public static final Pattern oseeLinkPattern = MarkdownHtmlUtil.ARTIFACT_LINK_PATTERN;
    private final BranchToken branchToken;
 
    public class OseeLinkWord {
