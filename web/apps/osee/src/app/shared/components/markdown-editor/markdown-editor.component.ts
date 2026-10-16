@@ -140,6 +140,17 @@ export class MarkdownEditorComponent {
 	dropListId = input<string>('osee-markdown-editor-drop-list');
 
 	/**
+	 * Branch this editor's artifact lives on (the owning tab's pinned branch). Used
+	 * to reject a cross-branch artifact drop: the hierarchy drag source always
+	 * reflects the globally-selected branch, so an artifact dragged while the global
+	 * selector differs from this tab's branch would link to an id that may not exist
+	 * (or be a different artifact) on this branch. When empty (default), no
+	 * cross-branch check is applied — consumers without a pinned branch opt out.
+	 * Mirrors the desktop `OmeEditTabDrop` same-branch guard.
+	 */
+	editorBranchId = input<string>('');
+
+	/**
 	 * Display names for the artifact ids referenced by `<artifact-link>` tags, used
 	 * to label the resolved anchors in the preview. The consumer resolves these in
 	 * response to {@link artifactLinkIdsChange} and feeds them back here; unknown
@@ -1090,11 +1101,33 @@ export class MarkdownEditorComponent {
 	 * Only accept drags whose payload is an artifact (carries an `id`). Within the
 	 * artifact explorer's single `cdkDropListGroup`, this keeps tab-reorder drags
 	 * from entering the editor and vice versa.
+	 *
+	 * NOTE: the cross-branch check is deliberately NOT applied here. A rejected
+	 * enter-predicate suppresses `cdkDropListEntered`, so a cross-branch drag would
+	 * get no visual feedback at all (a silent dead zone). Instead we accept the
+	 * enter (so {@link onArtifactDragEntered} can show a "blocked" overlay) and
+	 * refuse the actual insertion in {@link onArtifactDropped}.
 	 */
 	protected acceptArtifactDrag = (drag: CdkDrag): boolean => {
 		const data = drag.data as artifactWithRelations | undefined;
 		return !!data?.id && data.id !== '-1';
 	};
+
+	/**
+	 * Whether the artifact being dragged is on the SAME branch as this editor's
+	 * artifact. The hierarchy drag source renders the globally-selected branch
+	 * (`uiService.id`), so that is the dragged artifact's branch; the target is this
+	 * editor's pinned {@link editorBranchId}. A mismatch means a cross-branch drop,
+	 * which would link to an id that may not exist on this branch — rejected, like
+	 * the desktop `OmeEditTabDrop` same-branch guard. No pinned branch = opt out.
+	 */
+	private isDragOnEditorBranch(): boolean {
+		const editorBranch = this.editorBranchId();
+		if (!editorBranch) {
+			return true;
+		}
+		return this.branchId() === editorBranch;
+	}
 
 	/**
 	 * Whether the artifact currently being dragged over the editor is an image.
@@ -1113,11 +1146,24 @@ export class MarkdownEditorComponent {
 	 */
 	protected readonly dropIntent = signal<'image' | 'link'>('image');
 
+	/**
+	 * True while the artifact being dragged over the editor is from a DIFFERENT
+	 * branch than this editor's pinned branch. When set, the editor shows a "blocked"
+	 * overlay (instead of the embed/link drop zones) and {@link onArtifactDropped}
+	 * refuses the insertion. This replaces the previous silent enter-predicate
+	 * rejection, which gave the user no indication why the drop did nothing.
+	 */
+	protected readonly crossBranchBlocked = signal(false);
+
 	onArtifactDragEntered(event: CdkDragEnter<unknown>): void {
 		if (!this.acceptArtifactDrops() || this.disabled()) {
 			return;
 		}
 		const artifact = event.item.data as artifactWithRelations | undefined;
+		// A cross-branch drag is accepted into the drop zone only to SHOW why it is
+		// not allowed; the drop itself is refused. Flag it so the overlay renders the
+		// blocked state rather than the embed/link choice.
+		this.crossBranchBlocked.set(!this.isDragOnEditorBranch());
 		this.artifactDragIsImage.set(
 			!!artifact && this.isImageArtifact(artifact)
 		);
@@ -1128,6 +1174,7 @@ export class MarkdownEditorComponent {
 
 	onArtifactDragExited(): void {
 		this.artifactDragOver.set(false);
+		this.crossBranchBlocked.set(false);
 	}
 
 	/** Pointer entered one of the split overlay halves — records the drop intent. */
@@ -1154,11 +1201,20 @@ export class MarkdownEditorComponent {
 		const isImage = this.artifactDragIsImage();
 		const intent = this.dropIntent();
 		this.artifactDragOver.set(false);
+		this.crossBranchBlocked.set(false);
 		if (!this.acceptArtifactDrops() || this.disabled()) {
 			return;
 		}
 		const artifact = event.item.data as artifactWithRelations | undefined;
 		if (!artifact?.id || artifact.id === '-1') {
+			return;
+		}
+		// Defense in depth: the enter-predicate already rejects a cross-branch drag,
+		// but guard here too and tell the user why nothing was inserted (a silent
+		// no-op would be confusing). Mirrors desktop's "must be on the same branch".
+		if (!this.isDragOnEditorBranch()) {
+			this.uiService.ErrorText =
+				'Cannot link an artifact from a different branch than the one being edited.';
 			return;
 		}
 		// Non-image artifacts are always an artifact-link reference. Image artifacts

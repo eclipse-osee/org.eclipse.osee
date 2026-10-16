@@ -124,10 +124,23 @@ The choice is surfaced as a context-aware drop overlay (only while dragging):
 
 The active half (and therefore `dropIntent`) is driven by **`pointermove`** on the overlay computing the pointer's Y relative to the container midpoint — **not** `mouseenter`/`mousemove`, which CDK's pointer-based drag suppresses on the overlay. The drop itself lands on the editor body's single `cdkDropList` regardless of which half (CDK routes by geometry); `dropIntent` decides the tag. `artifactDragIsImage` (set on `cdkDropListEntered`, which carries the dragged item) toggles single-vs-split.
 
+### Cross-branch guard (same-branch feedback)
+
+An editor tab pins its own branch (`editorBranchId` input = the tab's `branchId`), but the hierarchy drag source always reflects the **globally-selected** branch (`uiService.id`). Dragging an artifact while the global selector differs from the tab's branch would link an id that may not exist — or may be a *different* artifact — on this branch. This mirrors the desktop `OmeEditTabDrop` same-branch drop guard.
+
+Rather than silently reject the drag (which left the user with no explanation of why nothing happened), the editor **accepts the enter so it can show why**:
+
+- The enter predicate (`acceptArtifactDrag`) deliberately does **not** apply the branch check — a rejected predicate suppresses `cdkDropListEntered`, so there would be no hook to render feedback.
+- `onArtifactDragEntered` compares the dragged artifact's branch (global `branchId`) to `editorBranchId` and sets the `crossBranchBlocked` signal when they differ.
+- While blocked, the overlay renders a distinct **"Can't link across branches"** message (info icon, `tw-text-caution` so it reads as caution rather than error, `role="alert"`) instead of the embed/link drop zones, and the container ring switches from the primary accent (`tw-ring-primary`) to `tw-ring-caution`. The `caution` token is a themed amber (dark amber in light mode, bright amber in dark mode — see `--osee-caution-default` in `osee-variables.css`), so it stays readable on either surface without a per-use `dark:` variant.
+- `onArtifactDropped` refuses the insertion when the branches differ and sets `uiService.ErrorText` as a backstop (defense in depth, in case a drop ever slips past the overlay).
+
+An **empty** `editorBranchId` (the default) opts out of the check entirely — consumers without a pinned branch (e.g. the create-child dialog) are unaffected.
+
 ### CDK drop-list wiring
 
 - The editor body is one `cdkDropList`, enabled by the `acceptArtifactDrops` input (off by default so the shared editor is inert where no drag source exists, e.g. the create-child dialog). It has a unique `dropListId` so the hierarchy drag source can connect to it by id (see `MarkdownDropListRegistryService` in the artifact explorer).
-- `cdkDropListEnterPredicate` (`acceptArtifactDrag`) accepts only artifact payloads (data with a valid id), so tab-reorder drags in the shared `cdkDropListGroup` don't enter the editor and vice versa.
+- `cdkDropListEnterPredicate` (`acceptArtifactDrag`) accepts only artifact payloads (data with a valid id), so tab-reorder drags in the shared `cdkDropListGroup` don't enter the editor and vice versa. It does **not** apply the cross-branch check — see "Cross-branch guard" above for why that moved to enter/drop.
 
 ### Drop saves immediately (no focusout)
 

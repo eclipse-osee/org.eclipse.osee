@@ -379,10 +379,19 @@ The app uses a token-based color system via CSS variables and Tailwind utilities
 | `tw-text-warning-lighter` | `#ef5350` (red-20) | `#ef5350` (red-20) | Lighter warning variant |
 | `tw-text-warning-darker` | `#b71c1c` (red-25) | `#b71c1c` (red-25) | Darker warning variant |
 
+### Caution palette (amber, themed per mode)
+
+| Tailwind class | Light mode | Dark mode | Use case |
+|---|---|---|---|
+| `tw-text-caution` | `#b58a00` (amber-8) | `#ffd54f` (amber-16) | "Not allowed, but not an error" feedback |
+
+`caution` is a single themed token (backed by `--osee-caution-default` in `osee-variables.css`) that resolves to a **darker amber in light mode** and a **brighter amber in dark mode**, so it stays readable on either surface **without a per-use `dark:` variant**. It works with any Tailwind color utility (`tw-text-caution`, `tw-ring-caution`, `tw-bg-caution`). The canonical use is the markdown editor's cross-branch drop guard overlay.
+
 ### Usage guidelines
 
 - Use `tw-text-primary` / `tw-bg-primary` for primary-colored text and backgrounds.
 - Use `tw-text-warning` for destructive actions only (Delete, Remove, Purge). **Do not use on Cancel/Close buttons.** Do not use hard-coded slot numbers like `tw-text-osee-red-8` — always prefer the semantic `tw-text-warning` token which adapts to the theme.
+- Use `tw-text-caution` (amber) for feedback that a thing is **not allowed but is not an error or a destructive action** — e.g. a blocked drop that broke nothing. Reserve the red `tw-text-warning` for genuine errors and destructive actions, so the two read differently. Like the others, prefer the `caution` token over raw `tw-text-osee-amber-*` slots.
 - Use the Material `primary-button`, `tertiary-button`, `error-button` CSS classes on `mat-raised-button` / `mat-flat-button` for pre-themed buttons (these use the M3 theming system, not Tailwind).
 - For foreground/background semantic tokens (adapt to light/dark automatically): `tw-text-foreground-base`, `tw-bg-background-card`, `tw-bg-background-hover`, etc.
 - Prefer semantic color tokens over hard-coded `osee-*` slot numbers. Use `tw-text-primary` instead of `tw-text-osee-blue-28`, use `tw-text-warning` instead of `tw-text-osee-red-8`.

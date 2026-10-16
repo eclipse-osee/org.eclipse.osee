@@ -18,6 +18,8 @@ import {
 	openBranch,
 	searchAndOpenArtifact,
 	switchEditorSection,
+	switchToHierarchy,
+	expandArtifact,
 	selectBranch,
 } from '../utils/helpers';
 import { waitForNetworkIdleIgnoringSse } from '../../../shared/sse-helpers';
@@ -278,6 +280,72 @@ test.describe('Branch-context isolation (tab pins its branch for writes)', () =>
 				dialog.getByRole('button', { name: 'Add' }).click(),
 			]);
 			expect(txResponse.request().postDataJSON().branch).toBe(branchAId);
+		});
+	});
+
+	test('a cross-branch artifact drag shows a blocked overlay and inserts nothing', async ({
+		page,
+	}) => {
+		// The markdown editor must refuse an artifact dragged from a different branch
+		// than the tab it is editing (the hierarchy source reflects the global
+		// selection; the tab is pinned). Mirrors the desktop same-branch drop guard.
+		// Rather than silently no-op, it shows a "blocked" overlay explaining why.
+		await test.step('open a markdown editor on branch A, then switch the global selector to B', async () => {
+			await openBranch(page, BRANCH_A);
+			await openArtifactAttributes(page, ARTIFACT);
+			await expect(
+				page.locator('osee-markdown-editor textarea')
+			).toBeVisible({ timeout: 15000 });
+
+			// Switch the global selector to B WITHOUT closing the A tab. The hierarchy
+			// now shows B's artifacts; the open editor is still pinned to A.
+			await selectBranch(page, 'Working', BRANCH_B);
+			await switchToHierarchy(page);
+			await expandArtifact(page, 'System Requirements - Markdown');
+		});
+
+		await test.step('dragging a branch-B artifact onto the A editor shows the blocked overlay and inserts nothing', async () => {
+			const editorTextarea = page.locator(
+				'osee-markdown-editor textarea'
+			);
+			const contentBefore = await editorTextarea.inputValue();
+
+			// A node from B's hierarchy (the global branch is now B).
+			const bNode = page
+				.locator('osee-artifact-hierarchy button')
+				.filter({ hasText: ARTIFACT })
+				.first();
+			await expect(bNode).toBeVisible({ timeout: 15000 });
+
+			const editorBody = page.locator(
+				'osee-markdown-editor [data-testid="editor-container"]'
+			);
+
+			// Hold the drag over the editor (press + double-hover) so the blocked
+			// overlay is on screen, assert it, THEN release. The overlay is the
+			// cross-branch feedback; it must appear while hovering and the drop must
+			// insert nothing.
+			await bNode.hover();
+			await page.mouse.down();
+			await editorBody.hover();
+			await editorBody.hover();
+			await expect(
+				page.getByText("Can't link across branches")
+			).toBeVisible({ timeout: 5000 });
+			await page.mouse.up();
+
+			// The cross-branch drag is refused: no artifact-link/image-link added,
+			// content unchanged, and the blocked overlay gone after release.
+			await expect(editorTextarea).toHaveValue(contentBefore, {
+				timeout: 5000,
+			});
+			await expect(editorTextarea).not.toHaveValue(
+				/<(artifact|image)-link>/,
+				{ timeout: 5000 }
+			);
+			await expect(
+				page.getByText("Can't link across branches")
+			).toBeHidden({ timeout: 5000 });
 		});
 	});
 });

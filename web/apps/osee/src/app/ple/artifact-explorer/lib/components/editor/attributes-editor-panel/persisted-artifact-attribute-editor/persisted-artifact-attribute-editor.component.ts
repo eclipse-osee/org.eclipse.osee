@@ -136,6 +136,7 @@ import { MarkdownDropListRegistryService } from '../../../../services/markdown-d
 						[artifactId]="artifactId()"
 						[acceptArtifactDrops]="true"
 						[dropListId]="markdownDropListId"
+						[editorBranchId]="branchId()"
 						[artifactLinkNames]="artifactLinkNames()"
 						(artifactLinkIdsChange)="
 							resolveArtifactLinkNames($event)

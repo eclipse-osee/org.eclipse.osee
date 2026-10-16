@@ -21,6 +21,8 @@ import { CurrentTransactionService } from '@osee/transactions/services';
 import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import { UiService } from '@osee/shared/services';
+import { vi } from 'vitest';
 
 describe('MarkdownEditorComponent', () => {
 	let component: MarkdownEditorComponent;
@@ -179,6 +181,92 @@ describe('MarkdownEditorComponent', () => {
 			} as never);
 			expect(acceptsArtifact).toBe(true);
 			expect(rejectsNonArtifact).toBe(false);
+		});
+
+		describe('cross-branch guard', () => {
+			it('accepts the drag, does not flag it blocked, and inserts when the dragged artifact is on the editor branch', () => {
+				const ui = TestBed.inject(UiService);
+				ui.idValue = '8'; // hierarchy (source) branch = global selection
+				fixture.componentRef.setInput('editorBranchId', '8'); // tab branch
+				fixture.componentRef.setInput('mdContent', '');
+				fixture.detectChanges();
+
+				expect(
+					component['acceptArtifactDrag']({
+						data: artifact('810'),
+					} as never)
+				).toBe(true);
+
+				// Same branch: entering does NOT set the blocked overlay.
+				component.onArtifactDragEntered(dropEvent(artifact('810')));
+				expect(component['crossBranchBlocked']()).toBe(false);
+
+				component.onArtifactDropped(dropEvent(artifact('810')));
+				expect(component.mdContent()).toContain(
+					'<artifact-link>810</artifact-link>'
+				);
+			});
+
+			it('accepts the drag into the zone so feedback can show, flags it blocked on enter, and refuses the drop with an error when the artifact is on a different branch', () => {
+				const ui = TestBed.inject(UiService);
+				ui.idValue = '8'; // global selection = source branch
+				const errorSpy = vi.spyOn(ui, 'ErrorText', 'set');
+				fixture.componentRef.setInput('editorBranchId', '9'); // tab pinned elsewhere
+				fixture.componentRef.setInput('mdContent', '');
+				fixture.detectChanges();
+
+				// The predicate now accepts any artifact payload (so the drop zone is
+				// entered and can render WHY the drop is not allowed) -- the branch
+				// check moved to enter/drop.
+				expect(
+					component['acceptArtifactDrag']({
+						data: artifact('820'),
+					} as never)
+				).toBe(true);
+
+				// Entering flags the cross-branch state so the "blocked" overlay shows.
+				component.onArtifactDragEntered(dropEvent(artifact('820')));
+				expect(component['crossBranchBlocked']()).toBe(true);
+
+				// Dropping inserts nothing and surfaces a user-facing error.
+				component.onArtifactDropped(dropEvent(artifact('820')));
+				expect(component.mdContent()).toBe('');
+				expect(errorSpy).toHaveBeenCalledWith(
+					expect.stringContaining('different branch')
+				);
+				// The drop clears the blocked flag so a later same-branch drag is clean.
+				expect(component['crossBranchBlocked']()).toBe(false);
+			});
+
+			it('clears the blocked flag when the drag leaves the zone without dropping', () => {
+				const ui = TestBed.inject(UiService);
+				ui.idValue = '8';
+				fixture.componentRef.setInput('editorBranchId', '9');
+				fixture.detectChanges();
+
+				component.onArtifactDragEntered(dropEvent(artifact('840')));
+				expect(component['crossBranchBlocked']()).toBe(true);
+
+				component.onArtifactDragExited();
+				expect(component['crossBranchBlocked']()).toBe(false);
+			});
+
+			it('applies no cross-branch check when editorBranchId is empty (opt out)', () => {
+				const ui = TestBed.inject(UiService);
+				ui.idValue = '8';
+				fixture.componentRef.setInput('editorBranchId', '');
+				fixture.detectChanges();
+
+				expect(
+					component['acceptArtifactDrag']({
+						data: artifact('830'),
+					} as never)
+				).toBe(true);
+
+				// Opt-out: entering never flags the blocked state.
+				component.onArtifactDragEntered(dropEvent(artifact('830')));
+				expect(component['crossBranchBlocked']()).toBe(false);
+			});
 		});
 
 		it('emits artifactLinkClicked and prevents default when a preview link is clicked ON ITS TEXT', () => {

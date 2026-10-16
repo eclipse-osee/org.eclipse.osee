@@ -391,7 +391,8 @@
 		(cdkDropListDropped)="onArtifactDropped($event)"
 		[class.tw-ring-2]="artifactDragOver()"
 		[class.tw-ring-inset]="artifactDragOver()"
-		[class.tw-ring-osee-blue-6]="artifactDragOver()"
+		[class.tw-ring-primary]="artifactDragOver() && !crossBranchBlocked()"
+		[class.tw-ring-caution]="artifactDragOver() && crossBranchBlocked()"
 		(dragover)="onEditorDragOver($event)"
 		(dragenter)="onEditorDragEnter($event)"
 		(dragleave)="onEditorDragLeave($event)"
@@ -400,16 +401,37 @@
 			<div
 				class="tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-rounded-b-lg tw-bg-osee-neutral-100/90 dark:tw-bg-osee-neutral-6/90">
 				<mat-icon
-					class="tw-size-12 tw-text-5xl tw-leading-[48px] tw-text-osee-blue-6">
+					class="tw-size-12 tw-text-5xl tw-leading-[48px] tw-text-primary">
 					cloud_upload
 				</mat-icon>
-				<span class="tw-text-lg tw-font-medium tw-text-osee-blue-6">
+				<span class="tw-text-lg tw-font-medium tw-text-primary">
 					Drop Image Here
 				</span>
 			</div>
 		}
 		@if (artifactDragOver()) {
-			@if (artifactDragIsImage()) {
+			@if (crossBranchBlocked()) {
+				<!-- The dragged artifact is on a DIFFERENT branch than this tab is
+				     editing. The drop is refused (its id may not exist, or may be a
+				     different artifact, on this branch); show WHY instead of silently
+				     doing nothing. Mirrors the desktop same-branch drop guard. -->
+				<div
+					class="tw-pointer-events-none tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-rounded-b-lg tw-bg-osee-neutral-100/90 dark:tw-bg-osee-neutral-6/90"
+					role="alert">
+					<mat-icon
+						class="tw-size-12 tw-text-5xl tw-leading-[48px] tw-text-caution">
+						info
+					</mat-icon>
+					<span class="tw-text-lg tw-font-medium tw-text-caution">
+						Can't link across branches
+					</span>
+					<span
+						class="tw-max-w-xs tw-text-center tw-text-sm tw-text-caution">
+						This artifact is on a different branch than the one you
+						are editing.
+					</span>
+				</div>
+			} @else if (artifactDragIsImage()) {
 				<!-- Image drag: offer a CHOICE. Top half embeds the image inline
 				     (image-link); bottom half inserts a plain reference (artifact-link).
 				     The active half is driven by pointer POSITION (pointermove), not
@@ -425,33 +447,33 @@
 						class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-bg-osee-neutral-100/90 tw-transition-opacity dark:tw-bg-osee-neutral-6/90"
 						[class.tw-ring-2]="dropIntent() === 'image'"
 						[class.tw-ring-inset]="dropIntent() === 'image'"
-						[class.tw-ring-osee-blue-6]="dropIntent() === 'image'"
+						[class.tw-ring-primary]="dropIntent() === 'image'"
 						[class.tw-opacity-100]="dropIntent() === 'image'"
 						[class.tw-opacity-40]="dropIntent() !== 'image'">
 						<mat-icon
-							class="tw-size-10 tw-text-4xl tw-leading-[40px] tw-text-osee-blue-6">
+							class="tw-size-10 tw-text-4xl tw-leading-[40px] tw-text-primary">
 							image
 						</mat-icon>
 						<span
-							class="tw-text-base tw-font-medium tw-text-osee-blue-6">
+							class="tw-text-base tw-font-medium tw-text-primary">
 							Drop to Embed Image
 						</span>
 					</div>
 					<!-- Prominent divider between the two choices. -->
-					<div class="tw-h-0.5 tw-shrink-0 tw-bg-osee-blue-6"></div>
+					<div class="tw-h-0.5 tw-shrink-0 tw-bg-primary"></div>
 					<div
 						class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-bg-osee-neutral-100/90 tw-transition-opacity dark:tw-bg-osee-neutral-6/90"
 						[class.tw-ring-2]="dropIntent() === 'link'"
 						[class.tw-ring-inset]="dropIntent() === 'link'"
-						[class.tw-ring-osee-blue-6]="dropIntent() === 'link'"
+						[class.tw-ring-primary]="dropIntent() === 'link'"
 						[class.tw-opacity-100]="dropIntent() === 'link'"
 						[class.tw-opacity-40]="dropIntent() !== 'link'">
 						<mat-icon
-							class="tw-size-10 tw-text-4xl tw-leading-[40px] tw-text-osee-blue-6">
+							class="tw-size-10 tw-text-4xl tw-leading-[40px] tw-text-primary">
 							add_link
 						</mat-icon>
 						<span
-							class="tw-text-base tw-font-medium tw-text-osee-blue-6">
+							class="tw-text-base tw-font-medium tw-text-primary">
 							Drop to Insert Link
 						</span>
 					</div>
@@ -460,10 +482,10 @@
 				<div
 					class="tw-pointer-events-none tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-rounded-b-lg tw-bg-osee-neutral-100/90 dark:tw-bg-osee-neutral-6/90">
 					<mat-icon
-						class="tw-size-12 tw-text-5xl tw-leading-[48px] tw-text-osee-blue-6">
+						class="tw-size-12 tw-text-5xl tw-leading-[48px] tw-text-primary">
 						add_link
 					</mat-icon>
-					<span class="tw-text-lg tw-font-medium tw-text-osee-blue-6">
+					<span class="tw-text-lg tw-font-medium tw-text-primary">
 						Drop to Insert Link
 					</span>
 				</div>
