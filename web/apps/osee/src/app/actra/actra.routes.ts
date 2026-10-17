@@ -42,6 +42,11 @@ export const routes: Routes = [
 				'./actra-create-action-page/actra-create-action-page.routes'
 			),
 	},
+	{
+		path: 'kanban',
+		title: 'Kanban Board',
+		loadChildren: () => import('./kanban/kanban.routes')
+	}
 ];
 
 export default routes;
