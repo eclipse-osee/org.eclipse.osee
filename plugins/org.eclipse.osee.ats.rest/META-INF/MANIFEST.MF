@@ -93,7 +93,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.osgi.service.packageadmin
 Require-Bundle: org.eclipse.osee.ats.api,
  org.eclipse.osee.framework.core.server,
- javax.activation
+ javax.activation,
+ org.eclipse.osee.ats.core
 Export-Package: org.eclipse.osee.ats.rest,
  org.eclipse.osee.ats.rest.internal.report,
  org.eclipse.osee.ats.rest.internal.workitem.sync.jira,
