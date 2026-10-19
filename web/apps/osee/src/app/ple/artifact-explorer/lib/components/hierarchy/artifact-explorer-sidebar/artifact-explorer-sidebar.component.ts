@@ -27,6 +27,7 @@ import {
 } from '@osee/shared/components';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
+import { MarkdownDropListRegistryService } from '../../../services/markdown-drop-list-registry.service';
 import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import { ArtifactSearchComponent } from '../artifact-search-panel/artifact-search/artifact-search.component';
 import { BranchManagementComponent } from '../branch-management/branch-management.component';
@@ -63,6 +64,18 @@ export type HierarchySection = 'hierarchy' | 'search' | 'branch';
 export class ArtifactExplorerSidebarComponent {
 	private artHierPathService = inject(ArtifactHierarchyPathService);
 	private uiService = inject(UiService);
+	private dropListRegistry = inject(MarkdownDropListRegistryService);
+
+	/**
+	 * Drop targets the hierarchy drag connects to: the relations editor list plus
+	 * any markdown editors currently accepting artifact drops. Needed explicitly
+	 * because those editor lists are nested under the tab group's own drop list and
+	 * so are excluded from the shared `cdkDropListGroup`.
+	 */
+	protected readonly connectedDropLists = computed(() => [
+		'relationList',
+		...this.dropListRegistry.ids(),
+	]);
 
 	/** Active section driven by the parent activity bar. */
 	activeSection = input.required<HierarchySection>();

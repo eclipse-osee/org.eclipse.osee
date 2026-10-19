@@ -1,7 +1,7 @@
 ---
 summary: "Markdown editor component with formatting toolbar, image upload, table editing, preview, fullscreen, and VS Code-style undo/redo"
 tags: [web, angular, markdown, editor, images, preview, toolbar]
-fileMatch: "**/markdown-editor*,**/markdown-image*"
+fileMatch: "**/markdown-editor*,**/markdown-image*,**/markdown-link*"
 ---
 
 # Markdown Editor
@@ -13,6 +13,8 @@ The markdown editor (`MarkdownEditorComponent`) is an Angular component providin
 - Responsive toolbar with split buttons, formatting actions, and progressive section collapse
 - Split-pane editing with live HTML preview (supports dark mode)
 - Image upload (via dialog or drag-and-drop) with size selection
+- Artifact linking by dragging artifacts from the hierarchy (image vs. link choice)
+- Clickable `<artifact-link>` references in the preview (open the artifact in a tab)
 - Table creation and editing (via `MarkdownTableDialogComponent`)
 - Image preview mode (renders `<image-link>` tags as actual images)
 - Fullscreen mode with resizable divider
@@ -27,6 +29,7 @@ The markdown editor (`MarkdownEditorComponent`) is an Angular component providin
 | `markdown-editor.component.html` | Template with toolbar, textarea, preview pane |
 | `markdown-editor-actions.ts` | Formatting actions, list options, heading options |
 | `markdown-image.service.ts` | HTTP service for uploading and fetching images |
+| `markdown-link.util.ts` | Client-side `<artifact-link>`/`<image-link>` regexes + tag builders (mirror of the Java `MarkdownHtmlUtil` source of truth) |
 | `toolbar-section-dropdown.component.ts` | Collapsed section dropdown (used by ribbon collapse) |
 | `split-button/split-button.component.ts` | Reusable split button (icon + dropdown arrow) |
 
@@ -95,9 +98,57 @@ The optional `size` attribute controls rendered dimensions during publishing:
 
 `toggleShowImages()` fetches image object URLs from the server and replaces `<image-link>` tags with `<img>` elements for visual preview. The editor textarea is disabled during preview.
 
-### Drag-and-Drop
+### Drag-and-Drop (image files)
 
-Files dragged onto the editor are validated against supported formats and uploaded directly (bypasses the dialog — no caption or size selection for drag-drop).
+Image *files* dragged onto the editor are validated against supported formats and uploaded directly (bypasses the dialog — no caption or size selection for file drag-drop). This is native HTML5 file drop, distinct from the artifact drag-drop below.
+
+## Artifact Linking (drag from the hierarchy)
+
+Artifacts dragged from the artifact-explorer hierarchy onto the editor insert a reference tag at the cursor — mirroring the desktop `OmeEditTabDrop` behavior. This is **Angular CDK** drag (the hierarchy nodes are `cdkDrag`), not native HTML5 DnD.
+
+### Tag type: image vs. link
+
+- A **non-image** artifact always inserts an `<artifact-link>ID</artifact-link>` (a textual reference).
+- An **image** artifact can be inserted two ways, and the user chooses at drop time:
+  - **Embed** → `<image-link>ID</image-link>` (renders inline in image-preview mode).
+  - **Link** → `<artifact-link>ID</artifact-link>` (a plain reference to the image artifact).
+
+Image detection (`isImageArtifact`) is by artifact **`typeId === ARTIFACTTYPEIDENUM.IMAGE`** first, because the hierarchy drag payload is a **lightweight token** — the `/children` endpoint builds it with `includeAttributes=false`, so it carries `typeId`/`icon` but **not** attributes. An Extension-attribute check is kept as a secondary signal for fully-attributed artifacts (a non-Image type carrying an image file). Do **not** rely on the Extension attribute alone for the drag path — it is absent on a dragged node.
+
+### Split drop overlay (the image choice)
+
+The choice is surfaced as a context-aware drop overlay (only while dragging):
+
+- Non-image drag → a single "Drop to Insert Link" zone.
+- Image drag → a two-half overlay: top "Drop to Embed Image", bottom "Drop to Insert Link", separated by a solid divider. The half under the pointer is highlighted (full opacity + inset ring); the other dims.
+
+The active half (and therefore `dropIntent`) is driven by **`pointermove`** on the overlay computing the pointer's Y relative to the container midpoint — **not** `mouseenter`/`mousemove`, which CDK's pointer-based drag suppresses on the overlay. The drop itself lands on the editor body's single `cdkDropList` regardless of which half (CDK routes by geometry); `dropIntent` decides the tag. `artifactDragIsImage` (set on `cdkDropListEntered`, which carries the dragged item) toggles single-vs-split.
+
+### Cross-branch guard (same-branch feedback)
+
+An editor tab pins its own branch (`editorBranchId` input = the tab's `branchId`), but the hierarchy drag source always reflects the **globally-selected** branch (`uiService.id`). Dragging an artifact while the global selector differs from the tab's branch would link an id that may not exist — or may be a *different* artifact — on this branch. This mirrors the desktop `OmeEditTabDrop` same-branch drop guard.
+
+Rather than silently reject the drag (which left the user with no explanation of why nothing happened), the editor **accepts the enter so it can show why**:
+
+- The enter predicate (`acceptArtifactDrag`) deliberately does **not** apply the branch check — a rejected predicate suppresses `cdkDropListEntered`, so there would be no hook to render feedback.
+- `onArtifactDragEntered` compares the dragged artifact's branch (global `branchId`) to `editorBranchId` and sets the `crossBranchBlocked` signal when they differ.
+- While blocked, the overlay renders a distinct **"Can't link across branches"** message (info icon, `tw-text-caution` so it reads as caution rather than error, `role="alert"`) instead of the embed/link drop zones, and the container ring switches from the primary accent (`tw-ring-primary`) to `tw-ring-caution`. The `caution` token is a themed amber (dark amber in light mode, bright amber in dark mode — see `--osee-caution-default` in `osee-variables.css`), so it stays readable on either surface without a per-use `dark:` variant.
+- `onArtifactDropped` refuses the insertion when the branches differ and sets `uiService.ErrorText` as a backstop (defense in depth, in case a drop ever slips past the overlay).
+
+An **empty** `editorBranchId` (the default) opts out of the check entirely — consumers without a pinned branch (e.g. the create-child dialog) are unaffected.
+
+### CDK drop-list wiring
+
+- The editor body is one `cdkDropList`, enabled by the `acceptArtifactDrops` input (off by default so the shared editor is inert where no drag source exists, e.g. the create-child dialog). It has a unique `dropListId` so the hierarchy drag source can connect to it by id (see `MarkdownDropListRegistryService` in the artifact explorer).
+- `cdkDropListEnterPredicate` (`acceptArtifactDrag`) accepts only artifact payloads (data with a valid id), so tab-reorder drags in the shared `cdkDropListGroup` don't enter the editor and vice versa. It does **not** apply the cross-branch check — see "Cross-branch guard" above for why that moved to enter/drop.
+
+### Drop saves immediately (no focusout)
+
+A drop never focuses the textarea, so no blur/focusout follows to trigger the consumer's auto-save. `insertLinkTag` (and `insertImageLink`) therefore emit **`mdContentCommitted`** after updating content; the persisted editor saves on that signal immediately (see the commit model in `docs/ai/web/artifact-explorer-attributes.md`). Without this the field would stay dirty and the tab would warn about unsaved changes on close.
+
+### Preview link resolution + click-to-open
+
+The server preview endpoint (`convertMarkdownToHtmlPreview`) does **not** resolve `<artifact-link>` tags, so the editor resolves them client-side before sending content to the preview: `resolveArtifactLinksToAnchors` rewrites each tag to `<a href="#" data-artifact-id="ID">name</a>` (name from the `artifactLinkNames` input, else the id). A click on such an anchor in the preview is intercepted (`onPreviewClick`) and emitted as **`artifactLinkClicked`**; the consumer opens that artifact in a tab on the link's branch. The editor emits **`artifactLinkIdsChange`** whenever the referenced ids change so the consumer can resolve names (fed back via `artifactLinkNames`). The editor stays decoupled from the explorer's tab/branch model — it emits ids and consumes names.
 
 ## Captions
 

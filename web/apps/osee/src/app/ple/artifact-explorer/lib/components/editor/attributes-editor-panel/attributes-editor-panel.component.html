@@ -41,6 +41,8 @@
 					[attr]="name"
 					[artifactId]="artifactId()"
 					[artifactApplicability]="applicability()"
+					[branchId]="tab().branchId"
+					[viewId]="tab().viewId"
 					[disabled]="!editable()"
 					[conflicted]="remoteChangeWhileDirty()" />
 			</div>
@@ -82,6 +84,8 @@
 						[attr]="group.attrs[0]"
 						[artifactId]="artifactId()"
 						[artifactApplicability]="applicability()"
+						[branchId]="tab().branchId"
+						[viewId]="tab().viewId"
 						[disabled]="!editable()"
 						[conflicted]="remoteChangeWhileDirty()" />
 				</div>

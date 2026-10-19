@@ -36,7 +36,7 @@
 			@if (branchIdValid() && branchType()) {
 				<div
 					cdkDropList
-					cdkDropListConnectedTo="relationList">
+					[cdkDropListConnectedTo]="connectedDropLists()">
 					@if (paths | async; as paths) {
 						<osee-artifact-hierarchy
 							[paths]="paths"
