@@ -379,10 +379,19 @@ The app uses a token-based color system via CSS variables and Tailwind utilities
 | `tw-text-warning-lighter` | `#ef5350` (red-20) | `#ef5350` (red-20) | Lighter warning variant |
 | `tw-text-warning-darker` | `#b71c1c` (red-25) | `#b71c1c` (red-25) | Darker warning variant |
 
+### Caution palette (amber, themed per mode)
+
+| Tailwind class | Light mode | Dark mode | Use case |
+|---|---|---|---|
+| `tw-text-caution` | `#b58a00` (amber-8) | `#ffd54f` (amber-16) | "Not allowed, but not an error" feedback |
+
+`caution` is a single themed token (backed by `--osee-caution-default` in `osee-variables.css`) that resolves to a **darker amber in light mode** and a **brighter amber in dark mode**, so it stays readable on either surface **without a per-use `dark:` variant**. It works with any Tailwind color utility (`tw-text-caution`, `tw-ring-caution`, `tw-bg-caution`). The canonical use is the markdown editor's cross-branch drop guard overlay.
+
 ### Usage guidelines
 
 - Use `tw-text-primary` / `tw-bg-primary` for primary-colored text and backgrounds.
 - Use `tw-text-warning` for destructive actions only (Delete, Remove, Purge). **Do not use on Cancel/Close buttons.** Do not use hard-coded slot numbers like `tw-text-osee-red-8` — always prefer the semantic `tw-text-warning` token which adapts to the theme.
+- Use `tw-text-caution` (amber) for feedback that a thing is **not allowed but is not an error or a destructive action** — e.g. a blocked drop that broke nothing. Reserve the red `tw-text-warning` for genuine errors and destructive actions, so the two read differently. Like the others, prefer the `caution` token over raw `tw-text-osee-amber-*` slots.
 - Use the Material `primary-button`, `tertiary-button`, `error-button` CSS classes on `mat-raised-button` / `mat-flat-button` for pre-themed buttons (these use the M3 theming system, not Tailwind).
 - For foreground/background semantic tokens (adapt to light/dark automatically): `tw-text-foreground-base`, `tw-bg-background-card`, `tw-bg-background-hover`, etc.
 - Prefer semantic color tokens over hard-coded `osee-*` slot numbers. Use `tw-text-primary` instead of `tw-text-osee-blue-28`, use `tw-text-warning` instead of `tw-text-osee-red-8`.
@@ -543,8 +552,10 @@ npx playwright show-report
 - **Test programmatic state via `page.evaluate()`** when no visible indicator exists — e.g., reading selection ranges, scroll positions, or computed values from the DOM.
 - **Use `locator.filter({ hasText })` for icon-only buttons** — buttons with only an icon and no label often lack accessible names. Filter by the icon's text content.
 - **Scope locators to reduce ambiguity** — prefer `page.locator('section button')` over `page.getByRole('button')` when multiple buttons share similar names across different page regions.
-- **Opening a `mat-select` can swallow a single click** — when the element just rendered or reflowed, one `.click()` may not open the overlay (`aria-expanded` stays `"false"`). Re-drive the open until it reports expanded, capped so it can't spin forever: `await expect(async () => { if ((await select.getAttribute('aria-expanded')) !== 'true') await select.click(); await expect(select).toHaveAttribute('aria-expanded', 'true', { timeout: 2000 }); }).toPass({ timeout: 15000 });`. The `if` guard avoids re-clicking an already-open select (which would toggle it shut). This is more robust than padding a fixed timeout before the click.
+- **Opening a `mat-select` can swallow a single click** — when the trigger just rendered or reflowed (e.g. a select in a just-opened dialog or wizard step), one `.click()` may not open the overlay, so the option never renders and the wait for it times out even though its data loaded fine. Use `openSelectAndChooseOption(trigger, option, { clickTarget?, optionTimeout? })` from `playwright/shared/select-helpers.ts`: it re-drives the open until `option` is visible (guarded so it never re-clicks an already-open panel) then clicks it, or `clickTarget` for a multi-select pseudo-checkbox. Not for `.fill()`-driven search autocompletes (next bullet) — it opens the trigger, it doesn't type a filter.
 - **Type into a debounced-search autocomplete with `pressSequentially`, not `fill`.** Autocompletes whose options come from a server search driven by the input's `valueChanges` with a `debounceTime` (e.g. the branch selector and the MIM Platform Type dropdown) need per-character input. `fill()` sets the value in one shot and emits a single input event that the debounce can coalesce or mis-time, so the search never fires and the listbox stays empty. Use `await input.click({ force: true }); await input.fill(''); await input.pressSequentially('value');` then assert the option is visible before clicking it. (Plain `mat-select` overlays with static options are fine to open with a click — this only applies to search-backed autocompletes.)
+- **Drive Angular CDK drag-and-drop with a hover/press/double-hover/release sequence, not `dragTo` or coordinate math.** OSEE's draggable surfaces (the artifact hierarchy's `cdkDrag` nodes dropped onto the relations editor or the markdown editor) use **Angular CDK** drag, which is pointer-based — Playwright's `locator.dragTo()` (HTML5 DnD) does not drive it, and a hand-rolled `mouse.move(x,y)` sequence is unreliable (CDK needs its enter registered). The proven pattern (used by `mim/traceability` and `artifact-explorer/markdown-artifact-link`) is: `await source.hover(); await page.mouse.down(); await target.hover(); await target.hover(); await page.mouse.up();` — the **double** `target.hover()` is required so CDK registers the drop-list enter before release. The drop routes to the `cdkDropList` by geometry regardless of any overlay on top.
+- **During a CDK drag, `mouseenter`/`mousemove` are suppressed on the page — use `pointermove` (or CDK's own position) to track the pointer.** If a drop target needs to react to *where* within it the pointer is mid-drag (e.g. the markdown editor's split "embed vs. link" overlay), a `(mouseenter)`/`(mousemove)` handler will not fire during the CDK drag. Bind `(pointermove)` and compute the region from the event's coordinates relative to the element's `getBoundingClientRect()`. In a test, assert the resulting visible state (the highlighted half), not the mouse events.
 
 ### Testing auto-save (focus-lost) editors
 

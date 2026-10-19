@@ -35,8 +35,8 @@ All publishing endpoints are in `plugins/org.eclipse.osee.define/src/org/eclipse
 1. **`PublishingOperationsImpl.processPublishingRequest`** — Orchestrates the publish via `WordTemplateProcessorServer`
 2. **`WordTemplateProcessorServer.postProcessMarkdown`** — Runs content transformations in order:
    - `processApplicability` — Resolves feature/config tags
-   - `processArtifactLinks` — Converts `<artifact-link>` to markdown links
-   - `processImageLinks` — Converts `<image-link>ID</image-link>` to `![name](resources/name_ID.ext "name")`
+   - `processArtifactLinks` — Converts `<artifact-link>` to markdown links (matches via the shared `MarkdownHtmlUtil.ARTIFACT_LINK_PATTERN`)
+   - `processImageLinks` — Converts `<image-link>ID</image-link>` to `![name](resources/name_ID.ext "name")` (matches via `MarkdownHtmlUtil.IMAGE_LINK_PATTERN`)
    - `processCaptions` — Converts `<figure-caption>` / `<table-caption>` (with optional `position` attribute) to numbered HTML divs
    - `processTableOfContents` — Builds TOC, figure list, table list
 3. **`WordTemplateProcessorServer.packageMarkdown`** — Bundles processed markdown + image binaries into a zip
@@ -92,6 +92,38 @@ The CSS `table-layout: fixed` is what enables images to render inside table cell
    - **468px** standalone (~6.5in at 72dpi, matching page content width)
    - If a size hint is present, the cap is further reduced to `sizePercent × maxWidth`
    - Images are never upscaled beyond their native resolution
+
+## Artifact Links
+
+### `<artifact-link>` — the centralized tag
+
+Markdown content references another artifact as `<artifact-link>ARTIFACT_ID</artifact-link>`
+(a textual, clickable reference — distinct from `<image-link>`, which embeds an image).
+
+The pattern and tag-building are **centralized in `MarkdownHtmlUtil`** (the source of truth,
+alongside `IMAGE_LINK_PATTERN` and the caption patterns):
+
+- `ARTIFACT_LINK_PATTERN_STRING` / `ARTIFACT_LINK_PATTERN` — `<artifact-link>(\d+)</artifact-link>`, group 1 = id.
+- `buildArtifactLinkTag(id)` / `buildImageLinkTag(id)` — construct the tags.
+
+All consumers use these rather than re-compiling the regex or re-formatting the tag inline.
+Known consumers (Java): `WordTemplateProcessorServer.processArtifactLinks`/`replaceArtifactTag`
+(publishing), `WordTemplateContentToMarkdownContentConverter` (Word→markdown import generates
+the tag), and the desktop `OmeHtmlTab` (preview anchor), `XTextOseeLinkListener` (click-to-open),
+`ArtOmeData` (deleted-link cleanup), `OmeEditTabDrop` (drag insert). The web mirrors the pattern
+in `markdown-link.util.ts` (`ARTIFACT_LINK_REGEX` + builders), kept in sync with these Java
+constants — see `docs/ai/web/markdown-editor.md`.
+
+> When adding a new site that reads or writes `<artifact-link>`/`<image-link>`, use the
+> `MarkdownHtmlUtil` pattern/builders (Java) or `markdown-link.util.ts` (web). Do not
+> re-introduce an inline `"<artifact-link>...".` literal or a local regex copy — that was the
+> scattering this centralization removed.
+
+### Publishing resolution
+
+`processArtifactLinks` rewrites each in-publish `<artifact-link>` to a markdown section link
+`[name](#id)` (the anchor is produced when flexmark renders the document); ids not in the
+publish are collected and appended as an artifact appendix (`processMissingArtifacts`).
 
 ## Captions
 

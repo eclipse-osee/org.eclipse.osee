@@ -12,6 +12,7 @@
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
+import { openSelectAndChooseOption } from '../../../shared/select-helpers';
 
 test('test', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 1000 });
@@ -23,21 +24,22 @@ test('test', async ({ page }) => {
 	await page.locator('osee-platform-types-fab').locator('button').click();
 	await expect(page.locator('osee-new-type-form')).toBeVisible();
 	await expect(page.getByTestId('logical-type-selector')).toBeVisible();
-	await page
-		.locator('osee-logical-type-dropdown')
-		.getByTestId('logical-type-selector')
-		.locator('.mat-mdc-select-trigger')
-		.locator('span')
-		.first()
-		.click();
-
-	// Logical-type options load async; wait for the option before clicking.
+	// Logical-type options load async and the open click can be swallowed; re-drive the open until
+	// the option renders, then click its inner span.
 	const integerOption = page.getByRole('option', {
 		name: 'Integer',
 		exact: true,
 	});
-	await expect(integerOption).toBeVisible({ timeout: 60000 });
-	await integerOption.locator('span').click();
+	await openSelectAndChooseOption(
+		page
+			.locator('osee-logical-type-dropdown')
+			.getByTestId('logical-type-selector')
+			.locator('.mat-mdc-select-trigger')
+			.locator('span')
+			.first(),
+		integerOption,
+		{ clickTarget: integerOption.locator('span') }
+	);
 
 	await page.screenshot({
 		path: 'screenshots/platform-types-page/select-logical-type.png',
@@ -59,14 +61,11 @@ test('test', async ({ page }) => {
 	await page.getByLabel('Minval').fill('0');
 	await page.getByLabel('Maxval').click();
 	await page.getByLabel('Maxval').fill('2000');
-	await page.getByPlaceholder('Units').click();
-	// Options load async; wait for the option before clicking.
-	const metersOption = page.getByRole('option', {
-		name: 'Meters',
-		exact: true,
-	});
-	await expect(metersOption).toBeVisible({ timeout: 60000 });
-	await metersOption.click();
+	// Options load async and the open click can be swallowed; re-drive the open.
+	await openSelectAndChooseOption(
+		page.getByPlaceholder('Units'),
+		page.getByRole('option', { name: 'Meters', exact: true })
+	);
 	await page.getByLabel('Default Value').click();
 	await page.getByLabel('Default Value').fill('0');
 	await page.getByLabel('Default Value').blur();
@@ -84,11 +83,13 @@ test('test', async ({ page }) => {
 	await page.locator('mat-row:nth-child(3) > mat-cell:nth-child(2)').click();
 	await page.locator('osee-platform-types-fab').locator('button').click();
 	await expect(page.locator('osee-new-type-form')).toBeVisible();
-	await page
-		.locator('osee-logical-type-dropdown')
-		.getByTestId('logical-type-selector')
-		.click();
-	await page.getByText('Enumeration', { exact: true }).click();
+	// Logical-type options load async and the open click can be swallowed; re-drive the open.
+	await openSelectAndChooseOption(
+		page
+			.locator('osee-logical-type-dropdown')
+			.getByTestId('logical-type-selector'),
+		page.getByText('Enumeration', { exact: true })
+	);
 	// Step 2 renders in two phases: a minimal form first, then the real fields once
 	// GET /mim/logicalType/<id> resolves. Filling before that fetch lands writes into inputs that
 	// the second render replaces, silently dropping the value. Wait for the fetch before filling.

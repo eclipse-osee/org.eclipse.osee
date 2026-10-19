@@ -95,7 +95,7 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
             String artId = art.getIdString();
             String name = art.getSoleAttributeValue(CoreAttributeTypes.Name);
             String url = String.format("<a href=\"%s\">%s</a>", artId, name);
-            String tagToReplace = "<artifact-link>" + artId + "</artifact-link>";
+            String tagToReplace = MarkdownHtmlUtil.buildArtifactLinkTag(artId);
             mdContent = mdContent.replace(tagToReplace, url);
          }
 
