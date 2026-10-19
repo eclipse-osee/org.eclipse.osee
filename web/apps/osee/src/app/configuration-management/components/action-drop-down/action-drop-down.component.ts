@@ -173,7 +173,12 @@ export class ActionDropDownComponent {
 											),
 											of()
 										)
-									)
+									),
+									// Refresh workflow state after commit, like transition()/approveBranch().
+									tap(() => {
+										this._updateWorkflow.next(true);
+										this.update.emit();
+									})
 								)
 						)
 					)
