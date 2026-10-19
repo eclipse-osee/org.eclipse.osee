@@ -27,6 +27,7 @@ rust_library(
     deps = all_crate_deps(normal = True) + [
         "//cli/applicability_lexer_base",
         "//cli/applicability_lexer_config_build_file",
+        "//cli/applicability_lexer_config_conf",
         "//cli/applicability_lexer_config_cpp_like",
         "//cli/applicability_lexer_config_custom",
         "//cli/applicability_lexer_config_latex",
