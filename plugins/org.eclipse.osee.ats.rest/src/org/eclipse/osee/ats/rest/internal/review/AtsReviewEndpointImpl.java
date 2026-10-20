@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.AtsReviewEndpointApi;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.review.ReviewDefectData;
 
 /**
  * @author Paul A. Garcia
@@ -51,6 +52,11 @@ public class AtsReviewEndpointImpl implements AtsReviewEndpointApi {
       workItems.stream().filter(w -> w.isReview()).forEach(r -> reviews.add((IAtsAbstractReview) r));
 
       return reviews;
+   }
+
+   @Override
+   public ReviewDefectData getOpenDefectItems(ReviewDefectData data) {
+      return new ReviewOperations(atsApi).getOpenDefectItems(data);
    }
 
 }

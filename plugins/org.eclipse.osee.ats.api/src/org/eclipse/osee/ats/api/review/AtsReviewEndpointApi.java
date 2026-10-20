@@ -14,7 +14,9 @@
 package org.eclipse.osee.ats.api.review;
 
 import java.util.Collection;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -37,4 +39,10 @@ public interface AtsReviewEndpointApi {
    @Path("/ids/{id}")
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<IAtsAbstractReview> getReviews(@PathParam("id") String ids);
+
+   @POST
+   @Path("open-defects")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   ReviewDefectData getOpenDefectItems(ReviewDefectData data);
 }

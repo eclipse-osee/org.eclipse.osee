@@ -31,6 +31,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.ResultRow;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
@@ -54,6 +55,7 @@ import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewe
 import org.eclipse.osee.framework.ui.skynet.util.SelectionProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
@@ -203,6 +205,10 @@ public class ResultsEditor extends AbstractArtifactEditor implements IWorkbenchL
                AHTML.simplePage("Error: Pages creation error for \"" + editorName + "\"; StartPage == null")));
          }
          setPartName(editorName);
+         OseeImage editorImage = getResultsEditorProvider().getEditorImage();
+         if (editorImage != null) {
+            setTitleImage(ImageManager.getImage(editorImage));
+         }
          setActivePage(startPage);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

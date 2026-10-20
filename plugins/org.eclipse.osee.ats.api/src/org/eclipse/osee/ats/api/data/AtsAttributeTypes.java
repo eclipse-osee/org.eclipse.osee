@@ -205,6 +205,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString Resolution = ats.createString(1152921504606847195L, "ats.Resolution", TEXT_PLAIN, "Implementation details.", MultiLine, Edit);
    ReviewBlocksAttributeType ReviewBlocks = ats.createEnum(new ReviewBlocksAttributeType(), Read);
    AttributeTypeString ReviewDefect = ats.createString(1152921504606847222L, "ats.Review Defect", TEXT_PLAIN, "", Read);
+   AttributeTypeDate ReviewDueDate = ats.createDate(2976372740913744670L, "ats.Review Due Date", TEXT_CALENDAR, "", Edit);
    ReviewFormalTypeAttributeType ReviewFormalType = ats.createEnum(new ReviewFormalTypeAttributeType(), Edit);
    RiskAnalysisAttributeType RiskAnalysis = ats.createEnum(new RiskAnalysisAttributeType(), Edit);
    RiskFactorAttributeType RiskFactor = ats.createEnum(new RiskFactorAttributeType(), Edit);
