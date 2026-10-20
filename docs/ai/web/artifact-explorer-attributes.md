@@ -165,6 +165,61 @@ The attributes panel participates in the SSE real-time notification system:
 - **Warning location**: The conflict warning (with Resolve and Discard actions) is a full-width row rendered below the button row inside the `ArtifactEditorComponent` sticky toolbar container, not in the panel. The panel owns the state (`remoteChangeWhileDirty`, `resolvingConflict`) and the actions (`openConflictResolutionDialog()`, `dismissAndRefresh()`); the parent reads them through the `#attrPanel` template reference (which shadows the `attrPanel` viewChild in template scope, so it is used as an instance — `attrPanel.remoteChangeWhileDirty()`, not `attrPanel()`). Living inside the sticky container keeps the warning pinned without a fragile manual `top` offset, and the dedicated row avoids truncating the message.
 - **Dismiss & Refresh**: The toolbar refresh button calls the panel's `dismissAndRefresh()`, which clears dirty state and reloads the parent resource, discarding local edits.
 
+## Closing a tab / leaving the page (seamless auto-save)
+
+The editors auto-save on blur, and **closing a tab or the window is itself a blur** — so a
+close almost always triggers the save that would make it safe. The close flow is built around
+that fact instead of nagging on any dirty state. The single source of truth is
+`EditorDirtyService`, which exposes a **leave-state model** consumed by every close path (do
+not re-derive it from the raw dirty/conflict signals):
+
+- `leaveStateFor(entityId)` / `globalLeaveState()` → `'clean' | 'saving' | 'conflicted'`.
+  Conflict dominates dirtiness (a held conflict can't auto-save); otherwise dirty ⇒ `saving`,
+  else `clean`.
+- `awaitSettled(entityId, timeoutMs)` → `Promise<'saved' | 'timeout'>`. Resolves when the
+  entity's dirty editors clear (the real save-completion signal: the editor calls `markClean`
+  in its save `next` handler) or the deadline elapses. The deadline is required because a save
+  can **fail** (the field stays dirty), so the caller can fall back to a prompt instead of
+  hanging. This replaced an ad-hoc `effect`+`setTimeout` race that used to live in the tab
+  component — keep the await-settle logic in the service where it is unit-tested.
+
+**Tab close** (`ArtifactTabGroupComponent.closeTab`, resolved by stable `tabId`, not index):
+- `clean` → close immediately.
+- `saving` → `await awaitSettled(artifactId, 2500)`; close silently on `'saved'`, prompt only
+  on `'timeout'` (save stalled/failed). No message in the common case — the save the blur
+  started simply lands first.
+- `conflicted` → the one case that warns up front, since the edit genuinely can't be saved.
+
+> Close by **`tabId`** via `removeTabByTabId`, never by artifact id: the same artifact can be
+> open on two branches, so `removeTabByArtifactId` would close both tabs, and the index can
+> shift while awaiting the save.
+
+**Closing-state UI (no stacked prompts).** While a tab's close is awaiting its save, its id is
+held in a `closingTabs` signal (`isClosing(tabId)`): the tab's × is replaced by a small
+`mat-progress-spinner` and the button is gone, so the up-to-2.5s wait cannot be clicked
+repeatedly into stacked `confirm()` dialogs. `closeTab` also early-returns if `isClosing(tabId)`
+is already set, guarding the programmatic path. The flag is cleared in a `finally` so it is
+released whether the save lands, times out, or the prompt is dismissed.
+
+**Prompts are plain `confirm()`** (not a `MatDialog`) — custom actions were judged not worth a
+component now that the save-on-close path makes a prompt rare. The messages are deliberate:
+each leads with the situation, states that changes are unsaved, then maps the two `confirm()`
+buttons (OK discards + closes, Cancel keeps the tab open). The `saving`-timeout prompt points
+the user at the network badge (top right, green = connected) and to try closing again, since a
+stalled save is almost always a lost connection.
+
+**Browser/window unload** (`ArtifactExplorerComponent.onBeforeUnload`): prompts (native
+`beforeUnload`) when `globalLeaveState() !== 'clean'` — i.e. for **both** `saving` and
+`conflicted`. Unlike an in-app tab close, a real unload **cannot await** the async
+`POST /orcs/txs` (it can't complete before the page tears down) and the stack has no
+synchronous-commit path, so a still-dirty editor at unload is genuine data-loss risk worth the
+prompt. A fully `clean` editor leaves with no prompt — the common case, since the blur-save
+usually lands before the user actually leaves.
+
+> The panel publishes its conflict truth into the root service via
+> `dirtyService.setConflicted(artifactId, remoteChangeWhileDirty())` (effect) and clears it on
+> destroy, so the close flows can read conflict state without reaching into panel instances.
+
 ## Conflict resolution dialog
 
 When a conflict exists, the warning banner offers a **Resolve** button (`merge_type` icon) that opens `AttributeConflictResolutionDialogComponent`.

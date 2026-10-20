@@ -481,12 +481,18 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 			.subscribe((names) => this.artifactLinkNames.set(names));
 	}
 
-	/** Opens an artifact-link clicked in the preview in a new tab on the link's branch. */
+	/**
+	 * Opens an artifact-link clicked in the preview in a new tab on the link's branch.
+	 * The link opens on the same branch as this editor, so the new tab inherits this
+	 * editor's editability ({@link editable}) rather than re-deriving it from the
+	 * global branch type (which can differ from the link's branch).
+	 */
 	protected openArtifactLink(artifactId: string) {
 		this.artifactLinkService.openArtifact(
 			artifactId,
 			this.branchId(),
-			this.viewId()
+			this.viewId(),
+			this.editable()
 		);
 	}
 

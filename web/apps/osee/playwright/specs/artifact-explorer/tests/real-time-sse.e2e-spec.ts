@@ -400,4 +400,67 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 			await purgeBranchViaApi(request, branchId);
 		}
 	});
+
+	test('closing a tab with an unresolved conflict warns, and discards + closes on confirm', async ({
+		browser,
+		request,
+		userPage,
+	}) => {
+		// Closing a CONFLICTED tab is the one close path that must warn: the held edit
+		// cannot auto-save, so closing genuinely discards it. This drives the real
+		// two-user conflict (Jason dirty + focused, Joe saves the same attribute), then
+		// closes Jason's tab and asserts the confirm() fires and discards on OK.
+		const { branchId, branchName, artifact } =
+			await setupBranchWithArtifact(browser, request, 'ConflictClose');
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
+		try {
+			await openArtifact(joe, branchName, artifact);
+			await openArtifact(jason, branchName, artifact);
+			await Promise.all([
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
+			]);
+
+			await test.step('raise the conflict on Jason', async () => {
+				// Jason edits and KEEPS focus so no auto-save-on-blur fires (stays dirty).
+				const jasonName = nameField(jason);
+				await jasonName.click();
+				await jasonName.fill(artifact + ' - Jason unsaved');
+
+				// Joe changes the SAME attribute and saves -> Jason is now conflicted.
+				await editNameAndSave(joe, artifact + ' - Joe saved');
+				await expect(
+					jason.locator('osee-conflict-resolution-banner')
+				).toBeVisible({ timeout: 20000 });
+			});
+
+			await test.step('closing the conflicted tab warns; OK discards and closes', async () => {
+				// The close must surface a confirm() (not close silently). Capture its
+				// message and accept it, which discards the held edit and closes the tab.
+				let dialogMessage: string | null = null;
+				jason.once('dialog', (d) => {
+					dialogMessage = d.message();
+					void d.accept();
+				});
+
+				await jason.getByLabel('Close tab').first().click();
+
+				// The prompt appeared and named the conflict as the reason.
+				await expect
+					.poll(() => dialogMessage, { timeout: 10000 })
+					.toContain('conflict');
+
+				// On accept, the tab is discarded and closed.
+				await expect(
+					jason.getByText(
+						'Select an artifact from the hierarchy to begin'
+					)
+				).toBeVisible({ timeout: 15000 });
+			});
+		} finally {
+			// joe/jason contexts are closed (video retained-on-failure) by the userPage fixture.
+			await purgeBranchViaApi(request, branchId);
+		}
+	});
 });
