@@ -31,6 +31,8 @@ import { applic } from '@osee/applicability/types';
 import { attribute } from '@osee/attributes/types';
 import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import {
+	FieldSaveStatusComponent,
+	fieldSaveStatus,
 	FocusLostInputComponent,
 	MarkdownEditorComponent,
 } from '@osee/shared/components';
@@ -47,12 +49,18 @@ import { MarkdownDropListRegistryService } from '../../../../services/markdown-d
 
 @Component({
 	selector: 'osee-persisted-artifact-attribute-editor',
-	// Amber "caution" ring shown while a save is blocked by an unresolved conflict. This is a
-	// caution state, NOT a destructive/error one, so the semantic `warning` token (which is red)
-	// would be wrong here. The app has no amber/caution semantic token, so raw amber slots are
-	// used deliberately: osee-yellow-10 in light mode, osee-amber-9 in dark for adequate contrast.
+	// `tw-relative` only anchors the absolutely-positioned save-status indicator.
+	// Deliberately no padding/width here: the indicator must not reflow or widen the
+	// field (that misaligns grouped instances and the applicability row).
+	//
+	// The amber "caution" ring (tw-ring-* below) is shown while a save is blocked by
+	// an unresolved conflict. This is a caution state, NOT a destructive/error one, so
+	// the semantic `warning` token (which is red) would be wrong here. The app has no
+	// amber/caution semantic token, so raw amber slots are used deliberately:
+	// osee-yellow-10 in light mode, osee-amber-9 in dark for adequate contrast.
 	host: {
 		'[class.tw-block]': 'true',
+		'[class.tw-relative]': 'true',
 		'[class.tw-rounded]': 'blockedUnsaved()',
 		'[class.tw-ring-2]': 'blockedUnsaved()',
 		'[class.tw-ring-osee-yellow-10]': 'blockedUnsaved()',
@@ -62,6 +70,7 @@ import { MarkdownDropListRegistryService } from '../../../../services/markdown-d
 	imports: [
 		FormsModule,
 		FocusLostInputComponent,
+		FieldSaveStatusComponent,
 		MatSlideToggle,
 		MatFormField,
 		MatLabel,
@@ -72,6 +81,19 @@ import { MarkdownDropListRegistryService } from '../../../../services/markdown-d
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	viewProviders: [provideOptionalControlContainerNgForm()],
 	template: `
+		<!--
+			Save-status indicator, rendered once for every widget kind so it looks
+			identical regardless of store type. Absolutely positioned in the field's
+			top-right corner (the label row's trailing whitespace), so it takes NO
+			flow space and does not widen the host — no layout shift, and grouped
+			instances stay aligned in their box. Renders NOTHING while clean/saved
+			(saveStatus() === null); appears only for unsaved / saving / error. A
+			blocked conflict is excluded (it has its own amber ring).
+		-->
+		<osee-field-save-status
+			class="tw-absolute tw-right-1 tw-top-0 tw-z-10"
+			[status]="saveStatus()"
+			[fieldName]="attr().name ?? ''" />
 		@switch (attr().storeType) {
 			@case ('Boolean') {
 				<div class="tw-flex tw-flex-col tw-gap-1">
@@ -127,8 +149,20 @@ import { MarkdownDropListRegistryService } from '../../../../services/markdown-d
 			}
 			@default {
 				@if (attr().name === 'Markdown Content') {
+					@if (showLabel()) {
+						<span
+							class="tw-mb-1 tw-block tw-text-xs tw-text-[color:var(--mat-sys-on-surface-variant)]"
+							[id]="'persisted-attr-markdown-label-' + attr().id">
+							{{ attr().name ?? '' }}
+						</span>
+					}
 					<osee-markdown-editor
 						class="tw-block"
+						[attr.aria-labelledby]="
+							showLabel()
+								? 'persisted-attr-markdown-label-' + attr().id
+								: null
+						"
 						[mdContent]="displayValue()"
 						(mdContentChange)="onMarkdownChange($event)"
 						(mdContentCommitted)="onMarkdownCommitted($event)"
@@ -284,6 +318,30 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 	/** Guards against the effect resetting previousValue while a save is in-flight. */
 	private saving = signal(false);
 
+	/** True after a save transaction fails, until the next save starts or succeeds. */
+	private saveError = signal(false);
+
+	/**
+	 * The field's save status for the inline indicator, derived from the existing
+	 * save lifecycle. `null` (clean/saved) renders nothing — the common, quiet case.
+	 * Precedence: a blocked conflict already has its own amber ring (so this stays
+	 * null and does not double up), then in-flight save, then failure, then an
+	 * unsaved-but-not-yet-saving edit.
+	 */
+	protected readonly saveStatus = computed<fieldSaveStatus>(() => {
+		if (this.blockedUnsaved()) {
+			// The conflict ring communicates this state; don't also show a glyph.
+			return null;
+		}
+		if (this.saving()) {
+			return 'saving';
+		}
+		if (this.saveError()) {
+			return 'error';
+		}
+		return this.dirtyService.isDirty(this.editorKey()) ? 'unsaved' : null;
+	});
+
 	/** Tracks server-ready transitions so a save deferred while disconnected flushes on reconnect. */
 	private wasServerReady = this.sseEventService.serverReady();
 
@@ -338,6 +396,10 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 		const key = this.editorKey();
 		if (newValue !== this.previousValue()) {
 			this.pendingValuesService.set(this.attr().id, newValue);
+			// A prior save failure is stale the moment the user resumes editing, so
+			// clear it as the field goes/stays dirty — the indicator shows "unsaved"
+			// again rather than a lingering error for the now-superseded attempt.
+			this.saveError.set(false);
 			if (!this.dirtyService.isDirty(key)) {
 				this.dirtyService.markDirty(key);
 				// Capture the generation this live edit belongs to, so a later deferred
@@ -555,6 +617,7 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 				: { set: [updated] };
 
 		this.saving.set(true);
+		this.saveError.set(false);
 		this.currentTxService
 			.modifyArtifactAndMutate(
 				`Modifying ${current.name ?? 'attribute'}`,
@@ -570,9 +633,13 @@ export class PersistedArtifactAttributeEditorComponent implements OnDestroy {
 					this.pendingValuesService.remove(this.attr().id);
 					this.editGeneration = null;
 					this.saving.set(false);
+					this.saveError.set(false);
 				},
 				error: () => {
+					// Leave the field dirty/pending (the reconnect-flush effect may retry),
+					// and surface the failure in the status indicator.
 					this.saving.set(false);
+					this.saveError.set(true);
 				},
 			});
 	}

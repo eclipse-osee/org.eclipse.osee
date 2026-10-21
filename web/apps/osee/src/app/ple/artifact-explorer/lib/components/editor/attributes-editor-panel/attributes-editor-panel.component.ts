@@ -175,18 +175,18 @@ export class AttributesEditorPanelComponent {
 	});
 
 	/**
-	 * Mirror this artifact's conflict state into the root dirty service so close
-	 * flows (tab X, browser unload) can tell "dirty but auto-saving" (close freely)
-	 * from "blocked by an unresolved conflict" (must warn — the edit can't be saved
-	 * until resolved). The panel owns the truth; this just publishes it.
-	 */
-	/**
 	 * Id the conflict flag was last published under. Clearing the old id on a change
 	 * avoids orphaning a stale conflicted entry; a panel is pinned to one artifact in
 	 * practice, this just doesn't rely on that silently.
 	 */
 	private _publishedConflictId: `${number}` | null = null;
 
+	/**
+	 * Mirror this artifact's conflict state into the root dirty service so close
+	 * flows (tab X, browser unload) can tell "dirty but auto-saving" (close freely)
+	 * from "blocked by an unresolved conflict" (must warn — the edit can't be saved
+	 * until resolved). The panel owns the truth; this just publishes it.
+	 */
 	private _publishConflictState = effect(() => {
 		const id = this.artifactId();
 		const conflicted = this.remoteChangeWhileDirty();

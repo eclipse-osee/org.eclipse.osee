@@ -165,6 +165,42 @@ The attributes panel participates in the SSE real-time notification system:
 - **Warning location**: The conflict warning (with Resolve and Discard actions) is a full-width row rendered below the button row inside the `ArtifactEditorComponent` sticky toolbar container, not in the panel. The panel owns the state (`remoteChangeWhileDirty`, `resolvingConflict`) and the actions (`openConflictResolutionDialog()`, `dismissAndRefresh()`); the parent reads them through the `#attrPanel` template reference (which shadows the `attrPanel` viewChild in template scope, so it is used as an instance — `attrPanel.remoteChangeWhileDirty()`, not `attrPanel()`). Living inside the sticky container keeps the warning pinned without a fragile manual `top` offset, and the dedicated row avoids truncating the message.
 - **Dismiss & Refresh**: The toolbar refresh button calls the panel's `dismissAndRefresh()`, which clears dirty state and reloads the parent resource, discarding local edits.
 
+## Per-field save-status indicator
+
+Because the editors auto-save on blur (there is no Save button), a field can sit with an
+unsaved edit and the user may not realize they must click out to persist it. A small inline
+indicator makes that lifecycle visible.
+
+- **Component**: `osee-field-save-status` (`FieldSaveStatusComponent`, `@osee/shared/components`)
+  — a stateless, presentational component. It takes a nullable `status`
+  (`fieldSaveStatus = 'unsaved' | 'saving' | 'error' | null`) and a `fieldName`, and maps the
+  enum to a view: `unsaved` → amber `edit` glyph, `saving` → spinner, `error` → red
+  `error_outline`, `null` → **nothing**. It holds no logic and no timers; it only renders. A
+  polite `aria-live` region announces transitions for screen readers.
+- **Silent when clean**: `null` renders nothing, so a clean/saved field shows no indicator —
+  the editor looks untouched in the common case. The indicator appears only for
+  unsaved / saving / error.
+- **Status derivation lives in the editor** (`PersistedArtifactAttributeEditorComponent.saveStatus`,
+  a `computed`), because that component already owns the save lifecycle. Precedence:
+  `blockedUnsaved()` → `null` (the amber **conflict ring** already communicates that state —
+  do not double up with a glyph); then `saving()` → `saving`; then `saveError()` → `error`;
+  then dirty → `unsaved`; else `null`. `saveError` is set in the save `error` handler and
+  cleared when a new edit starts (`trackPendingEdit`) or a save succeeds, so a stale failure
+  doesn't linger once the user resumes editing.
+- **No layout shift (gutter/overlay)**: the indicator is absolutely positioned in the field's
+  top-right corner (the label row's trailing whitespace) with the host only `tw-relative`.
+  It takes **no flow space** and the host adds **no padding/width**, so toggling it never
+  reflows the field. (An earlier reserved-padding `tw-pr-6` gutter was removed: it widened the
+  host, which misaligned grouped instances inside their bounding box and didn't apply to the
+  applicability dropdown. Absolute overlay avoids both.)
+- **Intrinsic to persisted editors, not opt-in**: it is the visual counterpart of auto-save,
+  so the persisted editor always renders it (no input toggle). It is deliberately **absent**
+  from the in-memory create-dialog editor (`osee-attributes-editor`), which does not auto-save
+  per field — a "click out to save" hint there would be a lie.
+- **Markdown label**: the Markdown Content widget now renders a label (gated on `showLabel()`,
+  `aria-labelledby` wired) like the other widgets, so it reads consistently and the indicator
+  has the same label-row context.
+
 ## Closing a tab / leaving the page (seamless auto-save)
 
 The editors auto-save on blur, and **closing a tab or the window is itself a blur** — so a
