@@ -33,11 +33,11 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
-import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.CreateOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -504,8 +504,8 @@ public class CreateActionOperation {
       Conditions.checkNotNull(fromAction, "fromAction");
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
-      ChangeTypes changeType = ChangeTypes.valueOf(
-         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, ""));
+      String changeType =
+         atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.ChangeType, "");
       setArtifactIdentifyData(toTeam, //
          title, //
          atsApi.getAttributeResolver().getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""), //
@@ -519,14 +519,14 @@ public class CreateActionOperation {
    /**
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
     */
-   private void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeTypes changeType,
+   private void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, String changeType,
       String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
       changes.setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, title);
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
       }
-      if (changeType != null && changeType.isNotNone()) {
-         changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.ChangeType, changeType.name());
+      if (Strings.isValid(changeType)) {
+         changes.setSoleAttributeValue(atsObject, AtsAttributeTypes.ChangeType, changeType);
       }
       if (Strings.isValid(priority) && !"None".equals(priority)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Priority, priority);
@@ -645,37 +645,33 @@ public class CreateActionOperation {
    }
 
    private void addAdditionalAttrs() {
-      for (Entry<String, String> attr : data.getAttrValues().entrySet()) {
-         if (!Strings.isNumeric(attr.getKey())) {
-            rd.errorf("Invalid attribute type id %s", attr.getKey());
-            return;
-         }
-         AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(Long.valueOf(attr.getKey()));
-         if (attributeType == null) {
-            rd.errorf("Invalid attribute type id %s", attr.getKey());
-            return;
-         }
-         for (IAtsTeamWorkflow teamWf : teamWfs) {
-            if (attributeType.isDate()) {
-               if (!Strings.isNumeric(attr.getValue())) {
-                  rd.errorf("Date Attribute must be Long string, not [%s]", attr.getValue());
-                  return;
-               }
-               Date date = new Date(Long.valueOf(attr.getValue()));
-               changes.setSoleAttributeValue(teamWf, attributeType, date);
-            } else if (attributeType.isBoolean()) {
-               String value = attr.getValue();
-               boolean set = false;
-               if (value.equals("true")) {
-                  set = true;
-               } else if (value.equals("false")) {
-                  set = false;
+      for (AttributeValue attrValue : data.getAttrValues().getAttributes()) {
+         AttributeTypeToken attributeType = attrValue.getAttrType();
+         if (attributeType != null) {
+            for (IAtsTeamWorkflow teamWf : teamWfs) {
+               if (attributeType.isDate()) {
+                  if (!Strings.isNumeric(attrValue.getValues().iterator().next())) {
+                     rd.errorf("Date Attribute must be Long string, not [%s]", attrValue.getValues().iterator().next());
+                     return;
+                  }
+                  Date date = new Date(Long.valueOf(attrValue.getValues().iterator().next()));
+                  changes.setSoleAttributeValue(teamWf, attributeType, date);
+               } else if (attributeType.isBoolean()) {
+                  String value = attrValue.getValues().iterator().next();
+                  boolean set = false;
+                  if (value.equals("true")) {
+                     set = true;
+                  } else if (value.equals("false")) {
+                     set = false;
+                  } else {
+                     rd.errorf("Unexpected Boolean value [%s]", value);
+                  }
+                  changes.setSoleAttributeValue(teamWf, attributeType, set);
                } else {
-                  rd.errorf("Unexpected Boolean value [%s]", value);
+                  for (String value : attrValue.getValues()) {
+                     changes.addAttribute(teamWf, attributeType, value);
+                  }
                }
-               changes.setSoleAttributeValue(teamWf, attributeType, set);
-            } else {
-               changes.setSoleAttributeValue(teamWf, attributeType, attr.getValue());
             }
          }
       }

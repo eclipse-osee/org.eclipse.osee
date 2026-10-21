@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.Adaptable;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
@@ -45,12 +46,12 @@ public class BlamEditorInput implements IEditorInput, IPersistableElement, Adapt
    }
 
    public Image getImage() {
-      return blamOperation.getImage();
+      return ImageManager.getImage(blamOperation.getImage());
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return blamOperation.getImageDescriptor();
+      return ImageManager.getImageDescriptor(blamOperation.getImage());
    }
 
    public AbstractBlam getBlamOperation() {

@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorkTypeEndpoint;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.pr.AtsPrEndpointApi;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefEndpointApi;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
@@ -108,5 +109,7 @@ public interface IAtsServerEndpointProvider {
    BranchEndpoint getBrchEp();
 
    AtsIcdEndpointApi getIcdEp();
+
+   AtsWorkDefEndpointApi getWorkDefEp();
 
 }

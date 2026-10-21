@@ -20,22 +20,30 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.cr.CreateNewChangeRequestBlam;
+import org.eclipse.osee.ats.ide.workflow.cr.AbstractCreateNewChangeRequestBlam;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class CreateNewDemoChangeRequestBlam extends CreateNewChangeRequestBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CreateNewDemoChangeRequestBlam extends AbstractCreateNewChangeRequestBlam {
+
+   private static final String BLAM_NAME = "Create New Demo Change Request";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
 
    public CreateNewDemoChangeRequestBlam() {
-      super("Create New Demo Change Request");
+      super(BLAM_NAME);
    }
 
-   @Override
-   public String getDescriptionUsage() {
-      return "Create program top level Demo Change Request for any new feature or problem found.\nThis will mature into all the work for all teams needed to resolve this request.";
-   }
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
    @Override
    public Collection<IAtsActionableItem> getProgramCrAis() {
@@ -55,16 +63,25 @@ public class CreateNewDemoChangeRequestBlam extends CreateNewChangeRequestBlam {
    }
 
    @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavItemCat.TOP_NEW);
-   }
-
-   @Override
    public void handlePopulateWithDebugInfo() {
       super.handlePopulateWithDebugInfo();
       if (changeTypeWidget != null) {
          changeTypeWidget.setSelected(ChangeTypes.Problem.name());
       }
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavItemCat.TOP_NEW);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Create program top level Demo Change Request for any new feature or problem found.\nThis will mature into all the work for all teams needed to resolve this request.";
    }
 
 }

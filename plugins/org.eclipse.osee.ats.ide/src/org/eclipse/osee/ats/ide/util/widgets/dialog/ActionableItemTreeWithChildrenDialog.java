@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Control;
  */
 public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDialog<IAtsActionableItem> {
 
-   XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Actionable Item Actions");
+   XXCheckBoxWidget recurseChildrenCheck = new XXCheckBoxWidget("Include all children Actionable Item Actions");
    boolean recurseChildren = false;
    protected Composite dialogComp;
    Collection<IAtsActionableItem> actionableItems;
@@ -82,7 +82,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
 
       if (addIncludeAllCheckbox) {
          recurseChildrenCheck.createWidgets(dialogComp, 2);
-         recurseChildrenCheck.set(recurseChildren);
+         recurseChildrenCheck.setSelected(recurseChildren);
          recurseChildrenCheck.addSelectionListener(new SelectionAdapter() {
 
             @Override

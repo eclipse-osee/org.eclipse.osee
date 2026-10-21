@@ -26,12 +26,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -46,9 +46,9 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -82,7 +82,7 @@ public class QuickSearchView extends GenericViewPart {
    private static final String LAST_APPLIC_TEXT = "lastApplicText";
    private static final String LAST_VIEW_UUID = "lastViewUuid";
    private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
-   private XBranchSelectWidget branchSelect;
+   private XXBranchSelWidget branchSelect;
    private SearchComposite searchComposite;
    private QuickSearchOptionComposite optionsComposite;
    private IMemento memento;
@@ -107,7 +107,7 @@ public class QuickSearchView extends GenericViewPart {
       if (DbConnectionExceptionComposite.dbConnectionIsOk() && memento != null) {
          if (Widgets.isAccessible(searchComposite)) {
             memento.putString(LAST_QUERY_KEY_ID, searchComposite.getQuery());
-            branch = branchSelect.getData();
+            branch = branchSelect.getBranch();
             if (branch != null) {
                memento.putString(LAST_BRANCH_UUID, branch.getIdString());
             }
@@ -165,8 +165,8 @@ public class QuickSearchView extends GenericViewPart {
 
             if (Strings.isValid(uuid) && uuid.matches("\\d+")) {
                try {
-                  branchSelect.setSelection(BranchManager.getBranchToken(Long.valueOf(uuid)));
-                  setBranch(branchSelect.getData());
+                  branchSelect.setBranch(BranchManager.getBranchToken(Long.valueOf(uuid)));
+                  setBranch(branchSelect.getBranch());
                   if (Strings.isValid(viewUuid) && viewUuid.matches("\\d+")) {
                      setViewId(ArtifactId.valueOf(viewUuid));
                   }
@@ -207,16 +207,16 @@ public class QuickSearchView extends GenericViewPart {
 
          sComp.setContent(comp);
 
-         branchSelect = new XBranchSelectWidget("");
-         branchSelect.setDisplayLabel(false);
+         branchSelect = new XXBranchSelWidget();
+         branchSelect.set(XOption.VALUE_BORDER, XOption.VALUE_TOOLTIP, XOption.VALUE_WHITE);
          branchSelect.createWidgets(comp, 2);
-         branchSelect.addListener(searchListener);
-         branchSelect.addListener(new Listener() {
+         branchSelect.getLabelLinkWidget().addListener(SWT.MouseDown, searchListener);
+         branchSelect.getLabelLinkWidget().addListener(SWT.MouseDown, new Listener() {
             @Override
             public void handleEvent(Event event) {
                try {
-                  BranchToken selectedBranch = branchSelect.getData();
-                  if (selectedBranch != null && !BranchId.SENTINEL.equals(selectedBranch)) {
+                  BranchToken selectedBranch = branchSelect.getBranch();
+                  if (selectedBranch != null && selectedBranch.isValid()) {
                      branch = selectedBranch;
                      setViewId(ArtifactId.SENTINEL);
                      setApplicabilityId(ApplicabilityToken.SENTINEL);
@@ -232,7 +232,7 @@ public class QuickSearchView extends GenericViewPart {
          OseeStatusContributionItemFactory.addTo(this, true);
 
          searchComposite = new SearchComposite(comp, SWT.NONE, "Search", null, this, true);
-         searchComposite.addListener(searchListener);
+         searchComposite.addSearchListener(searchListener);
 
          optionsComposite = new QuickSearchOptionComposite(comp, SWT.NONE);
          optionsComposite.setLayout(ALayout.getZeroMarginLayout());
@@ -289,8 +289,8 @@ public class QuickSearchView extends GenericViewPart {
 
    public void setBranch(BranchToken branch) {
       if (branchSelect != null) {
-         branchSelect.setSelection(branch);
-         this.branch = branchSelect.getData();
+         branchSelect.setBranch(branch);
+         this.branch = branchSelect.getBranch();
          // branch has been selected; allow user to set up search string
          compositeEnablement(searchComposite, true);
          refreshView();
@@ -308,7 +308,7 @@ public class QuickSearchView extends GenericViewPart {
       public void handleEvent(Event event) {
          if (Widgets.isAccessible(searchComposite) && branchSelect != null) {
 
-            final BranchToken branch = branchSelect.getData();
+            final BranchToken branch = branchSelect.getBranch();
             if (branch == null) {
                AWorkbench.popup("Error: Must Select a Branch");
                return;
@@ -338,7 +338,7 @@ public class QuickSearchView extends GenericViewPart {
       }
    }
 
-   private void handleSearch() {
+   public void handleSearch() {
       NewSearchUI.activateSearchResultView();
 
       ISearchQuery query;
@@ -362,7 +362,7 @@ public class QuickSearchView extends GenericViewPart {
       if (view.getCheckBox()) {
          options.setView(getViewId());
       }
-      query = new ArtifactSearch(branchSelect.getData(), options);
+      query = new ArtifactSearch(branchSelect.getBranch(), options);
       NewSearchUI.runQueryInBackground(query);
 
    }

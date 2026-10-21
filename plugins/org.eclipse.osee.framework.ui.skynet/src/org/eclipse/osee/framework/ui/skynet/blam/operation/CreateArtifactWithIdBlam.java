@@ -19,11 +19,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -32,18 +35,22 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import java.util.Arrays;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 
 /**
  * @author Donald G. Dunne
  * @author Loren K. Ashley
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class CreateArtifactWithIdBlam extends AbstractBlam {
 
-   private static String blamDescription =
+   private static String BLAM_NAME = "Create Artifact With Id";
+   private static String BLAM_DESC =
       "Create artifact of type with given id.\nWARNING: You must manually confirm that id is not already used.";
-   private static String blamName = "Create Artifact With Id";
    private static String messageArtifactTypeMustEnter = "Must enter Artifact Type";
    private static String messageBranchMustEnter = "Must enter Branch";
    private static String messageIdMustBe32 = "(Must be an int greater than zero)";
@@ -51,17 +58,19 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
    private static String messageIdMustEnter32 = "Must enter id as an int greater than zero";
    private static String messageIdMustEnter64 = "Must enter id as a long greater than zero";
    private static String messageNameMustEnter = "Must enter name";
-   private static String variableMapArtifactType = "Artifact Type";
-   private static String variableMapBranch = "Branch";
    private static String variableMapName = "Name";
+
    private final String messageIdMustBe;
    private final String messageIdMustEnter;
    private final boolean useLongIds;
    private final String variableMapId;
 
-   public CreateArtifactWithIdBlam() {
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
 
-      super(blamName, blamDescription, null);
+   public CreateArtifactWithIdBlam() {
+      super(BLAM_NAME);
 
       this.useLongIds = ArtifactToken.USE_LONG_IDS;
 
@@ -76,34 +85,39 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
       this.variableMapId = "Id ".concat(this.messageIdMustBe);
    }
 
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return List.of(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
-   }
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
 
    @Override
    public List<XWidgetData> getXWidgetItems() {
-      //@formatter:off
-      return
-         new XWidgetBuilder()
-                .andWidget( variableMapBranch,       "XBranchSelectWidget"      ).endWidget()
-                .andWidget( variableMapArtifactType, "XArtifactTypeComboViewer" ).endWidget()
-                .andWidget( variableMapName,         "XText"                    ).endWidget()
-                .andWidget( this.variableMapId,      "XText"                    ).endWidget()
-                .getXWidgetDatas();
-      //@formatter:on
+      createWidgetBuilder();
+      wb.andWidget(XWidgetLabels.BRANCH, WidgetId.XXBranchSelWidget);
+      wb.andWidget(XWidgetLabels.ARTIFACT_TYPE, WidgetId.XXArtifactTypeWidget);
+      wb.andTextWidget(variableMapName);
+      wb.andTextWidget(this.variableMapId);
+      return wb.getXWidgetDatas();
    }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
-      var artifactType = variableMap.getArtifactType(variableMapArtifactType);
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
+      var artifactType = variableMap.getArtifactType(XWidgetLabels.ARTIFACT_TYPE);
       if (Objects.isNull(artifactType)) {
          AWorkbench.popup(messageArtifactTypeMustEnter);
          return;
       }
 
-      var branchId = variableMap.getBranch(variableMapBranch);
+      var branchId = variableMap.getBranch(XWidgetLabels.BRANCH);
       if (Objects.isNull(branchId)) {
          AWorkbench.popup(messageBranchMustEnter);
       }
@@ -147,12 +161,12 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
             var brch = BranchManager.getBranch(branchToken);
             if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create new Artifact", //
                String.format("Create new Artifact\n\n" + //
-            "Type: %s\n" + //
-            "Branch: %s\n" + //
-            "Id: %s\n" + //
-            "Name: [%s]\n\n" + //
-            "WARNING, WARNING, WARNING: And you confirm you have checked the id does not already exist?", artifactType,
-                  brch, artId, name))) {
+                  "Type: %s\n" + //
+                  "Branch: %s\n" + //
+                  "Id: %s\n" + //
+                  "Name: [%s]\n\n" + //
+                  "WARNING, WARNING, WARNING: And you confirm you have checked the id does not already exist?",
+                  artifactType, brch, artId, name))) {
                cancelled.set(true);
             }
 
@@ -173,6 +187,29 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
 
          ArtifactEditor.editArtifact(artifact);
       }
+   }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(CoreUserGroups.OseeAdmin);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return List.of(XNavigateItem.DEFINE_ADMIN);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return BLAM_DESC;
    }
 
 }

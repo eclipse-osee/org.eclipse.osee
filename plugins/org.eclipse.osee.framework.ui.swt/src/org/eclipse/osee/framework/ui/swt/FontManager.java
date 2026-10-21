@@ -39,6 +39,10 @@ public final class FontManager {
       return getFont("arial", 12, SWT.BOLD);
    }
 
+   public static Font getHyperlinkFont() {
+      return getFont("arial", 12, SWT.UNDERLINE_LINK);
+   }
+
    public static Font getCourierNew8() {
       return getFont("Courier New", 8, SWT.NONE);
    }

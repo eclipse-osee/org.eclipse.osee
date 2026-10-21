@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.ide.util.internal;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
@@ -37,7 +36,6 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    Boolean atsAdmin = null;
    Boolean atsDeleteWorkflowAdmin = null;
    private AtsUser currentUser;
-   private AtsApi atsApi;
 
    public AtsUserServiceClientImpl() {
       // For OSGI Instantiation
@@ -143,15 +141,6 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    @Override
    public Collection<AtsUser> getUsers() {
       return configurationService.getConfigurations().getUsers();
-   }
-
-   @Override
-   public void setAtsApi(AtsApi atsApi) {
-      this.atsApi = atsApi;
-   }
-
-   public AtsApi getAtsApi() {
-      return atsApi;
    }
 
 }

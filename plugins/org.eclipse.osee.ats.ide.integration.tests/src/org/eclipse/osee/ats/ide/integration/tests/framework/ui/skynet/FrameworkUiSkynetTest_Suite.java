@@ -15,6 +15,8 @@ package org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet;
 
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.ats.ide.integration.tests.util.TestFailureListener;
+import org.eclipse.osee.client.test.framework.TestAllRegisteredBlamsIntegrationTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,6 +26,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
+   TestAllRegisteredBlamsIntegrationTest.class,
    LinkUtilTest.class, //
 })
 public class FrameworkUiSkynetTest_Suite {
@@ -31,6 +34,7 @@ public class FrameworkUiSkynetTest_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
+      TestFailureListener.setEnabled(false);
       DemoUtil.checkDbInitAndPopulateSuccess();
    }
 

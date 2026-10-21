@@ -36,6 +36,7 @@ public class Branch extends NamedIdBase implements BranchToken, Adaptable {
    private final Set<Branch> childBranches = new HashSet<>();
    private BranchType branchType;
    private BranchState branchState;
+   private Boolean isPle;
    private boolean isArchived;
    private boolean inheritsAccessControl;
    private TransactionRecord parentTx;
@@ -84,6 +85,10 @@ public class Branch extends NamedIdBase implements BranchToken, Adaptable {
 
    public boolean isArchived() {
       return isArchived;
+   }
+
+   public Boolean isPle() {
+      return isPle;
    }
 
    public ArtifactId getAssociatedArtifactId() {
@@ -216,6 +221,10 @@ public class Branch extends NamedIdBase implements BranchToken, Adaptable {
 
    public void setCategories(List<BranchCategoryToken> categories) {
       this.categories = categories;
+   }
+
+   public void setPle(boolean ple) {
+      this.isPle = ple;
    }
 
 }

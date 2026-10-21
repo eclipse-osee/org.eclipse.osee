@@ -23,14 +23,18 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchQueryData;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.enums.OseeImage;
+import org.eclipse.osee.framework.core.widget.validate.IValueValidator;
+import org.eclipse.osee.framework.core.widget.validate.XXNoOpValidator;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**
  * This is the non-UI representation of what should become a widget. It has no tie to any specific UI and could be used
@@ -47,56 +51,59 @@ import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
  */
 public class XWidgetData {
 
-   private static final String UNKNOWN = "Unknown";
    private static final int DEFAULT_HEIGHT = 9999;
-   private final Map<String, Object> parameters = new HashMap<String, Object>();
-   private final XOptionHandler xOptionHandler = new XOptionHandler();
-   private String name = "Unknown";
-   private String id = "";
-   private String storeName = "";
-   private Long storeId = -1L;
-   private String storeName2 = "";
-   private Long storeId2 = -1L;
-   private String xWidgetName = UNKNOWN;
-   private int beginComposite = 0; // If >0, indicates new child composite with columns == value
-   private boolean border = false;
-   private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
-   private boolean endComposite, endGroupComposite; // indicated end of child composite
-   private String groupName;
-   private int height = DEFAULT_HEIGHT;
-   private boolean noSelect;
-   private String toolTip;
-   private String defaultValue;
-   private String keyedBranchName;
-   private ArtifactToken artifact;
-   private Object object;
-   private String doubleClickText;
+   private ArtifactId teamId = ArtifactId.SENTINEL;
+   private ArtifactToken artifact = ArtifactToken.SENTINEL;
+   private ArtifactToken enumeratedArt = ArtifactToken.SENTINEL;
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
    private AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
-   private RelationTypeSide relationTypeSide;
+   private BranchQueryData branchQuery = new BranchQueryData();
+   private Collection<Object> values = new ArrayList<Object>();
    private ComputedCharacteristicToken<?> computedCharacteristic;
-   private boolean horizontalLabel;
-   private Object defaultValueObj = null;
+   private Double max;
+   private Double min;
    private ISelectableValueProvider valueProvider;
-   private Collection<? extends Object> values = new ArrayList<Object>();
-   private List<ConditionalRule> conditions = new ArrayList<>();
-   private ArtifactToken enumeratedArt = ArtifactToken.SENTINEL;
-   private ArtifactId teamId = ArtifactId.SENTINEL;
-   private List<WidgetHint> widgetHints = new ArrayList<>();
-   private OseeImage oseeImage;
    private IUserGroupArtifactToken userGroup = UserGroupArtifactToken.SENTINEL;
-   private BranchQueryData branchQuery;
+   private List<ConditionalRule> conditions = new ArrayList<>();
+   private Long id = 0L; // Temporary id so this widget can be indexed and found
+   private OseeImage oseeImage;
+   private RelationTypeSide relationTypeSide;
+   private Object labelProvider; // ILabelProvider
+   private Object defaultValue;
+   private Object object;
+   private Object formToolkit; // SWT FormToolkit
+   private Object managedForm; // SWT ManagedForm
+   private Object xWidget;
+   private Object viewerComparator;
+   private Object widgetDef; // WidgetDefinition creating this widget
+   private final List<Object> xModListeners = new ArrayList<>();
+   private String doubleClickText;
+   private String groupName;
+   private String keyedBranchName;
+   private String label = "";
+   private String toolTip;
+   private String diagDescUrl;
+   private String dateFormat = DateUtil.MMDDYY;
+   private WidgetId widgetId = WidgetId.SENTINEL;
+   private boolean border = false;
+   private boolean endComposite, endGroupComposite; // indicated end of child composite
+   private final List<String> selectable = new ArrayList<>();
+   private final List<AttributeTypeToken> providerFor = new ArrayList<>();
+   private final Map<String, Object> parameters = new HashMap<String, Object>();
+   private final XOptionHandler xOptionHandler = new XOptionHandler();
+   private int beginComposite = 0; // If >0, indicates new child composite with columns == value
+   private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
+   private int height = DEFAULT_HEIGHT;
+   private Integer swtFgLabelColor = null;
+   private IValueValidator validator = XXNoOpValidator.instance;
+   private final List<SwtWidgetListener> swtValueListeners = new ArrayList<>();
+   private BranchToken branch = BranchToken.SENTINEL;
 
    public XWidgetData(XOption... xOption) {
-      xOptionHandler.add(XOption.EDITABLE);
+      xOptionHandler.add(XOption.WRITE);
       xOptionHandler.add(XOption.ALIGN_LEFT);
       xOptionHandler.add(xOption);
-   }
-
-   @Override
-   public Object clone() throws CloneNotSupportedException {
-      return super.clone();
    }
 
    public boolean isHeightSet() {
@@ -105,19 +112,12 @@ public class XWidgetData {
 
    @Override
    public String toString() {
-      return getName();
+      return String.format("Label: [%s] \n%s \nXOpts: %s \nAttr Type: %s", getLabel(), getWidgetId(),
+         getXOptionHandler().getXOptions(), getAttributeType().toStringWithId());
    }
 
-   public String getName() {
-      return name;
-   }
-
-   public String getStoreName() {
-      return storeName;
-   }
-
-   public void setStoreName(String storeName) {
-      this.storeName = storeName;
+   public String getLabel() {
+      return label;
    }
 
    public boolean isRequired() {
@@ -128,33 +128,25 @@ public class XWidgetData {
    }
 
    public boolean isRequiredForCompletion() {
-      if (xOptionHandler.contains(XOption.REQUIRED_FOR_COMPLETION)) {
+      if (xOptionHandler.contains(XOption.RFC)) {
          return true;
       }
       return false;
    }
 
    public boolean isFillVertically() {
-      return xOptionHandler.contains(XOption.FILL_VERTICALLY);
+      return xOptionHandler.contains(XOption.FILL_VERT);
    }
 
    public boolean isFillHorizontally() {
-      return xOptionHandler.contains(XOption.FILL_HORIZONTALLY);
+      return xOptionHandler.contains(XOption.FILL_HORZ);
    }
 
-   public String getXWidgetName() {
-      return xWidgetName;
+   public void setLabel(String label) {
+      this.label = label;
    }
 
-   public void setXWidgetName(String widget) {
-      xWidgetName = widget;
-   }
-
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   public void setDefaultValue(String defaultValue) {
+   public void setDefaultValue(Object defaultValue) {
       this.defaultValue = defaultValue;
    }
 
@@ -167,32 +159,32 @@ public class XWidgetData {
    }
 
    public int getBeginComposite() {
-      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_10)) {
+      if (xOptionHandler.contains(XOption.COMP_10)) {
          return 10;
       }
-      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_8)) {
+      if (xOptionHandler.contains(XOption.COMP_8)) {
          return 8;
       }
-      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_6)) {
+      if (xOptionHandler.contains(XOption.COMP_6)) {
          return 6;
       }
-      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_4)) {
+      if (xOptionHandler.contains(XOption.COMP_4)) {
          return 4;
       }
       return beginComposite;
    }
 
    public int getBeginGroupComposite() {
-      if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_10)) {
+      if (xOptionHandler.contains(XOption.GCOMP_10)) {
          return 10;
       }
-      if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_8)) {
+      if (xOptionHandler.contains(XOption.GCOMP_8)) {
          return 8;
       }
-      if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_6)) {
+      if (xOptionHandler.contains(XOption.GCOMP_6)) {
          return 6;
       }
-      if (xOptionHandler.contains(XOption.BEGIN_GROUP_COMPOSITE_4)) {
+      if (xOptionHandler.contains(XOption.GCOMP_4)) {
          return 4;
       }
       return beginGroupComposite;
@@ -235,7 +227,7 @@ public class XWidgetData {
       this.toolTip = toolTip;
    }
 
-   public String getDefaultValue() {
+   public Object getDefaultValue() {
       return defaultValue;
    }
 
@@ -245,14 +237,6 @@ public class XWidgetData {
 
    public String getKeyedBranchName() {
       return keyedBranchName;
-   }
-
-   public String getId() {
-      return id;
-   }
-
-   public void setId(String id) {
-      this.id = id;
    }
 
    public XOptionHandler getXOptionHandler() {
@@ -267,31 +251,20 @@ public class XWidgetData {
       this.artifact = artifact;
    }
 
-   /**
-    * Generic object passed along to the created XWidget
-    */
-   public void setObject(Object object) {
-      this.object = object;
-   }
-
-   public Object getObject() {
-      return object;
+   public void setFillHorzontally(boolean fillHoriz) {
+      if (fillHoriz) {
+         xOptionHandler.add(XOption.FILL_HORZ);
+      } else {
+         xOptionHandler.remove(XOption.FILL_HORZ);
+      }
    }
 
    public void setFillVertically(boolean fillVert) {
       if (fillVert) {
-         xOptionHandler.add(XOption.FILL_VERTICALLY);
+         xOptionHandler.add(XOption.FILL_VERT);
       } else {
-         xOptionHandler.remove(XOption.FILL_VERTICALLY);
+         xOptionHandler.remove(XOption.FILL_VERT);
       }
-   }
-
-   public Long getStoreId() {
-      return storeId;
-   }
-
-   public void setStoreId(Long storeId) {
-      this.storeId = storeId;
    }
 
    public void setDoubleClickText(String doubleClickText) {
@@ -342,28 +315,12 @@ public class XWidgetData {
       return parameters;
    }
 
-   public boolean isNoSelect() {
-      return noSelect;
-   }
-
-   public void setNoSelect(boolean noSelect) {
-      this.noSelect = noSelect;
-   }
-
    public void setHorizontalLabel(boolean set) {
-      this.horizontalLabel = set;
+      set(XOption.HORZ_LABEL);
    }
 
    public boolean isHorizontalLabel() {
-      return horizontalLabel;
-   }
-
-   public void setDefaultValueObj(Object value) {
-      this.defaultValueObj = value;
-   }
-
-   public Object getDefaultValueObj() {
-      return defaultValueObj;
+      return is(XOption.HORZ_LABEL);
    }
 
    public String getGroupName() {
@@ -382,11 +339,11 @@ public class XWidgetData {
       this.valueProvider = valueProvider;
    }
 
-   public Collection<? extends Object> getValues() {
+   public Collection<Object> getValues() {
       return values;
    }
 
-   public void setValues(Collection<? extends Object> values) {
+   public void setValues(Collection<Object> values) {
       this.values = values;
    }
 
@@ -420,6 +377,13 @@ public class XWidgetData {
    }
 
    public void setAttributeType(AttributeTypeToken attributeType) {
+      if (this.attributeType.equals(attributeType)) {
+         return;
+      }
+      if (this.attributeType.isValid() && attributeType.isInvalid()) {
+         Conditions.assertTrue(attributeType.isValid(),
+            "Valid attr type %s shouldn't be overwrittend by SENTINEL for %s", this.attributeType.toStringWithId());
+      }
       this.attributeType = attributeType;
    }
 
@@ -431,39 +395,13 @@ public class XWidgetData {
       this.teamId = teamId;
    }
 
-   public void addWidgetHint(WidgetHint hint) {
-      widgetHints.add(hint);
-   }
-
-   public List<WidgetHint> getWidgetHints() {
-      return widgetHints;
-   }
-
-   public void setWidgetHints(List<WidgetHint> widgetHints) {
-      this.widgetHints = widgetHints;
-   }
-
-   public String getStoreName2() {
-      return storeName2;
-   }
-
-   public void setStoreName2(String storeName2) {
-      this.storeName2 = storeName2;
-   }
-
-   public Long getStoreId2() {
-      return storeId2;
-   }
-
-   public void setStoreId2(Long storeId2) {
-      this.storeId2 = storeId2;
-   }
-
    public AttributeTypeToken getAttributeType2() {
       return attributeType2;
    }
 
    public void setAttributeType2(AttributeTypeToken attributeType2) {
+      Conditions.assertTrue(attributeType2.isValid(), "Attr Type 2 should be valid for %s",
+         attributeType.toStringWithId());
       this.attributeType2 = attributeType2;
    }
 
@@ -489,6 +427,278 @@ public class XWidgetData {
 
    public void setBranchQuery(BranchQueryData branchQuery) {
       this.branchQuery = branchQuery;
+   }
+
+   public WidgetId getWidgetId() {
+      return widgetId;
+   }
+
+   public void setWidgetId(WidgetId widgetId) {
+      this.widgetId = widgetId;
+   }
+
+   public List<String> getSelectable() {
+      return selectable;
+   }
+
+   public void setSelectable(List<? extends Object> selectable) {
+      for (Object obj : selectable) {
+         this.selectable.add(obj.toString());
+      }
+   }
+
+   public Double getMin() {
+      return min;
+   }
+
+   public void setMin(Double min) {
+      this.min = min;
+   }
+
+   public Double getMax() {
+      return max;
+   }
+
+   public void setMax(Double max) {
+      this.max = max;
+   }
+
+   public Long getId() {
+      return id;
+   }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
+
+   public Object getObject() {
+      return object;
+   }
+
+   public void setObject(Object object) {
+      this.object = object;
+   }
+
+   public Object getFormToolkit() {
+      return formToolkit;
+   }
+
+   public void setFormToolkit(Object formToolkit) {
+      this.formToolkit = formToolkit;
+   }
+
+   public Object getManagedForm() {
+      return managedForm;
+   }
+
+   public void setManagedForm(Object managedForm) {
+      this.managedForm = managedForm;
+   }
+
+   public Object getLabelProvider() {
+      return labelProvider;
+   }
+
+   public void setLabelProvider(Object labelProvider) {
+      this.labelProvider = labelProvider;
+   }
+
+   public IValueValidator getValidator() {
+      return validator;
+   }
+
+   public void setValidator(IValueValidator validator) {
+      this.validator = validator;
+   }
+
+   public Integer getFgLabelColor() {
+      return swtFgLabelColor;
+   }
+
+   public void setFgLabelColor(Integer swtFgLabelColor) {
+      this.swtFgLabelColor = swtFgLabelColor;
+   }
+
+   public void addSwtValueListener(int swtOp, Object listener) {
+      swtValueListeners.add(new SwtWidgetListener(swtOp, listener));
+   }
+
+   public List<SwtWidgetListener> getSwtValueListeners() {
+      return swtValueListeners;
+   }
+
+   public String getDateFormat() {
+      return dateFormat;
+   }
+
+   public void setDateFormat(String dateFormat) {
+      this.dateFormat = dateFormat;
+   }
+
+   public Object getxWidget() {
+      return xWidget;
+   }
+
+   public void setXWidget(Object xWidget) {
+      this.xWidget = xWidget;
+   }
+
+   public Object getWidgetDef() {
+      return widgetDef;
+   }
+
+   public void setWidgetDef(Object widgetDef) {
+      this.widgetDef = widgetDef;
+   }
+
+   // XOption convenience methods
+
+   public void set(XOption... xOptions) {
+      for (XOption opt : xOptions) {
+         getXOptionHandler().add(opt);
+      }
+   }
+
+   public void remove(XOption xOption) {
+      getXOptionHandler().remove(xOption);
+   }
+
+   /**
+    * @return true if any match
+    */
+   public boolean is(XOption... options) {
+      for (XOption opt : options) {
+         if (getXOptionHandler().contains(opt)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public boolean isNot(XOption options) {
+      return !is(options);
+   }
+
+   public boolean isAll(XOption... xOptions) {
+      for (XOption xOption : xOptions) {
+         if (!getXOptionHandler().contains(xOption)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public boolean isAny(XOption... xOptions) {
+      for (XOption xOption : xOptions) {
+         if (getXOptionHandler().contains(xOption)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public String getDiagDescUrl() {
+      return diagDescUrl;
+   }
+
+   /**
+    * URL that describes enumerated values. If set, this will be displayed in dialog as a hyperlink that the users can
+    * select to get more information.
+    */
+   public void setDiagDescUrl(String diagDescUrl) {
+      this.diagDescUrl = diagDescUrl;
+   }
+
+   public BranchToken getBranch() {
+      return branch;
+   }
+
+   public void setBranch(BranchToken branch) {
+      this.branch = branch;
+   }
+
+   public void setProviderfor(AttributeTypeToken... attrTypes) {
+      for (AttributeTypeToken attrType : attrTypes) {
+         this.providerFor.add(attrType);
+      }
+   }
+
+   @Override
+   public XWidgetData clone() {
+      XWidgetData copy = new XWidgetData();
+      copy.artifact = this.artifact;
+      copy.artifactType = this.artifactType;
+      copy.attributeType = this.attributeType;
+      copy.attributeType2 = this.attributeType2;
+      copy.beginComposite = this.beginComposite;
+      copy.beginGroupComposite = this.beginGroupComposite;
+      copy.border = this.border;
+      copy.branch = this.branch;
+      copy.branchQuery = this.branchQuery;
+      copy.computedCharacteristic = this.computedCharacteristic;
+      copy.conditions = new ArrayList<>(this.conditions);
+      copy.dateFormat = this.dateFormat;
+      copy.defaultValue = this.defaultValue;
+      copy.diagDescUrl = this.diagDescUrl;
+      copy.doubleClickText = this.doubleClickText;
+      copy.endComposite = this.endComposite;
+      copy.endGroupComposite = this.endGroupComposite;
+      copy.enumeratedArt = this.enumeratedArt;
+      copy.formToolkit = this.formToolkit;
+      copy.groupName = this.groupName;
+      copy.height = this.height;
+      copy.id = this.id;
+      copy.keyedBranchName = this.keyedBranchName;
+      copy.label = this.label;
+      copy.labelProvider = this.labelProvider;
+      copy.managedForm = this.managedForm;
+      copy.max = this.max;
+      copy.min = this.min;
+      copy.object = this.object;
+      copy.oseeImage = this.oseeImage;
+      copy.parameters.putAll(this.parameters);
+      copy.providerFor.addAll(this.providerFor);
+      copy.relationTypeSide = this.relationTypeSide;
+      copy.selectable.addAll(this.selectable);
+      copy.swtFgLabelColor = this.swtFgLabelColor;
+      copy.swtValueListeners.addAll(this.swtValueListeners);
+      copy.teamId = this.teamId;
+      copy.toolTip = this.toolTip;
+      copy.userGroup = this.userGroup;
+      copy.validator = this.validator;
+      copy.valueProvider = this.valueProvider;
+      copy.values = new ArrayList<>(this.values);
+      copy.viewerComparator = this.viewerComparator;
+      copy.widgetDef = this.widgetDef;
+      copy.widgetId = this.widgetId;
+      copy.xModListeners.addAll(this.xModListeners);
+      copy.xOptionHandler.add(this.xOptionHandler.getXOptions());
+      copy.xWidget = this.xWidget;
+      return copy;
+   }
+
+   public List<AttributeTypeToken> getProviderFor() {
+      return providerFor;
+   }
+
+   public Object getViewerComparator() {
+      return viewerComparator;
+   }
+
+   public void setViewerComparator(Object viewerComparator) {
+      this.viewerComparator = viewerComparator;
+   }
+
+   public void addXModListener(Object listener) {
+      this.xModListeners.add(listener);
+   }
+
+   public List<Object> getxModListeners() {
+      return xModListeners;
+   }
+
+   public boolean isCommon() {
+      return getAttributeType().hasDisplayHint(DisplayHint.Common);
    }
 
 }

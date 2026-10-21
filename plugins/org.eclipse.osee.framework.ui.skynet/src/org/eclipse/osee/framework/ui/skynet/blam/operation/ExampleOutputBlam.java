@@ -15,25 +15,61 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class ExampleOutputBlam extends AbstractBlam {
 
-   @Override
-   public String getName() {
-      return "Example Blam";
+   private static final String BLAM_NAME = "Example";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public ExampleOutputBlam() {
+      super(BLAM_NAME, CoreImage.EXAMPLE);
    }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andCheckBoxWidget("body is html").andDefault(true);
+      wb.andLabelWidget("   ");
+      wb.andLabelWidget("Widget to select a branch....");
+      wb.andBranchSelWidget().andBranchQuery().andBranchType(BranchType.WORKING);
+      wb.andLabelWidget("- OR Widget to select a list of Branch Views passed in - ");
+      wb.andBranchViewSelWidget() //
+         .andValues( //
+            new BranchViewToken(DemoBranches.SAW_PL.getId(), "Config A", ArtifactId.valueOf(342432L)), //
+            new BranchViewToken(DemoBranches.SAW_PL.getId(), "Config B", ArtifactId.valueOf(898689L)) //
+         );
+      wb.andLabelWidget("- OR Working Together - Select branch loads those views into View Selection - ");
+      wb.andBranchAndViewSelWidget(); //
+      return wb.getXWidgetDatas();
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -42,19 +78,9 @@ public class ExampleOutputBlam extends AbstractBlam {
       }
    }
 
-   @Override
-   public String getXWidgetsXml() {
-      // @formatter:off
-      return "<xWidgets>" +
-      		"<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" />" +
-      		"</xWidgets>";
-      // @formatter:on
-   }
-
-   @Override
-   public String getDescriptionUsage() {
-      return "Send individual emails to everyone in the selected groups with an unsubscribe option";
-   }
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
 
    @Override
    public Collection<XNavItemCat> getCategories() {
@@ -62,13 +88,8 @@ public class ExampleOutputBlam extends AbstractBlam {
    }
 
    @Override
-   public Image getImage() {
-      return ImageManager.getImage(CoreImage.EXAMPLE);
-   }
-
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(CoreImage.EXAMPLE);
+   public String getDescriptionUsage() {
+      return "Send individual emails to everyone in the selected groups with an unsubscribe option";
    }
 
 }

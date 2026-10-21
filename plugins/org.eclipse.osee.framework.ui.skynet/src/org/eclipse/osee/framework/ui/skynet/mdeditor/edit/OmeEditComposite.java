@@ -15,12 +15,13 @@ package org.eclipse.osee.framework.ui.skynet.mdeditor.edit;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeImageLinkListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkErrorListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXAbstractSTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XTextOseeImageLinkListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XTextOseeLinkErrorListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XTextOseeLinkListener;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -37,7 +38,7 @@ import org.eclipse.swt.widgets.Label;
 public class OmeEditComposite extends Composite {
 
    protected Browser browser;
-   private XText textWidget;
+   private XXTextWidget textWidget;
    private final AbstractOmeData omeData;
 
    public OmeEditComposite(Composite parent, int style, OmeEditTab omeEditTab, AbstractOmeData omeData) {
@@ -63,7 +64,7 @@ public class OmeEditComposite extends Composite {
             lockLabel.setImage(ImageManager.getImage(CoreImage.LOCK_LOCKED));
          }
 
-         textWidget = omeData.createXText(enabled);
+         textWidget = omeData.createXXStringXText(enabled);
          textWidget.setVerticalLabel(true);
          textWidget.setFillHorizontally(true);
          textWidget.setFillVertically(true);
@@ -92,7 +93,7 @@ public class OmeEditComposite extends Composite {
 
             @Override
             public void widgetModified(XWidget widget) {
-               omeData.setMdContent(textWidget.get());
+               omeData.setMdContent(textWidget.getSelectedFirst());
                ((IDirtiableEditor) omeEditTab.getEditor()).onDirtied();
             }
          });
@@ -115,11 +116,11 @@ public class OmeEditComposite extends Composite {
       omeData.doSave();
    }
 
-   public XText getText() {
+   public XXAbstractSTextWidget getText() {
       return textWidget;
    }
 
    public void appendText(String text) {
-      textWidget.set(omeData.getMdContent() + "\n\n" + text);
+      textWidget.setSelected(omeData.getMdContent() + "\n\n" + text);
    }
 }

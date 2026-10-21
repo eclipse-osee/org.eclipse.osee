@@ -56,11 +56,11 @@ public class TaskImportJob extends Job {
                throw new Exception(ex.getMessage(), ex.getCause());
             }
          } else {
-            throw new OseeArgumentException("All files passed must be a file");
+            throw new OseeArgumentException("All files passed must be a file; not [%s]", file);
          }
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
-         if (ex.getCause().getMessage() == ImportTasksFromSpreadsheet.INVALID_BLAM_CAUSE) {
+         if (ex.getCause() != null && ex.getCause().getMessage() == ImportTasksFromSpreadsheetBlam.INVALID_BLAM_CAUSE) {
             // suppress dialog for XReportData
          } else {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

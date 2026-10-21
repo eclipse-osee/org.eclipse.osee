@@ -120,7 +120,7 @@ public class TransitionResults {
          return "<Empty>";
       }
       StringBuffer sb = new StringBuffer();
-      sb.append("Reason(s):\n");
+      sb.append("Reason(s):\n\n");
       appendResultsString(sb, results);
       for (TransitionWorkItemResult workItem : transitionWorkItems) {
          sb.append(workItem.getResultString());

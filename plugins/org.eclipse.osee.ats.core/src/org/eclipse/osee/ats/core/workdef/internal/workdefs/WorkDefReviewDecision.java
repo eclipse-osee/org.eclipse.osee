@@ -13,25 +13,29 @@
 
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORZ_LABEL;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XXDecisionRevWidget;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
+import static org.eclipse.osee.framework.core.widget.XOption.HORZ_LABEL;
+import static org.eclipse.osee.framework.core.widget.XOption.REQUIRED;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 
 /**
  * @author Donald G. Dunne
  */
+
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefReviewDecision extends AbstractWorkDef {
 
    public WorkDefReviewDecision() {
@@ -44,40 +48,39 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
          .andToStates(StateToken.Decision, StateToken.Cancelled) //
-         .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.DecisionReviewOptions, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
+            new AttrWidgetDef(DecisionReviewOptions), //
+            new AttrWidgetDef(Description), //
             new CompositeLayoutItem(6, //
-               new WidgetDef(AtsAttributeTypes.ReviewBlocks, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", RFT,
-                  HORZ_LABEL), //
-               new WidgetDef(AtsAttributeTypes.NeedBy, "XDateDam"), //
-               new WidgetDef(AtsAttributeTypes.RelatedToState, "XHyperlinkWfdForRelatedStateDam", FILL_VERT) //
+               new AttrWidgetDef(ReviewBlocks).set(REQUIRED, HORZ_LABEL), //
+               new AttrWidgetDef(NeedBy), //
+               new AttrWidgetDef(RelatedToState) //
             ), //
-            new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new AttrWidgetDef(EstimatedHours));
 
       bld.andState(2, "Decision", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Followup, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(CoreAttributeTypes.Name, "XLabelDam"), //
-            new WidgetDef(AtsAttributeTypes.Decision, "XComboDam(1,2,3)", RFT, HORZ_LABEL), //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new AttrWidgetDef(Name), //
+            // Decision attr type must be specified so server-side transition validation enforces REQUIRED
+            new AttrWidgetDef(Decision, XXDecisionRevWidget, REQUIRED), //
+            new AttrWidgetDef(Description), //
+            new AttrWidgetDef(Resolution));
 
       bld.andState(3, "Followup", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new AttrWidgetDef(Resolution));
 
       bld.andState(4, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
-         .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDef(CoreAttributeTypes.Name, "XLabelDam"), //
-            new WidgetDef(AtsAttributeTypes.Decision, "XComboDam(1,2,3)", RFT, HORZ_LABEL), //
-            new WidgetDef(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new AttrWidgetDef(Name), //
+            // Decision attr type must be specified so server-side transition validation enforces REQUIRED
+            new AttrWidgetDef(Decision, XXDecisionRevWidget, REQUIRED), //
+            new AttrWidgetDef(Resolution));
 
       bld.andState(5, "Cancelled", StateType.Cancelled) //
          .andColor(StateColor.DARK_GREEN);

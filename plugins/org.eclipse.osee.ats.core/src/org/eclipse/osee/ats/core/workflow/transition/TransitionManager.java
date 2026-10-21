@@ -48,7 +48,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -72,6 +71,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -241,7 +241,6 @@ public class TransitionManager implements IAtsChangeSetListener {
                      String errStr =
                         String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
                            fromStateDef.getWorkDefinition().getName(), fromStateDef.getName(), toStateDef.getName());
-                     OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
                      results.addResult(workItem, new TransitionResult(errStr));
                      continue;
                   }
@@ -255,7 +254,6 @@ public class TransitionManager implements IAtsChangeSetListener {
                         "Wait state [%s] can only transition back to [%s] or to a cancelled state, not to \"[%s]\" for Work Def [%s] on %s",
                         fromStateDef.getName(), workItem.getLastStateName(), toStateDef.getName(),
                         workItem.getWorkDefinition().getName(), workItem.toStringWithId());
-                     OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
                      results.addResult(workItem, new TransitionResult(errStr));
                      continue;
                   }
@@ -631,8 +629,8 @@ public class TransitionManager implements IAtsChangeSetListener {
          WidgetDef widgetDef =
             atsApi.getWorkDefinitionService().getWidgetFromLayoutItems(stateDef, ReviewUtil.MEETING_ATTENDEES_LABEL);
          if (widgetDef != null) {
-            if (widgetDef.is(WidgetOption.RFT) || (widgetDef.is(
-               WidgetOption.REQUIRED_FOR_FORMAL_REVIEW) && atsApi.getReviewService().isFormalReview(workItem))) {
+            if (widgetDef.is(XOption.REQUIRED) || (widgetDef.is(
+               XOption.FORMAL_REV_REQ) && atsApi.getReviewService().isFormalReview(workItem))) {
                if (atsApi.getAttributeResolver().hasNoAttribute(workItem, AtsAttributeTypes.MeetingAttendeeId)) {
                   results.addResult(workItem, TransitionResult.REVIEW_REQUIRES_MEETING_ATTENDEES);
                }

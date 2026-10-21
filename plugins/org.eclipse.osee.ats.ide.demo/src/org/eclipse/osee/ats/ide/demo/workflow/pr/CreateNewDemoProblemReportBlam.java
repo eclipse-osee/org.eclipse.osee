@@ -19,15 +19,29 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.pr.CreateNewProblemReportBlam;
+import org.eclipse.osee.ats.ide.workflow.pr.AbstractCreateNewProblemReportBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.osgi.service.component.annotations.Component;
 
-public class CreateNewDemoProblemReportBlam extends CreateNewProblemReportBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CreateNewDemoProblemReportBlam extends AbstractCreateNewProblemReportBlam {
+
+   private static final String BLAM_NAME = "Create New Demo Problem Report";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
 
    public CreateNewDemoProblemReportBlam() {
-      super("Create New Demo Problem Report");
+      super(BLAM_NAME, AtsImage.PROBLEM_REPORT);
    }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
    @Override
    public void createActionData(NewActionData data) {
@@ -46,6 +60,15 @@ public class CreateNewDemoProblemReportBlam extends CreateNewProblemReportBlam {
       IAtsActionableItem ai =
          AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_PL_PR_AI);
       return Collections.singleton(ai);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Creates a new Demo Problem Report workflow using the SAW PL Problem Report actionable item and demo work definition. Only available on demo databases.";
    }
 
 }

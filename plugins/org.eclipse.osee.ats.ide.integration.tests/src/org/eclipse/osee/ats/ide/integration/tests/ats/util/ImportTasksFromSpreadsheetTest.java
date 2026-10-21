@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 import java.io.File;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -23,7 +24,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.navigate.NavigateView;
-import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheet;
+import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.OseeInf;
@@ -32,7 +33,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test Case for {@link ImportTasksFromSpreadsheet}
+ * Test Case for {@link ImportTasksFromSpreadsheetBlam}
  *
  * @author Donald G. Dunne
  */
@@ -46,12 +47,13 @@ public class ImportTasksFromSpreadsheetTest {
    @Test
    public void testPerformImport() throws Exception {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      ImportTasksFromSpreadsheet importTasks = new ImportTasksFromSpreadsheet();
+      ImportTasksFromSpreadsheetBlam importTasks = new ImportTasksFromSpreadsheetBlam();
 
       // Import files live in deployed ATS bundle cause they are used as examples for users
       File file = OseeInf.getResourceAsFile("atsImport/Task_Import.xml", NavigateView.class);
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
-      importTasks.performImport(false, false, teamWf, file);
+      NewTaskSet taskSet = importTasks.performImport(false, false, teamWf, file);
+      Assert.assertTrue(taskSet.getResults().toString(), taskSet.isSuccess());
 
       Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(teamWf);
       Assert.assertEquals(3, tasks.size());

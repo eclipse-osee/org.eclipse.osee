@@ -145,34 +145,32 @@ public class ArtifactExplorerToolbar {
    }
 
    private void createOpenQuickSearchAction(IToolBarManager toolbarManager) {
-      Action openQuickSearch =
-         new Action("Quick Search", ImageManager.getImageDescriptor(CoreImage.ARTIFACT_SEARCH)) {
-            @Override
-            public void run() {
-               Job job = new UIJob("Open Quick Search") {
+      Action openQuickSearch = new Action("Quick Search", ImageManager.getImageDescriptor(CoreImage.ARTIFACT_SEARCH)) {
+         @Override
+         public void run() {
+            Job job = new UIJob("Open Quick Search") {
 
-                  @Override
-                  public IStatus runInUIThread(IProgressMonitor monitor) {
-                     IStatus status = Status.OK_STATUS;
-                     try {
-                        IViewPart viewPart =
-                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                              QuickSearchView.VIEW_ID);
-                        if (viewPart != null) {
-                           BranchToken branch = BranchManager.getBranchToken(artifactExplorer.getBranch());
-                           if (branch != null) {
-                              ((QuickSearchView) viewPart).setBranch(branch);
-                           }
+               @Override
+               public IStatus runInUIThread(IProgressMonitor monitor) {
+                  IStatus status = Status.OK_STATUS;
+                  try {
+                     IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                        QuickSearchView.VIEW_ID);
+                     if (viewPart != null) {
+                        BranchToken branch = BranchManager.getBranchToken(artifactExplorer.getBranch());
+                        if (branch != null) {
+                           ((QuickSearchView) viewPart).setBranch(branch);
                         }
-                     } catch (Exception ex) {
-                        status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
                      }
-                     return status;
+                  } catch (Exception ex) {
+                     status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
                   }
-               };
-               Jobs.startJob(job);
-            }
-         };
+                  return status;
+               }
+            };
+            Jobs.startJob(job);
+         }
+      };
       openQuickSearch.setToolTipText("Open Quick Search View");
       toolbarManager.add(openQuickSearch);
    }

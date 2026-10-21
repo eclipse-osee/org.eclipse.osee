@@ -145,8 +145,7 @@ public class AtsBranchConfigurationTest {
 
       Assert.assertNotNull(versionToTarget);
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.BaselineBranchId,
-         viaTeamDefBranch.getIdString());
+      changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.BaselineBranchId, viaTeamDefBranch);
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCreateBranch, true);
       changes.execute();
@@ -258,7 +257,7 @@ public class AtsBranchConfigurationTest {
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, viaTeamDefBranch.getIdString());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, viaTeamDefBranch);
       // setup team def to allow create/commit of branch
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCreateBranch, true);

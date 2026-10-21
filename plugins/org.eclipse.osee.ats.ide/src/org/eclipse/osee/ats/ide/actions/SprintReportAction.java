@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTreeContentPr
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
  * @author Donald G. Dunne
@@ -208,20 +207,21 @@ public class SprintReportAction extends AbstractAtsAction {
                }
 
                // Add points per Category3
-               String cat3 = atsApi.getAttributeResolver().getSoleAttributeValue(sprintItem,
-                  AtsAttributeTypes.Category3, Widgets.NOT_SET);
-               String[] split = cat3.split("/");
-               for (String splitCat : split) {
-                  Double pts = cat3ToPoints.get(splitCat);
-                  if (pts == null) {
-                     pts = 0.0;
+               String cat3 =
+                  atsApi.getAttributeResolver().getSoleAttributeValue(sprintItem, AtsAttributeTypes.Category3, "");
+               if (Strings.isValid(cat3)) {
+                  String[] split = cat3.split("/");
+                  for (String splitCat : split) {
+                     Double pts = cat3ToPoints.get(splitCat);
+                     if (pts == null) {
+                        pts = 0.0;
+                     }
+                     Double ptsPerCat = itemPts / split.length;
+                     pts = pts + ptsPerCat;
+                     cat3ToPoints.put(splitCat, pts);
+                     cat3s.add(splitCat);
                   }
-                  Double ptsPerCat = itemPts / split.length;
-                  pts = pts + ptsPerCat;
-                  cat3ToPoints.put(splitCat, pts);
-                  cat3s.add(splitCat);
                }
-
             }
          }
 

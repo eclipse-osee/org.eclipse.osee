@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,11 +35,11 @@ import org.eclipse.swt.widgets.Control;
  */
 public class ActionActionableItemListDialog extends FilteredCheckboxTreeDialog<IAtsActionableItem> {
 
-   XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Actionable Items' Actions");
+   XXCheckBoxWidget recurseChildrenCheck = new XXCheckBoxWidget("Include all children Actionable Items' Actions");
    boolean recurseChildren = false;
-   XCheckBox showFinishedCheck = new XCheckBox("Show Completed and Cancelled Workflows");
+   XXCheckBoxWidget showFinishedCheck = new XXCheckBoxWidget("Show Completed and Cancelled Workflows");
    boolean showFinished = false;
-   XCheckBox showActionCheck = new XCheckBox("Show Action instead of Workflows");
+   XXCheckBoxWidget showActionCheck = new XXCheckBoxWidget("Show Action instead of Workflows");
    boolean showAction = false;
 
    public ActionActionableItemListDialog(Active active) {
@@ -61,7 +61,7 @@ public class ActionActionableItemListDialog extends FilteredCheckboxTreeDialog<I
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       recurseChildrenCheck.createWidgets(comp, 2);
-      recurseChildrenCheck.set(recurseChildren);
+      recurseChildrenCheck.setSelected(recurseChildren);
       recurseChildrenCheck.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -78,7 +78,7 @@ public class ActionActionableItemListDialog extends FilteredCheckboxTreeDialog<I
          };
       });
       showActionCheck.createWidgets(comp, 2);
-      showActionCheck.set(showAction);
+      showActionCheck.setSelected(showAction);
       showActionCheck.addSelectionListener(new SelectionAdapter() {
 
          @Override

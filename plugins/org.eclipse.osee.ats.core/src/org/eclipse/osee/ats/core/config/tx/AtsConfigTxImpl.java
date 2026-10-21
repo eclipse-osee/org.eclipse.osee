@@ -129,7 +129,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
       changes.setSoleAttributeValue(verArt, AtsAttributeTypes.Released, released != ReleasedOption.UnReleased);
       changes.setSoleAttributeValue(verArt, AtsAttributeTypes.NextVersion, nextRelease == NextRelease.Next);
       if (branch != null && branch.isValid()) {
-         changes.setSoleAttributeValue(verArt, AtsAttributeTypes.BaselineBranchId, branch.getIdString());
+         changes.setSoleAttributeValue(verArt, AtsAttributeTypes.BaselineBranchId, branch);
          changes.setSoleAttributeValue(verArt, AtsAttributeTypes.AllowCommitBranch, true);
          changes.setSoleAttributeValue(verArt, AtsAttributeTypes.AllowCreateBranch, true);
       }

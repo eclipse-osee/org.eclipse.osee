@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,8 +29,8 @@ import org.eclipse.ui.dialogs.SelectionDialog;
  */
 public class HierarchicalReportDialog extends SelectionDialog {
 
-   XCheckBox showAttributesCheck = new XCheckBox("Include Attributes");
-   XCheckBox recurseChildrenCheck = new XCheckBox("Recurse Children");
+   XXCheckBoxWidget showAttributesCheck = new XXCheckBoxWidget("Include Attributes");
+   XXCheckBoxWidget recurseChildrenCheck = new XXCheckBoxWidget("Recurse Children");
    boolean recurseChildren = true;
 
    public HierarchicalReportDialog(Shell parent) {
@@ -47,7 +47,7 @@ public class HierarchicalReportDialog extends SelectionDialog {
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       recurseChildrenCheck.createWidgets(comp, 2);
-      recurseChildrenCheck.set(recurseChildren);
+      recurseChildrenCheck.setSelected(recurseChildren);
       recurseChildrenCheck.addSelectionListener(new SelectionAdapter() {
 
          @Override

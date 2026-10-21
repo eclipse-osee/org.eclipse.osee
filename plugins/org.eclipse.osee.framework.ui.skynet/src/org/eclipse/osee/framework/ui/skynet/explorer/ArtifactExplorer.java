@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -63,8 +64,10 @@ import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.GenericViewPart;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
 import org.eclipse.swt.SWT;
@@ -76,9 +79,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewReference;
@@ -98,7 +99,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private TreeViewer treeViewer;
    private Artifact explorerRoot;
    private TreeEditor myTreeEditor;
-   private XBranchSelectWidget branchSelect;
+   private XXBranchSelWidget branchSelect;
    private BranchToken branch = BranchToken.SENTINEL;
 
    private ArtifactExplorerDragAndDrop dragAndDropWorker;
@@ -152,16 +153,16 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             branchSelectComp.setLayout(new GridLayout(1, false));
             branchSelectComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-            branchSelect = new XBranchSelectWidget("");
-            branchSelect.setDisplayLabel(false);
-            branchSelect.setSelection(branch);
+            branchSelect = new XXBranchSelWidget();
+            branchSelect.setSelected(branch);
+            branchSelect.set(XOption.VALUE_BORDER, XOption.VALUE_TOOLTIP, XOption.VALUE_WHITE);
             branchSelect.createWidgets(branchSelectComp, 1);
+            branchSelect.addXModifiedListener(new XModifiedListener() {
 
-            branchSelect.addListener(new Listener() {
                @Override
-               public void handleEvent(Event event) {
+               public void widgetModified(XWidget widget) {
                   try {
-                     BranchToken selectedBranch = branchSelect.getData();
+                     BranchToken selectedBranch = branchSelect.getSelectedFirst();
                      if (selectedBranch != null && !BranchId.SENTINEL.equals(selectedBranch)) {
                         branch = selectedBranch;
                         dragAndDropWorker.updateBranch(branch);
@@ -173,7 +174,6 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                      OseeLog.log(getClass(), Level.SEVERE, ex);
                   }
                }
-
             });
 
             branchViewComp = new Composite(branchSelectComp, SWT.BORDER);
@@ -460,8 +460,8 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    }
 
    public void initializeSelectionBox() {
-      if (branch != null && branchSelect != null && branch.notEqual(branchSelect.getData())) {
-         branchSelect.setSelection(branch);
+      if (branch != null && branchSelect != null && branch.notEqual(branchSelect.getSelectedFirst())) {
+         branchSelect.setSelected(branch);
          refreshBranchWarning();
          refreshView();
       }

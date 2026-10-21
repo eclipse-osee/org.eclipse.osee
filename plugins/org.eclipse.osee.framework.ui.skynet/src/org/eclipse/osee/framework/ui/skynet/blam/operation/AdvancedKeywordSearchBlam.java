@@ -23,6 +23,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -30,12 +34,14 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Perform keyword search (in word order) for a list of keywords. Results will be in an excel spreadsheet where each
@@ -43,27 +49,60 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  *
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class AdvancedKeywordSearchBlam extends AbstractBlam {
 
-   @Override
-   public String getName() {
-      return "Advanced Keyword Search";
+   private static final String BLAM_NAME = "Advanced Keyword Search";
+   static final String INCLUDE_ATTRIBUTE_VALUES_IN_RESULTS = "Include Attribute Values in Results";
+   static final String FILTER_RESULTS_BY_ARTIFACT_TYPE = "Filter results by Artifact Type";
+   static final String KEYWORD_GROUPS_ONE_SET_OF_KEYWORDS_PER_LINE = "Keyword groups (one set of keywords per line)";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public AdvancedKeywordSearchBlam() {
+      super(BLAM_NAME, CoreImage.GEAR);
    }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andBranchSelWidget();
+      wb.andTextWidget(KEYWORD_GROUPS_ONE_SET_OF_KEYWORDS_PER_LINE).and(XOption.VAL_MULTI_TEXT);
+      wb.andArtifactTypeWidget(FILTER_RESULTS_BY_ARTIFACT_TYPE).andValueSingleSelect();
+      wb.andAttributeTypeWidget(INCLUDE_ATTRIBUTE_VALUES_IN_RESULTS).andValueMultiSelect();
+      return wb.getXWidgetDatas();
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      ArtifactTypeToken ofArtifactType = variableMap.getArtifactType("Filter results by Artifact Type");
-      BranchId branch = variableMap.getBranch("Branch");
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
+      ArtifactTypeToken ofArtifactType = variableMap.getArtifactType(FILTER_RESULTS_BY_ARTIFACT_TYPE);
+      BranchId branch = variableMap.getBranch(XWidgetLabels.BRANCH);
       if (branch == null) {
          AWorkbench.popup("Must enter Branch");
          return;
       }
-      String keywordgroups = variableMap.getString("Keyword groups (one set of keywords per line)");
+      String keywordgroups = variableMap.getString(KEYWORD_GROUPS_ONE_SET_OF_KEYWORDS_PER_LINE);
       if (!Strings.isValid(keywordgroups)) {
          AWorkbench.popup("Must enter keyword groups");
          return;
       }
-      Collection<AttributeTypeToken> attrTypes = variableMap.getAttributeTypes("Include Attribute Values in Results");
+      Collection<AttributeTypeToken> attrTypes = variableMap.getAttributeTypes(INCLUDE_ATTRIBUTE_VALUES_IN_RESULTS);
       HashCollection<Artifact, String> artifactToMatch = new HashCollection<>(100);
       for (String keywords : keywordgroups.split(System.getProperty("line.separator"))) {
          for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(branch, keywords, true, EXCLUDE_DELETED,
@@ -73,11 +112,12 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
             }
          }
       }
+
       XResultData resultData = new XResultData(false);
       resultData.log(String.format("[%s] on branch [%s] (keyword groups listed below results)", getName(), branch));
       resultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
       List<String> headerList = new ArrayList<>();
-      headerList.addAll(Arrays.asList("Artifact", "Keywords matched", "Guid", "Link", "Artifact Type"));
+      headerList.addAll(Arrays.asList("Artifact", "Keywords matched", "Guid", "Link", XWidgetLabels.ARTIFACT_TYPE));
       for (AttributeTypeToken attrType : attrTypes) {
          headerList.add(attrType.getName());
       }
@@ -97,24 +137,18 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
       XResultDataUI.report(resultData, String.format("[%s] on branch [%s]", getName(), branch));
    }
 
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets>" + //
-         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" />" + //
-         "<XWidget xwidgetType=\"XText\" fill=\"Vertically\"  displayName=\"Keyword groups (one set of keywords per line)\" />" + //
-         "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Filter results by Artifact Type\" />" + //
-         "<XWidget xwidgetType=\"XAttributeTypeMultiChoiceSelect\" displayName=\"Include Attribute Values in Results\" />" + //
-         "</xWidgets>";
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.ADVANCED_SEARCHES);
    }
 
    @Override
    public String getDescriptionUsage() {
       return "Perform keyword quick search (in word order) for a list of keywords.  Results will show artifacts paired with matching keyword groups.";
-   }
-
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.ADVANCED_SEARCHES);
    }
 
 }

@@ -13,15 +13,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Collection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.DisplayHint;
+import org.eclipse.osee.framework.core.widget.validate.IValueValidator;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -31,114 +28,85 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
  * @author Jeff C. Phillips
  */
 public class StringHandlePromptChange implements IHandlePromptChange {
-   private final EntryDialog entryDialog;
-   private final AttributeTypeToken attributeType;
+   private final EntryDialog dialog;
+   private final AttributeTypeToken attrType;
    private final boolean persist;
    private final Collection<? extends Artifact> artifacts;
-   private final NumberFormat format;
-   private String initialValue = "";
+   private final IValueValidator validator;
    private final String viewName;
 
-   public StringHandlePromptChange(AttributeTypeToken attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format, String viewName) {
-      this.attributeType = attributeType;
+   public StringHandlePromptChange(AttributeTypeToken attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, IValueValidator validator, String viewName) {
+      this.attrType = attributeType;
       this.persist = persist;
       this.artifacts = artifacts;
-      this.format = format;
+      this.validator = validator;
       this.viewName = viewName;
-      this.entryDialog = new EntryDialog("Enter " + displayName, "Enter " + displayName);
+      this.dialog = new EntryDialog("Enter " + displayName, "Enter " + displayName);
    }
 
    @Override
    public boolean promptOk() {
       boolean multiLine = false;
-      if (attributeType.getDisplayHints().contains(DisplayHint.MultiLine)) {
+      if (attrType.getDisplayHints().contains(DisplayHint.MultiLine)) {
          multiLine = true;
       }
       if (multiLine) {
-         entryDialog.setFillVertically(multiLine);
+         dialog.setFillVertically(multiLine);
       }
-      setInitialText(artifacts, entryDialog, format, attributeType);
-      entryDialog.setNumberFormat(format);
-      if (Strings.isValid(initialValue)) {
-         entryDialog.setEntry(initialValue);
+      dialog.setValidator(validator);
+      String currValue = "";
+      if (artifacts.size() == 1) {
+         currValue = artifacts.iterator().next().getSoleAttributeValueAsString(attrType, "");
       }
-      return entryDialog.open() == Window.OK;
-   }
-
-   public String getEntry() {
-      return entryDialog.getEntry();
+      if (Strings.isValid(currValue)) {
+         dialog.setEntry(currValue);
+      }
+      return dialog.open() == Window.OK;
    }
 
    @Override
    public boolean store() {
-      updateSmaAttributes(artifacts, attributeType, format, entryDialog);
+      String diagEntry = dialog.getEntry();
+      if (Strings.isValid(diagEntry)) {
+         diagEntry = validateEntry(dialog.getEntry(), attrType);
+      }
+      for (Artifact artifact : artifacts) {
+         if (Strings.isValid(diagEntry)) {
+            artifact.setSoleAttributeFromString(attrType, diagEntry);
+         } else {
+            artifact.deleteAttributes(attrType);
+         }
+      }
       if (persist) {
          TransactionManager.persistInTransaction(viewName + " - Persist Attributes", artifacts);
       }
       return true;
    }
 
-   private static void setInitialText(Collection<? extends Artifact> artifacts, EntryDialog entryDialog,
-      NumberFormat format, AttributeTypeId attributeType) {
-      if (artifacts.size() == 1) {
-         Artifact artifact = artifacts.iterator().next();
-         if (artifact.getAttributeValues(attributeType).size() > 1) {
-            throw new OseeArgumentException("Can't edit Multiple Values");
-         }
-         Object smaObj = artifacts.iterator().next().getSoleAttributeValue(attributeType, "");
-         String initialText = smaObj.equals("") ? "" : formatObject(smaObj, format);
-         entryDialog.setEntry(initialText);
-      } else {
-         entryDialog.setEntry("");
-      }
-   }
-
-   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts,
-      AttributeTypeToken attributeType, NumberFormat format, EntryDialog entryDialog) {
-      for (Artifact artifact : artifacts) {
-         String value = entryDialog.getEntry();
-         String safeValue = getSafeValue(value, format, attributeType);
-         if (Strings.isValid(safeValue)) {
-            artifact.setSoleAttributeFromString(attributeType, safeValue);
-         } else {
-            artifact.deleteAttributes(attributeType);
-         }
-      }
-   }
-
-   private static String getSafeValue(String value, NumberFormat format, AttributeTypeToken attributeType) {
+   /**
+    * This should not exception as the dialog validator should not allow invalid values to be entered. This is for a
+    * double check to make sure we're not putting in wrong data
+    */
+   private static String validateEntry(String value, AttributeTypeToken attrType) {
       String toReturn = value;
-      if (format != null && !toReturn.isEmpty()) {
-         try {
-            if (attributeType.isInteger()) {
-               toReturn = String.valueOf(format.parse(value).intValue());
-            } else if (attributeType.isArtifactId()) {
-               toReturn = String.valueOf(format.parse(value).intValue());
-            } else if (attributeType.isLong()) {
-               toReturn = String.valueOf(format.parse(value).intValue());
-            } else {
-               toReturn = String.valueOf(format.parse(value).doubleValue()); // TODO check for dot in integers
-            }
-         } catch (ParseException ex) {
-            OseeCoreException.wrapAndThrow(ex);
+      if (Strings.isValid(value)) {
+         if (attrType.isInteger()) {
+            toReturn = Integer.valueOf(value).toString();
+         } else if (attrType.isArtifactId()) {
+            toReturn = Long.valueOf(value).toString();
+         } else if (attrType.isLong()) {
+            toReturn = Long.valueOf(value).toString();
+         } else if (attrType.isBranchId()) {
+            toReturn = Long.valueOf(value).toString();
+         } else if (attrType.isDouble()) {
+            toReturn = Double.valueOf(value).toString();
+         } else if (attrType.isBoolean()) {
+            toReturn = Boolean.valueOf(value).toString();
+         } else {
+            throw new OseeArgumentException(String.format("Unhandled attribute type [%s]", attrType.toStringWithId()));
          }
       }
       return toReturn;
    }
 
-   private static String formatObject(Object src, NumberFormat format) {
-      if (format == null) {
-         return String.valueOf(src);
-      } else {
-         return format.format(src);
-      }
-   }
-
-   public String getInitialValue() {
-      return initialValue;
-   }
-
-   public void setInitialValue(String initialValue) {
-      this.initialValue = initialValue;
-   }
 }

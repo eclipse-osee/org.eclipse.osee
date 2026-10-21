@@ -13,23 +13,28 @@
 
 package org.eclipse.osee.ats.core.demo.test;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFC;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.EstimatedHours;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.WorkPackage;
+import static org.eclipse.osee.framework.core.widget.XOption.REQUIRED;
+import static org.eclipse.osee.framework.core.widget.XOption.RFC;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends AbstractWorkDef {
 
    public WorkDefTeamTransitionManagerTestWidgetRequiredCompletion() {
@@ -42,24 +47,22 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends Ab
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //
          .andToStates(StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new AttrWidgetDef(Description).set(REQUIRED), //
             new CompositeLayoutItem(4, //
-               new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFC), //
-               new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam", RFC) //
+               new AttrWidgetDef(EstimatedHours).set(RFC), //
+               new AttrWidgetDef(WorkPackage).set(RFC) //
             ));
 
       bld.andState(2, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
+            new AttrWidgetDef(Description).set(REQUIRED), //
             new CompositeLayoutItem(4, //
-               new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam", RFC), //
-               new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam", RFC) //
+               new AttrWidgetDef(EstimatedHours).set(RFC), //
+               new AttrWidgetDef(WorkPackage).set(RFC) //
             ));
 
       bld.andState(3, "Completed", StateType.Completed) //
@@ -69,5 +72,10 @@ public class WorkDefTeamTransitionManagerTestWidgetRequiredCompletion extends Ab
          .andColor(StateColor.BLACK);
 
       return bld.getWorkDefinition();
+   }
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
    }
 }

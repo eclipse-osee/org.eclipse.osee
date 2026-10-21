@@ -13,23 +13,33 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXChangeTypeWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<String> {
+public class ChangeTypeSearchWidget extends AbstractSearchWidget<XXChangeTypeWidget, String> {
 
-   public static SearchWidget ChangeTypeWidget = new SearchWidget(7, "Change Type(s)", "XHyperlinkWfdForObject");
+   private static final String LABEL = "Change Type(s)";
+   public static SearchWidget ChangeTypeWidget = new SearchWidget(7, LABEL, WidgetIdAts.XXChangeTypeWidget);
 
    public ChangeTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(ChangeTypeWidget, searchItem);
+   }
+
+   @Override
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      if (xWidget.getLabel().equals(LABEL)) {
+         xWidget.set(XOption.CLEAR);
+      }
    }
 
    @Override
@@ -38,19 +48,6 @@ public class ChangeTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<St
          List<String> changeTypes = data.getChangeTypes();
          getWidget().setSelected(changeTypes);
       }
-   }
-
-   @Override
-   public Collection<String> getSelectable() {
-      Set<String> cTypes = new HashSet<>();
-      cTypes.addAll(ChangeTypes.getValuesStrs());
-      cTypes.remove(ChangeTypes.None.getName());
-      return cTypes;
-   }
-
-   @Override
-   boolean isMultiSelect() {
-      return true;
    }
 
 }
