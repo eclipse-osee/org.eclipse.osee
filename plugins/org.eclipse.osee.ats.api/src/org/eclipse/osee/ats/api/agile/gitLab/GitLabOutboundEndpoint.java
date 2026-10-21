@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.api.agile.gitLab;
+package org.eclipse.osee.ats.api.agile.gitlab;
 
 public interface GitLabOutboundEndpoint {
    //TODO

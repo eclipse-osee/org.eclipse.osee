@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.rest.internal.agile.gitLab;
+package org.eclipse.osee.ats.rest.internal.agile.gitlab;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.core.agile.gitLab.AbstractAtsGitLabService;
+import org.eclipse.osee.ats.core.agile.gitlab.AbstractAtsGitLabService;
 
 public class AtsGitLabServiceImpl extends AbstractAtsGitLabService {
 
