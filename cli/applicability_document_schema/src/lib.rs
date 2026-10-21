@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use applicability_lexer_config_build_file::ApplicabilityBuildFileLexerConfig;
+use applicability_lexer_config_conf::ApplicabilityConfLexerConfig;
 use applicability_lexer_config_cpp_like::ApplicabilityCppLikeLexerConfig;
 use applicability_lexer_config_custom::ApplicabilityCustomLexerConfig;
 use applicability_lexer_config_latex::ApplicabilityLatexLexerConfig;
@@ -23,6 +24,7 @@ pub enum SupportedSchema {
     CppLike,
     Rust,
     BuildFile,
+    ConfLike,
     LaTeX,
     Plantuml,
     Custom(String, String),
@@ -67,6 +69,9 @@ pub fn is_schema_supported(
 //     .py
 //     .txt
 //     .dockerfile
+//     .yml
+//     .yaml
+//     .conf
 //     WORKSPACE
 //     BUILD
 //     Dockerfile
@@ -108,8 +113,9 @@ pub fn get_schema_from_file_name_and_extension(
         Some("tex") => get_schema("latex".into()),
         Some(
             "bzl" | "bazel" | "fileApplicability" | "applicability" | "gpj" | "mk" | "opt" | "bat"
-            | "cmd" | "toml" | "py" | "txt" | "dockerfile",
+            | "cmd" | "toml" | "py" | "txt" | "dockerfile" | "yml" | "yaml",
         ) => get_schema("build".into()),
+        Some("conf") => get_schema("conf".into()),
         Some("puml" | "pu" | "plantuml") => get_schema("plantuml".into()),
         None => match file_name {
             Some(
@@ -215,7 +221,14 @@ pub fn get_schema(schema_type: StringOrByteArray) -> SupportedSchema {
         | StringOrByteArray::Str("bat")
         | StringOrByteArray::U8(b"bat")
         | StringOrByteArray::Str("cmd")
-        | StringOrByteArray::U8(b"cmd") => SupportedSchema::BuildFile,
+        | StringOrByteArray::U8(b"cmd")
+        | StringOrByteArray::Str("yml")
+        | StringOrByteArray::U8(b"yml")
+        | StringOrByteArray::Str("yaml")
+        | StringOrByteArray::U8(b"yaml") => SupportedSchema::BuildFile,
+        StringOrByteArray::Str("conf") | StringOrByteArray::U8(b"conf") => {
+            SupportedSchema::ConfLike
+        }
         _ => SupportedSchema::NotSupported,
     }
 }
@@ -225,6 +238,7 @@ pub enum DocTypeConfig<'a, 'b, 'c, 'd, 'e> {
     Md(ApplicabilityMarkdownLexerConfig<'a, 'b, 'c, 'd>),
     Cpp(ApplicabilityCppLikeLexerConfig<'a, 'b, 'c, 'd, 'e>),
     Build(ApplicabilityBuildFileLexerConfig<'a>),
+    Conf(ApplicabilityConfLexerConfig<'a>),
     Rust(ApplicabilityRustLexerConfig<'a, 'b, 'c, 'd, 'e>),
     Latex(ApplicabilityLatexLexerConfig<'a, 'b>),
     Plantuml(ApplicabilityPlantumlLexerConfig<'a, 'b, 'c, 'd>),
@@ -243,6 +257,7 @@ pub fn get_doc_config<'a, 'b, 'c, 'd, 'e>(
         SupportedSchema::BuildFile => {
             DocTypeConfig::Build(ApplicabilityBuildFileLexerConfig::default())
         }
+        SupportedSchema::ConfLike => DocTypeConfig::Conf(ApplicabilityConfLexerConfig::default()),
         SupportedSchema::LaTeX => DocTypeConfig::Latex(ApplicabilityLatexLexerConfig::default()),
         SupportedSchema::Custom(_, _) => {
             DocTypeConfig::Custom(ApplicabilityCustomLexerConfig::new("", ""))
@@ -264,6 +279,25 @@ mod schema_resolution_tests {
             get_schema_from_file(Path::new(path), "", ""),
             SupportedSchema::BuildFile
         )
+    }
+
+    fn is_conf_like(path: &str) -> bool {
+        matches!(
+            get_schema_from_file(Path::new(path), "", ""),
+            SupportedSchema::ConfLike
+        )
+    }
+
+    #[test]
+    fn yaml_files_use_build_file_schema() {
+        assert!(is_build_file("config.yml"));
+        assert!(is_build_file("ci/pipeline.yaml"));
+    }
+
+    #[test]
+    fn conf_files_use_conf_schema() {
+        assert!(is_conf_like("app.conf"));
+        assert!(is_conf_like("etc/service.conf"));
     }
 
     #[test]

@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -135,7 +136,7 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
                   // Show that artifact was deleted
                   String artNotFound = String.format(
                      "Linked artifact [%s] has not been found and is likely deleted. Remove this text.", idStr);
-                  String originalLink = String.format("<artifact-link>%s</artifact-link>", idStr);
+                  String originalLink = MarkdownHtmlUtil.buildArtifactLinkTag(idStr);
                   mdContent = mdContent.replace(originalLink, artNotFound);
                }
             }

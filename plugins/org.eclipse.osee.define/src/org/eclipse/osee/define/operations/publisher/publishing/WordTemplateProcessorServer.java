@@ -1612,8 +1612,7 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
 
    protected String processArtifactLinks(String markdownContent) {
-      Pattern artifactLinkPattern = Pattern.compile("<artifact-link>(\\d+)</artifact-link>");
-      Matcher artifactLinkMatcher = artifactLinkPattern.matcher(markdownContent);
+      Matcher artifactLinkMatcher = MarkdownHtmlUtil.ARTIFACT_LINK_PATTERN.matcher(markdownContent);
 
       Set<ArtifactId> artLinkIdsNotInPublish = new HashSet<>();
 
@@ -1641,7 +1640,7 @@ public class WordTemplateProcessorServer implements ToMessage {
    }
 
    private String replaceArtifactTag(String markdownContent, String idStr, String markdownLink) {
-      String tagToReplace = String.format("<artifact-link>%s</artifact-link>", idStr);
+      String tagToReplace = MarkdownHtmlUtil.buildArtifactLinkTag(idStr);
       return markdownContent.replace(tagToReplace, markdownLink);
    }
 

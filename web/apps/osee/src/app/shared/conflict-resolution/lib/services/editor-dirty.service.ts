@@ -29,6 +29,22 @@ export class EditorDirtyService {
 	/** Set of editor keys that currently have dirty data. */
 	private dirtyEditors = signal<Set<string>>(new Set());
 
+	/**
+	 * Monotonic "edit generation", bumped only on a bulk {@link clearAll} (conflict
+	 * resolve/discard or a forced refresh). A field editor captures the generation
+	 * when it starts a live edit; a later deferred commit (e.g. a text input's
+	 * debounced blur) checks whether the generation still matches before saving.
+	 *
+	 * This is what makes a stale commit detectable precisely: it distinguishes "my
+	 * edit is still live" from "my edit was discarded, and the pending slot I see was
+	 * recreated by a *different*, newer edit." A per-field {@link markClean} (a normal
+	 * save) does NOT bump it -- only a bulk invalidation does.
+	 */
+	private readonly _generation = signal(0);
+
+	/** Current edit generation; capture at edit start, compare at deferred commit. */
+	readonly generation = this._generation.asReadonly();
+
 	/** Whether any editor currently has unsaved changes. */
 	readonly hasDirtyEditors = computed(() => this.dirtyEditors().size > 0);
 
@@ -77,8 +93,13 @@ export class EditorDirtyService {
 		});
 	}
 
-	/** Clear all dirty state (e.g., on full page refresh). */
+	/**
+	 * Clear all dirty state (conflict resolve/discard, forced refresh). Bumps the
+	 * edit generation so any in-flight deferred commit from before this point is
+	 * recognized as stale and dropped, instead of re-saving a discarded value.
+	 */
 	clearAll() {
 		this.dirtyEditors.set(new Set());
+		this._generation.update((g) => g + 1);
 	}
 }

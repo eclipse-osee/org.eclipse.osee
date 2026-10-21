@@ -54,6 +54,9 @@ use tracing::debug;
 //     .py
 //     .txt
 //     .dockerfile
+//     .yml
+//     .yaml
+//     .conf
 //     WORKSPACE
 //     BUILD
 //     Dockerfile
@@ -71,6 +74,7 @@ pub fn get_comment_syntax_from_file(
         SupportedSchema::Rust => ("//".to_owned(), "".to_owned()),
         SupportedSchema::LaTeX => ("\\if".to_owned(), "{}".to_owned()),
         SupportedSchema::BuildFile => ("#".to_owned(), "".to_owned()),
+        SupportedSchema::ConfLike => (";".to_owned(), "".to_owned()),
         SupportedSchema::Custom(start, end) => (start, end),
         SupportedSchema::NotSupported => ("".to_owned(), "".to_owned()),
         SupportedSchema::Plantuml => ("'".to_owned(), "".to_owned()),
@@ -130,6 +134,9 @@ where
             DocTypeConfig::Build(applicability_build_file_lexer_config) => {
                 parse_applicability(span, applicability_build_file_lexer_config)
             }
+            DocTypeConfig::Conf(applicability_conf_lexer_config) => {
+                parse_applicability(span, applicability_conf_lexer_config)
+            }
             DocTypeConfig::Rust(applicabilty_rust_lexer_config) => {
                 parse_applicability(span, applicabilty_rust_lexer_config)
             }
@@ -186,6 +193,9 @@ where
             DocTypeConfig::Build(applicability_build_file_lexer_config) => {
                 parse_applicability(span, applicability_build_file_lexer_config)
             }
+            DocTypeConfig::Conf(applicability_conf_lexer_config) => {
+                parse_applicability(span, applicability_conf_lexer_config)
+            }
             DocTypeConfig::Rust(applicabilty_rust_lexer_config) => {
                 parse_applicability(span, applicabilty_rust_lexer_config)
             }
@@ -217,8 +227,10 @@ pub fn get_comment_syntax_from_file_name_and_extension<'a>(
         Some("md") => ("``", "``"),
         Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h" | "rs") => ("//", ""),
         Some(
-            "bzl" | "bazel" | "fileApplicability" | "applicability" | "py" | "txt" | "dockerfile",
+            "bzl" | "bazel" | "fileApplicability" | "applicability" | "py" | "txt" | "dockerfile"
+            | "yml" | "yaml",
         ) => ("#", ""),
+        Some("conf") => (";", ""),
         None => match file_name {
             Some(
                 "WORKSPACE" | "BUILD" | ".fileApplicability" | ".applicability" | "Dockerfile",
