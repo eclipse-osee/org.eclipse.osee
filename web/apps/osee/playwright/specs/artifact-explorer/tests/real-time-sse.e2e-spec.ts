@@ -167,9 +167,11 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 		request,
 		userPage,
 	}) => {
-		// Presence is heartbeat-driven (eventually consistent) and each side is
-		// asserted, so give the whole test a larger budget than the 30s default.
-		test.setTimeout(60000);
+		// Presence is eventually consistent: an already-present viewer sees a newcomer
+		// only via a change-driven push bounded by the 15s heartbeat-interval fallback,
+		// stacked on CI-slow connect time. 60s was too tight (avatar rendered right at
+		// the old deadline); 120s covers the real worst case.
+		test.setTimeout(120000);
 		const { branchId, branchName, artifact } =
 			await setupBranchWithArtifact(browser, request, 'Presence');
 		const joe = await userPage(DEMO_USERS.joe);
@@ -196,17 +198,18 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 				jasonHeartbeat,
 			]);
 
-			// The current user is filtered out of presence, so an avatar appears only because the
-			// other viewer is a DIFFERENT user. Avatars are generic id-derived icons (not name
-			// initials), so a visible avatar circle is the presence signal. Assert both sides
-			// concurrently so one side's wait doesn't serialize onto the other.
+			// A visible avatar is the presence signal (generic id-derived icons, not
+			// initials); the current user is filtered out, so it only appears because the
+			// other viewer is present. Assert both sides concurrently. The 45s timeout
+			// absorbs the 15s heartbeat-interval fallback plus broadcast/render (25s
+			// previously tripped right as the avatar rendered).
 			await Promise.all([
 				expect(
 					joe.locator('osee-presence-avatars mat-icon').first()
-				).toBeVisible({ timeout: 25000 }),
+				).toBeVisible({ timeout: 45000 }),
 				expect(
 					jason.locator('osee-presence-avatars mat-icon').first()
-				).toBeVisible({ timeout: 25000 }),
+				).toBeVisible({ timeout: 45000 }),
 			]);
 		} finally {
 			// joe/jason contexts are closed (video retained-on-failure) by the userPage fixture.
