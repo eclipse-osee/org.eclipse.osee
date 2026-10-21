@@ -313,7 +313,9 @@ jobs:
           SERVER_PATH: ${{env.SERVER_PATH}}
           IMAGE_DIRECTORY: ${{env.IMAGE_DIRECTORY}}
   web_e2e:
-    runs-on: ubuntu-latest
+    # Larger runner: the OSEE server, Postgres, and the Playwright browsers all
+    # share this runner's CPU, so more cores keeps the SSE-timing e2e tests stable.
+    runs-on: ubuntu-latest-4-cores
     # continue-on-error: true
     needs:
       [
