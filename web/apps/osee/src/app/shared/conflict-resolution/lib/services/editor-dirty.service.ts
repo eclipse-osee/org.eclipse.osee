@@ -10,24 +10,59 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, Injector, computed, inject, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import {
+	Observable,
+	filter,
+	firstValueFrom,
+	map,
+	race,
+	take,
+	timer,
+} from 'rxjs';
+
+/**
+ * How a close/navigation flow should treat an entity (or the whole editor):
+ * - `clean`: nothing unsaved — leave immediately, no prompt.
+ * - `saving`: has unsaved edits, but they auto-save on blur. The close that
+ *   caused the blur already triggered the save; the caller should wait for it to
+ *   land ({@link EditorDirtyService.awaitSettled}) rather than warn.
+ * - `conflicted`: a remote change arrived while dirty, so the edit is HELD for the
+ *   user to resolve and cannot auto-save. This is the only state that warrants a
+ *   warning before discarding.
+ */
+export type leaveState = 'clean' | 'saving' | 'conflicted';
+
+/** Outcome of waiting for an entity's in-flight auto-save to complete. */
+export type settleResult = 'saved' | 'timeout';
 
 /**
  * Tracks which attribute editors currently hold unsaved changes, keyed by an
- * editor key. Consumers form keys as `${entityId}-${attributeId}` so both
- * "is this specific field dirty" and "does this entity have any dirty field"
- * can be answered.
+ * editor key, plus which entities are blocked by an unresolved conflict. Consumers
+ * form dirty keys as `${entityId}-${attributeId}` so both "is this specific field
+ * dirty" and "does this entity have any dirty field" can be answered.
  *
- * Root-provided so a single source of truth spans the parent editor (which
- * decides whether to reload on a remote change) and the child field editors
- * (which set the red conflict ring).
+ * Root-provided so a single source of truth spans the parent editor (which decides
+ * whether to reload on a remote change), the child field editors (which set the
+ * conflict ring), and the close/unload flows (which decide whether leaving is safe,
+ * via {@link leaveStateFor} / {@link awaitSettled}).
  */
 @Injectable({
 	providedIn: 'root',
 })
 export class EditorDirtyService {
-	/** Set of editor keys that currently have dirty data. */
-	private dirtyEditors = signal<Set<string>>(new Set());
+	private readonly injector = inject(Injector);
+
+	/** Set of editor keys that currently have dirty (unsaved) data. */
+	private readonly dirtyEditors = signal<Set<string>>(new Set());
+
+	/**
+	 * Entities that currently have an unresolved conflict (a remote change arrived
+	 * while the user had unsaved edits), keyed by entity id. A conflicted entity
+	 * cannot auto-save — its edits are held until the user resolves them.
+	 */
+	private readonly conflictedEntities = signal<Set<string>>(new Set());
 
 	/**
 	 * Monotonic "edit generation", bumped only on a bulk {@link clearAll} (conflict
@@ -48,9 +83,19 @@ export class EditorDirtyService {
 	/** Whether any editor currently has unsaved changes. */
 	readonly hasDirtyEditors = computed(() => this.dirtyEditors().size > 0);
 
+	/** Whether any editor is currently blocked by an unresolved conflict. */
+	readonly hasConflictedEditors = computed(
+		() => this.conflictedEntities().size > 0
+	);
+
 	/** Whether a specific editor key is currently dirty. */
 	isDirty(editorKey: string): boolean {
 		return this.dirtyEditors().has(editorKey);
+	}
+
+	/** Whether a specific entity is currently blocked by an unresolved conflict. */
+	isConflicted(entityId: string): boolean {
+		return this.conflictedEntities().has(entityId);
 	}
 
 	/**
@@ -67,6 +112,59 @@ export class EditorDirtyService {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * The leave-state for a single entity: the one source of truth close flows use to
+	 * decide between "leave now", "wait for the auto-save", and "warn". Conflict wins
+	 * over plain dirtiness because a conflicted edit cannot auto-save.
+	 */
+	leaveStateFor(entityId: string): leaveState {
+		if (this.isConflicted(entityId)) {
+			return 'conflicted';
+		}
+		return this.hasDirtyEditorsForEntity(entityId) ? 'saving' : 'clean';
+	}
+
+	/**
+	 * The leave-state across ALL entities, for a whole-window close (browser/tab
+	 * unload). `conflicted` dominates `saving` dominates `clean`.
+	 */
+	globalLeaveState(): leaveState {
+		if (this.hasConflictedEditors()) {
+			return 'conflicted';
+		}
+		return this.hasDirtyEditors() ? 'saving' : 'clean';
+	}
+
+	/**
+	 * Resolves once the entity has no remaining dirty editors (its in-flight
+	 * auto-saves have landed), or `timeout` elapses first. Built on the real
+	 * save-completion signal: the field editor calls {@link markClean} inside its
+	 * save `next` handler, so dirtiness clearing IS the save settling.
+	 *
+	 * A deadline is required because a save can FAIL (the field stays dirty) — a
+	 * `timeout` outcome lets the caller fall back to an explicit prompt rather than
+	 * hang. Already-clean resolves immediately.
+	 */
+	awaitSettled(entityId: string, timeoutMs: number): Promise<settleResult> {
+		if (!this.hasDirtyEditorsForEntity(entityId)) {
+			return Promise.resolve('saved');
+		}
+		const settled$: Observable<settleResult> = toObservable(
+			this.dirtyEditors,
+			{ injector: this.injector }
+		).pipe(
+			filter(() => !this.hasDirtyEditorsForEntity(entityId)),
+			take(1),
+			map((): settleResult => 'saved')
+		);
+		const deadline$: Observable<settleResult> = timer(timeoutMs).pipe(
+			map((): settleResult => 'timeout')
+		);
+		return firstValueFrom(race(settled$, deadline$), {
+			defaultValue: 'timeout' as settleResult,
+		});
 	}
 
 	/** Mark an editor as dirty (has unsaved changes). */
@@ -93,13 +191,31 @@ export class EditorDirtyService {
 		});
 	}
 
+	/** Flag an entity as having an unresolved conflict (set true) or not (set false). */
+	setConflicted(entityId: string, conflicted: boolean) {
+		this.conflictedEntities.update((set) => {
+			if (set.has(entityId) === conflicted) {
+				return set;
+			}
+			const next = new Set(set);
+			if (conflicted) {
+				next.add(entityId);
+			} else {
+				next.delete(entityId);
+			}
+			return next;
+		});
+	}
+
 	/**
-	 * Clear all dirty state (conflict resolve/discard, forced refresh). Bumps the
-	 * edit generation so any in-flight deferred commit from before this point is
-	 * recognized as stale and dropped, instead of re-saving a discarded value.
+	 * Clear all dirty + conflict state (conflict resolve/discard, forced refresh).
+	 * Bumps the edit generation so any in-flight deferred commit from before this
+	 * point is recognized as stale and dropped, instead of re-saving a discarded
+	 * value.
 	 */
 	clearAll() {
 		this.dirtyEditors.set(new Set());
+		this.conflictedEntities.set(new Set());
 		this._generation.update((g) => g + 1);
 	}
 }

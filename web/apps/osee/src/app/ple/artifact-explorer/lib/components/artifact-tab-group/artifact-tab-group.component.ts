@@ -11,8 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ArtifactExplorerTabService } from '../../services/artifact-explorer-tab.service';
@@ -28,6 +29,7 @@ import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-edit
 		MatTab,
 		CdkDrag,
 		MatIcon,
+		MatProgressSpinner,
 		MatTabLabel,
 		MatTooltip,
 		ArtifactEditorComponent,
@@ -59,19 +61,125 @@ export class ArtifactTabGroupComponent {
 
 	selectedIndex = this.tabService.selectedIndex;
 
-	removeTab(index: number) {
-		if (this.dirtyService.hasDirtyEditors()) {
-			const confirmed = confirm(
-				'You have unsaved changes.\n\n' +
-					'To save your work, click Cancel, then click outside the text field you were editing. ' +
-					'Changes are saved automatically when an editor loses focus.\n\n' +
-					'Click OK to discard changes and close this tab.'
-			);
-			if (!confirmed) {
+	/**
+	 * How long to wait for an in-progress auto-save to land before falling back to a
+	 * confirm prompt. Clicking the close button blurs the focused editor, which
+	 * triggers its async blur-save; this window lets that save complete so the tab
+	 * closes silently instead of nagging about changes that are already persisting.
+	 *
+	 * The normal path closes the instant the save lands (well under this budget), so
+	 * this is purely the give-up deadline. A stuck save is almost always a dropped
+	 * connection, so keep it short enough to surface the "check your network" prompt
+	 * promptly, while still comfortably clearing a healthy-but-slow save (~100-400ms).
+	 */
+	private static readonly AUTOSAVE_SETTLE_MS = 1500;
+
+	/**
+	 * Tabs (by stable tabId) whose close is in progress while we wait for an
+	 * in-flight auto-save to settle. The close button for these shows a spinner and
+	 * is disabled, so a slow save can't be clicked repeatedly into stacked prompts.
+	 */
+	private readonly closingTabs = signal<ReadonlySet<string>>(new Set());
+
+	/** Whether this tab's close is awaiting its auto-save (shows a spinner, X disabled). */
+	protected isClosing(tabId: string): boolean {
+		return this.closingTabs().has(tabId);
+	}
+
+	private setClosing(tabId: string, closing: boolean) {
+		this.closingTabs.update((set) => {
+			if (set.has(tabId) === closing) {
+				return set;
+			}
+			const next = new Set(set);
+			if (closing) {
+				next.add(tabId);
+			} else {
+				next.delete(tabId);
+			}
+			return next;
+		});
+	}
+
+	/**
+	 * Closes a tab, keeping the common case seamless. The close itself blurs the
+	 * active editor and triggers its auto-save, so the only states that need the
+	 * user's attention are a true conflict (can't auto-save) or a save that doesn't
+	 * land in time. Everything else closes with no prompt. Resolved by tabId so a
+	 * reorder during the brief settle wait can't close the wrong tab.
+	 */
+	async closeTab(index: number) {
+		const closing = this.tabs()[index];
+		if (!closing) {
+			return;
+		}
+		// Close by the stable tabId, not index: the index can shift while we await an
+		// auto-save, and the same artifact can be open on two branches (so closing by
+		// artifact id would wrongly close both). tabId targets exactly this tab.
+		const tabId = closing.tabId;
+
+		// Ignore a repeat click while this tab is already settling its save — the
+		// button is disabled in that window, this guards the programmatic path too.
+		if (this.isClosing(tabId)) {
+			return;
+		}
+
+		const artifactId =
+			closing.tabType === 'Artifact' ? closing.artifact?.id : undefined;
+
+		// A non-artifact tab has nothing to save — close immediately.
+		if (!artifactId) {
+			this.tabService.removeTabByTabId(tabId);
+			return;
+		}
+
+		switch (this.dirtyService.leaveStateFor(artifactId)) {
+			case 'clean':
+				this.tabService.removeTabByTabId(tabId);
+				return;
+
+			case 'conflicted': {
+				// The one case that must warn: a held conflict can't auto-save, so
+				// closing genuinely discards the edit.
+				const discard = confirm(
+					'This artifact has unsaved changes that conflict with an update from another user. ' +
+						'They cannot be saved until you resolve the conflict.\n\n' +
+						'OK: close and discard your changes.\n' +
+						'Cancel: keep the tab open and resolve the conflict.'
+				);
+				if (discard) {
+					this.tabService.removeTabByTabId(tabId);
+				}
+				return;
+			}
+
+			case 'saving': {
+				// The blur from clicking close already kicked off the save; wait for it
+				// to land, then close silently. The X shows a spinner and is disabled
+				// during this window so the wait can't be clicked into stacked prompts.
+				// Only prompt if the save stalls or fails.
+				this.setClosing(tabId, true);
+				try {
+					const result = await this.dirtyService.awaitSettled(
+						artifactId,
+						ArtifactTabGroupComponent.AUTOSAVE_SETTLE_MS
+					);
+					if (
+						result === 'saved' ||
+						confirm(
+							'This artifact has changes that have not finished saving.\n\n' +
+								'OK: close and discard the unsaved changes.\n' +
+								'Cancel: keep the tab open. Check that your network badge (top right) is green, then try closing again.'
+						)
+					) {
+						this.tabService.removeTabByTabId(tabId);
+					}
+				} finally {
+					this.setClosing(tabId, false);
+				}
 				return;
 			}
 		}
-		this.tabService.removeTab(index);
 	}
 
 	onTabDropped(event: CdkDragDrop<unknown[]>) {

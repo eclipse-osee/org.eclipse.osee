@@ -18,7 +18,9 @@ import { APP_BASE } from './playwright/shared/test-config';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const config: PlaywrightTestConfig = {
-	workers: process.env['CI'] ? 3 : undefined,
+	// Match the CI runner's core count so workers don't oversubscribe CPU and starve
+	// the SSE round-trips the real-time tests wait on (see web_e2e runner).
+	workers: process.env['CI'] ? 4 : undefined,
 	timeout: process.env['CI'] ? 45000 : 30000,
 	// No retries: every test runs once, so a failure is captured on its first (and only) attempt
 	// with artifacts reflecting the actual failing state -- not a retry that ran against

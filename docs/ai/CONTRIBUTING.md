@@ -29,7 +29,23 @@ Do not cut corners. Research industry best practices before implementing infrast
 3. **Performance-aware.** Avoid unnecessary allocations, redundant computations, and O(n²) where O(n) exists. Call out performance-sensitive decisions explicitly.
 4. **Maintainable structure.** Single responsibility. No god functions. Minimal coupling between components. If something is reused, extract it. If it's not, don't prematurely abstract.
 5. **No dead code or duplication.** If you find yourself copying logic, refactor. If code isn't reachable, remove it.
-6. **Succinct comments.** Keep comments short and to the point by default — explain *why*, not *what* the code already says. Expand to multiple sentences only when the extra length adds genuine value (a non-obvious race, a subtle invariant, a hard-won gotcha). Summarizing surrounding logic in a comment can help, but only when the complexity warrants it — don't pad a comment to look thorough, and don't restate the code.
+6. **Succinct comments.** Explain *why*, not *what* the code already says.
+   - **Default to 1–2 lines.** That is the norm, not the floor to argue up from.
+   - **Earn every line past the second.** A comment longer than the code it explains, or longer than two lines, needs a concrete reason that would otherwise cost a reader real time: a non-obvious race, a subtle invariant, a hard-won gotcha, a decision that looks wrong without context. "Being thorough" is not such a reason.
+   - **Cut, don't pad.** Before expanding a comment, first try deleting words: drop restatement of the code, background the reader already has, and narration of what the change *was* (that belongs in the commit/PR, not the source). Prefer the shortest version that still carries the *why*.
+   - **No change-narration.** Don't write "previously X; now Y" or justify a value against its old value in source comments — state the current reason only.
+
+   ```ts
+   // Over-written — restates the code and narrates the fix:
+   // `tw-relative` anchors the absolutely-positioned indicator. The indicator takes
+   // NO flow space (absolute) and the host adds NO padding, so it neither reflows the
+   // field when it toggles nor widens the host — which keeps grouped instances aligned
+   // and matches every other field that has no such gutter (an earlier tw-pr-6 broke that).
+
+   // Essential why only:
+   // `tw-relative` anchors the absolute indicator. No padding/width here: it must not
+   // reflow or widen the field (that misaligns grouped instances and the applicability row).
+   ```
 7. **Self-critique before presenting.** Review your output for fragility, duplication, missing error handling, and unnecessary complexity. Fix problems rather than noting them as acceptable tradeoffs.
 8. **Be direct.** If a premise in the request is wrong or suboptimal, say so with reasoning. Do not agree to be agreeable.
 
