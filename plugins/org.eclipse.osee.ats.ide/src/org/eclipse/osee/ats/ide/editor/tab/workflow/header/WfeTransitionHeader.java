@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -83,16 +84,59 @@ public class WfeTransitionHeader extends Composite {
       this.isEditable = isEditable;
 
       workItem = editor.getWorkItem();
-      setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      GridLayout layout =
-         new GridLayout(AtsApiService.get().getWorkItemService().isAllowSiblingCreation(workItem) ? 7 : 5, false);
-      layout.verticalSpacing = 0;
-      layout.marginWidth = 0;
-      layout.marginHeight = 0;
-      setLayout(layout);
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.horizontalIndent = 5;
+      setLayoutData(gd);
+      GridLayout topLayout = new GridLayout(1, false);
+      topLayout.marginWidth = 0;
+      topLayout.marginHeight = 0;
+      topLayout.verticalSpacing = 2;
+      setLayout(topLayout);
       editor.getWorkFlowTab().getManagedForm().getToolkit().adapt(this);
 
-      transitionLabelLink = editor.getToolkit().createHyperlink(this, "Transition", SWT.NONE);
+      // Debug row - only visible to WFE Debug Users
+      if (AtsApiService.get().userService().isInUserGroup(AtsUserGroups.AtsWfeDebugUser)) {
+         Composite debugRow = new Composite(this, SWT.NONE);
+         debugRow.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         GridLayout debugLayout = new GridLayout(2, false);
+         debugLayout.marginWidth = 0;
+         debugLayout.marginHeight = 0;
+         debugRow.setLayout(debugLayout);
+         editor.getToolkit().adapt(debugRow);
+
+         Label debugLabel = editor.getToolkit().createLabel(debugRow, "Dev Debug Mode:");
+         debugLabel.setFont(FontManager.getDefaultLabelFont());
+         debugLabel.setToolTipText(
+            "Debug mode enabled via WFE Debug User group membership.\n" + "Provides Fill Required to set dummy data for quick transitions during development.");
+         debugLabel.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
+
+         Hyperlink debugFillLink = editor.getToolkit().createHyperlink(debugRow, "Fill Required", SWT.NONE);
+         debugFillLink.setLayoutData(new GridData());
+         debugFillLink.setToolTipText(
+            "Fill all required widgets in header and current state with dummy data for quick transition testing.");
+         debugFillLink.addHyperlinkListener(new HyperlinkAdapter() {
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+               try {
+                  WfeDebugFillAction.fillCurrentState(editor);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+         });
+      }
+
+      // Transition row
+      Composite transitionRow = new Composite(this, SWT.NONE);
+      transitionRow.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      int numColumns = AtsApiService.get().getWorkItemService().isAllowSiblingCreation(workItem) ? 9 : 6;
+      GridLayout transLayout = new GridLayout(numColumns, false);
+      transLayout.marginWidth = 0;
+      transLayout.marginHeight = 0;
+      transitionRow.setLayout(transLayout);
+      editor.getToolkit().adapt(transitionRow);
+
+      transitionLabelLink = editor.getToolkit().createHyperlink(transitionRow, "Transition", SWT.NONE);
       transitionLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
          public void linkActivated(HyperlinkEvent e) {
@@ -119,12 +163,12 @@ public class WfeTransitionHeader extends Composite {
       transitionLabelLink.setFont(FontManager.getDefaultLabelFont());
       transitionLabelLink.setToolTipText("Select to transition workflow to the default (shown) state");
 
-      Label transitionToLabel = editor.getToolkit().createLabel(this, "To");
+      Label transitionToLabel = editor.getToolkit().createLabel(transitionRow, "To");
       transitionToLabel.setLayoutData(new GridData());
 
       String toStateName = getToState() == null ? "<not set>" : getToState().getName();
-      stateLabelLink = editor.getToolkit().createHyperlink(this, toStateName, SWT.NONE);
-      stateLabelLink.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      stateLabelLink = editor.getToolkit().createHyperlink(transitionRow, toStateName, SWT.NONE);
+      stateLabelLink.setLayoutData(new GridData());
       stateLabelLink.setToolTipText("Select to Transition to another state");
       stateLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
@@ -159,7 +203,12 @@ public class WfeTransitionHeader extends Composite {
 
       });
 
-      Hyperlink assigneesLabelLink = editor.getToolkit().createHyperlink(this, "Next State Assignee(s)", SWT.NONE);
+      // Spacer between transition and assignees
+      Label spacer1 = editor.getToolkit().createLabel(transitionRow, "            ");
+      spacer1.setLayoutData(new GridData());
+
+      Hyperlink assigneesLabelLink =
+         editor.getToolkit().createHyperlink(transitionRow, "Next State Assignee(s)", SWT.NONE);
       assigneesLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
          public void linkActivated(HyperlinkEvent e) {
@@ -170,37 +219,48 @@ public class WfeTransitionHeader extends Composite {
             }
          }
       });
-      transitionAssigneesLabel =
-         editor.getToolkit().createLabel(this, Strings.truncate(workItem.getTransitionAssigneesStr(), 100, true));
-      transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      transitionAssigneesLabel = editor.getToolkit().createLabel(transitionRow,
+         Strings.truncate(workItem.getTransitionAssigneesStr(), 100, true));
+      transitionAssigneesLabel.setLayoutData(new GridData());
       transitionAssigneesLabel.setToolTipText("Select to change assignee(s) upon transition to next state.");
 
       if (workItem.isTeamWorkflow()) {
          boolean createSiblingWorkflowEnabled =
             AtsApiService.get().getWorkItemService().isAllowSiblingCreation(workItem);
          if (createSiblingWorkflowEnabled) {
+            // Spacer between assignees and sibling
+            Label spacer2 = editor.getToolkit().createLabel(transitionRow, "            ");
+            spacer2.setLayoutData(new GridData());
+
+            // IDE hooks may create a product-specific sibling control. A true return means the hook handled it and
+            // suppresses the standard fallback; false means keep looking, then create the default hyperlink.
+            boolean customSiblingWidgetCreated = false;
             for (IAtsWorkItemHook hook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
                if (hook instanceof IAtsWorkItemHookIde && ((IAtsWorkItemHookIde) hook).createSiblingWidget(workItem,
-                  this, editor)) {
-                  return;
+                  transitionRow, editor)) {
+                  customSiblingWidgetCreated = true;
+                  break;
                }
             }
-
-            createSiblingLink = editor.getToolkit().createHyperlink(this, "Create Sibling Workflow(s)", SWT.NONE);
-            createSiblingLink.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            createSiblingLink.setToolTipText("Create new Team Workflows off same Action");
-            createSiblingLink.addHyperlinkListener(new HyperlinkAdapter() {
-               @Override
-               public void linkActivated(HyperlinkEvent e) {
-                  try {
-                     XSiblingActionBar.openCreateSiblingWorkflowBlam((IAtsTeamWorkflow) workItem);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+            if (!customSiblingWidgetCreated) {
+               createSiblingLink =
+                  editor.getToolkit().createHyperlink(transitionRow, "Create Sibling Workflow(s)", SWT.NONE);
+               createSiblingLink.setLayoutData(new GridData());
+               createSiblingLink.setToolTipText("Create new Team Workflows off same Action");
+               createSiblingLink.addHyperlinkListener(new HyperlinkAdapter() {
+                  @Override
+                  public void linkActivated(HyperlinkEvent e) {
+                     try {
+                        XSiblingActionBar.openCreateSiblingWorkflowBlam((IAtsTeamWorkflow) workItem);
+                     } catch (Exception ex) {
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     }
                   }
-               }
-            });
+               });
+            }
          }
       }
+
    }
 
    public static StateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable,

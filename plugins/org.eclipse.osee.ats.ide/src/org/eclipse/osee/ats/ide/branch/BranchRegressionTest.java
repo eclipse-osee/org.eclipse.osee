@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
-import org.eclipse.osee.ats.ide.util.widgets.XWorkingBranchEnablement;
+import org.eclipse.osee.ats.ide.util.widgets.util.XXWorkingBranchEnablement;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -313,7 +313,7 @@ public abstract class BranchRegressionTest {
       WorkflowEditor.editArtifact(reqTeamWf);
 
       // Verify the enablement of XWorkingBranch
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
+      XXWorkingBranchEnablement enablement = new XXWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Not_Started, enablement.getStatus());
       Assert.assertTrue("Create Branch Button should be enabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertFalse("Show Artifact Explorer Button should be disabled",
@@ -332,7 +332,7 @@ public abstract class BranchRegressionTest {
       workingBranch = reqTeamWf.getWorkingBranchForceCacheUpdate();
       Assert.assertNotNull("workingBranch returned null", workingBranch);
 
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
+      XXWorkingBranchEnablement enablement = new XXWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Changes_InProgress, enablement.getStatus());
       Assert.assertFalse("Create Branch Button should be disabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertTrue("Show Artifact Explorer Button should be enabled",
@@ -346,7 +346,7 @@ public abstract class BranchRegressionTest {
       AtsApiService.get().getBranchServiceIde().deleteWorkingBranch(reqTeamWf, false, true);
       Assert.assertTrue(reqTeamWf.getWorkingBranch().isInvalid());
 
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
+      XXWorkingBranchEnablement enablement = new XXWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Not_Started, enablement.getStatus());
       Assert.assertTrue("Create Branch Button should be enabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertFalse("Show Artifact Explorer Button should be disabled",
@@ -375,7 +375,7 @@ public abstract class BranchRegressionTest {
    public void testXWorkingBranchAfterSecondCreateBranch() {
 
       // Verify the new status of the XWorkingBranch
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
+      XXWorkingBranchEnablement enablement = new XXWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Changes_InProgress, enablement.getStatus());
       Assert.assertFalse("Create Branch Button should be disabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertTrue("Show Artifact Explorer Button should be enabled",
@@ -532,7 +532,7 @@ public abstract class BranchRegressionTest {
 
       WorkflowEditor.editArtifact(reqTeamWf);
 
-      XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeamWf);
+      XXWorkingBranchEnablement enablement = new XXWorkingBranchEnablement(reqTeamWf);
       Assert.assertEquals(BranchStatus.Changes_NotPermitted__BranchCommitted, enablement.getStatus());
       Assert.assertFalse("Create Branch Button should be disabled", enablement.isCreateBranchButtonEnabled());
       Assert.assertFalse("Show Artifact Explorer Button should be disabled",

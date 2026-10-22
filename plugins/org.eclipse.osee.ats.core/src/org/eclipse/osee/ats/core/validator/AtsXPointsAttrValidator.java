@@ -13,16 +13,17 @@
 
 package org.eclipse.osee.ats.core.validator;
 
-import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IValueProvider;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XOption;
 
 /**
  * @author Donald G. Dunne
@@ -33,17 +34,18 @@ public class AtsXPointsAttrValidator extends AtsXWidgetValidator {
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDef widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      if ("XEstimatedPointsWidget".equals(widgetDef.getXWidgetName())) {
-         boolean found = false;
-         for (AttributeTypeToken attrType : Arrays.asList(AtsAttributeTypes.PointsEnum, AtsAttributeTypes.PointsNumeric)) {
-            if (atsApi.getAttributeResolver().getAttributeCount(workItem, attrType) > 0) {
-               found = true;
-               break;
+      WidgetId widgetId = widgetDef.getWidgetId();
+      if (widgetDef.getWidData().is(XOption.REQUIRED)) {
+         if (widgetId.equals(WidgetIdAts.XXPointsEnumWidget)) {
+            if (atsApi.getAttributeResolver().hasNoAttribute(workItem, AtsAttributeTypes.PointsEnum)) {
+               result = new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition to [%s]",
+                  widgetDef.getName(), toStateDef.getName());
             }
-         }
-         if (!found) {
-            result = new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition to [%s]",
-               widgetDef.getName(), toStateDef.getName());
+         } else if (widgetId.equals(WidgetIdAts.XXPointsNumericWidget)) {
+            if (atsApi.getAttributeResolver().hasNoAttribute(workItem, AtsAttributeTypes.PointsNumeric)) {
+               result = new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition to [%s]",
+                  widgetDef.getName(), toStateDef.getName());
+            }
          }
       }
       return result;

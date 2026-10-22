@@ -220,7 +220,8 @@ public class SendNotificationEvents {
             // never fall back to getSubjectDescription() as it may contain unsanitized user input
             String description = event.getSanitizedSubjectDescription();
             if (Strings.isValid(description)) {
-               result = Strings.truncate("OSEE Notification" + " - " + event.getSubjectType() + " - " + description, 128);
+               result =
+                  Strings.truncate("OSEE Notification" + " - " + event.getSubjectType() + " - " + description, 128);
             } else {
                result = Strings.truncate("OSEE Notification" + " - " + event.getSubjectType(), 128);
             }

@@ -95,7 +95,7 @@ public class WfeJournalSubscribersComp extends Composite {
          Label origLabel = editor.getToolkit().createLabel(this, LABEL);
          origLabel.setLayoutData(new GridData());
       }
-      valueLabel = editor.getToolkit().createLabel(this, Widgets.NOT_SET);
+      valueLabel = editor.getToolkit().createLabel(this, "");
       valueLabel.setLayoutData(new GridData());
       refresh();
    }

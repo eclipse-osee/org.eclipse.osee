@@ -12,28 +12,28 @@
  **********************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Assumptions;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.EstimatedCompletionDate;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.SAVE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
+import org.eclipse.osee.ats.api.workdef.model.SignDateWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.xx.PointsNumericWidgetDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefTaskDefault;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne
  */
+
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
 
    public WorkDefTaskDemoForCrEstimating(AtsWorkDefinitionToken workDefToken) {
@@ -50,26 +50,27 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
 
       bld.andState(1, "InWork", StateType.Working).isStartState() //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(Description, "XTextDam", FILL_VERT, SAVE), //
-            new WidgetDef(Assumptions, "XTextDam", FILL_VERT, SAVE), //
-            new WidgetDef(AtsAttributeTypes.RiskFactor, "XHyperlinkLabelValueSelectionDam", SAVE), //
+            new AttrWidgetDef(Description), //
+            new AttrWidgetDef(Assumptions), //
+            new AttrWidgetDef(RiskFactor), //
             new CompositeLayoutItem(4, //
-               new WidgetDef("Estimated Points", "XEstimatedPointsWidget", RFT, SAVE), //
-               new WidgetDef(EstimatedCompletionDate, "XDateDam", SAVE) //
+               new PointsNumericWidgetDefinition("Estimated Points").andRequired(), //
+               new AttrWidgetDef(EstimatedCompletionDate) //
             ), //
-            new SignByAndDateWidgetDefinition("Reviewed By", AtsAttributeTypes.ReviewedBy,
-               AtsAttributeTypes.ReviewedByDate));
+            new SignDateWidgetDef("Reviewed By", ReviewedBy, ReviewedByDate));
 
-      bld.andState(2, "Completed", StateType.Completed) //
-         .andColor(StateColor.DARK_GREEN);
+      bld.andState(2, "Completed", StateType.Completed);
 
-      bld.andState(3, "Cancelled", StateType.Cancelled) //
-         .andColor(StateColor.DARK_RED);
+      bld.andState(3, "Cancelled", StateType.Cancelled);
 
       return bld.getWorkDefinition();
    }
 
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
+   }
 }

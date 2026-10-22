@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.ats.rest.internal.demo;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -24,6 +27,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -75,6 +79,7 @@ public class AtsDbConfigDemoOp {
 
       IAtsChangeSet changes = atsApi.createChangeSet("Set ATS Admin");
       changes.relate(AtsUserGroups.AtsTempAdmin, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
+      changes.relate(AtsUserGroups.AtsWfeDebugUser, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
       changes.execute();
 
       (new OrganizePrograms(atsApi)).run();
@@ -85,7 +90,22 @@ public class AtsDbConfigDemoOp {
 
       addBacklogCustomization();
 
+      createAndconfigureFunctionalAreaAndDemoFunctionalList();
+
       return rd;
+   }
+
+   private void createAndconfigureFunctionalAreaAndDemoFunctionalList() {
+      // Create Folder under User Groups folder and add some User Groups token in that folder
+      IAtsChangeSet changes = atsApi.createChangeSet("Create Functional Area", COMMON);
+      ArtifactToken userGroupArt = atsApi.getQueryService().getArtifact(CoreArtifactTokens.UserGroups, COMMON);
+      ArtifactToken functionalAreaFolder = changes.createArtifact(userGroupArt, DemoArtifactToken.FunctionalAreaFolder);
+      // Relate users to the userGroups
+      for (IUserGroupArtifactToken userGroup : DemoArtifactToken.FunctionalAreaUserGroups) {
+         ArtifactToken artifact = changes.createArtifact(functionalAreaFolder, userGroup);
+         changes.relate(artifact, CoreRelationTypes.Users_User, DemoUsers.Joe_Smith);
+      }
+      changes.execute();
    }
 
    private void setBranchFavorites() {

@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.core.data.TestRunStorageKey;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchSelWidget;
 import org.eclipse.osee.ote.ui.define.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -68,7 +68,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
    private final ILabelProvider labelProvider;
    private final List<ViewerFilter> filters;
    private final Object treeInput;
-   private XBranchSelectWidget branchSelect;
+   private XXBranchSelWidget branchWidget;
 
    protected OutfileImportPage(IStructuredSelection selection) {
       super(PAGE_NAME);
@@ -106,8 +106,8 @@ public class OutfileImportPage extends WizardDataTransferPage {
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       group.setText("Select a Branch to import files into");
       group.setToolTipText("Opens the branch selection dialog");
-      branchSelect = new XBranchSelectWidget("branch");
-      branchSelect.createWidgets(group, SWT.BORDER | SWT.READ_ONLY);
+      branchWidget = new XXBranchSelWidget();
+      branchWidget.createWidgets(group, SWT.BORDER | SWT.READ_ONLY);
 
       createFileSelectArea(composite);
 
@@ -222,7 +222,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
       if (settings != null) {
          String lastSelected = settings.get(TestRunStorageKey.SELECTED_BRANCH_ID);
          try {
-            branchSelect.setSelection(BranchManager.getBranchToken(Long.parseLong(lastSelected)));
+            branchWidget.setSelected(BranchManager.getBranchToken(Long.parseLong(lastSelected)));
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -267,7 +267,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
    @Override
    protected boolean validateDestinationGroup() {
       boolean toReturn = super.validateDestinationGroup();
-      BranchId branch = branchSelect.getData();
+      BranchId branch = branchWidget.getSelectedFirst();
       if (branch == null) {
          setMessage(null);
          setErrorMessage("Please select a working branch. Cannot import into a null branch.");
@@ -306,7 +306,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
             branchUuids = new String[0];
          }
 
-         BranchId branch = branchSelect.getData();
+         BranchId branch = branchWidget.getSelectedFirst();
          try {
             if (branch != null) {
                String lastBranchSelected = branch.getIdString();
@@ -340,6 +340,6 @@ public class OutfileImportPage extends WizardDataTransferPage {
 
    public boolean finish() {
       saveWidgetValues();
-      return new ImportOutfileUIOperation(branchSelect.getData(), getSelectedResources()).execute();
+      return new ImportOutfileUIOperation(branchWidget.getSelectedFirst(), getSelectedResources()).execute();
    }
 }

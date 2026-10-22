@@ -69,7 +69,7 @@ public class AtsConfigTxProgram extends AbstractAtsConfigTxObject<IAtsConfigTxPr
 
    @Override
    public IAtsConfigTxProgram andProductLineBranch(BranchToken branch) {
-      changes.setSoleAttributeValue(program, AtsAttributeTypes.ProductLineBranchId, branch.getId());
+      changes.setSoleAttributeValue(program, AtsAttributeTypes.ProductLineBranchId, branch);
       return this;
    }
 

@@ -34,6 +34,7 @@ import org.eclipse.osee.define.rest.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.define.rest.api.toggles.TogglesEndpoint;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.client.QueryBuilder;
 import org.eclipse.osee.framework.core.client.TogglesClientImpl;
@@ -341,6 +342,11 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public UserEndpoint getOrcsUserEndpoint() {
       return getOrcsEndpoint(UserEndpoint.class);
+   }
+
+   @Override
+   public boolean isProduction() {
+      return ClientSessionManager.isProductionDataStore();
    }
 
 }

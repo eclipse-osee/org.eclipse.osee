@@ -29,8 +29,7 @@ import org.junit.Test;
  */
 public class WorkDefBuilderTest {
 
-   public static AtsWorkDefinitionToken WorkDefBuilderTest =
-      new AtsWorkDefinitionToken(4352354L, "WorkDefBuilderTest");
+   public static AtsWorkDefinitionToken WorkDefBuilderTest = new AtsWorkDefinitionToken(4352354L, "WorkDefBuilderTest");
    private WorkDefBuilder bld;
 
    @Before

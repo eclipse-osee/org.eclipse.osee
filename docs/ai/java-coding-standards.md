@@ -122,7 +122,16 @@ public void deleteBranch(BranchId branch) {
 }
 ```
 
-## Imports
+## Fail Fast
+
+Surface problems as early as possible — ideally when a developer defines or builds something, not at build/release time or when someone later runs a validation operation.
+
+- **Validate at the point of definition/construction.** Builders, factories, and model constructors should check their inputs and fail immediately when something is wrong, so the developer writing the code sees the error while writing it. Prefer this over a separate "validate everything" pass that only runs on demand.
+- **Fail hard when the failure is a programming/config error.** For invariants a developer must not violate (e.g. a malformed work definition, an unenforceable required widget, a duplicate id), throw a clear exception (`OseeArgumentException`, `Conditions.assert*`, `OseeStateException`) rather than logging a warning that is easy to miss. A loud failure at startup/registration beats a silent one discovered in production.
+- **Keep existing fail-fast paths intact.** When extending code that already collects errors and throws (e.g. `WorkDefBuilder` records into `getResults()` and `AtsWorkDefinitionProviderService` throws on any work-def error when its `@Component` builder binds), add new checks to that same path — do not downgrade them to warnings or move them into a run-on-demand operation.
+- The error message should name the offending item and state the fix, so the developer can correct it without further investigation.
+
+## Import Style
 
 - Always use proper `import` statements. Never use fully-qualified class names inline unless there is a genuine name collision that cannot be resolved with imports.
 - Use specific imports when fewer than 5 imports come from the same package.
@@ -173,7 +182,9 @@ public void deleteBranch(BranchId branch) {
 ## General Style
 
 - No hard-coded absolute file paths in production code. Use configurable properties or workspace-relative paths.
-- No fully qualified class names in method bodies -- use imports.
+- No fully qualified class names in method bodies -- use imports. The only exception is when two classes share a simple name and both are needed in the same file.
+- Use `Strings.isValid(value)` instead of manual null/empty string checks (it also rejects whitespace-only).
+- Use `Widgets.isAccessible(widget)` for SWT widget null/disposed checks.
 - Prefer early return over deep nesting.
 - One class per file (inner classes excepted).
 - Do not merge `TODO` or `TBD` comments. Remove them before merging and track the improvement in the issue tracking system instead.

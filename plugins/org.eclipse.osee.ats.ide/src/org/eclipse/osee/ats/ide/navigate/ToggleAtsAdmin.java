@@ -13,12 +13,15 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.IUserGroup;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -39,6 +42,11 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
 
    public ToggleAtsAdmin() {
       super("Toggle ATS Admin - Temporary", PluginUiImage.ADMIN, XNavigateItem.DEMO);
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(AtsUserGroups.AtsTempAdmin);
    }
 
    @Override

@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.ats.ide.world;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 
@@ -28,6 +30,10 @@ public class WorldXNavigateItemAction extends XNavigateItemAction {
 
    public WorldXNavigateItemAction(String name, XNavItemCat... xNavItemCat) {
       super(name, determineImage(name), xNavItemCat);
+   }
+
+   public WorldXNavigateItemAction(String name, List<IUserGroupArtifactToken> groups, XNavItemCat... xNavItemCat) {
+      super(name, determineImage(name), groups, xNavItemCat);
    }
 
    private static AtsImage determineImage(String name) {

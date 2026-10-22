@@ -13,16 +13,19 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.widget.validate.IValueValidator;
+import org.eclipse.osee.framework.core.widget.validate.XXNoOpValidator;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXAbstractSTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
@@ -31,8 +34,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -58,36 +59,48 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class EntryDialog extends MessageDialog {
 
-   protected XText text;
+   protected XXTextWidget textWidget;
    protected Composite areaComposite;
    protected String entryText = "";
-   private NumberFormat numberFormat;
    private String errorString = "";
-   protected Button ok;
+   protected Button okButton;
+   protected boolean okSelected = false;
+   protected Button clearButton;
+   protected boolean clearSelected = false;
+   protected boolean includeClear = false;
    protected Label errorLabel;
    protected boolean fillVertically = false;
    private Button fontButton;
    private String label;
    protected Integer textHeight = null;
    protected boolean addOpenInEditorOption = true;
+   protected Composite customAreaParent;
+   protected IValueValidator validator = XXNoOpValidator.instance;
+   private boolean spellCheck = true;
 
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<>();
    private final String dialogTitle;
 
    public EntryDialog(String dialogTitle, String dialogMessage) {
-      this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
-         new String[] {"OK", "Cancel"}, 0);
+      this(dialogTitle, dialogMessage, false);
    }
 
-   public EntryDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+   public EntryDialog(String dialogTitle, String dialogMessage, boolean includeClear) {
+      this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
+         (includeClear ? new String[] {"OK", "Cancel", "Clear"} : new String[] {"OK", "Cancel"}), 0);
+      this.includeClear = includeClear;
+   }
+
+   private EntryDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
          defaultIndex);
       this.dialogTitle = dialogTitle;
    }
 
-   private final ModifyListener textModifyListener = new ModifyListener() {
+   private final XModifiedListener textModifyListener = new XModifiedListener() {
+
       @Override
-      public void modifyText(ModifyEvent e) {
+      public void widgetModified(XWidget widget) {
          handleModified();
       }
    };
@@ -98,14 +111,13 @@ public class EntryDialog extends MessageDialog {
          setInitialButtonState();
       }
    };
-   protected Composite customAreaParent;
 
    @Override
    protected Control createCustomArea(Composite parent) {
       this.customAreaParent = parent;
       areaComposite = new Composite(parent, SWT.NONE);
-      areaComposite.setLayout(new GridLayout(2, false));
-      GridData gd = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+      areaComposite.setLayout(new GridLayout(1, false));
+      GridData gd = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL);
       gd.widthHint = 600;
       areaComposite.setLayoutData(gd);
       areaComposite.addMouseMoveListener(compListener);
@@ -120,6 +132,28 @@ public class EntryDialog extends MessageDialog {
       areaComposite.layout();
       parent.layout();
       return areaComposite;
+   }
+
+   @Override
+   protected Control createButtonBar(Composite parent) {
+      Control c = super.createButtonBar(parent);
+      okButton = getButton(0);
+      okButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            okSelected = true;
+         }
+      });
+      if (includeClear) {
+         clearButton = getButton(2);
+         clearButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               clearSelected = true;
+            }
+         });
+      }
+      return c;
    }
 
    protected void createOpenInEditorHyperlink(Composite parent) {
@@ -168,7 +202,7 @@ public class EntryDialog extends MessageDialog {
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
-            text.setText("");
+            textWidget.setSelected("");
          }
       });
 
@@ -179,7 +213,7 @@ public class EntryDialog extends MessageDialog {
          public void widgetSelected(SelectionEvent e) {
             Clipboard clipboard = new Clipboard(Display.getCurrent());
             TextTransfer textTransfer = TextTransfer.getInstance();
-            clipboard.setContents(new Object[] {text.get()}, new Transfer[] {textTransfer});
+            clipboard.setContents(new Object[] {textWidget.getSelectedFirst()}, new Transfer[] {textTransfer});
          }
       });
 
@@ -190,9 +224,9 @@ public class EntryDialog extends MessageDialog {
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
             if (fontButton.getSelection()) {
-               text.setFont(getFont());
+               textWidget.setFont(getFont());
             } else {
-               text.setFont(null);
+               textWidget.setFont(null);
             }
          }
       });
@@ -203,24 +237,25 @@ public class EntryDialog extends MessageDialog {
    }
 
    protected void createTextBox() {
-      text = new XText(Strings.isValid(label) ? label : "");
-      text.setFillHorizontally(true);
-      text.setFocus();
+      String labelStr = Strings.isValid(label) ? label : "";
+
+      textWidget = new XXTextWidget(labelStr);
+      textWidget.setFocus();
+      textWidget.setSpellCheck(spellCheck);
       if (!Strings.isValid(label)) {
-         text.setDisplayLabel(false);
+         textWidget.setDisplayLabel(false);
       }
       if (fillVertically) {
-         text.setFillVertically(true);
-         text.setHeight(textHeight == null ? 200 : textHeight);
+         textWidget.setFillVertically(true);
+         textWidget.setHeight(textHeight == null ? 200 : textHeight);
       }
-      text.createWidgets(areaComposite, 2);
-      text.setFocus();
+      textWidget.createWidgets(areaComposite, 2);
+      textWidget.setFocus();
       if (Strings.isValid(entryText)) {
-         text.set(entryText);
-         text.selectAll();
+         textWidget.setSelected(entryText);
       }
-      text.addModifyListener(textModifyListener);
-      addContextMenu(text.getStyledText());
+      textWidget.addXModifiedListener(textModifyListener);
+      addContextMenu(textWidget.getStyledText());
    }
 
    @Override
@@ -233,26 +268,20 @@ public class EntryDialog extends MessageDialog {
    }
 
    public void setInitialButtonState() {
-      if (ok == null) {
-         ok = getButton(0);
+      if (okButton == null) {
+         okButton = getButton(0);
          handleModified();
       }
       areaComposite.removeMouseMoveListener(compListener);
    }
 
    public void handleModified() {
-      if (text != null) {
-         entryText = text.get();
+      if (textWidget != null) {
+         entryText = textWidget.getSelectedFirst();
          if (!isEntryValid()) {
             getButton(getDefaultButtonIndex()).setEnabled(false);
-            errorLabel.setText(errorString);
-            errorLabel.update();
-            areaComposite.layout();
          } else {
             getButton(getDefaultButtonIndex()).setEnabled(true);
-            errorLabel.setText("");
-            errorLabel.update();
-            areaComposite.layout();
          }
       }
    }
@@ -262,8 +291,8 @@ public class EntryDialog extends MessageDialog {
    }
 
    public void setEntry(String entry) {
-      if (text != null) {
-         text.set(entry);
+      if (textWidget != null) {
+         textWidget.setSelected(entry);
       }
       this.entryText = entry;
    }
@@ -274,25 +303,20 @@ public class EntryDialog extends MessageDialog {
     * @return true if entry is valid
     */
    public boolean isEntryValid() {
-      if (numberFormat == null || text.isEmpty()) {
+      if (validator == null) {
          return true;
       }
-
       try {
-         numberFormat.parse(text.get());
-      } catch (ParseException ex) {
+         String selectedFirst = textWidget.getSelectedFirst();
+         XResultData valid = validator.isValid(selectedFirst);
+         return valid.isOK();
+      } catch (Exception ex) {
          return false;
       }
-
-      return true;
    }
 
    public void setValidationErrorString(String errorString) {
       this.errorString = errorString;
-   }
-
-   public void setNumberFormat(NumberFormat numberFormat) {
-      this.numberFormat = numberFormat;
    }
 
    /**
@@ -330,8 +354,8 @@ public class EntryDialog extends MessageDialog {
       closeEventListeners.add(event);
    }
 
-   protected XText getText() {
-      return text;
+   protected XXAbstractSTextWidget getText() {
+      return textWidget;
    }
 
    public void setLabel(String label) {
@@ -437,6 +461,29 @@ public class EntryDialog extends MessageDialog {
 
    public void setMultiline(boolean multiline) {
       setFillVertically(multiline);
+   }
+
+   public void setSpellCheck(boolean spellCheck) {
+      this.spellCheck = spellCheck;
+      if (textWidget != null) {
+         textWidget.setSpellCheck(spellCheck);
+      }
+   }
+
+   public IValueValidator getValidator() {
+      return validator;
+   }
+
+   public void setValidator(IValueValidator validator) {
+      this.validator = validator;
+   }
+
+   public boolean isOkSelected() {
+      return okSelected;
+   }
+
+   public boolean isClearSelected() {
+      return clearSelected;
    }
 
 }

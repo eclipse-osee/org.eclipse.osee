@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.api.column;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.api.config.ActionRollup;
-import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.config.InheritParent;
 import org.eclipse.osee.ats.api.config.MultiEdit;
@@ -46,7 +45,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 public class AtsColumnTokensDefault {
 
    private static Map<String, AtsCoreAttrTokColumnToken> idToAttrValCol = new HashMap<>(500);
-   private static boolean hintsSet = false;
 
    /**
     * Attribute Value columns. These are backed directly by an attribute with the possible ability to change with edit
@@ -147,27 +145,6 @@ public class AtsColumnTokensDefault {
 
       public CoreAttrTokColTokenDefault(AttributeTypeToken attrType) {
          super(attrType);
-         if (!hintsSet) {
-            // Mark Core Attr Types with correct AtsDisplayHints; Can't do at type definition due to dependency order
-            CoreAttributeTypes.AccessContextId.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.Annotation.addDisplayHint(AtsDisplayHint.Edit);
-            CoreAttributeTypes.BranchDiffData.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.ContentUrl.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.Description.addDisplayHint(AtsDisplayHint.Edit);
-            CoreAttributeTypes.GitBranchName.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.GitBuildId.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.GitChangeId.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.GitCommitAuthorDate.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.GitCommitMessage.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.GitCommitSha.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.GitRepoName.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.Name.addDisplayHint(AtsDisplayHint.Edit);
-            CoreAttributeTypes.Notes.addDisplayHint(AtsDisplayHint.Edit);
-            CoreAttributeTypes.Partition.addDisplayHint(AtsDisplayHint.Edit);
-            CoreAttributeTypes.RelationOrder.addDisplayHint(AtsDisplayHint.Read);
-            CoreAttributeTypes.StaticId.addDisplayHint(AtsDisplayHint.Read);
-            hintsSet = true;
-         }
       }
 
    }

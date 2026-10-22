@@ -16,40 +16,74 @@ package org.eclipse.osee.ats.ide.operation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 
 /**
  * @author Megumi Telles
  */
-public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CreateWorkingBranchFromTxBlam extends AbstractAtsBlam {
 
-   private static final String ATS_ID_TX_WIDGET_NAME = "USAGE: Team Workflow ATS ID, TransactionId (pair on each line)";
+   private static final String BLAM_NAME = "Create Working Branch from TX Id";
+   private static final String BLAM_DESC =
+      "Enter Team Workflow ATS ID,Transaction Id (pair on each line) from which to create working branch.";
+   static final String ATS_ID_TX_WIDGET_NAME = "Team Workflow ATS ID, TransactionId";
    private static final int PAIR_SIZE = 2;
 
-   private static final String description =
-      "'Copy and paste' or 'type' in Team Workflow ATS ID,Transaction Id from which to create working branch";
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
 
    public CreateWorkingBranchFromTxBlam() {
-      super(null, description, BlamUiSource.FILE);
+      super(BLAM_NAME, CoreImage.BRANCH_WORKING);
    }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andTextWidget(ATS_ID_TX_WIDGET_NAME).fillVert();
+      return wb.getXWidgetDatas();
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String input = variableMap.getString(ATS_ID_TX_WIDGET_NAME);
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
       ArrayList<String> idTxs = new ArrayList<>(Arrays.asList(input.split("\\r?\\n")));
       for (String idTx : idTxs) {
          String[] pairs = idTx.split("[,\\s]+");
@@ -80,9 +114,27 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
       }
    }
 
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(AtsUserGroups.AtsAdmin);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
    @Override
    public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return BLAM_DESC;
    }
 
 }

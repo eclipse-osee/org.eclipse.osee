@@ -103,6 +103,10 @@ public class ArtifactQuery {
     * @return artifact unless it's been deleted; else return Sentinel
     */
    public static ArtifactToken getArtifactFromTokenOrSentinel(ArtifactToken artifactToken) {
+      if (artifactToken instanceof Artifact) {
+         Artifact artifact = (Artifact) artifactToken;
+         return artifact.isDeleted() ? ArtifactToken.SENTINEL : artifact;
+      }
       ArtifactToken art = ArtifactToken.SENTINEL;
       try {
          art = getArtifactFromToken(artifactToken);

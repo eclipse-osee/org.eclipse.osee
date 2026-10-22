@@ -19,10 +19,22 @@ import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.actions.newaction.CreateNewActionProvider;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXAssigneesWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXOriginatorWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXPointsNumericWidget;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Donald G. Dunne
@@ -30,21 +42,62 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class CreateNewActionProviderDemo implements CreateNewActionProvider {
 
    private static Collection<IAtsTeamDefinition> demoTeamDefs;
+   private XXAssigneesWidget assigneeWidget;
+   private XXPointsNumericWidget pointsWidget;
+   private XXOriginatorWidget originatorWidget;
+   private XXTextWidget titleWidget;
 
    @Override
-   public void getAdditionalXWidgetItems(XWidgetBuilder wb, IAtsTeamDefinition teamDef) {
+   public void getAdditionalXWidgetItems(XWidgetBuilderAts wba, IAtsTeamDefinition teamDef) {
       // Align each widget with it's related andTeamId in case there are multiple different team defs impacted
-      wb.andWidget("Originator", "XOriginatorHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();
-      wb.andWidget("Assignees", "XAssigneesHyperlinkWidget").andTeamId(
-         teamDef.getArtifactId()).andRequired().endWidget();
-      wb.andWidget("Targeted Version", "XTargetedVersionHyperlinkWidget").andTeamId(
-         teamDef.getArtifactId()).endWidget();
-      wb.andWidget("Points", "XText").andAttrType(AtsAttributeTypes.PointsNumeric).andTeamId(
-         teamDef.getArtifactId()).endWidget();
-      wb.andXBoolean(AtsAttributeTypes.UnplannedWork).andTeamId(teamDef.getArtifactId()).endWidget();
-      wb.andXText(AtsAttributeTypes.WorkPackage).andTeamId(teamDef.getArtifactId()).endWidget();
-      wb.andWidget("Sprint", "XSprintHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();
-      wb.andWidget("Feature Group", "XAgileFeatureHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();
+      wba.andOriginatorWidget().andTeamId(teamDef.getArtifactId());
+      wba.andWidget("Assignees", WidgetIdAts.XXAssigneesWidget).andTeamId(teamDef.getArtifactId()).andRequired();
+      wba.andWidget("Targeted Version", WidgetIdAts.XXTargetedVersionWidget).andTeamId(teamDef.getArtifactId());
+      wba.andWidget("Points", WidgetIdAts.XXPointsNumericWidget).andAttrType(AtsAttributeTypes.PointsNumeric).andTeamId(
+         teamDef.getArtifactId());
+      wba.andCheckBoxWidget(AtsAttributeTypes.UnplannedWork).andTeamId(teamDef.getArtifactId());
+      wba.andTextWidget(AtsAttributeTypes.WorkPackage).andTeamId(teamDef.getArtifactId());
+      wba.andWidget("Sprint", WidgetIdAts.XXAgileSprintSelWidget).andTeamId(teamDef.getArtifactId());
+      wba.andWidget("Feature Group", WidgetIdAts.XXAgileFeatureSelWidget).andTeamId(teamDef.getArtifactId());
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
+      XModifiedListener xModListener, boolean isEditable) {
+      if (xWidget.getLabel().equals("Originator")) {
+         originatorWidget = (XXOriginatorWidget) xWidget;
+         originatorWidget.getLabelLinkWidget().addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseUp(MouseEvent e) {
+               if (e.button == 3) {
+                  handlePopulateWithDebugInfo(titleWidget.get());
+               }
+            }
+
+         });
+      } else if (xWidget.getLabel().equals("Assignees")) {
+         assigneeWidget = (XXAssigneesWidget) xWidget;
+      } else if (xWidget.getLabel().equals("Points")) {
+         pointsWidget = (XXPointsNumericWidget) xWidget;
+      } else if (xWidget.getLabel().equals("Title")) {
+         titleWidget = (XXTextWidget) xWidget;
+      }
+   }
+
+   @Override
+   public void handlePopulateWithDebugInfo(String title) {
+      if (originatorWidget != null) {
+         originatorWidget.setSelected(AtsApiService.get().userService().getUser());
+         originatorWidget.refresh();
+      }
+      if (assigneeWidget != null) {
+         assigneeWidget.setSelected(AtsApiService.get().getUserService().getCurrentUserToken());
+         assigneeWidget.refresh();
+      }
+      if (pointsWidget != null) {
+         pointsWidget.setSelected("1");
+      }
    }
 
    @Override

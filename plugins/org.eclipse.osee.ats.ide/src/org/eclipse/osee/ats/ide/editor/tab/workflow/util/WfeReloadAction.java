@@ -18,12 +18,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.WorkflowEditor.WfeSaveListener;
 import org.eclipse.osee.ats.ide.editor.tab.reload.WfeReloadTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -72,18 +69,18 @@ public class WfeReloadAction extends AbstractAtsAction {
                   if (result == 1) {
                      return;
                   }
-                  editor.doSave(null, new WfeSaveListener() {
-
-                     @Override
-                     public void saved(IAtsWorkItem workItem, IAtsChangeSet changes) {
-                        try {
-                           Thread reloadThread = getReloadThread();
-                           reloadThread.start();
-                        } catch (Exception ex) {
-                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-                        }
-                     }
-                  });
+                  //   TBD               editor.doSave(null, new WfeSaveListener() {
+                  //
+                  //                     @Override
+                  //                     public void saved(IAtsWorkItem workItem, IAtsChangeSet changes) {
+                  //                        try {
+                  //                           Thread reloadThread = getReloadThread();
+                  //                           reloadThread.start();
+                  //                        } catch (Exception ex) {
+                  //                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  //                        }
+                  //                     }
+                  //                  });
                } else {
                   try {
                      Thread reloadThread = getReloadThread();

@@ -14,8 +14,8 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
 import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.ide.demotest.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;

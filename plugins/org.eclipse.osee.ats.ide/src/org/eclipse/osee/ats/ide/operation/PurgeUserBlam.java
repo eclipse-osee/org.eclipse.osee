@@ -18,8 +18,10 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -32,21 +34,30 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcTransaction;
-import org.eclipse.swt.graphics.Image;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 
 /**
  * @author Megumi Telles
  */
-public class PurgeUserBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class PurgeUserBlam extends AbstractAtsBlam {
 
+   private static final String BLAM_NAME = "Admin - Purge User";
+   static final String PERSIST = "Persist";
    public final static String FROM_USER = "From User";
    public final static String TO_USER = "To User";
+   private static final String GET_AUTHORED_TRANSACTIONS = "SELECT count(1) from osee_tx_details where author=?";
+   private static final String GET_RELATIONS_ASIDE = "SELECT count(1) from osee_relation_link where a_art_id=?";
+   private static final String GET_RELATIONS_BSIDE = "SELECT count(1) from osee_relation_link where b_art_id=?";
+   private static final String UPDATE_AUTHORED_TRANSACTIONS = "update osee_tx_details set author=? where author=?";
+   private static final String UPDATE_RELATIONS_ASIDE = "update osee_relation_link set a_art_id=? where a_art_id=?";
+   private static final String UPDATE_RELATIONS_BSIDE = "update osee_relation_link set b_art_id=? where b_art_id=?";
    private static int numOfAuthoredTransactions = 0;
    private static int numOfASideRelations = 0;
    private static int numOfBSideRelations = 0;
@@ -54,21 +65,34 @@ public class PurgeUserBlam extends AbstractBlam {
    private static int numOfUpdatedASideRelations = 0;
    private static int numOfUpdatedBSideRelations = 0;
    private static boolean persist = false;
-
    private static final int defaultUpdateValue = -1;
 
-   private static final String GET_AUTHORED_TRANSACTIONS = "SELECT count(1) from osee_tx_details where author=?";
-   private static final String GET_RELATIONS_ASIDE = "SELECT count(1) from osee_relation_link where a_art_id=?";
-   private static final String GET_RELATIONS_BSIDE = "SELECT count(1) from osee_relation_link where b_art_id=?";
-   private static final String UPDATE_AUTHORED_TRANSACTIONS = "update osee_tx_details set author=? where author=?";
-   private static final String UPDATE_RELATIONS_ASIDE = "update osee_relation_link set a_art_id=? where a_art_id=?";
-   private static final String UPDATE_RELATIONS_BSIDE = "update osee_relation_link set b_art_id=? where b_art_id=?";
    private final JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
 
-   @Override
-   public String getName() {
-      return "Admin - Purge User";
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public PurgeUserBlam() {
+      super(BLAM_NAME, CoreImage.X_RED);
    }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andWidget(FROM_USER, WidgetId.XXUserTokenWidget).and(XOption.ACTIVE_BOTH);
+      wb.andWidget(TO_USER, WidgetId.XXUserTokenWidget).and(XOption.ACTIVE_BOTH);
+      wb.andCheckBoxWidget(PERSIST);
+      return wb.getXWidgetDatas();
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
@@ -77,7 +101,7 @@ public class PurgeUserBlam extends AbstractBlam {
          @Override
          public void run() {
             try {
-               persist = variableMap.getBoolean("Persist");
+               persist = variableMap.getBoolean(PERSIST);
 
                //TODO Allow for multiple users to be selected at one time.
                final Artifact fromUser = variableMap.getUser(FROM_USER);
@@ -117,6 +141,10 @@ public class PurgeUserBlam extends AbstractBlam {
          };
       });
    }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
    private void confirmDeletionOfArtifact(final Artifact fromUser) {
       if (persist) {
@@ -202,32 +230,22 @@ public class PurgeUserBlam extends AbstractBlam {
    }
 
    @Override
-   public List<XWidgetData> getXWidgetItems() {
-      XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andWidget(FROM_USER, "XHyperlinkWfdForUserAll").endWidget();
-      wb.andWidget(TO_USER, "XHyperlinkWfdForUserAll").endWidget();
-      wb.andXCheckbox("Persist").endWidget();
-      return wb.getXWidgetDatas();
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(AtsUserGroups.AtsAdmin);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.USER_MANAGEMENT_ADMIN);
    }
 
    @Override
    public String getDescriptionUsage() {
       return "Purge the specified User.  Choose user to purge and user to re-assign existing transactions and relations.  Select Persist to make changes and purge User Artifact.";
-   }
-
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.USER_MANAGEMENT_ADMIN, XNavItemCat.OSEE_ADMIN);
-   }
-
-   @Override
-   public Image getImage() {
-      return ImageManager.getImage(CoreImage.X_RED);
-   }
-
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(CoreImage.X_RED);
    }
 
 }

@@ -70,8 +70,7 @@ public class ImportEndpointTest {
    }
 
    private static void copyResource(String resource, File output) throws IOException {
-      try (
-         InputStream inputStream = OsgiUtil.getResourceAsStream(ImportEndpointTest.class, "support/word/" + resource);
+      try (InputStream inputStream = OsgiUtil.getResourceAsStream(ImportEndpointTest.class, "support/word/" + resource);
          OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(output))) {
          Lib.inputStreamToOutputStream(inputStream, outputStream);
       }

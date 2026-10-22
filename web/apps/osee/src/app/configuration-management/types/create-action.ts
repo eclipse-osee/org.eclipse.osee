@@ -19,14 +19,6 @@ import {
 	targetedVersionSentinel,
 } from '@osee/shared/types/configuration-management';
 
-type _changeType = {
-	id: `${number}`;
-	name: string;
-	idString: string;
-	idIntValue: number;
-	description: string;
-};
-
 export type CreateActionInterface = {
 	createdByUser: user;
 	defaultWorkType: string;
@@ -44,7 +36,8 @@ export type CreateActionInterface = {
 	sprint: string;
 	attrValues: Record<string, string>;
 	createBranchDefault: boolean;
-	changeType: _changeType;
+	/** The change-type name string, e.g. "Improvement", "Bug", "Support". */
+	changeType: string;
 	parentAction: string;
 };
 // only used in action dropdown component
@@ -71,13 +64,7 @@ export class CreateAction implements CreateActionInterface {
 	sprint = '';
 	attrValues: Record<string, string> = {};
 	createBranchDefault = false;
-	changeType: _changeType = {
-		id: '-1',
-		name: '',
-		idString: '-1',
-		idIntValue: -1,
-		description: '',
-	};
+	changeType = '';
 	allowParentAction = true;
 	parentAction = '';
 }

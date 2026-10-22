@@ -18,6 +18,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 
 /**
  * @author Donald G. Dunne
@@ -65,14 +66,14 @@ public class AtsSearchGoalSearchItem extends AbstractWorkItemSearchItem {
    }
 
    @Override
-   protected void addWidgets() {
+   protected void addWidgets(XWidgetBuilderAts wba) {
       if (showWorkItemWidgets()) {
-         getWorkItemTypeWidget().addWidget(14);
+         getWorkItemTypeWidget().addWidget(wba, 14);
       }
-      getTitleWidget().addWidget();
-      getStateTypeWidget().addWidget(6);
-      getUserWidget().addWidget();
-      getUserTypeWidget().addWidget();
+      getTitleWidget().addWidget(wba);
+      getStateTypeWidget().addWidget(wba, 6);
+      getUserWidget().addWidget(wba);
+      getUserTypeWidget().addWidget(wba);
    }
 
 }

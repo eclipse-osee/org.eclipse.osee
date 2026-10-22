@@ -135,6 +135,7 @@ public class XViewer extends TreeViewer {
    public XViewer(Tree tree, IXViewerFactory xViewerFactory, boolean filterRealTime, boolean searchRealTime) {
       super(tree);
       this.xViewerFactory = xViewerFactory;
+      this.xViewerFactory.initialize();
       this.menuManager = new MenuManager();
       this.menuManager.setRemoveAllWhenShown(true);
       this.menuManager.createContextMenu(tree.getParent());
@@ -250,6 +251,7 @@ public class XViewer extends TreeViewer {
          searchComp = new Composite(parent, SWT.NONE);
          searchComp.setLayout(XViewerLib.getZeroMarginLayout(11, false));
          searchComp.setLayoutData(new GridData(SWT.FILL, SWT.None, true, false));
+         searchComp.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
 
          if (filterDataUI != null) {
             filterDataUI.createWidgets(searchComp);
@@ -271,6 +273,7 @@ public class XViewer extends TreeViewer {
             filterText = new StyledText(searchComp, SWT.NONE);
             filterText.setText(" "); //$NON-NLS-1$
             filterText.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+            filterText.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
             filterText.addListener(SWT.MouseUp, getCustomizationMouseListener());
          }
       }
@@ -586,6 +589,18 @@ public class XViewer extends TreeViewer {
       return toReturn;
    }
 
+   @Override
+   public void expandAll() {
+      super.expandAll();
+      updateStatusLabel();
+   }
+
+   @Override
+   public void collapseAll() {
+      super.collapseAll();
+      updateStatusLabel();
+   }
+
    private void getVisibleItems(List<TreeItem> toReturn, TreeItem items[]) {
       for (TreeItem item : items) {
          toReturn.add(item);
@@ -683,7 +698,7 @@ public class XViewer extends TreeViewer {
       filterText.setText(str);
       filterText.getParent().getParent().layout();
       filterText.setToolTipText(str);
-      filterText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+      filterText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
       filterText.setWordWrap(false);
       filterText.setFont(getBoldFont());
 

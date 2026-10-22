@@ -13,21 +13,22 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.Collection;
-import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkBuildImpactStateWidget;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.xx.XXBuildImpactStateWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class BuildImpactStateSearchWidget extends AbstractSearchWidget<XHyperlinkBuildImpactStateWidget, String> implements TeamDefListener {
+public class BuildImpactStateSearchWidget extends AbstractSearchWidget<XXBuildImpactStateWidget, String> {
 
+   private static final String LABEL = "Build Impact State";
    public static SearchWidget BuildImpactStateWidget =
-      new SearchWidget(1432339, "Build Impact State", "XHyperlinkBuildImpactStateWidget");
+      new SearchWidget(1432339, LABEL, WidgetIdAts.XXBuildImpactStateWidget);
 
    public BuildImpactStateSearchWidget(SearchWidget srchWidget, WorldEditorParameterSearchItem searchItem) {
       super(srchWidget, searchItem);
@@ -38,26 +39,18 @@ public class BuildImpactStateSearchWidget extends AbstractSearchWidget<XHyperlin
    }
 
    @Override
-   public void set(AtsSearchData data) {
-      XHyperlinkBuildImpactStateWidget widget = getWidget();
-      if (widget != null) {
-         widget.set(data.getBuildImpactState());
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      if (xWidget.getLabel().startsWith(LABEL)) {
+         xWidget.set(XOption.CLEAR);
       }
-   }
-
-   public String getCurrentValue() {
-      String value = getWidget().getCurrentValue();
-      if (Strings.isInvalid(value)) {
-         value = Widgets.NOT_SET;
-      }
-      return value;
    }
 
    @Override
-   public void updateAisOrTeamDefs() {
-      Collection<TeamDefinition> teamDefs = getTeamDefs();
-      if (teamDefs.size() == 1) {
-         getWidget().setTeamDef(teamDefs.iterator().next());
+   public void set(AtsSearchData data) {
+      XXBuildImpactStateWidget widget = getWidget();
+      if (widget != null) {
+         widget.setSelected(data.getBuildImpactState());
       }
    }
 
