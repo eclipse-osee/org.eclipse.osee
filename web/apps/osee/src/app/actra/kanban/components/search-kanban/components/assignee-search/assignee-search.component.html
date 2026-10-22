@@ -1,0 +1,22 @@
+<mat-form-field appearance="outline">
+	<mat-label>Search assignees</mat-label>
+	<input
+		matInput
+		type="search"
+		placeholder="Enter an assignee name"
+		[ngModel]="searchTerm()"
+		(ngModelChange)="updateSearch($event)"
+		[matAutocomplete]="assigneeOptions" />
+	<mat-autocomplete #assigneeOptions="matAutocomplete" [displayWith]="displayAssignee">
+		@for (assignee of filteredAssignees(); track assignee.id) {
+			<mat-option [value]="assignee">{{ assignee.name }}</mat-option>
+		} @empty {
+			<mat-option disabled>No matching assignees</mat-option>
+		}
+	</mat-autocomplete>
+</mat-form-field>
+@if (loading()) {
+	<p role="status">Loading assignees...</p>
+} @else if (error()) {
+	<p role="alert">{{ error() }}</p>
+}
