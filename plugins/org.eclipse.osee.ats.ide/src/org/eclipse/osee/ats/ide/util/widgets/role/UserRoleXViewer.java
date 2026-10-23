@@ -50,10 +50,10 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class UserRoleXViewer extends XViewer {
 
-   private final XUserRoleViewer xUserRoleViewer;
+   private final XUserRoleViewerWidget xUserRoleViewer;
    private final WorkDefinition workDefinition;
 
-   public UserRoleXViewer(Composite parent, int style, XUserRoleViewer xUserRoleViewer, WorkDefinition workDefinition) {
+   public UserRoleXViewer(Composite parent, int style, XUserRoleViewerWidget xUserRoleViewer, WorkDefinition workDefinition) {
       super(parent, style, new UserRoleXViewerFactory());
       this.xUserRoleViewer = xUserRoleViewer;
       this.workDefinition = workDefinition;
@@ -275,7 +275,7 @@ public class UserRoleXViewer extends XViewer {
    /**
     * @return the xUserRoleViewer
     */
-   public XUserRoleViewer getXUserRoleViewer() {
+   public XUserRoleViewerWidget getXUserRoleViewer() {
       return xUserRoleViewer;
    }
 

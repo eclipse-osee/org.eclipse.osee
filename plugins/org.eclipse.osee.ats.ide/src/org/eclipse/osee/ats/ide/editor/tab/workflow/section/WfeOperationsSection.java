@@ -49,7 +49,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXButtonViaActionWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -154,24 +154,24 @@ public class WfeOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       if (editor.getWorkItem().isTeamWorkflow()) {
-         new XButtonViaAction(new EditActionableItemsAction((TeamWorkFlowArtifact) editor.getWorkItem())).createWidgets(
-            sectionBody, 2);
-         new XButtonViaAction(new DuplicateWorkflowAction(
+         new XXButtonViaActionWidget(
+            new EditActionableItemsAction((TeamWorkFlowArtifact) editor.getWorkItem())).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new DuplicateWorkflowAction(
             Collections.singleton((TeamWorkFlowArtifact) editor.getWorkItem()))).createWidgets(sectionBody, 2);
-         new XButtonViaAction(
+         new XXButtonViaActionWidget(
             new ModifyActionableItemAction((TeamWorkFlowArtifact) editor.getWorkItem())).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new AccessControlAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new AccessControlAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
       }
       if (editor.getWorkItem().isTask()) {
-         new XButtonViaAction(
+         new XXButtonViaActionWidget(
             new CreateActionFromTaskAction(Collections.singleton((TaskArtifact) editor.getWorkItem()))).createWidgets(
                sectionBody, 2);
-         new XButtonViaAction(
+         new XXButtonViaActionWidget(
             new RestoreTasksFromActions(Collections.singleton((TaskArtifact) editor.getWorkItem()))).createWidgets(
                sectionBody, 2);
       }
       if (editor.getWorkItem().isTeamWorkflow()) {
-         new XButtonViaAction(new CreateTasksFromActions(
+         new XXButtonViaActionWidget(new CreateTasksFromActions(
             Collections.singleton((TeamWorkFlowArtifact) editor.getWorkItem()))).createWidgets(sectionBody, 2);
       }
       section.setClient(sectionBody);
@@ -189,10 +189,10 @@ public class WfeOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       if (editor.getWorkItem().isTeamWorkflow()) {
-         new XButtonViaAction(new DirtyReportAction(editor)).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new WfeReloadAction(editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new MoveTeamWorkflowsAction()).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new CreateDecisionReviewAction(editor)).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new DirtyReportAction(editor)).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new WfeReloadAction(editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new MoveTeamWorkflowsAction()).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new CreateDecisionReviewAction(editor)).createWidgets(sectionBody, 2);
       }
 
       for (IWfeOperationsSection operation : operationsSectionProviders) {
@@ -221,15 +221,16 @@ public class WfeOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor, false)).createWidgets(sectionBody, 2);
+      new XXButtonViaActionWidget(new DeletePurgeAtsArtifactsAction(editor, false)).createWidgets(sectionBody, 2);
 
       if (isAdmin) {
-         new XButtonViaAction(new RefreshDirtyAction(editor)).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new RefreshDirtyAction(editor)).createWidgets(sectionBody, 2);
          if (ShowBranchChangeDataAction.isApplicable(editor.getWorkItem())) {
-            new XButtonViaAction(new ShowBranchChangeDataAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+            new XXButtonViaActionWidget(new ShowBranchChangeDataAction(editor.getWorkItem())).createWidgets(sectionBody,
+               2);
          }
-         new XButtonViaAction(new MoveWorkflowWorkingBranchToWorkflowAction(editor, AtsApiService.get())).createWidgets(
-            sectionBody, 2);
+         new XXButtonViaActionWidget(
+            new MoveWorkflowWorkingBranchToWorkflowAction(editor, AtsApiService.get())).createWidgets(sectionBody, 2);
       }
 
       for (IWfeOperationsSection operation : operationsSectionProviders) {
@@ -251,16 +252,16 @@ public class WfeOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       try {
-         new XButtonViaAction(new OpenInAtsWorldAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new OpenInSkyWalkerAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new ResourceHistoryAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new OpenInAtsWorldAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new OpenInSkyWalkerAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new ResourceHistoryAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
          if (editor.getWorkItem().getParentAWA() != null) {
-            new XButtonViaAction(new OpenParentAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
+            new XXButtonViaActionWidget(new OpenParentAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
          }
          if (AtsApiService.get().getUserService().isAtsAdmin()) {
-            new XButtonViaAction(new OpenInArtifactEditorAction(editor)).createWidgets(sectionBody, 2);
+            new XXButtonViaActionWidget(new OpenInArtifactEditorAction(editor)).createWidgets(sectionBody, 2);
          }
-         new XButtonViaAction(new ShowWorkDefinitionAction()).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new ShowWorkDefinitionAction()).createWidgets(sectionBody, 2);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -280,9 +281,9 @@ public class WfeOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       try {
-         new XButtonViaAction(new SubscribedAction(editor)).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new FavoriteAction(editor)).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new EmailActionAction(editor)).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new SubscribedAction(editor)).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new FavoriteAction(editor)).createWidgets(sectionBody, 2);
+         new XXButtonViaActionWidget(new EmailActionAction(editor)).createWidgets(sectionBody, 2);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

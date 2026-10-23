@@ -13,22 +13,34 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.xx.XXStateNameWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class StateNameSearchWidget extends AbstractXHyperlinkWfdSearchWidget<String> {
+public class StateNameSearchWidget extends AbstractSearchWidget<XXStateNameWidget, String> {
 
-   public static SearchWidget StateNameWidget = new SearchWidget(238234789, "State Name", "XHyperlinkWfdForObject");
+   private static final String LABEL = "State Name";
+   public static SearchWidget StateNameWidget = new SearchWidget(238234789, LABEL, WidgetIdAts.XXStateNameWidget);
 
    public StateNameSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(StateNameWidget, searchItem);
+   }
+
+   @Override
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      if (xWidget.getLabel().equals(LABEL)) {
+         xWidget.set(XOption.CLEAR);
+         xWidget.setUseToStringSorter(true);
+      }
    }
 
    @Override
@@ -37,22 +49,6 @@ public class StateNameSearchWidget extends AbstractXHyperlinkWfdSearchWidget<Str
          List<String> stateNames = data.getStates();
          getWidget().setSelected(stateNames);
       }
-   }
-
-   @Override
-   public void widgetCreating(XWidget xWidget) {
-      super.widgetCreating(xWidget);
-      xWidget.setUseToStringSorter(true);
-   }
-
-   @Override
-   public Collection<String> getSelectable() {
-      return AtsApiService.get().getWorkDefinitionService().getStateNames();
-   }
-
-   @Override
-   boolean isMultiSelect() {
-      return true;
    }
 
 }

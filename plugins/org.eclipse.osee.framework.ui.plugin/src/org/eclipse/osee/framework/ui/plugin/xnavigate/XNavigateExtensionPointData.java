@@ -39,7 +39,7 @@ public class XNavigateExtensionPointData {
    }
 
    public List<XNavigateItem> getNavigateItems() {
-      return navigateItem.getNavigateItems(new ArrayList<XNavigateItem>());
+      return navigateItem.getNavigateItemsForCurrentUser(new ArrayList<XNavigateItem>());
    }
 
    public String getCategory() {

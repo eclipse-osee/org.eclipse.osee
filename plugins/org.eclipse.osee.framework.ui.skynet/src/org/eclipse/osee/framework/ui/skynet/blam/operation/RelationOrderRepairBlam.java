@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,39 +39,51 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 
+@Component(service = AbstractBlam.class, immediate = true)
 public class RelationOrderRepairBlam extends AbstractBlam {
+
+   private static final String BLAM_NAME = "Relation Order Repair";
+   static final String ARTIFACTS = "Artifacts";
+   static final String RECURSE_OVER_HIERARCHY = "Recurse Over Hierarchy";
+
    private SkynetTransaction transaction;
    private boolean recurse;
 
-   @Override
-   public String getName() {
-      return "Relation Order Repair";
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public RelationOrderRepairBlam() {
+      super(BLAM_NAME, CoreImage.GEAR);
    }
 
-   @Override
-   public String getXWidgetsXml() {
-      StringBuilder widgets = new StringBuilder();
-      widgets.append("<xWidgets>");
-      widgets.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts\" />)");
-      widgets.append(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Recurse Over Hierarchy\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      widgets.append("</xWidgets>");
-      return widgets.toString();
-   }
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
 
    @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andListDropWidget(ARTIFACTS);
+      wb.andCheckBoxWidget(RECURSE_OVER_HIERARCHY);
+      return wb.getXWidgetDatas();
    }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      List<Artifact> inputArtifacts = variableMap.getArtifacts("Artifacts");
+      List<Artifact> inputArtifacts = variableMap.getArtifacts(ARTIFACTS);
       if (inputArtifacts.isEmpty()) {
          return;
       }
-      recurse = variableMap.getBoolean("Recurse Over Hierarchy");
+      recurse = variableMap.getBoolean(RECURSE_OVER_HIERARCHY);
       BranchId branch = getBranch(inputArtifacts);
       transaction = TransactionManager.createTransaction(branch, getName());
       for (Artifact art : inputArtifacts) {
@@ -77,6 +91,10 @@ public class RelationOrderRepairBlam extends AbstractBlam {
       }
       transaction.execute();
    }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
    private BranchId getBranch(List<Artifact> arts) {
       Artifact firstArt = arts.get(0);
@@ -118,6 +136,25 @@ public class RelationOrderRepairBlam extends AbstractBlam {
             resetRelationOrder(child);
          }
       }
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(CoreUserGroups.OseeAdmin);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Repairs relation order data for the dropped artifacts. Removes stale relation order entries that reference relations no longer present and optionally recurses over the hierarchy.";
    }
 
 }

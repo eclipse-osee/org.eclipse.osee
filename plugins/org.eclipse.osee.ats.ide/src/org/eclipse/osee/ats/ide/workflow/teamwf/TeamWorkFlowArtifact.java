@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -81,21 +80,6 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       } catch (Exception ex) {
          return "Error: " + ex.getLocalizedMessage();
       }
-   }
-
-   @Override
-   public String getEditorTitle() {
-      try {
-         if (AtsApiService.get().getVersionService().isTeamUsesVersions(getTeamDefinition())) {
-            IAtsVersion version = AtsApiService.get().getVersionService().getTargetedVersion(this);
-            return String.format("%s - %s: [%s] - %s", getAtsId(), getTeamName(),
-               version != null ? version : "Un-Targeted", getName());
-
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return super.getEditorTitle();
    }
 
    public void setTeamDefinition(IAtsTeamDefinition teamDef) {

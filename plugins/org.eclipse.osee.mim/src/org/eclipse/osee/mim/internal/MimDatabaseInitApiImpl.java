@@ -69,7 +69,7 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
       NewActionData data = new NewActionData();
       data.setAiIds(Arrays.asList(DemoArtifactToken.SAW_PL_MIM_AI.getIdString()));
       data.setAsUser(DemoUsers.Joe_Smith.getArtifactId());
-      data.setChangeType(ChangeTypes.Improvement);
+      data.setChangeType(ChangeTypes.Improvement.name());
       data.setCreatedByUserArtId(DemoUsers.Joe_Smith.getIdString());
       data.setDescription("MIM demo data");
       data.setOriginator(ArtifactId.valueOf(DemoUsers.Joe_Smith.getId()));

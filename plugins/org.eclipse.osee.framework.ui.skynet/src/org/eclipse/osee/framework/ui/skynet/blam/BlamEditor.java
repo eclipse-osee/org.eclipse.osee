@@ -21,7 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPersistableElement;
@@ -88,17 +90,21 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       return overviewPage.getInput();
    }
 
-   public void executeBlam() {
-      executeBlam(false);
+   public XResultData executeBlam() {
+      return executeBlam(false);
    }
 
-   public void executeBlam(boolean inDebug) {
+   public XResultData executeBlam(boolean inDebug) {
       OperationLogger reporter = overviewPage.getReporter();
       AbstractBlam blamOperation = getEditorInput().getBlamOperation();
       blamOperation.setInDebug(inDebug);
       BlamEditorExecutionAdapter jobChangeListener = new BlamEditorExecutionAdapter(blamOperation);
       VariableMap blamVariableMap = getBlamVariableMap();
       blamOperation.execute(reporter, blamVariableMap, jobChangeListener);
+      if (overviewPage.getOutputSection() == null) {
+         return XResultData.OK_STATUS;
+      }
+      return overviewPage.getOutputSection().getResults();
    }
 
    public static void edit(final BlamEditorInput blamEditorInput) {
@@ -219,8 +225,12 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
-               editors.add((BlamEditor) editor.getEditor(false));
+            List<IEditorReference> blamEditors = AWorkbench.getEditors(EDITOR_ID);
+            for (IEditorReference editor : blamEditors) {
+               IEditorPart editorPart = editor.getEditor(false);
+               if (editorPart instanceof BlamEditor) {
+                  editors.add((BlamEditor) editorPart);
+               }
             }
          }
       });
@@ -242,7 +252,34 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       return overviewPage.getBlamWidgets();
    }
 
-   public XWidget getXWidget(XWidgetData widData) {
-      return overviewPage.geXWidget(widData);
+   public XWidget getXWidget(WidgetId widgetId) {
+      return overviewPage.geXWidget(widgetId);
+   }
+
+   public BlamOverviewPage getOverviewPage() {
+      return overviewPage;
+   }
+
+   public XWidget getXWidget(String widgetLabbel) {
+      for (XWidget widget : getBlamXWidgets()) {
+         if (widget.getLabel().equals(widgetLabbel)) {
+            return widget;
+         }
+      }
+      return null;
+   }
+
+   public XResultData getOutputResults() {
+      return getOverviewPage().getOutputSection().getOutput().getResults();
+   }
+
+   public XResultData executeBlam(XResultData rd) {
+      getOverviewPage().getOutputSection().setRd(rd);
+      return executeBlam();
+   }
+
+   @Override
+   public String toString() {
+      return getEditorInput().getName();
    }
 }

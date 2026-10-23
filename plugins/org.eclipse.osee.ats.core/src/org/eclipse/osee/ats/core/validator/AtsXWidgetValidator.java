@@ -17,17 +17,19 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
+ * Provider to validate XWidget/IAttributeWidget entry against workitem store model without use of XWidget UI
+ *
  * @author Donald G. Dunne
  */
 public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
@@ -37,11 +39,11 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    public boolean isRequiredForTransition(WidgetDef widgetDef) {
-      return widgetDef.getOptions().contains(WidgetOption.RFT);
+      return widgetDef.is(XOption.REQUIRED);
    }
 
    public boolean isRequiredForCompletion(WidgetDef widgetDef) {
-      return widgetDef.getOptions().contains(WidgetOption.RFC);
+      return widgetDef.is(XOption.RFC);
    }
 
    public boolean isEmptyValue(IValueProvider provider) {
@@ -70,7 +72,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
 
       }
       for (Date date : valueProvider.getDateValues()) {
-         if (widgetDef.is(WidgetOption.FUTURE_DATE_REQUIRED)) {
+         if (widgetDef.is(XOption.FUTURE_DATE_REQ)) {
             if (date.before(new Date())) {
                return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be in future",
                   valueProvider.getName(), DateUtil.get(date, DateUtil.MMDDYYHHMM));

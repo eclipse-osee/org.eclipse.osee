@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.ats.api.workdef;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Donald G. Dunne
  */
@@ -20,6 +23,9 @@ public enum StateType {
    Working,
    Completed,
    Cancelled;
+
+   public static List<StateType> StateTypes =
+      Arrays.asList(StateType.Working, StateType.Completed, StateType.Cancelled);
 
    public boolean isCompleted() {
       return this == Completed;

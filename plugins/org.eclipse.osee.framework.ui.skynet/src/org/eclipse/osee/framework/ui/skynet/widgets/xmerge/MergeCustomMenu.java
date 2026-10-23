@@ -205,8 +205,8 @@ public class MergeCustomMenu extends XViewerCustomMenu {
 
    private String addDestRevealMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem destReveal = Commands.getLocalCommandContribution(getSite(), "destRevealArtifactExplorer",
-         "Reveal Dest Artifact in Artifact Explorer", null, null,
-         ImageManager.getImageDescriptor(CoreImage.MAGNIFY), null, null, "dest_Reveal");
+         "Reveal Dest Artifact in Artifact Explorer", null, null, ImageManager.getImageDescriptor(CoreImage.MAGNIFY),
+         null, null, "dest_Reveal");
       setCommandHandler(destReveal, handler);
       menuManager.add(destReveal);
       return destReveal.getId();
@@ -258,15 +258,15 @@ public class MergeCustomMenu extends XViewerCustomMenu {
    }
 
    private String addGenerateThreeWayMergeMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem mergeArtifactCommand = Commands.getLocalCommandContribution(getSite(),
-         "mergeArtifactCommand", "Generate Three Way Merge", null, null,
-         ImageManager.getImageDescriptor(CoreImage.MERGE_MERGED), "E", null, "Merge_Source_Destination_Artifact");
+      CommandContributionItem mergeArtifactCommand =
+         Commands.getLocalCommandContribution(getSite(), "mergeArtifactCommand", "Generate Three Way Merge", null, null,
+            ImageManager.getImageDescriptor(CoreImage.MERGE_MERGED), "E", null, "Merge_Source_Destination_Artifact");
       setCommandHandler(mergeArtifactCommand, handler);
       menuManager.add(mergeArtifactCommand);
       return mergeArtifactCommand.getId();
    }
 
-   private MergeXWidget getMergeXWiget() {
+   private XMergeWidget getMergeXWiget() {
       return ((MergeXViewer) xViewer).getMergeXWidget();
    }
 
@@ -274,7 +274,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       MenuManager subMenuManager = new MenuManager("Differences", "diffTransaction");
       menuManager.add(subMenuManager);
 
-      MergeXWidget mergeXWidget = getMergeXWiget();
+      XMergeWidget mergeXWidget = getMergeXWiget();
 
       createDiffItems(subMenuManager, handlerService, new DiffHandler(menuManager, 1, mergeXWidget),
          "Show Source Branch Differences");

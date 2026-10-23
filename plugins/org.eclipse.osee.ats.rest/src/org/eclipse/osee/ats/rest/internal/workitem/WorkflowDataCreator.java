@@ -16,10 +16,10 @@ package org.eclipse.osee.ats.rest.internal.workitem;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.BlockedReason;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.HoldReason;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Title;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.EDITABLE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.NOT_EDITABLE;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
+import static org.eclipse.osee.framework.core.widget.XOption.FILL_VERT;
+import static org.eclipse.osee.framework.core.widget.XOption.READ;
+import static org.eclipse.osee.framework.core.widget.XOption.REQUIRED;
+import static org.eclipse.osee.framework.core.widget.XOption.WRITE;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,14 +28,12 @@ import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
-import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
@@ -59,12 +57,14 @@ import org.eclipse.osee.framework.core.data.AttributePojoBaseId;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.Multiplicity;
 import org.eclipse.osee.framework.core.data.Multiplicity.MultiplicityToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -73,6 +73,11 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
+ * This class should be for populating the WorkflowData which is used for web and other external apps that need Workflow
+ * and WorkflowDefinition information. It should NOT be used for any ide rendering and should not be changed without
+ * testing web/external apps. It should only be used by a single REST endpoint at
+ * ats.rest.internal.workitem.AtsActionEndpointImpl.getWorkflowData(ArtifactId).
+ *
  * @author Donald G. Dunne
  */
 public class WorkflowDataCreator {
@@ -292,7 +297,7 @@ public class WorkflowDataCreator {
       hComp.setColumns(1);
 
       // Title
-      addWidgetDef(hComp, "Title", "XTextDam", "String", Title, workItem.getName(), RFT, EDITABLE);
+      addWidgetDef(hComp, "Title", "XTextDam", "String", Title, workItem.getName(), REQUIRED, WRITE);
 
       // State, Created, Originator
       addStateComposite(hComp);
@@ -306,13 +311,12 @@ public class WorkflowDataCreator {
       // Blocked, Hold
       addBlockedHoldComposite(hComp);
 
-      addWidgetDef(hComp, "Work Definition", "XLabel", "String", null, workItem.getWorkDefinition().getName(),
-         NOT_EDITABLE);
+      addWidgetDef(hComp, "Work Definition", "XLabel", "String", null, workItem.getWorkDefinition().getName(), READ);
 
    }
 
    private WfdWidgetDef addWidgetDef(WfdWidgetComposite wComp, String name, String xWidget, String dataType,
-      AttributeTypeString attrType, String displayValue, WidgetOption... widgetOpts) {
+      AttributeTypeString attrType, String displayValue, XOption... options) {
       WfdWidgetDef wWidget = new WfdWidgetDef();
       wWidget.setName(name);
       wWidget.setWidgetName(xWidget);
@@ -323,12 +327,12 @@ public class WorkflowDataCreator {
          wWidget.setAttributeType(new WfeAttributeTypeToken(attrType));
          setMultiplicity(wWidget, attrType);
       }
-      for (WidgetOption opt : widgetOpts) {
+      for (XOption opt : options) {
          wWidget.getWidgetOptions().add(opt);
       }
-      wWidget.setEditable(wWidget.getWidgetOptions().contains(EDITABLE));
+      wWidget.setEditable(wWidget.getWidgetOptions().contains(WRITE));
       wWidget.setMultiLine(wWidget.getWidgetOptions().contains(FILL_VERT));
-      wWidget.setRequired(wWidget.getWidgetOptions().contains(RFT));
+      wWidget.setRequired(wWidget.getWidgetOptions().contains(REQUIRED));
       wComp.getWidgets().add(wWidget);
       return wWidget;
    }
@@ -352,10 +356,10 @@ public class WorkflowDataCreator {
 
    private void addStateComposite(WfdWidgetComposite hComp) {
       WfdWidgetComposite stateComp = new WfdWidgetComposite("State Composite");
-      addWidgetDef(stateComp, "Current State", "XLabel", "String", null, workItem.getCurrentStateName(), NOT_EDITABLE);
+      addWidgetDef(stateComp, "Current State", "XLabel", "String", null, workItem.getCurrentStateName(), READ);
       addWidgetDef(stateComp, "Created", "XLabel", "String", null, DateUtil.getMMDDYYHHMM(workItem.getCreatedDate()),
-         NOT_EDITABLE);
-      addWidgetDef(stateComp, "Originator", "XLabel", "String", null, workItem.getCreatedBy().getName(), NOT_EDITABLE);
+         READ);
+      addWidgetDef(stateComp, "Originator", "XLabel", "String", null, workItem.getCreatedBy().getName(), READ);
       stateComp.setColumns(6);
       hComp.getWidgets().add(stateComp);
    }
@@ -366,22 +370,21 @@ public class WorkflowDataCreator {
       if (workItem.isTeamWorkflow()) {
          count++;
          addWidgetDef(teamComp, "Team", "XLabel", "String", null,
-            workItem.getParentTeamWorkflow().getTeamDefinition().getName(), NOT_EDITABLE);
+            workItem.getParentTeamWorkflow().getTeamDefinition().getName(), READ);
       } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
          count++;
          addWidgetDef(teamComp, "Parent Id", "XLabel", "String", null, workItem.getParentTeamWorkflow().getAtsId(),
-            NOT_EDITABLE);
+            READ);
       }
-      addWidgetDef(teamComp, "ATS Id", "XLabel", "String", null, workItem.getAtsId(), NOT_EDITABLE);
+      addWidgetDef(teamComp, "ATS Id", "XLabel", "String", null, workItem.getAtsId(), READ);
       count++;
       addWidgetDef(teamComp, "PCR Id(s)", "XLabel", "String", null, Collections.toString(",", workItem.getPcrIds()),
-         NOT_EDITABLE);
+         READ);
       count++;
       IAtsAction action = workItem.getParentAction();
       if (action != null) {
          count++;
-         addWidgetDef(teamComp, "Action Id", "XLabel", "String", null, workItem.getParentAction().getAtsId(),
-            NOT_EDITABLE);
+         addWidgetDef(teamComp, "Action Id", "XLabel", "String", null, workItem.getParentAction().getAtsId(), READ);
       }
       teamComp.setColumns(count * 2);
       hComp.getWidgets().add(teamComp);
@@ -403,7 +406,7 @@ public class WorkflowDataCreator {
       }
       if (workItem.isInWork()) {
          addWidgetDef(versionComp, "Assignee(s)", "XAssigneesHyperlink", "String", null,
-            DateUtil.getMMDDYYHHMM(workItem.getCreatedDate()), NOT_EDITABLE);
+            DateUtil.getMMDDYYHHMM(workItem.getCreatedDate()), READ);
       }
       versionComp.setColumns(count);
       hComp.getWidgets().add(versionComp);
@@ -412,9 +415,9 @@ public class WorkflowDataCreator {
    private void addBlockedHoldComposite(WfdWidgetComposite hComp) {
       WfdWidgetComposite blockedComp = new WfdWidgetComposite("Blocked/Hold Composite");
       addWidgetDef(blockedComp, "Blocked", "XTextDam", "String", BlockedReason,
-         atsApi.getAttributeResolver().getSoleAttributeValue(workItem, BlockedReason, ""), EDITABLE);
+         atsApi.getAttributeResolver().getSoleAttributeValue(workItem, BlockedReason, ""), WRITE);
       addWidgetDef(blockedComp, "Hold", "XTextDam", "String", HoldReason,
-         atsApi.getAttributeResolver().getSoleAttributeValue(workItem, HoldReason, ""), EDITABLE);
+         atsApi.getAttributeResolver().getSoleAttributeValue(workItem, HoldReason, ""), WRITE);
       hComp.getWidgets().add(blockedComp);
    }
 
@@ -453,8 +456,7 @@ public class WorkflowDataCreator {
    private WfdWidgetDef createWfdWidget(WidgetDef widgetDef) {
       WfdWidgetDef wWidget = new WfdWidgetDef();
       wWidget.setName(widgetDef.getName());
-      wWidget.setWidgetName(widgetDef.getXWidgetName());
-      wWidget.setWidgetHints(widgetDef.getWidgetHints());
+      wWidget.setWidgetName(widgetDef.getWidgetId().getName());
       AttributeTypeToken attrType = widgetDef.getAttributeType();
       boolean attrTypeEditable = true;
       if (attrType.isValid()) {
@@ -467,14 +469,14 @@ public class WorkflowDataCreator {
          }
          // Get related attrs and add to widget for convenience
          addAttrValues(wWidget, attrType);
-         if (attrType.getDisplayHints().contains(AtsDisplayHint.Read)) {
+         if (attrType.getDisplayHints().contains(DisplayHint.Read)) {
             attrTypeEditable = false;
          }
       }
-      wWidget.setWidgetOptions(widgetDef.getOptions().getXOptions());
-      wWidget.setRequired(widgetDef.getOptions().contains(WidgetOption.RFT));
-      wWidget.setMultiLine(widgetDef.getOptions().contains(WidgetOption.FILL_VERT));
-      boolean editable = widgetDef.getOptions().contains(WidgetOption.EDITABLE) || attrTypeEditable;
+      wWidget.setWidgetOptions(widgetDef.getOptions());
+      wWidget.setRequired(widgetDef.is(XOption.REQUIRED));
+      wWidget.setMultiLine(widgetDef.is(XOption.FILL_VERT));
+      boolean editable = widgetDef.is(XOption.WRITE) || attrTypeEditable;
       wWidget.setEditable(editable);
 
       return wWidget;

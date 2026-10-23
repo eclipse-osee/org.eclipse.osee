@@ -363,6 +363,10 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return false;
    }
 
+   public final boolean hasAttribute(AttributeTypeToken attrType) {
+      return !getAttributes(attrType).isEmpty();
+   }
+
    /**
     * Checks if the specified attribute type ID exists in the artifact and has non-null values set.
     *
@@ -1020,17 +1024,17 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * </br>
     * NOTE: You MUST add artifact to transaction AFTER calling this method for new artifacts.
     */
-   public final void setAttributeValues(AttributeTypeId attributeType, Collection<String> newValues) {
+   public final void setAttributeValues(AttributeTypeId attributeType, Collection<? extends Object> newValues) {
       Conditions.checkValid(attributeType);
       ensureAttributesLoaded();
       // ensure new values are unique
-      HashSet<String> uniqueNewValues = new HashSet<>(newValues);
+      HashSet<Object> uniqueNewValues = new HashSet<>(newValues);
 
       List<Attribute<Object>> remainingAttributes = getAttributes(attributeType);
-      List<String> remainingNewValues = new ArrayList<>(uniqueNewValues.size());
+      List<Object> remainingNewValues = new ArrayList<>(uniqueNewValues.size());
 
       // all existing attributes matching a new value will be left untouched
-      for (String newValue : uniqueNewValues) {
+      for (Object newValue : uniqueNewValues) {
          boolean found = false;
          for (Attribute<Object> attribute : remainingAttributes) {
             if (attribute.getValue().toString().equals(newValue)) {
@@ -1044,12 +1048,12 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
          }
       }
 
-      for (String newValue : remainingNewValues) {
+      for (Object newValue : remainingNewValues) {
          if (remainingAttributes.isEmpty()) {
             setOrAddAttribute(attributeType, newValue);
          } else {
             int index = remainingAttributes.size() - 1;
-            remainingAttributes.get(index).setFromString(newValue);
+            remainingAttributes.get(index).setValue(newValue);
             remainingAttributes.remove(index);
          }
       }

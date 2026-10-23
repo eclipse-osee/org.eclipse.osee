@@ -19,12 +19,12 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.core.util.StringValueProvider;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
 
@@ -38,8 +38,8 @@ public class AtsXWidgetValidatorTest {
    private static AtsXWidgetValidator validator = new AtsXWidgetValidator() {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider,
-         WidgetDef widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, WidgetDef widgetDef,
+         StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
          return null;
       }
    };
@@ -60,7 +60,7 @@ public class AtsXWidgetValidatorTest {
       WidgetDef widgetDef = new WidgetDef("test widget");
       Assert.assertFalse(validator.isRequiredForTransition(widgetDef));
 
-      widgetDef.getOptions().add(WidgetOption.RFT);
+      widgetDef.set(XOption.REQUIRED);
       Assert.assertTrue(validator.isRequiredForTransition(widgetDef));
    }
 
@@ -69,7 +69,7 @@ public class AtsXWidgetValidatorTest {
       WidgetDef widgetDef = new WidgetDef("test widget");
       Assert.assertFalse(validator.isRequiredForCompletion(widgetDef));
 
-      widgetDef.getOptions().add(WidgetOption.RFC);
+      widgetDef.set(XOption.RFC);
       Assert.assertTrue(validator.isRequiredForCompletion(widgetDef));
    }
 
@@ -83,7 +83,7 @@ public class AtsXWidgetValidatorTest {
    @org.junit.Test
    public void testValidateWidgetIsRequired() {
       WidgetDef widgetDef = new WidgetDef("test");
-      widgetDef.getOptions().add(WidgetOption.RFT);
+      widgetDef.set(XOption.REQUIRED);
 
       StateDefinition fromStateDef = new StateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
@@ -106,8 +106,8 @@ public class AtsXWidgetValidatorTest {
       Assert.assertTrue(Strings.isValid(result.getDetails()));
 
       // change widget to required_for_completed, turn off RFT
-      widgetDef.getOptions().add(WidgetOption.NOT_RFT);
-      widgetDef.getOptions().add(WidgetOption.RFC);
+      widgetDef.set(XOption.NO_REQUIRED);
+      widgetDef.set(XOption.RFC);
 
       toStateDef.setName("working state");
       toStateDef.setStateType(StateType.Working);

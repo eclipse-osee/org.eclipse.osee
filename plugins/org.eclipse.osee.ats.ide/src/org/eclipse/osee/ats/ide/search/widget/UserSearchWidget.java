@@ -13,25 +13,27 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXAssigneesWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class UserSearchWidget extends AbstractXHyperlinkWfdSearchWidget<AtsUser> {
+public class UserSearchWidget extends AbstractSearchWidget<XXAssigneesWidget, UserToken> {
 
-   public static SearchWidget UserWidget = new SearchWidget(2383478, "User", "XHyperlinkWfdForObject");
+   private static final String LABEL = "User";
+   public static SearchWidget UserSearchWidget = new SearchWidget(2383478, LABEL, WidgetIdAts.XXAssigneesWidget);
 
    public UserSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(UserWidget, searchItem);
+      super(UserSearchWidget, searchItem);
    }
 
    @Override
@@ -39,8 +41,10 @@ public class UserSearchWidget extends AbstractXHyperlinkWfdSearchWidget<AtsUser>
       if (getWidget() != null) {
          String userId = data.getUserId();
          if (Strings.isValid(userId)) {
-            AtsUser user = AtsApiService.get().getUserService().getUserByUserId(userId);
+            UserToken user = AtsApiService.get().getUserService().getUserTokenByUserId(userId);
             getWidget().setSelected(user);
+         } else {
+            getWidget().clear();
          }
       }
    }
@@ -48,17 +52,10 @@ public class UserSearchWidget extends AbstractXHyperlinkWfdSearchWidget<AtsUser>
    @Override
    public void widgetCreating(XWidget xWidget) {
       super.widgetCreating(xWidget);
-      xWidget.setUseToStringSorter(true);
-   }
-
-   @Override
-   public Collection<AtsUser> getSelectable() {
-      return Collections.castAll(AtsApiService.get().getUserService().getUsers(Active.Both));
-   }
-
-   @Override
-   boolean isMultiSelect() {
-      return false;
+      if (xWidget.getLabel().equals(LABEL)) {
+         xWidget.setUseToStringSorter(true);
+         xWidget.set(XOption.CLEAR);
+      }
    }
 
 }

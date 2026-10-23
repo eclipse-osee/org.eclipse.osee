@@ -125,11 +125,10 @@
 				[(ngModel)]="data().changeType"
 				name="changeType"
 				required
-				oseeHasValidId
 				data-testid="select-change-type">
 				@for (item of changeTypes | async; track $index) {
 					<mat-option
-						[value]="item"
+						[value]="item.name"
 						[attr.data-testid]="'option-' + item.name">
 						{{ item.name }}
 					</mat-option>
