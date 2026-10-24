@@ -1,0 +1,41 @@
+
+<mat-form-field
+	appearance="outline">
+	<mat-label>Search by workflow ID</mat-label>
+	<input
+		matInput
+		type="search"
+		placeholder="Enter a workflow ID"
+		[ngModel]="searchId()"
+		(ngModelChange)="searchId.set($event)"
+		(keydown.enter)="search()"
+		aria-label="Workflow ID" />
+	@if (searchId()) {
+		<button
+			matSuffix
+			mat-icon-button
+			aria-label="Clear workflow ID"
+			matTooltip="Clear"
+			(mousedown)="clearSearch($event)">
+			<mat-icon>close</mat-icon>
+		</button>
+	}
+</mat-form-field>
+
+
+@if (loading()) {
+	<p
+		role="status"
+		class="tw-p-4 tw-text-sm tw-opacity-50">
+		Searching…
+	</p>
+} @else if (hasResult()) {
+	// TODO 
+	
+} @else if (error()) {
+	<p
+		role="alert"
+		class="tw-p-4 tw-text-sm tw-opacity-50">
+		{{ error() }}
+	</p>
+}
