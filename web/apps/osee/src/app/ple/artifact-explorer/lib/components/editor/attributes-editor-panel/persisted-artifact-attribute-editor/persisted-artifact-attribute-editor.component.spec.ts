@@ -17,7 +17,7 @@ import {
 	withInterceptorsFromDi,
 } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { PersistedArtifactAttributeEditorComponent } from './persisted-artifact-attribute-editor.component';
 import { attribute } from '@osee/attributes/types';
@@ -255,6 +255,63 @@ describe('PersistedArtifactAttributeEditorComponent (commit model)', () => {
 			// The genuine commit at the current generation + matching pending saves.
 			component.onTextCommitted('typed');
 			expect(saveSpy).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe('saveStatus (inline indicator derivation)', () => {
+		/** `saveStatus` is protected; read it through the instance for assertions. */
+		const status = () =>
+			(
+				component as unknown as {
+					saveStatus: () => 'unsaved' | 'saving' | 'error' | null;
+				}
+			).saveStatus();
+
+		it('is null (silent) for a clean, untouched field', () => {
+			setup('persisted');
+			expect(status()).toBeNull();
+		});
+
+		it('is "unsaved" once a live edit marks the field dirty', () => {
+			setup('persisted');
+			component.onLiveInput('typed');
+			expect(status()).toBe('unsaved');
+		});
+
+		it('returns to null after a successful save clears dirty', () => {
+			setup('persisted');
+			// Emit a result so the save's `next` handler runs (marks clean, saving off).
+			// (The default of() completes without emitting, which would leave `saving`.)
+			saveSpy.mockReturnValue(of({}) as never);
+			component.onLiveInput('typed');
+			expect(status()).toBe('unsaved');
+			component.onTextCommitted('typed');
+			expect(status()).toBeNull();
+		});
+
+		it('is "error" after a save fails, and clears when a new edit starts', () => {
+			setup('persisted');
+			// Make the save fail so the error signal is set.
+			saveSpy.mockReturnValue(
+				throwError(() => new Error('save failed')) as never
+			);
+			component.onLiveInput('typed');
+			component.onTextCommitted('typed');
+			expect(status()).toBe('error');
+
+			// A fresh edit clears the error and shows unsaved again.
+			component.onLiveInput('typed again');
+			expect(status()).toBe('unsaved');
+		});
+
+		it('is null while blocked by a conflict (the amber ring owns that state, no double glyph)', () => {
+			setup('persisted');
+			fixture.componentRef.setInput('conflicted', true);
+			fixture.detectChanges();
+
+			component.onLiveInput('typed while conflicted');
+			// Dirty + conflicted => blockedUnsaved; saveStatus defers to the ring.
+			expect(status()).toBeNull();
 		});
 	});
 });

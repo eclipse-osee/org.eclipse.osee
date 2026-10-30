@@ -17,6 +17,8 @@ import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatTooltip } from '@angular/material/tooltip';
 import { BranchInfoService } from '@osee/shared/services';
 import {
 	teamWorkflowDetails,
@@ -42,6 +44,8 @@ import { MergeManagerDialogComponent } from '@osee/commit/components';
 		MatMenuTrigger,
 		MatMenu,
 		MatMenuItem,
+		MatProgressSpinner,
+		MatTooltip,
 		NgClass,
 		NgTemplateOutlet,
 	],
@@ -70,6 +74,15 @@ export class ActionDropDownComponent {
 	currentState = computed(() => this.teamWorkflow().currentState);
 	currentStateName = computed(() =>
 		this.currentState().state.replace(/([a-z])([A-Z])/g, '$1 $2')
+	);
+
+	/**
+	 * Whether a commit can actually run. The Commit Branch item can render (workflow-
+	 * derived) before `branch` resolves, and `commitBranch()` silently drops the click
+	 * while it is the sentinel — so gate the item on this instead.
+	 */
+	protected readonly commitReady = computed(
+		() => this.branch().id !== branchSentinel.id
 	);
 
 	isTeamLead = toSignal(

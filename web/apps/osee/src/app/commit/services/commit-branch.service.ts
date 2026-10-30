@@ -148,7 +148,9 @@ export class CommitBranchService {
 								: null
 						),
 						tap((commitResp) => {
-							if (!commitResp.success) {
+							if (commitResp.success) {
+								this.uiService.updated = true;
+							} else {
 								this.uiService.ErrorText =
 									'Error committing branch';
 							}

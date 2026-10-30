@@ -33,6 +33,8 @@ import { CommitBranchService } from '@osee/commit/services';
 import { commitBranchServiceMock } from '@osee/commit/testing';
 import { actionServiceMock } from '@osee/configuration-management/testing';
 import { ActionService } from '@osee/configuration-management/services';
+import { of } from 'rxjs';
+import { transitionResponse } from '@osee/shared/types';
 
 describe('ActionStateButtonService', () => {
 	let service: ActionStateButtonService;
@@ -76,6 +78,8 @@ describe('ActionStateButtonService', () => {
 		expect(service).toBeTruthy();
 	});
 
+	afterEach(() => vi.restoreAllMocks());
+
 	it('should commit a branch', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(
@@ -86,6 +90,42 @@ describe('ActionStateButtonService', () => {
 				)
 			).toBe('(a|)', { a: testDataTransitionResponse });
 		});
+	});
+	it('should surface post-commit validation failures without completing the workflow', () => {
+		const reason =
+			'Working Branch exists.\n\nPlease commit or delete working branch before transition.';
+		const validation: transitionResponse = {
+			...testDataTransitionResponse,
+			empty: false,
+			transitionWorkItems: [{ results: [{ details: reason }] }],
+		};
+		const actionService = TestBed.inject(ActionService);
+		vi.spyOn(actionService, 'validateTransitionAction').mockReturnValue(
+			of(validation)
+		);
+		const transition = vi.spyOn(actionService, 'transitionAction');
+		const error = vi.spyOn(uiService, 'ErrorText', 'set');
+		const commit = vi.spyOn(
+			TestBed.inject(CommitBranchService),
+			'commitBranch'
+		);
+
+		scheduler.run(({ expectObservable }) => {
+			expectObservable(
+				service.commitBranch(
+					testBranchActions[0],
+					testBranchListing[0],
+					testBranchListing[1]
+				)
+			).toBe('|');
+		});
+
+		expect(commit).toHaveBeenCalledOnce();
+		expect(transition).not.toHaveBeenCalled();
+		expect(error).toHaveBeenCalledWith(
+			'Branch committed, but workflow completion was blocked:\n\n' +
+				reason
+		);
 	});
 	it('should approve a branch', () => {
 		scheduler.run(({ expectObservable }) => {

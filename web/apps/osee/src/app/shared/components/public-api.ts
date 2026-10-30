@@ -23,6 +23,7 @@ export * from './attributes-editor/attribute-delete-button/attribute-delete-butt
 export * from './attributes-editor/attribute-toolbar/attribute-toolbar.component';
 export * from './markdown-editor/markdown-editor.component';
 export * from './expand-icon/expand-icon.component';
+export * from './field-save-status/field-save-status.component';
 export * from './focus-lost-input/focus-lost-input.component';
 export * from './named-id-list-editor/named-id-list-editor.component';
 export * from './edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';

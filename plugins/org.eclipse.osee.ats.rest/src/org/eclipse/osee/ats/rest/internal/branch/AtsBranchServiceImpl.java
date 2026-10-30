@@ -99,9 +99,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchState getBranchState(BranchId branch) {
-      if (branch instanceof Branch) {
-         return ((Branch) branch).getBranchState();
-      }
+      // Working-branch lookups cache Branch snapshots; transition validation needs the persisted state.
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       Branch fullBranch = query.andId(branch).getResults().getExactlyOne();
       return fullBranch.getBranchState();

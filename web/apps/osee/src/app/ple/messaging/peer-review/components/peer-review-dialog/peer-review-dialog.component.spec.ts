@@ -36,6 +36,8 @@ import { ManageActionButtonComponentMock } from '@osee/configuration-management/
 import { BranchInfoService } from '@osee/shared/services';
 import { BranchInfoServiceMock } from '@osee/shared/testing';
 import { provideRouter, RouterLink } from '@angular/router';
+import { signal } from '@angular/core';
+import { branchSelected } from '../../types/peer-review';
 
 describe('PeerReviewDialogComponent', () => {
 	let component: PeerReviewDialogComponent;
@@ -101,5 +103,30 @@ describe('PeerReviewDialogComponent', () => {
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
+	});
+
+	it('renders unique branch ids even when the source list has duplicates', () => {
+		// A transient server response during a commit can list the same branch twice.
+		// The @for tracks branch.branch.id, so a duplicate id would throw Angular into
+		// a non-settling re-render (NG0955) that stalls the commit flow. workingBranches()
+		// must de-dupe so the rendered keys are always unique.
+		const dup: branchSelected = {
+			branch: testBranchListing[0],
+			selected: true,
+			selectable: true,
+			committedToBaseline: false,
+		};
+		// Replace the private source signal with a duplicate-id list; the public
+		// workingBranches() computed reads it at call time and must de-dupe.
+		(
+			component as unknown as {
+				_allWorkingBranches: ReturnType<typeof signal<branchSelected[]>>;
+			}
+		)._allWorkingBranches = signal([dup, { ...dup }]);
+
+		const rendered = component.workingBranches();
+		const ids = rendered.map((b) => b.branch.id);
+		expect(new Set(ids).size).toBe(ids.length);
+		expect(rendered.length).toBe(1);
 	});
 });
