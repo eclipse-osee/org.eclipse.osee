@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
 import org.osgi.service.component.annotations.Component;
@@ -38,6 +39,7 @@ public class XXStateNameWidget extends XXStringsWidget {
 
    public XXStateNameWidget() {
       super(ID, "State Name(s)");
+      set(XOption.VAL_MULTI_SEL);
       setOseeImage(AtsImage.STATE);
    }
 
