@@ -193,62 +193,65 @@ export class ActionStateButtonService {
 											)
 										)
 										.pipe(
-											switchMap((validateObs) =>
-												iif(
-													() =>
-														getTransitionFailureReasons(
-															validateObs
-														).length === 0,
-													this.actionService
-														.transitionAction(
-															new transitionAction(
-																'Completed',
-																'Transition To Completed',
-																[action],
-																user
-															)
+											switchMap((validateObs) => {
+												const failures =
+													getTransitionFailureReasons(
+														validateObs
+													);
+												if (failures.length > 0) {
+													this.uiService.ErrorText =
+														'Branch committed, but workflow completion was blocked:\n\n' +
+														failures.join('\n\n');
+													return of();
+												}
+												return this.actionService
+													.transitionAction(
+														new transitionAction(
+															'Completed',
+															'Transition To Completed',
+															[action],
+															user
 														)
-														.pipe(
-															tap(
-																(
-																	transitionResponse
-																) => {
-																	const failures =
-																		getTransitionFailureReasons(
-																			transitionResponse
+													)
+													.pipe(
+														tap(
+															(
+																transitionResponse
+															) => {
+																const failures =
+																	getTransitionFailureReasons(
+																		transitionResponse
+																	);
+																if (
+																	failures.length >
+																	0
+																) {
+																	this.uiService.ErrorText =
+																		failures.join(
+																			'\n\n'
 																		);
+																} else {
+																	this.uiService.updated =
+																		true;
 																	if (
-																		failures.length >
-																		0
-																	) {
-																		this.uiService.ErrorText =
-																			failures.join(
-																				'\n\n'
-																			);
-																	} else {
-																		this.uiService.updated =
-																			true;
-																		if (
-																			currentAction.length >
-																				0 &&
-																			currentAction[0]
-																				.id ===
-																				action.id
-																		)
-																			this.branchedRouter.position =
-																				{
-																					type: 'baseline',
-																					id: commitObs
-																						.tx
-																						.branchId,
-																				};
-																	}
+																		currentAction.length >
+																			0 &&
+																		currentAction[0]
+																			.id ===
+																			action.id
+																	)
+																		this.branchedRouter.position =
+																			{
+																				type: 'baseline',
+																				id: commitObs
+																					.tx
+																					.branchId,
+																			};
 																}
-															)
-														),
-													of() // @todo replace with a false response
-												)
-											)
+															}
+														)
+													);
+											})
 										),
 									of() // @todo replace with a false response
 								)

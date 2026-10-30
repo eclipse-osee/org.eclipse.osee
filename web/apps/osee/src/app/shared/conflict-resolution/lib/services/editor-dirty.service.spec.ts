@@ -90,6 +90,51 @@ describe('EditorDirtyService', () => {
 		});
 	});
 
+	describe('clearEntity (explicit discard)', () => {
+		it('drops the entity dirty keys and conflict flag, leaving it clean', () => {
+			service.markDirty('12-1');
+			service.markDirty('12-2');
+			service.setConflicted('12', true);
+
+			service.clearEntity('12');
+
+			expect(service.hasDirtyEditorsForEntity('12')).toBe(false);
+			expect(service.isConflicted('12')).toBe(false);
+			expect(service.leaveStateFor('12')).toBe('clean');
+		});
+
+		it('leaves other entities untouched', () => {
+			service.markDirty('12-1');
+			service.markDirty('99-1');
+			service.setConflicted('99', true);
+
+			service.clearEntity('12');
+
+			expect(service.hasDirtyEditorsForEntity('12')).toBe(false);
+			// 99 is unaffected.
+			expect(service.hasDirtyEditorsForEntity('99')).toBe(true);
+			expect(service.isConflicted('99')).toBe(true);
+		});
+
+		it('does not match an entity whose id is a prefix of another', () => {
+			service.markDirty('12-1');
+			service.markDirty('123-1');
+
+			service.clearEntity('12');
+
+			expect(service.hasDirtyEditorsForEntity('12')).toBe(false);
+			// "123" must survive clearing "12" (trailing-dash prefix guard).
+			expect(service.hasDirtyEditorsForEntity('123')).toBe(true);
+		});
+
+		it('bumps the generation so in-flight deferred commits are invalidated', () => {
+			service.markDirty('12-1');
+			const before = service.generation();
+			service.clearEntity('12');
+			expect(service.generation()).toBe(before + 1);
+		});
+	});
+
 	it('is idempotent on repeated mark/clean', () => {
 		service.markDirty('12-1');
 		service.markDirty('12-1');

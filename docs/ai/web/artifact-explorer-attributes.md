@@ -218,6 +218,14 @@ not re-derive it from the raw dirty/conflict signals):
   can **fail** (the field stays dirty), so the caller can fall back to a prompt instead of
   hanging. This replaced an ad-hoc `effect`+`setTimeout` race that used to live in the tab
   component — keep the await-settle logic in the service where it is unit-tested.
+- `clearEntity(entityId)` → drop all of one entity's dirty keys + its conflict flag on an
+  **explicit discard**. This exists because a conflicted field editor's `ngOnDestroy`
+  deliberately skips `markClean` (structural teardown must not drop a live conflict edit), so
+  when the user discards a conflicted tab the keys would otherwise leak — leaving
+  `globalLeaveState()` stuck at `saving` and firing a phantom `beforeunload` prompt for an
+  artifact already discarded. `closeTab` calls it on both discard paths (the `conflicted`
+  branch, and the `saving` timeout-discard). It bumps the generation like `clearAll` so a
+  reconnect-flush can't resurrect the discarded edit after the editor is gone.
 
 **Tab close** (`ArtifactTabGroupComponent.closeTab`, resolved by stable `tabId`, not index):
 - `clean` → close immediately.

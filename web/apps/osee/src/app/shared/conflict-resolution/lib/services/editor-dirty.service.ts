@@ -208,6 +208,31 @@ export class EditorDirtyService {
 	}
 
 	/**
+	 * Drop all dirty keys and the conflict flag for one entity — an explicit discard
+	 * (e.g. closing a conflicted tab). A conflicted field editor's `ngOnDestroy`
+	 * deliberately skips `markClean` (teardown must not drop a live conflict edit), so
+	 * on discard the keys would otherwise leak and leave the entity looking `saving`
+	 * forever. Bumps the (global) generation so any in-flight deferred commit for the
+	 * now-gone editor is recognized as stale and cannot resurrect the discarded edit
+	 * via the reconnect-flush; the bump is global like {@link clearAll}, harmless to
+	 * other entities (their commits re-validate by value identity).
+	 */
+	clearEntity(entityId: string) {
+		const prefix = `${entityId}-`;
+		this.dirtyEditors.update((set) => {
+			let next: Set<string> | null = null;
+			for (const key of set) {
+				if (key.startsWith(prefix)) {
+					(next ??= new Set(set)).delete(key);
+				}
+			}
+			return next ?? set;
+		});
+		this.setConflicted(entityId, false);
+		this._generation.update((g) => g + 1);
+	}
+
+	/**
 	 * Clear all dirty + conflict state (conflict resolve/discard, forced refresh).
 	 * Bumps the edit generation so any in-flight deferred commit from before this
 	 * point is recognized as stale and dropped, instead of re-saving a discarded

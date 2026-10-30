@@ -189,5 +189,42 @@ describe('ArtifactTabGroupComponent', () => {
 			expect(removeSpy).toHaveBeenCalledWith('tab-1');
 			expect(isClosing('tab-1')).toBe(false);
 		});
+
+		it('discarding a conflicted tab clears its dirty keys (no stale "saving" after close)', async () => {
+			const t = makeTab('tab-1', '100');
+			tabService.Tabs.set([t]);
+			// Real dirty state: the artifact has an unsaved, conflicted edit. (A
+			// conflicted field editor's ngOnDestroy skips markClean, so the close site
+			// must clear these or they leak.)
+			dirty.markDirty('100-1');
+			dirty.setConflicted('100', true);
+			expect(dirty.globalLeaveState()).toBe('conflicted');
+
+			// User confirms the discard.
+			vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+			await component.closeTab(0);
+
+			// The decisive assertion: nothing left dirty/conflicted for this artifact,
+			// so a later unload sees a clean editor (not a phantom "saving").
+			expect(dirty.globalLeaveState()).toBe('clean');
+			expect(dirty.hasDirtyEditorsForEntity('100')).toBe(false);
+		});
+
+		it('keeping a conflicted tab (cancel) leaves its state intact', async () => {
+			const t = makeTab('tab-1', '100');
+			tabService.Tabs.set([t]);
+			dirty.markDirty('100-1');
+			dirty.setConflicted('100', true);
+
+			vi.spyOn(window, 'confirm').mockReturnValue(false);
+			const removeSpy = vi.spyOn(tabService, 'removeTabByTabId');
+
+			await component.closeTab(0);
+
+			// Cancel: tab stays, state preserved for the user to resolve.
+			expect(removeSpy).not.toHaveBeenCalled();
+			expect(dirty.globalLeaveState()).toBe('conflicted');
+		});
 	});
 });

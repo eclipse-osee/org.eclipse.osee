@@ -148,6 +148,10 @@ export class ArtifactTabGroupComponent {
 						'Cancel: keep the tab open and resolve the conflict.'
 				);
 				if (discard) {
+					// Explicit discard: clear the held conflict's dirty keys before the
+					// editor destroys (its ngOnDestroy skips markClean while conflicted),
+					// so they don't leak and leave the entity stuck looking "saving".
+					this.dirtyService.clearEntity(artifactId);
 					this.tabService.removeTabByTabId(tabId);
 				}
 				return;
@@ -164,14 +168,19 @@ export class ArtifactTabGroupComponent {
 						artifactId,
 						ArtifactTabGroupComponent.AUTOSAVE_SETTLE_MS
 					);
-					if (
-						result === 'saved' ||
+					if (result === 'saved') {
+						// Save landed; its success handler already cleared the dirty keys.
+						this.tabService.removeTabByTabId(tabId);
+					} else if (
 						confirm(
 							'This artifact has changes that have not finished saving.\n\n' +
 								'OK: close and discard the unsaved changes.\n' +
 								'Cancel: keep the tab open. Check that your network badge (top right) is green, then try closing again.'
 						)
 					) {
+						// Explicit discard of a never-landed save: clear the orphaned keys
+						// so the entity doesn't keep looking "saving" after the tab is gone.
+						this.dirtyService.clearEntity(artifactId);
 						this.tabService.removeTabByTabId(tabId);
 					}
 				} finally {
