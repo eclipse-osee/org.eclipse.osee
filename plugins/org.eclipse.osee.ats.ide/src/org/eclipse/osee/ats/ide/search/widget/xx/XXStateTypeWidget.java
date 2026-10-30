@@ -47,7 +47,7 @@ public class XXStateTypeWidget extends XXAbstractBaseXWidget<StateType> {
       super(ID, "State Type");
       setAttributeType(AtsAttributeTypes.CurrentStateType);
       setSelectable(StateType.StateTypes);
-      set(XOption.VAL_SINGLE_SEL);
+      set(XOption.VAL_MULTI_SEL);
       setOseeImage(AtsImage.STATE_TYPE);
    }
 

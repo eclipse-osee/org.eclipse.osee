@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.ide.util.widgets.xx;
 
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ChangeType;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -25,6 +24,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.util.XXWorkItemData;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -38,8 +38,6 @@ import org.osgi.service.component.annotations.Component;
 public class XXChangeTypeWidget extends XXStringsWidget {
 
    public static final WidgetId ID = WidgetIdAts.XXChangeTypeWidget;
-   public static List<String> DefaultChangeTypes =
-      Arrays.asList(ChangeTypes.Improvement.toString(), ChangeTypes.Problem.name(), ChangeTypes.Support.name());
 
    protected XXWorkItemData xxWid = XXWorkItemData.SENTINEL;
 
@@ -65,7 +63,7 @@ public class XXChangeTypeWidget extends XXStringsWidget {
          List<ChangeTypes> changeTypes = AtsApiService.get().getWorkItemService().getChangeTypeOptions(workItem);
          return Collections.toStrings(changeTypes);
       }
-      return DefaultChangeTypes;
+      return ChangeTypes.getDefaultValuesStrs();
    }
 
    //////////////////////////////////////////
