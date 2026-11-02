@@ -100,13 +100,26 @@ export class PeerReviewDialogComponent {
 	);
 
 	workingBranches = computed(() => {
-		if (this.isCommitting()) {
-			return this._allWorkingBranches().filter(
-				(branch) => branch.selected
-			);
-		}
-		return this._allWorkingBranches();
+		const branches = this.isCommitting()
+			? this._allWorkingBranches().filter((branch) => branch.selected)
+			: this._allWorkingBranches();
+		// De-dupe by branch id. The `@for` tracks `branch.branch.id`; a transient
+		// server response during a commit can briefly list the same branch twice,
+		// and duplicate track keys throw Angular into a repeating re-render (NG0955)
+		// that never settles — which stalls the in-flight commit/transition chain and
+		// leaves the list stale (Close Peer Review stuck disabled). Keeping one entry
+		// per id guarantees stable keys regardless of what the response contains.
+		return this.dedupeById(branches);
 	});
+
+	/** One entry per `branch.branch.id`; later occurrences win (freshest state). */
+	private dedupeById(branches: branchSelected[]): branchSelected[] {
+		const byId = new Map<string, branchSelected>();
+		for (const branch of branches) {
+			byId.set(branch.branch.id, branch);
+		}
+		return [...byId.values()];
+	}
 
 	handleChange(branchSelection: branchSelected, selected: boolean) {
 		this.prUIService.handleBranchSelection(branchSelection, selected);

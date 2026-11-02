@@ -24,7 +24,20 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.PostgresOnly;
@@ -114,6 +127,73 @@ public class BranchEndpointTest {
       data.setTxCopyBranchType(false);
 
       return data;
+   }
+
+   @Test
+   public void commitAllowsImmediateCompletedValidation() {
+      AtsApi atsApi = AtsApiService.get();
+      AtsUser user = atsApi.getUserService().getCurrentUser();
+      NewActionData data = atsApi.getActionService().createActionData(getClass().getSimpleName(),
+         "Immediate completion after commit", "Commit consistency regression").andAi(
+            atsApi.getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_PL_MIM_AI)).andWorkDef(
+               AtsWorkDefinitionTokens.WorkDefTeamMIM).andChangeType(ChangeTypes.Improvement).andPriority("1").andAsUser(
+                  user).andAssignees(Arrays.asList(user));
+      NewActionData created = atsApi.getActionService().createAction(data);
+      Assert.assertTrue(created.getRd().toString(), created.getRd().isSuccess());
+      IAtsTeamWorkflow teamWf = created.getActResult().getAtsTeamWfs().iterator().next();
+      BranchId baseline = BranchId.SENTINEL;
+      BranchId working = BranchId.SENTINEL;
+      try {
+         NewBranch baselineData = testDataInitialization(DemoBranches.SAW_PL);
+         baselineData.setBranchType(BranchType.BASELINE);
+         baselineData.setBranchName("Commit consistency baseline");
+         baseline = branchEndpoint.createBranch(baselineData);
+         NewBranch workingData = testDataInitialization(branchEndpoint.getBranchById(baseline));
+         workingData.setAssociatedArtifact(ArtifactId.valueOf(teamWf.getId()));
+         working = branchEndpoint.createBranch(workingData);
+         ServiceUtil.getOseeClient().getArtifactEndpoint(working).createArtifact(working,
+            CoreArtifactTypes.SoftwareDesignMsWord, CoreArtifactTokens.SoftwareRequirementsFolder,
+            "Commit consistency artifact");
+
+         TransitionData transition = new TransitionData();
+         transition.setName("Commit consistency transition");
+         transition.setWorkItemIds(Arrays.asList(ArtifactToken.valueOf(teamWf.getId(), teamWf.getName())));
+         transition.setTransitionUserArtId(user.getArtifactId());
+         transition.setToStateName(TeamState.Review.getName());
+         TransitionResults reviewed = atsApi.getServerEndpoints().getActionEndpoint().transition(transition);
+         Assert.assertTrue(reviewed.toString(), reviewed.isEmpty());
+
+         transition.setToStateName(TeamState.Completed.getName());
+         TransitionResults beforeCommit =
+            atsApi.getServerEndpoints().getActionEndpoint().transitionValidate(transition);
+         Assert.assertTrue(beforeCommit.toString(),
+            beforeCommit.contains(TransitionResult.WORKING_BRANCH_EXISTS.getDetails()));
+
+         BranchCommitOptions options = new BranchCommitOptions();
+         options.setArchive(false);
+         options.setCommitter(user.getArtifactId());
+         TransactionResult committed = branchEndpoint.commitBranch(working, baseline, options);
+         Assert.assertTrue(committed.toString(), committed.isSuccess());
+         TransitionResults afterCommit =
+            atsApi.getServerEndpoints().getActionEndpoint().transitionValidate(transition);
+         Assert.assertTrue(afterCommit.toString(), afterCommit.isEmpty());
+         Assert.assertEquals(BranchState.COMMITTED, branchEndpoint.getBranchById(working).getBranchState());
+      } finally {
+         if (working.isValid()) {
+            try (Response response = branchEndpoint.purgeBranch(working, false, false)) {
+               // do nothing
+            }
+         }
+         if (baseline.isValid()) {
+            try (Response response = branchEndpoint.purgeBranch(baseline, false, false)) {
+               // do nothing
+            }
+         }
+         IAtsChangeSet changes = atsApi.createChangeSet("Clean up commit consistency regression");
+         changes.deleteArtifact(teamWf);
+         changes.deleteArtifact(created.getActResult().getAction());
+         changes.execute();
+      }
    }
 
    @Test
