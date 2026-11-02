@@ -13,10 +13,6 @@
 
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
-import java.util.Arrays;
-import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -47,14 +43,6 @@ public final class XNavigateItemOperation extends XNavigateItem {
       if (operation != null) {
          Operations.executeAsJob(operation, true);
       }
-   }
-
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      if (categories.contains(XNavItemCat.OSEE_ADMIN)) {
-         return Arrays.asList(CoreUserGroups.OseeAdmin);
-      }
-      return Arrays.asList(CoreUserGroups.Everyone);
    }
 
 }

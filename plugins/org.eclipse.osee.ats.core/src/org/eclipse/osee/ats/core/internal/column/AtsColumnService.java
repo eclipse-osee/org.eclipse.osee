@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
 import org.eclipse.osee.ats.api.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
-import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.ColumnType;
@@ -80,6 +79,7 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -182,16 +182,16 @@ public class AtsColumnService implements IAtsColumnService {
             continue;
          }
          try {
-            if (attrType.hasDisplayHint(AtsDisplayHint.Read, AtsDisplayHint.Edit, AtsDisplayHint.ReadConfig)) {
+            if (attrType.hasDisplayHint(DisplayHint.Read, DisplayHint.Edit, DisplayHint.ReadConfig)) {
                if (!idToAtsColumn.containsKey(attrType.getName())) {
                   AtsCoreAttrTokenColumn col = getAttributeColumn(attrType, "workflow attr types");
                   idToAtsColumn.put(col.getId(), col);
                }
             } else {
-               rd.error(String.format("Workflow Attribute Type %s must specify AtsDisplayHint.Edit or Read",
+               rd.error(String.format("Workflow Attribute Type %s must specify DisplayHint.Edit or Read",
                   attrType.toStringWithId()));
             }
-            if (attrType.hasDisplayHint(AtsDisplayHint.Config)) {
+            if (attrType.hasDisplayHint(DisplayHint.Config)) {
                rd.error(String.format("Workflow Attribute Type %s should not specify DisplayHint.Config",
                   attrType.toStringWithId()));
             }

@@ -12,13 +12,11 @@
  **********************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Donald G. Dunne
@@ -33,21 +31,15 @@ public class EntryCheckCheckDialog extends EntryCheckDialog {
       this.checkBoxMessage2 = checkBoxMessage2;
    }
 
-   public EntryCheckCheckDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, String checkBoxMessage1, String checkBoxMessage2, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
-      super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, checkBoxMessage1, dialogImageType,
-         dialogButtonLabels, defaultIndex);
-      this.checkBoxMessage2 = checkBoxMessage2;
-   }
-
    @Override
    protected void createExtendedArea(Composite parent) {
       super.createExtendedArea(parent);
 
-      final XCheckBox checkbox = new XCheckBox(checkBoxMessage2);
+      final XXCheckBoxWidget checkbox = new XXCheckBoxWidget(checkBoxMessage2);
       checkbox.setFillHorizontally(true);
       checkbox.setFocus();
       checkbox.setDisplayLabel(false);
-      checkbox.set(checked2);
+      checkbox.setSelected(checked2);
       checkbox.createWidgets(checkComp, 1);
 
       SelectionListener selectionListener = new SelectionAdapter() {

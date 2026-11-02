@@ -89,29 +89,29 @@ public class NewTaskSet {
       return !isErrors();
    }
 
-   public static NewTaskSet create(NewTaskData newTaskData, String comment, UserToken user) {
-      return create(newTaskData, comment, user.getUserId());
+   public static NewTaskSet create(NewTaskData newTaskData, String commitComment, UserToken user) {
+      return create(newTaskData, commitComment, user.getUserId());
    }
 
-   public static NewTaskSet create(String comment, AtsUser user) {
-      return create(comment, user.getUserId());
+   public static NewTaskSet create(String commitComment, AtsUser user) {
+      return create(commitComment, user.getUserId());
    }
 
-   public static NewTaskSet create(String comment, String asUserId) {
+   public static NewTaskSet create(String commitComment, String asUserId) {
       NewTaskSet newTaskSet = new NewTaskSet();
       newTaskSet.setAsUserId(asUserId);
-      newTaskSet.setCommitComment(comment);
+      newTaskSet.setCommitComment(commitComment);
       return newTaskSet;
    }
 
-   public static NewTaskSet create(String comment, UserToken user) {
-      return create(comment, user.getUserId());
+   public static NewTaskSet create(String commitComment, UserToken user) {
+      return create(commitComment, user.getUserId());
    }
 
-   public static NewTaskSet create(NewTaskData newTaskData, String comment, String asUserId) {
+   public static NewTaskSet create(NewTaskData newTaskData, String commitComment, String asUserId) {
       NewTaskSet newTaskSet = new NewTaskSet();
       newTaskSet.setAsUserId(asUserId);
-      newTaskSet.setCommitComment(comment);
+      newTaskSet.setCommitComment(commitComment);
       newTaskSet.getNewTaskDatas().add(newTaskData);
       return newTaskSet;
    }
@@ -119,8 +119,8 @@ public class NewTaskSet {
    /**
     * @return NewTaskSet with single NewTaskData
     */
-   public static NewTaskSet createWithData(String comment, Long teamWfId, String asUserId) {
-      NewTaskSet newTaskSet = create(comment, asUserId);
+   public static NewTaskSet createWithData(String commitComment, Long teamWfId, String asUserId) {
+      NewTaskSet newTaskSet = create(commitComment, asUserId);
       NewTaskData newTaskData = new NewTaskData();
       newTaskSet.getNewTaskDatas().add(newTaskData);
       newTaskData.setTeamWfId(teamWfId);
@@ -130,8 +130,8 @@ public class NewTaskSet {
    /**
     * @return NewTaskSet with single NewTaskData
     */
-   public static NewTaskSet createWithData(IAtsTeamWorkflow teamWf, String comment, AtsUser atsUser) {
-      return createWithData(comment, teamWf.getId(), atsUser.getUserId());
+   public static NewTaskSet createWithData(IAtsTeamWorkflow teamWf, String commitComment, AtsUser atsUser) {
+      return createWithData(commitComment, teamWf.getId(), atsUser.getUserId());
    }
 
    public TransactionToken getTransaction() {

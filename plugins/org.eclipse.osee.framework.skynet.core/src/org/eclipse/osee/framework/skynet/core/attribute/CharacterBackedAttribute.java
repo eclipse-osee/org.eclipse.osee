@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.lang.reflect.ParameterizedType;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -31,6 +32,7 @@ public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    protected boolean subClassSetValue(T value) {
       Class<?> clazz = getClass();
       String superclassName = clazz.getSuperclass().getSimpleName();
@@ -47,8 +49,13 @@ public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
             String stringValue = enumToken.getName();
             return getAttributeDataProvider().setValue(stringValue);
          }
-         throw new ClassCastException(
-            parameterclazz + " attribute subClassSetValue called with type " + value.getClass());
+         // The generic write path erases T, so any Object can reach here. Validate/coerce against the
+         // AttributeType (the contract for what the stored String must parse back into) so a bad value fails at
+         // the write instead of throwing an opaque ClassCastException on a later read. This normalizes an
+         // Id/BranchId/Number/numeric-String into the proper native type and rejects non-parseable values
+         // (e.g. the String "don" into a Long/BranchId attribute) with a clear message.
+         value = ((AttributeTypeGeneric<T>) getAttributeType()).coerceValue(value);
+         return getAttributeDataProvider().setValue(value);
       }
       if (this.isOfType(CoreAttributeTypes.WordTemplateContent) && value instanceof String) {
          return getAttributeDataProvider().setValue(modifyWordValue(value));

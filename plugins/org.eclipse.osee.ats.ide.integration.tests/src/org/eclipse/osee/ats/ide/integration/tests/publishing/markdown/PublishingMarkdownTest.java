@@ -12,11 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.publishing.markdown;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import com.vladsch.flexmark.ast.Code;
 import com.vladsch.flexmark.ast.HardLineBreak;
 import com.vladsch.flexmark.ast.Heading;
@@ -590,8 +586,7 @@ public class PublishingMarkdownTest {
             // Check if the table is wrapped by a paragraph
             Element nextElement = table.parent();
             assertNotNull("The table should not have a null parent.", nextElement);
-            assertTrue("The table should be wrapped in a paragraph.",
-               nextElement.tagName().equals("p"));
+            assertTrue("The table should be wrapped in a paragraph.", nextElement.tagName().equals("p"));
 
             // Table is wrapped in <p> and followed by an anchor and caption, so three siblings ahead will be a data right marking.
             nextElement = nextElement.nextElementSibling().nextElementSibling().nextElementSibling();
@@ -628,11 +623,10 @@ public class PublishingMarkdownTest {
             }
          };
 
-         NodeVisitor visitor = new NodeVisitor(
-            new VisitHandler<>(Image.class, image -> foundImages.add(image.getUrl().toString())),
-            new VisitHandler<>(HtmlInline.class, html -> collectHtmlImgSrc.accept(html)),
-            new VisitHandler<>(HtmlBlock.class, html -> collectHtmlImgSrc.accept(html))
-         );
+         NodeVisitor visitor =
+            new NodeVisitor(new VisitHandler<>(Image.class, image -> foundImages.add(image.getUrl().toString())),
+               new VisitHandler<>(HtmlInline.class, html -> collectHtmlImgSrc.accept(html)),
+               new VisitHandler<>(HtmlBlock.class, html -> collectHtmlImgSrc.accept(html)));
 
          visitor.visit(mdDocument);
 
@@ -654,8 +648,7 @@ public class PublishingMarkdownTest {
             rawMarkdown.contains("<image-link"));
 
          // Verify the sized image was converted to an img tag with inline style
-         assertTrue(
-            "Sized image should be converted to <img> with max-width style in product ID: " + productId,
+         assertTrue("Sized image should be converted to <img> with max-width style in product ID: " + productId,
             rawMarkdown.contains("style=\"max-width:50%;height:auto\""));
       }
    }

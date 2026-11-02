@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateOption;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -188,6 +189,14 @@ public class StateDefBuilder {
                   newItems.add(newItem);
                }
             }
+         } else if (currItem instanceof AttrWidgetDef) {
+            AttrWidgetDef widgetDef = (AttrWidgetDef) currItem;
+            if (attrTypeLocation.equals(widgetDef.getAttributeType())) {
+               found.set(true);
+               for (LayoutItem newItem : insertLayoutItems) {
+                  newItems.add(newItem);
+               }
+            }
          }
          // Recurse through composite layout items
          else if (currItem instanceof CompositeLayoutItem) {
@@ -234,12 +243,14 @@ public class StateDefBuilder {
             state.getName(), workDef.getName());
       }
       StateDefinition fromStateDef = workDef.getStateByName(fromState.getName());
-      if (fromStateDef.getLayoutItems().isEmpty()) {
+
+      if (fromStateDef == null || fromStateDef.getLayoutItems().isEmpty()) {
          rd.errorf(
             "State [%s] cannot import layout from other state if from state [%s] has no layout items defined for Work Def %s\n",
             state.getName(), fromState.getName(), workDef.getName());
+      } else {
+         this.andLayout(fromStateDef.getLayoutItems());
       }
-      this.andLayout(fromStateDef.getLayoutItems());
       return this;
    }
 

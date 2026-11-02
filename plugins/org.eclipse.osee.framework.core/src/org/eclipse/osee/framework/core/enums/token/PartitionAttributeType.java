@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.enums.token;
 
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.EnumToken;
@@ -35,7 +36,7 @@ public class PartitionAttributeType extends AttributeTypeEnum<PartitionEnum> {
 
    public PartitionAttributeType(NamespaceToken namespace, int enumCount) {
       super(1152921504606847111L, namespace, "Partition", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
-         enumCount);
+         enumCount, DisplayHint.Edit);
    }
 
    public PartitionAttributeType() {

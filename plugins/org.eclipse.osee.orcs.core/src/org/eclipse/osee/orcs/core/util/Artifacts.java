@@ -35,8 +35,12 @@ public class Artifacts {
    }
 
    public static ArtifactToken getOrCreate(ArtifactToken artifactToken, TransactionBuilder tx, OrcsApi orcsApi) {
+      BranchId branch = artifactToken.getBranch();
+      if (branch.isInvalid()) {
+         branch = tx.getBranch();
+      }
       ArtifactToken art =
-         orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andId(artifactToken).getResults().getAtMostOneOrDefault(
+         orcsApi.getQueryFactory().fromBranch(branch).andId(artifactToken).getResults().getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL);
       if (art.isInvalid()) {
          art = tx.createArtifact(artifactToken);

@@ -26,6 +26,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -54,9 +55,11 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.GenericViewPart;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -67,7 +70,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -85,7 +87,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    private GroupExplorerItem rootItem;
    private Collection<GroupExplorerItem> selected;
    private Object[] expanded = new Object[] {};
-   private XBranchSelectWidget branchSelect;
+   private XXBranchSelWidget branchWidget;
    private BranchToken branch;
    private GroupExplorerDragAndDrop groupExpDnd;
 
@@ -112,23 +114,23 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
          parentComp.setLayout(gridLayout);
          parentComp.setLayoutData(gridData);
 
-         branchSelect = new XBranchSelectWidget("");
-         branchSelect.setDisplayLabel(false);
-         branchSelect.setSelection(branch);
-         branchSelect.createWidgets(parentComp, 1);
+         branchWidget = new XXBranchSelWidget();
+         branchWidget.setDisplayLabel(false);
+         branchWidget.setSelected(branch);
+         branchWidget.createWidgets(parentComp, 1);
 
-         branchSelect.addListener(new Listener() {
+         branchWidget.addXModifiedListener(new XModifiedListener() {
+
             @Override
-            public void handleEvent(Event event) {
+            public void widgetModified(XWidget widget) {
                try {
-                  branch = branchSelect.getData();
+                  branch = branchWidget.getSelectedFirst();
                   refresh();
                   groupExpDnd.setBranch(branch);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
-
          });
 
          treeViewer = new GroupTreeViewer(this, parentComp);
@@ -267,9 +269,8 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
          AWorkbench.popup("Must select branch first");
          return;
       }
-      EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create New Group", null, "Enter Group Name",
-         MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
-      if (ed.open() == 0) {
+      EntryDialog ed = new EntryDialog("Create New Group", "Enter Group Name");
+      if (ed.open() == Window.OK) {
          try {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(branch, GroupExplorer.class.getSimpleName() + ".handleNewGroup");

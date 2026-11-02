@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.util.widgets.defect;
 
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -98,10 +98,9 @@ public class DefectUtil {
 
    public void handleImportDefectsViaList() {
       try {
-         EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create Defects", null,
-            "Enter Defect descriptions, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+         EntryDialog ed = new EntryDialog("Create Defects", "Enter Defect descriptions, one per line.");
          ed.setFillVertically(true);
-         if (ed.open() == 0) {
+         if (ed.open() == Window.OK) {
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("Import Review Defects");
             IAtsPeerReviewDefectManager defectManager = review.getDefectManager();
             for (String str : ed.getEntry().split("\n")) {

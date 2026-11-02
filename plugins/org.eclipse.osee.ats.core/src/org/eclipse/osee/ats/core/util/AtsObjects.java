@@ -22,10 +22,14 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -193,6 +197,25 @@ public class AtsObjects {
          result = atsApi.getWorkItemService().getAction(artifact);
       }
       return result;
+   }
+
+   public static Collection<ArtifactToken> toArtifactTokens(Collection<IAtsVersion> versions) {
+      List<ArtifactToken> tokens = new ArrayList<>(versions.size());
+      for (IAtsObject atsObject : versions) {
+         tokens.add(atsObject.getStoreObject());
+      }
+      return tokens;
+   }
+
+   public static List<UserToken> toUserTokens(List<AtsUser> aUsers) {
+      List<UserToken> tokens = new ArrayList<>(aUsers.size());
+      for (AtsUser aUser : aUsers) {
+         UserToken userTok = AtsApiService.get().userService().getUser(aUser);
+         if (userTok != null) {
+            tokens.add(userTok);
+         }
+      }
+      return tokens;
    }
 
 }

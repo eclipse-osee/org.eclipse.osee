@@ -12,23 +12,37 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.operation;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.core.enums.OseeImage;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam implements IsEnabled {
+
+   private static final String BLAM_NAME = "Create Sibling Workflows";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public CreateSiblingWorkflowBlam() {
+      this(BLAM_NAME, AtsImage.CHANGE_REQUEST);
+   }
+
+   public CreateSiblingWorkflowBlam(String name, OseeImage image) {
+      super(name, image);
+   }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
    @Override
    protected void createTreeViewers(Composite parent) {
@@ -57,13 +71,8 @@ public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam impleme
    }
 
    @Override
-   public String getDescriptionUsage() {
-      return "Create sibling workflows in this Action.  Select AIs and select Create button.";
-   }
-
-   @Override
    public String getRunText() {
-      return "Create Sibling Workflows";
+      return BLAM_NAME;
    }
 
    @Override
@@ -73,36 +82,17 @@ public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam impleme
 
    @Override
    public String getTabTitle() {
-      return "Create Sibling Workflows";
+      return BLAM_NAME;
    }
 
    @Override
    public String getTitle() {
-      return "Create Sibling Workflows";
-   }
-
-   @Override
-   public Image getImage() {
-      return ImageManager.getImage(AtsImage.CHANGE_REQUEST);
-   }
-
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.CHANGE_REQUEST);
+      return BLAM_NAME;
    }
 
    @Override
    public String getDropLabelStr() {
       return "Team Workflow";
-   }
-
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
-      if (xWidget.getLabel().equals(getDropLabelStr())) {
-         dropViewer.getTableViewer().getTable().setEnabled(false);
-      }
    }
 
    @Override
@@ -113,9 +103,13 @@ public class CreateSiblingWorkflowBlam extends ModifyActionableItemsBlam impleme
       return false;
    }
 
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
    @Override
-   public String getName() {
-      return getTitle();
+   public String getDescriptionUsage() {
+      return "Create sibling workflows in this Action.  Select AIs and select Create button.";
    }
 
 }

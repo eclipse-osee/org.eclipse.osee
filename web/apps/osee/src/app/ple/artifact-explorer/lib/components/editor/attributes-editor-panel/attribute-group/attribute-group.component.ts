@@ -54,6 +54,8 @@ const COLLAPSE_LIMIT = 5;
 							[attr]="attr"
 							[artifactId]="artifactId()"
 							[artifactApplicability]="artifactApplicability()"
+							[branchId]="branchId()"
+							[viewId]="viewId()"
 							[disabled]="disabled()"
 							[conflicted]="conflicted()"
 							[showLabel]="false" />
@@ -91,6 +93,10 @@ export class AttributeGroupComponent {
 	artifactId = input.required<`${number}`>();
 	/** Artifact applicability. */
 	artifactApplicability = input.required<applic>();
+	/** Branch of the owning artifact, so grouped editors write to the tab's branch. */
+	branchId = input<string>('');
+	/** View of the owning artifact, passed through to the editors. */
+	viewId = input<string>('');
 	/** Whether editing is disabled. */
 	disabled = input(false);
 	/** Whether a remote conflict exists (blocks auto-save). */

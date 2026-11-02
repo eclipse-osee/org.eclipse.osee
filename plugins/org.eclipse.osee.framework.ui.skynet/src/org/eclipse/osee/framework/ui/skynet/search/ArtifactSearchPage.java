@@ -56,10 +56,10 @@ import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.osee.framework.ui.skynet.search.page.AbstractArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.NamedLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchSelWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
 import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
@@ -109,7 +109,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private FilteredCheckboxTree attributeTypeList;
    private FilteredTree attributeValueList;
 
-   private XBranchSelectWidget branchSelect;
+   private XXBranchSelWidget branchWidget;
 
    private SearchFilter ATTRIBUTE_VALUE_FILTER;
    private static int lastSearchTypeListSelected = 2; // Attribute
@@ -128,11 +128,9 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
          mainComposite.setLayout(new GridLayout());
 
-         branchSelect = new XBranchSelectWidget("");
-         branchSelect.setDisplayLabel(false);
-         branchSelect.setSelection(BranchManager.getLastBranch());
-         branchSelect.createWidgets(mainComposite, 2);
-         branchSelect.addListener(new BranchSelectListener(branchSelect));
+         branchWidget = new XXBranchSelWidget();
+         branchWidget.setSelected(BranchManager.getLastBranch());
+         branchWidget.createWidgets(mainComposite, 2);
 
          addFilterControls(mainComposite);
          addTableControls(mainComposite);
@@ -151,29 +149,19 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       }
    }
 
-   private static class BranchSelectListener implements Listener {
-
-      private final XBranchSelectWidget branchSelect;
-
-      public BranchSelectListener(XBranchSelectWidget branchSelect) {
-         this.branchSelect = branchSelect;
-      }
-
-      @Override
-      public void handleEvent(Event event) {
-         BranchToken branch = branchSelect.getSelection();
-         XResultData rd = isBranchReadable(branch);
-         if (rd.isErrors()) {
-            XResultDataDialog.open(rd, "Branch Access", "Read Access Denied for branch %s", branch.toStringWithId());
-         }
-      }
-   }
-
    private BranchToken getSelectedBranch() {
-      BranchToken branch = branchSelect.getData();
+      BranchToken branch = branchWidget.getSelectedFirst();
+
+      XResultData rd = isBranchReadable(branch);
+      if (rd.isErrors()) {
+         XResultDataDialog.open(rd, "Branch Access", "Read Access Denied for branch %s", branch.toStringWithId());
+         branch = BranchManager.getLastBranch();
+      }
+
       if (branch == null) {
          branch = BranchManager.getLastBranch();
       }
+
       try {
          if (branch == null) {
             branch = COMMON;

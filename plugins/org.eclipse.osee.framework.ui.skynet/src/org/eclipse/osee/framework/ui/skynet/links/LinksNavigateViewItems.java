@@ -45,7 +45,7 @@ public class LinksNavigateViewItems implements XNavigateItemProvider {
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
+   public List<XNavigateItem> getNavigateItemsForCurrentUser(List<XNavigateItem> items) {
       ensurePopulated();
       items.add(linkNavItem);
       return items;

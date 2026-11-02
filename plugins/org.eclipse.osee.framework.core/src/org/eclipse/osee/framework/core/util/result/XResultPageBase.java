@@ -17,7 +17,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -101,6 +103,34 @@ public class XResultPageBase {
       return id;
    }
 
+   public static XResultPageBase getReport(XResultData resultData, final String title) {
+      return getReport(resultData, title, Manipulations.ALL);
+   }
+
+   public static XResultPageBase getReport(XResultData resultData, final String title, Manipulations... manipulations) {
+      XResultPageBase page = new XResultPageBase(title + " - " + DateUtil.getMMDDYYHHMM(),
+         resultData.toString().equals("") ? "Nothing Logged" : resultData.toString(), manipulations);
+      if (isErrorWarningCountFromSearch(manipulations)) {
+         page.setNumErrors(resultData.getNumErrorsViaSearch());
+         page.setNumWarnings(resultData.getNumWarningsViaSearch());
+      } else {
+         page.setNumErrors(resultData.getNumErrors());
+         page.setNumWarnings(resultData.getNumWarnings());
+      }
+      return page;
+   }
+
+   private static boolean isErrorWarningCountFromSearch(Manipulations[] manipulations) {
+      if (manipulations != null) {
+         for (Manipulations manip : manipulations) {
+            if (manip == Manipulations.ERROR_WARNING_FROM_SEARCH) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
    public String getErrorWarningHtml() {
       int numErrors = getNumErrors();
       int numWarnings = getNumWarnings();
@@ -113,7 +143,7 @@ public class XResultPageBase {
       if (numErrors > 0) {
          return "<font color=\"red\">";
       } else if (numWarnings > 0) {
-         return "<font color=\"yellow\">";
+         return "<font color=\"orange\">";
       }
       return "";
    }

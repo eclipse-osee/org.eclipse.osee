@@ -17,22 +17,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -58,9 +55,9 @@ public class AtsQuickSearchComposite extends Composite {
    private static final String MEMENTO_KEY_INCLUDE_COMPLETED = "includeCompleted";
    private static final String MEMENTO_KEY_USE_SEARCH_VIEW = "useSearchView";
 
-   private Combo searchCombo;
-   private XCheckBox completeCancelledCheck;
-   private XCheckBox useSearchViewCheck;
+   private final Combo searchCombo;
+   private final XXCheckBoxWidget completeCancelledCheck;
+   private final XXCheckBoxWidget useSearchViewCheck;
    private final List<String> searchHistory = new LinkedList<>();
 
    public AtsQuickSearchComposite(Composite parent, int style) {
@@ -101,16 +98,17 @@ public class AtsQuickSearchComposite extends Composite {
       Composite checkComp = new Composite(this, SWT.NONE);
       checkComp.setLayout(ALayout.getZeroMarginLayout(2, false));
 
-      completeCancelledCheck = new XCheckBox("IC");
+      completeCancelledCheck = new XXCheckBoxWidget("IC");
       completeCancelledCheck.createWidgets(checkComp, 2);
       completeCancelledCheck.setToolTip("Include completed/cancelled ATS Artifacts");
 
       Composite checkComp2 = new Composite(this, SWT.NONE);
       checkComp2.setLayout(ALayout.getZeroMarginLayout(2, false));
 
-      useSearchViewCheck = new XCheckBox("SV");
+      useSearchViewCheck = new XXCheckBoxWidget("SV");
       useSearchViewCheck.createWidgets(checkComp2, 2);
-      useSearchViewCheck.setToolTip("Use Eclipse Search View (tree mode shows attribute match locations); World View otherwise");
+      useSearchViewCheck.setToolTip(
+         "Use Eclipse Search View (tree mode shows attribute match locations); World View otherwise");
    }
 
    private void handleSearch() {
@@ -209,11 +207,11 @@ public class AtsQuickSearchComposite extends Composite {
 
          Boolean includeCompleted = child.getBoolean(MEMENTO_KEY_INCLUDE_COMPLETED);
          if (includeCompleted != null) {
-            completeCancelledCheck.set(includeCompleted);
+            completeCancelledCheck.setSelected(includeCompleted);
          }
          Boolean useSearchView = child.getBoolean(MEMENTO_KEY_USE_SEARCH_VIEW);
          if (useSearchView != null) {
-            useSearchViewCheck.set(useSearchView);
+            useSearchViewCheck.setSelected(useSearchView);
          }
       }
    }

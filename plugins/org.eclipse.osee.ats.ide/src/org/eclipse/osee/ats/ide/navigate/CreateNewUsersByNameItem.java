@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -55,15 +54,14 @@ import org.eclipse.swt.graphics.Image;
 public class CreateNewUsersByNameItem extends XNavigateItemAction {
 
    public CreateNewUsersByNameItem() {
-      super("Create New Users by Name (Testing Only)", CoreImage.USER, XNavigateItem.USER_MANAGEMENT_ADMIN);
+      super("Create New Users by Name (Test Only)", CoreImage.USER, XNavigateItem.USER_MANAGEMENT_ADMIN);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create New User(s)", null,
-         "Enter User name(s) one per line", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed = new EntryDialog("Create New User(s)", "Enter User name(s) one per line");
       ed.setFillVertically(true);
-      if (ed.open() == 0) {
+      if (ed.open() == Window.OK) {
          Set<String> newUserNames = new HashSet<>();
          for (String str : ed.getEntry().split(System.getProperty("line.separator"))) {
             newUserNames.add(str);

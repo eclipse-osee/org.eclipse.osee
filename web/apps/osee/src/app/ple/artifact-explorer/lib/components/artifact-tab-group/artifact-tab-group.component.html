@@ -26,6 +26,7 @@
 		mat-stretch-tabs="false"
 		mat-align-tabs="start"
 		cdkDropList
+		[cdkDropListEnterPredicate]="onlyReorderTabs"
 		(cdkDropListDropped)="onTabDropped($event)"
 		cdkDropListOrientation="horizontal">
 		@for (tab of tabs(); track tab.tabId) {

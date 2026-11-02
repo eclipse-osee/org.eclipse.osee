@@ -59,10 +59,9 @@ public class AtsSearchData {
    @JsonSerialize(using = ToStringSerializer.class)
    private final Long workPackageId = 0L;
    @JsonSerialize(using = ToStringSerializer.class)
-   private Long applicId = 0L;
    private String colorTeam = "";
    private String namespace = "";
-   private ReviewFormalType reviewType;
+   private ReviewFormalType reviewFormalType;
    private ReleasedOption releasedOption;
    private HoldState holdState;
    private CustomizeData customizeData;
@@ -109,9 +108,8 @@ public class AtsSearchData {
       item.setInsertionActivityId(getInsertionActivityId());
       item.setWorkPackage(getWorkPackage());
       item.setColorTeam(getColorTeam());
-      item.setReviewType(getReviewType());
+      item.setReviewFormalType(getReviewFormalType());
       item.setAttrValues(getAttrValues());
-      item.setApplicId(getApplicId());
       item.setHoldState(getHoldState());
       item.setConfiguration(getConfiguration());
       item.setBuildImpact(getBuildImpact());
@@ -257,14 +255,6 @@ public class AtsSearchData {
       this.namespace = namespace;
    }
 
-   public ReviewFormalType getReviewType() {
-      return reviewType;
-   }
-
-   public void setReviewType(ReviewFormalType reviewType) {
-      this.reviewType = reviewType;
-   }
-
    public ReleasedOption getReleasedOption() {
       return releasedOption;
    }
@@ -287,14 +277,6 @@ public class AtsSearchData {
 
    public void setAttrValues(AttributeValues attrValues) {
       this.attrValues = attrValues;
-   }
-
-   public Long getApplicId() {
-      return applicId;
-   }
-
-   public void setApplicId(Long applicId) {
-      this.applicId = applicId;
    }
 
    public void addAttrValue(AttributeValue attributeValue) {
@@ -389,6 +371,14 @@ public class AtsSearchData {
 
    public void setPreviousPrListId(Long previousPrListId) {
       this.previousPrListId = previousPrListId;
+   }
+
+   public ReviewFormalType getReviewFormalType() {
+      return reviewFormalType;
+   }
+
+   public void setReviewFormalType(ReviewFormalType reviewFormalType) {
+      this.reviewFormalType = reviewFormalType;
    }
 
 }

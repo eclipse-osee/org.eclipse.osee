@@ -280,6 +280,66 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 		}
 	});
 
+	test('a remote change to a DIFFERENT attribute while in conflict does not reset the dirty editor value', async ({
+		browser,
+		request,
+		userPage,
+	}) => {
+		// Regression guard for the exact concern raised during the branch/commit
+		// rework: while one user has an unsaved edit on attribute A and a conflict is
+		// pending, a SECOND remote event (another user changing a DIFFERENT attribute
+		// B on the same artifact) must NOT reload the shared resource and clobber the
+		// in-progress edit. The parent editor's `hasDirtyEditorsForEntity` guard skips
+		// the reload while dirty; this proves it holds across a second, unrelated event.
+		test.setTimeout(90000);
+		const { branchId, branchName, artifact } =
+			await setupBranchWithArtifact(browser, request, 'KeepEdit');
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
+		try {
+			await openArtifact(joe, branchName, artifact);
+			await openArtifact(jason, branchName, artifact);
+			await Promise.all([
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
+			]);
+
+			const jasonUnsaved = artifact + ' - Jason in progress';
+
+			await test.step('Jason starts a dirty Name edit; Joe renames (same attr) to raise the conflict', async () => {
+				const jasonName = nameField(jason);
+				await jasonName.click();
+				await jasonName.fill(jasonUnsaved);
+
+				await editNameAndSave(joe, artifact + ' - Joe first');
+				await expect(
+					jason.locator('osee-conflict-resolution-banner')
+				).toBeVisible({ timeout: 20000 });
+			});
+
+			await test.step('Joe changes a DIFFERENT attribute (adds one), firing a second event', async () => {
+				// Adding an attribute is an attribute change to a different type than
+				// Name; it is a second remote event on the same artifact while Jason is
+				// still conflicted.
+				await addAttribute(joe, 'CUI Limited');
+			});
+
+			await test.step("Jason's in-progress Name value is preserved (not reset) and the banner still shows", async () => {
+				// The decisive assertion: Jason's unsaved text must still be there. If
+				// the second event had reloaded the shared resource, this would have
+				// reverted to a server value.
+				await expect(nameField(jason)).toHaveValue(jasonUnsaved, {
+					timeout: 20000,
+				});
+				await expect(
+					jason.locator('osee-conflict-resolution-banner')
+				).toBeVisible();
+			});
+		} finally {
+			await purgeBranchViaApi(request, branchId);
+		}
+	});
+
 	test('attribute add, delete, and history updates by one user propagate to another', async ({
 		browser,
 		request,

@@ -17,6 +17,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -42,6 +43,11 @@ public final class ClearSearchAction extends Action {
       AtsSearchData searchData = AtsApiService.get().getAtsSearchDataService().createSearchData(
          searchItem.getNamespace(), searchItem.getSearchName());
       searchData.getStateTypes().add(StateType.Working);
+      // loadWidgets clears builder defaults before applying this data. Explicitly restore the new Action Search
+      // baseline without adding Team Workflow to Review or fixed-type searches that do not render this checkbox.
+      if (!searchItem.isReviewSearch() && searchItem.showWorkItemWidgets()) {
+         searchData.getWorkItemTypes().add(WorkItemType.TeamWorkflow);
+      }
       searchItem.loadWidgets(searchData);
    }
 

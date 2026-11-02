@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -65,14 +64,14 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class OseeProductionTestsNavItem extends XNavigateItem {
 
-   public static String NAME = "OSEE Production Tests";
+   public static String NAME = "Testing - OSEE Production Tests";
    private final AtsApi atsApi;
    private static IAtsQueryService queryService;
    private final List<StandAloneRestData> datas = new ArrayList<>();
    private static final List<OseeProductionTestProvider> providers = new ArrayList<>();
 
    public OseeProductionTestsNavItem() {
-      super(NAME, AtsImage.SEARCH, AtsNavigateViewItems.ATS_ADMIN);
+      super(NAME, AtsImage.SEARCH, XNavigateItem.TOP_ADMIN_TESTING);
       atsApi = AtsApiService.get();
       if (atsApi != null) {
          queryService = atsApi.getQueryService();

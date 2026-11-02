@@ -19,10 +19,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -33,8 +33,9 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ValidateWorkDefinitionNavigateItem extends XNavigateItem {
 
-   public ValidateWorkDefinitionNavigateItem(XNavItemCat category) {
-      super("Validate Work Definitions", AtsImage.WORKFLOW_DEFINITION, category);
+   public ValidateWorkDefinitionNavigateItem() {
+      super("Testing - Validate Work Definitions", AtsImage.WORKFLOW_DEFINITION,
+         AtsNavigateViewItems.ATS_ADMIN_TESTING);
    }
 
    @Override

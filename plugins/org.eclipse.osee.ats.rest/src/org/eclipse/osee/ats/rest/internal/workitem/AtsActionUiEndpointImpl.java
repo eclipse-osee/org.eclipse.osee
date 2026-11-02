@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.ats.rest.internal.wfe.XWidgetHtmlPage;
 import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalWebOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -76,6 +77,22 @@ public final class AtsActionUiEndpointImpl implements AtsActionUiEndpointApi {
 
       JournalWebOperations op = new JournalWebOperations(workItem, user, atsApi);
       return op.getHtml();
+   }
+
+   @Override
+   @Path("{id}/workflow")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getWorkflow(@PathParam("id") String id) {
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(id);
+      if (workItem == null) {
+         workItem = atsApi.getWorkItemService().getWorkItem(atsApi.getQueryService().getArtifactById(id));
+      }
+      if (workItem == null) {
+         return AHTML.simplePage(String.format("Workflow with id [%s] not found", id));
+      }
+      XWidgetHtmlPage page = new XWidgetHtmlPage(atsApi, workItem);
+      return page.generate();
    }
 
    /**

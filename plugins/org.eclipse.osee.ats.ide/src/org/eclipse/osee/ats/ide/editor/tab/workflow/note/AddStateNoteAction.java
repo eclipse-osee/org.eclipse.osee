@@ -92,8 +92,8 @@ public class AddStateNoteAction extends AbstractAtsAction {
          new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);
       dialog.create();
       if (dialog.open() == Window.OK) {
-         selectedState = noteWizard.mainPage.stateList.getSelected().iterator().next().getName();
-         noteType = AtsStateNoteType.valueOf(noteWizard.mainPage.typeList.getSelected().iterator().next().getName());
+         selectedState = noteWizard.mainPage.stateList.getSelected().iterator().next();
+         noteType = AtsStateNoteType.valueOf(noteWizard.mainPage.typeList.getSelected().iterator().next());
          noteText = noteWizard.mainPage.noteText.get();
          return true;
       }

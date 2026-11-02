@@ -16,13 +16,11 @@ package org.eclipse.osee.ats.ide.util.widgets.defect;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -36,8 +34,8 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class NewDefectDialog extends EntryDialog {
 
-   private XText text2;
-   private XCombo severityCombo;
+   private XXTextWidget text2;
+   private XXStringsWidget severityCombo;
    private String entryText2 = "";
    private final String label2;
    private Listener okListener;
@@ -63,28 +61,30 @@ public class NewDefectDialog extends EntryDialog {
    @Override
    protected void createExtendedArea(Composite parent) {
 
-      getErrorLabel().addMouseListener(new MouseAdapter() {
+      textWidget.addLabelMouseListener(new MouseAdapter() {
 
          @Override
          public void mouseUp(MouseEvent e) {
             super.mouseUp(e);
             if (e.button == 3) {
-               text.set("description " + AtsApiService.get().getRandomNum());
-               severityCombo.set("Issue");
-               text2.set("location");
+               textWidget.setSelected("description " + AtsApiService.get().getRandomNum());
+               severityCombo.setSelected("Issue");
+               severity = Severity.Issue;
+               text2.setSelected("location");
+               handleModified();
             }
          }
 
       });
 
-      severityCombo = new XCombo("Enter Defect Severity");
-      severityCombo.setDataStrings(Severity.strValues().toArray(new String[Severity.strValues().size()]));
-      severityCombo.createWidgets(customAreaParent, 1);
+      severityCombo = new XXStringsWidget("Enter Defect Severity");
+      severityCombo.setSelectable(Severity.strValues());
+      severityCombo.createWidgets(parent, 1);
       severityCombo.addXModifiedListener(new XModifiedListener() {
 
          @Override
          public void widgetModified(XWidget widget) {
-            String str = severityCombo.get();
+            String str = severityCombo.getSelectedFirst();
             if (Strings.isValid(str)) {
                severity = Severity.valueOf(str);
             } else {
@@ -94,21 +94,21 @@ public class NewDefectDialog extends EntryDialog {
          }
       });
 
-      text2 = new XText(label2);
+      text2 = new XXTextWidget(label2);
       text2.setFillHorizontally(true);
       if (isFillVertically()) {
          text2.setFillVertically(true);
          text2.setHeight(100);
-         text.setHeight(100);
+         textWidget.setHeight(100);
          text2.setFont(getFont());
       }
-      text2.set(entryText2);
-      text2.createWidgets(customAreaParent, 1);
+      text2.setSelected(entryText2, false);
+      text2.createWidgets(parent, 1);
 
-      text2.addModifyListener(new ModifyListener() {
+      text2.addXModifiedListener(new XModifiedListener() {
 
          @Override
-         public void modifyText(ModifyEvent e) {
+         public void widgetModified(XWidget widget) {
             handleModified();
             entryText2 = text2.get();
          }
@@ -146,6 +146,7 @@ public class NewDefectDialog extends EntryDialog {
          setErrorString("Must select Severity");
          return false;
       }
+      setErrorString("");
       return true;
    }
 

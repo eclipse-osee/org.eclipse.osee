@@ -239,7 +239,23 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
          changes.relate(teamDef, CoreRelationTypes.DefaultHierarchical_Child, enumArt);
          changes.addTag(enumArt, AtsUtil.WORK_PKG_STATIC_ID);
          for (String workPackage : workPackageNames) {
-            Conditions.assertTrue(Strings.isValid(artName), "Invalid package name");
+            Conditions.assertTrue(Strings.isValid(workPackage), "Invalid package name");
+            changes.addAttribute(enumArt, CoreAttributeTypes.IdValue, workPackage);
+         }
+      }
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andWorkPackages(ArtifactToken enumArtToken, String... workPackageNames) {
+      if (workPackageEnumArt.isInvalid()) {
+         Conditions.assertTrue(enumArtToken.isValid(), "Invalid art name");
+         Conditions.assertTrue(workPackageNames.length > 0, "Work Package Names can not be empty");
+         ArtifactToken enumArt = changes.createArtifact(enumArtToken);
+         changes.relate(teamDef, CoreRelationTypes.DefaultHierarchical_Child, enumArt);
+         changes.addTag(enumArt, AtsUtil.WORK_PKG_STATIC_ID);
+         for (String workPackage : workPackageNames) {
+            Conditions.assertTrue(Strings.isValid(workPackage), "Invalid package name");
             changes.addAttribute(enumArt, CoreAttributeTypes.IdValue, workPackage);
          }
       }

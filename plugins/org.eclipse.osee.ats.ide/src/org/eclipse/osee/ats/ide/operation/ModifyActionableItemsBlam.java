@@ -25,20 +25,19 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitionUtility;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -52,10 +51,12 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -67,20 +68,19 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateTreeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.ICheckBoxStateTreeListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.ICheckBoxStateTreeViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXListArtifactDropWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -90,42 +90,61 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class ModifyActionableItemsBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class ModifyActionableItemsBlam extends AbstractAtsBlam {
 
+   private static final String BLAM_NAME = "Modify Actionable Items";
    protected final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
-   private TeamWorkFlowArtifact defaultTeamWorkflow;
+
+   private IAtsTeamWorkflow teamWf;
    private FilteredCheckboxTree wfTree;
    private FilteredCheckboxTree otherTree;
    protected CheckBoxStateFilteredTreeViewer<IAtsActionableItem> newTree;
-   protected XListDropViewer dropViewer;
-   private XText resultsText;
+   protected XXListArtifactDropWidget dropViewer;
+   private XXTextWidget resultsText;
    private Set<IAtsActionableItem> currAIsForAllWfs;
    private List<IAtsActionableItem> currWorkflowDesiredAIs;
    private List<IAtsActionableItem> newAIs;
    private WorkflowsActiveAisContentProvider wfAiProvider;
 
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
    public ModifyActionableItemsBlam() {
-      // do nothing
+      super(BLAM_NAME, CoreImage.GEAR);
    }
 
-   protected String getDropLabelStr() {
-      return TEAM_WORKFLOW;
+   public ModifyActionableItemsBlam(String name, OseeImage image) {
+      super(name, image);
+   }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andListDropWidget(getDropLabelStr());
+      return wb.getXWidgetDatas();
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
+      XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, xWidgetSwtRenderer, modListener, isEditable);
       if (xWidget.getLabel().equals(getDropLabelStr())) {
          createTreeViewers(xWidget.getControl().getParent());
 
-         dropViewer = (XListDropViewer) xWidget;
-         if (defaultTeamWorkflow != null) {
-            dropViewer.setInput(defaultTeamWorkflow);
+         dropViewer = (XXListArtifactDropWidget) xWidget;
+         if (teamWf != null) {
+            dropViewer.setSelected((Artifact) teamWf.getStoreObject());
          }
          dropViewer.addXModifiedListener(new DropListener());
          Control control = dropViewer.getControl();
@@ -135,8 +154,51 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       }
    }
 
-   protected void createTreeViewers(Composite parent) {
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
+   @Override
+   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               List<Artifact> artifacts = dropViewer.getSelectedArtifacts();
+               if (artifacts.isEmpty()) {
+                  AWorkbench.popup("ERROR", "Must drag in a Team Workflow to duplicate.");
+                  return;
+               } else if (artifacts.size() != 1 || !(artifacts.iterator().next() instanceof IAtsTeamWorkflow)) {
+                  AWorkbench.popup("ERROR", "Only one Team Workflow can be processed at a time");
+               }
+               if (newAIs.isEmpty()) {
+                  AWorkbench.popup("Must select AI(s)");
+                  return;
+               }
+               XResultData data = new XResultData(false);
+               TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifacts.iterator().next();
+               performModification(teamWf, data, false);
+               if (data.isErrors()) {
+                  XResultDataUI.report(data, getName());
+               }
+               clearTables();
+               refreshTables(teamWf);
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         };
+      });
+   }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
+   protected String getDropLabelStr() {
+      return TEAM_WORKFLOW;
+   }
+
+   protected void createTreeViewers(Composite parent) {
       Composite treeComp = new Composite(parent, SWT.BORDER);
       treeComp.setLayout(new GridLayout(getLayoutColumns(), true));
       GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -158,8 +220,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
       if (displayWfTree()) {
          wfTree = new FilteredCheckboxTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-         wfAiProvider = new WorkflowsActiveAisContentProvider(defaultTeamWorkflow == null ? null : defaultTeamWorkflow,
-            Active.Active);
+         wfAiProvider = new WorkflowsActiveAisContentProvider(teamWf == null ? null : teamWf, Active.Active);
          wfTree.getViewer().setContentProvider(wfAiProvider);
          wfTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
          wfTree.getViewer().setComparator(new AtsObjectNameSorter());
@@ -201,7 +262,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       });
       newTree.getViewer().addPostSelectionChangedListener(new ModificationListener());
 
-      resultsText = new XText("Results if run");
+      resultsText = new XXTextWidget("Results if run");
       resultsText.setVerticalLabel(true);
       GridData data2 = new GridData(SWT.FILL, SWT.NONE, true, false);
       data2.heightHint = 100;
@@ -247,8 +308,8 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          });
       }
 
-      if (defaultTeamWorkflow != null) {
-         refreshTables(defaultTeamWorkflow);
+      if (teamWf != null) {
+         refreshTables(teamWf);
       }
    }
 
@@ -293,7 +354,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
    }
 
-   private void refreshTables(final TeamWorkFlowArtifact teamWf) {
+   private void refreshTables(final IAtsTeamWorkflow teamWf) {
       final WorkflowsActiveAisContentProvider fWfAiProvider = wfAiProvider;
 
       Displays.ensureInDisplayThread(new Runnable() {
@@ -346,7 +407,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       newTree.clearChecked();
    }
 
-   private void refreshResultsArea(TeamWorkFlowArtifact teamWf) {
+   private void refreshResultsArea(IAtsTeamWorkflow teamWf) {
       XResultData results = new XResultData(false);
       performModification(teamWf, results, true);
       resultsText.setText(results.toString());
@@ -354,14 +415,14 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
    private TeamWorkFlowArtifact getDroppedTeamWf() {
       TeamWorkFlowArtifact teamWf = null;
-      List<Artifact> artifacts = dropViewer.getArtifacts();
+      List<Artifact> artifacts = dropViewer.getSelectedArtifacts();
       if (artifacts.size() == 1) {
          teamWf = (TeamWorkFlowArtifact) artifacts.iterator().next();
       }
       return teamWf;
    }
 
-   private void performModification(TeamWorkFlowArtifact teamWf, XResultData results, boolean logOnly) {
+   private void performModification(IAtsTeamWorkflow teamWf, XResultData results, boolean logOnly) {
       if (teamWf == null) {
          AWorkbench.popup("Must drop a Team Workflow to modify");
          return;
@@ -426,13 +487,13 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
       private final ModifyActionableItems job;
       List<IAtsTeamWorkflow> newTeamWfs = new ArrayList<>();
-      private final TeamWorkFlowArtifact teamWf;
+      private final IAtsTeamWorkflow teamWf;
 
-      public TeamWorkFlowArtifact getTeamWf() {
+      public IAtsTeamWorkflow getTeamWf() {
          return teamWf;
       }
 
-      public ModifyActionableItemOperation(String opName, TeamWorkFlowArtifact teamWf, XResultData results, ModifyActionableItems job) {
+      public ModifyActionableItemOperation(String opName, IAtsTeamWorkflow teamWf, XResultData results, ModifyActionableItems job) {
          super(opName, Activator.PLUGIN_ID);
          this.teamWf = teamWf;
          this.job = job;
@@ -469,68 +530,12 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    }
 
    @Override
-   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               List<Artifact> artifacts = dropViewer.getArtifacts();
-               if (artifacts.isEmpty()) {
-                  AWorkbench.popup("ERROR", "Must drag in a Team Workflow to duplicate.");
-                  return;
-               } else if (artifacts.size() != 1 || !(artifacts.iterator().next() instanceof IAtsTeamWorkflow)) {
-                  AWorkbench.popup("ERROR", "Only one Team Workflow can be processed at a time");
-               }
-               if (newAIs.isEmpty()) {
-                  AWorkbench.popup("Must select AI(s)");
-                  return;
-               }
-               XResultData data = new XResultData(false);
-               TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifacts.iterator().next();
-               performModification(teamWf, data, false);
-               if (data.isErrors()) {
-                  XResultDataUI.report(data, getName());
-               }
-               clearTables();
-               refreshTables(teamWf);
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         };
-      });
-   }
-
-   @Override
    public boolean showExecuteSection() {
       return false;
    }
 
-   @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets>"
-         //
-         + "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + getDropLabelStr() + "\" />" +
-         //
-         "</xWidgets>";
-   }
-
-   @Override
-   public String getDescriptionUsage() {
-      return "Add, remove or modify actionable items impacted in this Action.";
-   }
-
-   public void setDefaultTeamWorkflow(TeamWorkFlowArtifact team) {
-      this.defaultTeamWorkflow = team;
-   }
-
-   @Override
-   public String getName() {
-      return "Modify Actionable Items";
-   }
-
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(AtsNavigateViewItems.ATS_UTIL);
+   public void setDefaultTeamWorkflow(IAtsTeamWorkflow teamWf) {
+      this.teamWf = teamWf;
    }
 
    @Override
@@ -546,16 +551,6 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    @Override
    public String getTitle() {
       return getName();
-   }
-
-   @Override
-   public Image getImage() {
-      return ImageManager.getImage(AtsImage.ACTIONABLE_ITEM);
-   }
-
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.ACTIONABLE_ITEM);
    }
 
    public int getWorkflowTreeItemCount() {
@@ -586,6 +581,20 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
    protected boolean displayDuplicateButton() {
       return true;
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AtsNavigateViewItems.ATS_UTIL);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Add, remove or modify actionable items impacted in this Action.";
    }
 
 }

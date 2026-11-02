@@ -276,8 +276,8 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
 
    @Override
    public BranchId getBaselineBranchId(IAtsTeamDefinition teamDef) {
-      return BranchId.valueOf(
-         atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, "0"));
+      return atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId,
+         BranchId.SENTINEL);
    }
 
    @Override

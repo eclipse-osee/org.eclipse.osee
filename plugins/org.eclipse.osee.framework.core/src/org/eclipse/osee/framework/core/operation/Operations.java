@@ -119,6 +119,13 @@ public final class Operations {
       }
       job.setRule(rule);
       job.schedule();
+      if (job instanceof OperationJob && (((OperationJob) job).operation).isPend()) {
+         try {
+            job.join();
+         } catch (InterruptedException ex) {
+            // do nothing
+         }
+      }
       return job;
    }
 

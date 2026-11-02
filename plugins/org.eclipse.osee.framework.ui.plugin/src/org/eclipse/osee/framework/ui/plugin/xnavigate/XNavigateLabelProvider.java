@@ -39,7 +39,8 @@ public class XNavigateLabelProvider implements ILabelProvider {
       if (arg0 == null) {
          return "";
       }
-      return ((XNavigateItem) arg0).getName();
+      XNavigateItem item = (XNavigateItem) arg0;
+      return item.isAdminOnly() ? item.getName() + " - (Admin)" : item.getName();
    }
 
    /**

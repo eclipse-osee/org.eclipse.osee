@@ -817,7 +817,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Date createDate = new Date();
       data.setCreatedDateLong(String.valueOf(createDate.getTime()));
       data.setCreatedByUserArtId(DemoUsers.Alex_Kay.getIdString());
-      data.setChangeType(ChangeTypes.Improvement);
+      data.setChangeType(ChangeTypes.Improvement.name());
       data.setDescription("desc");
       Date needBy = new Date();
       data.setNeedByDateLong(String.valueOf(needBy.getTime()));

@@ -12,3 +12,4 @@
  **********************************************************************/
 export * from './transaction.service';
 export * from './current-transaction.service';
+export * from './branch-context';

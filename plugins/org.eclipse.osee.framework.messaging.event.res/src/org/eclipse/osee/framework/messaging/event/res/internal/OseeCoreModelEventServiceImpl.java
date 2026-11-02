@@ -119,7 +119,7 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
    public void addFrameworkListener(IFrameworkEventListener frameworkEventListener) {
       for (Entry<ResMessages, Boolean> messageEntries : messages.entrySet()) {
          ResMessages resMessageID = messageEntries.getKey();
-         boolean isVerbose = messageEntries.getValue();
+         boolean isVerbose = false; // Only turn true to debug events
          subscribe(resMessageID, resMessageID.getSerializationClass(), isVerbose, frameworkEventListener);
       }
    }

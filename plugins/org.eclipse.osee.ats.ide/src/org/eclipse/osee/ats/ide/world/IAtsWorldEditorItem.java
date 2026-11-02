@@ -34,7 +34,7 @@ public interface IAtsWorldEditorItem {
    /**
     * Provides code based columns that compute their own value and may add their own editing capabilities. Columns
     * should NOT be created for simple attribute types, these are handled automatically in AtsAttributeTypes using
-    * AtsDisplayHints. Any code based columns also have to provide their own columns in AtsCoreService so the simple
+    * DisplayHints. Any code based columns also have to provide their own columns in AtsCoreService so the simple
     * value can be retrieved by client or server.
     */
    default public List<XViewerColumn> getXViewerColumns() {

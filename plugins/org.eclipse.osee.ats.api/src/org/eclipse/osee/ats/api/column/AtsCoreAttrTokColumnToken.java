@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.ats.api.column;
 
-import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.config.MultiEdit;
 import org.eclipse.osee.ats.api.config.Show;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -37,7 +37,7 @@ public class AtsCoreAttrTokColumnToken extends AtsCoreColumnToken {
          AtsColumnUtil.getColumnType(attrType), //
          AtsColumnUtil.getColumnAlign(attrType), //
          Show.No, //
-         (attrType.hasDisplayHint(AtsDisplayHint.Edit)) ? MultiEdit.Yes : MultiEdit.No, //
+         (attrType.hasDisplayHint(DisplayHint.Edit)) ? MultiEdit.Yes : MultiEdit.No, //
          attrType.getDescription());
       this.attrTypeId = attrType.getId();
       this.attrTypeName = attrType.getName();

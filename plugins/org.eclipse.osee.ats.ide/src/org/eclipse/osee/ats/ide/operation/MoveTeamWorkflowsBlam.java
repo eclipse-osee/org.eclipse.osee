@@ -17,32 +17,65 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class MoveTeamWorkflowsBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class MoveTeamWorkflowsBlam extends AbstractAtsBlam {
 
-   private final static String SOURCE_TEAM_WORKFLOWS = "Source Team Workflow(s) (drop here)";
-   private final static String DEST_TEAM_WORKFLOW = "Destination Team Workflow (drop here)";
+   private static final String BLAM_NAME = "Move Team Workflows";
+   final static String SOURCE_TEAM_WORKFLOWS = "Source Team Workflow(s) (drop here)";
+   final static String DEST_TEAM_WORKFLOW = "Destination Team Workflow (drop here)";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
 
    public MoveTeamWorkflowsBlam() {
-      // do nothing
+      super(BLAM_NAME, CoreImage.GEAR);
    }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andListDropWidget(SOURCE_TEAM_WORKFLOWS);
+      wb.andListDropWidget(DEST_TEAM_WORKFLOW);
+      return wb.getXWidgetDatas();
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -69,28 +102,18 @@ public class MoveTeamWorkflowsBlam extends AbstractBlam {
       });
    }
 
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + SOURCE_TEAM_WORKFLOWS + "\" />" +
-      //
-         "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + DEST_TEAM_WORKFLOW + "\" />" +
-         //
-         "</xWidgets>";
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AtsNavigateViewItems.ATS_UTIL);
    }
 
    @Override
    public String getDescriptionUsage() {
       return "Takes source Team Workflow(s) and moves them to destination Team Workflow's Action; Emtpy source Action artifacts will be deleted.";
-   }
-
-   @Override
-   public String getName() {
-      return "Move Team Workflows";
-   }
-
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(AtsNavigateViewItems.ATS_UTIL);
    }
 
 }

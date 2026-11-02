@@ -32,16 +32,16 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.SpaceWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
@@ -49,6 +49,8 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -73,6 +75,10 @@ public class WfeOutlinePage extends ContentOutlinePage {
    private WorkflowEditor workflowEditor;
    private WorkDefinitionViewer workDefViewer;
    private boolean isTeamWf;
+   // The outline content is entirely derived from the (immutable-at-runtime) Work Definition.
+   // Track the currently-shown work def id so we only rebuild the tree when it actually changes
+   // (e.g. switching editors), never on artifact persist/refresh.
+   private Long shownWorkDefId = null;
 
    @Override
    public void createControl(Composite parent) {
@@ -103,21 +109,21 @@ public class WfeOutlinePage extends ContentOutlinePage {
    public void setInput(Object input) {
       if (input instanceof WorkflowEditor) {
          this.workflowEditor = (WorkflowEditor) input;
-         if (getTreeViewer() != null) {
-            if (workflowEditor != null && getTreeViewer() != null && Widgets.isAccessible(getTreeViewer().getTree())) {
+         if (getTreeViewer() != null && Widgets.isAccessible(getTreeViewer().getTree())) {
+            try {
                getTreeViewer().setInput(workflowEditor);
-               try {
-                  AbstractWorkflowArtifact awa = workflowEditor.getWorkItem();
-                  if (awa != null) {
-                     StateDefinition stateDef = WfeWorkFlowTab.getCurrentAtsWorkPage(awa).getStateDefinition();
-                     StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
-                     getTreeViewer().expandToLevel(awa, 2);
-                     getTreeViewer().expandToLevel(stateDef, 1);
-                     getTreeViewer().setSelection(newSelection);
-                  }
-               } catch (OseeStateException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               AbstractWorkflowArtifact awa = workflowEditor.getWorkItem();
+               shownWorkDefId =
+                  (awa != null && awa.getWorkDefinition() != null) ? awa.getWorkDefinition().getId() : null;
+               if (awa != null) {
+                  StateDefinition stateDef = awa.getStateDefinition();
+                  StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
+                  getTreeViewer().expandToLevel(awa, 2);
+                  getTreeViewer().expandToLevel(stateDef, 1);
+                  getTreeViewer().setSelection(newSelection);
                }
+            } catch (OseeStateException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } else if (input instanceof WorkDefinitionViewer) {
@@ -141,6 +147,31 @@ public class WfeOutlinePage extends ContentOutlinePage {
       if (viewer != null && Widgets.isAccessible(viewer.getTree())) {
          viewer.refresh();
       }
+   }
+
+   /**
+    * Called on editor refresh/reload. Re-inputs only when needed: when the tree lost its content (emptied/orphaned) or
+    * when the editor is now showing a different work definition than the outline currently displays. Since the work def
+    * is immutable at runtime, an ordinary artifact persist/refresh (same work def) does nothing — preserving the user's
+    * expansion/selection with no flicker.
+    */
+   public void reSync() {
+      TreeViewer viewer = getTreeViewer();
+      if (viewer == null || !Widgets.isAccessible(viewer.getTree()) || workflowEditor == null) {
+         return;
+      }
+      boolean lost =
+         viewer.getTree().getItemCount() == 0 || viewer.getInput() == null || viewer.getInput() != workflowEditor;
+      Long currentWorkDefId = null;
+      AbstractWorkflowArtifact awa = workflowEditor.getWorkItem();
+      if (awa != null && awa.getWorkDefinition() != null) {
+         currentWorkDefId = awa.getWorkDefinition().getId();
+      }
+      boolean workDefChanged = currentWorkDefId != null && !currentWorkDefId.equals(shownWorkDefId);
+      if (lost || workDefChanged) {
+         setInput(workflowEditor);
+      }
+      // else: same editor, same (static) work def -> nothing to do
    }
 
    private class InternalContentProvider implements ITreeContentProvider {
@@ -169,11 +200,11 @@ public class WfeOutlinePage extends ContentOutlinePage {
             if (workItem != null) {
                items.add(workItem);
             }
-            items.add(new WrappedStateItems(AtsApiService.get().getWorkItemService().getWorkItemHooks()));
+            items.add(new WrappedLayoutItems(AtsApiService.get().getWorkItemService().getWorkItemHooks()));
          } else if (element instanceof AbstractWorkflowArtifact) {
             items.add(((AbstractWorkflowArtifact) element).getWorkDefinition());
          } else if (element instanceof WrappedLayout) {
-            items.addAll(((WrappedLayout) element).getStateItems());
+            items.addAll(((WrappedLayout) element).getLayoutItems());
          } else if (element instanceof WorkDefinition) {
             getChildrenFromWorkDefinition((WorkDefinition) element, items);
          } else if (element instanceof StateDefinition) {
@@ -182,8 +213,8 @@ public class WfeOutlinePage extends ContentOutlinePage {
             items.addAll(((CompositeLayoutItem) element).getLayoutItems());
          } else if (element instanceof Artifact && ((Artifact) element).isOfType(CoreArtifactTypes.User)) {
             items.add("Assignee: " + ((Artifact) element).getName());
-         } else if (element instanceof WrappedStateItems) {
-            items.addAll(((WrappedStateItems) element).getStateItems());
+         } else if (element instanceof WrappedLayoutItems) {
+            items.addAll(((WrappedLayoutItems) element).getLayoutItems());
          } else if (element instanceof IAtsWorkItemHook) {
             items.add("Description: " + ((IAtsWorkItemHook) element).getDescription());
             items.add("Full Name: " + ((IAtsWorkItemHook) element).getFullName());
@@ -248,6 +279,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof IAtsWorkItemHook) {
             return true;
          } else if (element instanceof WidgetDef) {
+         } else if (element instanceof WidgetDef) {
             return true;
          } else if (element instanceof IAtsPeerReviewDefinition) {
             return true;
@@ -264,13 +296,13 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedPriorities) {
             return !((WrappedPriorities) element).getPriorities().isEmpty();
          } else if (element instanceof WrappedLayout) {
-            return !((WrappedLayout) element).stateItems.isEmpty();
+            return !((WrappedLayout) element).layoutItems.isEmpty();
          } else if (element instanceof WrappedDecisionReviews) {
             return !((WrappedDecisionReviews) element).decReviews.isEmpty();
          } else if (element instanceof WrappedPeerReviews) {
             return !((WrappedPeerReviews) element).decReviews.isEmpty();
-         } else if (element instanceof WrappedStateItems) {
-            return !((WrappedStateItems) element).workflowHooks.isEmpty();
+         } else if (element instanceof WrappedLayoutItems) {
+            return !((WrappedLayoutItems) element).workflowHooks.isEmpty();
          } else if (element instanceof WrappedStates) {
             if (((WrappedStates) element).states != null) {
                return !((WrappedStates) element).states.isEmpty();
@@ -286,34 +318,33 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWidgetDefinition(Object element1, List<Object> items) {
-         WidgetDef element = (WidgetDef) element1;
-         items.add("XWidget: " + element.getXWidgetName());
-         if (element.getAttributeType() != null) {
-            items.add("Attribute Name: " + element.getAttributeType().getName());
+         WidgetDef widDef = (WidgetDef) element1;
+         XWidgetData widData = widDef.getWidData();
+         items.add("WidgetDef: " + widDef.getClass().getSimpleName());
+         if (widDef instanceof SpaceWidgetDef) {
+            return;
          }
-         if (element.getAttributeType2() != null) {
-            items.add("Attribute2 Name: " + element.getAttributeType2().getName());
+         if (widDef.getWidgetId().isValid()) {
+            items.add("XWidget: " + widDef.getWidgetId().getName());
          }
-         if (Strings.isValid(element.getDescription())) {
-            items.add("Description: " + element.getDescription());
+         if (widDef.getAttributeType().isValid()) {
+            items.add("Attribute Name: " + widDef.getAttributeType().getName());
          }
-         if (element.getHeight() > 0) {
-            items.add("Height: " + element.getHeight());
+         if (widDef.getAttributeType2().isValid()) {
+            items.add("Attribute2 Name: " + widDef.getAttributeType2().getName());
          }
-         if (element.getAttributeType() != null) {
-            items.add("Tooltip: " + element.getToolTip());
+         if (Strings.isValid(widDef.getDescription())) {
+            items.add("Description: " + widDef.getDescription());
          }
-         if (!element.getOptions().getXOptions().isEmpty()) {
-            items.addAll(element.getOptions().getXOptions());
+         if (Strings.isValid(widDef.getToolTip())) {
+            items.add("Tooltip: " + widData.getToolTip());
          }
-         if (element.getEnumeratedArt() != null) {
-            items.add("Enumerated ArtId: " + element.getEnumeratedArt().toStringWithId());
+         items.add("XOption: " + widDef.getOptions());
+         if (widDef.getEnumeratedArt().isValid()) {
+            items.add("Enumerated ArtId: " + widDef.getEnumeratedArt().toStringWithId());
          }
-         if (element.getWidgetHints().isEmpty()) {
-            items.add("Widget Hints: " + element.getWidgetHints());
-         }
-         if (element.getUserGroup() != null && element.getUserGroup().getId() > 0) {
-            items.add("User Group: " + element.getUserGroup().toStringWithId());
+         if (widDef.getUserGroup().isValid()) {
+            items.add("User Group: " + widDef.getUserGroup().toStringWithId());
          }
       }
 
@@ -596,11 +627,11 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
    }
 
-   private class WrappedStateItems {
+   private class WrappedLayoutItems {
       private final Collection<IAtsWorkItemHook> workflowHooks;
 
-      public WrappedStateItems(Collection<IAtsWorkItemHook> stateItems) {
-         this.workflowHooks = stateItems;
+      public WrappedLayoutItems(Collection<IAtsWorkItemHook> workflowHooks) {
+         this.workflowHooks = workflowHooks;
       }
 
       @Override
@@ -608,7 +639,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          return "Workflow Hooks" + (workflowHooks.isEmpty() ? " (Empty)" : "");
       }
 
-      public Collection<IAtsWorkItemHook> getStateItems() {
+      public Collection<IAtsWorkItemHook> getLayoutItems() {
          return workflowHooks;
       }
 
@@ -633,19 +664,19 @@ public class WfeOutlinePage extends ContentOutlinePage {
    }
 
    private class WrappedLayout {
-      private final Collection<LayoutItem> stateItems;
+      private final Collection<LayoutItem> layoutItems;
 
-      public WrappedLayout(Collection<LayoutItem> stateItems) {
-         this.stateItems = stateItems;
+      public WrappedLayout(Collection<LayoutItem> layoutItems) {
+         this.layoutItems = layoutItems;
       }
 
       @Override
       public String toString() {
-         return "Layout" + (stateItems.isEmpty() ? " (Empty)" : "");
+         return "Layout" + (layoutItems.isEmpty() ? " (Empty)" : "");
       }
 
-      public Collection<LayoutItem> getStateItems() {
-         return stateItems;
+      public Collection<LayoutItem> getLayoutItems() {
+         return layoutItems;
       }
 
    }
@@ -695,6 +726,17 @@ public class WfeOutlinePage extends ContentOutlinePage {
                return String.format("%s - %s", changeTypes.name(), desc);
             }
             return changeTypes.name();
+         } else if (element instanceof SpaceWidgetDef) {
+            return "Space";
+         } else if (element instanceof AttrWidgetDef) {
+            return ((AttrWidgetDef) element).getName() + " - (AttrWidgetDef)";
+         } else if (element instanceof WidgetDef) {
+            WidgetDef widDef = (WidgetDef) element;
+            String widDefLabel = widDef.getName();
+            if (Strings.isInvalid(widDefLabel) && widDef.getWidgetId().isValid()) {
+               widDefLabel = widDef.getWidgetId().getName();
+            }
+            return (Strings.isValid(widDefLabel) ? widDefLabel : "unknown") + " - (WidgetDef)";
          }
          return String.valueOf(element);
       }
@@ -709,15 +751,16 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ArtifactImageManager.getImage((AbstractWorkflowArtifact) element);
          } else if (element instanceof StateDefinition) {
             return ImageManager.getImage(AtsImage.STATE_DEFINITION);
-         } else if (element instanceof IAtsWorkItemHook || element instanceof WrappedStateItems) {
-            return ImageManager.getImage(AtsImage.STATE_ITEM);
+         } else if (element instanceof IAtsWorkItemHook || element instanceof WrappedLayoutItems) {
+            return ImageManager.getImage(AtsImage.LAYOUT_ITEM);
          } else if (element instanceof WorkDefinition) {
             return ImageManager.getImage(AtsImage.WORKFLOW);
          } else if (element instanceof WidgetDef) {
+         } else if (element instanceof WidgetDef) {
             return ImageManager.getImage(CoreImage.GEAR);
          } else if (element instanceof CompositeLayoutItem || element instanceof WrappedLayout) {
-            return ImageManager.getImage(AtsImage.COMPOSITE_STATE_ITEM);
-         } else if (element instanceof String || element instanceof WidgetOption || element instanceof WrappedPercentWeight) {
+            return ImageManager.getImage(AtsImage.COMPOSITE_LAYOUT_ITEM);
+         } else if (element instanceof String || element instanceof XOption || element instanceof WrappedPercentWeight) {
             return ImageManager.getImage(AtsImage.RIGHT_ARROW_SM);
          } else if (element instanceof WrappedStates || element instanceof WrappedTransitions) {
             return ImageManager.getImage(AtsImage.TRANSITION);

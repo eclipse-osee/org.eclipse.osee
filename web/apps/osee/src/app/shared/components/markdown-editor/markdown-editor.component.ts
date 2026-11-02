@@ -16,14 +16,22 @@ import {
 	Component,
 	computed,
 	DestroyRef,
+	effect,
 	ElementRef,
 	inject,
 	Injector,
 	input,
 	model,
+	output,
 	signal,
 	viewChild,
 } from '@angular/core';
+import {
+	CdkDrag,
+	CdkDragDrop,
+	CdkDragEnter,
+	CdkDropList,
+} from '@angular/cdk/drag-drop';
 import {
 	takeUntilDestroyed,
 	toObservable,
@@ -69,6 +77,19 @@ import {
 import { SUPPORTED_IMAGE_FORMATS_LABEL } from '@osee/shared/types/constants';
 import { isSupportedImageFile } from '@osee/shared/utils';
 import { MarkdownImageService } from './markdown-image.service';
+import {
+	buildArtifactLinkTag,
+	buildImageLinkTag,
+	extractArtifactLinkIds,
+	imageLinkRegex,
+	resolveArtifactLinksToAnchors,
+} from './markdown-link.util';
+import {
+	SUPPORTED_IMAGE_EXTENSIONS,
+	ARTIFACTTYPEIDENUM,
+} from '@osee/shared/types/constants';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { artifactWithRelations } from '@osee/artifact-with-relations/types';
 import { HelpTopicRegistryService } from '../help-drawer/help-topic-registry.service';
 import { HelpAnchorDirective } from '../help-drawer/help-anchor.directive';
 import { HelpButtonComponent } from '../help-drawer/help-button.component';
@@ -85,6 +106,7 @@ import {
 		MatIconButton,
 		FormsModule,
 		MatTooltip,
+		CdkDropList,
 		HelpAnchorDirective,
 		HelpButtonComponent,
 		SplitButtonComponent,
@@ -100,6 +122,70 @@ export class MarkdownEditorComponent {
 	disabled = input(false);
 	artifactId = input<string>('');
 	mdContent = model.required<string>();
+
+	/**
+	 * When true, the editor body accepts artifacts dragged from the hierarchy (via
+	 * Angular CDK) and inserts an `<artifact-link>` (or `<image-link>` for image
+	 * artifacts) at the cursor. Off by default so the shared editor is inert where
+	 * no artifact drag source exists (e.g. the create-child dialog).
+	 */
+	acceptArtifactDrops = input(false);
+
+	/**
+	 * CDK drop-list id for the editor body, used by an external drag source (the
+	 * artifact hierarchy) to connect to this list by id. Only meaningful when
+	 * {@link acceptArtifactDrops} is true; the consumer supplies a unique id and
+	 * registers it with whatever drag source should feed the editor.
+	 */
+	dropListId = input<string>('osee-markdown-editor-drop-list');
+
+	/**
+	 * Branch this editor's artifact lives on (the owning tab's pinned branch). Used
+	 * to reject a cross-branch artifact drop: the hierarchy drag source always
+	 * reflects the globally-selected branch, so an artifact dragged while the global
+	 * selector differs from this tab's branch would link to an id that may not exist
+	 * (or be a different artifact) on this branch. When empty (default), no
+	 * cross-branch check is applied — consumers without a pinned branch opt out.
+	 * Mirrors the desktop `OmeEditTabDrop` same-branch guard.
+	 */
+	editorBranchId = input<string>('');
+
+	/**
+	 * Display names for the artifact ids referenced by `<artifact-link>` tags, used
+	 * to label the resolved anchors in the preview. The consumer resolves these in
+	 * response to {@link artifactLinkIdsChange} and feeds them back here; unknown
+	 * ids fall back to the id.
+	 */
+	artifactLinkNames = input<Map<string, string>>(new Map());
+
+	/** Emits the current set of `<artifact-link>` ids whenever the content changes. */
+	artifactLinkIdsChange = output<string[]>();
+
+	/** Emits the artifact id of an `<artifact-link>` clicked in the preview. */
+	artifactLinkClicked = output<string>();
+
+	/**
+	 * Emits the new content when an edit is COMMITTED by a non-focus action (a
+	 * dropped artifact link or an inserted image) rather than by typing. Such edits
+	 * bypass the textarea focus/blur cycle, so a consumer that persists on blur must
+	 * save in response to this instead of waiting for a focusout that never comes.
+	 */
+	mdContentCommitted = output<string>();
+
+	/**
+	 * Notifies the consumer of the `<artifact-link>` ids in the current content so
+	 * it can resolve their names (fed back via {@link artifactLinkNames}). Tracks
+	 * the last emitted set to emit only on an actual change, not every keystroke.
+	 */
+	private lastEmittedLinkIds = '';
+	private readonly _emitArtifactLinkIds = effect(() => {
+		const ids = extractArtifactLinkIds(this.mdContent());
+		const key = ids.join(',');
+		if (key !== this.lastEmittedLinkIds) {
+			this.lastEmittedLinkIds = key;
+			this.artifactLinkIdsChange.emit(ids);
+		}
+	});
 
 	/**
 	 * VS Code-style undo/redo with intelligent grouping.
@@ -608,7 +694,9 @@ export class MarkdownEditorComponent {
 			debounceTime(500),
 			switchMap((content: string) =>
 				this.artExpHttpService
-					.convertMarkdownToHtmlPreview(content)
+					.convertMarkdownToHtmlPreview(
+						this.resolveArtifactLinks(content)
+					)
 					.pipe(
 						map((html: string) =>
 							this.domSanitizer.bypassSecurityTrustHtml(html)
@@ -632,9 +720,7 @@ export class MarkdownEditorComponent {
 		}
 
 		const content = this.mdContent();
-		const imageLinkRegex =
-			/<image-link(?:\s+size="(xs|s|m|l)")?>(\d+)<\/image-link>/g;
-		const matches = [...content.matchAll(imageLinkRegex)];
+		const matches = [...content.matchAll(imageLinkRegex())];
 		const artifactIds = [...new Set(matches.map((m) => m[2]))];
 
 		if (artifactIds.length === 0) {
@@ -677,7 +763,9 @@ export class MarkdownEditorComponent {
 						);
 					}
 					return this.artExpHttpService
-						.convertMarkdownToHtmlPreview(contentWithImages)
+						.convertMarkdownToHtmlPreview(
+							this.resolveArtifactLinks(contentWithImages)
+						)
 						.pipe(take(1));
 				})
 			)
@@ -969,8 +1057,7 @@ export class MarkdownEditorComponent {
 	): void {
 		this.commitExplicitUndoState();
 
-		const sizeAttr = size ? ` size="${size}"` : '';
-		const imageTag = `<image-link${sizeAttr}>${artifactId}</image-link>`;
+		const imageTag = buildImageLinkTag(artifactId, size);
 		const positionAttr =
 			captionPosition === 'above' ? ' position="above"' : '';
 		const escapedCaption = caption.replace(/</g, '&lt;');
@@ -997,6 +1084,224 @@ export class MarkdownEditorComponent {
 		this.mdContent.set(newContent);
 		this.isUndoRedoAction = false;
 		this.commitCurrentState(newContent);
+		// Image insert (upload or drop) also commits without focusing the textarea;
+		// signal it so the consumer persists without waiting for a focusout.
+		this.mdContentCommitted.emit(newContent);
+	}
+
+	/**
+	 * Handles an artifact dragged from the hierarchy (Angular CDK). Inserts an
+	 * `<image-link>` for image artifacts and an `<artifact-link>` otherwise, at the
+	 * cursor — mirroring the desktop `OmeEditTabDrop` behavior.
+	 */
+	/** True while an acceptable artifact is hovering over the editor drop zone. */
+	protected readonly artifactDragOver = signal(false);
+
+	/**
+	 * Only accept drags whose payload is an artifact (carries an `id`). Within the
+	 * artifact explorer's single `cdkDropListGroup`, this keeps tab-reorder drags
+	 * from entering the editor and vice versa.
+	 *
+	 * NOTE: the cross-branch check is deliberately NOT applied here. A rejected
+	 * enter-predicate suppresses `cdkDropListEntered`, so a cross-branch drag would
+	 * get no visual feedback at all (a silent dead zone). Instead we accept the
+	 * enter (so {@link onArtifactDragEntered} can show a "blocked" overlay) and
+	 * refuse the actual insertion in {@link onArtifactDropped}.
+	 */
+	protected acceptArtifactDrag = (drag: CdkDrag): boolean => {
+		const data = drag.data as artifactWithRelations | undefined;
+		return !!data?.id && data.id !== '-1';
+	};
+
+	/**
+	 * Whether the artifact being dragged is on the SAME branch as this editor's
+	 * artifact. The hierarchy drag source renders the globally-selected branch
+	 * (`uiService.id`), so that is the dragged artifact's branch; the target is this
+	 * editor's pinned {@link editorBranchId}. A mismatch means a cross-branch drop,
+	 * which would link to an id that may not exist on this branch — rejected, like
+	 * the desktop `OmeEditTabDrop` same-branch guard. No pinned branch = opt out.
+	 */
+	private isDragOnEditorBranch(): boolean {
+		const editorBranch = this.editorBranchId();
+		if (!editorBranch) {
+			return true;
+		}
+		return this.branchId() === editorBranch;
+	}
+
+	/**
+	 * Whether the artifact currently being dragged over the editor is an image.
+	 * Set on drop-list enter (CDK's entered event carries the dragged item), so the
+	 * overlay can offer a CHOICE for images — embed inline (`<image-link>`) vs. a
+	 * plain reference (`<artifact-link>`) — while non-image artifacts get a single
+	 * zone (always a reference). Null when nothing acceptable is being dragged.
+	 */
+	protected readonly artifactDragIsImage = signal(false);
+
+	/**
+	 * For an image drag, which half of the split overlay the pointer is currently
+	 * over, hence what the drop will insert. Defaults to 'image' (embed) — the
+	 * common intent and the historical behavior — so a drop without hovering a
+	 * specific half still embeds. Only meaningful while {@link artifactDragIsImage}.
+	 */
+	protected readonly dropIntent = signal<'image' | 'link'>('image');
+
+	/**
+	 * True while the artifact being dragged over the editor is from a DIFFERENT
+	 * branch than this editor's pinned branch. When set, the editor shows a "blocked"
+	 * overlay (instead of the embed/link drop zones) and {@link onArtifactDropped}
+	 * refuses the insertion. This replaces the previous silent enter-predicate
+	 * rejection, which gave the user no indication why the drop did nothing.
+	 */
+	protected readonly crossBranchBlocked = signal(false);
+
+	onArtifactDragEntered(event: CdkDragEnter<unknown>): void {
+		if (!this.acceptArtifactDrops() || this.disabled()) {
+			return;
+		}
+		const artifact = event.item.data as artifactWithRelations | undefined;
+		// A cross-branch drag is accepted into the drop zone only to SHOW why it is
+		// not allowed; the drop itself is refused. Flag it so the overlay renders the
+		// blocked state rather than the embed/link choice.
+		this.crossBranchBlocked.set(!this.isDragOnEditorBranch());
+		this.artifactDragIsImage.set(
+			!!artifact && this.isImageArtifact(artifact)
+		);
+		// Reset to the default embed intent each time a new image drag enters.
+		this.dropIntent.set('image');
+		this.artifactDragOver.set(true);
+	}
+
+	onArtifactDragExited(): void {
+		this.artifactDragOver.set(false);
+		this.crossBranchBlocked.set(false);
+	}
+
+	/** Pointer entered one of the split overlay halves — records the drop intent. */
+	/** Single writer of {@link dropIntent}; also the seam unit tests use to set intent. */
+	protected setDropIntent(intent: 'image' | 'link'): void {
+		this.dropIntent.set(intent);
+	}
+
+	/**
+	 * Updates the drop intent from the pointer's position over the split overlay.
+	 * Uses `pointermove` (which fires during a CDK drag) rather than mouseenter:
+	 * CDK's pointer-based drag suppresses mouse enter/move on the overlay. The top
+	 * half means embed (image-link), the bottom half means reference (artifact-link).
+	 */
+	protected updateDropIntentFromPointer(event: PointerEvent): void {
+		const rect = (
+			event.currentTarget as HTMLElement
+		).getBoundingClientRect();
+		const inTopHalf = event.clientY < rect.top + rect.height / 2;
+		this.setDropIntent(inTopHalf ? 'image' : 'link');
+	}
+
+	onArtifactDropped(event: CdkDragDrop<unknown>): void {
+		const isImage = this.artifactDragIsImage();
+		const intent = this.dropIntent();
+		this.artifactDragOver.set(false);
+		this.crossBranchBlocked.set(false);
+		if (!this.acceptArtifactDrops() || this.disabled()) {
+			return;
+		}
+		const artifact = event.item.data as artifactWithRelations | undefined;
+		if (!artifact?.id || artifact.id === '-1') {
+			return;
+		}
+		// Defense in depth: the enter-predicate already rejects a cross-branch drag,
+		// but guard here too and tell the user why nothing was inserted (a silent
+		// no-op would be confusing). Mirrors desktop's "must be on the same branch".
+		if (!this.isDragOnEditorBranch()) {
+			this.uiService.ErrorText =
+				'Cannot link an artifact from a different branch than the one being edited.';
+			return;
+		}
+		// Non-image artifacts are always an artifact-link reference. Image artifacts
+		// default to an embedded image-link, but the user can drop onto the "link"
+		// half of the split overlay to insert a plain artifact-link reference instead.
+		const asImage = isImage && intent === 'image';
+		const tag = asImage
+			? buildImageLinkTag(artifact.id)
+			: buildArtifactLinkTag(artifact.id);
+		this.insertLinkTag(tag);
+	}
+
+	/**
+	 * Whether the dragged artifact is an image. Decided primarily by artifact TYPE
+	 * (`ARTIFACTTYPEIDENUM.IMAGE`) because the hierarchy drag payload is a lightweight
+	 * token — it carries `typeId`/`icon` but NOT attributes (see the `/children`
+	 * endpoint), so an Extension-attribute check alone would always miss on a drag.
+	 * The Extension check is kept as a secondary signal for callers that DO pass a
+	 * fully-attributed artifact (e.g. a non-Image type carrying an image file).
+	 */
+	private isImageArtifact(artifact: artifactWithRelations): boolean {
+		if (artifact.typeId === ARTIFACTTYPEIDENUM.IMAGE) {
+			return true;
+		}
+		const extensions = (artifact.attributes ?? [])
+			.filter((a) => a.typeId === ATTRIBUTETYPEIDENUM.EXTENSION)
+			.map((a) => `${a.value ?? ''}`.trim().toLowerCase());
+		return extensions.some((ext) =>
+			(SUPPORTED_IMAGE_EXTENSIONS as readonly string[]).includes(ext)
+		);
+	}
+
+	/** Splices a link tag into the content at the cursor as a single undo group. */
+	private insertLinkTag(tag: string): void {
+		this.commitExplicitUndoState();
+		const content = this.mdContent();
+		const cursorPos =
+			this.savedSelectionStart >= 0
+				? this.savedSelectionStart
+				: content.length;
+		const before = content.substring(0, cursorPos);
+		const after = content.substring(cursorPos);
+		const newContent = before + tag + after;
+		this.savedSelectionStart = cursorPos + tag.length;
+		this.savedSelectionEnd = this.savedSelectionStart;
+		this.isUndoRedoAction = true;
+		this.mdContent.set(newContent);
+		this.isUndoRedoAction = false;
+		this.commitCurrentState(newContent);
+		// A drop never focuses the textarea, so no focusout will follow to trigger a
+		// save. Signal the committed edit so the consumer persists it immediately.
+		this.mdContentCommitted.emit(newContent);
+	}
+
+	/**
+	 * Intercepts clicks inside the preview; when an `<artifact-link>` anchor is
+	 * clicked, emits its id so the consumer can open the artifact instead of
+	 * following the dead `href="#"`.
+	 */
+	onPreviewClick(event: MouseEvent): void {
+		// A real click often lands on the anchor's inner TEXT node, not the <a>
+		// element, so event.target may be a Text node (which has no `closest`).
+		// Resolve to the nearest Element first, then walk up to the anchor. Without
+		// this, clicking the link text fell through to the native `href="#"`
+		// navigation (URL became ".../#") instead of opening the artifact.
+		const target = event.target as Node | null;
+		const startEl =
+			target instanceof Element ? target : target?.parentElement;
+		const anchor = startEl?.closest('a[data-artifact-id]');
+		if (!anchor) {
+			return;
+		}
+		event.preventDefault();
+		const id = anchor.getAttribute('data-artifact-id');
+		if (id) {
+			this.artifactLinkClicked.emit(id);
+		}
+	}
+
+	/**
+	 * Rewrites `<artifact-link>` tags to anchors (labeled with the resolved name
+	 * when known, else the id) before the content is sent to the HTML preview
+	 * endpoint, which does not resolve these tags server-side.
+	 */
+	private resolveArtifactLinks(content: string): string {
+		const names = this.artifactLinkNames();
+		return resolveArtifactLinksToAnchors(content, (id) => names.get(id));
 	}
 
 	openTableDialog(): void {

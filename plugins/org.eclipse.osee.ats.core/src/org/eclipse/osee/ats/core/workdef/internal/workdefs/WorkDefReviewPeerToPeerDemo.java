@@ -10,18 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XXAttachmentDemoWidget;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateToken;
-import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.StateDefBuilder;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefReviewPeerToPeerDemo extends WorkDefReviewPeerToPeer {
 
    public WorkDefReviewPeerToPeerDemo() {
@@ -36,12 +40,16 @@ public class WorkDefReviewPeerToPeerDemo extends WorkDefReviewPeerToPeer {
       StateDefBuilder stateBld = bld.getStateDefBuilder(StateToken.Prepare);
 
       if (stateBld != null) {
-         stateBld.insertLayoutAfter(AtsAttributeTypes.Description, //
-            new CompositeLayoutItem(5, //
-               new WidgetDef("Select Peer Review Checklist to Attach", "XAttachmentExampleWidget")) //
+         stateBld.insertLayoutAfter(Description, //
+            new WidgetDef("Select Peer Review Checklist to Attach", XXAttachmentDemoWidget) //
          );
       }
 
       return bld.getWorkDefinition();
+   }
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
    }
 }

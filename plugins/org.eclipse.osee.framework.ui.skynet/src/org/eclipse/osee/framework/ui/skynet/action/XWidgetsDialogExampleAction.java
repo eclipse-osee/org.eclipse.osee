@@ -43,10 +43,10 @@ public class XWidgetsDialogExampleAction extends Action {
       try {
          XWidgetsExampleDialog dialog = new XWidgetsExampleDialog(TITLE, "Enter and select Ok");
          if (dialog.open() == Window.OK) {
-            String title = dialog.getXtextString("title");
-            String desc = dialog.getXtextString("desc");
-            boolean valid = dialog.getXCheckBoxChecked("valid");
-            String number = dialog.getXComboString("number");
+            String title = dialog.getXtextString(XWidgetsExampleDialog.TITLE_ID);
+            String desc = dialog.getXtextString(XWidgetsExampleDialog.DESC_ID);
+            boolean valid = dialog.getXCheckBoxChecked(XWidgetsExampleDialog.IS_VALID_ID);
+            String number = dialog.getXComboString(XWidgetsExampleDialog.NUMBER_ID);
 
             String html = AHTML.beginMultiColumnTable(95, 2);
             html += AHTML.addHeaderRowMultiColumnTable(Arrays.asList("key", "value"));

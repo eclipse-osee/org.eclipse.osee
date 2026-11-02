@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Control;
  */
 public class ViewBranchViewFilterTreeDialog extends FilteredTreeDialog {
    private Long selection;
-   XCheckBox showAll = new XCheckBox("Show All Branch Views");
+   XXCheckBoxWidget showAll = new XXCheckBoxWidget("Show All Branch Views");
    private final Map<Long, String> branchViews;
 
    public ViewBranchViewFilterTreeDialog(String title, String message, Map<Long, String> branchViews) {

@@ -45,7 +45,7 @@ public class XResultDataHeaders {
          rd = new XResultData();
       }
       String release = getReleaseStr();
-      rd.logf("%s\n\nArtifact(s):\nAttrType: %s\nUser: %s\nRelease: %s\nBranch: %s\n\n", title,
+      rd.logf("%s\n\nArtifact(s): %s\nAttrType: %s\nUser: %s\nRelease: %s\nBranch: %s\n\n", title,
          Artifacts.toStringWithIds(artifacts), attributeType, OseeApiService.user().toStringWithId(), release,
          artifacts.iterator().next().getBranch().toStringWithId());
       return rd;
@@ -57,7 +57,7 @@ public class XResultDataHeaders {
          rd = new XResultData();
       }
       String release = getReleaseStr();
-      rd.logf("%s\n\nArtifact(s):\nRelType: %s\nUser: %s\nRelease: %s\nBranch: %s\n\n", title,
+      rd.logf("%s\n\nArtifact(s): %s\nRelType: %s\nUser: %s\nRelease: %s\nBranch: %s\n\n", title,
          Artifacts.toStringWithIds(artifacts), relTypeSide, OseeApiService.user().toStringWithId(), release,
          artifacts.iterator().next().getBranch().toStringWithId());
       return rd;

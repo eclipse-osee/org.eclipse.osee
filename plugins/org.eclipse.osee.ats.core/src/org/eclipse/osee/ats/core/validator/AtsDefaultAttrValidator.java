@@ -16,11 +16,11 @@ package org.eclipse.osee.ats.core.validator;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.XOption;
 
 /**
  * @author Vaibhav Patel
@@ -35,8 +35,8 @@ public class AtsDefaultAttrValidator extends AtsXWidgetValidator {
        * Required flags are checked here to avoid validating not required fields. Actual logic is implemented in the
        * validateWidgetIsRequired method.
        */
-      if ((widgetDef.getOptions().contains(WidgetOption.RFC) || widgetDef.getOptions().contains(
-         WidgetOption.RFT)) && widgetDef.getAttributeType() != AttributeTypeToken.SENTINEL) {
+      if ((widgetDef.is(XOption.RFC) || widgetDef.is(
+         XOption.REQUIRED)) && widgetDef.getAttributeType() != AttributeTypeToken.SENTINEL) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
       }
       return result;

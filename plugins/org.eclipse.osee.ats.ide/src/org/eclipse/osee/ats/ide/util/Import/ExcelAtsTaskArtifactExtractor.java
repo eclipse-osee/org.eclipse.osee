@@ -534,12 +534,21 @@ public class ExcelAtsTaskArtifactExtractor {
 
       private void processPercentComplete(String[] row, JaxAtsTask jTask, int i) {
          String str = row[i];
-         Double percent = 0.0;
          if (Strings.isValid(str)) {
+            // ats.Percent Complete is an Integer attribute. Spreadsheet values are whole percents (e.g. 23), so
+            // store an int - do NOT round-trip through Double (Double.valueOf("23").toString() is "23.0", which
+            // then fails Integer parsing on the server). Still accept a fractional form (e.g. 0.23) by scaling to
+            // a 0-100 percent.
+            Integer percent = 0;
             try {
-               percent = Double.valueOf(str);
-               if (percent < 1) {
-                  percent = percent * 100;
+               if (str.contains(".")) {
+                  double parsed = Double.valueOf(str);
+                  if (parsed < 1) {
+                     parsed = parsed * 100;
+                  }
+                  percent = (int) Math.round(parsed);
+               } else {
+                  percent = Integer.valueOf(str);
                }
             } catch (Exception ex) {
                rd.errorf("  Row %d, Col %s [Percent Complete]: Invalid value \"%s\"\n", rowNum, getColumnLabel(i), str);

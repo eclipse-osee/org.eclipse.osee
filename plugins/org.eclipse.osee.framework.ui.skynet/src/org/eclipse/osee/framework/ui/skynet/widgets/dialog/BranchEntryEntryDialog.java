@@ -14,13 +14,11 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -34,8 +32,8 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class BranchEntryEntryDialog extends EntryDialog {
 
-   private XBranchSelectWidget branchWidget;
-   private XText text2;
+   private XXBranchSelWidget branchWidget;
+   private XXTextWidget text2;
    private String entryText2 = "";
    private final String text2Label;
    private Listener okListener;
@@ -65,45 +63,45 @@ public class BranchEntryEntryDialog extends EntryDialog {
    @Override
    protected void createExtendedArea(Composite parent) {
 
-      text2 = new XText(text2Label);
+      text2 = new XXTextWidget(text2Label);
       text2.setFillHorizontally(true);
       if (isFillVertically2()) {
          text2.setFillVertically(true);
          text2.setHeight(100);
-         text.setHeight(100);
+         textWidget.setHeight(100);
          text2.setFont(getFont());
       }
       text2.set(entryText2);
       text2.createWidgets(customAreaParent, 1);
 
-      text2.addModifyListener(new ModifyListener() {
+      text2.addXModifiedListener(new XModifiedListener() {
 
          @Override
-         public void modifyText(ModifyEvent e) {
+         public void widgetModified(XWidget widget) {
             handleModified();
             entryText2 = text2.get();
          }
       });
 
-      branchWidget = new XBranchSelectWidget("Branch");
+      branchWidget = new XXBranchSelWidget();
       branchWidget.createWidgets(customAreaParent, 1);
       if (branch != null && branch.isValid()) {
-         branchWidget.setSelection(branch);
+         branchWidget.setSelected(branch);
       }
       branchWidget.addXModifiedListener(new XModifiedListener() {
 
          @Override
          public void widgetModified(XWidget widget) {
-            branch = branchWidget.getData();
+            branch = branchWidget.getSelectedFirst();
          }
       });
 
       if (addCheckBox) {
-         final XCheckBox checkbox = new XCheckBox(checkboxMessage);
+         final XXCheckBoxWidget checkbox = new XXCheckBoxWidget(checkboxMessage);
          checkbox.setFillHorizontally(true);
          checkbox.setFocus();
          checkbox.setDisplayLabel(false);
-         checkbox.set(checked);
+         checkbox.setSelected(checked);
          checkbox.createWidgets(customAreaParent, 1);
 
          SelectionListener selectionListener = new SelectionAdapter() {

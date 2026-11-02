@@ -13,12 +13,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.text.NumberFormat;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.widget.validate.XXLongValidator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -59,7 +59,7 @@ public class BranchTransactionHandler extends CommandHandler {
                Object selectedObject = selection.getFirstElement();
                EntryDialog diag =
                   new EntryDialog("Branch Transaction Report", "Enter number of transactions; 0 for all");
-               diag.setNumberFormat(NumberFormat.getInstance());
+               diag.setValidator(XXLongValidator.instance);
                diag.setEntry("499");
                if (diag.open() == Window.OK) {
                   BranchToken selBranch = BranchManager.getBranch((BranchId) selectedObject);

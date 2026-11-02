@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AccessControlTest.class,
-   //ArtifactEventLoopbackTest.class,
+   // ArtifactEventLoopbackTest.class, - CodeReview.IgnoreLine
    ArtifactEventTest.class,
    ArtifactTopicEventLoopbackTest.class,
    ArtifactTopicEventTest.class,
@@ -47,7 +47,6 @@ import org.junit.runners.Suite;
    CreateBranchOperationTest.class,
    CrossBranchRelationLinkTest.class,
    CsvArtifactTest.class,
-   EnumAttributeMultiplicityTest.class,
    IntegerAttributeTest.class,
    FrameworkEventToRemoteEventListenerTest.class,
    MergeManagerTest.class,
@@ -55,7 +54,7 @@ import org.junit.runners.Suite;
    OseeEnumerationValidationTest.class,
    OseeInfoTest.class,
    PurgeArtifactsTest.class,
-   // PurgeTransactionTest moved to LongRunningTestSuite
+   // PurgeTransactionTest moved to LongRunningTestSuite - CodeReview.IgnoreLine
    RealTimeChangeEventIntegrationTest.class,
    RelationDeletionTest.class,
    RelationFilterUtilTest.class,

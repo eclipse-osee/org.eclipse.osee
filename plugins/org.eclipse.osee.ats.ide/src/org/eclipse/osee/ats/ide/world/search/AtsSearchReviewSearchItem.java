@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.world.search;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 
 /**
  * @author Donald G. Dunne
@@ -68,18 +69,18 @@ public class AtsSearchReviewSearchItem extends AtsSearchWorkflowSearchItem {
    }
 
    @Override
-   protected void addWidgets() {
-      getWorkItemTypeWidget().addWidget(1);
-      getReviewTypeWidget().addWidgetEndComposite();
-      getTitleWidget().addWidget();
-      getAiWidget().addWidget(3);
-      getTeamDefWidget().addWidget(2);
-      getVersionWidget().addWidget(4);
-      getStateTypeWidget().addWidget();
-      getChangeTypeWidget().addWidget(6);
-      getUserWidget().addWidget();
-      getUserTypeWidget().addWidget();
-      getStateNameWidget().addWidget();
+   protected void addWidgets(XWidgetBuilderAts wba) {
+      getWorkItemTypeWidget().addWidget(wba, 1);
+      getReviewTypeWidget().addWidgetEndComposite(wba);
+      getTitleWidget().addWidget(wba);
+      getAiWidget().addWidget(wba, 3);
+      getTeamDefWidget().addWidget(wba, 2);
+      getVersionWidget().addWidget(wba, 4);
+      getStateTypeWidget().addWidget(wba);
+      getChangeTypeWidget().addWidget(wba, 6);
+      getUserWidget().addWidget(wba);
+      getUserTypeWidget().addWidget(wba);
+      getStateNameWidget().addWidget(wba);
    }
 
 }

@@ -83,9 +83,9 @@ public class XResultData {
       logf(message, data);
    }
 
-   public XResultData(boolean enableOseeLog) {
+   public XResultData(boolean logToSysErr) {
       super();
-      this.logToSysErr = enableOseeLog;
+      this.logToSysErr = logToSysErr;
       clear();
    }
 
@@ -96,6 +96,14 @@ public class XResultData {
       if (listeners != null && listeners.length > 0) {
          this.listeners = Arrays.asList(listeners);
       }
+   }
+
+   public XResultData(Type type, String message, Object... data) {
+      logStr(type, message, data);
+   }
+
+   public XResultData(XResultType type, String message, Object... data) {
+      logStr(type.getrType(), message, data);
    }
 
    public void clear() {
@@ -168,7 +176,13 @@ public class XResultData {
    }
 
    public boolean isEmpty() {
-      return toString().equals("");
+      // Empty iff every entry is empty; avoids joining the whole log just to compare against "".
+      for (String result : results) {
+         if (result != null && !result.isEmpty()) {
+            return false;
+         }
+      }
+      return true;
    }
 
    public void bumpCount(Type type, int byAmt) {
@@ -230,6 +244,12 @@ public class XResultData {
          } else {
             System.out.print(resultStr);
          }
+      }
+   }
+
+   public void syserr(String message, Object... data) {
+      if (isLogToSysErr()) {
+         System.err.print(String.format(message, data));
       }
    }
 
@@ -390,10 +410,12 @@ public class XResultData {
    public String getHtml() {
       String html = toString();
       html = AHTML.textToHtml(html);
-      html = html.replaceFirst("PUT_RESULTS_HERE", getResultsString());
-      html = html.replaceAll("Error:", Matcher.quoteReplacement(AHTML.color("RED", "Error:")));
-      html = html.replaceAll("Warning:", Matcher.quoteReplacement(AHTML.color("BLUE", "Warning:")));
-      html = html.replaceAll("\n", "<br/>");
+      // replaceFirst needs regex (the replacement is dynamic); the rest are literal find/replace, so use
+      // String.replace (no Pattern compile, replacement taken literally - hence no quoteReplacement needed).
+      html = html.replaceFirst("PUT_RESULTS_HERE", Matcher.quoteReplacement(getResultsString()));
+      html = html.replace("Error:", AHTML.color("RED", "Error:"));
+      html = html.replace("Warning:", AHTML.color("BLUE", "Warning:"));
+      html = html.replace("\n", "<br/>");
       return html;
    }
 
@@ -476,6 +498,10 @@ public class XResultData {
       return isSuccess();
    }
 
+   public boolean isNotOK() {
+      return !isOK();
+   }
+
    public static XResultData valueOf(Type type, String messageId, String message, Exception ex) {
       XResultData rd = new XResultData();
       rd.logStr(type, "%s: %s - %s", messageId, message, Lib.exceptionToString(ex));
@@ -491,8 +517,6 @@ public class XResultData {
    public void addTimeSpentAndClearTimeForKey(String key) {
       logTimeSpent(key);
       keyTimeStart.remove(key);
-      System.err.println("keyTimeStart " + keyTimeStart);
-      System.err.println("keyToTimeSpentMap " + keyToTimeSpentMap);
    }
 
    public Boolean getResult() {
@@ -560,6 +584,18 @@ public class XResultData {
    public void assertTrue(boolean bool) {
       if (!bool) {
          error("expected true, but was false");
+      }
+   }
+
+   public void assertNotNullOrEmpty(String message, String value) {
+      if (Strings.isInvalid(value)) {
+         error(message);
+      }
+   }
+
+   public void assertEquals(Object expected, Object actual) {
+      if (!expected.equals(actual)) {
+         errorf("Expected: %s Actual: %s\n", expected, actual);
       }
    }
 

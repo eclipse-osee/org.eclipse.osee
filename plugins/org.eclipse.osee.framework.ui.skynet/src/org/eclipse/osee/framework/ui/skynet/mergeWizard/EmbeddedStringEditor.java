@@ -15,13 +15,13 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Label;
 public class EmbeddedStringEditor {
 
    private Color colorResource = null;
-   private XText text;
+   private XXTextWidget text;
    private String entryText = "";
    private String validationRegularExpression = null;
    private String validationErrorString = "";
@@ -66,7 +66,7 @@ public class EmbeddedStringEditor {
       });
 
       new Label(composite, SWT.NONE).setText(dialogMessage);
-      text = new XText();
+      text = new XXTextWidget();
       text.setFillHorizontally(true);
       text.setFocus();
       text.setDisplayLabel(false);
@@ -79,9 +79,10 @@ public class EmbeddedStringEditor {
       }
       text.createWidgets(composite, 2);
 
-      text.addModifyListener(new ModifyListener() {
+      text.addXModifiedListener(new XModifiedListener() {
+
          @Override
-         public void modifyText(ModifyEvent e) {
+         public void widgetModified(XWidget widget) {
             handleModified();
          }
       });
@@ -119,7 +120,7 @@ public class EmbeddedStringEditor {
 
    /**
     * override this method to make own checks on entry this will be called with every keystroke
-    * 
+    *
     * @return true if entry is valid
     */
    public boolean isEntryValid() {

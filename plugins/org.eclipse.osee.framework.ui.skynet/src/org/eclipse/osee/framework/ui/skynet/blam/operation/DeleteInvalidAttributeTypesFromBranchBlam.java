@@ -1,0 +1,138 @@
+/*********************************************************************
+ * Copyright (c) 2004, 2007 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+
+package org.eclipse.osee.framework.ui.skynet.blam.operation;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.XWidgetLabels;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+
+/**
+ * @author Megumi Telles
+ */
+@Component(service = AbstractBlam.class, immediate = true)
+public class DeleteInvalidAttributeTypesFromBranchBlam extends AbstractBlam {
+
+   private static final String BLAM_NAME = "Delete Invalid Attribute Types From Branch";
+   private static final String BLAM_DESC =
+      "Provide list of artifact GUIDs that contain an invalid attribute type to delete from the selected branch";
+   static final String ARTIFACT_IDS_WIDGET_NAME = "List of Artifact GUIDs (comma separated)";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public DeleteInvalidAttributeTypesFromBranchBlam() {
+      super(BLAM_NAME);
+   }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andAttributeTypesWidget();
+      wb.andBranchSelWidget();
+      wb.andTextWidget(ARTIFACT_IDS_WIDGET_NAME).fillVert();
+      return wb.getXWidgetDatas();
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
+
+   @Override
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) {
+      BranchId branch = variableMap.getBranch(XWidgetLabels.BRANCH);
+      List<AttributeTypeToken> attributeTypes = variableMap.getAttributeTypes(XWidgetLabels.ATTRIBUTE_TYPE);
+      String input = variableMap.getString(ARTIFACT_IDS_WIDGET_NAME);
+      Conditions.checkNotNullOrEmpty(input, ARTIFACT_IDS_WIDGET_NAME);
+      List<String> inputGuids = Arrays.asList(input.split("[,\\s]+"));
+      List<Artifact> arts = ArtifactQuery.getArtifactListFromIds(inputGuids, branch);
+      if (arts != null && !arts.isEmpty()) {
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(branch, "BLAM: Delete invalid attribute type");
+         for (AttributeTypeToken attrType : attributeTypes) {
+            deleteInvalidAttributeType(arts, attrType, transaction);
+         }
+         transaction.execute();
+      }
+
+   }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
+   private void deleteInvalidAttributeType(List<Artifact> artifacts, AttributeTypeToken attrType,
+      SkynetTransaction transaction) {
+      for (Artifact art : artifacts) {
+         if (!art.isAttributeTypeValid(attrType)) {
+            delete(art, attrType);
+            art.persist(transaction);
+         } else {
+            logf("Artifact [%s] attribute type [%s] is valid - did not delete\n", art, attrType);
+         }
+      }
+   }
+
+   private void delete(Artifact art, AttributeTypeToken attrType) {
+      List<Attribute<?>> attrs = art.getAttributes();
+      for (Attribute<?> attr : attrs) {
+         if (attr.isOfType(attrType)) {
+            attr.delete();
+            logf("Artifact [%s] attribute type [%s] deleted: [%s]\n", art, attrType, attr);
+         }
+      }
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(CoreUserGroups.OseeAdmin);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return BLAM_DESC;
+   }
+
+}

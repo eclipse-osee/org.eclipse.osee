@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NamedIdAndDescription } from '@osee/shared/types';
 import {
 	PRIORITIES,
 	Priority,
@@ -27,7 +26,8 @@ export type CreateNewActionInterface = {
 	createdByUserId: string;
 	versionId: targetedVersion;
 	priority: Priority;
-	changeType: NamedIdAndDescription;
+	/** The change-type name (e.g. "Improvement"); the server's NewActionData.changeType is a String. */
+	changeType: string;
 	originator: string;
 	assignees: string;
 	points: string;
@@ -49,11 +49,7 @@ export class CreateNewAction implements CreateNewActionInterface {
 			this.createdByUserId = config.createdByUser.id;
 			this.versionId = config.targetedVersion;
 			this.priority = config.priority;
-			this.changeType = {
-				id: config.changeType.id,
-				name: config.changeType.name,
-				description: config.changeType.description,
-			};
+			this.changeType = config.changeType;
 			this.originator = config.originator.id;
 			this.assignees = config.assignees;
 			this.points = config.points;
@@ -65,7 +61,7 @@ export class CreateNewAction implements CreateNewActionInterface {
 			this.parentAction = config.parentAction;
 		}
 	}
-	changeType: NamedIdAndDescription = { id: '-1', name: '', description: '' };
+	changeType = '';
 	priority: Priority = PRIORITIES.LowestPriority;
 	title = '';
 	opName = 'Create Action Web';

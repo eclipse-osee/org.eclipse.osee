@@ -70,19 +70,13 @@ export class FocusLostInputComponent<T> {
 	appearance = input<'outline' | 'fill'>('outline');
 
 	subscriptSizing = input<SubscriptSizing>('dynamic');
-	/** When true (sampled at blur), the debounced commit is dropped instead of emitted. */
-	suppressCommit = input(false);
 	focus = signal(false);
 	type = input('text');
 	tooltip = input<string>('');
 	placeholder = input<string>('');
 	maxlength = input<string | number | null>(null);
 
-	// Snapshot at blur, not emission: the commit fires ~500ms later, by which time suppressCommit
-	// may have cleared (e.g. the conflict was resolved) -- reading it then would reopen the race.
-	private _suppressAtBlur = false;
 	protected onFocusOut() {
-		this._suppressAtBlur = this.suppressCommit();
 		this.focus.set(false);
 	}
 
@@ -92,11 +86,20 @@ export class FocusLostInputComponent<T> {
 		filter((v) => !v)
 	);
 	private _value$ = toObservable(this.value);
-	private _value = this._value$.pipe(
-		debounceTime(500),
-		sample(this._focus),
-		filter(() => !this._suppressAtBlur)
-	);
+	// Emit the latest value at the settled blur. The input binds
+	// `updateOn: 'blur'`, so `value` only changes on blur -- it is already a
+	// low-frequency, blur-gated stream. `sample(_focus)` picks the value present at
+	// the settled-blur tick; there is nothing per-keystroke to coalesce, so no
+	// debounce on the value is needed (the only debounce that matters is on `_focus`,
+	// which absorbs focus flicker so a momentary blur/refocus is not a commit). An
+	// earlier `debounceTime(500)` here was vestigial: it only added latency and a
+	// second 500ms window racing the focus one, widening the stale-commit surface.
+	//
+	// This component is intentionally a "dumb" input: it reports commits
+	// (valueChange) and keystrokes (liveInput) and does NOT know about conflicts or
+	// staleness. A consumer that auto-saves owns deciding whether a given commit is
+	// still valid (see the persisted attribute editor's edit-generation guard).
+	private _value = this._value$.pipe(sample(this._focus));
 	valueChange = outputFromObservable(this._value);
 
 	/**

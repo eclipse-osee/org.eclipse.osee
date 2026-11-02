@@ -67,7 +67,7 @@ public class AtsBranchServiceImplTest {
       // Test Team Def-base Team Arts
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1);
       // clear versions to config item is from teamDef
       for (IAtsVersion version : AtsApiService.get().getVersionService().getVersions(teamDef)) {
          changes.deleteArtifact(AtsApiService.get().getQueryService().getArtifact(version));
@@ -120,7 +120,7 @@ public class AtsBranchServiceImplTest {
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1);
       // clear versions to config item is from teamDef
       for (IAtsVersion version : AtsApiService.get().getVersionService().getVersions(teamDef)) {
          changes.deleteArtifact(AtsApiService.get().getQueryService().getArtifact(version));

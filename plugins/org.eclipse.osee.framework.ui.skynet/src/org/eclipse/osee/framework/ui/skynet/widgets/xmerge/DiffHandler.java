@@ -31,7 +31,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
    private final int diffToShow;
    private AttributeConflict attributeConflict;
    private ArtifactConflict artifactConflict;
-   public DiffHandler(MenuManager menuManager, int diffToShow, MergeXWidget mergeXWidget) {
+   public DiffHandler(MenuManager menuManager, int diffToShow, XMergeWidget mergeXWidget) {
       super(menuManager);
       this.diffToShow = diffToShow;
    }

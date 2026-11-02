@@ -40,7 +40,11 @@ public abstract class CharacterBackedAttribute<T> extends AttributeImpl<T> {
    @Override
    public boolean subClassSetValue(T value) {
       Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
-      return getDataProxy().setValue(value);
+      // The generic write path erases T, so any Object can reach here. Validate/coerce against the AttributeType
+      // (the contract for what the stored String must parse back into) so a bad value fails at the write instead
+      // of corrupting storage or throwing a ClassCastException on a later read.
+      T coerced = getFullAttributeType().coerceValue(value);
+      return getDataProxy().setValue(coerced);
    }
 
 }

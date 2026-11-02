@@ -39,6 +39,8 @@ public interface IAtsVersionService {
 
    IAtsVersion getFoundInVersion(IAtsWorkItem workItem);
 
+   IAtsVersion getIntroducedInVersion(IAtsWorkItem workItem);
+
    Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version);
 
    IAtsTeamDefinition getTeamDefinition(IAtsVersion version);
@@ -56,6 +58,8 @@ public interface IAtsVersionService {
    IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team);
 
    IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes);
+
+   IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, ArtifactToken version, IAtsChangeSet changes);
 
    Version createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
 

@@ -56,7 +56,7 @@ import org.eclipse.osee.ats.ide.actions.SubscribedAction;
 import org.eclipse.osee.ats.ide.column.GoalOrderColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XWorldTextFilter;
+import org.eclipse.osee.ats.ide.util.widgets.util.XXWorldTextFilter;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
@@ -660,7 +660,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, ISel
 
    @Override
    public XViewerTextFilter getXViewerTextFilter() {
-      return new XWorldTextFilter(this);
+      return new XXWorldTextFilter(this);
    }
 
    @Override

@@ -17,7 +17,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Jeff C. Phillips
@@ -56,9 +54,8 @@ public class BranchCreationHandler extends CommandHandler {
          throw new OseeStateException(
             "Backing data for the jobbed node in the branchview was not of the expected type");
       }
-      final EntryCheckDialog dialog = new EntryCheckDialog(Displays.getActiveShell(), "Branch", null,
-         "Enter the name of the new branch:", "Include a copy of the chosen transaction on the new branch",
-         MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);
+      final EntryCheckDialog dialog = new EntryCheckDialog("Branch", "Enter the name of the new branch:",
+         "Include a copy of the chosen transaction on the new branch");
       int result = dialog.open();
 
       if (result == 0 && dialog.getEntry() != null) {

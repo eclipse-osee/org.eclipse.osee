@@ -138,10 +138,7 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       programVersion = teamDefList.isEmpty() ? "" : teamDefList.get(0).getName();
 
       // Resolve the baseline branch from the version artifact
-      String baselineBranchStr = version.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "");
-      if (!baselineBranchStr.isEmpty()) {
-         baselineBranchFromVersion = BranchId.valueOf(baselineBranchStr);
-      }
+      baselineBranchFromVersion = version.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, BranchId.SENTINEL);
 
       // Load all related workflow artifacts with their attributes in a single fetch
       List<ArtifactReadable> workflowArts =
@@ -420,11 +417,10 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
 
          // Batch-check safety and security impacts
          if (countImpacts && !swReqArtIds.isEmpty() && baselineBranchFromVersion.isValid()) {
-            numSafety = orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andIds(
-               swReqArtIds).and(CoreAttributeTypes.IDAL, List.of("A", "B", "C"),
-                  QueryOption.CONTAINS_MATCH_ANY).getCount();
-            numSecurity = orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andIds(
-               swReqArtIds).andExists(CoreAttributeTypes.PotentialSecurityImpact).getCount();
+            numSafety = orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andIds(swReqArtIds).and(
+               CoreAttributeTypes.IDAL, List.of("A", "B", "C"), QueryOption.CONTAINS_MATCH_ANY).getCount();
+            numSecurity = orcsApi.getQueryFactory().fromBranch(baselineBranchFromVersion).andIds(swReqArtIds).andExists(
+               CoreAttributeTypes.PotentialSecurityImpact).getCount();
          }
 
          buffer[7] = swAdded;

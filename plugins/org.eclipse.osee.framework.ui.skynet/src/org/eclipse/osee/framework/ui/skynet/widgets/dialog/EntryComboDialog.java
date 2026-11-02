@@ -16,9 +16,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -39,12 +39,12 @@ public class EntryComboDialog extends EntryDialog {
    @Override
    protected void createExtendedArea(Composite parent) {
 
-      final XCombo combo = new XCombo(comboMessage);
+      final XXStringsWidget combo = new XXStringsWidget(comboMessage);
       combo.setFillHorizontally(true);
       combo.setFocus();
-      combo.setDataStrings(options.toArray(new String[options.size()]));
+      combo.setSelectable(options);
       if (Strings.isValid(defaultSelection)) {
-         combo.setDataStrings(new String[] {defaultSelection});
+         combo.setSelected(defaultSelection);
       }
       combo.createWidgets(parent, 2);
 
@@ -53,7 +53,7 @@ public class EntryComboDialog extends EntryDialog {
          @Override
          public void widgetModified(XWidget widget) {
             handleModified();
-            selection = combo.get();
+            selection = combo.getSelectedFirst();
          }
       };
       combo.addXModifiedListener(listener);

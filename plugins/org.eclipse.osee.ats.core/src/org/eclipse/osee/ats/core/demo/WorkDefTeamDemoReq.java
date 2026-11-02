@@ -13,27 +13,35 @@
 
 package org.eclipse.osee.ats.core.demo;
 
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERT;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.RFT;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XCommitManagerWfeWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XXValidateReqChangesButtonWfeWidget;
+import static org.eclipse.osee.ats.api.util.WidgetIdAts.XXWorkingBranchWfeWidget;
+import static org.eclipse.osee.framework.core.widget.WidgetId.XXCheckBoxWidget;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.model.CreateChangeReportTasksWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.AttrWidgetDef;
+import org.eclipse.osee.ats.api.workdef.model.ChangeReportTasksWidgetDef;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.SignDateWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
-import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefTeamDemoReq extends AbstractWorkDef {
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
+public class WorkDefTeamDemoReq extends AbstractDemoWorkDef {
 
    public WorkDefTeamDemoReq() {
       super(DemoWorkDefinitions.WorkDefTeamDemoReq);
@@ -43,66 +51,54 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
-      bld.andPointsAttributeType(AtsAttributeTypes.PointsEnum);
-      bld.andHeader() //
-         .andLayout( //
-            getChangeTypeComposite(), //
-            new WidgetDef("Work Package", "XHyperlinkWorkPackageDam") //
-         ) //
-         .isShowMetricsHeader(false) //
-         .andLayout( //
-         ); //
+      bld.andPointsAttributeType(PointsEnum);
+      addDemoCustomHeader(bld);
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //
-
-         .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"),
-            new SignByAndDateWidgetDefinition("Lead Sign Off", AtsAttributeTypes.SignedOffBy,
-               AtsAttributeTypes.SignedOffByDate), //
-            new SignByAndDateWidgetDefinition("Manager Signoff", AtsAttributeTypes.ManagerSignedOffBy,
-               AtsAttributeTypes.ManagerSignedOffByDate), //
-            new SignByAndDateWidgetDefinition("Approved Hours", AtsAttributeTypes.ApproveRequestedHoursBy,
-               AtsAttributeTypes.ApproveRequestedHoursByDate) //
-                  .andImage(AtsImage.CHECK_CLIPBOARD));
+            new AttrWidgetDef(Description, XOption.REQUIRED), //
+            new AttrWidgetDef(ProposedResolution), //
+            new CompositeLayoutItem(8, //
+               new AttrWidgetDef(ValidationRequired), //
+               new AttrWidgetDef(WorkPackage), //
+               new AttrWidgetDef(AllowWebExport), //
+               new AttrWidgetDef("Crash Display w/ User Group w/o Joe", CrashOrBlankDisplay,
+                  XXCheckBoxWidget).andUserGroup(AtsUserGroups.PeerReviewCreationNotify) //
+            ), //
+            new SignDateWidgetDef("Lead Sign Off", SignedOffBy, SignedOffByDate), //
+            new SignDateWidgetDef("Manager Signoff", ManagerSignedOffBy, ManagerSignedOffByDate), //
+            new SignDateWidgetDef("Approved Hours", ApproveRequestedHoursBy, ApproveRequestedHoursByDate) //
+               .andImage(AtsImage.CHECK_CLIPBOARD));
 
       bld.andState(2, "Analyze", StateType.Working) //
          .andToStates(StateToken.Authorize, StateToken.Implement, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDef(AtsAttributeTypes.Description, "XTextDam", FILL_VERT, RFT), //
-            new WidgetDef(AtsAttributeTypes.Problem, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERT), //
-            new WidgetDef(AtsAttributeTypes.EstimatedHours, "XFloatDam"));
+            new AttrWidgetDef(WorkPackage), //
+            new AttrWidgetDef(Description), //
+            new AttrWidgetDef(Problem), //
+            new AttrWidgetDef(ProposedResolution), //
+            new AttrWidgetDef(EstimatedHours));
 
       bld.andState(3, "Authorize", StateType.Working) //
          .andToStates(StateToken.Implement, StateToken.Cancelled) //
-
-         .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"));
+            new AttrWidgetDef(WorkPackage), //
+            new AttrWidgetDef(EstimatedCompletionDate));
 
       bld.andState(4, "Implement", StateType.Working) //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-
          .andColor(StateColor.BLACK) //
          .andTransitionListener(TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges) //
          .andLayout( //
-            getWorkingBranchWidgetComposite(), //
-            new WidgetDef("Validate Requirement Changes", "XValidateReqChangesButton"), //
-            new WidgetDef("Commit Manager", "XCommitManager"), //
-            new WidgetDef(AtsAttributeTypes.WorkPackage, "XTextDam"), //
-            new WidgetDef(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new CreateChangeReportTasksWidgetDefinition("Create Tasks from Requirement Changes",
-               TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges), //
-            new WidgetDef(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERT));
+            new WidgetDef(XXWorkingBranchWfeWidget), //
+            new WidgetDef(XXValidateReqChangesButtonWfeWidget), //
+            new WidgetDef(XCommitManagerWfeWidget), //
+            new AttrWidgetDef(WorkPackage), //
+            new AttrWidgetDef(EstimatedCompletionDate), //
+            new ChangeReportTasksWidgetDef(TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges), //
+            new AttrWidgetDef(Resolution));
 
       bld.andState(5, "Completed", StateType.Completed) //
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
@@ -113,5 +109,10 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
          .andColor(StateColor.BLACK);
 
       return bld.getWorkDefinition();
+   }
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
    }
 }

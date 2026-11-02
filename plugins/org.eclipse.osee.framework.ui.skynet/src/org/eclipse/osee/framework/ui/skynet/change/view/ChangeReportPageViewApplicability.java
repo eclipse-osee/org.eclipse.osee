@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewBranchViewFilterTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -95,8 +94,7 @@ public class ChangeReportPageViewApplicability {
 
    private String getArtifactViewApplicabiltyText() {
       ArtifactId view = editor.getViewId();
-      String viewText =
-         view.isValid() ? ArtifactQuery.getArtifactTokenFromId(getBranch(), view).getName() : Widgets.NOT_SET;
+      String viewText = view.isValid() ? ArtifactQuery.getArtifactTokenFromId(getBranch(), view).getName() : "";
       return "<form><p><b>Branch View:</b> " + viewText + "</p></form>";
    }
 

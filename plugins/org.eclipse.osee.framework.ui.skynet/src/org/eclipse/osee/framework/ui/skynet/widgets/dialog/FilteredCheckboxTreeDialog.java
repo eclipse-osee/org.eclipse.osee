@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree.FilterableCheckboxTreeViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.FilteredCheckboxTreeListener;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
@@ -48,6 +49,7 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
 
    protected Label statusLabel;
    protected Button okButton;
+   private boolean okSelected = false;
    private FilteredCheckboxTree treeViewer;
    private Object input;
    private IContentProvider contentProvider;
@@ -62,6 +64,7 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
    private boolean clearAllowed;
    private boolean clearSelected = false;
    private String descUrl;
+   private FilteredCheckboxTreeListener filteredCheckboxTreeListener;
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
@@ -153,7 +156,9 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
             updateStatusLabel();
          }
       });
-
+      if (filteredCheckboxTreeListener != null) {
+         filteredCheckboxTreeListener.treeViewerCreated(treeViewer);
+      }
       if (selectables != null && !selectables.isEmpty()) {
          setInput(selectables);
          for (T selectable : selectables) {
@@ -247,6 +252,12 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       Control c = super.createButtonBar(parent);
       okButton = getButton(0);
       okButton.setEnabled(false);
+      okButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            okSelected = true;
+         }
+      });
       if (clearAllowed) {
          Button clearButton = getButton(2);
          clearButton.addSelectionListener(new SelectionAdapter() {
@@ -317,6 +328,14 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
 
    public void setDescUrl(String descUrl) {
       this.descUrl = descUrl;
+   }
+
+   public void setFilteredCheckboxTreeListener(FilteredCheckboxTreeListener filteredCheckboxTreeListener) {
+      this.filteredCheckboxTreeListener = filteredCheckboxTreeListener;
+   }
+
+   public boolean isOkSelected() {
+      return okSelected;
    }
 
 }

@@ -78,6 +78,16 @@ export class ArtifactTabGroupComponent {
 		this.tabService.onTabDropped(event);
 	}
 
+	/**
+	 * Restricts the tab strip to reordering its own tabs. Because the artifact
+	 * explorer wraps everything in a single `cdkDropListGroup`, an artifact dragged
+	 * from the hierarchy would otherwise be "accepted" by this list (the tab strip
+	 * overlays the whole editor panel), hijacking the drag before it can reach the
+	 * markdown editor. Only allow drags that originate from this same list.
+	 */
+	protected onlyReorderTabs = (drag: CdkDrag, drop: CdkDropList): boolean =>
+		drag.dropContainer === drop;
+
 	getAllDropListConnections(index: number) {
 		return computed(() =>
 			this.connections().filter((row) => row === '' + index)

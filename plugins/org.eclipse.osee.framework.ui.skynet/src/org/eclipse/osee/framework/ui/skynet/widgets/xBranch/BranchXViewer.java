@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.PromptChangeUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchViewerWidget.IBranchWidgetMenuListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -43,10 +43,10 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Jeff C. Phillips
  */
 public class BranchXViewer extends XViewer {
-   private final XBranchWidget xBranchViewer;
+   private final XBranchViewerWidget xBranchViewer;
    private IBranchWidgetMenuListener menuListener;
 
-   public BranchXViewer(Composite parent, int style, BranchXViewerFactory xViewerFactory, XBranchWidget xBranchViewer, boolean filterRealTime, boolean searchRealTime) {
+   public BranchXViewer(Composite parent, int style, BranchXViewerFactory xViewerFactory, XBranchViewerWidget xBranchViewer, boolean filterRealTime, boolean searchRealTime) {
       super(parent, style, xViewerFactory, filterRealTime, searchRealTime);
       this.xBranchViewer = xBranchViewer;
    }
@@ -121,7 +121,7 @@ public class BranchXViewer extends XViewer {
       }
    }
 
-   public XBranchWidget getXBranchViewer() {
+   public XBranchViewerWidget getXBranchViewer() {
       return xBranchViewer;
    }
 

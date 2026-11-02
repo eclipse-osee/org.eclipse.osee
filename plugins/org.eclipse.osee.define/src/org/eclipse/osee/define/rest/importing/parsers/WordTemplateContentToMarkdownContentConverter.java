@@ -22,6 +22,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServer;
+import org.eclipse.osee.framework.core.attribute.sanitizer.MarkdownSanitizer;
 import org.eclipse.osee.framework.core.attribute.sanitizer.TextSanitizer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
-import org.eclipse.osee.framework.core.attribute.sanitizer.MarkdownSanitizer;
+import org.eclipse.osee.framework.core.publishing.markdown.MarkdownHtmlUtil;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -260,7 +261,7 @@ public class WordTemplateContentToMarkdownContentConverter {
                   markdownContent.append("<!-- LINK TO DELETED ARTIFACT (" + oseeLinkRefId + ") -->");
                   logArtifactLinkToDeletedArtifact(currentArtifactId.toString());
                } else {
-                  markdownContent.append("<artifact-link>").append(oseeLinkRefId.trim()).append("</artifact-link>");
+                  markdownContent.append(MarkdownHtmlUtil.buildArtifactLinkTag(oseeLinkRefId.trim()));
                }
                if (oseeLinkRefArt == ArtifactReadable.SENTINEL) {
                   oseeLinkRefId =

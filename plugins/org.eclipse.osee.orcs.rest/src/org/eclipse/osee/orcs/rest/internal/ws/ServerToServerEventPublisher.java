@@ -123,7 +123,7 @@ public class ServerToServerEventPublisher implements EventHandler {
                }
             });
          }
-         OseeLog.logf(ServerToServerEventPublisher.class, Level.INFO,
+         OseeLog.logf(ServerToServerEventPublisher.class, Level.FINE,
             "ServerToServerEventPublisher: Activated with serverId=%s", SERVER_ID);
       } catch (Exception ex) {
          OseeLog.logf(ServerToServerEventPublisher.class, Level.WARNING,

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
+import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAdmin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,18 +26,18 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.CoreImage;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CreateEnumeratedArtifactDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 
 /**
  * @author Vaibhav Patel
@@ -46,7 +47,7 @@ public class CreateEnumeratedArtifactAction extends XNavigateItemAction {
    private static final String TITLE = "Create Enumerated Artifact";
 
    public CreateEnumeratedArtifactAction() {
-      super(TITLE, CoreImage.GEAR, XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
+      super(TITLE, CoreImage.GEAR, Arrays.asList(OseeAdmin), XNavigateItem.DEFINE_ADMIN);
    }
 
    private ArtifactToken getOrCreateEnumeratedArtifactFolder() {
@@ -73,18 +74,6 @@ public class CreateEnumeratedArtifactAction extends XNavigateItemAction {
       return enumArt;
    }
 
-   private void printResults(ArtifactToken enumArt) {
-      String value =
-         AtsApiService.get().getAttributeResolver().getAttributeValues(enumArt, CoreAttributeTypes.IdValue).toString();
-      StringBuilder html = new StringBuilder();
-      html.append(AHTML.beginMultiColumnTable(95, 2));
-      html.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Name", "Value(s)")));
-      html.append(AHTML.addRowMultiColumnTable(enumArt.getName(), value));
-      html.append(AHTML.endMultiColumnTable());
-      HtmlDialog htmlDiag = new HtmlDialog(TITLE, "\n Enumerated Artifact has been created.\n", html.toString());
-      htmlDiag.open();
-   }
-
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
@@ -94,8 +83,8 @@ public class CreateEnumeratedArtifactAction extends XNavigateItemAction {
             "The purpose of the Enumerated Artifact is to dynamically add, edit, or remove value(s) used to populate a certain Attribute Type. \n");
          CreateEnumeratedArtifactDialog dialog = new CreateEnumeratedArtifactDialog(TITLE, msg.toString());
          if (dialog.open() == Window.OK) {
-            String name = dialog.getXtextString("name");
-            String value = dialog.getXtextString("value");
+            String name = dialog.getXtextString(CreateEnumeratedArtifactDialog.NAME_ID);
+            String value = dialog.getXtextString(CreateEnumeratedArtifactDialog.VALUE_ID);
             if (Strings.isValid(name) && Strings.isValid(value)) {
                List<String> values = new ArrayList<>();
                for (String val : value.split("\r\n")) {
@@ -111,7 +100,7 @@ public class CreateEnumeratedArtifactAction extends XNavigateItemAction {
                }
                ArtifactToken enumArtFolder = getOrCreateEnumeratedArtifactFolder();
                ArtifactToken enumArt = createEnumeratedArtifact(enumArtFolder, name, values);
-               printResults(enumArt);
+               ArtifactEditor.editArtifact((Artifact) enumArt);
             } else {
                AWorkbench.popup("ERROR", name + " and/or " + value + " are not valid.");
             }
@@ -123,6 +112,6 @@ public class CreateEnumeratedArtifactAction extends XNavigateItemAction {
 
    @Override
    public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN);
    }
 }

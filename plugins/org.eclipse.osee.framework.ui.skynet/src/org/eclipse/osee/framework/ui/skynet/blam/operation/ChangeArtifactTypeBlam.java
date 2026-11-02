@@ -18,14 +18,20 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
@@ -33,26 +39,66 @@ import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
  * @author Jeff C. Phillips
  * @author Karol M. Wilk
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class ChangeArtifactTypeBlam extends AbstractBlam {
 
-   @Override
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      List<Artifact> artifacts = variableMap.getArtifacts("Artifacts");
-      ArtifactTypeToken artifactType = variableMap.getArtifactType("Artifact Type");
-      ChangeArtifactType.changeArtifactType(artifacts, artifactType, true);
+   private static final String BLAM_NAME = "Change Artifact Type";
+   static final String ARTIFACTS = "Artifacts";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public ChangeArtifactTypeBlam() {
+      super(BLAM_NAME, CoreImage.BLAM);
    }
 
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
-   }
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
 
    @Override
    public List<XWidgetData> getXWidgetItems() {
-      XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andWidget("Artifacts", "XListDropViewer").endWidget();
-      wb.andWidget("Artifact Type", "XArtifactTypeComboViewer").endWidget();
+      createWidgetBuilder();
+      wb.andListDropWidget(ARTIFACTS);
+      wb.andWidget(XWidgetLabels.ARTIFACT_TYPE, WidgetId.XXArtifactTypeWidget);
       return wb.getXWidgetDatas();
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
+
+   @Override
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
+      List<Artifact> artifacts = variableMap.getArtifacts(ARTIFACTS);
+      ArtifactTypeToken artifactType = variableMap.getArtifactType(XWidgetLabels.ARTIFACT_TYPE);
+
+      ChangeArtifactType.changeArtifactType(artifacts, artifactType, true);
+   }
+
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(CoreUserGroups.OseeAdmin);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN);
    }
 
    @Override

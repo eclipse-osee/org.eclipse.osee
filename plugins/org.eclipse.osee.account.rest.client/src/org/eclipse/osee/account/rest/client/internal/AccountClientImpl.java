@@ -13,12 +13,7 @@
 
 package org.eclipse.osee.account.rest.client.internal;
 
-import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNTS;
-import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_ACTIVE;
-import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_LOGIN;
-import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_LOGOUT;
-import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_PREFERENCES;
-import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_SESSSIONS;
+import static org.eclipse.osee.account.rest.model.AccountContexts.*;
 import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_SERVER;
 import java.net.URI;
 import java.util.ArrayList;
@@ -66,7 +61,6 @@ public class AccountClientImpl implements AccountClient {
          address = System.getProperty(OSEE_APPLICATION_SERVER, "");
       }
       baseUri = UriBuilder.fromUri(address).build();
-
    }
 
    @Override

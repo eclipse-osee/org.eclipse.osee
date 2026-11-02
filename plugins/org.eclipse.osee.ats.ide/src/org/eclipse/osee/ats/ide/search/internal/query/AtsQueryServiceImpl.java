@@ -243,12 +243,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public ArtifactToken getArtifactByNameOrSentinel(ArtifactTypeToken artType, String name) {
-
-      if (ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsApi.getAtsBranch()) != null) {
-         return ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsApi.getAtsBranch());
+      Artifact art = ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsApi.getAtsBranch());
+      if (art != null) {
+         return art;
       }
       return ArtifactReadable.SENTINEL;
-
    }
 
    @Override

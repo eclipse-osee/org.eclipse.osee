@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionAssigneesOperation;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -73,7 +74,7 @@ public class TransitionAssigneesOperationTest {
       if (truthTableRd != null) {
          truthTableRd.addRaw(AHTML.endMultiColumnTable());
          XResultDataUI.reportAndOpen(truthTableRd, TransitionAssigneesOperationTest.class.getSimpleName(),
-            TransitionAssigneesOperationTest.class.getSimpleName() + ".html");
+            OseeData.getPath().toFile(), TransitionAssigneesOperationTest.class.getSimpleName() + ".html", true);
       }
    }
 

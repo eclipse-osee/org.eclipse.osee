@@ -72,9 +72,26 @@ export const purgeBranchViaApi = async (
 	expect([200, 404]).toContain(response.status());
 };
 
-/** Navigate to the Artifact Explorer page. */
+/**
+ * Navigate to the Artifact Explorer page. Retries once on a navigation abort:
+ * under parallel workers the dev server can abort an in-flight navigation
+ * (ERR_ABORTED), which is transient — a single retry clears it. (The markdown
+ * editor spec had this guard inline; centralized here so every explorer spec
+ * that navigates is robust to the same contention.)
+ */
 export const navigateToArtifactExplorer = async (page: Page) => {
-	await page.goto('/ple/artifact/explorer');
+	try {
+		await page.goto('/ple/artifact/explorer');
+	} catch (err) {
+		// Only retry a transient navigation abort (another in-flight navigation
+		// aborted this one under parallel-worker load). Any other failure — a bad
+		// URL, a server error — must surface with its original message, not be
+		// masked behind a confusing second-attempt error.
+		if (!(err instanceof Error) || !err.message.includes('ERR_ABORTED')) {
+			throw err;
+		}
+		await page.goto('/ple/artifact/explorer');
+	}
 };
 
 /**

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 public class AtsTaskDefToken extends NamedIdBase {
 
    public static String ID = AtsTaskDefToken.class.getSimpleName();
+   public static final AtsTaskDefToken SENTINEL = new AtsTaskDefToken(-1L, "Sentinel");
 
    public AtsTaskDefToken() {
       // for jax-rs

@@ -57,9 +57,9 @@ public interface IAtsWorkDefinitionService {
    List<StateDefinition> getStatesOrderedByOrdinal(WorkDefinition workDef);
 
    /**
-    * Recursively decend StateItems and grab all widgetDefs.<br>
+    * Recursively decend LayoutItems and grab all widgetDefs.<br>
     * <br>
-    * Note: Modifing this list will not affect the state widgets. Use addStateItem().
+    * Note: Modifing this list will not affect the state widgets.
     */
    List<WidgetDef> getWidgetsFromLayoutItems(StateDefinition stateDef);
 

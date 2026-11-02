@@ -58,6 +58,7 @@ public class CheckBoxDialog extends MessageDialog {
 
       checkButton = new Button(composite, SWT.CHECK);
       checkButton.setText(Strings.isValid(checkBoxMessage) ? checkBoxMessage : "<NONE>");
+      checkButton.setSelection(checked);
       checkButton.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -71,5 +72,9 @@ public class CheckBoxDialog extends MessageDialog {
 
    public boolean isChecked() {
       return checked;
+   }
+
+   public void setChecked(boolean checked) {
+      this.checked = checked;
    }
 }

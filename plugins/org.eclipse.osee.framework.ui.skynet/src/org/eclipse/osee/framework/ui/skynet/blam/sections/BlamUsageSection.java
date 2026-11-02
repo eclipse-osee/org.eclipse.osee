@@ -13,15 +13,20 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam.sections;
 
+import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
+import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -58,6 +63,14 @@ public class BlamUsageSection extends BaseBlamSection {
          Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
          composite.setLayout(new GridLayout());
          composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+         // Access control based on User Groups; "Everyone" if none specified
+         Collection<IUserGroupArtifactToken> userGroups = getAbstractBlam().getUserGroups();
+         String userGroupAccess = userGroups.isEmpty() ? "Everyone" : userGroups.toString();
+         Label accessLabel = toolkit.createLabel(composite, "User Group Access: " + userGroupAccess, SWT.NONE);
+         accessLabel.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_YELLOW));
+         accessLabel.setFont(FontManager.getCourierNew12Bold());
+         accessLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 
          formText = toolkit.createFormText(composite, false);
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);

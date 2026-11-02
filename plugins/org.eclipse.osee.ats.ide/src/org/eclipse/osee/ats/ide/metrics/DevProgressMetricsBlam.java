@@ -11,7 +11,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -21,90 +20,108 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.version.Version;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelVersionSelection;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXTeamDefinitionsWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXVersionSelWidget;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXDateSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Stephen J. Molaro
  */
-public class DevProgressMetricsBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class DevProgressMetricsBlam extends AbstractAtsBlam {
 
-   private static final String NAME = "Development Progress Metrics BLAM";
-   private static final String TEAM_DEFINITIONS = "Team Definition(s)";
-   private static final String VERSION = "Version";
-   private static final String START_DATE = "Start Date";
-   private static final String END_DATE = "End Date";
-   private static final String ALL_TIME = "All Time";
+   private static final String BLAM_NAME = "Development Progress Metrics";
 
-   private XHyperlabelTeamDefinitionSelection programWidget;
-   private XHyperlabelVersionSelection versionWidget;
-   private XDateDam startDateWidget;
-   private XDateDam endDateWidget;
+   private XXTeamDefinitionsWidget teamdDefWidget;
+   private XXVersionSelWidget versionWidget;
+   private XXDateSelWidget startDateWidget;
+   private XXDateSelWidget endDateWidget;
    private Date startDate;
    private Date endDate;
    private boolean allTime;
-   private Collection<IAtsVersion> versions;
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public DevProgressMetricsBlam() {
+      super(BLAM_NAME, CoreImage.GEAR);
+   }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
 
    @Override
-   public String getName() {
-      return NAME;
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wba.andTeamDefinitionsWidget();
+      wba.andVersionWidget();
+      wba.andDateWidget(XWidgetLabels.START_DATE);
+      wba.andDateWidget(XWidgetLabels.END_DATE);
+      wba.andCheckBoxWidget(XWidgetLabels.ALL_TIME);
+      return wba.getXWidgetDatas();
    }
 
    @Override
-   public String getDescriptionUsage() {
-      return "Generates Dev Progress Report based on Version. Results are in the downloads folder.";
-   }
-
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
-      if (xWidget.getLabel().equalsIgnoreCase(VERSION)) {
-         versions = new ArrayList<>();
-         versionWidget = (XHyperlabelVersionSelection) xWidget;
-         versionWidget.getLabelHyperlink().redraw();
-      } else if (xWidget.getLabel().equals(TEAM_DEFINITIONS)) {
-         programWidget = (XHyperlabelTeamDefinitionSelection) xWidget;
-         programWidget.addXModifiedListener(new XModifiedListener() {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
+      XModifiedListener modListener, boolean isEditable) {
+      if (xWidget.isWidget(WidgetIdAts.XXTeamDefinitionsWidget)) {
+         teamdDefWidget = (XXTeamDefinitionsWidget) xWidget;
+         teamdDefWidget.addXModifiedListener(new XModifiedListener() {
 
             @Override
             public void widgetModified(XWidget widget) {
                setProgramVersions();
-               versionWidget.setSelectableVersions(versions);
-               versionWidget.getLabelHyperlink().redraw();
+               versionWidget.getLabelLinkWidget().redraw();
             }
          });
-      } else if (xWidget.getLabel().equalsIgnoreCase(START_DATE)) {
-         startDateWidget = (XDateDam) xWidget;
+      } else if (xWidget.isWidget(WidgetIdAts.XXVersionSelWidget)) {
+         versionWidget = (XXVersionSelWidget) xWidget;
+      } else if (xWidget.getLabel().equalsIgnoreCase(XWidgetLabels.START_DATE)) {
+         startDateWidget = (XXDateSelWidget) xWidget;
          initializeWidgets();
-      } else if (xWidget.getLabel().equalsIgnoreCase(END_DATE)) {
-         endDateWidget = (XDateDam) xWidget;
+      } else if (xWidget.getLabel().equalsIgnoreCase(XWidgetLabels.END_DATE)) {
+         endDateWidget = (XXDateSelWidget) xWidget;
          initializeWidgets();
       }
    }
 
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
+
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -113,11 +130,11 @@ public class DevProgressMetricsBlam extends AbstractBlam {
                String fileLocation = String.format("C:%sUsers%s%s%sDownloads", File.separator, File.separator,
                   System.getProperty("user.name"), File.separator);
 
-               Version selectedVersion = versionWidget.getSelectedVersion();
+               ArtifactToken selectedVersion = versionWidget.getSelectedFirst();
 
-               startDate = (Date) variableMap.getValue(START_DATE);
-               endDate = (Date) variableMap.getValue(END_DATE);
-               allTime = variableMap.getBoolean(ALL_TIME);
+               startDate = (Date) variableMap.getValue(XWidgetLabels.START_DATE);
+               endDate = (Date) variableMap.getValue(XWidgetLabels.END_DATE);
+               allTime = variableMap.getBoolean(XWidgetLabels.ALL_TIME);
 
                try (Response res = AtsApiService.get().getServerEndpoints().getMetricsEp().devProgressReport(
                   selectedVersion.getName(), startDate, endDate, allTime);) {
@@ -152,32 +169,19 @@ public class DevProgressMetricsBlam extends AbstractBlam {
       });
    }
 
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.REPORTS);
-   }
-
-   @Override
-   public List<XWidgetData> getXWidgetItems() {
-      XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andWidget(TEAM_DEFINITIONS, "XHyperlabelTeamDefinitionSelection").endWidget();
-      wb.andWidget(VERSION, "XHyperlabelVersionSelection").endWidget();
-      wb.andWidget(START_DATE, "XDateDam").endWidget();
-      wb.andWidget(END_DATE, "XDateDam").endWidget();
-      wb.andWidget(ALL_TIME, "XCheckBox").endWidget();
-      return wb.getXWidgetDatas();
-   }
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
    public void setProgramVersions() {
       HashSet<IAtsVersion> versionSet = new HashSet<>();
-      Collection<TeamDefinition> teamDefs = programWidget.getSelectedTeamDefintions();
+      Collection<IAtsTeamDefinition> teamDefs = teamdDefWidget.getSelected();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (teamDef.isValid()) {
             versionSet.addAll(AtsApiService.get().getVersionService().getVersionsFromTeamDefHoldingVersions(teamDef));
          }
       }
-      versions.clear();
-      versions.addAll(versionSet);
+      versionWidget.setSelectableVersions(versionSet);
    }
 
    private void initializeWidgets() {
@@ -194,4 +198,19 @@ public class DevProgressMetricsBlam extends AbstractBlam {
       cal.set(Calendar.DAY_OF_MONTH, 1);
       startDateWidget.setDate(cal.getTime());
    }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.REPORTS);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Generates Dev Progress Report based on Version. Results are in the downloads folder.";
+   }
+
 }

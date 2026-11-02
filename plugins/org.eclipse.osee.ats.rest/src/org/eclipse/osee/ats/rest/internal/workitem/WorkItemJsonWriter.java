@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -553,14 +554,18 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeObjectField("state", state.getName());
       writer.writeArrayFieldStart("rules");
       for (String rule : atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(state).stream().flatMap(
-         layout -> layout.getOptions().getXOptions().stream()).map(option -> option.name()).collect(
-            Collectors.toSet())) {
+         layout -> layout.getOptions().stream()).map(option -> option.name()).collect(Collectors.toSet())) {
          writer.writeString(rule);
       }
 
       writer.writeEndArray();
-      boolean hasCommitManager = atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(state).stream().map(
-         widget -> widget.getName()).anyMatch(name -> name.equals("Commit Manager"));
+      // Key off the widget token, not a display name. The tokenized Commit Manager
+      // widget (WidgetIdAts.XCommitManagerWfeWidget) carries its identity in the
+      // widgetId, and getName() is no longer the literal "Commit Manager".
+      boolean hasCommitManager =
+         atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(state).stream().map(
+            widget -> widget.getWidgetId()).anyMatch(
+               widgetId -> WidgetIdAts.XCommitManagerWfeWidget.getName().equals(widgetId.getName()));
       writer.writeObjectField("committable", hasCommitManager);
    }
 

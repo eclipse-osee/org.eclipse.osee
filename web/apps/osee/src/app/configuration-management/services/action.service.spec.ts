@@ -50,7 +50,7 @@ const testNewActionData: CreateNewActionInterface = {
 	createdByUserId: '0',
 	versionId: targetedVersionSentinel,
 	priority: PRIORITIES.LowestPriority,
-	changeType: { id: '-1', name: '', description: '' },
+	changeType: '',
 	originator: 'Joe Smith',
 	assignees: '123,456',
 	points: '1',

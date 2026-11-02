@@ -26,7 +26,6 @@ import org.junit.runners.Suite;
    AtsChangeSetTest.class,
    AtsDeleteManagerTest.class,
    AtsImageTest.class,
-   AtsXWidgetsExampleBlamTest.class,
    XResultDataTableExampleTest.class,
    CreateActionUsingAllActionableItemsTest.class,
    ImportActionsViaSpreadsheetTest.class,

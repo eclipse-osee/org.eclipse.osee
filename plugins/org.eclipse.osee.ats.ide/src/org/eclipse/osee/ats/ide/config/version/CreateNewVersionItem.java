@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -80,10 +79,9 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       if (teamDefHoldingVersions == null) {
          return;
       }
-      EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create New Version", null,
-         "Enter Version name(s) one per line", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed = new EntryDialog("Create New Version", "Enter Version name(s) one per line");
       ed.setFillVertically(true);
-      if (ed.open() == 0) {
+      if (ed.open() == Window.OK) {
          Set<String> newVersionNames = new HashSet<>();
          for (String str : ed.getEntry().split(System.getProperty("line.separator"))) {
             newVersionNames.add(str);

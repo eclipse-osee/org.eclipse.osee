@@ -33,7 +33,7 @@ public class TestRunViewNavigateItem implements XNavigateItemProvider {
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
+   public List<XNavigateItem> getNavigateItemsForCurrentUser(List<XNavigateItem> items) {
       items.add(new XNavigateItemAction(new OpenTestRunView(), OteDefineImage.TEST_RUN_VIEW, false, XNavItemCat.TOP));
       return items;
    }

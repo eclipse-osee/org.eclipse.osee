@@ -13,12 +13,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
-import java.text.NumberFormat;
 import java.util.Collection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.widget.validate.XXLongValidator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -43,7 +43,7 @@ public class ArtifactIdHandlePromptChange implements IHandlePromptChange {
       this.persist = persist;
 
       dialog = new EntryDialog("Change " + attrType.getName(), "Enter new " + attrType.getName());
-      dialog.setNumberFormat(NumberFormat.getNumberInstance());
+      dialog.setValidator(XXLongValidator.instance);
    }
 
    @Override

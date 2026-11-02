@@ -71,9 +71,9 @@ public class OmeEditTabDrop {
                      MarkdownHtmlUtil.SUPPORTED_IMAGE_EXTENSIONS::contains);
 
             if (hasSupportedImageExtension) {
-               artifactLink = String.format("<image-link>%s</image-link>", dropArt.getIdString());
+               artifactLink = MarkdownHtmlUtil.buildImageLinkTag(dropArt.getIdString());
             } else {
-               artifactLink = String.format("<artifact-link>%s</artifact-link>", dropArt.getIdString());
+               artifactLink = MarkdownHtmlUtil.buildArtifactLinkTag(dropArt.getIdString());
             }
             omeEditTab.appendText("\n" + artifactLink);
          }

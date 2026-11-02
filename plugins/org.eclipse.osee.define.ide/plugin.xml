@@ -56,26 +56,6 @@
             templateName="Work Instruction">
       </Template>
    </extension>
-	<extension id="SystemSubsystemReport" name="System and Subsystem Report"
-		point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.define.ide.blam.operation.SystemSubsystemReport" />
-	</extension>
-   <extension
-         id="PublishSubsystemToDesignTraceability"
-         name="Publish Subsystem To Design Traceability"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.define.ide.blam.operation.PublishSubsystemToDesignTraceability">
-      </Operation>
-   </extension>
- <extension
-       id="SubsystemToLowLevelReqTraceReport"
-       name="SubsystemToLowLevelReqTraceReport"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.SubsystemToLowLevelReqTraceReport">
-    </Operation>
- </extension>
  <extension
        point="org.eclipse.ui.popupMenus">
     <viewerContribution
@@ -106,89 +86,6 @@
        </action>
     </objectContribution>
  </extension>
- <extension
-       id="TraceReport"
-       name="TraceReport"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.traceability.blam.TraceReportBlam">
-    </Operation>
- </extension>
- 
-      <extension
-         id    = "PublishingAttributeContentBlam"
-         name  = "Publishing Attribute Content BLAM"
-         point = "org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation
-            className="org.eclipse.osee.define.ide.blam.operation.PublishingAttributeContentBlam" />
-      </extension>
-   
-      <extension
-         id    = "PublishingClearCachesBlam"
-         name  = "Publishing Clear Caches BLAM"
-         point = "org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation
-            className="org.eclipse.osee.define.ide.blam.operation.PublishingClearCachesBlam" />
-      </extension>
-      
-      <extension
-         id    = "PublishingTemplateBlam"
-         name  = "Publishing Template BLAM"
-         point = "org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation
-            className="org.eclipse.osee.define.ide.blam.operation.PublishingTemplateBlam" />
-      </extension>
-
-      <extension
-         id    = "PublishWithSpecifiedTemplate"
-         name  = "Publish With Specified Template"
-         point = "org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation
-            className="org.eclipse.osee.define.ide.blam.operation.PublishWithSpecifiedTemplate" />
-      </extension>
-      
- <extension
-       id="RemoveTraceMarksFromTraceUnits"
-       name="RemoveTraceMarksFromTraceUnits"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.traceability.blam.RemoveTraceMarksFromTraceUnits">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.SubsystemRequirementVerificationLevel">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.TestPlanComplianceReport">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.RequirementsTestReport">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.RequirementReorderOperation">
-    </Operation>
- </extension>
- <extension point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-	<Operation className="org.eclipse.osee.define.ide.blam.operation.SubsystemFullTraceReport"></Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.traceability.report.PublishStdStpTraceability">
-    </Operation>
- </extension>
-
    <extension
          point="org.eclipse.ui.commands">
       <category
@@ -196,69 +93,4 @@
             id="osee.product.commands.category">
       </category>
    </extension>
- <extension
-       id="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"
-       name="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.PublishSystemLevelSSDD">
-    </Operation>
- </extension>
- <extension
-       id="AddTraceMarksToTestCase"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.traceability.blam.AddTraceMarksToTraceUnits">
-    </Operation>
- </extension>
- <extension
-       id="FixDuplicateEnumeratedAttributes"
-       name="FixDuplicateEnumeratedAttributes"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.FixDuplicateEnumeratedAttributes">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.FixEmbeddedLinksBlam">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.DataRightsImporter">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.traceability.blam.RemoveObjectIdsFromTraceUnits">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.FindErroneousEmbeddedLinksBlam">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.FindDuplicateArtifactNames">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.FindMissingOrUnspecifiedAttributes">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.define.ide.blam.operation.DuplicateParentBlam">
-    </Operation>
- </extension>
 </plugin>

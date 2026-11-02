@@ -24,10 +24,11 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.util.UserIdSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.XXUserTokenWithTeamComparator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -118,7 +119,8 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<AtsUser> {
       if (teamMembers != null) {
          ((UserCheckTreeLabelProvider) getTreeViewer().getViewer().getLabelProvider()).setTeamMembers(teamMembers);
       }
-      getTreeViewer().setSorter(new UserIdSorter(getInitialSelections(), teamMembers));
+      getTreeViewer().getCheckboxTreeViewer().setComparator(
+         new XXUserTokenWithTeamComparator(getInitialSelections(), teamMembers));
       return c;
    }
 
@@ -139,6 +141,14 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<AtsUser> {
    public static class UserCheckTreeLabelProvider implements ILabelProvider {
       private Collection<AtsUser> teamMembers;
 
+      public UserCheckTreeLabelProvider(Collection<AtsUser> teamMembers) {
+         this.teamMembers = teamMembers;
+      }
+
+      public UserCheckTreeLabelProvider() {
+         this.teamMembers = null;
+      }
+
       @Override
       public Image getImage(Object arg0) {
          return null;
@@ -146,10 +156,18 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<AtsUser> {
 
       @Override
       public String getText(Object arg0) {
-         if (teamMembers != null && teamMembers.contains(arg0)) {
-            return ((AtsUser) arg0).getName() + " (Team)";
+         if (arg0 instanceof AtsUser) {
+            if (teamMembers != null && teamMembers.contains(arg0)) {
+               return ((AtsUser) arg0).getName() + " (Team)";
+            }
+            return ((AtsUser) arg0).getName();
+         } else if (arg0 instanceof UserToken) {
+            if (teamMembers != null && teamMembers.contains(arg0)) {
+               return ((UserToken) arg0).getName() + " (Team)";
+            }
+            return ((UserToken) arg0).getName();
          }
-         return ((AtsUser) arg0).getName();
+         return arg0.toString();
       }
 
       @Override

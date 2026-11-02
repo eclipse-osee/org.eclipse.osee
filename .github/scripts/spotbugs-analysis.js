@@ -846,13 +846,17 @@ function main() {
   const lines = [marker, `## :beetle: SpotBugs Analysis`, ``];
 
   if (filteredBugs.length > 0) {
+    // GitHub rejects an issue/PR comment body over 65,536 chars. A large PR can produce more
+    // changed-file bugs than fit, so cap the inline table and point to the HTML report for the rest.
+    const MAX_TABLE_ROWS = 200;
+    const shown = filteredBugs.slice(0, MAX_TABLE_ROWS);
     lines.push(
       `### :pushpin: Issues in Changed Files — ${filteredBugs.length} issue(s)`
     );
     lines.push(``);
     lines.push(`| File | Method | Priority | Message |`);
     lines.push(`|------|--------|----------|---------|`);
-    for (const bug of filteredBugs) {
+    for (const bug of shown) {
       const file = bug.sourcepath
         ? `\`${bug.sourcepath.split('/').pop()}\``
         : '';
@@ -860,6 +864,13 @@ function main() {
       const msg = bug.message.replace(/\|/g, '\\|');
       lines.push(
         `| ${file} | ${method} | ${PRIORITY_LABELS[bug.priority] || bug.priority} | ${msg} |`
+      );
+    }
+    if (filteredBugs.length > MAX_TABLE_ROWS) {
+      lines.push(``);
+      lines.push(
+        `> :information_source: Showing the first ${MAX_TABLE_ROWS} of ${filteredBugs.length} issues. ` +
+          `See the downloadable HTML report below for the full list.`
       );
     }
     lines.push(``);
@@ -888,7 +899,17 @@ function main() {
     `[:arrow_down: Download the SpotBugs HTML reports](${artifactUrl})`
   );
 
-  const prBody = lines.join('\n');
+  let prBody = lines.join('\n');
+
+  // Hard safety net: GitHub rejects a comment body >= 65536 chars. If we are still over (e.g. very long
+  // messages), truncate and keep the artifact link so the comment always posts.
+  const GITHUB_BODY_LIMIT = 65536;
+  if (prBody.length >= GITHUB_BODY_LIMIT) {
+    const notice =
+      `\n\n> :warning: Report truncated to fit GitHub's comment size limit. ` +
+      `See the downloadable HTML report above for the full list.\n`;
+    prBody = prBody.substring(0, GITHUB_BODY_LIMIT - notice.length - 1) + notice;
+  }
 
   // Upsert the PR comment
   const commentsData = ghGet(

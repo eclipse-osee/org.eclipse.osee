@@ -40,8 +40,8 @@ public class XNavItemCat extends OseeEnum {
    // Child of one of above category items
    public static final XNavItemCat SUBCAT = new XNavItemCat("SUBCAT");
 
-   // Will only display if OseeAdmin
-   public static final XNavItemCat OSEE_ADMIN = new XNavItemCat("ADMIN");
+   // Return if items should not be in Navigator
+   public static final XNavItemCat NO_NAV = new XNavItemCat("NO_NAV");
 
    public XNavItemCat(String name) {
       super(ENUM_ID, name);

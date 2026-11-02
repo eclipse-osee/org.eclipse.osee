@@ -103,6 +103,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
+   // For performance reasons, don't add anything to title that could slow this method
    public String getEditorTitle() {
       return getAtsId() + " - " + getArtifactType() + ": " + getName();
    }
@@ -222,7 +223,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public WorkDefinition getWorkDefinition() {
       try {
-         return AtsApiService.get().getWorkDefinitionService().getWorkDefinition(this);
+         WorkDefinition workDefinition = AtsApiService.get().getWorkDefinitionService().getWorkDefinition(this);
+         if (workDefinition == null) {
+            // Product-specific WorkDef builders can be present on the server but unavailable in this client runtime.
+            // Resolve the workflow's WorkDef from the server rather than returning null to WFE callers.
+            workDefinition = AtsApiService.get().getServerEndpoints().getWorkDefEp().getWorkDef(getIdString());
+         }
+         return workDefinition;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -234,11 +241,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       if (getCurrentStateName() == null) {
          return null;
       }
-      return getWorkDefinition().getStateByName(getCurrentStateName());
+      WorkDefinition workDefinition = getWorkDefinition();
+      return workDefinition == null ? null : workDefinition.getStateByName(getCurrentStateName());
    }
 
    public StateDefinition getStateDefinitionByName(String name) {
-      return getWorkDefinition().getStateByName(name);
+      WorkDefinition workDefinition = getWorkDefinition();
+      return workDefinition == null ? null : workDefinition.getStateByName(name);
    }
 
    public boolean isAccessControlWrite() {

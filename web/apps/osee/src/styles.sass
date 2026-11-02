@@ -405,3 +405,28 @@ button.osee-help-highlight, [mat-icon-button].osee-help-highlight
   100%
     transform: scale(1)
     color: inherit
+
+// The markdown editor accepts artifacts dragged from the hierarchy as a CDK drop
+// target, but it inserts a link tag at the cursor rather than hosting a sortable
+// list. CDK still injects the dragged item's placeholder as a child of the drop
+// container, which would otherwise appear as a stray element wedged into the
+// editor/preview flex row. Hide the placeholder only for these editor drop lists
+// (id prefix set in markdown-editor.component); other drop lists (relations,
+// tab reordering) keep their normal placeholder behavior.
+[id^="osee-md-editor-drop-"]
+  .cdk-drag-placeholder
+    display: none !important
+
+// CDK clones a dragged element into a floating `.cdk-drag-preview` appended to
+// <body>, OUTSIDE the component/theme subtree it came from, so the clone loses the
+// inherited foreground color and a dragged artifact's name rendered as default
+// black — unreadable in dark mode. Only the text/icon color needs fixing; pin it
+// to the theme-adaptive foreground token so it is legible in both modes. Do NOT
+// add a background/padding/box here — the preview should look like the row being
+// dragged, not a floating card. `.cdk-drag-preview` is CDK's documented styling
+// hook, and this must be global because the clone lives at the document root where
+// component styles cannot reach it.
+.cdk-drag-preview
+  color: var(--osee-foreground-text)
+  .mat-icon, mat-icon
+    color: var(--osee-foreground-text)

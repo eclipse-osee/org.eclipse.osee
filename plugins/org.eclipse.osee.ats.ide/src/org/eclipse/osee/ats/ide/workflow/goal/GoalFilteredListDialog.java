@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -60,11 +60,11 @@ public class GoalFilteredListDialog extends FilteredTreeDialog {
 
    private void createCheckbox(Composite parent) {
 
-      final XCheckBox checkbox = new XCheckBox("Remove from Goal");
+      final XXCheckBoxWidget checkbox = new XXCheckBoxWidget("Remove from Goal");
       checkbox.setFillHorizontally(true);
       checkbox.setFocus();
       checkbox.setDisplayLabel(false);
-      checkbox.set(removeFromGoal);
+      checkbox.setSelected(removeFromGoal);
       checkbox.createWidgets(parent, 2);
 
       SelectionListener selectionListener = new SelectionAdapter() {

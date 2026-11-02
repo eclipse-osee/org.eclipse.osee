@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
@@ -34,7 +33,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    private OrcsApi orcsApi;
-   private AtsApi atsApi;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -168,12 +166,4 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       return orcsApi.userService().isUserMember(AtsUserGroups.AtsDeleteWorkflowAdmin, getCurrentUser());
    }
 
-   public AtsApi getAtsApi() {
-      return atsApi;
-   }
-
-   @Override
-   public void setAtsApi(AtsApi atsApi) {
-      this.atsApi = atsApi;
-   }
 }

@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
-import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -80,7 +79,7 @@ public interface IAtsActionService {
    /**
     * @param opName - will be the transaction comment and in potentially in error text, should be unique
     */
-   default NewActionData createActionData(String opName, String title, String desc, ChangeTypes changeType,
+   default NewActionData createActionData(String opName, String title, String desc, String changeType,
       String priority) {
       return createActionData(opName, title, desc) //
          .andChangeType(changeType) //

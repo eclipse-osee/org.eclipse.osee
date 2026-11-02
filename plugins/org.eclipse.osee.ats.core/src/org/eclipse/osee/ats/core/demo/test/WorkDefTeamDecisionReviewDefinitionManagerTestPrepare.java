@@ -24,10 +24,14 @@ import org.eclipse.osee.ats.core.workdef.builder.DecisionReviewDefinitionBuilder
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne
  */
+@Component(service = IAtsWorkDefinitionBuilder.class, immediate = true)
 public class WorkDefTeamDecisionReviewDefinitionManagerTestPrepare extends AbstractWorkDef {
 
    public WorkDefTeamDecisionReviewDefinitionManagerTestPrepare() {
@@ -63,5 +67,10 @@ public class WorkDefTeamDecisionReviewDefinitionManagerTestPrepare extends Abstr
          .andColor(StateColor.BLACK);
 
       return bld.getWorkDefinition();
+   }
+
+   @Override
+   public boolean isApplicable() {
+      return DemoUtil.isDemoDatabase();
    }
 }

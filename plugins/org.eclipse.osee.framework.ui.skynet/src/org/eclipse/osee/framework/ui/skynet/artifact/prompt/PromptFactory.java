@@ -13,10 +13,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
-import java.text.NumberFormat;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.widget.validate.XXDoubleValidator;
+import org.eclipse.osee.framework.core.widget.validate.XXIntegerValidator;
+import org.eclipse.osee.framework.core.widget.validate.XXLongValidator;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -37,22 +39,21 @@ public final class PromptFactory implements IPromptFactory {
          promptChange = new DateHandlePromptChange(artifacts, attributeType, displayName, persist);
       } else if (attributeType.isDouble()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getInstance(), viewName);
+            XXDoubleValidator.instance, viewName);
       } else if (attributeType.isInteger()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getIntegerInstance(), viewName);
+            XXIntegerValidator.instance, viewName);
       } else if (attributeType.isLong()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-            NumberFormat.getNumberInstance(), viewName);
+            XXLongValidator.instance, viewName);
       } else if (attributeType.isBoolean()) {
          promptChange = new BooleanHandlePromptChange(artifacts, attributeType, displayName, persist, null);
-      } else if (attributeType.isEnumerated()) {
-         promptChange = new EnumeratedHandlePromptChange(artifacts, attributeType.toEnum(), displayName, persist);
       } else if (attributeType.isString()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts, null, viewName);
       } else if (attributeType.isArtifactId()) {
          promptChange = new ArtifactIdHandlePromptChange(artifacts, attributeType, displayName, persist);
       } else {
+         // Note: Enumerated attrs can be changed through Mass Editor
          throw new OseeStateException("Unhandled attribute type.  Can't edit through this view");
       }
       return promptChange;

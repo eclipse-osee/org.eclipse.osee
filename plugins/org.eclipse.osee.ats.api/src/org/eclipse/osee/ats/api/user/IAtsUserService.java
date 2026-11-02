@@ -96,4 +96,8 @@ public interface IAtsUserService {
 
    void setAtsApi(AtsApi atsApi);
 
+   UserToken getCurrentUserToken();
+
+   UserToken getUserTokenByUserId(String userId);
+
 }

@@ -18,10 +18,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -36,10 +36,12 @@ import org.eclipse.osee.ats.ide.search.widget.button.BuildMemoType;
 import org.eclipse.osee.ats.ide.search.widget.button.ExportBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.button.GenerateBuildMemoWidget;
 import org.eclipse.osee.ats.ide.search.widget.button.ValidateProblemReportsWidget;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXTeamDefinitionsWidget;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.SearchEngine;
 import org.eclipse.osee.ats.ide.world.search.AbstractWorkItemSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTeamWorkflowSearchItem;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -47,10 +49,10 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXLabelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -168,93 +170,87 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    }
 
    @Override
-   protected void addWidgets() {
-      super.addWidgets();
+   protected void addWidgets(XWidgetBuilderAts wba) {
+      super.addWidgets(wba);
       addPrWidgets();
    }
 
    protected void addPrWidgets() {
-      getConfig().addWidget(3);
-      getBuildImpact().addWidget();
-      getBuildImpactState().addWidget(-1);
+      getConfig().addWidget(wba, 3);
+      getBuildImpact().addWidget(wba);
+      getBuildImpactState().addWidget(wba, -1);
       //
       addSpaceWidget(this, OR_LABEL, 4);
-      getBuildImpact2().addWidget();
-      getBuildImpactState2().addWidget(-1);
+      getBuildImpact2().addWidget(wba);
+      getBuildImpactState2().addWidget(wba, -1);
       //
-      addSpaceWidget(this, "  ", 4);
-      getValidatePrs().addWidget(-1);
-      //
-      getPrList().addWidget(6);
-      getGenerateBuildMemo().addWidget();
-      getExportBuildMemoFull().addWidget();
-      getExportBuildMemoRelease().addWidget(-1);
+      addSpaceWidget(this, "  ", 6);
+      getValidatePrs().addWidget(wba);
+      getPrList().addWidget(wba);
+      getGenerateBuildMemo().addWidget(wba);
+      getExportBuildMemoFull().addWidget(wba);
+      getExportBuildMemoRelease().addWidget(wba, -1);
    }
 
    @Override
    protected void reportWidgetSelections(XResultData rd) {
       super.reportWidgetSelections(rd);
-      String configValue = config.getWidget().getCurrentValue();
-      rd.logf("Configuration: [%s]\n",
-         (Strings.isValid(configValue) && !Widgets.NOT_SET.equals(configValue)) ? configValue : "");
-      String buildImpact = getBuildImpact().getCurrentValue();
-      rd.logf("Build Impact: [%s]\n",
-         (Strings.isValid(buildImpact) && !Widgets.NOT_SET.equals(buildImpact)) ? buildImpact : "");
-      String buildImpactState = getBuildImpactState().getCurrentValue();
-      rd.logf("Build Impact State: [%s]\n",
-         (Strings.isValid(buildImpactState) && !Widgets.NOT_SET.equals(buildImpactState)) ? buildImpactState : "");
+      BranchViewToken configTok = config.getSelectedFirst();
+      String configValue = configTok.getName();
+      rd.logf("Configuration: [%s]\n", (Strings.isValid(configValue) ? configValue : ""));
+      String buildImpact = getBuildImpact().getSelectedFirst();
+      rd.logf("Build Impact: [%s]\n", (Strings.isValid(buildImpact) ? buildImpact : ""));
+      String buildImpactState = getBuildImpactState().getSelectedFirst();
+      rd.logf("Build Impact State: [%s]\n", (Strings.isValid(buildImpactState) ? buildImpactState : ""));
       rd.log("OR");
-      String buildImpact2 = getBuildImpact2().getCurrentValue();
-      rd.logf("Build Impact 2: [%s]\n",
-         (Strings.isValid(buildImpact2) && !Widgets.NOT_SET.equals(buildImpact2)) ? buildImpact2 : "");
-      String buildImpactState2 = getBuildImpactState2().getCurrentValue();
-      rd.logf("Build Impact State 2: [%s]\n",
-         (Strings.isValid(buildImpactState2) && !Widgets.NOT_SET.equals(buildImpactState2)) ? buildImpactState2 : "");
+      String buildImpact2 = getBuildImpact2().getSelectedFirst();
+      rd.logf("Build Impact 2: [%s]\n", (Strings.isValid(buildImpact2) ? buildImpact2 : ""));
+      String buildImpactState2 = getBuildImpactState2().getSelectedFirst();
+      rd.logf("Build Impact State 2: [%s]\n", (Strings.isValid(buildImpactState2) ? buildImpactState2 : ""));
       String prListArtName = prList.getCurrentValue();
-      rd.logf("PR List Artifact: [%s]\n",
-         (prListArtName != null && !Widgets.NOT_SET.equals(prListArtName)) ? prListArtName : "");
+      rd.logf("PR List Artifact: [%s]\n", (prListArtName != null ? prListArtName : ""));
    }
 
    @Override
    public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+      XWidgetSwtRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       super.widgetCreating(widget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
       if (widget.getLabel().equals(OR_LABEL)) {
-         XLabel label = (XLabel) widget;
+         XXLabelWidget label = (XXLabelWidget) widget;
          label.setFillHorizontally(false);
       }
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
       XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(widget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
+      super.widgetCreated(widget, toolkit, art, xWidgetSwtRenderer, modListener, isEditable);
 
-      generateBuildMemoWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer, modListener,
+      generateBuildMemoWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, xWidgetSwtRenderer, modListener,
          isEditable);
-      exportBuildMemoWidgetFull.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer, modListener,
+      exportBuildMemoWidgetFull.widgetCreated(getWorldEditor(), widget, toolkit, art, xWidgetSwtRenderer, modListener,
          isEditable);
-      exportBuildMemoWidgetRelease.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer,
+      exportBuildMemoWidgetRelease.widgetCreated(getWorldEditor(), widget, toolkit, art, xWidgetSwtRenderer,
          modListener, isEditable);
-      validatePrsWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, swtXWidgetRenderer, modListener,
+      validatePrsWidget.widgetCreated(getWorldEditor(), widget, toolkit, art, xWidgetSwtRenderer, modListener,
          isEditable);
 
       if (widget.getLabel().equals(TeamDefinitionSearchWidget.TeamDefintiionWidget.getName())) {
-         List<TeamDefinition> prTeamDefs = new ArrayList<>();
-         for (TeamDefinition teamDef : AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().values()) {
+         List<IAtsTeamDefinition> prTeamDefs = new ArrayList<>();
+         for (IAtsTeamDefinition teamDef : AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().values()) {
             if (teamDef.isActive() && teamDef.isWorkType(WorkType.ProblemReport)) {
                prTeamDefs.add(teamDef);
             }
          }
-         XHyperlabelTeamDefinitionSelection teamWidget = (XHyperlabelTeamDefinitionSelection) widget;
-         teamWidget.setTeamDefs(prTeamDefs);
-         final TeamDefinition firstTeamDef = prTeamDefs.size() > 0 ? prTeamDefs.iterator().next() : null;
-         teamWidget.getLabelWidget().addMouseListener(new MouseAdapter() {
+         XXTeamDefinitionsWidget teamDefWidget = (XXTeamDefinitionsWidget) widget;
+         teamDefWidget.setSelectable(prTeamDefs);
+         final IAtsTeamDefinition firstTeamDef = prTeamDefs.size() > 0 ? prTeamDefs.iterator().next() : null;
+         teamDefWidget.getLabelLinkWidget().addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseUp(MouseEvent e) {
                if (e.button == 3) {
-                  teamWidget.setSelectedTeamDefs(Arrays.asList(firstTeamDef));
+                  teamDefWidget.setSelected(Arrays.asList(firstTeamDef));
                }
             }
 
@@ -279,12 +275,12 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    @Override
    public AtsSearchData loadSearchData(AtsSearchData data) {
       super.loadSearchData(data);
-      data.setBuildImpact(getBuildImpact().getWidget().getSelected());
-      data.setBuildImpactState(getBuildImpactState().getWidget().getSelected());
-      data.setBuildImpact2(getBuildImpact2().getWidget().getSelected());
-      data.setBuildImpactState2(getBuildImpactState2().getWidget().getSelected());
-      data.setConfiguration(getConfig().getWidget().getToken());
-      data.setPreviousPrListId(getPrList().getWidget().getToken().getId());
+      data.setBuildImpact(getBuildImpact().getSelectedFirst());
+      data.setBuildImpactState(getBuildImpactState().getSelectedFirst());
+      data.setBuildImpact2(getBuildImpact2().getWidget().getSelectedFirst());
+      data.setBuildImpactState2(getBuildImpactState2().getSelectedFirst());
+      data.setConfiguration(getConfig().getWidget().getSelectedFirst());
+      data.setPreviousPrListId(getPrList().getWidget().getSelectedFirst().getId());
       return data;
    }
 
@@ -336,9 +332,9 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
    public Result isParameterSelectionValid() {
       Result result = super.isParameterSelectionValid();
       if (buildImpact != null) {
-         String buildImpactName = buildImpact.getWidget().getSelected();
+         String buildImpactName = buildImpact.getWidget().getSelectedFirst();
          if (Widgets.isInValidSelection(buildImpactName) && buildImpactState != null) {
-            String buildImpactStateName = buildImpactState.getCurrentValue();
+            String buildImpactStateName = buildImpactState.getSelectedFirst();
             if (Widgets.isValidSelection(buildImpactStateName)) {
                result.errorf("Build Impact State [%s] can not be specified without Build Impact selection\n",
                   buildImpactStateName);
@@ -346,9 +342,9 @@ public class AtsSearchPrWorkflowSearchItem extends AtsSearchTeamWorkflowSearchIt
          }
       }
       if (buildImpact2 != null) {
-         String buildImpactName2 = buildImpact2.getWidget().getSelected();
+         String buildImpactName2 = buildImpact2.getWidget().getSelectedFirst();
          if (Widgets.isInValidSelection(buildImpactName2) && buildImpactState2 != null) {
-            String buildImpactStateName2 = buildImpactState2.getCurrentValue();
+            String buildImpactStateName2 = buildImpactState2.getSelectedFirst();
             if (Widgets.isValidSelection(buildImpactStateName2)) {
                result.errorf("Build Impact State 2 [%s] can not be specified without Build Impact 2 selection\n",
                   buildImpactStateName2);

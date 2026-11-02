@@ -450,10 +450,10 @@ public class Collections {
 
    public static <T> T exactlyOne(Collection<T> items) {
       if (items.size() > 1) {
-         throw new MultipleItemsExist("Expected exactly 1, but found %s", items.size());
+         throw new MultipleItemsExist("Expected exactly 1, but found %s\n", items.size());
       }
       if (items.size() == 0) {
-         throw new OseeCoreException("Expected exactly 1, but found none");
+         throw new OseeCoreException("Expected exactly 1, but found none\n");
       }
       if (items instanceof List) {
          return ((List<T>) items).get(0);
@@ -463,7 +463,7 @@ public class Collections {
 
    public static <T> T oneOrSentinel(Collection<T> items, T sentinel) {
       if (items.size() > 1) {
-         throw new MultipleItemsExist("Expected at most 1, but found %s", items.size());
+         throw new MultipleItemsExist("Expected at most 1, but found %s\n", items.size());
       } else if (items.size() == 1) {
          if (items instanceof List) {
             return ((List<T>) items).get(0);
@@ -491,7 +491,7 @@ public class Collections {
 
    /**
     * Gets the next batch of elements from a list in a circular manner.
-    * 
+    *
     * @param items The list of items to batch.
     * @param batchSize The size of each batch.
     * @param startIndex The current starting index for the batch.
@@ -504,6 +504,18 @@ public class Collections {
          batch.add(items.get((startIndex + i) % size));
       }
       return batch;
+   }
+
+   public static boolean isNotEmpty(Collection<? extends Object> selectable) {
+      return selectable != null && !selectable.isEmpty();
+   }
+
+   public static Collection<String> toStrings(List<? extends Object> objects) {
+      List<String> toStrings = new ArrayList<>();
+      for (Object obj : objects) {
+         toStrings.add(obj.toString());
+      }
+      return toStrings;
    }
 
 }

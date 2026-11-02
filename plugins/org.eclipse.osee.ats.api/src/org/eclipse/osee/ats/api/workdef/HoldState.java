@@ -28,8 +28,11 @@ public enum HoldState {
       return this == On_Hold;
    }
 
+   /**
+    * @return true only for the explicit Not_On_Hold filter; Not_Set means no Hold State criterion
+    */
    public boolean isNotOnHold() {
-      return !isOnHold();
+      return this == Not_On_Hold;
    }
 
    public boolean isNotSet() {

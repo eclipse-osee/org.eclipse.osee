@@ -104,7 +104,8 @@ public class PublishingMarkdownAsPdfTest {
     * Configuration/Document Templates" folder.
     */
 
-   private static final String PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A = "PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A";
+   private static final String PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A =
+      "PUBLISHING_MARKDOWN_AS_PDF_TEST_TEMPLATE_A";
 
    //@formatter:off
    private static final Supplier<List<PublishingTemplate>> publishingTemplatesSupplier = new Supplier<> () {
@@ -192,9 +193,8 @@ public class PublishingMarkdownAsPdfTest {
        * Setup publishing templates
        */
 
-      templateMap =
-         new TestPublishingTemplateBuilder(PublishingMarkdownAsPdfTest.class).buildPublishingTemplates(
-            PublishingMarkdownAsPdfTest.publishingTemplatesSupplier);
+      templateMap = new TestPublishingTemplateBuilder(PublishingMarkdownAsPdfTest.class).buildPublishingTemplates(
+         PublishingMarkdownAsPdfTest.publishingTemplatesSupplier);
 
       /**
        * Setup PublishingRequestData
@@ -348,9 +348,8 @@ public class PublishingMarkdownAsPdfTest {
    @Test
    public void testImageInTableCellRendered() throws IOException {
       // Publish only the artifact containing a table with <image-link> references in cells.
-      List<Artifact> results = ArtifactQuery.getArtifactListFromTypeAndName(
-         CoreArtifactTypes.HeadingMarkdown, "Subsystem Component Overview",
-         DemoBranches.SAW_PL_Working_Branch_Markdown);
+      List<Artifact> results = ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.HeadingMarkdown,
+         "Subsystem Component Overview", DemoBranches.SAW_PL_Working_Branch_Markdown);
       org.junit.Assume.assumeTrue("Subsystem Component Overview artifact must exist", !results.isEmpty());
       Artifact tableArt = results.get(0);
 

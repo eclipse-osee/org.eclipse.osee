@@ -27,6 +27,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
@@ -82,8 +83,13 @@ public class WfeAttachmentsComposite extends Composite {
    }
 
    public void create() {
-      setLayout(ALayout.getZeroMarginLayout(1, false));
+      // Keep attachment rows tight. A default GridLayout adds 5 px top/bottom margins and vertical spacing between
+      // every row; use zero inter-row spacing but retain the normal bottom separation from the next header section.
+      GridLayout attachmentLayout = ALayout.getZeroMarginLayout(1, false);
+      attachmentLayout.marginBottom = 5;
+      setLayout(attachmentLayout);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.horizontalIndent = 5;
       setLayoutData(gd);
       editor.getToolkit().adapt(this);
 
@@ -93,16 +99,17 @@ public class WfeAttachmentsComposite extends Composite {
       label.setFont(FontManager.getDefaultLabelFont());
 
       createUpdateAttached();
-
-      refresh();
-
-      layout(true, true);
-      getParent().layout(true, true);
-      editor.getWorkFlowTab().getManagedForm().reflow(true);
+      reflowAttachments();
    }
 
-   private void createUpdateAttached() {
+   /**
+    * Reconciles attachment row controls with current relations.
+    *
+    * @return true only when a row or heading was added, removed, or changed
+    */
+   private boolean createUpdateAttached() {
 
+      boolean controlsChanged = false;
       Map<RelationLink, Artifact> supporting = getSupporting();
       List<Long> linkHandled = new ArrayList<>();
       existingRels.addAll(relIdToComp.keySet());
@@ -121,7 +128,8 @@ public class WfeAttachmentsComposite extends Composite {
             String labelStr = null;
             if (support instanceof IAtsWorkItem) {
                IAtsWorkItem thatWorkItem = (IAtsWorkItem) support;
-               labelStr = String.format("%s: - %s - [%s]", thatWorkItem.getArtifactTypeName(),
+               labelStr = String.format("%s: - %s - [%s]",
+                  AtsApiService.get().getWorkItemService().getWorkflowTitle(workItem, ""),
                   thatWorkItem.toStringWithAtsId(), thatWorkItem.getCurrentStateName());
             } else if (support.isOfType(CoreArtifactTypes.GeneralDocument)) {
                labelStr = String.format("File Extension: [%s] - Name [%s]",
@@ -146,22 +154,31 @@ public class WfeAttachmentsComposite extends Composite {
             createReadHyperlink(thisArt, thatArt, lComp, editor, "Read");
             createEditHyperlink(thatArt, lComp, editor);
             createDeleteHyperlink(thisArt, thatArt, relation, lComp, editor);
+            // only create if not workflow; users don't need artifact editor for that
             createArtEditHyperlink(thisArt, thatArt, lComp, editor, "ArtEdit");
 
             relIdToComp.put(relation.getId(), lComp);
+            controlsChanged = true;
 
             editor.getToolkit().createLabel(lComp, " " + labelStr);
 
             linkHandled.add(supportEntry.getKey().getId());
-            label.setText("Attachments: ");
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.WARNING, "Error showing link " + supportEntry.getKey(), ex);
          }
       }
       if (!existingRels.isEmpty()) {
-         removeRelations(existingRels);
+         Set<Long> removedRelationIds = new HashSet<>(existingRels);
+         existingRels.clear();
+         removeRelations(removedRelationIds);
+         controlsChanged = true;
       }
-
+      String attachmentLabel = supporting.isEmpty() ? "No Attachments" : "Attachments: ";
+      if (!attachmentLabel.equals(label.getText())) {
+         label.setText(attachmentLabel);
+         controlsChanged = true;
+      }
+      return controlsChanged;
    }
 
    private Map<RelationLink, Artifact> getSupporting() {
@@ -193,7 +210,7 @@ public class WfeAttachmentsComposite extends Composite {
          public void run() {
             if (Widgets.isAccessible(fComp) && relIdToComp != null) {
                for (Long relationId : existingRels) {
-                  Composite comp = relIdToComp.get(relationId);
+                  Composite comp = relIdToComp.remove(relationId);
                   if (comp != null) {
                      comp.dispose();
                   }
@@ -203,10 +220,20 @@ public class WfeAttachmentsComposite extends Composite {
       });
    }
 
+   /**
+    * Ordinary editor refreshes do not relayout this area. A structural attachment change performs one local layout
+    * and one managed-form reflow so a dropped/removed attachment is immediately visible without restoring the
+    * page-wide refresh flicker.
+    */
    public void refresh() {
-      if (Widgets.isAccessible(this)) {
-         createUpdateAttached();
+      if (Widgets.isAccessible(this) && createUpdateAttached()) {
+         reflowAttachments();
       }
+   }
+
+   private void reflowAttachments() {
+      layout(true, true);
+      editor.getWorkFlowTab().getManagedForm().reflow(true);
    }
 
    public static Hyperlink createDeleteHyperlink(Artifact thisArt, final Artifact thatArt, final RelationLink relation,
@@ -279,25 +306,31 @@ public class WfeAttachmentsComposite extends Composite {
       return link;
    }
 
+   /**
+    * Only create Artifact Editor hyperlink if not ATS Workflow
+    */
    public static Hyperlink createArtEditHyperlink(Artifact thisArt, final Artifact thatArt, Composite lComp,
       WorkflowEditor editor, String label) {
-      Hyperlink link = editor.getToolkit().createHyperlink(lComp, label, SWT.NONE);
-      link.setToolTipText("Open in the apprpriate internal Artifact Editor");
-      link.addHyperlinkListener(new HyperlinkAdapter() {
-         @Override
-         public void linkActivated(HyperlinkEvent e) {
-            if (AtsObjects.isAtsWorkItemOrAction(thatArt)) {
-               AtsEditors.openATSAction(thatArt, AtsOpenOption.OpenOneOrPopupSelect);
-            } else {
-               try {
-                  RendererManager.open(thatArt, PresentationType.DEFAULT_OPEN);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      if (!thisArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         Hyperlink link = editor.getToolkit().createHyperlink(lComp, label, SWT.NONE);
+         link.setToolTipText("Open in the apprpriate internal Artifact Editor");
+         link.addHyperlinkListener(new HyperlinkAdapter() {
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+               if (AtsObjects.isAtsWorkItemOrAction(thatArt)) {
+                  AtsEditors.openATSAction(thatArt, AtsOpenOption.OpenOneOrPopupSelect);
+               } else {
+                  try {
+                     RendererManager.open(thatArt, PresentationType.DEFAULT_OPEN);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
                }
             }
-         }
-      });
-      return link;
+         });
+         return link;
+      }
+      return null;
    }
 
    public static Hyperlink createReadHyperlink(Artifact thisArt, final Artifact thatArt, Composite lComp,

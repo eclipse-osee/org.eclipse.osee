@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Provider, inject } from '@angular/core';
 import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import { attribute } from '@osee/attributes/types';
 import { UiService } from '@osee/shared/services';
@@ -34,10 +34,24 @@ import {
 	transaction,
 	transactionResult,
 } from '@osee/transactions/types';
-import { take, map, pipe, Observable, switchMap, tap, filter } from 'rxjs';
+import { pipe, Observable, switchMap, tap, filter, of } from 'rxjs';
 import { TransactionService } from './transaction.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { branchSentinel } from '@osee/shared/types';
+import { BRANCH_CONTEXT, BranchContextSource } from './branch-context';
+
+/**
+ * Whether a branch id names a real, usable branch rather than a "no branch"
+ * placeholder. Centralizes the rule so the branch-context tier and the global
+ * current-branch read agree on what counts as valid. The empty string is the
+ * `toSignal` initial value; `'0'` is the unset route default; `branchSentinel.id`
+ * (`'-1'`) is the explicit sentinel.
+ */
+function isRealBranchId(id: string | undefined): id is string {
+	return (
+		id !== undefined && id !== '' && id !== '0' && id !== branchSentinel.id
+	);
+}
 
 @Injectable({
 	providedIn: 'root',
@@ -46,17 +60,50 @@ export class CurrentTransactionService {
 	private _uiService = inject(UiService);
 	private _txService = inject(TransactionService);
 
-	//note: anything using _id should be assumed to be non-reactive(i.e. called once)
-	private _id = toSignal(
-		this._uiService.id.pipe(
-			filter((v) => v !== '' && v !== '0' && v !== '-1')
-		),
-		{ initialValue: '' }
-	);
+	/**
+	 * Optional per-subtree branch pin (see {@link provideBranchContext}). When a
+	 * surface edits something other than the global current branch -- e.g. an
+	 * artifact explorer tab pinned to its own branch -- it provides this so writes
+	 * created under that subtree target the pinned branch, not whatever the global
+	 * branch selector currently holds. Null everywhere else = use the global branch.
+	 */
+	private _branchContext = inject(BRANCH_CONTEXT, { optional: true });
 
-	createTransaction(comment: string): Required<transaction> {
+	//note: anything using _id should be assumed to be non-reactive(i.e. called once)
+	private _id = toSignal(this._uiService.id.pipe(filter(isRealBranchId)), {
+		initialValue: '',
+	});
+
+	/**
+	 * Resolves the branch a transaction targets, in precedence order:
+	 * 1. an explicit `branchIdOverride` argument (when valid),
+	 * 2. the subtree's pinned {@link BRANCH_CONTEXT} branch (when provided + valid),
+	 * 3. the global current branch (`UiService.id`).
+	 *
+	 * The context tier is what makes branch targeting correct-by-construction inside
+	 * a pinned subtree: callers there do not need to pass an override, so a forgotten
+	 * argument can no longer silently write to the wrong branch.
+	 */
+	private resolveBranch(branchIdOverride?: string): string {
+		if (
+			branchIdOverride !== undefined &&
+			branchIdOverride !== branchSentinel.id
+		) {
+			return branchIdOverride;
+		}
+		const context = this._branchContext?.branchId();
+		if (isRealBranchId(context)) {
+			return context;
+		}
+		return this._id();
+	}
+
+	private emptyTransaction(
+		branch: string,
+		comment: string
+	): Required<transaction> {
 		return {
-			branch: this._id(),
+			branch,
 			txComment: comment,
 			createArtifacts: [],
 			modifyArtifacts: [],
@@ -66,27 +113,16 @@ export class CurrentTransactionService {
 		};
 	}
 
+	createTransaction(comment: string): Required<transaction> {
+		return this.emptyTransaction(this.resolveBranch(), comment);
+	}
+
 	createTx(
 		comment: string,
 		branchIdOverride?: string
 	): Observable<Required<transaction>> {
-		return this._uiService.id.pipe(
-			take(1),
-			map((id) => {
-				return {
-					branch:
-						branchIdOverride === undefined ||
-						branchIdOverride === branchSentinel.id
-							? id
-							: branchIdOverride,
-					txComment: comment,
-					createArtifacts: [],
-					modifyArtifacts: [],
-					deleteArtifacts: [],
-					deleteRelations: [],
-					addRelations: [],
-				};
-			})
+		return of(
+			this.emptyTransaction(this.resolveBranch(branchIdOverride), comment)
 		);
 	}
 
@@ -236,4 +272,22 @@ export class CurrentTransactionService {
 			)
 		);
 	}
+}
+
+/**
+ * Pins a component subtree to a branch/view for all transactions created within
+ * it. Add to a component's `providers`, then set the branch via the injected
+ * {@link BranchContextSource} (e.g. from an `effect` reading the host's inputs).
+ *
+ * Provides a SCOPED {@link CurrentTransactionService} so the branch-aware instance
+ * is the one descendants inject -- the root singleton cannot see a token provided
+ * lower in the tree. Any transaction built by a descendant (including the
+ * no-override create/relation helpers) then targets the pinned branch.
+ */
+export function provideBranchContext(): Provider[] {
+	return [
+		BranchContextSource,
+		{ provide: BRANCH_CONTEXT, useExisting: BranchContextSource },
+		CurrentTransactionService,
+	];
 }

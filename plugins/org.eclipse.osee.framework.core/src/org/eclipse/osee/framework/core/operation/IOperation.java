@@ -24,7 +24,7 @@ public interface IOperation extends Named {
    /**
     * <b>This method should not be called by clients, use {@link Operations#executeWorkAndCheckStatus(IOperation)
     * Operations.execute... methods} instead.</b>
-    * 
+    *
     * @param subMonitor the progress monitor to use for reporting progress to the user. It is the caller's
     * responsibility to call done() on the given monitor. Accepts null, indicating that no progress should be reported
     * and that the operation cannot be cancelled.
@@ -35,4 +35,8 @@ public interface IOperation extends Named {
    IStatus run(SubMonitor subMonitor);
 
    OperationLogger getLogger();
+
+   default boolean isPend() {
+      return false;
+   }
 }

@@ -104,4 +104,6 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andRelation(RelationTypeSide relAtype, ArtifactToken artifact);
 
+   IAtsConfigTxTeamDef andWorkPackages(ArtifactToken enumArtToken, String... workPackageName);
+
 }

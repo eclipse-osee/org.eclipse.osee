@@ -140,8 +140,13 @@ export type workDefinitionState = {
 export type workDefinitonLayoutItem = {
 	id: `${number}`;
 	name: string;
-	attributeType: `${number}`;
+	// A composite layout item (e.g. a CompositeLayoutItem row) has no attributeType
+	// of its own and nests its widgets under layoutItems. Consumers must descend into
+	// layoutItems to find every attribute-backed widget, not just the top level.
+	attributeType: `${number}` | null;
 	attributeType2: `${number}` | null;
+	composite: boolean;
+	layoutItems?: workDefinitonLayoutItem[];
 	options: {
 		xoptions: workDefinitonLayoutOption[];
 	};

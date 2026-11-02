@@ -16,30 +16,10 @@ package org.eclipse.osee.ats.api.data;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.atsDemo;
-import static org.eclipse.osee.ats.api.util.AtsImage.ACTION;
-import static org.eclipse.osee.ats.api.util.AtsImage.ACTIONABLE_ITEM;
-import static org.eclipse.osee.ats.api.util.AtsImage.BUILD_IMPACT;
-import static org.eclipse.osee.ats.api.util.AtsImage.CHANGE_REQUEST;
-import static org.eclipse.osee.ats.api.util.AtsImage.DECISION_REVIEW;
-import static org.eclipse.osee.ats.api.util.AtsImage.GOAL;
-import static org.eclipse.osee.ats.api.util.AtsImage.INSERTION;
-import static org.eclipse.osee.ats.api.util.AtsImage.INSERTION_ACTIVITY;
-import static org.eclipse.osee.ats.api.util.AtsImage.PEER_REVIEW;
-import static org.eclipse.osee.ats.api.util.AtsImage.PROBLEM_REPORT;
-import static org.eclipse.osee.ats.api.util.AtsImage.PROGRAM;
-import static org.eclipse.osee.ats.api.util.AtsImage.TASK;
-import static org.eclipse.osee.ats.api.util.AtsImage.TEAM_DEFINITION;
-import static org.eclipse.osee.ats.api.util.AtsImage.VERSION;
-import static org.eclipse.osee.ats.api.util.AtsImage.WORKFLOW;
-import static org.eclipse.osee.ats.api.util.AtsImage.WORKFLOW_DEFINITION;
-import static org.eclipse.osee.ats.api.util.AtsImage.WORK_PACKAGE;
+import static org.eclipse.osee.ats.api.util.AtsImage.*;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractAccessControlled;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.BranchDiffData;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitBranchName;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitRepoName;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.MaterialIcon;
@@ -63,12 +43,12 @@ public interface AtsArtifactTypes {
 
    // Base ATS type
    ArtifactTypeToken AtsArtifact = ats.add(ats.artifactType(63L, "ats.Ats Artifact", true, Artifact)
-      .zeroOrOne(Description)
+      .zeroOrOne(AtsAttributeTypes.Description)
       .zeroOrOne(GoalOrderVote));
 
    // ATS Config Objects
    ArtifactTypeToken AtsConfigArtifact = ats.add(ats.artifactType(801L, "ats.Ats Config Artifact", true, Artifact)
-      .exactlyOne(Active, Boolean.TRUE));
+      .exactlyOne(AtsAttributeTypes.Active, Boolean.TRUE));
 
    ArtifactTypeToken AtsTeamDefinitionOrAi = ats.add(ats.artifactType(803L, "ats.Ats Team Definition or AI", true, AtsConfigArtifact)
       .zeroOrOne(Actionable, Boolean.TRUE)
@@ -76,25 +56,25 @@ public interface AtsArtifactTypes {
 
    ArtifactTypeToken ActionableItem = ats.add(ats.artifactType(69L, "Actionable Item", false, ACTIONABLE_ITEM, new MaterialIcon("call_to_action"), AbstractAccessControlled, AtsTeamDefinitionOrAi)
       .zeroOrOne(AllowUserActionCreation)
-      .any(CSCI)
+      .any(AtsAttributeTypes.CSCI)
       .zeroOrOne(ProgramId)
-      .any(WorkType));
+      .any(AtsAttributeTypes.WorkType));
 
    ArtifactTypeToken Country = ats.add(ats.artifactType(4955822638391722788L, "Country", false, new MaterialIcon("map"), AtsConfigArtifact));
 
    ArtifactTypeToken Insertion = ats.add(ats.artifactType(1735587136604728792L, "Insertion", false, INSERTION,  AtsConfigArtifact)
-      .zeroOrOne(Description)
-      .zeroOrOne(EndDate)
+      .zeroOrOne(AtsAttributeTypes.Description)
+      .zeroOrOne(AtsAttributeTypes.EndDate)
       .zeroOrOne(PointsNumeric)
-      .zeroOrOne(StartDate));
+      .zeroOrOne(AtsAttributeTypes.StartDate));
 
    ArtifactTypeToken InsertionActivity = ats.add(ats.artifactType(3943415539127781884L, "Insertion Activity", false, INSERTION_ACTIVITY, AtsConfigArtifact)
-      .zeroOrOne(Description));
+      .zeroOrOne(AtsAttributeTypes.Description));
 
    ArtifactTypeToken Program = ats.add(ats.artifactType(52374361342017540L, "Program", false, PROGRAM, new MaterialIcon("code"), AtsConfigArtifact)
-      .any(CSCI)
+      .any(AtsAttributeTypes.CSCI)
       .zeroOrOne(ClosureState, null)
-      .zeroOrOne(Description)
+      .zeroOrOne(AtsAttributeTypes.Description)
       .zeroOrOne(Namespace)
       .zeroOrOne(ProductLineBranchId)
       .zeroOrOne(TeamDefinitionReference));
@@ -111,7 +91,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(AtsIdPrefix)
       .zeroOrOne(AtsIdSequenceName)
       .zeroOrOne(BaselineBranchId)
-      .any(CSCI)
+      .any(AtsAttributeTypes.CSCI)
       .zeroOrOne(ClosureActive)
       .zeroOrOne(FullName)
       .zeroOrOne(HoursPerWorkDay)
@@ -123,7 +103,7 @@ public interface AtsArtifactTypes {
       .any(TaskSetId)
       .zeroOrOne(TeamUsesVersions)
       .zeroOrOne(TeamWorkflowArtifactType)
-      .any(WorkType)
+      .any(AtsAttributeTypes.WorkType)
       .zeroOrOne(JiraTeamId)
       .zeroOrOne(JiraProjectId)
       .zeroOrOne(WorkflowDefinitionReference));
@@ -140,7 +120,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(FullName)
       .zeroOrOne(NextVersion)
       .zeroOrOne(ReleaseDate)
-      .zeroOrOne(StartDate)
+      .zeroOrOne(AtsAttributeTypes.StartDate)
       .zeroOrOne(TeamDefinitionReference)
       .zeroOrOne(Released)
       .zeroOrOne(TestRunToSourceLocator)
@@ -157,14 +137,14 @@ public interface AtsArtifactTypes {
     *  (TW24503) and all attribute types and art type is purged
     */
    ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, new MaterialIcon("cases"), Artifact)
-      .exactlyOne(Active, Boolean.TRUE)
-      .zeroOrOne(Description)
-      .zeroOrOne(EndDate)
+      .exactlyOne(AtsAttributeTypes.Active, Boolean.TRUE)
+      .zeroOrOne(AtsAttributeTypes.Description)
+      .zeroOrOne(AtsAttributeTypes.EndDate)
       .zeroOrOne(EstimatedHours)
       .any(Notes)
       .zeroOrOne(PercentComplete)
       .zeroOrOne(PointsNumeric)
-      .zeroOrOne(StartDate));
+      .zeroOrOne(AtsAttributeTypes.StartDate));
 
 
    // ATS Workflows
@@ -201,7 +181,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(CurrentStateName)
       .any(CurrentStateAssignee)
       .zeroOrOne(CurrentStateType)
-      .zeroOrOne(EndDate)
+      .zeroOrOne(AtsAttributeTypes.EndDate)
       .zeroOrOne(EstimatedCompletionDate)
       .zeroOrOne(EstimatedHours)
       .zeroOrOne(EstimatedReleaseDate)
@@ -219,7 +199,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(PointsNumeric)
       .zeroOrOne(ReleaseDate)
       .zeroOrOne(Resolution)
-      .zeroOrOne(StartDate)
+      .zeroOrOne(AtsAttributeTypes.StartDate)
       .any(StateNotes)
       .zeroOrOne(ReviewedBy)
       .zeroOrOne(ReviewedByDate)
@@ -295,7 +275,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(FlightNumber)
       .zeroOrOne(Ship)
       .zeroOrOne(TestDate)
-      .zeroOrOne(TestNumber)
+      .zeroOrOne(AtsAttributeTypes.TestNumber)
       .zeroOrOne(CogPriority)
       );
 
@@ -355,7 +335,7 @@ public interface AtsArtifactTypes {
 
    // ATS Agile
    ArtifactTypeToken AgileFeatureGroup = ats.add(ats.artifactType(560322181883393633L, "Agile Feature Group", false, new MaterialIcon("group_work"), AtsConfigArtifact)
-      .zeroOrOne(Description));
+      .zeroOrOne(AtsAttributeTypes.Description));
 
    ArtifactTypeToken AgileProgram = ats.add(ats.artifactType(7844993694062372L, "Agile Program", false, new MaterialIcon("code"), AtsConfigArtifact));
 
@@ -368,7 +348,7 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken AgileStory = ats.add(ats.artifactType(33216462134454L, "Agile Story", false, new MaterialIcon("history_edu"), AtsConfigArtifact));
 
    ArtifactTypeToken AgileTeam = ats.add(ats.artifactType(7553778770333667393L, "Agile Team", false, new MaterialIcon("groups"), AtsConfigArtifact)
-      .zeroOrOne(Description)
+      .zeroOrOne(AtsAttributeTypes.Description)
       .zeroOrOne(KanbanIgnoreStates));
 
    ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, new MaterialIcon("loop"), Goal)
@@ -378,6 +358,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(PlannedPoints)
       .zeroOrOne(JiraSprintId)
       .zeroOrOne(UnplannedPoints));
+
+   ArtifactTypeToken FundingGoal = ats.add(ats.artifactType(32983918238471789L, "Funding Goal", false, new MaterialIcon("list"), Goal));
 
    ArtifactTypeToken AgileBacklog = ats.add(ats.artifactType(7553335770333667393L, "Agile Backlog", false, new MaterialIcon("list"), Goal));
 
@@ -392,6 +374,7 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken DemoCodeTeamWorkflow = atsDemo.add(atsDemo.artifactType(79L, "Demo Code Team Workflow", false, TeamWorkflow));
    ArtifactTypeToken DemoReqTeamWorkflow = atsDemo.add(atsDemo.artifactType(80L, "Demo Req Team Workflow", false, TeamWorkflow));
    ArtifactTypeToken DemoTestTeamWorkflow = atsDemo.add(atsDemo.artifactType(81L, "Demo Test Team Workflow", false, TeamWorkflow));
+
 
    // @formatter:on
 }
