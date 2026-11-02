@@ -34,16 +34,18 @@ import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ManageActionButtonComponentMock } from '@osee/configuration-management/testing';
 import { BranchInfoService } from '@osee/shared/services';
-import { BranchInfoServiceMock } from '@osee/shared/testing';
+import { BranchInfoServiceMock, testBranchListing } from '@osee/shared/testing';
 import { provideRouter, RouterLink } from '@angular/router';
-import { signal } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { branchSelected } from '../../types/peer-review';
 
 describe('PeerReviewDialogComponent', () => {
 	let component: PeerReviewDialogComponent;
 	let fixture: ComponentFixture<PeerReviewDialogComponent>;
+	let workingBranches: BehaviorSubject<branchSelected[]>;
 
 	beforeEach(async () => {
+		workingBranches = new BehaviorSubject<branchSelected[]>([]);
 		await TestBed.overrideComponent(PeerReviewDialogComponent, {
 			set: {
 				imports: [
@@ -85,7 +87,10 @@ describe('PeerReviewDialogComponent', () => {
 					provideRouter([]),
 					{
 						provide: PeerReviewUiService,
-						useValue: PeerReviewUiServiceMock,
+						useValue: {
+							...PeerReviewUiServiceMock,
+							workingBranches,
+						},
 					},
 					{
 						provide: BranchInfoService,
@@ -106,23 +111,14 @@ describe('PeerReviewDialogComponent', () => {
 	});
 
 	it('renders unique branch ids even when the source list has duplicates', () => {
-		// A transient server response during a commit can list the same branch twice.
-		// The @for tracks branch.branch.id, so a duplicate id would throw Angular into
-		// a non-settling re-render (NG0955) that stalls the commit flow. workingBranches()
-		// must de-dupe so the rendered keys are always unique.
 		const dup: branchSelected = {
 			branch: testBranchListing[0],
 			selected: true,
 			selectable: true,
 			committedToBaseline: false,
 		};
-		// Replace the private source signal with a duplicate-id list; the public
-		// workingBranches() computed reads it at call time and must de-dupe.
-		(
-			component as unknown as {
-				_allWorkingBranches: ReturnType<typeof signal<branchSelected[]>>;
-			}
-		)._allWorkingBranches = signal([dup, { ...dup }]);
+		workingBranches.next([dup, { ...dup }]);
+		fixture.detectChanges();
 
 		const rendered = component.workingBranches();
 		const ids = rendered.map((b) => b.branch.id);
