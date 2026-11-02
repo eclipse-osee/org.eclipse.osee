@@ -72,7 +72,7 @@
 		"@angular/compiler-cli": "^21.0.6",
 		"@eslint/js": "^9.34.0",
 		"@ngx-playwright/test": "^0.6.0",
-		"@playwright/test": "^1.57.0",
+		"@playwright/test": "^1.64.1",
 		"@snuggery/snuggery": "^0.12.3",
 		"@types/d3-dispatch": "^3.0.0",
 		"@types/d3-drag": "^3.0.0",

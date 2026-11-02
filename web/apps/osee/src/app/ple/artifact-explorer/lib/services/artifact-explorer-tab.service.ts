@@ -124,8 +124,11 @@ export class ArtifactExplorerTabService {
 		});
 	}
 
-	removeTab(index: number) {
-		this.tabs.update((rows) => rows.filter((_, i) => index !== i));
+	/**
+	 * Clamp the selected index into range after a removal, so it never points past
+	 * the end of the (now shorter) tab list. Shared by every remover.
+	 */
+	private clampSelectedIndex() {
 		if (this._selectedIndex() >= this.tabs().length) {
 			this._selectedIndex.set(Math.max(0, this.tabs().length - 1));
 		}
@@ -138,6 +141,19 @@ export class ArtifactExplorerTabService {
 					!(t.tabType === 'Artifact' && t.artifact.id === artifactId)
 			)
 		);
+		this.clampSelectedIndex();
+	}
+
+	/**
+	 * Removes a single tab by its stable {@link tab.tabId}. Preferred over removing
+	 * by index when a close is deferred (e.g. awaiting an auto-save), since the
+	 * index can shift if tabs are reordered or another tab closes meanwhile. Unlike
+	 * {@link removeTabByArtifactId}, this targets exactly one tab — the same artifact
+	 * can be open on two branches, and only the clicked tab should close.
+	 */
+	removeTabByTabId(tabId: string) {
+		this.tabs.update((rows) => rows.filter((t) => t.tabId !== tabId));
+		this.clampSelectedIndex();
 	}
 
 	updateTabTitle(artifactId: string, newTitle: string) {

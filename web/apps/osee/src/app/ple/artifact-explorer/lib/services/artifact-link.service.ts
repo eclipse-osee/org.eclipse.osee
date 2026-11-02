@@ -37,9 +37,6 @@ export class ArtifactLinkService {
 	private readonly viewId = toSignal(this.uiService.viewId, {
 		initialValue: '',
 	});
-	private readonly branchType = toSignal(this.uiService.type, {
-		initialValue: '',
-	});
 
 	/**
 	 * Fetches display names for the given artifact ids on a branch. Missing or
@@ -81,11 +78,23 @@ export class ArtifactLinkService {
 	/**
 	 * Opens the linked artifact in a new tab. Resolves on the branch of the artifact
 	 * that holds the link (passed by the caller), matching desktop behavior where a
-	 * link always targets the same branch as the containing artifact. Falls back to
-	 * the current UI branch when no branch is supplied. Fetches the full artifact
-	 * (with relations) first so the tab has everything the editor needs.
+	 * link always targets the same branch as the containing artifact. `branchId`/
+	 * `viewId` are required, but an EMPTY string falls back to the current UI
+	 * branch/view (an unresolved link context). Fetches the full artifact (with
+	 * relations) first so the tab has everything the editor needs.
+	 *
+	 * `editable` is inherited from the editor the link was clicked in: a link always
+	 * opens on the same branch as its containing artifact, so the new tab has the
+	 * same editability. The caller passes it rather than re-deriving from the global
+	 * branch type, which can differ from the link's branch (the raw endpoint payload's
+	 * `editable` is not branch-aware either).
 	 */
-	openArtifact(artifactId: string, branchId?: string, viewId?: string): void {
+	openArtifact(
+		artifactId: string,
+		branchId: string,
+		viewId: string,
+		editable: boolean
+	): void {
 		const branch = branchId || this.branchId();
 		const view = viewId || this.viewId();
 		if (!branch) {
@@ -96,16 +105,8 @@ export class ArtifactLinkService {
 			.pipe(take(1))
 			.subscribe({
 				next: (artifact) =>
-					// Derive editability from branch type, matching the hierarchy/search
-					// open paths. The raw endpoint payload's `editable` is not branch-aware,
-					// so passing it through leaves every attribute editor disabled on a
-					// working branch. Open on the link's own branch, not necessarily the
-					// current UI branch.
 					this.tabService.addArtifactTabOnBranch(
-						{
-							...artifact,
-							editable: this.branchType() !== 'baseline',
-						},
+						{ ...artifact, editable },
 						branch,
 						view
 					),
