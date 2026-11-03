@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.workflow.goal;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +26,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.widget.validate.XXIntegerValidator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -97,13 +97,13 @@ public abstract class MembersManager<T extends CollectorArtifact> {
       }
 
       List<Artifact> members = memberArt.getMembers();
-      EntryDialog ed = new EntryDialog(String.format("Change %S Order", getItemName()),
+      EntryDialog diag = new EntryDialog(String.format("Change %S Order", getItemName()),
          String.format("%s: %s\n\n%s\n\nEnter New Order Number from 1..%d or %d for last.", getItemName(), memberArt,
             currentOrder.toString().replaceFirst(", $", ""), members.size(), members.size() + 1));
-      ed.setNumberFormat(NumberFormat.getIntegerInstance());
+      diag.setValidator(XXIntegerValidator.instance);
 
-      if (ed.open() == Window.OK) {
-         String newIndexStr = ed.getEntry();
+      if (diag.open() == Window.OK) {
+         String newIndexStr = diag.getEntry();
          Integer enteredIndex = Integer.valueOf(newIndexStr);
          boolean insertLast = enteredIndex > members.size();
          Integer membersIndex = insertLast ? members.size() - 1 : enteredIndex - 1;

@@ -17,36 +17,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workdef.XWidgetPage;
+import org.eclipse.osee.ats.ide.workdef.XWidgetWorkDefRenderer;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
-import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
 /**
- * Custom header with metrics bar or overridden by WorkDefinition
+ * Custom header with change type, points, priority, needby; overridden/extended by WorkDefinition
  *
  * @author Donald G. Dunne
  */
@@ -54,10 +45,10 @@ public class WfeCustomHeader extends Composite {
 
    protected final IAtsWorkItem workItem;
    private final IManagedForm managedForm;
-   private final boolean isEditable;
-   private final List<XWidget> allXWidgets = new ArrayList<>();
+   private final List<XWidget> widgets = new ArrayList<>();
    private final WorkflowEditor editor;
    private final AbstractWorkflowArtifact wfArt;
+   private final boolean debugLayout = false; // turns on background colors for composites
 
    public WfeCustomHeader(Composite parent, int style, IManagedForm managedForm, IAtsWorkItem workItem, final WorkflowEditor editor) {
       super(parent, SWT.NONE);
@@ -67,16 +58,20 @@ public class WfeCustomHeader extends Composite {
       this.editor = editor;
       editor.getToolkit().adapt(this);
 
-      isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(workItem);
-      // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
+      if (debugLayout) {
+         parent.setBackground(Displays.getSystemColor(SWT.COLOR_RED));
+         parent.getParent().setBackground(Displays.getSystemColor(SWT.COLOR_YELLOW));
+      }
 
       try {
-         setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-         GridLayout zeroMarginLayout = ALayout.getZeroMarginLayout(1, false);
-         zeroMarginLayout.marginWidth = 4;
-         zeroMarginLayout.horizontalSpacing = 8;
-         setLayout(zeroMarginLayout);
-         // section.setBackground(Displays.getSystemColor(SWT.COLOR_GREEN));
+         GridData gd = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+         gd.horizontalIndent = 0; // Want to align the left with rest of widgets
+         setLayoutData(gd);
+         // zero margin so childComposites don't indent
+         setLayout(ALayout.getZeroMarginLayout(2, false));
+         if (debugLayout) {
+            setBackground(Displays.getSystemColor(SWT.COLOR_GREEN));
+         }
 
          createBody();
          layout();
@@ -98,51 +93,22 @@ public class WfeCustomHeader extends Composite {
    }
 
    private void createBody() {
-      XWidgetPage statePage = new XWidgetPage(workItem, workItem.getWorkDefinition(), getLayoutItems());
-      statePage.generateLayoutDatas();
 
-      SwtXWidgetRenderer swtXWidgetRenderer = statePage.createBody(managedForm, this, wfArt, xModListener, isEditable);
-      for (XWidget xWidget : swtXWidgetRenderer.getXWidgets()) {
-         addAndCheckChildren(xWidget);
-      }
-
-      // Set all XWidget labels to bold font
-      XWidgetUtility.setLabelFontsBold(allXWidgets);
-
-      Composite childComp = (Composite) getChildren()[0];
-      childComp.setLayout(ALayout.getZeroMarginLayout());
+      XWidgetWorkDefRenderer workDefPage =
+         new XWidgetWorkDefRenderer(workItem, workItem.getWorkDefinition(), null, getLayoutItems());
+      workDefPage.createBody(managedForm, this, wfArt, null, true);
+      widgets.addAll(workDefPage.getXWidgets());
 
       computeTextSizesAndReflow();
-
    }
 
    private void computeTextSizesAndReflow() {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof XText) {
-            AttributeFormPart.computeXTextSize((XText) widget);
+      for (XWidget widget : widgets) {
+         if (widget instanceof XXTextWidget) {
+            XWidgetUtility.computeXTextSize((XXTextWidget) widget);
          }
       }
       managedForm.reflow(true);
-   }
-
-   private void addAndCheckChildren(XWidget xWidget) {
-      allXWidgets.add(xWidget);
-      xWidget.addXModifiedListener(xModListener);
-      for (XWidget childWidget : xWidget.getChildrenXWidgets()) {
-         addAndCheckChildren(childWidget);
-      }
-   }
-
-   public Result isXWidgetSavable() {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof ArtifactStoredWidget) {
-            IStatus status = widget.isValid();
-            if (!status.isOK()) {
-               return new Result(false, status.getMessage());
-            }
-         }
-      }
-      return Result.TrueResult;
    }
 
    @Override
@@ -150,35 +116,9 @@ public class WfeCustomHeader extends Composite {
       return "Header for " + workItem.toStringWithId();
    }
 
-   public XResultData isXWidgetDirty(XResultData rd) {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof ArtifactStoredWidget) {
-            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
-            if (artifactStoredWidget.getArtifact() != null) {
-               Result result = artifactStoredWidget.isDirty();
-               if (result.isTrue()) {
-                  rd.errorf("Widget [%s] is dirty\n", widget.toString());
-               }
-            }
-         }
-      }
-      return rd;
-   }
-
-   public void getDirtyIArtifactWidgets(List<ArtifactStoredWidget> widgets) {
-      for (XWidget widget : allXWidgets) {
-         if (widget instanceof ArtifactStoredWidget) {
-            ArtifactStoredWidget artifactStoredWidget = (ArtifactStoredWidget) widget;
-            if (artifactStoredWidget.isDirty().isTrue()) {
-               widgets.add(artifactStoredWidget);
-            }
-         }
-      }
-   }
-
    @Override
    public void dispose() {
-      for (XWidget xWidget : allXWidgets) {
+      for (XWidget xWidget : widgets) {
          if (xWidget != null) {
             xWidget.dispose();
          }
@@ -187,26 +127,11 @@ public class WfeCustomHeader extends Composite {
    }
 
    final WfeCustomHeader fSection = this;
-   final XModifiedListener xModListener = new XModifiedListener() {
-      @Override
-      public void widgetModified(XWidget xWidget) {
-         try {
-            if (wfArt.isDeleted()) {
-               return;
-            }
-            // Update duplicate widgets
-            DuplicateWidgetUpdateResolver.updateDuplicateWidgets(managedForm, wfArt, xWidget);
-            editor.onDirtied();
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-   };
 
    public void refresh() {
       try {
          editor.onDirtied();
-         for (XWidget xWidget : allXWidgets) {
+         for (XWidget xWidget : widgets) {
             xWidget.refresh();
          }
       } catch (OseeCoreException ex) {
@@ -215,25 +140,20 @@ public class WfeCustomHeader extends Composite {
    }
 
    public List<XWidget> getXWidgets(Class<?> clazz) {
-      List<XWidget> widgets = new ArrayList<>();
-      for (XWidget widget : allXWidgets) {
+      List<XWidget> classWidgets = new ArrayList<>();
+      for (XWidget widget : widgets) {
          if (clazz.isInstance(widget)) {
-            widgets.add(widget);
+            classWidgets.add(widget);
          }
       }
-      return widgets;
-   }
-
-   public boolean isEditable() {
-      return isEditable;
+      return classWidgets;
    }
 
    public WorkflowEditor getEditor() {
       return editor;
    }
 
-   public ArrayList<XWidget> getXWidgets(ArrayList<XWidget> widgets) {
-      widgets.addAll(allXWidgets);
+   public List<XWidget> getXWidgets() {
       return widgets;
    }
 

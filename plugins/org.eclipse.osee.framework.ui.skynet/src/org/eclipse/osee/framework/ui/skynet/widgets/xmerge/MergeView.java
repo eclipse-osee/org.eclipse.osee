@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
-import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
@@ -71,7 +71,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
 
-   private MergeXWidget mergeXWidget;
+   private XMergeWidget mergeXWidget;
    private BranchToken sourceBranch;
    private BranchToken destBranch;
    private TransactionToken transactionId;
@@ -138,7 +138,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    @Override
    public void createPartControl(Composite parent) {
 
-      mergeXWidget = new MergeXWidget(this);
+      mergeXWidget = new XMergeWidget();
+      mergeXWidget.setMergeView(this);
       mergeXWidget.setDisplayLabel(false);
       mergeXWidget.createWidgets(parent, 1);
 
@@ -514,7 +515,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
 
    }
 
-   public MergeXWidget getMergeXWidget() {
+   public XMergeWidget getMergeXWidget() {
       return mergeXWidget;
    }
 

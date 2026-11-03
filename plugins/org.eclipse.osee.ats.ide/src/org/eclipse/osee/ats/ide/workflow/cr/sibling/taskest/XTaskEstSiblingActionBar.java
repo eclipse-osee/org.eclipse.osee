@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.ide.workflow.cr.sibling.base.XSiblingActionBar;
  */
 public abstract class XTaskEstSiblingActionBar extends XSiblingActionBar {
 
-   public XTaskEstSiblingActionBar(XTaskEstSiblingWorldWidget siblingWorldWidget) {
+   public XTaskEstSiblingActionBar(XAbstractTaskEstSiblingWorldWidget siblingWorldWidget) {
       super(siblingWorldWidget);
    }
 

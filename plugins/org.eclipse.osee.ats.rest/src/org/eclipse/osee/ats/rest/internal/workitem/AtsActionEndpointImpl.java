@@ -57,7 +57,7 @@ import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
-import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.SignDateWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workdef.model.web.WorkflowData;
@@ -822,8 +822,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public boolean checkApproval(String atsId) {
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(atsId);
       for (LayoutItem layoutItem : workItem.getStateDefinition().getLayoutItems()) {
-         if (layoutItem instanceof SignByAndDateWidgetDefinition) {
-            SignByAndDateWidgetDefinition widgetDef = (SignByAndDateWidgetDefinition) layoutItem;
+         if (layoutItem instanceof SignDateWidgetDef) {
+            SignDateWidgetDef widgetDef = (SignDateWidgetDef) layoutItem;
             AttributeTypeToken userAttrType = widgetDef.getAttributeType();
             AttributeTypeToken dateAttrType = widgetDef.getAttributeType2();
             Object userVal = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, userAttrType, null);
@@ -845,8 +845,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       List<LayoutItem> layoutItems = workItem.getStateDefinition().getLayoutItems();
       IAtsChangeSet changes = null;
       for (LayoutItem layoutItem : layoutItems) {
-         if (layoutItem instanceof SignByAndDateWidgetDefinition) {
-            SignByAndDateWidgetDefinition widgetDef = (SignByAndDateWidgetDefinition) layoutItem;
+         if (layoutItem instanceof SignDateWidgetDef) {
+            SignDateWidgetDef widgetDef = (SignDateWidgetDef) layoutItem;
             AttributeTypeToken userAttrType = widgetDef.getAttributeType();
             AttributeTypeToken dateAttrType = widgetDef.getAttributeType2();
             if (changes == null) {

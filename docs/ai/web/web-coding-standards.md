@@ -17,6 +17,15 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - Use `changeDetection: ChangeDetectionStrategy.OnPush`.
 - Use `@if` `@else` `@for` `@loading` etc rather than `ngIf` `ngFor` etc.
 - Display tooltips for why things are disabled.
+- **No member/parameter decorators.** Never use `@Input`, `@Output`,
+  `@ViewChild`, `@ViewChildren`, `@ContentChild`, `@Host`, `@HostBinding`,
+  `@HostListener`, or `@Inject`. Use the function APIs: `input()`, `output()`,
+  `model()`, `viewChild()`, `contentChild()`, `inject()`. Only the class-level
+  `@Component`, `@Directive`, `@Injectable`, and `@Pipe` remain.
+- **Do not use host bindings.** No `@HostBinding`, `@HostListener`, `@Host`, and
+  no `host: {}` metadata for classes/attributes/listeners. Apply classes and
+  attributes in the parent's template (or on the root element of the component's
+  own template) instead.
 
 ## Dependency injection + state
 
@@ -25,6 +34,22 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - Use RxJS (`BehaviorSubject`/`ReplaySubject`/etc.) only when needed, matching the patterns in our code.
 - Use `viewChild()` or `viewChild.required()` if template references to forms or elements are required.
 - **Avoid constructors in components.** Prefer field initializers with `inject()` and lifecycle callbacks (`afterNextRender`, effects) for initialization logic. For data loading, use signal-based patterns (`httpResource`, `toSignal()`, `computed()`) which handle async state declaratively without constructor logic. Use a constructor only when logic must run synchronously at creation time before the first render and no signal-based alternative exists (e.g., synchronous batch rendering of pre-loaded local data).
+
+### Signals first
+
+- **Prioritize signals**: `signal()`, `computed()`, `linkedSignal()`, signal
+  forms, and `httpResource` for state, derived state, forms, and reads.
+- **Minimize `effect()`.** Effects are for true side effects only (logging,
+  non-Angular APIs, imperative DOM). Never use an effect to copy one signal into
+  another. Instead:
+  - Derived read-only value → `computed()`.
+  - Derived value that is also locally writable/resettable when a source changes
+    (e.g. selected item that resets when the list changes) → `linkedSignal()`.
+  - Async load keyed on a signal → `httpResource` / `resource`.
+- **Source → sink.** Write every data flow in one direction, from the data source
+  to the sink that consumes it (service/resource → `computed`/`linkedSignal` →
+  template). Declare sources first and sinks after them, and do not push values
+  back upstream or mutate a source from a sink's derivation.
 
 ### Prefer reactive chains over manual `subscribe`
 
@@ -129,7 +154,7 @@ Example (activity bar toggle):
 
 - Use `mat-button-toggle-group` for mutually exclusive options (not radio buttons).
 - Always add `hideSingleSelectionIndicator` to remove the default checkmark indicator on the selected toggle. This is purely visual — it does not prevent setting a default `[value]` on the group.
-- Selected state: **primary background with background-colored text** (filled). Use tokens:
+- Selected state: **primary background with background-colored text** (filled). Set these Material tokens inline as Tailwind arbitrary properties on the group, with values from the OSEE theme variables (not Material palette variables):
   - `--mat-button-toggle-selected-state-background-color: var(--osee-primary-default)`
   - `--mat-button-toggle-selected-state-text-color: var(--osee-background-background)`
 - Never use white text on a colored (filled) background for toggle selections — use the background token so it adapts to light/dark mode.
@@ -319,26 +344,40 @@ Hard rules:
   details that break on dependency upgrades. Use a token or input instead
   (steps 2–4). `::ng-deep` is additionally deprecated — never use it.
 
-**Exception — cascading token overrides:** when a token must reach Material
-components nested inside child components (e.g. form-field theming across a
-sidebar), set the tokens in a `styles:` block scoped to the component's own
-element selector together with `encapsulation: ViewEncapsulation.None`, so the
-tokens inherit into descendants. This block may set **only** custom-property
-tokens — never internal class selectors. This is the sole allowed use of
-`styles:` / `ViewEncapsulation.None`. Example:
+**Never turn off view encapsulation.** Do not set
+`encapsulation: ViewEncapsulation.None` (or `ShadowDom`) on any component, and
+do not add `styles:` blocks to work around it. When a token must reach Material
+components nested inside child components, set the token inline with a Tailwind
+arbitrary property on the element that wraps them (custom properties inherit
+into descendants without needing to disable encapsulation):
 
-```ts
-@Component({
-  // ...
-  styles: [
-    `
-      osee-my-component {
-        --mat-form-field-container-color: transparent;
-      }
-    `,
-  ],
-  encapsulation: ViewEncapsulation.None,
-})
+```html
+<div class="[--mat-form-field-container-color:transparent]">
+  <child-with-form-fields />
+</div>
+```
+
+### Material overrides and the color palette
+
+- **Override Material components inline with Tailwind utilities in the
+  template** (e.g. `tw-bg-primary`, `tw-text-warning`). Tailwind utilities are
+  emitted as `!important` in this repo, so they win over Material's styles without
+  specificity hacks or encapsulation tricks.
+- **Use the Tailwind color palette defined for this repo** (see "Theme colors")
+  — never the Angular Material palettes or Material theme variables (e.g.
+  `mat.$blue-palette`, `--mat-sys-*`, `--mdc-*` color vars) for colors.
+  Material component tokens (step 2 above) are still fine for non-color
+  sizing/shape tokens, set inline.
+
+## Animations
+
+- **Do not use `@angular/animations`** (`trigger`, `state`, `transition`).
+- Register keyframes/animations in the Tailwind config
+  (`theme.extend.keyframes` / `theme.extend.animation`) and trigger them from the
+  template with Tailwind classes toggled by a signal:
+
+```html
+<div [class]="open() ? 'tw-animate-fade-in' : 'tw-animate-fade-out'"></div>
 ```
 
 ## Typing + code style (apply broadly)
@@ -379,10 +418,19 @@ The app uses a token-based color system via CSS variables and Tailwind utilities
 | `tw-text-warning-lighter` | `#ef5350` (red-20) | `#ef5350` (red-20) | Lighter warning variant |
 | `tw-text-warning-darker` | `#b71c1c` (red-25) | `#b71c1c` (red-25) | Darker warning variant |
 
+### Caution palette (amber, themed per mode)
+
+| Tailwind class | Light mode | Dark mode | Use case |
+|---|---|---|---|
+| `tw-text-caution` | `#b58a00` (amber-8) | `#ffd54f` (amber-16) | "Not allowed, but not an error" feedback |
+
+`caution` is a single themed token (backed by `--osee-caution-default` in `osee-variables.css`) that resolves to a **darker amber in light mode** and a **brighter amber in dark mode**, so it stays readable on either surface **without a per-use `dark:` variant**. It works with any Tailwind color utility (`tw-text-caution`, `tw-ring-caution`, `tw-bg-caution`). The canonical use is the markdown editor's cross-branch drop guard overlay.
+
 ### Usage guidelines
 
 - Use `tw-text-primary` / `tw-bg-primary` for primary-colored text and backgrounds.
 - Use `tw-text-warning` for destructive actions only (Delete, Remove, Purge). **Do not use on Cancel/Close buttons.** Do not use hard-coded slot numbers like `tw-text-osee-red-8` — always prefer the semantic `tw-text-warning` token which adapts to the theme.
+- Use `tw-text-caution` (amber) for feedback that a thing is **not allowed but is not an error or a destructive action** — e.g. a blocked drop that broke nothing. Reserve the red `tw-text-warning` for genuine errors and destructive actions, so the two read differently. Like the others, prefer the `caution` token over raw `tw-text-osee-amber-*` slots.
 - Use the Material `primary-button`, `tertiary-button`, `error-button` CSS classes on `mat-raised-button` / `mat-flat-button` for pre-themed buttons (these use the M3 theming system, not Tailwind).
 - For foreground/background semantic tokens (adapt to light/dark automatically): `tw-text-foreground-base`, `tw-bg-background-card`, `tw-bg-background-hover`, etc.
 - Prefer semantic color tokens over hard-coded `osee-*` slot numbers. Use `tw-text-primary` instead of `tw-text-osee-blue-28`, use `tw-text-warning` instead of `tw-text-osee-red-8`.
@@ -543,8 +591,10 @@ npx playwright show-report
 - **Test programmatic state via `page.evaluate()`** when no visible indicator exists — e.g., reading selection ranges, scroll positions, or computed values from the DOM.
 - **Use `locator.filter({ hasText })` for icon-only buttons** — buttons with only an icon and no label often lack accessible names. Filter by the icon's text content.
 - **Scope locators to reduce ambiguity** — prefer `page.locator('section button')` over `page.getByRole('button')` when multiple buttons share similar names across different page regions.
-- **Opening a `mat-select` can swallow a single click** — when the element just rendered or reflowed, one `.click()` may not open the overlay (`aria-expanded` stays `"false"`). Re-drive the open until it reports expanded, capped so it can't spin forever: `await expect(async () => { if ((await select.getAttribute('aria-expanded')) !== 'true') await select.click(); await expect(select).toHaveAttribute('aria-expanded', 'true', { timeout: 2000 }); }).toPass({ timeout: 15000 });`. The `if` guard avoids re-clicking an already-open select (which would toggle it shut). This is more robust than padding a fixed timeout before the click.
+- **Opening a `mat-select` can swallow a single click** — when the trigger just rendered or reflowed (e.g. a select in a just-opened dialog or wizard step), one `.click()` may not open the overlay, so the option never renders and the wait for it times out even though its data loaded fine. Use `openSelectAndChooseOption(trigger, option, { clickTarget?, optionTimeout? })` from `playwright/shared/select-helpers.ts`: it re-drives the open until `option` is visible (guarded so it never re-clicks an already-open panel) then clicks it, or `clickTarget` for a multi-select pseudo-checkbox. Not for `.fill()`-driven search autocompletes (next bullet) — it opens the trigger, it doesn't type a filter.
 - **Type into a debounced-search autocomplete with `pressSequentially`, not `fill`.** Autocompletes whose options come from a server search driven by the input's `valueChanges` with a `debounceTime` (e.g. the branch selector and the MIM Platform Type dropdown) need per-character input. `fill()` sets the value in one shot and emits a single input event that the debounce can coalesce or mis-time, so the search never fires and the listbox stays empty. Use `await input.click({ force: true }); await input.fill(''); await input.pressSequentially('value');` then assert the option is visible before clicking it. (Plain `mat-select` overlays with static options are fine to open with a click — this only applies to search-backed autocompletes.)
+- **Drive Angular CDK drag-and-drop with a hover/press/double-hover/release sequence, not `dragTo` or coordinate math.** OSEE's draggable surfaces (the artifact hierarchy's `cdkDrag` nodes dropped onto the relations editor or the markdown editor) use **Angular CDK** drag, which is pointer-based — Playwright's `locator.dragTo()` (HTML5 DnD) does not drive it, and a hand-rolled `mouse.move(x,y)` sequence is unreliable (CDK needs its enter registered). The proven pattern (used by `mim/traceability` and `artifact-explorer/markdown-artifact-link`) is: `await source.hover(); await page.mouse.down(); await target.hover(); await target.hover(); await page.mouse.up();` — the **double** `target.hover()` is required so CDK registers the drop-list enter before release. The drop routes to the `cdkDropList` by geometry regardless of any overlay on top.
+- **During a CDK drag, `mouseenter`/`mousemove` are suppressed on the page — use `pointermove` (or CDK's own position) to track the pointer.** If a drop target needs to react to *where* within it the pointer is mid-drag (e.g. the markdown editor's split "embed vs. link" overlay), a `(mouseenter)`/`(mousemove)` handler will not fire during the CDK drag. Bind `(pointermove)` and compute the region from the event's coordinates relative to the element's `getBoundingClientRect()`. In a test, assert the resulting visible state (the highlighted half), not the mouse events.
 
 ### Testing auto-save (focus-lost) editors
 

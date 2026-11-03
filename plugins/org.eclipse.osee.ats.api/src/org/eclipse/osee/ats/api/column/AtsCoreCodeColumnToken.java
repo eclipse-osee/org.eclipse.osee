@@ -14,13 +14,13 @@
 package org.eclipse.osee.ats.api.column;
 
 import org.eclipse.osee.ats.api.config.ActionRollup;
-import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.config.InheritParent;
 import org.eclipse.osee.ats.api.config.MultiEdit;
 import org.eclipse.osee.ats.api.config.Show;
 import org.eclipse.osee.ats.api.util.ColumnType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 
 /**
  * @author Donald G. Dunne
@@ -59,22 +59,22 @@ public class AtsCoreCodeColumnToken extends AtsCoreColumnToken {
    public AtsCoreCodeColumnToken(String columnId, AttributeTypeToken attrType) {
       this(columnId, attrType.getUnqualifiedName(), AtsColumnUtil.getColumnWidth(attrType),
          AtsColumnUtil.getColumnType(attrType), AtsColumnUtil.getColumnAlign(attrType), Show.No,
-         (attrType.hasDisplayHint(AtsDisplayHint.Edit) ? MultiEdit.Yes : MultiEdit.No), ActionRollup.No,
-         InheritParent.No, attrType.getDescription());
+         (attrType.hasDisplayHint(DisplayHint.Edit) ? MultiEdit.Yes : MultiEdit.No), ActionRollup.No, InheritParent.No,
+         attrType.getDescription());
       this.attrType = attrType;
    }
 
    public AtsCoreCodeColumnToken(String columnId, String name, AttributeTypeToken attrType) {
       this(columnId, name, AtsColumnUtil.getColumnWidth(attrType), AtsColumnUtil.getColumnType(attrType),
          AtsColumnUtil.getColumnAlign(attrType), Show.No,
-         (attrType.hasDisplayHint(AtsDisplayHint.Edit) ? MultiEdit.Yes : MultiEdit.No), ActionRollup.No,
-         InheritParent.No, attrType.getDescription());
+         (attrType.hasDisplayHint(DisplayHint.Edit) ? MultiEdit.Yes : MultiEdit.No), ActionRollup.No, InheritParent.No,
+         attrType.getDescription());
       this.attrType = attrType;
    }
 
    public AtsCoreCodeColumnToken(String columnId, String name, int width, AttributeTypeToken attrType) {
       this(columnId, name, width, AtsColumnUtil.getColumnType(attrType), AtsColumnUtil.getColumnAlign(attrType),
-         Show.No, (attrType.hasDisplayHint(AtsDisplayHint.Edit) ? MultiEdit.Yes : MultiEdit.No), ActionRollup.No,
+         Show.No, (attrType.hasDisplayHint(DisplayHint.Edit) ? MultiEdit.Yes : MultiEdit.No), ActionRollup.No,
          InheritParent.No, attrType.getDescription());
       this.attrType = attrType;
    }

@@ -14,22 +14,30 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchAndViewSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchViewWidget;
 
 /**
  * @author Ryan D. Brooks
  */
 public class VariableMap {
    private final Map<String, Object> variableMap = new HashMap<>();
+   private List<XWidget> xWidgets = new ArrayList<XWidget>();
 
    public VariableMap() {
       // provides a constructor that does not throw OseeArgumentException
@@ -68,10 +76,22 @@ public class VariableMap {
    }
 
    public ArtifactTypeToken getArtifactType(String parameterName) {
-      return getSingleCollectionValue(ArtifactTypeToken.class, parameterName);
+      Object object = variableMap.get(parameterName);
+      if (object instanceof ArtifactTypeToken) {
+         return (ArtifactTypeToken) object;
+      }
+      Collection<ArtifactTypeToken> types = getCollection(ArtifactTypeToken.class, parameterName);
+      if (!types.isEmpty()) {
+         return types.iterator().next();
+      }
+      return ArtifactTypeToken.SENTINEL;
    }
 
    public List<ArtifactTypeToken> getArtifactTypes(String parameterName) {
+      Object object = variableMap.get(parameterName);
+      if (object instanceof ArtifactTypeToken) {
+         return new ArrayList<>(Arrays.asList((ArtifactTypeToken) object));
+      }
       Collection<ArtifactTypeToken> artTypes = getCollection(ArtifactTypeToken.class, parameterName);
       if (artTypes == null) {
          return new ArrayList<>();
@@ -87,11 +107,31 @@ public class VariableMap {
       return getSingleCollectionValue(Artifact.class, parameterName);
    }
 
+   public ArtifactToken getArtifactToken(String parameterName) {
+      Object object = variableMap.get(parameterName);
+      if (object instanceof ArtifactToken) {
+         return (ArtifactToken) object;
+      }
+      return ArtifactToken.SENTINEL;
+   }
+
    public AttributeTypeToken getAttributeType(String parameterName) {
-      return getSingleCollectionValue(AttributeTypeToken.class, parameterName);
+      Object object = variableMap.get(parameterName);
+      if (object instanceof AttributeTypeToken) {
+         return (AttributeTypeToken) object;
+      }
+      Collection<AttributeTypeToken> types = getCollection(AttributeTypeToken.class, parameterName);
+      if (!types.isEmpty()) {
+         return types.iterator().next();
+      }
+      return AttributeTypeToken.SENTINEL;
    }
 
    public List<AttributeTypeToken> getAttributeTypes(String parameterName) {
+      Object object = variableMap.get(parameterName);
+      if (object instanceof AttributeTypeToken) {
+         return new ArrayList<>(Arrays.asList((AttributeTypeToken) object));
+      }
       Collection<AttributeTypeToken> attrTypes = getCollection(AttributeTypeToken.class, parameterName);
       if (attrTypes == null) {
          return new ArrayList<>();
@@ -101,6 +141,40 @@ public class VariableMap {
 
    public String getString(String parameterName) {
       return getValue(String.class, parameterName);
+   }
+
+   /**
+    * This method is assuming there is only one branch selection widget
+    */
+   public BranchToken getBranch() {
+      for (XWidget xWidget : xWidgets) {
+         if (xWidget instanceof XXBranchAndViewSelWidget) {
+            XXBranchAndViewSelWidget widget = (XXBranchAndViewSelWidget) xWidget;
+            return widget.getSelectedBranch();
+         }
+         if (xWidget instanceof XXBranchSelWidget) {
+            XXBranchSelWidget widget = (XXBranchSelWidget) xWidget;
+            return widget.getSelectedFirst();
+         }
+      }
+      return BranchToken.SENTINEL;
+   }
+
+   /**
+    * This method is assuming there is only one branch selection widget
+    */
+   public BranchViewToken getBranchView() {
+      for (XWidget xWidget : xWidgets) {
+         if (xWidget instanceof XXBranchAndViewSelWidget) {
+            XXBranchAndViewSelWidget widget = (XXBranchAndViewSelWidget) xWidget;
+            return widget.getSelectedBranchView();
+         }
+         if (xWidget instanceof XXBranchViewWidget) {
+            XXBranchViewWidget widget = (XXBranchViewWidget) xWidget;
+            return widget.getSelectedFirst();
+         }
+      }
+      return BranchViewToken.SENTINEL;
    }
 
    public BranchToken getBranch(String parameterName) {
@@ -128,7 +202,53 @@ public class VariableMap {
    }
 
    public Artifact getUser(String parameterName) {
-      return getValue(Artifact.class, parameterName);
+      Object object = variableMap.get(parameterName);
+      if (object instanceof Artifact) {
+         return (Artifact) object;
+      }
+      Collection<Artifact> users = getCollection(Artifact.class, parameterName);
+      if (!users.isEmpty()) {
+         return users.iterator().next();
+      }
+      return null;
+   }
+
+   public List<Artifact> getUsers(String parameterName) {
+      Object object = variableMap.get(parameterName);
+      if (object instanceof Artifact) {
+         return new ArrayList<>(Arrays.asList((Artifact) object));
+      }
+      Collection<Artifact> users = getCollection(Artifact.class, parameterName);
+      if (users == null) {
+         return new ArrayList<>();
+      }
+      return new ArrayList<>(users);
+   }
+
+   public org.eclipse.osee.framework.core.data.UserToken getUserToken(String parameterName) {
+      Object object = variableMap.get(parameterName);
+      if (object instanceof org.eclipse.osee.framework.core.data.UserToken) {
+         return (org.eclipse.osee.framework.core.data.UserToken) object;
+      }
+      Collection<org.eclipse.osee.framework.core.data.UserToken> tokens =
+         getCollection(org.eclipse.osee.framework.core.data.UserToken.class, parameterName);
+      if (!tokens.isEmpty()) {
+         return tokens.iterator().next();
+      }
+      return org.eclipse.osee.framework.core.data.UserToken.SENTINEL;
+   }
+
+   public List<org.eclipse.osee.framework.core.data.UserToken> getUserTokens(String parameterName) {
+      Object object = variableMap.get(parameterName);
+      if (object instanceof org.eclipse.osee.framework.core.data.UserToken) {
+         return new ArrayList<>(Arrays.asList((org.eclipse.osee.framework.core.data.UserToken) object));
+      }
+      Collection<org.eclipse.osee.framework.core.data.UserToken> tokens =
+         getCollection(org.eclipse.osee.framework.core.data.UserToken.class, parameterName);
+      if (tokens == null) {
+         return new ArrayList<>();
+      }
+      return new ArrayList<>(tokens);
    }
 
    public List<Artifact> getArtifacts(String parameterName) {
@@ -167,5 +287,13 @@ public class VariableMap {
    @Override
    public String toString() {
       return variableMap.toString();
+   }
+
+   public List<XWidget> getxWidgets() {
+      return xWidgets;
+   }
+
+   public void setxWidgets(List<XWidget> xWidgets) {
+      this.xWidgets = xWidgets;
    }
 }

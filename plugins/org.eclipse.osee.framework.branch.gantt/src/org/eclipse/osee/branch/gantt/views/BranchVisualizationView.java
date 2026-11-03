@@ -34,7 +34,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -64,7 +66,7 @@ public class BranchVisualizationView extends ViewPart {
    private Action refreshAction;
    private Composite parent;
    private BranchGanttSettings settings;
-   private XBranchSelectWidget xBranchSelectWidget;
+   private XXBranchSelWidget branchWidget;
    private static String BRANCH_KEY = "branch.visualization.default";
    private Composite bodyComposite;
    private Composite bottomGroup1;
@@ -98,8 +100,8 @@ public class BranchVisualizationView extends ViewPart {
    }
 
    private void storeSelectedBranch() {
-      if (xBranchSelectWidget != null && !xBranchSelectWidget.getControl().isDisposed()) {
-         BranchId selectedBranch = xBranchSelectWidget.getData();
+      if (branchWidget != null && !branchWidget.getControl().isDisposed()) {
+         BranchId selectedBranch = branchWidget.getSelectedFirst();
          if (selectedBranch != null) {
             try {
                OseeApiService.userSvc().setSetting(BRANCH_KEY, selectedBranch.getId());
@@ -113,13 +115,13 @@ public class BranchVisualizationView extends ViewPart {
 
    private void addBranchSelection() {
 
-      xBranchSelectWidget = new XBranchSelectWidget("");
-      xBranchSelectWidget.setDisplayLabel(false);
-      xBranchSelectWidget.createWidgets(bodyComposite, 1);
-      xBranchSelectWidget.addListener(new Listener() {
+      branchWidget = new XXBranchSelWidget();
+      branchWidget.setDisplayLabel(false);
+      branchWidget.createWidgets(bodyComposite, 1);
+      branchWidget.addXModifiedListener(new XModifiedListener() {
 
          @Override
-         public void handleEvent(Event event) {
+         public void widgetModified(XWidget widget) {
             drawChart();
          }
       });
@@ -133,7 +135,7 @@ public class BranchVisualizationView extends ViewPart {
          if (Strings.isValid(branchUuid)) {
             try {
                BranchToken branch = BranchManager.getBranchToken(Long.valueOf(branchUuid));
-               xBranchSelectWidget.setSelection(branch);
+               branchWidget.setSelected(branch);
             } catch (Exception ex) {
                // do nothing
             }
@@ -144,7 +146,7 @@ public class BranchVisualizationView extends ViewPart {
    }
 
    private BranchId getSelectedBranch() {
-      return xBranchSelectWidget.getData();
+      return branchWidget.getSelectedFirst();
    }
 
    public void drawChart() {

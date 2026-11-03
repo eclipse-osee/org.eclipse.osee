@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -31,7 +31,7 @@ public class FilteredTreeArtifactTypeEntryDialog extends FilteredTreeArtifactTyp
 
    private String entryValue = null;
    private final String entryName;
-   private XText xText = null;
+   private XXTextWidget xText = null;
 
    public FilteredTreeArtifactTypeEntryDialog(String title, String message, String entryName) {
       super(title, message, ServiceUtil.getTokenService().getArtifactTypes());
@@ -46,7 +46,7 @@ public class FilteredTreeArtifactTypeEntryDialog extends FilteredTreeArtifactTyp
    @Override
    protected void createPreCustomArea(Composite parent) {
       super.createPreCustomArea(parent);
-      xText = new XText(entryName);
+      xText = new XXTextWidget(entryName);
       if (entryValue != null) {
          xText.setText(entryValue);
       }

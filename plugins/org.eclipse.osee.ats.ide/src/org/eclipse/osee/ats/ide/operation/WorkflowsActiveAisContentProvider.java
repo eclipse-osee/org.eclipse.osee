@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -32,9 +33,9 @@ import org.eclipse.osee.framework.core.enums.Active;
 public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
 
    private final Active active;
-   private TeamWorkFlowArtifact teamWf;
+   private IAtsTeamWorkflow teamWf;
 
-   public WorkflowsActiveAisContentProvider(TeamWorkFlowArtifact teamWf, Active active) {
+   public WorkflowsActiveAisContentProvider(IAtsTeamWorkflow teamWf, Active active) {
       this.teamWf = teamWf;
       this.active = active;
    }
@@ -112,11 +113,7 @@ public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
       // do nothing
    }
 
-   public TeamWorkFlowArtifact getTeamWf() {
-      return teamWf;
-   }
-
-   public void setTeamWf(TeamWorkFlowArtifact teamWf) {
+   public void setTeamWf(IAtsTeamWorkflow teamWf) {
       this.teamWf = teamWf;
    }
 

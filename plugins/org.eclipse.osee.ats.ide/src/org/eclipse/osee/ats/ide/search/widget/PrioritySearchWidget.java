@@ -13,27 +13,39 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXPriorityWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class PrioritySearchWidget extends AbstractXHyperlinkEntrySearchWidget {
+public class PrioritySearchWidget extends AbstractSearchWidget<XXPriorityWidget, String> {
 
-   public static SearchWidget PriorityWidget = new SearchWidget(14321234, "Priority", "XHyperlinkLabelValueStringSel");
+   private static final String LABEL = "Priority";
+   public static SearchWidget PriorityWidget = new SearchWidget(14321234, LABEL, WidgetIdAts.XXPriorityWidget);
 
    public PrioritySearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(PriorityWidget, searchItem);
    }
 
    @Override
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      if (xWidget.getLabel().equals(LABEL)) {
+         xWidget.set(XOption.CLEAR);
+      }
+   }
+
+   @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
-         List<String> priorities = data.getPriorities();
-         getWidget().setValue(Collections.toString(",", priorities));
+         getWidget().setSelected(Collections.toString(",", data.getPriorities()));
       }
    }
 

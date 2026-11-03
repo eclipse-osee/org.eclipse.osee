@@ -13,24 +13,35 @@
 
 package org.eclipse.osee.ats.ide.search.widget;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.xx.XXStateTypeWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class StateTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<StateType> {
+public class StateTypeSearchWidget extends AbstractSearchWidget<XXStateTypeWidget, StateType> {
 
-   public static SearchWidget PriorityWidget = new SearchWidget(3923248, "State Type", "XHyperlinkWfdForObject");
+   private static final String LABEL = "State Type";
+   public static SearchWidget StateTypeWidget = new SearchWidget(3923248, LABEL, WidgetIdAts.XXStateTypeWidget);
 
    public StateTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
-      super(PriorityWidget, searchItem);
+      super(StateTypeWidget, searchItem);
+   }
+
+   @Override
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      if (xWidget.getLabel().equals(LABEL)) {
+         xWidget.set(XOption.CLEAR);
+      }
    }
 
    @Override
@@ -38,24 +49,6 @@ public class StateTypeSearchWidget extends AbstractXHyperlinkWfdSearchWidget<Sta
       if (getWidget() != null) {
          List<StateType> stateTypes = data.getStateTypes();
          getWidget().setSelected(stateTypes);
-      }
-   }
-
-   @Override
-   public Collection<StateType> getSelectable() {
-      return Arrays.asList(StateType.values());
-   }
-
-   @Override
-   boolean isMultiSelect() {
-      return true;
-   }
-
-   public void set(StateType type) {
-      if (isMultiSelect()) {
-         getWidget().setSelected(Arrays.asList(type));
-      } else {
-         getWidget().setSelected(type);
       }
    }
 

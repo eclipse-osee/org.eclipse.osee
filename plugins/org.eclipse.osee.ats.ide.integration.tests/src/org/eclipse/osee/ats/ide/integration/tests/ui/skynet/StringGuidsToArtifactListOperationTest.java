@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.StringGuidsToArtifactListOperation;
-import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetInputAddable;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.IXWidgetInputAddable;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

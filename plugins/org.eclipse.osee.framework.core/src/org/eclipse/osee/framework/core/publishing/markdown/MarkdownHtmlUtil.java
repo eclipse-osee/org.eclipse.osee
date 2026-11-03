@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.eclipse.osee.framework.core.publishing.PublishingOutputFormatter;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.jsoup.Jsoup;
@@ -87,6 +88,17 @@ public class MarkdownHtmlUtil {
       "<image-link(?:\\s+size=\"(" + IMAGE_SIZE_VALUES + ")\")?>(\\d+)</image-link>";
 
    public static final Pattern IMAGE_LINK_PATTERN = Pattern.compile(IMAGE_LINK_PATTERN_STRING);
+
+   /**
+    * Pattern matching an artifact-link tag. Group 1 = artifact ID.
+    */
+   public static final String ARTIFACT_LINK_PATTERN_STRING = "<artifact-link>(\\d+)</artifact-link>";
+
+   public static final Pattern ARTIFACT_LINK_PATTERN = Pattern.compile(ARTIFACT_LINK_PATTERN_STRING);
+
+   private static final String ARTIFACT_LINK_TAG_FORMAT = "<artifact-link>%s</artifact-link>";
+   private static final String IMAGE_LINK_TAG_FORMAT = "<image-link>%s</image-link>";
+   private static final String IMAGE_LINK_SIZED_TAG_FORMAT = "<image-link size=\"%s\">%s</image-link>";
 
    // e.g. |---|---|
    public static final Pattern TABLE_SEPARATOR_PATTERN = Pattern.compile("(?s).*\\|[\\s:]*-+[\\s:]*\\|.*");
@@ -235,6 +247,32 @@ public class MarkdownHtmlUtil {
       matcher.appendTail(sb);
 
       return new StringModificationResult(sb.toString(), changes);
+   }
+
+   public static String buildArtifactLinkTag(String artifactId) {
+      return String.format(ARTIFACT_LINK_TAG_FORMAT, artifactId);
+   }
+
+   public static String buildImageLinkTag(String artifactId) {
+      return buildImageLinkTag(artifactId, null);
+   }
+
+   /**
+    * Builds an image-link tag, optionally with a size attribute. A null or blank
+    * size produces an unsized tag; a non-blank size must be one of
+    * {@link #IMAGE_SIZE_VALUES} (the same set {@link #IMAGE_LINK_PATTERN} parses).
+    * This overload exists so a server caller can emit a sized tag symmetric with
+    * the pattern and the web builder -- the no-arg form intentionally emits unsized.
+    */
+   public static String buildImageLinkTag(String artifactId, String size) {
+      if (Strings.isInvalid(size)) {
+         return String.format(IMAGE_LINK_TAG_FORMAT, artifactId);
+      }
+      if (!size.matches(IMAGE_SIZE_VALUES)) {
+         throw new OseeArgumentException("Invalid image-link size [%s]; expected one of [%s].", size,
+            IMAGE_SIZE_VALUES);
+      }
+      return String.format(IMAGE_LINK_SIZED_TAG_FORMAT, size, artifactId);
    }
 
    /**

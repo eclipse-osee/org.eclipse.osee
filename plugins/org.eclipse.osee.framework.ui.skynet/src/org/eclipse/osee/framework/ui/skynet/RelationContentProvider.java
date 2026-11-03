@@ -89,8 +89,18 @@ public class RelationContentProvider implements ITreeContentProvider {
             for (RelationTypeToken type : relationTypes) {
                childToParentMap.put(type, parentElement);
             }
+            // Sort: relation types with existing relations first, then alphabetically within each group
             Object[] ret = relationTypes.toArray();
-            Arrays.sort(ret);
+            Arrays.sort(ret, (a, b) -> {
+               RelationTypeToken typeA = (RelationTypeToken) a;
+               RelationTypeToken typeB = (RelationTypeToken) b;
+               boolean hasA = hasRelationsOfType(typeA);
+               boolean hasB = hasRelationsOfType(typeB);
+               if (hasA != hasB) {
+                  return hasA ? -1 : 1;
+               }
+               return typeA.getName().compareToIgnoreCase(typeB.getName());
+            });
             return ret;
          } else if (parentElement instanceof RelationTypeSideSorter) {
             RelationTypeSideSorter relationSorter = (RelationTypeSideSorter) parentElement;
@@ -182,5 +192,11 @@ public class RelationContentProvider implements ITreeContentProvider {
    @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
+   }
+
+   private boolean hasRelationsOfType(RelationTypeToken relationType) {
+      int countA = RelationManager.getRelatedArtifactsCount(artifactRoot, relationType, RelationSide.SIDE_A);
+      int countB = RelationManager.getRelatedArtifactsCount(artifactRoot, relationType, RelationSide.SIDE_B);
+      return countA > 0 || countB > 0;
    }
 }

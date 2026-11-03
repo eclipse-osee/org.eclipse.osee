@@ -25,11 +25,12 @@ import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -39,6 +40,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 /**
@@ -48,7 +50,7 @@ public class BranchLoadComposite extends Composite {
 
    private final BranchView branchView;
    private final BranchQueryData branchData;
-   private XText nameText;
+   private XXTextWidget nameText;
    private Button asIdButton;
 
    public BranchLoadComposite(BranchView branchView, Composite parent, int style) {
@@ -80,7 +82,7 @@ public class BranchLoadComposite extends Composite {
          }
       });
 
-      nameText = new XText("Search String");
+      nameText = new XXTextWidget("Search String");
       nameText.setToolTip("Search Branch names for String");
       nameText.createWidgets(this, 1);
       nameText.addXModifiedListener(new XModifiedListener() {
@@ -159,7 +161,11 @@ public class BranchLoadComposite extends Composite {
       } else {
          nameText.setLabel("Srch String: ");
       }
-      nameText.getLabelWidget().getParent().layout(true);
+      Control nameLabel =
+         Widgets.isAccessible(nameText.getLabelLinkWidget()) ? nameText.getLabelLinkWidget() : nameText.getLabelWidget();
+      if (Widgets.isAccessible(nameLabel)) {
+         nameLabel.getParent().layout(true);
+      }
       setSearchString();
    }
 

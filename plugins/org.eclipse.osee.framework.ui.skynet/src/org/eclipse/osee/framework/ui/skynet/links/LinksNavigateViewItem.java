@@ -83,8 +83,8 @@ public class LinksNavigateViewItem extends XNavigateItemAction {
       try {
          AccountWebPreferences data = LinkUtil.getAccountsPreferencesData(true);
          for (Link link : data.getLinks().values()) {
-            XNavigateUrlItem urlItem = new XNavigateUrlItem(link.getName() + getTagsStr(link, true), link.getUrl(),
-               true, CoreImage.LINK, NAME);
+            XNavigateUrlItem urlItem =
+               new XNavigateUrlItem(link.getName() + getTagsStr(link, true), link.getUrl(), true, CoreImage.LINK, NAME);
             addChild(urlItem);
             urlItem.setData(link);
             urlItem.addMenuItem(new LinksXNavigateMenuItem());

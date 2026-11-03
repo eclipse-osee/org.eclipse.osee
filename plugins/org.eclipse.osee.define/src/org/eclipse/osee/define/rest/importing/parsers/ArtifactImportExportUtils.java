@@ -260,12 +260,8 @@ public class ArtifactImportExportUtils {
             }
             byte[] entryBytes = baos.toByteArray();
 
-            try {
-               ArtifactRecord record = objectMapper.readValue(entryBytes, ArtifactRecord.class);
-               artifactRecords.add(record);
-            } catch (Exception e) {
-               System.err.println("Failed to parse JSON in entry " + entryName + ": " + e.getMessage());
-            }
+            ArtifactRecord record = objectMapper.readValue(entryBytes, ArtifactRecord.class);
+            artifactRecords.add(record);
             zis.closeEntry();
          }
       } catch (IOException e) {

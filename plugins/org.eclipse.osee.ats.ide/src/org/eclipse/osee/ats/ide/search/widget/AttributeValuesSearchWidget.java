@@ -15,18 +15,32 @@ package org.eclipse.osee.ats.ide.search.widget;
 
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.util.AttributeValues;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.base.XDynamicAttrValuesWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
 public class AttributeValuesSearchWidget extends AbstractSearchWidget<XDynamicAttrValuesWidget, AttributeValues> {
 
+   private static final String LABEL = "Attribute Values";
    public static SearchWidget AttributeValuesSearchWidget =
-      new SearchWidget(3893898, "Attribute Values", "XDynamicAttrValuesWidget");
+      new SearchWidget(3893898, LABEL, WidgetIdAts.XDynamicAttrValuesWidget);
 
    public AttributeValuesSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(AttributeValuesSearchWidget, searchItem);
+   }
+
+   @Override
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      if (xWidget.getLabel().equals(LABEL)) {
+         xWidget.set(XOption.CLEAR);
+      }
    }
 
    @Override

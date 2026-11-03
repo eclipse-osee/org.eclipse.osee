@@ -15,10 +15,26 @@ The attributes editor panel (`osee-attributes-editor-panel`) displays and edits 
 - Deleting attribute instances via an inline delete mode toggle
 - Grouped display for multi-instance attribute types
 
+## Branch targeting (tab-pinned, not global)
+
+An editor tab pins its own branch (`tab().branchId`): the same artifact can be open on two
+branches, and a tab survives a global branch-selector change. `ArtifactEditorComponent`
+therefore provides `provideBranchContext()` (from `@osee/transactions/services`) and feeds
+`tab().branchId`/`tab().viewId` into the injected `BranchContextSource` via an effect. This
+pins a **scoped `CurrentTransactionService`** for the whole editor subtree, so every write
+below it (attribute save/add/delete, native content, conflict commit, **and relations**)
+targets the tab's branch with no per-call override — reads were already tab-sourced, this
+makes writes agree. The one exception is the history **revert dialog**: it opens at the
+overlay root (outside the subtree) so it passes the tab branch explicitly as
+`branchIdOverride` (it carries `data.branchId`). Full precedence rules:
+`docs/ai/web/transaction-service.md` → "Branch targeting". Do **not** reintroduce per-call
+`branchIdOverride` on the in-subtree editors — the scoped service handles it.
+
 ## Component architecture
 
 ```
 ArtifactEditorComponent (artifact-editor)
+├── provides provideBranchContext() → scoped CurrentTransactionService pinned to tab().branchId
 ├── Owns shared artifactResource (httpResource, includeRelations=true)
 ├── Subscribes to ArtifactChangeNotificationService.forArtifact(branchId, artifactId) for this artifact
 ├── Passes artifactResource + remoteChangeCount (attributes panel) + changeCount (history panel) to children
@@ -144,10 +160,109 @@ The attributes panel participates in the SSE real-time notification system:
 - **Remote change detection**: Uses `remoteChangeCount` input + `effect()` to detect when the parent signals a remote change.
 - **Conflict handling**: If `EditorDirtyService.hasDirtyEditors()` is true when a remote change arrives, shows a warning banner and blocks auto-save.
 - **Preserving local edits (critical)**: When a remote change arrives and the user has unsaved edits for this artifact, the parent `ArtifactEditorComponent` **skips** `artifactResource.reload()` (via `dirtyService.hasDirtyEditorsForEntity(artifactId)`). Reloading would overwrite the in-progress edits and clear the ring. The latest server state is instead fetched on demand when the resolution dialog opens.
-- **Save blocking**: `PersistedArtifactAttributeEditorComponent` has a `conflicted` input. When true, `saveAttribute()` returns early without saving. Because the text input's blur commit is debounced ~500ms, that runtime guard alone had a hole: a blur during conflict could emit its commit *after* resolution cleared `conflicted`, re-saving the discarded value over the resolved one. So `conflicted` is also passed to `FocusLostInputComponent` as `suppressCommit`, which snapshots it at blur and drops any commit whose blur happened while suppressed — blocking the stale commit at the source, not just at the save.
+- **Save blocking**: `PersistedArtifactAttributeEditorComponent` has a `conflicted` input. When true, `saveAttribute()` returns early without saving (local edit state is preserved so the field stays in the resolution dialog). Stale deferred commits are handled by the commit model below, NOT by suppressing at the input — `FocusLostInputComponent` is a dumb input with no conflict awareness.
 - **Visual indicator**: Dirty fields blocked by a pending remote change show an **amber** ring (`tw-ring-osee-yellow-10 dark:tw-ring-osee-amber-9`) via host class binding (the `blockedUnsaved` computed). Amber means "unsaved, blocked — resolve to save"; it does **not** claim this specific field conflicts (per-field conflict truth is only known after the dialog's server fetch). Red is reserved for the confirmed conflicts shown in the dialog. The editor's dirty key is `${artifactId}-${attributeId}` (immutable across edits — intentionally excludes `gammaId` so the ring survives a gamma bump).
 - **Warning location**: The conflict warning (with Resolve and Discard actions) is a full-width row rendered below the button row inside the `ArtifactEditorComponent` sticky toolbar container, not in the panel. The panel owns the state (`remoteChangeWhileDirty`, `resolvingConflict`) and the actions (`openConflictResolutionDialog()`, `dismissAndRefresh()`); the parent reads them through the `#attrPanel` template reference (which shadows the `attrPanel` viewChild in template scope, so it is used as an instance — `attrPanel.remoteChangeWhileDirty()`, not `attrPanel()`). Living inside the sticky container keeps the warning pinned without a fragile manual `top` offset, and the dedicated row avoids truncating the message.
 - **Dismiss & Refresh**: The toolbar refresh button calls the panel's `dismissAndRefresh()`, which clears dirty state and reloads the parent resource, discarding local edits.
+
+## Per-field save-status indicator
+
+Because the editors auto-save on blur (there is no Save button), a field can sit with an
+unsaved edit and the user may not realize they must click out to persist it. A small inline
+indicator makes that lifecycle visible.
+
+- **Component**: `osee-field-save-status` (`FieldSaveStatusComponent`, `@osee/shared/components`)
+  — a stateless, presentational component. It takes a nullable `status`
+  (`fieldSaveStatus = 'unsaved' | 'saving' | 'error' | null`) and a `fieldName`, and maps the
+  enum to a view: `unsaved` → amber `edit` glyph, `saving` → spinner, `error` → red
+  `error_outline`, `null` → **nothing**. It holds no logic and no timers; it only renders. A
+  polite `aria-live` region announces transitions for screen readers.
+- **Silent when clean**: `null` renders nothing, so a clean/saved field shows no indicator —
+  the editor looks untouched in the common case. The indicator appears only for
+  unsaved / saving / error.
+- **Status derivation lives in the editor** (`PersistedArtifactAttributeEditorComponent.saveStatus`,
+  a `computed`), because that component already owns the save lifecycle. Precedence:
+  `blockedUnsaved()` → `null` (the amber **conflict ring** already communicates that state —
+  do not double up with a glyph); then `saving()` → `saving`; then `saveError()` → `error`;
+  then dirty → `unsaved`; else `null`. `saveError` is set in the save `error` handler and
+  cleared when a new edit starts (`trackPendingEdit`) or a save succeeds, so a stale failure
+  doesn't linger once the user resumes editing.
+- **No layout shift (gutter/overlay)**: the indicator is absolutely positioned in the field's
+  top-right corner (the label row's trailing whitespace) with the host only `tw-relative`.
+  It takes **no flow space** and the host adds **no padding/width**, so toggling it never
+  reflows the field. (An earlier reserved-padding `tw-pr-6` gutter was removed: it widened the
+  host, which misaligned grouped instances inside their bounding box and didn't apply to the
+  applicability dropdown. Absolute overlay avoids both.)
+- **Intrinsic to persisted editors, not opt-in**: it is the visual counterpart of auto-save,
+  so the persisted editor always renders it (no input toggle). It is deliberately **absent**
+  from the in-memory create-dialog editor (`osee-attributes-editor`), which does not auto-save
+  per field — a "click out to save" hint there would be a lie.
+- **Markdown label**: the Markdown Content widget now renders a label (gated on `showLabel()`,
+  `aria-labelledby` wired) like the other widgets, so it reads consistently and the indicator
+  has the same label-row context.
+
+## Closing a tab / leaving the page (seamless auto-save)
+
+The editors auto-save on blur, and **closing a tab or the window is itself a blur** — so a
+close almost always triggers the save that would make it safe. The close flow is built around
+that fact instead of nagging on any dirty state. The single source of truth is
+`EditorDirtyService`, which exposes a **leave-state model** consumed by every close path (do
+not re-derive it from the raw dirty/conflict signals):
+
+- `leaveStateFor(entityId)` / `globalLeaveState()` → `'clean' | 'saving' | 'conflicted'`.
+  Conflict dominates dirtiness (a held conflict can't auto-save); otherwise dirty ⇒ `saving`,
+  else `clean`.
+- `awaitSettled(entityId, timeoutMs)` → `Promise<'saved' | 'timeout'>`. Resolves when the
+  entity's dirty editors clear (the real save-completion signal: the editor calls `markClean`
+  in its save `next` handler) or the deadline elapses. The deadline is required because a save
+  can **fail** (the field stays dirty), so the caller can fall back to a prompt instead of
+  hanging. This replaced an ad-hoc `effect`+`setTimeout` race that used to live in the tab
+  component — keep the await-settle logic in the service where it is unit-tested.
+- `clearEntity(entityId)` → drop all of one entity's dirty keys + its conflict flag on an
+  **explicit discard**. This exists because a conflicted field editor's `ngOnDestroy`
+  deliberately skips `markClean` (structural teardown must not drop a live conflict edit), so
+  when the user discards a conflicted tab the keys would otherwise leak — leaving
+  `globalLeaveState()` stuck at `saving` and firing a phantom `beforeunload` prompt for an
+  artifact already discarded. `closeTab` calls it on both discard paths (the `conflicted`
+  branch, and the `saving` timeout-discard). It bumps the generation like `clearAll` so a
+  reconnect-flush can't resurrect the discarded edit after the editor is gone.
+
+**Tab close** (`ArtifactTabGroupComponent.closeTab`, resolved by stable `tabId`, not index):
+- `clean` → close immediately.
+- `saving` → `await awaitSettled(artifactId, 2500)`; close silently on `'saved'`, prompt only
+  on `'timeout'` (save stalled/failed). No message in the common case — the save the blur
+  started simply lands first.
+- `conflicted` → the one case that warns up front, since the edit genuinely can't be saved.
+
+> Close by **`tabId`** via `removeTabByTabId`, never by artifact id: the same artifact can be
+> open on two branches, so `removeTabByArtifactId` would close both tabs, and the index can
+> shift while awaiting the save.
+
+**Closing-state UI (no stacked prompts).** While a tab's close is awaiting its save, its id is
+held in a `closingTabs` signal (`isClosing(tabId)`): the tab's × is replaced by a small
+`mat-progress-spinner` and the button is gone, so the up-to-2.5s wait cannot be clicked
+repeatedly into stacked `confirm()` dialogs. `closeTab` also early-returns if `isClosing(tabId)`
+is already set, guarding the programmatic path. The flag is cleared in a `finally` so it is
+released whether the save lands, times out, or the prompt is dismissed.
+
+**Prompts are plain `confirm()`** (not a `MatDialog`) — custom actions were judged not worth a
+component now that the save-on-close path makes a prompt rare. The messages are deliberate:
+each leads with the situation, states that changes are unsaved, then maps the two `confirm()`
+buttons (OK discards + closes, Cancel keeps the tab open). The `saving`-timeout prompt points
+the user at the network badge (top right, green = connected) and to try closing again, since a
+stalled save is almost always a lost connection.
+
+**Browser/window unload** (`ArtifactExplorerComponent.onBeforeUnload`): prompts (native
+`beforeUnload`) when `globalLeaveState() !== 'clean'` — i.e. for **both** `saving` and
+`conflicted`. Unlike an in-app tab close, a real unload **cannot await** the async
+`POST /orcs/txs` (it can't complete before the page tears down) and the stack has no
+synchronous-commit path, so a still-dirty editor at unload is genuine data-loss risk worth the
+prompt. A fully `clean` editor leaves with no prompt — the common case, since the blur-save
+usually lands before the user actually leaves.
+
+> The panel publishes its conflict truth into the root service via
+> `dirtyService.setConflicted(artifactId, remoteChangeWhileDirty())` (effect) and clears it on
+> destroy, so the close flows can read conflict state without reaching into panel instances.
 
 ## Conflict resolution dialog
 
@@ -158,6 +273,11 @@ When a conflict exists, the warning banner offers a **Resolve** button (`merge_t
   - **Text / single-line** (`FocusLostInputComponent`) commits/saves only on blur, so it also exposes a `liveInput` output that fires on every keystroke. `PersistedArtifactAttributeEditorComponent.onLiveInput()` uses it so a remote change arriving mid-typing (before blur) is still caught as a conflict instead of overwriting the in-progress text.
   - **Markdown** marks dirty as the user types (its `onMarkdownChange`).
   - **Enum dropdown / boolean toggle** are atomic — dirty at the moment of selection/toggle (`ngModelChange`), which is also when the save fires. They are intentionally *not* dirty on open (browsing isn't an edit) and not deferred to after save (that would miss the in-flight and conflict-blocked windows).
+- **Commit model (one save path, staleness owned in one place)**: every widget funnels through `PersistedArtifactAttributeEditorComponent.commit(value)` → `saveAttribute(value)`. `saveAttribute` is the single owner of save validity: it drops no-op writes (`value === previousValue`) and refuses to write while `conflicted()` (resolution owns the write; local edit state is preserved). Two thin wrappers differ only by *when* the commit arrives relative to the user action, which determines the staleness risk:
+  - `commitImmediate(value)` — the action and the save are in the same tick: boolean toggle (`onBooleanChange`), enum select (`onEnumChange`), markdown drop/image insert (`onMarkdownCommitted`). No staleness window, so it records (`trackPendingEdit`) + saves directly. **Atomic widgets must use this** — routing them through the deferred path was the bug that made enum selections never save (they are not dirty-first).
+  - `commitDeferred(value)` — reported asynchronously after the action: the text input's debounced blur (`onTextCommitted`) and the markdown blur (`onMarkdownFocusOut`). A resolve/discard can land between the edit and this commit, so it is dropped unless it still represents the field's live edit (test below).
+- **Edit generation + value identity (stale-commit precision)**: `EditorDirtyService` exposes a monotonic `generation()` bumped only by `clearAll()` (conflict resolve/discard/forced refresh — a *bulk* invalidation; a per-field `markClean` on a normal save does not bump it). A field captures the generation when its live edit begins (`trackPendingEdit`, clean→dirty transition) and clears it on save/clean. `commitDeferred` drops a commit unless: its captured generation still matches, the field is still dirty, **and the committed value equals the field's current pending value** (`PendingAttributeValuesService.get(id)`). Value identity is the decisive check: if the user discards an edit and then **retypes a different value**, the stale debounced echo of the *old* text still arrives, but pending is now the new text, so it is rejected; generation also rejects it even if the new text equals the old. Value-identity is complete on its own; the generation is a cheap first gate.
+- **Why the input is dumb**: `FocusLostInputComponent` reports commits (`valueChange` at settled blur) and keystrokes (`liveInput`) and has **no** conflict/staleness awareness (the old `suppressCommit` input was removed). Keeping validity in one consumer-side owner avoids splitting the defense across the input and the consumer — that split is what let the enum bug slip through.
 - **`trackPendingEdit()` (efficiency + correctness)**: All change handlers funnel through this helper. It always updates the pending value (a plain `Map` write, no reactivity — the dialog needs the newest value), but only touches the dirty signal on an actual clean↔dirty transition (guarded by `isDirty()`), avoiding `Set` rebuilds and subscriber churn on every keystroke. If the value is edited back to the persisted value, it cleans the field (clears dirty + pending).
 - **Shared orchestration**: The detect → fetch → categorize → dialog → apply → commit → **refresh** flow lives in `@osee/shared/conflict-resolution` (`ConflictResolutionService`), not in the panel. The panel calls `conflictResolution.resolve({...})` supplying only its page-specific bits (fetch via `getartifactWithRelations`, commit via `modifyArtifactAndMutate`, refresh via `artifactResource().reload()`). The canonical description of the shared module lives in `docs/ai/web/conflict-resolution.md`; the artifact-explorer-specific notes are below.
 - **On-demand server fetch + categorization**: Opening the dialog fetches current server state (the shared resource was deliberately not reloaded) and runs the pure `categorizeConflicts(base, server, pending, keyOptions?, stagedAdds?)`, which sorts each edit into one bucket:

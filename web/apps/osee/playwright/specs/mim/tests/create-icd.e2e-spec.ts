@@ -13,6 +13,7 @@
 import { test, expect, Page } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL } from '../utils/helpers';
 import { selectBranch } from '../../../shared/branch-helpers';
+import { openSelectAndChooseOption } from '../../../shared/select-helpers';
 
 const branchName = 'New MIM ICD';
 
@@ -215,11 +216,11 @@ test('create transport type', async ({ page }) => {
 	await page.getByLabel('Byte Align Validation Size').click();
 	await page.getByLabel('Byte Align Validation Size').fill('8');
 	await page.getByLabel('Message Generation', { exact: true }).click();
-	await page.getByPlaceholder('Message Types').click();
-	// Options load async; wait for the option before clicking.
-	const transportMessageType = page.getByText('Operational');
-	await expect(transportMessageType).toBeVisible({ timeout: 60000 });
-	await transportMessageType.click();
+	// Options load async and the open click can be swallowed; re-drive the open.
+	await openSelectAndChooseOption(
+		page.getByPlaceholder('Message Types'),
+		page.getByText('Operational')
+	);
 	await page
 		.getByLabel('Create New Transport Type')
 		.getByText('Message Generation Position')
@@ -233,41 +234,48 @@ test('create transport type', async ({ page }) => {
 	await page.getByLabel('Minimum Subscriber').fill('1');
 	await page.getByLabel('Maximum Subscriber').click();
 	await page.getByLabel('Maximum Subscriber').fill('1');
-	// Each "Select Available ..." multi-select loads its options async; wait for the option to
-	// render before clicking its checkbox rather than racing the fetch.
-	await page.getByLabel('Select Available Message').locator('span').click();
+	// Each "Select Available ..." multi-select loads its options async and can swallow the open
+	// click; re-drive the open until the option renders, then click its pseudo-checkbox.
 	const availableMessageOption = page.getByRole('option', { name: 'Name' });
-	await expect(availableMessageOption).toBeVisible({ timeout: 60000 });
-	await availableMessageOption.locator('mat-pseudo-checkbox').click();
+	await openSelectAndChooseOption(
+		page.getByLabel('Select Available Message').locator('span'),
+		availableMessageOption,
+		{ clickTarget: availableMessageOption.locator('mat-pseudo-checkbox') }
+	);
 	await page.keyboard.press('Escape');
-	await page
-		.getByLabel('Select Available Submessage')
-		.locator('span')
-		.click();
 	const availableSubmessageOption = page.getByRole('option', {
 		name: 'SubMessage Name',
 	});
-	await expect(availableSubmessageOption).toBeVisible({ timeout: 60000 });
-	await availableSubmessageOption.locator('mat-pseudo-checkbox').click();
+	await openSelectAndChooseOption(
+		page.getByLabel('Select Available Submessage').locator('span'),
+		availableSubmessageOption,
+		{
+			clickTarget: availableSubmessageOption.locator(
+				'mat-pseudo-checkbox'
+			),
+		}
+	);
 	await page.keyboard.press('Escape');
 
-	await page.getByLabel('Select Available Structure').locator('span').click();
 	const availableStructureOption = page.getByRole('option', {
 		name: 'Name',
 		exact: true,
 	});
-	await expect(availableStructureOption).toBeVisible({ timeout: 60000 });
-	await availableStructureOption.locator('mat-pseudo-checkbox').click();
-	await page.getByRole('combobox', { name: 'Select Available Structure' });
+	await openSelectAndChooseOption(
+		page.getByLabel('Select Available Structure').locator('span'),
+		availableStructureOption,
+		{ clickTarget: availableStructureOption.locator('mat-pseudo-checkbox') }
+	);
 	await page.keyboard.press('Escape');
 
-	await page.getByLabel('Select Available Element').locator('span').click();
 	const availableElementOption = page.getByRole('option', {
 		name: 'Start Index',
 	});
-	await expect(availableElementOption).toBeVisible({ timeout: 60000 });
-	await availableElementOption.locator('mat-pseudo-checkbox').click();
-	await page.getByRole('combobox', { name: 'Select Available Element' });
+	await openSelectAndChooseOption(
+		page.getByLabel('Select Available Element').locator('span'),
+		availableElementOption,
+		{ clickTarget: availableElementOption.locator('mat-pseudo-checkbox') }
+	);
 	await page.keyboard.press('Escape');
 	await page.getByText('message, submessage,').click();
 	await page.keyboard.press('Escape');
@@ -292,25 +300,25 @@ test('create connection', async ({ page }) => {
 	await expect(page.getByLabel('Add a Name')).toBeVisible();
 	await page.getByLabel('Add a Name').fill('Connection A-B');
 	// The transport-type mat-select loads its options asynchronously (osee-mat-option-loading
-	// fetches "Transport Types" from the server when the panel opens), so the options are not in
-	// the DOM at open time. Open the select, then wait for the Ethernet option to actually render
-	// before clicking it, rather than racing the fetch with a bare getByText click (the empty-panel
-	// timeout this fixes).
-	await page
-		.getByRole('combobox', { name: 'Select a Transport Type' })
-		.click();
-	const ethernetOption = page.getByRole('option', { name: 'Ethernet' });
-	await expect(ethernetOption).toBeVisible({ timeout: 60000 });
-	await ethernetOption.click();
+	// fetches "Transport Types" from the server when the panel opens) and sits in the just-opened
+	// Create Connection dialog, so a single bare open-click can be swallowed during the dialog
+	// reflow -- the panel never opens and the Ethernet option never renders even though the server
+	// returned the types in ~300ms. openSelectAndChooseOption re-drives the open until the option
+	// is actually visible.
+	await openSelectAndChooseOption(
+		page.getByRole('combobox', { name: 'Select a Transport Type' }),
+		page.getByRole('option', { name: 'Ethernet' })
+	);
 	// The node list loads async; wait for each node option before clicking.
-	await page.getByText('Select Nodes').click();
-	const nodeAOption = page.getByLabel('Select Nodes').getByText('Node A');
-	await expect(nodeAOption).toBeVisible({ timeout: 60000 });
-	await nodeAOption.click();
-	await page.getByPlaceholder('Add a node').click();
-	const nodeBOption = page.getByLabel('Select Nodes').getByText('Node B');
-	await expect(nodeBOption).toBeVisible({ timeout: 60000 });
-	await nodeBOption.click();
+	// Node multi-select: the open click can be swallowed; re-drive each open until its option shows.
+	await openSelectAndChooseOption(
+		page.getByText('Select Nodes'),
+		page.getByLabel('Select Nodes').getByText('Node A')
+	);
+	await openSelectAndChooseOption(
+		page.getByPlaceholder('Add a node'),
+		page.getByLabel('Select Nodes').getByText('Node B')
+	);
 	// Ok is disabled until the required fields (name + transport type) are set; gate on enabled so
 	// a click can't land on the still-disabled button if the option selection hasn't applied yet.
 	const okButton = page.getByRole('button', { name: 'Ok' });
@@ -345,33 +353,33 @@ test('create message and submessage', async ({ page }) => {
 	// Wait for the dialog before filling.
 	await expect(page.getByLabel('Name')).toBeVisible();
 	await page.getByLabel('Name').fill('Message 1');
-	// These dropdowns load their options asynchronously; wait for each option to render before
-	// clicking rather than racing the fetch with a bare click (the empty-panel timeout pattern).
-	await page.getByPlaceholder('Rates').click();
-	const rateOption = page.getByRole('option', { name: '5', exact: true });
-	await expect(rateOption).toBeVisible({ timeout: 60000 });
-	await rateOption.click();
-	await page.getByPlaceholder('Message Periodicity').click();
-	const periodicityOption = page.getByText('Periodic', { exact: true });
-	await expect(periodicityOption).toBeVisible({ timeout: 60000 });
-	await periodicityOption.click();
-	await page.getByPlaceholder('Message Types').click();
-	const messageTypeOption = page.getByText('Operational');
-	await expect(messageTypeOption).toBeVisible({ timeout: 60000 });
-	await messageTypeOption.click();
+	// These dropdowns load their options asynchronously and can swallow the open click; re-drive
+	// each open until its option renders rather than racing the fetch with a bare click.
+	await openSelectAndChooseOption(
+		page.getByPlaceholder('Rates'),
+		page.getByRole('option', { name: '5', exact: true })
+	);
+	await openSelectAndChooseOption(
+		page.getByPlaceholder('Message Periodicity'),
+		page.getByText('Periodic', { exact: true })
+	);
+	await openSelectAndChooseOption(
+		page.getByPlaceholder('Message Types'),
+		page.getByText('Operational')
+	);
 	await page
 		.getByLabel('Create New Message')
 		.getByText('Message Number')
 		.click();
 	await page.getByLabel('Message Number').fill('1');
-	await page.getByText('Select Publisher Node(s)').click();
-	const publisherNode = page.getByRole('option', { name: 'Node A' });
-	await expect(publisherNode).toBeVisible({ timeout: 60000 });
-	await publisherNode.click();
-	await page.getByText('Select Subscriber Node(s)').click();
-	const subscriberNode = page.getByText('Node B');
-	await expect(subscriberNode).toBeVisible({ timeout: 60000 });
-	await subscriberNode.click();
+	await openSelectAndChooseOption(
+		page.getByText('Select Publisher Node(s)'),
+		page.getByRole('option', { name: 'Node A' })
+	);
+	await openSelectAndChooseOption(
+		page.getByText('Select Subscriber Node(s)'),
+		page.getByText('Node B')
+	);
 
 	await page.screenshot({
 		animations: 'disabled',
@@ -443,11 +451,11 @@ test('create structure', async ({ page }) => {
 	await page.getByLabel('Max Simultaneity').fill('1');
 	await page.getByText('Min Simultaneity', { exact: true }).click();
 	await page.getByLabel('Min Simultaneity').fill('1');
-	await page.getByPlaceholder('Structure Categories').click();
-	// Options load async; wait for the option before clicking.
-	const structureCategoryOption = page.getByRole('option', { name: 'Misc' });
-	await expect(structureCategoryOption).toBeVisible({ timeout: 60000 });
-	await structureCategoryOption.click();
+	// Options load async and the open click can be swallowed; re-drive the open until the option renders.
+	await openSelectAndChooseOption(
+		page.getByPlaceholder('Structure Categories'),
+		page.getByRole('option', { name: 'Misc' })
+	);
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 
@@ -705,18 +713,14 @@ async function createElement(
 		.locator('osee-platform-type-dropdown')
 		.getByRole('button')
 		.click();
-	await page
-		.locator('osee-logical-type-dropdown')
-		.getByTestId('logical-type-selector')
-		.locator('span')
-		.click();
-	// Logical-type options load async; wait for the option before clicking.
-	const logicalTypeOption = page.getByRole('option', {
-		name: logicalType,
-		exact: true,
-	});
-	await expect(logicalTypeOption).toBeVisible({ timeout: 60000 });
-	await logicalTypeOption.click();
+	// Logical-type options load async and the open click can be swallowed; re-drive the open.
+	await openSelectAndChooseOption(
+		page
+			.locator('osee-logical-type-dropdown')
+			.getByTestId('logical-type-selector')
+			.locator('span'),
+		page.getByRole('option', { name: logicalType, exact: true })
+	);
 	// Step 2 renders in two phases; wait for GET /mim/logicalType/<id> before filling so the value
 	// is not dropped by the second render.
 	await Promise.all([
@@ -741,11 +745,11 @@ async function createElement(
 	}
 
 	if (units !== '') {
-		await page.getByRole('combobox', { name: 'Units' }).click();
-		// Options load async; wait for the option before clicking.
-		const unitsOption = page.getByRole('option', { name: units });
-		await expect(unitsOption).toBeVisible({ timeout: 60000 });
-		await unitsOption.click();
+		// Options load async and the open click can be swallowed; re-drive the open.
+		await openSelectAndChooseOption(
+			page.getByRole('combobox', { name: 'Units' }),
+			page.getByRole('option', { name: units })
+		);
 	}
 	// Gate on Next enabling (form valid + async unique settled) before clicking.
 	const page2Next = page

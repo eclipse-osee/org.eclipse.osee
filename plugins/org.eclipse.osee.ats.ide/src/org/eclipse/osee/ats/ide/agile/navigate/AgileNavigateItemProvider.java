@@ -50,7 +50,7 @@ public class AgileNavigateItemProvider implements XNavigateItemProvider {
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
+   public List<XNavigateItem> getNavigateItemsForCurrentUser(List<XNavigateItem> items) {
       ElapsedTime time = new ElapsedTime("NVI - agile section", AtsNavigateViewItems.debug);
       try {
 

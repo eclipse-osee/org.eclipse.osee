@@ -41,10 +41,10 @@ import org.eclipse.swt.widgets.ToolItem;
 public class XSiblingActionBar {
 
    protected Label extraInfoLabel;
-   protected final XSiblingWorldWidget siblingWorldWidget;
+   protected final XAbstractSiblingWorldArtWidget siblingWorldWidget;
    protected final IAtsTeamWorkflow teamWf;
 
-   public XSiblingActionBar(XSiblingWorldWidget siblingWorldWidget) {
+   public XSiblingActionBar(XAbstractSiblingWorldArtWidget siblingWorldWidget) {
       this.siblingWorldWidget = siblingWorldWidget;
       this.teamWf = siblingWorldWidget.getTeamWf();
    }

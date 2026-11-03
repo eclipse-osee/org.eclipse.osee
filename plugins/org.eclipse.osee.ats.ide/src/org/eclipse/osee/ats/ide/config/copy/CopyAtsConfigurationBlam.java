@@ -15,12 +15,17 @@ package org.eclipse.osee.ats.ide.config.copy;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
-import org.eclipse.osee.ats.ide.util.widgets.XActionableItemCombo;
-import org.eclipse.osee.ats.ide.util.widgets.XTeamDefinitionCombo;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXActionableItemWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXTeamDefinitionsWidget;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,49 +35,76 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 
 /**
  * @author Donald G. Dunne
  */
-public class CopyAtsConfigurationBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CopyAtsConfigurationBlam extends AbstractAtsBlam {
 
-   private org.eclipse.osee.ats.ide.util.widgets.XTeamDefinitionCombo xTeamDefinitionCombo;
-   private org.eclipse.osee.ats.ide.util.widgets.XActionableItemCombo xActionableItemCombo;
+   private static final String BLAM_NAME = "Copy ATS Configuration";
+   private static final String PERSIST_CHANGES = "Persist Changes";
+   private static final String RETAIN_TEAM_LEADS_MEMBERS = "Retain Team Leads/Members";
+   private static final String NAME_REPLACE_STRING = "Name Replace String";
+   private static final String NAME_SEARCH_STRING = "Name Search String";
+
+   private XXTeamDefinitionsWidget teamDefWidget;
+   private XXActionableItemWidget aiWidget;
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public CopyAtsConfigurationBlam() {
+      super(BLAM_NAME, CoreImage.GEAR);
+   }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
 
    @Override
-   public String getName() {
-      return "Copy ATS Configuration";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wba.andTeamDefinitionWidget().andValueSingleSelect();
+      wba.andActionableItemWidget().andValueSingleSelect();
+      wb.andTextWidget(NAME_SEARCH_STRING);
+      wb.andTextWidget(NAME_REPLACE_STRING);
+      wb.andCheckBoxWidget(RETAIN_TEAM_LEADS_MEMBERS);
+      wb.andCheckBoxWidget(PERSIST_CHANGES);
+      return wb.getXWidgetDatas();
    }
 
    @Override
-   public String getXWidgetsXml() {
-      StringBuilder builder = new StringBuilder();
-      builder.append("<xWidgets>");
-      builder.append(
-         "<XWidget xwidgetType=\"XTeamDefinitionCombo\" displayName=\"Top Team Definition to Copy From (most like new config)\" />");
-      builder.append(
-         "<XWidget xwidgetType=\"XActionableItemCombo\" displayName=\"Top Actionable Item to Copy From\" />");
-      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Name Search String\" />");
-      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Name Replace String\" />");
-      builder.append(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Retain Team Leads/Members\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      builder.append(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Persist Changes\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      builder.append("</xWidgets>");
-      return builder.toString();
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
+      XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, xWidgetSwtRenderer, modListener, isEditable);
+      if (xWidget.isWidget(WidgetIdAts.XXTeamDefinitionsWidget)) {
+         teamDefWidget = (XXTeamDefinitionsWidget) xWidget;
+         teamDefWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               aiWidget.setTeamDef(teamDefWidget.getSelectedFirst());
+            }
+         });
+      }
+      if (xWidget.isWidget(WidgetIdAts.XXActionableItemWidget)) {
+         aiWidget = (XXActionableItemWidget) xWidget;
+      }
+
    }
 
-   private IAtsTeamDefinition getSelectedTeamDefinition() {
-      return (IAtsTeamDefinition) xTeamDefinitionCombo.getSelectedTeamDef();
-   }
-
-   private IAtsActionableItem getSelectedActionableItem() {
-      return xActionableItemCombo.getSelectedAi();
-   }
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -83,12 +115,12 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
             return;
          }
          ConfigData data = new ConfigData();
-         data.setSearchStr((String) variableMap.getValue("Name Search String"));
-         data.setReplaceStr((String) variableMap.getValue("Name Replace String"));
+         data.setSearchStr((String) variableMap.getValue(NAME_SEARCH_STRING));
+         data.setReplaceStr((String) variableMap.getValue(NAME_REPLACE_STRING));
          data.setTeamDef(getSelectedTeamDefinition());
          data.setActionableItem(getSelectedActionableItem());
-         data.setPersistChanges(variableMap.getBoolean("Persist Changes"));
-         data.setRetainTeamLeads(variableMap.getBoolean("Retain Team Leads/Members"));
+         data.setPersistChanges(variableMap.getBoolean(PERSIST_CHANGES));
+         data.setRetainTeamLeads(variableMap.getBoolean(RETAIN_TEAM_LEADS_MEMBERS));
 
          XResultData resultData = new XResultData(false);
          new CopyAtsValidation(data, resultData).validate();
@@ -107,28 +139,38 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
       }
    }
 
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
+   private IAtsTeamDefinition getSelectedTeamDefinition() {
+      return teamDefWidget.getSelectedFirst();
+   }
+
+   private IAtsActionableItem getSelectedActionableItem() {
+      XXActionableItemWidget widget = (XXActionableItemWidget) getXWidget(WidgetIdAts.XXActionableItemWidget);
+      return widget.getSelectedFirst();
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(AtsUserGroups.AtsAdmin);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AtsNavigateViewItems.ATS_ADMIN);
+   }
+
    @Override
    public String getDescriptionUsage() {
       return "This BLAM will use existing configuration of a top Team Definition to create a new configuration..\n" +
       //
          "This includes making team defs, actionable items, setting all team leads/team members and changing name using search string and replace string.";
-   }
-
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
-      if (xWidget.getLabel().equals("Top Team Definition to Copy From (most like new config)")) {
-         xTeamDefinitionCombo = (XTeamDefinitionCombo) xWidget;
-      }
-      if (xWidget.getLabel().equals("Top Actionable Item to Copy From")) {
-         xActionableItemCombo = (XActionableItemCombo) xWidget;
-      }
-   }
-
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(AtsNavigateViewItems.ATS_ADMIN, XNavItemCat.OSEE_ADMIN);
    }
 
 }

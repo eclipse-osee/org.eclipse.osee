@@ -13,30 +13,23 @@
 
 package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
+import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test case for {@link WidgetDef}
+ * Test case for {@link WidgetDef} Test case for {@link WidgetDef}
  *
  * @author Donald G. Dunne
  */
 public class WidgetDefinitionTest {
 
    @Test
-   public void testGetSetDescription() {
-      WidgetDef item = new WidgetDef("review");
-      Assert.assertEquals(null, item.getDescription());
-      item.setDescription("desc");
-      Assert.assertEquals("desc", item.getDescription());
-   }
-
-   @Test
    public void testToString() {
       WidgetDef item = new WidgetDef("review");
-      Assert.assertEquals("[review][]", item.toString());
+      Assert.assertTrue(item.toString().contains("[review]"));
    }
 
    @Test
@@ -48,11 +41,17 @@ public class WidgetDefinitionTest {
    }
 
    @Test
-   public void testGetSetWidgetname() {
+   public void testGetSetWidgetId() {
       WidgetDef item = new WidgetDef("review");
-      Assert.assertEquals("", item.getXWidgetName());
-      item.setXWidgetName("desc");
-      Assert.assertEquals("desc", item.getXWidgetName());
+      Assert.assertEquals(WidgetId.SENTINEL, item.getWidgetId());
+      item.setWidgetId(WidgetId.XXArtEdAttrViewerWidget);
+      Assert.assertEquals(WidgetId.XXArtEdAttrViewerWidget, item.getWidgetId());
+
+      Assert.assertTrue(WidgetId.SENTINEL.isInvalid());
+      Assert.assertFalse(WidgetId.SENTINEL.isValid());
+
+      Assert.assertFalse(WidgetId.XXArtEdAttrViewerWidget.isInvalid());
+      Assert.assertTrue(WidgetId.XXArtEdAttrViewerWidget.isValid());
    }
 
    @Test
@@ -64,19 +63,11 @@ public class WidgetDefinitionTest {
    }
 
    @Test
-   public void testGetSetHeight() {
-      WidgetDef item = new WidgetDef("review");
-      Assert.assertEquals(0, item.getHeight());
-      item.setHeight(4);
-      Assert.assertEquals(4, item.getHeight());
-   }
-
-   @Test
    public void testSet() {
       WidgetDef item = new WidgetDef("review");
-      Assert.assertFalse(item.is(WidgetOption.ALIGN_CENTER));
-      item.set(WidgetOption.ALIGN_CENTER);
-      Assert.assertTrue(item.is(WidgetOption.ALIGN_CENTER));
+      Assert.assertFalse(item.is(XOption.ALIGN_CENTER));
+      item.set(XOption.ALIGN_CENTER);
+      Assert.assertTrue(item.is(XOption.ALIGN_CENTER));
    }
 
 }

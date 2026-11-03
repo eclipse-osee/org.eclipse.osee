@@ -14,20 +14,23 @@
 package org.eclipse.osee.ats.ide.search.widget;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkBuildImpactWidget;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.search.widget.base.TeamDefListener;
+import org.eclipse.osee.ats.ide.search.widget.xx.XXBuildImpactNameWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.eclipse.osee.framework.core.widget.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Donald G. Dunne
  */
-public class BuildImpactSearchWidget extends AbstractSearchWidget<XHyperlinkBuildImpactWidget, String> implements TeamDefListener {
+public class BuildImpactSearchWidget extends AbstractSearchWidget<XXBuildImpactNameWidget, String> implements TeamDefListener {
 
-   public static SearchWidget BuildImpactWidget =
-      new SearchWidget(9935478, "Build Impact", "XHyperlinkBuildImpactWidget");
+   private static final String LABEL = "Build Impact";
+   public static SearchWidget BuildImpactWidget = new SearchWidget(9935478, LABEL, WidgetIdAts.XXBuildImpactNameWidget);
 
    public BuildImpactSearchWidget(WorldEditorParameterSearchItem searchItem) {
       this(BuildImpactWidget, searchItem);
@@ -38,26 +41,29 @@ public class BuildImpactSearchWidget extends AbstractSearchWidget<XHyperlinkBuil
    }
 
    @Override
-   public void set(AtsSearchData data) {
-      XHyperlinkBuildImpactWidget widget = getWidget();
-      if (widget != null) {
-         widget.set(data.getBuildImpact());
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      if (xWidget.getLabel().startsWith(LABEL)) {
+         xWidget.set(XOption.CLEAR);
       }
    }
 
-   public String getCurrentValue() {
-      String value = getWidget().getCurrentValue();
-      if (Strings.isInvalid(value)) {
-         value = Widgets.NOT_SET;
+   @Override
+   public void set(AtsSearchData data) {
+      XXBuildImpactNameWidget widget = getWidget();
+      if (widget != null) {
+         widget.setSelected(data.getBuildImpact());
       }
-      return value;
    }
 
    @Override
    public void updateAisOrTeamDefs() {
-      Collection<TeamDefinition> teamDefs = getTeamDefs();
+      Collection<IAtsTeamDefinition> teamDefs = getTeamDefs();
       if (teamDefs.size() == 1) {
          getWidget().setTeamDef(teamDefs.iterator().next());
+      } else {
+         getWidget().setTeamDef(null);
+         getWidget().clear();
       }
    }
 

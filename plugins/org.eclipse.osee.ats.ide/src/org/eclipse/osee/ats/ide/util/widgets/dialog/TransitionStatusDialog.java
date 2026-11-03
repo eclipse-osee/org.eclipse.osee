@@ -21,14 +21,19 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
-import org.eclipse.osee.framework.ui.skynet.widgets.XPercent;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXDoubleSTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXPercentSTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -36,9 +41,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 
 /**
  * @author Donald G. Dunne
@@ -46,10 +49,10 @@ import org.eclipse.swt.widgets.Listener;
 public class TransitionStatusDialog extends MessageDialog {
 
    protected Label statusLabel;
-   protected XPercent percent = new XPercent("Percent Complete");
-   protected XFloat hours = new XFloat("Additional Hours Spent");
-   protected XRadioButton splitRadio = new XRadioButton("Split Hours Spent between Items");
-   protected XRadioButton eachRadio = new XRadioButton("Apply Hours Spent to each Item");
+   protected XXPercentSTextWidget percentWidget = new XXPercentSTextWidget("Percent Complete");
+   protected XXDoubleSTextWidget hoursWidget = new XXDoubleSTextWidget("Additional Hours Spent");
+   protected XXCheckBoxWidget splitRadioWidget = new XXCheckBoxWidget("Split Hours Spent between Items");
+   protected XXCheckBoxWidget eachRadioWidget = new XXCheckBoxWidget("Apply Hours Spent to each Item");
    private Button okButton;
    private final TransitionStatusData data;
 
@@ -80,70 +83,76 @@ public class TransitionStatusDialog extends MessageDialog {
 
       boolean percentSet = false;
       if (data.isPercentRequired()) {
-         percent.setRequiredEntry(true);
-         percent.setToolTip("Enter total percent complete.");
-         percent.createWidgets(parent, 2);
+         percentWidget.setRequiredEntry(true);
+         percentWidget.setToolTip("Enter total percent complete.");
+         percentWidget.createWidgets(parent, 2);
          try {
             Integer defaultPercent = data.getDefaultPercent();
             if (defaultPercent != null) {
                data.setPercent(defaultPercent);
-               percent.set(defaultPercent);
+               percentWidget.setSelected(defaultPercent.toString());
                percentSet = true;
             } else if (data.getWorkItems().size() == 1) {
-               int currentPercent = 0;
+               Integer currentPercent = 0;
                AbstractWorkflowArtifact awa =
                   (AbstractWorkflowArtifact) AtsApiService.get().getQueryService().getArtifact(
                      data.getWorkItems().iterator().next());
                currentPercent = AtsApiService.get().getWorkItemMetricsService().getPercentComplete(awa);
                data.setPercent(currentPercent);
-               percent.set(currentPercent);
+               percentWidget.setSelected(currentPercent.toString());
                percentSet = true;
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
-         percent.addModifyListener(new ModifyListener() {
+         percentWidget.addXModifiedListener(new XModifiedListener() {
+
             @Override
-            public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
-               IStatus status = percent.isValid();
-               if (status.getSeverity() != IStatus.OK) {
+            public void widgetModified(XWidget widget) {
+               XResultData status = percentWidget.isValid();
+               if (status.isNotOK()) {
                   data.setPercent(null);
                } else {
-                  data.setPercent(percent.getInt());
+                  String str = percentWidget.getSelectedFirst();
+                  if (Strings.isNumeric(str)) {
+                     data.setPercent(Integer.valueOf(str));
+                  }
                }
                updateButtons();
                updateStatusLabel();
-            };
+            }
+
          });
-         percent.getLabelWidget().addListener(SWT.MouseUp, new Listener() {
+         percentWidget.addLabelWidgetListener(new MouseAdapter() {
             @Override
-            public void handleEvent(Event event) {
-               if (event.button == 3) {
+            public void mouseUp(MouseEvent e) {
+               if (e.button == 3) {
                   data.setPercent(99);
-                  percent.set("99");
+                  percentWidget.setSelected("99");
                   data.setAdditionalHours(1.0);
-                  hours.set("1");
+                  hoursWidget.setSelected("1");
                   updateStatusLabel();
                }
             }
          });
       }
 
-      hours.setRequiredEntry(true);
-      hours.setToolTip("Enter hours spent since last status entry.");
-      hours.createWidgets(parent, 2);
-      hours.addModifyListener(new ModifyListener() {
+      hoursWidget.setRequiredEntry(true);
+      hoursWidget.setToolTip("Enter hours spent since last status entry.");
+      hoursWidget.createWidgets(parent, 2);
+      hoursWidget.addXModifiedListener(new XModifiedListener() {
+
          @Override
-         public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
-            IStatus status = hours.isValid();
-            if (status.getSeverity() != IStatus.OK) {
+         public void widgetModified(XWidget widget) {
+            XResultData status = hoursWidget.isValid();
+            if (status.isNotOK()) {
                data.setAdditionalHours(null);
             } else {
-               data.setAdditionalHours(hours.getFloat());
+               data.setAdditionalHours(Double.valueOf(hoursWidget.getSelectedFirst()));
             }
             updateButtons();
             updateStatusLabel();
-         };
+         }
       });
 
       if (data.getWorkItems().size() > 1) {
@@ -151,29 +160,29 @@ public class TransitionStatusDialog extends MessageDialog {
          comp.setLayout(new GridLayout(2, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         eachRadio.createWidgets(comp, 2);
-         eachRadio.setSelected(data.isApplyHoursToEachItem());
-         eachRadio.setToolTip("Hours Spent will be added to to time spent for each object.");
-         eachRadio.addSelectionListener(new SelectionAdapter() {
+         eachRadioWidget.createWidgets(comp, 2);
+         eachRadioWidget.setSelected(data.isApplyHoursToEachItem());
+         eachRadioWidget.setToolTip("Hours Spent will be added to to time spent for each object.");
+         eachRadioWidget.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-               data.setApplyHoursToEachItem(eachRadio.isSelected());
+               data.setApplyHoursToEachItem(eachRadioWidget.isSelected());
                updateButtons();
                updateStatusLabel();
             }
 
          });
 
-         splitRadio.createWidgets(comp, 2);
-         splitRadio.setSelected(data.isSplitHoursBetweenItems());
-         splitRadio.setToolTip(
+         splitRadioWidget.createWidgets(comp, 2);
+         splitRadioWidget.setSelected(data.isSplitHoursBetweenItems());
+         splitRadioWidget.setToolTip(
             "Hours Spent will be divided equaly by the number of objects " + "and added to the existing hours spent for the object.");
-         splitRadio.addSelectionListener(new SelectionAdapter() {
+         splitRadioWidget.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-               data.setSplitHoursBetweenItems(splitRadio.isSelected());
+               data.setSplitHoursBetweenItems(splitRadioWidget.isSelected());
                updateButtons();
                updateStatusLabel();
             }
@@ -182,7 +191,7 @@ public class TransitionStatusDialog extends MessageDialog {
       }
       updateStatusLabel();
       if (!data.isPercentRequired() || percentSet) {
-         hours.setFocus();
+         hoursWidget.setFocus();
       }
       return parent;
    }

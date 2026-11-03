@@ -23,9 +23,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
-import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions.LinkName;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtons;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -46,7 +43,6 @@ public class SkyWalkerLayoutTabItem {
    private TreeViewer treeViewer;
    private final Spinner levelSpinner;
    private final SkyWalkerOptions options;
-   private final XRadioButtons radioButtons;
 
    public SkyWalkerLayoutTabItem(org.eclipse.swt.widgets.TabFolder tabFolder, final SkyWalkerOptions options) {
 
@@ -110,25 +106,6 @@ public class SkyWalkerLayoutTabItem {
       });
       treeViewer.setInput(options.getLayouts());
 
-      radioButtons = new XRadioButtons("Link Naming");
-      radioButtons.setVertical(true, 1);
-      radioButtons.setVerticalLabel(true);
-      for (LinkName linkName : LinkName.values()) {
-         radioButtons.addButton(linkName.name());
-      }
-      radioButtons.createWidgets(comp, 1);
-      radioButtons.setSelected(options.getLinkName().name());
-      radioButtons.addXModifiedListener(new XModifiedListener() {
-         @Override
-         public void widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget widget) {
-            if (radioButtons.getSelectedNames().size() > 0) {
-               if (!options.getLinkName().equals(radioButtons.getSelectedNames().iterator().next())) {
-                  options.setLinkName(LinkName.valueOf(radioButtons.getSelectedNames().iterator().next()));
-               }
-            }
-         };
-      });
-
       options.addSkyWalkerOptionsChangeListener(new ISkyWalkerOptionsChangeListener() {
          @Override
          public void modified(ModType... modTypes) {
@@ -154,13 +131,6 @@ public class SkyWalkerLayoutTabItem {
          if (levelSpinner != null) {
             if (levelSpinner.getSelection() != options.getLevels()) {
                levelSpinner.setSelection(options.getLevels());
-            }
-         }
-      }
-      if (modList.contains(ModType.Link_Name)) {
-         if (radioButtons != null) {
-            if (options.getLinkName().equals(radioButtons.getSelectedNames().iterator().next())) {
-               radioButtons.setSelected(options.getLinkName().name());
             }
          }
       }

@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.change.actions;
 
-import java.text.NumberFormat;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.widget.validate.XXLongValidator;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.change.IChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -45,7 +45,7 @@ public class ReloadBranchTransactionAction extends Action {
          @Override
          public void run() {
             EntryDialog diag = new EntryDialog("Branch Transaction Report", "Enter number of transactions; 0 for all");
-            diag.setNumberFormat(NumberFormat.getInstance());
+            diag.setValidator(XXLongValidator.instance);
             diag.setEntry("499");
             if (diag.open() == Window.OK) {
                view.recomputeBranchTransactions(Integer.valueOf(diag.getEntry()));

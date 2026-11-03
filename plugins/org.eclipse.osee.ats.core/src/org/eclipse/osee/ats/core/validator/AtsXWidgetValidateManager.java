@@ -54,14 +54,14 @@ public class AtsXWidgetValidateManager {
    }
 
    public static List<WidgetResult> validateTransition(IAtsWorkItem workItem, List<WidgetResult> results,
-      IValueProvider valueProvider, WidgetDef widgetDef, StateDefinition fromStateDef,
-      StateDefinition toStateDef, AtsApi atsApi) {
+      IValueProvider valueProvider, WidgetDef widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef,
+      AtsApi atsApi) {
       List<IAtsXWidgetValidatorProvider> providers = getProviders();
       for (IAtsXWidgetValidatorProvider provider : providers) {
          for (IAtsXWidgetValidator validator : provider.getValidators()) {
             try {
-               WidgetResult status = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef,
-                  toStateDef, atsApi);
+               WidgetResult status =
+                  validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef, toStateDef, atsApi);
 
                if (status != null) {
                   if (!status.isSuccess()) {
@@ -88,8 +88,10 @@ public class AtsXWidgetValidateManager {
       List<WidgetResult> results = new ArrayList<>();
       List<WidgetDef> widgetItems =
          atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition());
+
       List<WidgetDef> headerWidgetItems = atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(
          workItem.getStateDefinition(), workItem.getWorkDefinition().getHeaderDef().getLayoutItems());
+
       if (!headerWidgetItems.isEmpty()) {
          for (WidgetDef item : headerWidgetItems) {
             widgetItems.add(item);

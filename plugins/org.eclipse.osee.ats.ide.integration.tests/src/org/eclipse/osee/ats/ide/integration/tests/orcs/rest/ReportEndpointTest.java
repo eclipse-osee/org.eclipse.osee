@@ -438,6 +438,7 @@ public class ReportEndpointTest {
       } finally {
          response.close();
       }
+
    }
 
    @Test
@@ -821,8 +822,8 @@ public class ReportEndpointTest {
    }
 
    /**
-    * Tests the applyHierarchyNumbers endpoint using query parameters for attributeType and padding.
-    * Verifies that a valid allowed attribute type (ParagraphNumber) succeeds.
+    * Tests the applyHierarchyNumbers endpoint using query parameters for attributeType and padding. Verifies that a
+    * valid allowed attribute type (ParagraphNumber) succeeds.
     */
    @Test
    public void testApplyHierarchyNumbersWithQueryParams() {
@@ -856,8 +857,8 @@ public class ReportEndpointTest {
       String artifactId = subsystemReqArt.getIdString();
       long paragraphNumberTypeId = CoreAttributeTypes.ParagraphNumber.getId();
 
-      String url =
-         String.format("orcs/report/%s/hierarchyNumber/%s?attributeType=%d", branchId, artifactId, paragraphNumberTypeId);
+      String url = String.format("orcs/report/%s/hierarchyNumber/%s?attributeType=%d", branchId, artifactId,
+         paragraphNumberTypeId);
 
       Response response = jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).put(null);
       try {
@@ -865,8 +866,7 @@ public class ReportEndpointTest {
             response.getStatusInfo().getFamily());
 
          String responseBody = readResponseBody(response);
-         assertTrue("Response should indicate padding 2 (default)",
-            responseBody.contains("padding 2"));
+         assertTrue("Response should indicate padding 2 (default)", responseBody.contains("padding 2"));
       } finally {
          response.close();
       }

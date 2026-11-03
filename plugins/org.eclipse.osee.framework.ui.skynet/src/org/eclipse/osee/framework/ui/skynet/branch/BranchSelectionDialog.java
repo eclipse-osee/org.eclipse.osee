@@ -27,9 +27,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchPresentationType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.BranchSelectedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchViewerWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchViewerWidget.BranchSelectedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchViewerWidget.IBranchWidgetMenuListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.actions.SetAsFavoriteAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -54,7 +54,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
    private BranchToken selected;
    private BranchToken defaultSelected;
    private static BranchToken lastSelectedBranch;
-   private XBranchWidget branchWidget;
+   private XBranchViewerWidget branchWidget;
    private boolean allowOnlyWorkingBranches;
    private final Collection<? extends BranchId> branches;
 
@@ -82,7 +82,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
    @Override
    protected Control createDialogArea(Composite container) {
       super.createDialogArea(container);
-      branchWidget = new XBranchWidget(true, true, defaultSelected, this);
+      branchWidget = new XBranchViewerWidget(true, true, defaultSelected, this);
       branchWidget.setDisplayLabel(false);
       branchWidget.createWidgets(container, 1);
       branchWidget.setBranchPresentationType(BranchPresentationType.Flat);

@@ -16,11 +16,10 @@ package org.eclipse.osee.ats.api.workdef.model.web;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.framework.core.data.AttributePojo;
 import org.eclipse.osee.framework.core.data.Multiplicity;
 import org.eclipse.osee.framework.core.data.Multiplicity.MultiplicityToken;
-import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
+import org.eclipse.osee.framework.core.widget.XOption;
 
 /**
  * @author Donald G. Dunne
@@ -28,13 +27,12 @@ import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 public class WfdWidgetDef extends WfdWidgetItem {
 
    public String widgetName = "";
-   private List<WidgetHint> widgetHints = new ArrayList<>();
    private WfeAttributeTypeToken attributeType = WfeAttributeTypeToken.SENTINEL;
    private String displayName = "";
    private String displayValue = "";
    private MultiplicityToken multiplicity = Multiplicity.SENTINEL.getToken();
    public String dataType = "";
-   private Collection<WidgetOption> widgetOptions = new ArrayList<>();
+   private Collection<XOption> xOptions = new ArrayList<>();
    private boolean required = false;
    private boolean multiLine = false;
    private boolean editable = false;
@@ -53,14 +51,6 @@ public class WfdWidgetDef extends WfdWidgetItem {
       this.widgetName = widgetName;
    }
 
-   public List<WidgetHint> getWidgetHints() {
-      return widgetHints;
-   }
-
-   public void setWidgetHints(List<WidgetHint> widgetHints) {
-      this.widgetHints = widgetHints;
-   }
-
    public String getDataType() {
       return dataType;
    }
@@ -69,12 +59,12 @@ public class WfdWidgetDef extends WfdWidgetItem {
       this.dataType = dataType;
    }
 
-   public Collection<WidgetOption> getWidgetOptions() {
-      return widgetOptions;
+   public Collection<XOption> getWidgetOptions() {
+      return xOptions;
    }
 
-   public void setWidgetOptions(Collection<WidgetOption> widgetOptions) {
-      this.widgetOptions = widgetOptions;
+   public void setWidgetOptions(Collection<XOption> xOptions) {
+      this.xOptions = xOptions;
    }
 
    public boolean isRequired() {

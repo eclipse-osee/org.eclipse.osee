@@ -53,7 +53,7 @@ public class EmailUserGroups extends XNavigateItemAction {
       super("Email User Groups", CoreImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
    }
 
-   public static Set<Artifact> getEmailGroupsAndUserGroups(Artifact user) {
+   public static Set<Artifact> getEmailGroupsAndUserGroups() {
       Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup, COMMON,
          DeletionFlag.EXCLUDE_DELETED)) {
@@ -69,7 +69,7 @@ public class EmailUserGroups extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
-         Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(OseeApiService.userArt());
+         Set<Artifact> groupOptions = getEmailGroupsAndUserGroups();
          FilteredCheckboxTreeArtifactDialog dialog =
             new FilteredCheckboxTreeArtifactDialog("Select Groups to Email", groupOptions);
          if (dialog.open() == Window.OK) {

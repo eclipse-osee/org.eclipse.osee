@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 public interface IWorldViewerEventHandler {
 
    default public WorldXViewer getWorldXViewer() {
+      // for extension
       return null;
    }
 
@@ -32,12 +33,16 @@ public interface IWorldViewerEventHandler {
 
    public boolean isDisposed();
 
-   public void handleColumnEvents(ArtifactEvent artifactEvent, WorldXViewer worldXViewer);
+   default public void handleColumnEvents(ArtifactEvent artifactEvent, WorldXViewer worldXViewer) {
+      // for extension
+   }
 
-   public void handleColumnTopicEvents(ArtifactTopicEvent artifactTopicEvent, WorldXViewer worldXViewer);
+   default public void handleColumnTopicEvents(ArtifactTopicEvent artifactTopicEvent, WorldXViewer worldXViewer) {
+      // for extension
+   }
 
-   default void handleReloaded(Collection<Artifact> modifiedArts) {
-      return;
+   default public void handleReloaded(Collection<Artifact> modifiedArts) {
+      // for extension
    }
 
 }

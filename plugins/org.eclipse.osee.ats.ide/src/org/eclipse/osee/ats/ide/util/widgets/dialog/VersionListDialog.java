@@ -18,8 +18,8 @@ import java.util.LinkedList;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Control;
  */
 public class VersionListDialog extends FilteredTreeDialog {
 
-   XCheckBox showReleased = new XCheckBox("Show Released Versions");
+   XXCheckBoxWidget showReleased = new XXCheckBoxWidget("Show Released Versions");
    private final Collection<IAtsVersion> verArts;
    private boolean removeAllAllowed = false;
    private boolean removeAllSelected = false;
@@ -72,7 +72,7 @@ public class VersionListDialog extends FilteredTreeDialog {
       checkComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       showReleased.createWidgets(checkComp, 2);
-      showReleased.set(false);
+      showReleased.setSelected(false);
       showReleased.addSelectionListener(new SelectionAdapter() {
 
          @Override

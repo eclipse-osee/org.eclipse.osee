@@ -60,7 +60,7 @@ public class StateDefinitionTest {
    }
 
    @Test
-   public void testGetStateItems() {
+   public void testGetLayoutItems() {
       StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, def.getLayoutItems().size());
       def.getLayoutItems().add(new LayoutItem("item"));
@@ -147,25 +147,24 @@ public class StateDefinitionTest {
    }
 
    @Test
-   public void testGetWidgetsFromStateItems() {
+   public void testGetWidgetsFromLayoutItems() {
       StateDefinition def = new StateDefinition("endorse");
       Assert.assertEquals(0, new AtsWorkDefinitionServiceImpl(null, null).getWidgetsFromLayoutItems(def).size());
 
       WidgetDef widget1 = new WidgetDef("item 1");
       def.getLayoutItems().add(widget1);
 
-      CompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
-      def.getLayoutItems().add(stateItem2);
+      CompositeLayoutItem layoutItems2 = new CompositeLayoutItem(2);
+      def.getLayoutItems().add(layoutItems2);
       WidgetDef widget2 = new WidgetDef("item 2");
-      stateItem2.getLayoutItems().add(widget2);
+      layoutItems2.getLayoutItems().add(widget2);
       WidgetDef widget3 = new WidgetDef("item 3");
-      stateItem2.getLayoutItems().add(widget3);
+      layoutItems2.getLayoutItems().add(widget3);
 
-      CompositeLayoutItem stateItem3 = new CompositeLayoutItem(2);
-      stateItem2.getLayoutItems().add(stateItem3);
-      // StateItem is an base class, so it's widgets won't be seen
+      CompositeLayoutItem layoutItem3 = new CompositeLayoutItem(2);
+      layoutItems2.getLayoutItems().add(layoutItem3);
       LayoutItem widget4 = new LayoutItem("item 4");
-      stateItem3.getLayoutItems().add(widget4);
+      layoutItem3.getLayoutItems().add(widget4);
 
       Assert.assertEquals(3, new AtsWorkDefinitionServiceImpl(null, null).getWidgetsFromLayoutItems(def).size());
    }

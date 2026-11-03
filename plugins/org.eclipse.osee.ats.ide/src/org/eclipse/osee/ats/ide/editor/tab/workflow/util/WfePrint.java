@@ -17,19 +17,16 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNote;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.column.DeadlineColumnUI;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.Overview;
-import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -49,8 +46,6 @@ public class WfePrint extends Action {
 
    private final AbstractWorkflowArtifact sma;
    boolean includeTaskList = true;
-   private final String normalColor = "#FFFFFF";
-   private final String activeColor = "#EEEEEE";
 
    public WfePrint(AbstractWorkflowArtifact sma) {
       super();
@@ -158,7 +153,8 @@ public class WfePrint extends Action {
 
    private void getWorkFlowHtml(XResultData rd) {
       // Only display current or past states
-      for (StateXWidgetPage statePage : WfeWorkFlowTab.getStatePagesOrderedByOrdinal(sma)) {
+      for (StateDefinition statePage : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
+         sma.getWorkDefinition())) {
          if (sma.isInState(statePage) || sma.getLog().isStateVisited(statePage)) {
             // Don't show completed or cancelled state if not currently those state
             if (statePage.isCompleted() && !sma.isCompleted()) {
@@ -174,21 +170,8 @@ public class WfePrint extends Action {
                   notesSb.append(AHTML.newline());
                }
             }
-            if (sma.isInState(statePage) || sma.getLog().isStateVisited(statePage)) {
-               statePage.generateLayoutDatas();
-               rd.addRaw(statePage.getHtml(sma.isInState(statePage) ? activeColor : normalColor, notesSb.toString(),
-                  getReviewData(sma, statePage)));
-               rd.addRaw(AHTML.newline());
-            }
          }
       }
-   }
-
-   private String getReviewData(AbstractWorkflowArtifact sma, StateXWidgetPage page) {
-      if (sma.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         return ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page);
-      }
-      return "";
    }
 
    public boolean isIncludeTaskList() {

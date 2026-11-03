@@ -75,8 +75,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
 
       boolean exceptionList = path.startsWith("/ide/session") //
          || path.startsWith("/orcs/datastore/initialize") //
-         || (requestContext.getRequest().getMethod().equals(
-            HttpMethod.GET) && path.startsWith("/orcs/datastore/user")) //
+         || (requestContext.getRequest().getMethod().equals(HttpMethod.GET) && path.startsWith("/orcs/datastore/user")) //
          || path.startsWith("/osee/") //
          || path.startsWith("/unsubscribe/") //
          || path.startsWith("/dispo/") //
@@ -133,6 +132,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
       if (!exceptionList && orcsApi.userService().getUser().isInvalid()) {
          unauthorized(requestContext);
       }
+
       if (activityLog.isEnabled()) {
          try {
             String message = String.format("%s %s", requestContext.getMethod(), requestContext.getUriInfo().getPath());

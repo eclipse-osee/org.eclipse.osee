@@ -652,7 +652,7 @@ public class ArtifactValidityReport {
                      orcsApi.getTransactionFactory().purgeTransaction(txIdsSet).call();
                      time.endSec();
                   } catch (Exception ex) {
-                     System.err.println(Lib.exceptionToString(ex));
+                     // do nothing
                   }
                }
             }

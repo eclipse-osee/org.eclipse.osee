@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class AtsHealthCheckNavigateItem extends XNavigateItem {
 
    public AtsHealthCheckNavigateItem() {
-      super("ATS Health Check", CoreImage.HEALTH, AtsNavigateViewItems.ATS_HEALTH);
+      super("Testing - ATS Health Check", CoreImage.HEALTH, AtsNavigateViewItems.ATS_ADMIN_TESTING);
    }
 
    @Override

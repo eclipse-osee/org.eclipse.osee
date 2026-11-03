@@ -86,10 +86,24 @@ export class ArtifactExplorerComponent {
 	protected layoutContainer =
 		viewChild<ElementRef<HTMLElement>>('layoutContainer');
 
-	/** Prevent browser tab/window close when there are unsaved changes. */
+	/**
+	 * Warn on browser tab/window close only when leaving would actually lose data.
+	 *
+	 * Unlike an in-app tab close (which can await the auto-save — see
+	 * `ArtifactTabGroupComponent`), a real browser unload cannot wait for an async
+	 * save: the transaction is a `POST /orcs/txs` that can't complete before the
+	 * page tears down. So BOTH unsaved states justify the native prompt here:
+	 * - `saving`: edits are dirty with an auto-save that won't finish in time, and
+	 * - `conflicted`: edits are held for the user to resolve and can't auto-save.
+	 *
+	 * Only a fully `clean` editor leaves without a prompt — which is the common case,
+	 * since closing blurs the active field and its save usually lands well before the
+	 * user actually leaves. This is honest: we warn exactly when data is at risk, not
+	 * on every keystroke.
+	 */
 	@HostListener('window:beforeunload', ['$event'])
 	onBeforeUnload(event: BeforeUnloadEvent) {
-		if (this.dirtyService.hasDirtyEditors()) {
+		if (this.dirtyService.globalLeaveState() !== 'clean') {
 			event.preventDefault();
 		}
 	}

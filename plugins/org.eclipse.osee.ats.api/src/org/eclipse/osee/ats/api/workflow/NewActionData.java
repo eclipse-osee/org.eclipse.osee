@@ -27,16 +27,17 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.CreateOption;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AttributeValues;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.util.BooleanState;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -52,7 +53,7 @@ public class NewActionData {
    String title;
    String description;
    String priority;
-   ChangeTypes changeType;
+   String changeType;
    String agileTeam;
    String assigneesArtIds; // Comma-separated list
    String createdByUserArtId; // User Art ID
@@ -75,7 +76,7 @@ public class NewActionData {
    List<NewActionRel> relations = new ArrayList<>();
    List<NewActionTeamData> teamData = new ArrayList<>();
    Map<ArtifactId, ArtifactToken> aiToArtToken = new HashMap<>();
-   Map<String, String> attrValues = new HashMap<>();
+   AttributeValues attrValues = new AttributeValues();
    Map<WorkType, ArtifactTypeToken> workTypeToArtType = new HashMap<>();
    Map<WorkType, AtsWorkDefinitionToken> workTypeToWorkDef = new HashMap<>();
    NewActionMemberData memberData = null;
@@ -106,11 +107,11 @@ public class NewActionData {
       this.description = description;
    }
 
-   public ChangeTypes getChangeType() {
+   public String getChangeType() {
       return changeType;
    }
 
-   public void setChangeType(ChangeTypes changeType) {
+   public void setChangeType(String changeType) {
       this.changeType = changeType;
    }
 
@@ -168,20 +169,6 @@ public class NewActionData {
 
    public void setCreatedDateLong(String createdDateLong) {
       this.createdDateLong = createdDateLong;
-   }
-
-   public Map<String, String> getAttrValues() {
-      return attrValues;
-   }
-
-   public void setAttrValues(Map<String, String> attrValues) {
-      this.attrValues = attrValues;
-   }
-
-   public void addAttrValue(AttributeTypeId type, String value) {
-      if (Strings.isValidAndNonBlank(value)) {
-         attrValues.put(type.getIdString(), value);
-      }
    }
 
    public String getNeedByDate() {
@@ -380,6 +367,13 @@ public class NewActionData {
 
    public NewActionData andChangeType(ChangeTypes changeType) {
       if (changeType != null) {
+         this.changeType = changeType.toString();
+      }
+      return this;
+   }
+
+   public NewActionData andChangeType(String changeType) {
+      if (Strings.isValid(changeType)) {
          this.changeType = changeType;
       }
       return this;
@@ -489,12 +483,18 @@ public class NewActionData {
       this.relations = relations;
    }
 
-   public NewActionData andAttr(AttributeTypeId attrType, String value) {
+   public void addAttrValue(AttributeTypeToken type, String value) {
+      if (Strings.isValidAndNonBlank(value)) {
+         attrValues.addAttrValue(type, value);
+      }
+   }
+
+   public NewActionData andAttr(AttributeTypeToken attrType, String value) {
       addAttrValue(attrType, value);
       return this;
    }
 
-   public NewActionData andAttr(AttributeTypeId attrType, Collection<String> values) {
+   public NewActionData andAttr(AttributeTypeToken attrType, Collection<String> values) {
       for (String value : values) {
          andAttr(attrType, value);
       }
@@ -659,6 +659,22 @@ public class NewActionData {
 
    public void setDebugRd(XResultData debugRd) {
       this.debugRd = debugRd;
+   }
+
+   public void andChangeType(ChangeType cType) {
+      andChangeType(cType.getName());
+   }
+
+   public AttributeValues getAttrValues() {
+      return attrValues;
+   }
+
+   public void setAttrValues(AttributeValues attrValues) {
+      this.attrValues = attrValues;
+   }
+
+   public void andAttrValue(AttributeTypeToken attrType, String value) {
+      andAttr(attrType, value);
    }
 
 }

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -32,9 +33,10 @@ import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.demo.reqts.icd.CheckSignalsRoundTripTestNavigateItem;
+import org.eclipse.osee.ats.ide.demotest.CreateActionUsingAllActionableItems;
+import org.eclipse.osee.ats.ide.demotest.CreateXWidgetExampleAction;
 import org.eclipse.osee.ats.ide.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.ide.navigate.ToggleAtsAdmin;
-import org.eclipse.osee.ats.ide.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.ide.world.search.ILazyTeamDefinitionProvider;
@@ -69,7 +71,7 @@ public class DemoNavigateViewItems implements XNavigateItemProvider {
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
+   public List<XNavigateItem> getNavigateItemsForCurrentUser(List<XNavigateItem> items) {
 
       if (DemoUtil.isDbPopulatedWithDemoData().isTrue()) {
 
@@ -80,20 +82,24 @@ public class DemoNavigateViewItems implements XNavigateItemProvider {
 
          addTeamItems(items);
 
-         items.add(
-            new SearchNavigateItem(new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action), JHU_ADMIN));
+         items.add(new SearchNavigateItem(new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action),
+            Arrays.asList(AtsUserGroups.AtsAdmin), JHU_ADMIN));
          items.add(new SearchNavigateItem(
-            new ArtifactTypeSearchItem("Show all Decision Review", AtsArtifactTypes.DecisionReview), JHU_ADMIN));
+            new ArtifactTypeSearchItem("Show all Decision Review", AtsArtifactTypes.DecisionReview),
+            Arrays.asList(AtsUserGroups.AtsAdmin), JHU_ADMIN));
          items.add(new SearchNavigateItem(
-            new ArtifactTypeSearchItem("Show all PeerToPeer Review", AtsArtifactTypes.PeerToPeerReview), JHU_ADMIN));
+            new ArtifactTypeSearchItem("Show all PeerToPeer Review", AtsArtifactTypes.PeerToPeerReview),
+            Arrays.asList(AtsUserGroups.AtsAdmin), JHU_ADMIN));
          items.add(new SearchNavigateItem(
             new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows", AtsArtifactTypes.TeamWorkflow),
-            JHU_ADMIN, XNavItemCat.OSEE_ADMIN));
-         items.add(
-            new SearchNavigateItem(new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task), JHU_ADMIN));
-
+            Arrays.asList(AtsUserGroups.AtsAdmin), JHU_ADMIN));
+         items.add(new SearchNavigateItem(new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task),
+            Arrays.asList(AtsUserGroups.AtsAdmin), JHU_ADMIN));
          items.add(new CreateGoalTestDemoArtifacts(JHU_HEALTH));
+
          items.add(new CreateActionUsingAllActionableItems(XNavigateItem.DEMO));
+         items.add(new CreateXWidgetExampleAction(XNavigateItem.DEMO));
+
          items.add(new AtsConfig2ExampleNavigateItem());
 
          // ICD Signal Checking
@@ -123,7 +129,8 @@ public class DemoNavigateViewItems implements XNavigateItemProvider {
          }
       }
 
-      items.add(new XNavigateItemFolder("JHU Admin", CoreImage.LASER, JHU_ADMIN, SUBCAT));
+      items.add(new XNavigateItemFolder("JHU Admin", CoreImage.LASER, Arrays.asList(AtsUserGroups.AtsAdmin), JHU_ADMIN,
+         SUBCAT));
       items.add(new XNavigateItemFolder("Health", CoreImage.HEALTH, JHU_HEALTH, SUBCAT));
 
       items.add(

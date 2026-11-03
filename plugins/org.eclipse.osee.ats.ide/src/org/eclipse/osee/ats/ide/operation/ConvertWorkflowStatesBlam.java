@@ -22,36 +22,72 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.workflow.ConvertWorkflowStatesOperation;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 
 /**
  * @author Donald G. Dunne
  */
-public class ConvertWorkflowStatesBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class ConvertWorkflowStatesBlam extends AbstractAtsBlam {
 
-   private final static String SOURCE_TEAM_WORKFLOWS = "Team Workflow(s) (drop here)";
-   private final static String FROM_TO_MAP = "From State to State mapping (from:to;from:to)";
-   private final static String PERSIST = "Persist (else report only)";
+   private static final String BLAM_NAME = "Convert Workflow State Names";
+   final static String SOURCE_TEAM_WORKFLOWS = "Team Workflow(s) (drop here)";
+   final static String FROM_TO_MAP = "From State to State mapping (from:to;from:to)";
+   final static String PERSIST = "Persist (else report only)";
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
 
    public ConvertWorkflowStatesBlam() {
-      // do nothing
+      super(BLAM_NAME, CoreImage.GEAR);
    }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andListDropWidget(SOURCE_TEAM_WORKFLOWS);
+      wb.andTextWidget(FROM_TO_MAP).andHorizLabel();
+      wb.andCheckBoxWidget(PERSIST).andDefault("false");
+      return wb.getXWidgetDatas();
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -77,6 +113,7 @@ public class ConvertWorkflowStatesBlam extends AbstractBlam {
                   AWorkbench.popup("ERROR", "No From/To values extracted.");
                   return;
                }
+
                final XResultData rd = new XResultData();
                ConvertWorkflowStatesOperation operation =
                   new ConvertWorkflowStatesOperation(fromToMap, sourceTeamArts, persist, rd);
@@ -96,6 +133,10 @@ public class ConvertWorkflowStatesBlam extends AbstractBlam {
       });
    }
 
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
    private Map<String, String> createFromToMap(String fromToMapStr) {
       Map<String, String> fromToMap = new HashMap<>();
       for (String line : fromToMapStr.split(";")) {
@@ -110,29 +151,22 @@ public class ConvertWorkflowStatesBlam extends AbstractBlam {
    };
 
    @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + SOURCE_TEAM_WORKFLOWS + "\" />" +
-      //
-         "<XWidget xwidgetType=\"XText\" displayName=\"" + FROM_TO_MAP + "\" horizontalLabel=\"true\" />" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + PERSIST + "\" defaultValue=\"false\"/>" +
-         //
-         "</xWidgets>";
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(AtsUserGroups.AtsAdmin);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(AtsNavigateViewItems.ATS_ADMIN);
    }
 
    @Override
    public String getDescriptionUsage() {
       return "Takes source Team Workflow(s) and converts state names.  \nUse this BLAM when Work Definition changes require state re-name or removal.  \nThis BLAM will fix old workflows\nNOTE: ATS log will show name changes, but not OSEE history.";
-   }
-
-   @Override
-   public String getName() {
-      return "Convert Workflow State Names";
-   }
-
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(AtsNavigateViewItems.ATS_ADMIN, XNavItemCat.OSEE_ADMIN);
    }
 
 }

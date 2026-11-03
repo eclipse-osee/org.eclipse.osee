@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 public class NamedComparator implements Comparator<Named> {
    private static final int NUMBER_STRING_LIMIT = 19;
    private static final Pattern numberPattern = Pattern.compile("[+-]?\\d+");
+   public static final NamedComparator sorted_ascending = new NamedComparator(SortOrder.ASCENDING);
+   public static final NamedComparator sorted_descending = new NamedComparator(SortOrder.DESCENDING);
 
    private final Matcher numberMatcher = numberPattern.matcher("");
    private final SortOrder orderType;

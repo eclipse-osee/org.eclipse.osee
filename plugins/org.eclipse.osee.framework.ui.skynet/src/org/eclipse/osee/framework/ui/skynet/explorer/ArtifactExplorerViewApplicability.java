@@ -97,7 +97,7 @@ public class ArtifactExplorerViewApplicability {
    }
 
    private String getArtifactViewApplicabiltyText() {
-      String viewName = Widgets.NOT_SET;
+      String viewName = "";
       if (explorer != null) {
          BranchToken branch = explorer.getBranch();
          if (branch.isValid()) {

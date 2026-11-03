@@ -13,10 +13,12 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
+import java.util.Arrays;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -34,7 +36,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 public class DuplicateArtifactReport extends XNavigateItemAction {
 
    public DuplicateArtifactReport() {
-      super("Duplicate Artifact Report", CoreImage.GEAR, AtsNavigateViewItems.ATS_UTIL);
+      super("Duplicate Artifact Report", CoreImage.GEAR, Arrays.asList(CoreUserGroups.OseeAdmin),
+         AtsNavigateViewItems.ATS_UTIL);
    }
 
    @Override

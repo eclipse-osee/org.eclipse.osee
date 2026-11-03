@@ -532,7 +532,7 @@ NewActionData result = atsApi.getActionService().createAction(data);
 3. Walk up the team definition hierarchy looking for a reference
 4. Fall back to `AtsWorkDefinitionTokens.WorkDefTeamDefault`
 
-Work definitions are registered via `IAtsWorkDefinitionProviderService` which collects all `IAtsWorkDefinitionProvider` implementations (OSGi declarative services pattern). Each provider returns a collection of `WorkDefinition` objects built using the `WorkDefBuilder` API.
+Each work definition registers itself as an OSGi DS component (`@Component(service = IAtsWorkDefinitionBuilder.class)` + an `OSGI-INF/<fqcn>.xml` descriptor), like BLAMs/XWidgets. `AtsWorkDefinitionProviderService` collects every `IAtsWorkDefinitionBuilder` via a `MULTIPLE/DYNAMIC/GREEDY @Reference`, builds the applicable ones (`isApplicable()` gates demo work defs on `DemoUtil.isDemoDatabase()`), and caches by id. There is no central provider list to edit when adding a work def.
 
 ### Work Definition Assignment Chain
 

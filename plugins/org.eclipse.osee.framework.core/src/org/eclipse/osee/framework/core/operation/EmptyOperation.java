@@ -21,8 +21,10 @@ import org.eclipse.core.runtime.SubMonitor;
  * @author Donald G. Dunne
  */
 public class EmptyOperation implements IOperation {
+
    private final IStatus status;
    private boolean called;
+   public static EmptyOperation instance = new EmptyOperation();
 
    public EmptyOperation() {
       this(Status.OK_STATUS);

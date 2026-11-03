@@ -13,7 +13,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
+import java.util.Arrays;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,25 +30,23 @@ public class XWidgetRendererItemTest {
    @Test
    public void testSetGetName() {
       XWidgetData item = new XWidgetData();
-      item.setName("My Name");
+      item.setLabel("My Name");
 
-      Assert.assertEquals("My Name", item.getName());
+      Assert.assertEquals("My Name", item.getLabel());
 
-      item.setName("this.that.one");
+      item.setLabel("this.that.one");
 
-      Assert.assertEquals("this.that.one", item.getName());
+      Assert.assertEquals("this.that.one", item.getLabel());
    }
 
    @Test
-   public void testSetGetStoreName() {
-      XWidgetData item = new XWidgetData();
-      item.setStoreName("My Name");
+   public void testSelectableCollectionIsExpanded() {
+      XWidgetService.get().addWidget(new XXTextWidget());
+      XWidgetBuilder builder = new XWidgetBuilder();
 
-      Assert.assertEquals("My Name", item.getStoreName());
+      builder.andTextWidget("Selectable").andSelectable(Arrays.asList("one", "two"));
 
-      item.setStoreName("this.that.one");
-
-      Assert.assertEquals("this.that.one", item.getStoreName());
+      Assert.assertEquals(Arrays.asList("one", "two"), builder.getXWidgetDatas().get(0).getSelectable());
    }
 
 }

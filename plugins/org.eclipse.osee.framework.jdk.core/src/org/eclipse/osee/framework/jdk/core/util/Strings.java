@@ -905,4 +905,8 @@ public class Strings {
       }
    }
 
+   public static boolean isValidString(Object obj) {
+      return (obj instanceof String && Strings.isValid((String) obj));
+   }
+
 }

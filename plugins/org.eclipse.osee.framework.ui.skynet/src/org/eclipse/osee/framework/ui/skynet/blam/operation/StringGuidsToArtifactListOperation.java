@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetInputAddable;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.IXWidgetInputAddable;
 
 /**
  * Typically used to parse GUIDs copied from another application via text-clipboard. Operation extracts input from

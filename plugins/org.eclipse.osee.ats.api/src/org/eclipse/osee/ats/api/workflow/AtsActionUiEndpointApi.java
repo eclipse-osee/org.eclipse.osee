@@ -78,4 +78,13 @@ public interface AtsActionUiEndpointApi {
    @Produces(MediaType.TEXT_HTML)
    String getJournal(@PathParam("atsId") String atsId, @PathParam("useraid") String useraid);
 
+   /**
+    * @param id (id, atsId) of workflow to display
+    * @return html representation of the workflow using WorkDef-driven layout
+    */
+   @Path("{id}/workflow")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   String getWorkflow(@PathParam("id") String id);
+
 }

@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class EditActionableItemsAction extends AbstractAtsAction {
 
-   private final TeamWorkFlowArtifact teamWf;
+   private final IAtsTeamWorkflow teamWf;
 
    public EditActionableItemsAction(TeamWorkFlowArtifact teamWf) {
       super("Add/Update Actionable Items/Workflows");
@@ -35,8 +36,8 @@ public class EditActionableItemsAction extends AbstractAtsAction {
       editActionableItems(teamWf);
    }
 
-   public static void editActionableItems(TeamWorkFlowArtifact teamArt) {
-      new ModifyActionableItemAction(teamArt).run();
+   public static void editActionableItems(IAtsTeamWorkflow teamWf) {
+      new ModifyActionableItemAction(teamWf).run();
    }
 
 }

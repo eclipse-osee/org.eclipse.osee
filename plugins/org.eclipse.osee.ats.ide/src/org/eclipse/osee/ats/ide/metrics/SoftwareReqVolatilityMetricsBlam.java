@@ -23,125 +23,137 @@ import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.version.Version;
+import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelVersionSelection;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXTeamDefinitionsWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.rel.XXTargetedVersionWidget;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.XWidgetLabels;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXDateSelWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Stephen J. Molaro
  */
-public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class SoftwareReqVolatilityMetricsBlam extends AbstractAtsBlam {
 
-   private static final String NAME = "Software Requirements Volatility Metrics BLAM";
-   private static final String TEAM_DEFINITIONS = "Team Definition(s)";
-   private static final String VERSION = "Version";
-   private static final String START_DATE = "Start Date";
-   private static final String END_DATE = "End Date";
-   private static final String ALL_TIME = "All Time";
-   private static final String INCLUDE_IMPACTS = "Include Safety and Security counts";
+   private static final String BLAM_NAME = "Software Requirements Volatility Metrics";
+   static final String INCLUDE_IMPACTS = "Include Safety and Security counts";
 
-   private XHyperlabelTeamDefinitionSelection programWidget;
-   private XHyperlabelVersionSelection versionWidget;
-   private XDateDam startDateWidget;
-   private XDateDam endDateWidget;
+   private XXTeamDefinitionsWidget teamDefWidget;
+   private XXTargetedVersionWidget versionWidget;
+   private XXDateSelWidget startDateWidget;
+   private XXDateSelWidget endDateWidget;
    private Date startDate;
    private Date endDate;
    private boolean allTime;
    private boolean includeImpacts;
-
    private Collection<IAtsVersion> versions;
 
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public SoftwareReqVolatilityMetricsBlam() {
+      super(BLAM_NAME, CoreImage.GEAR);
+   }
+
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
    @Override
-   public String getName() {
-      return NAME;
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wba.andTeamDefinitionsWidget();
+      wba.andTargetedVersionWidget();
+      wba.andDateWidget(XWidgetLabels.START_DATE);
+      wba.andDateWidget(XWidgetLabels.END_DATE);
+      wba.andCheckBoxWidget(XWidgetLabels.ALL_TIME);
+      wba.andCheckBoxWidget(INCLUDE_IMPACTS);
+      return wba.getXWidgetDatas();
    }
 
    @Override
-   public String getDescriptionUsage() {
-      return "Generates Software Requirements Volatility Metrics Report based on selected version. The date selection chooses requirements based on the completion date. Software Requirements are always included by default. Results are in the downloads folder.";
-   }
-
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer swtXWidgetRenderer,
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
       XModifiedListener modListener, boolean isEditable) {
-      if (xWidget.getLabel().equalsIgnoreCase(VERSION)) {
+      if (xWidget.isWidget(WidgetIdAts.XXTargetedVersionWidget)) {
          versions = new ArrayList<>();
-         versionWidget = (XHyperlabelVersionSelection) xWidget;
-         versionWidget.getLabelHyperlink().redraw();
-      } else if (xWidget.getLabel().equals(TEAM_DEFINITIONS)) {
-         programWidget = (XHyperlabelTeamDefinitionSelection) xWidget;
-         programWidget.addXModifiedListener(new XModifiedListener() {
+         versionWidget = (XXTargetedVersionWidget) xWidget;
+         versionWidget.getLabelLinkWidget().redraw();
+      } else if (xWidget.isWidget(WidgetIdAts.XXTeamDefinitionsWidget)) {
+         teamDefWidget = (XXTeamDefinitionsWidget) xWidget;
+         teamDefWidget.addXModifiedListener(new XModifiedListener() {
 
             @Override
             public void widgetModified(XWidget widget) {
                setProgramVersions();
-               versionWidget.setSelectableVersions(versions);
-               versionWidget.getLabelHyperlink().redraw();
+               versionWidget.setSelectable(AtsObjects.toArtifactTokens(versions));
+               versionWidget.getLabelLinkWidget().redraw();
             }
          });
-      } else if (xWidget.getLabel().equalsIgnoreCase(START_DATE)) {
-         startDateWidget = (XDateDam) xWidget;
+      } else if (xWidget.getLabel().equalsIgnoreCase(XWidgetLabels.START_DATE)) {
+         startDateWidget = (XXDateSelWidget) xWidget;
          initializeWidgets();
-      } else if (xWidget.getLabel().equalsIgnoreCase(END_DATE)) {
-         endDateWidget = (XDateDam) xWidget;
+      } else if (xWidget.getLabel().equalsIgnoreCase(XWidgetLabels.END_DATE)) {
+         endDateWidget = (XXDateSelWidget) xWidget;
          initializeWidgets();
       }
    }
 
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
+
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
-      // Read widget values on the display thread since widgets are SWT-bound
-      final Version[] selectedVersionHolder = new Version[1];
-      Displays.pendInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            selectedVersionHolder[0] = versionWidget.getSelectedVersion();
-         }
-      });
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
 
-      Version selectedVersion = selectedVersionHolder[0];
+      ArtifactToken selectedVersion = versionWidget.getSelectedFirst();
       if (selectedVersion == null) {
          return;
       }
 
-      startDate = (Date) variableMap.getValue(START_DATE);
-      endDate = (Date) variableMap.getValue(END_DATE);
-      allTime = variableMap.getBoolean(ALL_TIME);
-      includeImpacts = variableMap.getBoolean(INCLUDE_IMPACTS);
-
-      // Perform the REST call and file I/O off the UI thread (runOperation is already on a background job)
       Response res = null;
       BufferedWriter bwr = null;
       try {
          String fileLocation = String.format("C:%sUsers%s%s%sDownloads", File.separator, File.separator,
             System.getProperty("user.name"), File.separator);
 
+         startDate = (Date) variableMap.getValue(XWidgetLabels.START_DATE);
+         endDate = (Date) variableMap.getValue(XWidgetLabels.END_DATE);
+         allTime = variableMap.getBoolean(XWidgetLabels.ALL_TIME);
+         includeImpacts = variableMap.getBoolean(INCLUDE_IMPACTS);
          res = AtsApiService.get().getServerEndpoints().getMetricsEp().softwareReqVolatility(
             selectedVersion.getIdString(), startDate, endDate, allTime, includeImpacts);
 
-         if (res == null) {
-            return;
+         if (res == null || res.getStatus() != Response.Status.OK.getStatusCode()) {
+            throw new OseeStateException("No response from metrics endpoint");
          }
 
          String filePath = String.format("%s%s%s", fileLocation, File.separator, res.getHeaderString("FileName"));
@@ -173,26 +185,13 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
       }
    }
 
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.REPORTS);
-   }
-
-   @Override
-   public List<XWidgetData> getXWidgetItems() {
-      XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andWidget(TEAM_DEFINITIONS, "XHyperlabelTeamDefinitionSelection").endWidget();
-      wb.andWidget(VERSION, "XHyperlabelVersionSelection").endWidget();
-      wb.andWidget(START_DATE, "XDateDam").endWidget();
-      wb.andWidget(END_DATE, "XDateDam").endWidget();
-      wb.andWidget(ALL_TIME, "XCheckBox").endWidget();
-      wb.andWidget(INCLUDE_IMPACTS, "XCheckBox").endWidget();
-      return wb.getXWidgetDatas();
-   }
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
 
    public void setProgramVersions() {
       HashSet<IAtsVersion> versionSet = new HashSet<>();
-      Collection<TeamDefinition> teamDefs = programWidget.getSelectedTeamDefintions();
+      Collection<IAtsTeamDefinition> teamDefs = teamDefWidget.getSelected();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (teamDef.isValid()) {
             versionSet.addAll(AtsApiService.get().getVersionService().getVersionsFromTeamDefHoldingVersions(teamDef));
@@ -216,4 +215,19 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
       cal.set(Calendar.DAY_OF_MONTH, 1);
       startDateWidget.setDate(cal.getTime());
    }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.REPORTS);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Generates Software Requirements Volatility Metrics Report based on selected version. The date selection chooses requirements based on the completion date. Software Requirements are always included by default. Results are in the downloads folder.";
+   }
+
 }

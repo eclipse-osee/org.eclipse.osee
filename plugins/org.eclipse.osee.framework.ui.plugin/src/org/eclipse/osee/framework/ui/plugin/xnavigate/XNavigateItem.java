@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -31,7 +32,7 @@ import org.eclipse.swt.graphics.Image;
 public abstract class XNavigateItem {
 
    public static final XNavItemCat TOP_ADMIN = new XNavItemCat("Admin");
-   public static final XNavItemCat ADMIN_TESTING = new XNavItemCat("Admin.Testing");
+   public static final XNavItemCat TOP_ADMIN_TESTING = new XNavItemCat("Admin.Testing");
 
    public static final XNavItemCat REPORTS = new XNavItemCat("Reports");
    public static final XNavItemCat EMAIL_NOTIFICATIONS = new XNavItemCat("Email & Notifications");
@@ -65,21 +66,51 @@ public abstract class XNavigateItem {
    protected INavigateItemRefresher refresher;
    protected final Collection<XNavItemCat> categories;
    Image image;
+   protected Collection<IUserGroupArtifactToken> groups;
 
    public XNavigateItem(String name, OseeImage oseeImage, XNavItemCat... xNavItemCat) {
       this(name, ImageManager.create(oseeImage), xNavItemCat);
    }
 
+   public XNavigateItem(String name, OseeImage oseeImage, Collection<IUserGroupArtifactToken> groups, XNavItemCat... xNavItemCat) {
+      this(name, ImageManager.create(oseeImage), groups, xNavItemCat);
+   }
+
    public XNavigateItem(String name, KeyedImage oseeImage, XNavItemCat... xNavItemCat) {
+      this(name, oseeImage, null, xNavItemCat);
+   }
+
+   public XNavigateItem(String name, KeyedImage oseeImage, Collection<IUserGroupArtifactToken> groups, XNavItemCat... xNavItemCat) {
       this.name = name;
       this.oseeImage = oseeImage;
       if (parent != null) {
          parent.addChild(this);
       }
+      if (groups != null) {
+         this.groups = new ArrayList<>();
+         this.groups.addAll(groups);
+      }
       this.categories = org.eclipse.osee.framework.jdk.core.util.Collections.asHashSet(xNavItemCat);
    }
 
-   public abstract Collection<IUserGroupArtifactToken> getUserGroups();
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      if (groups == null) {
+         groups = new ArrayList<>();
+      }
+      return groups;
+   }
+
+   /**
+    * Admin-only when user groups include OseeAdmin or AtsAdmin.
+    */
+   public boolean isAdminOnly() {
+      for (IUserGroupArtifactToken group : getUserGroups()) {
+         if (group.equals(CoreUserGroups.OseeAdmin) || group.equals(CoreUserGroups.AtsAdmin)) {
+            return true;
+         }
+      }
+      return false;
+   }
 
    public void addChild(XNavigateItem item) {
       children.add(item);

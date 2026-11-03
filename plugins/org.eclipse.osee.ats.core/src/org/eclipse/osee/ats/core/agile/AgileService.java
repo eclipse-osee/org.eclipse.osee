@@ -79,6 +79,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -92,17 +93,6 @@ public class AgileService implements IAgileService {
    public AgileService(AtsApi atsApi) {
       this.logger = atsApi.getLogger();
       this.atsApi = atsApi;
-   }
-
-   @Override
-   public String getPointsStr(IAtsWorkItem workItem) {
-      AttributeTypeToken pointsAttrType = atsApi.getAgileService().getPointsAttrType(workItem);
-      if (!atsApi.getAttributeResolver().isAttributeTypeValid(workItem, pointsAttrType)) {
-         return "";
-      }
-
-      String ptsStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, pointsAttrType, "");
-      return ptsStr;
    }
 
    @Override
@@ -636,6 +626,22 @@ public class AgileService implements IAgileService {
          sprints.add(sprintArt);
       }
       return sprints;
+   }
+
+   @Override
+   public String getPointsStr(IAtsWorkItem workItem) {
+      String result =
+         atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, AtsAttributeTypes.PointsEnum, "");
+      if (Strings.isInValid(result)) {
+         Double pts =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PointsNumeric, 0.0);
+         if (pts == 0.0) {
+            result = "";
+         } else {
+            result = pts.toString();
+         }
+      }
+      return result;
    }
 
    @Override

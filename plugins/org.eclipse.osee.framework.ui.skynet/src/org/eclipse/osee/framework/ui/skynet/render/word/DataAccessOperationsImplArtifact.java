@@ -78,8 +78,8 @@ public class DataAccessOperationsImplArtifact implements DataAccessOperations {
     */
 
    @Override
-   public void abortIfInvalidHierarchy(ArtifactId artid, BranchId branchid, RelationTypeSide relationTypeSide, ArtifactId view,
-      boolean upstream) {
+   public void abortIfInvalidHierarchy(ArtifactId artid, BranchId branchid, RelationTypeSide relationTypeSide,
+      ArtifactId view, boolean upstream) {
       throw new UnsupportedOperationException();
    }
 

@@ -312,6 +312,9 @@ html {
 		--osee-secondary-default: var(--osee-amber-22);
 		--osee-secondary-lighter: var(--osee-amber-16);
 		--osee-secondary-darker: var(--osee-amber-27);
+		/* Caution: amber accent for "not allowed, but not an error" feedback.
+		   Darker amber in light mode for contrast on light surfaces. */
+		--osee-caution-default: var(--osee-amber-8);
 
 		/* M2 BACK COMPAT: BACKGROUND */
 		--osee-background-status-bar: var(--osee-misc-0);
@@ -383,6 +386,9 @@ html {
 		--osee-secondary-default: var(--osee-yellow-26);
 		--osee-secondary-lighter: var(--osee-yellow-16);
 		--osee-secondary-darker: var(--osee-yellow-27);
+		/* Caution: amber accent for "not allowed, but not an error" feedback.
+		   Brighter amber in dark mode for contrast on dark surfaces. */
+		--osee-caution-default: var(--osee-amber-16);
 
 		/* M2 BACK COMPAT: BACKGROUND */
 		--osee-background-status-bar: 0 0 0;

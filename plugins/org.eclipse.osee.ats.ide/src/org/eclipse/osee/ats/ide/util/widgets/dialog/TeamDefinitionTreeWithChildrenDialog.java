@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Control;
  */
 public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDialog<TeamDefinition> {
 
-   XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Team Definition Actions");
+   XXCheckBoxWidget recurseChildrenCheck = new XXCheckBoxWidget("Include all children Team Definition Actions");
    boolean recurseChildren = false;
    protected Composite dialogComp;
 
@@ -87,7 +87,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
       dialogComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       recurseChildrenCheck.createWidgets(dialogComp, 2);
-      recurseChildrenCheck.set(recurseChildren);
+      recurseChildrenCheck.setSelected(recurseChildren);
       recurseChildrenCheck.addSelectionListener(new SelectionAdapter() {
 
          @Override

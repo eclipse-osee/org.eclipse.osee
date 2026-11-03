@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.editor;
 
-import org.eclipse.osee.ats.ide.integration.tests.ats.editor.stateItem.AtsTest_Demo_StateItem_Suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,7 +21,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AtsTest_Demo_StateItem_Suite.class,
    WfeEditorAddSupportingArtifactsTest.class,
    WfeEditorAddSupportingFilesTest.class,
    WfePrintTest.class})

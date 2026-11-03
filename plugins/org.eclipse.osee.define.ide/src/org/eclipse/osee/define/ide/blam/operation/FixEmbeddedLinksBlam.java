@@ -13,18 +13,23 @@
 
 package org.eclipse.osee.define.ide.blam.operation;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWordContent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.util.LinkType;
+import org.eclipse.osee.framework.core.widget.XWidgetData;
+import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -32,48 +37,65 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.osgi.service.component.annotations.Component;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 
 /**
  * @author John Misinco
  */
+@Component(service = AbstractBlam.class, immediate = true)
 public class FixEmbeddedLinksBlam extends AbstractBlam {
 
-   private static final String BRANCH = "Branch Input";
+   private static final String BLAM_NAME = "Fix Embedded Links";
 
-   @Override
-   public String getXWidgetsXml() {
-      return String.format("<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/></xWidgets>",
-         BRANCH);
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
+
+   public FixEmbeddedLinksBlam() {
+      super(BLAM_NAME, CoreImage.GEAR);
    }
 
-   @Override
-   public String getDescriptionUsage() {
-      return "For a given branch, locate all WholeWordContent attributes and replace branchUuids with that of the selected branch";
-   }
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
 
    @Override
-   public String getName() {
-      return "Fix Embedded Links";
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wb.andBranchSelWidget();
+      return wb.getXWidgetDatas();
    }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      BranchId branch = variableMap.getBranch(BRANCH);
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
+      BranchId branch = variableMap.getBranch(XWidgetLabels.BRANCH);
       QueryBuilderArtifact queryBuilder = ArtifactQuery.createQueryBuilder(branch);
-      queryBuilder.andExists(CoreAttributeTypes.WholeWordContent);
+      queryBuilder.andExists(WholeWordContent);
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "Update embedded links");
       LinkType linkType = LinkType.OSEE_SERVER_LINK;
       for (Artifact artifact : queryBuilder.getResults()) {
-         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
-            String content = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.WholeWordContent, "");
+         if (artifact.isAttributeTypeValid(WholeWordContent)) {
+            String content = artifact.getSoleAttributeValueAsString(WholeWordContent, "");
             if (Strings.isValid(content)) {
                Set<String> unknownGuids = new HashSet<>();
                content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids);
-               artifact.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, content);
+               artifact.setSoleAttributeFromString(WholeWordContent, content);
                artifact.persist(tx);
                if (!unknownGuids.isEmpty()) {
-                  log(String.format("Unknown guids found in [%s] - %s", artifact,
-                     org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", unknownGuids)));
+                  logf("Unknown guids found in [%s] - %s", artifact,
+                     org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", unknownGuids));
                }
             }
          }
@@ -81,9 +103,27 @@ public class FixEmbeddedLinksBlam extends AbstractBlam {
       tx.execute();
    }
 
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      return Arrays.asList(CoreUserGroups.OseeAdmin);
+   }
+
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
+
    @Override
    public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "For a given branch, locate all WholeWordContent attributes and replace branchUuids with that of the selected branch";
    }
 
 }

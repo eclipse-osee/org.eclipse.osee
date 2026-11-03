@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
@@ -824,6 +825,19 @@ public final class BranchManager {
 
    public static Branch getBranch(TransactionToken transaction) {
       return getBranch(transaction.getBranch());
+   }
+
+   public static boolean isPle(BranchId branchId) {
+      Branch branch = null;
+      if (branchId instanceof Branch) {
+         branch = (Branch) branchId;
+      } else {
+         branch = BranchManager.getBranch(branchId);
+      }
+      if (branch.isPle() == null) {
+         branch.setPle(BranchManager.getBranchCategories(branchId).contains(CoreBranchCategoryTokens.PLE));
+      }
+      return branch.isPle();
    }
 
    public static List<BranchCategoryToken> getBranchCategories(BranchId branchId) {

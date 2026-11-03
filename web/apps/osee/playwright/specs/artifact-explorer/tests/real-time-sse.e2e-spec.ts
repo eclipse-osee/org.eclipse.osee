@@ -167,9 +167,11 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 		request,
 		userPage,
 	}) => {
-		// Presence is heartbeat-driven (eventually consistent) and each side is
-		// asserted, so give the whole test a larger budget than the 30s default.
-		test.setTimeout(60000);
+		// Presence is eventually consistent: an already-present viewer sees a newcomer
+		// only via a change-driven push bounded by the 15s heartbeat-interval fallback,
+		// stacked on CI-slow connect time. 60s was too tight (avatar rendered right at
+		// the old deadline); 120s covers the real worst case.
+		test.setTimeout(120000);
 		const { branchId, branchName, artifact } =
 			await setupBranchWithArtifact(browser, request, 'Presence');
 		const joe = await userPage(DEMO_USERS.joe);
@@ -196,17 +198,18 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 				jasonHeartbeat,
 			]);
 
-			// The current user is filtered out of presence, so an avatar appears only because the
-			// other viewer is a DIFFERENT user. Avatars are generic id-derived icons (not name
-			// initials), so a visible avatar circle is the presence signal. Assert both sides
-			// concurrently so one side's wait doesn't serialize onto the other.
+			// A visible avatar is the presence signal (generic id-derived icons, not
+			// initials); the current user is filtered out, so it only appears because the
+			// other viewer is present. Assert both sides concurrently. The 45s timeout
+			// absorbs the 15s heartbeat-interval fallback plus broadcast/render (25s
+			// previously tripped right as the avatar rendered).
 			await Promise.all([
 				expect(
 					joe.locator('osee-presence-avatars mat-icon').first()
-				).toBeVisible({ timeout: 25000 }),
+				).toBeVisible({ timeout: 45000 }),
 				expect(
 					jason.locator('osee-presence-avatars mat-icon').first()
-				).toBeVisible({ timeout: 25000 }),
+				).toBeVisible({ timeout: 45000 }),
 			]);
 		} finally {
 			// joe/jason contexts are closed (video retained-on-failure) by the userPage fixture.
@@ -280,6 +283,66 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 		}
 	});
 
+	test('a remote change to a DIFFERENT attribute while in conflict does not reset the dirty editor value', async ({
+		browser,
+		request,
+		userPage,
+	}) => {
+		// Regression guard for the exact concern raised during the branch/commit
+		// rework: while one user has an unsaved edit on attribute A and a conflict is
+		// pending, a SECOND remote event (another user changing a DIFFERENT attribute
+		// B on the same artifact) must NOT reload the shared resource and clobber the
+		// in-progress edit. The parent editor's `hasDirtyEditorsForEntity` guard skips
+		// the reload while dirty; this proves it holds across a second, unrelated event.
+		test.setTimeout(90000);
+		const { branchId, branchName, artifact } =
+			await setupBranchWithArtifact(browser, request, 'KeepEdit');
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
+		try {
+			await openArtifact(joe, branchName, artifact);
+			await openArtifact(jason, branchName, artifact);
+			await Promise.all([
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
+			]);
+
+			const jasonUnsaved = artifact + ' - Jason in progress';
+
+			await test.step('Jason starts a dirty Name edit; Joe renames (same attr) to raise the conflict', async () => {
+				const jasonName = nameField(jason);
+				await jasonName.click();
+				await jasonName.fill(jasonUnsaved);
+
+				await editNameAndSave(joe, artifact + ' - Joe first');
+				await expect(
+					jason.locator('osee-conflict-resolution-banner')
+				).toBeVisible({ timeout: 20000 });
+			});
+
+			await test.step('Joe changes a DIFFERENT attribute (adds one), firing a second event', async () => {
+				// Adding an attribute is an attribute change to a different type than
+				// Name; it is a second remote event on the same artifact while Jason is
+				// still conflicted.
+				await addAttribute(joe, 'CUI Limited');
+			});
+
+			await test.step("Jason's in-progress Name value is preserved (not reset) and the banner still shows", async () => {
+				// The decisive assertion: Jason's unsaved text must still be there. If
+				// the second event had reloaded the shared resource, this would have
+				// reverted to a server value.
+				await expect(nameField(jason)).toHaveValue(jasonUnsaved, {
+					timeout: 20000,
+				});
+				await expect(
+					jason.locator('osee-conflict-resolution-banner')
+				).toBeVisible();
+			});
+		} finally {
+			await purgeBranchViaApi(request, branchId);
+		}
+	});
+
 	test('attribute add, delete, and history updates by one user propagate to another', async ({
 		browser,
 		request,
@@ -334,6 +397,69 @@ test.describe('Artifact editor real-time (SSE, two users)', () => {
 				await expect
 					.poll(() => historyRows.count(), { timeout: 20000 })
 					.toBeGreaterThan(initialCount);
+			});
+		} finally {
+			// joe/jason contexts are closed (video retained-on-failure) by the userPage fixture.
+			await purgeBranchViaApi(request, branchId);
+		}
+	});
+
+	test('closing a tab with an unresolved conflict warns, and discards + closes on confirm', async ({
+		browser,
+		request,
+		userPage,
+	}) => {
+		// Closing a CONFLICTED tab is the one close path that must warn: the held edit
+		// cannot auto-save, so closing genuinely discards it. This drives the real
+		// two-user conflict (Jason dirty + focused, Joe saves the same attribute), then
+		// closes Jason's tab and asserts the confirm() fires and discards on OK.
+		const { branchId, branchName, artifact } =
+			await setupBranchWithArtifact(browser, request, 'ConflictClose');
+		const joe = await userPage(DEMO_USERS.joe);
+		const jason = await userPage(DEMO_USERS.jason);
+		try {
+			await openArtifact(joe, branchName, artifact);
+			await openArtifact(jason, branchName, artifact);
+			await Promise.all([
+				waitForPageReadyForSse(joe),
+				waitForPageReadyForSse(jason),
+			]);
+
+			await test.step('raise the conflict on Jason', async () => {
+				// Jason edits and KEEPS focus so no auto-save-on-blur fires (stays dirty).
+				const jasonName = nameField(jason);
+				await jasonName.click();
+				await jasonName.fill(artifact + ' - Jason unsaved');
+
+				// Joe changes the SAME attribute and saves -> Jason is now conflicted.
+				await editNameAndSave(joe, artifact + ' - Joe saved');
+				await expect(
+					jason.locator('osee-conflict-resolution-banner')
+				).toBeVisible({ timeout: 20000 });
+			});
+
+			await test.step('closing the conflicted tab warns; OK discards and closes', async () => {
+				// The close must surface a confirm() (not close silently). Capture its
+				// message and accept it, which discards the held edit and closes the tab.
+				let dialogMessage: string | null = null;
+				jason.once('dialog', (d) => {
+					dialogMessage = d.message();
+					void d.accept();
+				});
+
+				await jason.getByLabel('Close tab').first().click();
+
+				// The prompt appeared and named the conflict as the reason.
+				await expect
+					.poll(() => dialogMessage, { timeout: 10000 })
+					.toContain('conflict');
+
+				// On accept, the tab is discarded and closed.
+				await expect(
+					jason.getByText(
+						'Select an artifact from the hierarchy to begin'
+					)
+				).toBeVisible({ timeout: 15000 });
 			});
 		} finally {
 			// joe/jason contexts are closed (video retained-on-failure) by the userPage fixture.

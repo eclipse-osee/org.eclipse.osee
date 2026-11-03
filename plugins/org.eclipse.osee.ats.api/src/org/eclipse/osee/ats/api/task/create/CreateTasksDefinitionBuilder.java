@@ -59,8 +59,7 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
 
    public CreateTasksDefinitionBuilder andStaticTask(String title, String desc, StateToken relatedToState,
       Long... assigneeAccountId) {
-      return andStaticTask(title, desc, relatedToState, AtsWorkDefinitionTokens.WorkDefTeamDefault,
-         assigneeAccountId);
+      return andStaticTask(title, desc, relatedToState, AtsWorkDefinitionTokens.WorkDefTeamDefault, assigneeAccountId);
    }
 
    public CreateTasksDefinitionBuilder andStaticTask(String name, String desc, StateToken relatedToState,
@@ -113,6 +112,11 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
       for (AttributeTypeToken copyAttrType : copyAttrTypes) {
          createTasksDef.getChgRptOptions().getCopyAttrTypes().add(copyAttrType);
       }
+      return this;
+   }
+
+   public CreateTasksDefinitionBuilder andCommitComment(String commitComment) {
+      createTasksDef.setCommitComment(commitComment);
       return this;
    }
 

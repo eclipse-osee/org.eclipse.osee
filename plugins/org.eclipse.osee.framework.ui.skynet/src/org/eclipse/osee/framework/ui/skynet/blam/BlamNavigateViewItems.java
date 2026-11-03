@@ -15,35 +15,21 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.test.TestingOpenAndTestAllRegisteredBlamsDemo;
 
 /**
  * @author Donald G. Dunne
  */
 public class BlamNavigateViewItems implements XNavigateItemProvider {
-
-   private static TreeMap<String, AbstractBlam> blams;
-
-   public synchronized static Map<String, AbstractBlam> getBlamMap() {
-      if (blams == null) {
-         blams = new TreeMap<>();
-         ExtensionDefinedObjects<AbstractBlam> definedObjects = new ExtensionDefinedObjects<>(
-            "org.eclipse.osee.framework.ui.skynet.BlamOperation", "Operation", "className");
-         for (AbstractBlam blam : definedObjects.getObjects()) {
-            blams.put(blam.getName(), blam);
-         }
-      }
-      return blams;
-   }
 
    @Override
    public boolean isApplicable() {
@@ -51,22 +37,23 @@ public class BlamNavigateViewItems implements XNavigateItemProvider {
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
+   public List<XNavigateItem> getNavigateItemsForCurrentUser(List<XNavigateItem> items) {
       Collection<IUserGroupArtifactToken> userGroups =
          OsgiUtil.getService(getClass(), OseeClient.class).userService().getMyUserGroups();
-      for (AbstractBlam blam : BlamNavigateViewItems.getBlamOperations()) {
-         if (blam.isApplicable()) {
+      for (AbstractBlam blam : BlamService.getBlams()) {
+         if (blam.isApplicable() && !blam.getCategories().contains(XNavItemCat.NO_NAV)) {
             Collection<IUserGroupArtifactToken> blamUserGroups = blam.getUserGroups();
             if (blamUserGroups.isEmpty() || !Collections.setIntersection(blamUserGroups, userGroups).isEmpty()) {
-               XNavigateItemBlam blamItem = new XNavigateItemBlam(blam);
+               XNavigateBlamItem blamItem = new XNavigateBlamItem(blam);
                items.add(blamItem);
             }
          }
       }
+      // Admin.Testing category only exists for admins, so only add there to avoid an orphaned parent
+      if (userGroups.contains(CoreUserGroups.OseeAdmin) && DemoUtil.isDemoDatabase()) {
+         items.add(new TestingOpenAndTestAllRegisteredBlamsDemo());
+      }
       return items;
    }
 
-   public static Collection<AbstractBlam> getBlamOperations() {
-      return getBlamMap().values();
-   }
 }

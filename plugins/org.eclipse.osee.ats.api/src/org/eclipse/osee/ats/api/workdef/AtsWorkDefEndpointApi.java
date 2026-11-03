@@ -20,6 +20,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefArtifactTypeContext;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -33,6 +34,11 @@ public interface AtsWorkDefEndpointApi {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<WorkDefinition> get();
+
+   @GET
+   @Path("artifactTypeContexts")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<WorkDefArtifactTypeContext> getArtifactTypeContexts();
 
    @Path("{id}")
    @GET

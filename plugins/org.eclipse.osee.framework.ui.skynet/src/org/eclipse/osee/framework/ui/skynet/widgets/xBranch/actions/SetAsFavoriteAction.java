@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchViewerWidget;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Display;
 
@@ -36,9 +36,9 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SetAsFavoriteAction extends Action {
 
-   private final XBranchWidget xBranchViewer;
+   private final XBranchViewerWidget xBranchViewer;
 
-   public SetAsFavoriteAction(XBranchWidget xBranchViewer) {
+   public SetAsFavoriteAction(XBranchViewerWidget xBranchViewer) {
       super("Toggle Branch as Favorite");
       this.xBranchViewer = xBranchViewer;
    }

@@ -21,6 +21,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,7 +42,7 @@ public class EditEnumeratedArtifact extends XNavigateItemAction {
    private static final String TITLE = "Edit Enumerated Artifact";
 
    public EditEnumeratedArtifact() {
-      super(TITLE, CoreImage.GEAR, XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
+      super(TITLE, CoreImage.GEAR, Arrays.asList(CoreUserGroups.OseeAdmin), XNavigateItem.DEFINE_ADMIN);
    }
 
    @Override
@@ -65,6 +66,6 @@ public class EditEnumeratedArtifact extends XNavigateItemAction {
 
    @Override
    public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.DEFINE_ADMIN, XNavItemCat.OSEE_ADMIN);
+      return Arrays.asList(XNavigateItem.DEFINE_ADMIN);
    }
 }

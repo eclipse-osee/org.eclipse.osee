@@ -22,4 +22,12 @@ public interface IAtsWorkDefinitionBuilder {
 
    public WorkDefinition build();
 
+   /**
+    * @return true if this work definition should be registered in the current environment. Default
+    * true; demo/test work defs override to gate on DemoUtil.isDemoDatabase().
+    */
+   default boolean isApplicable() {
+      return true;
+   }
+
 }

@@ -23,5 +23,7 @@ Import-Package: org.eclipse.nebula.widgets.ganttchart,
  org.eclipse.osee.framework.skynet.core.transaction,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.widgets,
+ org.eclipse.osee.framework.ui.skynet.widgets.xx,
+ org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen,
  org.eclipse.osee.framework.ui.swt
 Bundle-Vendor: Eclipse Open System Engineering Environment

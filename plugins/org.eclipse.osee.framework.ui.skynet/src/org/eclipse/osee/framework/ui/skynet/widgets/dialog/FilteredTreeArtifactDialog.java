@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,11 +44,11 @@ import org.eclipse.swt.widgets.Control;
 public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
 
    private Collection<? extends Artifact> selectable;
-   private XCheckBox checkbox;
+   private XXCheckBoxWidget checkbox;
    private String checkBoxLabel;
    private boolean defaultChecked;
    private boolean checked;
-   private XText text;
+   private XXTextWidget text;
    private String textLabel;
    private String enteredText;
 
@@ -84,9 +84,9 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
          comp1.setLayout(new GridLayout(2, false));
          comp1.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-         checkbox = new XCheckBox(checkBoxLabel);
+         checkbox = new XXCheckBoxWidget(checkBoxLabel);
          checkbox.createWidgets(comp1, 2);
-         checkbox.set(defaultChecked);
+         checkbox.setSelected(defaultChecked);
          checkbox.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -100,7 +100,7 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
          comp1.setLayout(new GridLayout(1, false));
          comp1.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-         text = new XText(textLabel);
+         text = new XXTextWidget(textLabel);
          text.setFillVertically(true);
          text.createWidgets(comp1, 2);
          if (Strings.isValid(enteredText)) {

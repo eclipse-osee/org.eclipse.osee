@@ -27,75 +27,144 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.ide.blam.AbstractAtsBlam;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkChangeTypeSelection;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXActionableItemWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXChangeTypeWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXPriorityWidget;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.enums.OseeEnum;
+import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.demo.DemoUtilCore;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXListArtifactDropWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Donald G. Dunne
  */
-public class CreateActionFromTaskBlam extends AbstractBlam {
+@Component(service = AbstractBlam.class, immediate = true)
+public class CreateActionFromTaskBlam extends AbstractAtsBlam {
 
+   private static final String BLAM_NAME = "Create Actions from Tasks";
    private final static String TASKS = "Tasks (drop here)";
    private final static String TITLE = "Title";
    private final static String ACTIONABLE_ITEMS = "Actionable Item(s)";
    private final static String CHANGE_TYPE = "Change Type";
    private final static String PRIORITY = "Priority";
+
    private Collection<TaskArtifact> taskArtifacts;
    private final AtsApi atsApi;
-   private XHyperlinkChangeTypeSelection changeTypeWidget;
-   private XHyperlinkPrioritySelection priorityWidget;
-   private XHyperlabelActionableItemSelection aiWidget;
+   private XXChangeTypeWidget changeTypeWidget;
+   private XXPriorityWidget priorityWidget;
+   private XXActionableItemWidget aiWidget;
+
+   //////////////////////////////////////////
+   // Constructors
+   //////////////////////////////////////////
 
    public CreateActionFromTaskBlam() {
-      // do nothing
+      super(BLAM_NAME, CoreImage.GEAR);
       atsApi = AtsApiService.get();
    }
 
+   //////////////////////////////////////////
+   // Widgets
+   //////////////////////////////////////////
+
+   @Override
+   public List<XWidgetData> getXWidgetItems() {
+      createWidgetBuilder();
+      wba.andListDropWidget(TASKS);
+      wba.andAiWidget().andRequired();
+      wba.andTextWidget(TITLE).andDefault(getDefaultTitle()).andRequired();
+      wba.andChangeTypeWidget().andRequired();
+      wba.andPriorityWidget().andRequired();
+      return wb.getXWidgetDatas();
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetSwtRenderer xWidgetSwtRenderer,
+      XModifiedListener modListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, xWidgetSwtRenderer, modListener, isEditable);
+      if (xWidget.getLabel().equals(TASKS) && taskArtifacts != null) {
+         XXListArtifactDropWidget viewer = (XXListArtifactDropWidget) xWidget;
+         viewer.setSelected(Collections.castAll(taskArtifacts));
+      } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
+         changeTypeWidget = (XXChangeTypeWidget) xWidget;
+      } else if (xWidget.getLabel().equals(PRIORITY)) {
+         priorityWidget = (XXPriorityWidget) xWidget;
+      } else if (xWidget.getLabel().equals(ACTIONABLE_ITEMS)) {
+         aiWidget = (XXActionableItemWidget) xWidget;
+         aiWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               Collection<IAtsActionableItem> ais = aiWidget.getSelected();
+               if (!ais.isEmpty()) {
+                  IAtsActionableItem ai = ais.iterator().next();
+
+                  List<ChangeTypes> changeTypeOptions = atsApi.getWorkItemService().getChangeTypeOptions(ai);
+                  changeTypeWidget.setSelectable(OseeEnum.toStrings(changeTypeOptions));
+
+                  List<Priorities> priorityOptions = atsApi.getWorkItemService().getPrioritiesOptions(ai);
+                  priorityWidget.setSelectable(OseeEnum.toStrings(priorityOptions));
+               }
+            }
+         });
+      }
+   }
+
+   //////////////////////////////////////////
+   // Operation
+   //////////////////////////////////////////
+
    @Override
    public void runOperation(final VariableMap variableMap, final IProgressMonitor monitor) {
+
+      // Remove when demo operation test is implemented in Blam
+      if (DemoUtilCore.isDemoDbBlamTest()) {
+         return;
+      }
+
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TASKS);
                String title = variableMap.getString(TITLE);
                Collection<IAtsActionableItem> aiasArts =
                   variableMap.getCollection(IAtsActionableItem.class, ACTIONABLE_ITEMS);
-               ChangeTypes changeType = (ChangeTypes) variableMap.getValue(CHANGE_TYPE);
-               if (changeType == null) {
+               String changeType = variableMap.getString(CHANGE_TYPE);
+               if (Strings.isInvalid(changeType)) {
                   AWorkbench.popup("ERROR", "Must select a Change Type");
                   return;
                }
 
-               Priorities priority = (Priorities) variableMap.getValue(PRIORITY);
-               if (priority == null) {
+               String priority = variableMap.getString(PRIORITY);
+               if (Strings.isInvalid(priority)) {
                   AWorkbench.popup("ERROR", "Must select a Priority");
                   return;
                }
@@ -117,7 +186,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
                   AtsUtilClient.setEmailEnabled(false);
                   Collection<TaskArtifact> taskArts = Collections.castAll(artifacts);
                   Collection<IAtsActionableItem> aias = Collections.castAll(aiasArts);
-                  handleCreateActions(taskArts, title, aias, changeType, priority.getName(), monitor);
+                  handleCreateActions(taskArts, title, aias, changeType, priority, monitor);
                } catch (Exception ex) {
                   log(ex);
                } finally {
@@ -131,8 +200,12 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       });
    }
 
+   //////////////////////////////////////////
+   // Helpers
+   //////////////////////////////////////////
+
    private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias,
-      ChangeTypes changeType, String priority, IProgressMonitor monitor) {
+      String changeType, String priority, IProgressMonitor monitor) {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
       for (TaskArtifact task : tasks) {
          String useTitle = title;
@@ -168,49 +241,6 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       return String.format("Created from task [%s]", taskArt.toStringWithId());
    }
 
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
-      SwtXWidgetRenderer swtXWidgetRenderer , XModifiedListener modListener, boolean isEditable) {
-      super.widgetCreated(xWidget, toolkit, art, swtXWidgetRenderer, modListener, isEditable);
-      if (xWidget.getLabel().equals(TASKS) && taskArtifacts != null) {
-         XListDropViewer viewer = (XListDropViewer) xWidget;
-         viewer.setInput(taskArtifacts);
-      } else if (xWidget.getLabel().equals(CHANGE_TYPE)) {
-         changeTypeWidget = (XHyperlinkChangeTypeSelection) xWidget;
-      } else if (xWidget.getLabel().equals(PRIORITY)) {
-         priorityWidget = (XHyperlinkPrioritySelection) xWidget;
-      } else if (xWidget.getLabel().equals(ACTIONABLE_ITEMS)) {
-         aiWidget = (XHyperlabelActionableItemSelection) xWidget;
-         aiWidget.addXModifiedListener(new XModifiedListener() {
-
-            @Override
-            public void widgetModified(XWidget widget) {
-               Collection<IAtsActionableItem> ais = aiWidget.getSelectedActionableItems();
-               if (!ais.isEmpty()) {
-                  IAtsActionableItem ai = ais.iterator().next();
-
-                  List<ChangeTypes> changeTypeOptions = atsApi.getWorkItemService().getChangeTypeOptions(ai);
-                  changeTypeWidget.setSelectable(changeTypeOptions);
-
-                  List<Priorities> priorityOptions = atsApi.getWorkItemService().getPrioritiesOptions(ai);
-                  priorityWidget.setSelectable(priorityOptions);
-               }
-            }
-         });
-      }
-   }
-
-   @Override
-   public List<XWidgetData> getXWidgetItems() {
-      XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andWidget(TASKS, "XListDropViewer");
-      wb.andXHyperlinkActionableItemActive().andRequired().endWidget();
-      wb.andXText(TITLE).andDefault(getDefaultTitle()).andRequired().endWidget();
-      wb.andChangeType(ChangeTypes.DEFAULT_CHANGE_TYPES).andRequired().endWidget();
-      wb.andPriority().andRequired().endWidget();
-      return wb.getXWidgetDatas();
-   }
-
    /**
     * Return "Copy of"-title if all titles of workflows are the same, else ""
     */
@@ -228,24 +258,23 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       return title;
    }
 
-   @Override
-   public String getDescriptionUsage() {
-      return "Create Action from task and relate using supporting information relation.";
-   }
-
    public void setDefaultTeamWorkflows(Collection<? extends TaskArtifact> taskArtifacts) {
       this.taskArtifacts = new LinkedList<>();
       this.taskArtifacts.addAll(taskArtifacts);
    }
 
-   @Override
-   public String getName() {
-      return "Create Actions from Tasks";
-   }
+   //////////////////////////////////////////
+   // Categories & Description
+   //////////////////////////////////////////
 
    @Override
    public Collection<XNavItemCat> getCategories() {
       return Arrays.asList(AtsNavigateViewItems.ATS_UTIL);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Create Action from task and relate using supporting information relation.";
    }
 
 }

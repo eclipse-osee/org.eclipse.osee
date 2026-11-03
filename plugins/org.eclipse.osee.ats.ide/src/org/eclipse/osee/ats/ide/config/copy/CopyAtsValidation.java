@@ -85,7 +85,7 @@ public class CopyAtsValidation {
    private void validateTeamDefinition(IAtsTeamDefinition teamDef) {
       String newName = CopyAtsUtil.getConvertedName(configData, teamDef.getName());
       if (newName.equals(teamDef.getName())) {
-         resultData.errorf("Could not get new name from name conversion for Team Definition [%s]", teamDef.getName());
+         resultData.errorf("Could not get new name from name conversion for Team Definition [%s]\n", teamDef.getName());
       }
       for (IAtsTeamDefinition childTeamDef : AtsApiService.get().getTeamDefinitionService().getTeamsFromItemAndChildren(
          teamDef)) {

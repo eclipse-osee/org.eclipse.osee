@@ -13,26 +13,7 @@
 
 package org.eclipse.osee.ats.api.data;
 
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AbstractReview;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AbstractWorkflowArtifact;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Action;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileFeatureGroup;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileSprint;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileStory;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsArtifact;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsConfigArtifact;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.BuildImpactData;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Country;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Insertion;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.InsertionActivity;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Program;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ReleaseArtifact;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.User;
@@ -225,6 +206,10 @@ public interface AtsRelationTypes {
    RelationTypeToken TeamWorkflowToReview = ats.add(2305843009213694321L, "TeamWorkflowToReview", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team Workflow", AbstractReview, "Review");
    RelationTypeSide TeamWorkflowToReview_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToReview, SIDE_A);
    RelationTypeSide TeamWorkflowToReview_Review = RelationTypeSide.create(TeamWorkflowToReview, SIDE_B);
+
+   RelationTypeToken TeamWorkflowToFundingGoal = ats.add(238958198472938L, "TeamWorkflowToFundingGoal", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team Workflow", AbstractReview, "Funding Goal");
+   RelationTypeSide TeamWorkflowToFundingGoal_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToReview, SIDE_A);
+   RelationTypeSide TeamWorkflowToFundingGoal_Goal = RelationTypeSide.create(Goal, SIDE_B);
 
    RelationTypeToken UserGroupToActionableItem = ats.add(23875102986153L, "UserGroupToActionableItem", MANY_TO_ONE, UNORDERED, CoreArtifactTypes.UserGroup, "User Group", ActionableItem, "ActionableItem");
    RelationTypeSide UserGroupToActionableItem_UserGroup = RelationTypeSide.create(UserGroupToActionableItem, SIDE_A);

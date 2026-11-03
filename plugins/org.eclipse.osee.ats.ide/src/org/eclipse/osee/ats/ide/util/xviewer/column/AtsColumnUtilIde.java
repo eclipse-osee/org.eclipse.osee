@@ -19,12 +19,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -56,7 +56,7 @@ public class AtsColumnUtilIde {
                AWorkbench.popup(INVALID_SELECTION, COLUMN_NOT_EDITABLE, attrColumn.getName());
                return false;
             }
-            if (!attrType.getDisplayHints().contains(AtsDisplayHint.Edit)) {
+            if (!attrType.getDisplayHints().contains(DisplayHint.Edit)) {
                AWorkbench.popup(INVALID_SELECTION, ATTRIBUTE_NOT_EDITABLE, attrType.getUnqualifiedName());
                return false;
             }
@@ -104,7 +104,7 @@ public class AtsColumnUtilIde {
          AWorkbench.popup(INVALID_SELECTION, INVALID_ATTR_TYPE, attrType.getUnqualifiedName());
          return;
       }
-      if (!attrType.getDisplayHints().contains(AtsDisplayHint.Edit)) {
+      if (!attrType.getDisplayHints().contains(DisplayHint.Edit)) {
          AWorkbench.popup(INVALID_SELECTION, ATTRIBUTE_NOT_EDITABLE, attrType.getUnqualifiedName());
          return;
       }

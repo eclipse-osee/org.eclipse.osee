@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.operation;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -23,7 +24,7 @@ public abstract class OperationLogger {
 
    /**
     * Reports as a row. Subsequent calls are reported as a new row (i.e. a new line is appended)
-    * 
+    *
     * @param row array of strings treated as fields of a row
     */
    public abstract void log(String... row);
@@ -41,4 +42,10 @@ public abstract class OperationLogger {
    public final void logf(String format, Object... args) {
       log(String.format(format, args));
    }
+
+   public XResultData getResults() {
+      // for subclass
+      return XResultData.OK_STATUS;
+   }
+
 }

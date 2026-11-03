@@ -25,10 +25,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
@@ -39,29 +39,19 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
-import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.EditorWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.EditorWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
@@ -79,7 +69,6 @@ import org.eclipse.ui.progress.UIJob;
 public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventHandler {
    private final AbstractWorkflowArtifact awa;
    private final List<WfeWorkflowSection> stateSections = new ArrayList<>();
-   private final List<StateXWidgetPage> statePages = new ArrayList<>();
    private IManagedForm managedForm;
    private Composite bodyComp;
    private Composite atsBody;
@@ -87,11 +76,13 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    public final static String ID = "ats.workflow.tab";
    private final WorkflowEditor editor;
    private final List<WfeUndefinedStateSection> undefinedStateSections = new ArrayList<>();
+   private final AtsApi atsApi;
 
    public WfeWorkFlowTab(WorkflowEditor editor, AbstractWorkflowArtifact awa) {
       super(editor, ID, awa, "Workflow");
       this.editor = editor;
       this.awa = awa;
+      atsApi = AtsApiService.get();
    }
 
    @Override
@@ -222,14 +213,14 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(new GridLayout(1, false));
 
-      StateXWidgetPage page = getCurrentAtsWorkPage(awa);
-      if (page == null) {
+      StateDefinition currentStateDef = getCurrentAtsWorkPage(awa);
+      if (currentStateDef == null) {
          OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP,
             "Can't retrieve current page from current state [%s] of work definition [%s]", awa.getCurrentStateName(),
             awa.getWorkDefinition().getName());
       }
 
-      headerComp = new WfeHeaderComposite(atsBody, SWT.NONE, editor, getCurrentAtsWorkPage(awa), managedForm);
+      headerComp = new WfeHeaderComposite(atsBody, SWT.NONE, editor, managedForm);
       headerComp.create();
 
       createPageSections();
@@ -238,24 +229,29 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
       setEditorWidgets();
       atsBody.layout();
+      // Operations is created last. State-section construction reflows before Operations exists, so a restored editor
+      // can cache a scroll extent that ends above its title bar. Reflow once after the complete body is assembled;
+      // this is structural construction, not an ordinary refresh, and does not reintroduce no-op refresh flicker.
+      managedForm.reflow(true);
       atsBody.setFocus();
    }
 
    private void setEditorWidgets() {
       if (Widgets.isAccessible(headerComp)) {
-         Collection<XWidget> headerWidgets = headerComp.getXWidgets(new ArrayList<XWidget>());
+         Collection<XWidget> headerWidgets = headerComp.getXWidgets();
          for (XWidget widget : headerWidgets) {
             if (widget instanceof EditorWidget) {
                ((EditorWidget) widget).setEditorData(editor);
+               widget.setManagedForm(managedForm);
             }
          }
       }
-      List<StateXWidgetPage> statePages = getStatePages();
-      for (StateXWidgetPage currStatePage : statePages) {
-         Collection<XWidget> updateWidgets = currStatePage.getDynamicXWidgetLayout().getXWidgets();
+      for (WfeWorkflowSection currStatePage : stateSections) {
+         Collection<XWidget> updateWidgets = currStatePage.getXWidgets();
          for (XWidget widget : updateWidgets) {
             if (widget instanceof EditorWidget) {
                ((EditorWidget) widget).setEditorData(editor);
+               widget.setManagedForm(managedForm);
             }
          }
       }
@@ -286,7 +282,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       }
    }
 
-   private final Map<String, Pair<StateXWidgetPage, Composite>> stateNameToPageAndComposite = new HashMap<>();
+   private final Map<String, Composite> stateNameToComposite = new HashMap<>();
 
    private void createPageSections() {
       try {
@@ -295,12 +291,13 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
          gd.widthHint = 100;
          sectionsComp.setLayoutData(gd);
          sectionsComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+         XWidgetUtility.debugLayout(sectionsComp, SWT.COLOR_CYAN);
 
-         for (StateXWidgetPage statePage : getStatePagesOrderedByOrdinal(awa)) {
+         for (StateDefinition stateDef : getStatePagesOrderedByOrdinal(awa)) {
             try {
                // Only display current or past states
-               if (awa.isInState(statePage) || awa.getLog().isStateVisited(statePage)) {
-                  createStateSection(sectionsComp, statePage);
+               if (awa.isInState(stateDef) || awa.getLog().isStateVisited(stateDef)) {
+                  createStateSection(sectionsComp, stateDef);
                }
                // Else make placeholder for state transition
                else {
@@ -309,8 +306,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
                   gd.widthHint = 100;
                   placeHolderComp.setLayoutData(gd);
                   placeHolderComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-                  stateNameToPageAndComposite.put(statePage.getName(),
-                     new Pair<StateXWidgetPage, Composite>(statePage, placeHolderComp));
+                  stateNameToComposite.put(stateDef.getName(), placeHolderComp);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -321,48 +317,11 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       }
    }
 
-   private void createStateSection(Composite sectionsComp, StateXWidgetPage statePage) {
+   private WfeWorkflowSection createStateSection(Composite sectionsComp, StateDefinition statePage) {
       WfeWorkflowSection section = new WfeWorkflowSection(sectionsComp, SWT.NONE, statePage, awa, editor);
       managedForm.addPart(section);
       stateSections.add(section);
-      statePages.add(statePage);
-   }
-
-   public XResultData isXWidgetDirty(XResultData rd) {
-      if (Widgets.isAccessible(headerComp)) {
-         rd.log("======> WFE - Header\n");
-         headerComp.isXWidgetDirty(rd);
-      }
-      for (WfeWorkflowSection section : stateSections) {
-         rd.logf("======> WFE Section - %s\n", section.getStatePage().getName());
-         section.isXWidgetDirty(rd);
-      }
-      return rd;
-   }
-
-   public Result isXWidgetSavable() {
-      Result result = null;
-      for (WfeWorkflowSection section : stateSections) {
-         result = section.isXWidgetSavable();
-         if (result.isFalse()) {
-            return result;
-         }
-      }
-      return Result.TrueResult;
-   }
-
-   public void saveXWidgetToArtifact() {
-      List<ArtifactStoredWidget> artWidgets = new ArrayList<>();
-      if (Widgets.isAccessible(headerComp)) {
-         headerComp.getDirtyIArtifactWidgets(artWidgets);
-      }
-      // Collect all dirty widgets first (so same attribute shown on different sections don't collide)
-      for (WfeWorkflowSection section : stateSections) {
-         section.getDirtyIArtifactWidgets(artWidgets);
-      }
-      for (ArtifactStoredWidget widget : artWidgets) {
-         widget.saveToArtifact();
-      }
+      return section;
    }
 
    @Override
@@ -382,7 +341,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
    public WfeWorkflowSection getCurrentStateSection() {
       for (WfeWorkflowSection section : stateSections) {
-         if (section.getPage().getName().equals(editor.getWorkItem().getCurrentStateName())) {
+         if (section.getStateDef().getName().equals(editor.getWorkItem().getCurrentStateName())) {
             return section;
          }
       }
@@ -396,61 +355,106 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
             @Override
             public void run() {
+               long refreshStartNanos = System.nanoTime();
+               if (XWidget.debugXWidgetPerformance) {
+                  XWidget.debugXWidgets.syserr("WFE REFRESH PERF epochMs=%s phase=START\n", System.currentTimeMillis());
+               }
                String stateName = awa.getCurrentStateName();
 
                // Determine if state already exists
                boolean found = false;
                for (WfeWorkflowSection section : stateSections) {
-                  if (section.getPage().getName().equals(stateName)) {
+                  if (section.getStateDef().getName().equals(stateName)) {
                      found = true;
                   }
                }
 
+               long phaseStartNanos = System.nanoTime();
                headerComp.refresh();
+               debugRefreshPhase("header", phaseStartNanos);
 
                // Create state if not exist
                if (!found) {
-                  Pair<StateXWidgetPage, Composite> pageAndComp = stateNameToPageAndComposite.get(stateName);
-                  if (pageAndComp != null) {
-                     StateXWidgetPage statePage = pageAndComp.getFirst();
-                     createStateSection(pageAndComp.getSecond(), statePage);
+                  Composite placeholderSectionComp = stateNameToComposite.get(stateName);
+                  if (placeholderSectionComp != null) {
+                     createStateSection(placeholderSectionComp, awa.getWorkDefinition().getStateByName(stateName));
                   }
                }
 
+               phaseStartNanos = System.nanoTime();
                for (WfeWorkflowSection section : stateSections) {
                   section.refresh();
                }
-               refreshExpandStates();
+               debugRefreshPhase("sections", phaseStartNanos);
 
+               phaseStartNanos = System.nanoTime();
+               refreshExpandStates();
+               debugRefreshPhase("expandStates", phaseStartNanos);
+
+               phaseStartNanos = System.nanoTime();
                setEditorWidgets();
+               debugRefreshPhase("setEditorWidgets", phaseStartNanos);
+               debugRefreshPhase("TOTAL", refreshStartNanos);
             }
 
          });
       }
    }
 
+   /** Logs one Workflow Editor refresh phase using monotonic elapsed time; active only with XWidget debugging. */
+   private void debugRefreshPhase(String phase, long startNanos) {
+      if (XWidget.debugXWidgets.isLogToSysErr() && XWidget.debugXWidgetPerformance) {
+         double durationMs = (System.nanoTime() - startNanos) / 1_000_000.0;
+         XWidget.debugXWidgets.syserr("WFE REFRESH PERF epochMs=%s phase=%s durationMs=%.3f\n",
+            System.currentTimeMillis(), phase, durationMs);
+      }
+   }
+
    public void refreshExpandStates() {
+      boolean expansionChanged = false;
       for (WfeWorkflowSection wfeSection : stateSections) {
          if (!Widgets.isAccessible(wfeSection.getMainComp())) {
             continue;
          }
          if (wfeSection.isPinned()) {
-            wfeSection.expand();
+            expansionChanged |= setSectionExpanded(wfeSection, true);
             continue;
          }
-         boolean isCurrentState = wfeSection.isCurrentState();
-         if (isCurrentState) {
+         expansionChanged |= setSectionExpanded(wfeSection, wfeSection.isCurrentState());
+      }
+      // Only relayout when a section actually expanded/collapsed. This method runs on every editor refresh
+      // (including a single-attribute auto-persist); doing a deep layout(true, true) every time repaints the
+      // whole workflow body and is the primary cause of the save flicker. See docs/ai/ide/ide-swt-layouts.md.
+      if (expansionChanged && Widgets.isAccessible(bodyComp)) {
+         bodyComp.layout(true);
+      }
+   }
+
+   /**
+    * Expands or collapses a section only when its SWT expanded state actually changes. Calling
+    * {@link Section#setExpanded(boolean)} with the existing value still invalidates the Eclipse Forms hierarchy on
+    * Windows; during an ordinary attribute refresh that repaints the shared form and makes every native Text value
+    * visibly blank/repaint. The equality guard is therefore required even though no logical state changes.
+    *
+    * @return true when the section's expanded state changed and the workflow body needs one layout
+    */
+   private boolean setSectionExpanded(WfeWorkflowSection wfeSection, boolean expand) {
+      if (!Widgets.isAccessible(wfeSection.getSection())) {
+         if (expand) {
             wfeSection.expand();
-         } else {
-            if (Widgets.isAccessible(wfeSection.getSection())) {
-               wfeSection.getSection().setExpanded(false);
-            }
          }
+         return false;
       }
-      if (Widgets.isAccessible(bodyComp)) {
-         bodyComp.layout(true, true);
-         bodyComp.getParent().layout(true, true);
+      boolean wasExpanded = wfeSection.getSection().isExpanded();
+      if (wasExpanded == expand) {
+         return false;
       }
+      if (expand) {
+         wfeSection.expand();
+      } else {
+         wfeSection.getSection().setExpanded(false);
+      }
+      return true;
    }
 
    @Override
@@ -470,52 +474,17 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       return headerComp;
    }
 
-   public List<StateXWidgetPage> getStatePages() {
-      return statePages;
-   }
-
-   public void computeSizeAndReflow() {
-      for (WfeWorkflowSection section : stateSections) {
-         section.computeTextSizesAndReflow();
-      }
-   }
-
-   @Override
-   public void handleColumnEvents(ArtifactEvent artifactEvent, WorldXViewer worldXViewer) {
-      // no columns in WorkflowTab
-   }
-
-   @Override
-   public void handleColumnTopicEvents(ArtifactTopicEvent artifactTopicEvent, WorldXViewer worldXViewer) {
-      // no columns in WorkflowTab
-   }
-
-   public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
-      for (StateXWidgetPage statePage : getStatePagesOrderedByOrdinal(awa)) {
-         if (awa.getCurrentStateName().equals(statePage.getName())) {
-            return statePage;
+   private StateDefinition getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
+      for (StateDefinition stateDef : getStatePagesOrderedByOrdinal(awa)) {
+         if (awa.getCurrentStateName().equals(stateDef.getName())) {
+            return stateDef;
          }
       }
       return null;
    }
 
-   public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(IAtsWorkItem workItem) {
-      List<StateXWidgetPage> statePages = new ArrayList<>();
-      if (workItem != null) {
-         WorkDefinition workDef = workItem.getWorkDefinition();
-         for (StateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
-            workDef)) {
-            try {
-               StateXWidgetPage statePage = new StateXWidgetPage(workDef, stateDefinition,
-                  (IDynamicWidgetLayoutListener) null, (AbstractWorkflowArtifact) workItem);
-               statePages.add(statePage);
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
-      }
-      return statePages;
-
+   private List<StateDefinition> getStatePagesOrderedByOrdinal(IAtsWorkItem workItem) {
+      return atsApi.getWorkDefinitionService().getStatesOrderedByOrdinal(workItem.getWorkDefinition());
    }
 
 }

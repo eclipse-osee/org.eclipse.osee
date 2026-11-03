@@ -15,6 +15,7 @@ import {
 	Component,
 	computed,
 	DestroyRef,
+	effect,
 	inject,
 	input,
 	signal,
@@ -48,6 +49,10 @@ import {
 	ConflictResolutionBannerComponent,
 	EditorDirtyService,
 } from '@osee/shared/conflict-resolution';
+import {
+	BranchContextSource,
+	provideBranchContext,
+} from '@osee/transactions/services';
 
 export type EditorSection = 'attributes' | 'relations' | 'history' | 'info';
 
@@ -67,6 +72,12 @@ export type EditorSection = 'attributes' | 'relations' | 'history' | 'info';
 		PresenceAvatarsComponent,
 		ConflictResolutionBannerComponent,
 	],
+	// Pin this editor's whole subtree to the tab's branch/view so every transaction
+	// built below (attribute saves, add/delete, native content, conflict resolution)
+	// targets the TAB's branch -- not whatever the global branch selector currently
+	// holds. This makes branch targeting correct-by-construction: descendants inject
+	// the scoped CurrentTransactionService and need not pass a per-call override.
+	providers: [provideBranchContext()],
 	templateUrl: './artifact-editor.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -81,8 +92,18 @@ export class ArtifactEditorComponent {
 	private readonly tabService = inject(ArtifactExplorerTabService);
 	private readonly snackBar = inject(MatSnackBar);
 	private readonly dirtyService = inject(EditorDirtyService);
+	private readonly branchContext = inject(BranchContextSource);
 
 	tab = input.required<artifactTab>();
+
+	/**
+	 * Feed the tab's branch/view into the subtree's branch context so all writes
+	 * created by descendants target this tab's branch. Inputs are not available at
+	 * provider-construction time, so the context is a mutable source set here.
+	 */
+	private readonly _syncBranchContext = effect(() => {
+		this.branchContext.set(this.tab().branchId, this.tab().viewId);
+	});
 
 	/** Which editor section is currently visible. */
 	protected activeSection = signal<EditorSection>('attributes');

@@ -34,8 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
-import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -62,7 +61,7 @@ public class WfeJournalTab extends WfeAbstractTab {
    private IManagedForm managedForm;
    private WfeJournalSubscribersComp journalComp;
    private JournalData journalData;
-   private XText text;
+   private XXTextWidget text;
    private Button submitButton;
    private Button openJournalOnWebButton;
 
@@ -119,13 +118,20 @@ public class WfeJournalTab extends WfeAbstractTab {
    private void createWidgets() {
 
       Composite composite = new Composite(bodyComp, SWT.NONE);
-      composite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      GridLayout compLayout = new GridLayout(1, false);
+      compLayout.marginWidth = 5;
+      compLayout.marginHeight = 5;
+      compLayout.verticalSpacing = 6;
+      composite.setLayout(compLayout);
       composite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
       getManagedForm().getToolkit().adapt(composite);
 
       journalComp = new WfeJournalSubscribersComp(composite, SWT.NONE, workItem, workItem.isInWork(), editor);
       openJournalOnWebButton = new Button(composite, SWT.PUSH);
       openJournalOnWebButton.setText("Open Journal on Web");
+      GridData openBtnGd = new GridData();
+      openBtnGd.verticalIndent = 4;
+      openJournalOnWebButton.setLayoutData(openBtnGd);
       managedForm.getToolkit().adapt(openJournalOnWebButton, true, true);
       openJournalOnWebButton.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -136,18 +142,35 @@ public class WfeJournalTab extends WfeAbstractTab {
 
       });
 
-      text = new XText("New Entry");
+      text = new XXTextWidget("New Entry");
       text.setVerticalLabel(true);
       text.setFillHorizontally(true);
       text.setFillVertically(true);
-      text.createWidgets(composite, 1);
+
+      // Composite around label + text field with white background
+      Composite textComp = new Composite(composite, SWT.NONE);
+      GridLayout textCompLayout = new GridLayout(1, false);
+      textCompLayout.marginWidth = 4;
+      textCompLayout.marginHeight = 4;
+      textComp.setLayout(textCompLayout);
+      textComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+      textComp.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+
+      text.createWidgets(textComp, 1);
       GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
       gd.heightHint = 100;
       text.getStyledText().setLayoutData(gd);
-      text.adaptControls(getManagedForm().getToolkit());
+      text.getStyledText().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+      text.getStyledText().getParent().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+      if (text.getLabelWidget() != null) {
+         text.getLabelWidget().setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+      }
 
       submitButton = new Button(composite, SWT.PUSH);
       submitButton.setText("Submit");
+      GridData submitGd = new GridData();
+      submitGd.verticalIndent = 4;
+      submitButton.setLayoutData(submitGd);
       managedForm.getToolkit().adapt(submitButton, true, true);
       submitButton.addSelectionListener(new SelectionAdapter() {
 

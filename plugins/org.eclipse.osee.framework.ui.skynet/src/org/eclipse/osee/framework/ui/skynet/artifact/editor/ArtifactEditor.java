@@ -15,41 +15,32 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorReloadTab;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.art.ArtAttrTab;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.art.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.details.ArtEdDetailsTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.rel.ArtEdRelationsTab;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.reload.ArtifactEditorReloadTab;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.util.ArtifactEditorOutlinePage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.OseeMarkdownEditorInput;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.edit.OmeEditTab;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.html.OmeHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
@@ -59,7 +50,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor";
 
    private IActionContributor actionBarContributor;
-   private ArtifactFormPage formPage;
+   private ArtAttrTab formPage;
    private ArtifactEditorOutlinePage outlinePage;
    private ArtEdAttrTab attrTab;
    private ArtEdRelationsTab relTab;
@@ -67,10 +58,11 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    private OmeEditTab mdEditTab;
    private OmeHtmlTab mdHtmlTab;
+   private boolean reloading = false;
 
    public IActionContributor getActionBarContributor() {
       if (actionBarContributor == null) {
-         actionBarContributor = new ArtifactEditorActionBarContributor(getArtifactFromEditorInput());
+         actionBarContributor = new ArtifactEditorActionBarContributor(getArtifactFromEditorInput(), this);
       }
       return actionBarContributor;
    }
@@ -82,23 +74,22 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    @Override
    public void editorDirtyStateChanged() {
-      super.editorDirtyStateChanged();
-      getOutlinePage().refresh();
+      // Auto-save: no dirty state tracking
    }
 
    @Override
    public void onDirtied() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            firePropertyChange(PROP_DIRTY);
-         }
-      });
+      // Auto-save: no dirty state tracking
+   }
+
+   @Override
+   public boolean isDirty() {
+      return false;
    }
 
    @Override
    public void showBusy(boolean busy) {
-      ArtifactFormPage page = getFormPage();
+      ArtAttrTab page = getFormPage();
       if (page != null) {
          page.showBusy(busy);
       }
@@ -117,40 +108,12 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    @Override
    public void doSave(IProgressMonitor monitor) {
-      try {
-         if (mdEditTab != null) {
-            mdEditTab.doSave();
-         }
-         getFormPage().doSave(monitor);
-         Artifact artifact = getEditorInput().getArtifact();
-         artifact.persist(String.format("%s - %s", getClass().getSimpleName(), artifact.toStringWithId()));
-         firePropertyChange(PROP_DIRTY);
-      } catch (OseeCoreException ex) {
-         onDirtied();
-         XResultData rd =
-            AccessControlArtifactUtil.getXResultAccessHeader("Artifact Editor - Save", getEditorInput().getArtifact());
-         rd.logf("\n\n%s", Lib.exceptionToString(ex));
-         XResultDataUI.report(rd, "Artifact Editor - Save");
-      }
+      // Auto-save: individual actions persist immediately; this is a no-op
    }
 
    @Override
    public void dispose() {
-      try {
-         // If the artifact is dirty when the editor gets disposed, then it needs to be reverted
-         Artifact artifact = getEditorInput().getArtifact();
-         if (artifact != null && !artifact.isDeleted() && artifact.isDirty()) {
-            try {
-               artifact.reloadAttributesAndRelations();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      } finally {
-         super.dispose();
-      }
+      super.dispose();
    }
 
    @Override
@@ -171,7 +134,9 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    @Override
    public void refreshDirtyArtifact() {
-      Jobs.startJob(new RefreshDirtyArtifactJob());
+      if (!reloading) {
+         reloadEditor();
+      }
    }
 
    @Override
@@ -196,7 +161,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    public void performLoad() {
-      formPage = new ArtifactFormPage(this, "ArtifactFormPage", "Attributes");
+      formPage = new ArtAttrTab(this, "ArtifactFormPage", "Attributes");
       try {
          addPage(formPage);
          setPartName(getEditorInput().getName());
@@ -269,7 +234,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       }
    }
 
-   private ArtifactFormPage getFormPage() {
+   private ArtAttrTab getFormPage() {
       return formPage;
    }
 
@@ -289,31 +254,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          outlinePage = new ArtifactEditorOutlinePage();
       }
       return outlinePage;
-   }
-
-   private final class RefreshDirtyArtifactJob extends UIJob {
-
-      public RefreshDirtyArtifactJob() {
-         super("Refresh Dirty Artifact");
-      }
-
-      @Override
-      public IStatus runInUIThread(IProgressMonitor monitor) {
-         try {
-            setPartName(getEditorInput().getName());
-            ArtifactEditorOutlinePage outlinePage = getOutlinePage();
-            outlinePage.refresh();
-
-            ArtifactFormPage page = getFormPage();
-            if (page != null && Widgets.isAccessible(page.getPartControl())) {
-               page.refresh();
-            }
-            onDirtied();
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-         return Status.OK_STATUS;
-      }
    }
 
    @Override
@@ -341,6 +281,51 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       if (detailsTab != null) {
          detailsTab.refresh();
       }
+   }
+
+   /**
+    * Full reload: clears all tabs, reloads artifact from server, and re-creates all tabs from scratch.
+    */
+   public void reloadEditor() {
+      if (reloading) {
+         return;
+      }
+      reloading = true;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               // Remember current page index
+               int currentPage = getActivePage();
+
+               // Remove all pages
+               while (getPageCount() > 0) {
+                  removePage(0);
+               }
+
+               // Clear tab references
+               formPage = null;
+               attrTab = null;
+               relTab = null;
+               detailsTab = null;
+               mdEditTab = null;
+               mdHtmlTab = null;
+
+               // Re-create all tabs
+               performLoad();
+               setPartName(getEditorInput().getName());
+
+               // Restore page selection
+               if (currentPage >= 0 && currentPage < getPageCount()) {
+                  setActivePage(currentPage);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            } finally {
+               reloading = false;
+            }
+         }
+      });
    }
 
    public static ArtifactEditor getArtifactEditor(Artifact fArtifact) {
@@ -390,8 +375,8 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       });
    }
 
-   public AttributesFormSection getAttributeFormSection() {
-      return formPage.getAttrFormSection();
+   public AttributeFormPart getAttributeFormPart() {
+      return formPage.getFormPart();
    }
 
 }

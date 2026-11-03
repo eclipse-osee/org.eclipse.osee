@@ -20,14 +20,16 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.workdef.HoldState;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.ide.world.WorldXWidgetActionPage;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -35,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -78,36 +79,37 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return true;
    }
 
-   protected void addWidgets() {
+   protected void addWidgets(XWidgetBuilderAts wba) {
       if (showWorkItemWidgets()) {
-         getWorkItemTypeWidget().addWidget(14);
+         getWorkItemTypeWidget().addWidget(wba, 14);
       }
       addBaseWidgets();
    }
 
    protected void addBaseWidgets() {
-      getTitleWidget().addWidget();
+      getTitleWidget().addWidget(wba);
       if (isAdvanced()) {
-         getAiWidget().addWidget(3);
+         getAiWidget().addWidget(wba, 3);
       }
-      getTeamDefWidget().addWidget(0);
+      getTeamDefWidget().addWidget(wba, 0);
 
-      getVersionWidget().addWidget(8);
-      getStateTypeWidget().addWidget();
-      getStateNameWidget().addWidget();
-      getHoldStateWidget().addWidget(-1);
+      getVersionWidget().addWidget(wba, 8);
+      getStateTypeWidget().addWidget(wba);
+      getStateNameWidget().addWidget(wba);
+      getHoldStateWidget().addWidget(wba, -1);
 
       if (includeUserWidgets()) {
-         getChangeTypeWidget().addWidget(8);
-         getPriorityWidget().addWidget();
-         getUserWidget().addWidget();
-         getUserTypeWidget().addWidget(-1);
+         getChangeTypeWidget().addWidget(wba, 8);
+         getPriorityWidget().addWidget(wba);
+         getUserWidget().addWidget(wba);
+         getUserTypeWidget().addWidget(wba, -1);
       } else {
-         getChangeTypeWidget().addWidget(4);
-         getPriorityWidget().addWidget(-1);
+         getChangeTypeWidget().addWidget(wba, 4);
+         getPriorityWidget().addWidget(wba, -1);
       }
+      wba.endComp();
 
-      getAttrValuesWidget().addWidget();
+      getAttrValuesWidget().addWidget(wba);
 
    }
 
@@ -116,9 +118,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    }
 
    @Override
-   public String getParameterXWidgetXml() {
-      addWidgets();
-      return super.getParameterXWidgetXml();
+   public XWidgetBuilderAts getWidgetBuilderAts() {
+      XWidgetBuilderAts wba = super.getWidgetBuilderAts();
+      addWidgets(wba);
+      return wba;
    }
 
    public AtsSearchData loadSearchData(AtsSearchData data) {
@@ -126,19 +129,19 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          data.setId(searchId);
       }
       data.setSearchName(searchName);
-      if (getTitleWidget() != null && Strings.isValid(getTitleWidget().get())) {
-         data.setTitle(getTitleWidget().get());
+      if (getTitleWidget() != null && Strings.isValid(getTitleWidget().getSelectedFirst())) {
+         data.setTitle(getTitleWidget().getSelectedFirst());
       }
       if (data.getStateTypes() != null) {
          data.getStateTypes().clear();
-         data.getStateTypes().addAll(getStateTypeWidget().get());
+         data.getStateTypes().addAll(getStateTypeWidget().getSelected());
       }
       if (getUserWidget() != null) {
-         AtsUser user = this.getUserWidget().getSingle();
+         UserToken user = this.getUserWidget().getSelectedFirst();
          data.setUserId(user == null ? null : user.getUserId());
       }
       if (getUserTypeWidget() != null) {
-         data.setUserType(getUserTypeWidget().getSingle());
+         data.setUserType(getUserTypeWidget().getSelectedFirst());
       }
       if (showWorkItemWidgets() && getWorkItemTypeWidget() != null) {
          data.getWorkItemTypes().clear();
@@ -156,25 +159,25 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          data.getAiIds().addAll(getAiWidget().getIds());
       }
 
-      if (getVersionWidget().getSingle() != null) {
-         data.setVersionId(getVersionWidget().getSingle().getId());
+      if (getVersionWidget().getSelectedFirst() != null) {
+         data.setVersionId(getVersionWidget().getSelectedFirst().getId());
       }
-      if (getStateNameWidget() != null && !getStateNameWidget().get().isEmpty()) {
-         data.getStates().addAll(getStateNameWidget().get());
+      if (getStateNameWidget() != null && !getStateNameWidget().getSelected().isEmpty()) {
+         data.getStates().addAll(getStateNameWidget().getSelected());
       }
-      if (getChangeTypeWidget() != null && !getChangeTypeWidget().get().isEmpty()) {
-         data.getChangeTypes().addAll(getChangeTypeWidget().get());
+      if (getChangeTypeWidget() != null && !getChangeTypeWidget().getSelected().isEmpty()) {
+         data.getChangeTypes().addAll(getChangeTypeWidget().getSelected());
       }
-      if (getPriorityWidget() != null && !getPriorityWidget().get().isEmpty()) {
-         for (String str : getPriorityWidget().get().split(",")) {
-            if (!str.equals(Widgets.NOT_SET)) {
+      if (getPriorityWidget() != null && !getPriorityWidget().getSelected().isEmpty()) {
+         for (String str : getPriorityWidget().getSelectedFirst().split(",")) {
+            if (Strings.isValid(str)) {
                data.getPriorities().add(str);
             }
          }
       }
-      if (getHoldStateWidget() != null && getHoldStateWidget().getSingle() != null) {
-         data.setHoldState(getHoldStateWidget().getSingle());
-      }
+      HoldState holdState = getHoldStateWidget() == null ? null : getHoldStateWidget().getSelectedFirst();
+      // Empty XX widgets expose Not_Set as a getter sentinel; null is the AtsSearchData representation for no filter.
+      data.setHoldState(holdState == null || holdState.isNotSet() ? null : holdState);
       if (data.getWorkItemTypes().isEmpty()) {
          for (WorkItemType type : WorkItemType.values()) {
             data.getWorkItemTypes().add(type);
@@ -182,7 +185,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       }
       data.setNamespace(getNamespace());
       if (getReviewTypeWidget() != null) {
-         data.setReviewType(getReviewTypeWidget().getSingle());
+         data.setReviewFormalType(getReviewTypeWidget().getSelectedFirst());
       }
       data.setAttrValues(getAttrValuesWidget().get());
       return data;
@@ -340,12 +343,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
 
    protected boolean isAdvanced() {
       return false;
-   }
-
-   protected void addSpaceWidget(WorldEditorParameterSearchItem searchItem, String blankLabel, int beginComposite) {
-      String widgetXml = String.format("<XWidget xwidgetType=\"XLabel\" displayName=\"" + blankLabel + "\" %s />",
-         searchItem.getBeginComposite(beginComposite));
-      searchItem.addWidgetXml(widgetXml);
    }
 
    public Collection<Artifact> performPostSearchFilter(Collection<Artifact> artifacts) {

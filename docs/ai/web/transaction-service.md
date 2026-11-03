@@ -20,11 +20,85 @@ The web app uses `CurrentTransactionService` (from `@osee/transactions/services`
 
 | Method | Purpose |
 |--------|---------|
-| `createTransaction(comment)` | Creates a `Required<transaction>` synchronously using the current branch ID. |
-| `createTx(comment, branchIdOverride?)` | Creates a `Required<transaction>` as an Observable (reactive). |
+| `createTransaction(comment)` | Creates a `Required<transaction>` synchronously. Branch resolved via `resolveBranch()` (see Branch targeting below). |
+| `createTx(comment, branchIdOverride?)` | Creates a `Required<transaction>` as an Observable. Branch resolved via `resolveBranch()` (override → context → global). |
 | `modifyArtifactAndMutate(comment, artId, applicability, attrConfig, branchIdOverride?)` | Builds a modify transaction and immediately executes it. |
 | `modifyArt(comment, artId, applicability, attrConfig, branchIdOverride?)` | Builds a modify transaction without executing — returns `Observable<Required<transaction>>`. |
 | `performMutation()` | RxJS pipe operator that sends the transaction to the server, sets `uiService.updated = true` for backward compat. Local change notification is handled automatically by `TransactionService`. |
+
+## Branch targeting (which branch a transaction writes to)
+
+Every transaction needs a branch. `CurrentTransactionService.resolveBranch()` picks it
+in this precedence order:
+
+1. **Explicit `branchIdOverride` argument** (when valid, i.e. not the branch sentinel).
+2. **The subtree's pinned branch context** (`BRANCH_CONTEXT`), when a `provideBranchContext()`
+   ancestor supplied one.
+3. **The global current branch** (`UiService.id`) — the default everywhere else.
+
+Most of the app writes to "the current branch" (the branch selector / route), so tiers 1
+and 2 are absent and tier 3 applies. You only need tiers 1–2 for a **pinned surface** — one
+that edits a branch which may differ from the global selector.
+
+### Pinned surfaces and `provideBranchContext()`
+
+An artifact explorer **editor tab** pins its own branch: the same artifact can be open on
+two branches at once (`ArtifactExplorerTabService.addArtifactTabOnBranch`), and a tab
+survives a global branch-selector change (it is only repointed/closed on
+rebaseline/commit/delete). Reads were already tab-sourced, but **writes** historically fell
+back to the global branch, so editing a tab after switching the global selector silently
+wrote to the wrong branch.
+
+The fix is **branch context by DI**, not per-call arguments:
+
+- `provideBranchContext()` (from `@osee/transactions/services`) returns providers for a
+  `BranchContextSource` (a settable signal-backed `{ branchId, viewId }`), the `BRANCH_CONTEXT`
+  token (aliased to that source), **and a scoped `CurrentTransactionService`**. The scoped
+  instance is required because the root singleton cannot see a token provided lower in the tree.
+- A host component adds it to `providers` and feeds its pinned branch in via the injected
+  `BranchContextSource` (inputs are not available at provider-construction time, so an `effect`
+  sets it):
+
+```typescript
+@Component({
+  // ...
+  providers: [provideBranchContext()],
+})
+export class ArtifactEditorComponent {
+  private readonly branchContext = inject(BranchContextSource);
+  tab = input.required<artifactTab>();
+  private readonly _sync = effect(() =>
+    this.branchContext.set(this.tab().branchId, this.tab().viewId)
+  );
+}
+```
+
+Every descendant that injects `CurrentTransactionService` (attributes panel, persisted
+attribute editor, grouped editors, native content, applicability dropdown, relations editor)
+now gets the **scoped** instance and writes to the tab's branch — **with no per-call
+override**. This is correct-by-construction: a new editor added under the tab, and even the
+no-override helpers (`createArtifact`, `addRelation`, `deleteRelation`, `createTransaction`),
+target the pinned branch automatically. Nothing outside a `provideBranchContext()` subtree
+is affected — the global fallback is unchanged.
+
+### When you still need the explicit `branchIdOverride` (tier 1)
+
+A `MatDialog` opened without a `viewContainerRef`/`injector` is created at the **overlay
+root**, outside the host component's injector subtree, so it does **not** inherit the scoped
+service — it gets the root (global-branch) instance. If such a dialog runs its own
+transaction for a pinned surface, pass the branch explicitly. Example: the artifact history
+**revert** dialog carries `data.branchId` (the tab's branch) and passes it as the
+`branchIdOverride` so the revert targets the artifact's branch, not the global selector.
+(Dialogs that do not run their own transaction — e.g. the add-attribute dialog returns a
+selection and the panel commits, or the conflict dialog calls a `commit` callback closed over
+the panel's scoped service — need nothing.)
+
+### Surfaces that are NOT pinned (no action needed)
+
+- **MIM / messaging / transports / connection graph / platform types / shared dropdowns** —
+  branch-selector-driven; one branch at a time; tier 3 (global) is correct.
+- **AcTra (workflow editor, attachments)** — sets `uiService.idValue = COMMON_BRANCH_ID` in
+  `ngOnInit`, so the global branch *is* Common; tier 3 already resolves to Common.
 
 ### `attrConfig` shape
 

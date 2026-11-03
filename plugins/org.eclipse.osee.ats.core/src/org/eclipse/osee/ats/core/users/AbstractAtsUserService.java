@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
    protected IAtsConfigurationsService configurationService;
+   protected AtsApi atsApi;
 
    @Override
    public void setConfigurationService(IAtsConfigurationsService configurationService) {
@@ -240,6 +241,25 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
          }
       }
       return assignees;
+   }
+
+   public AtsApi getAtsApi() {
+      return atsApi;
+   }
+
+   @Override
+   public void setAtsApi(AtsApi atsApi) {
+      this.atsApi = atsApi;
+   }
+
+   @Override
+   public UserToken getCurrentUserToken() {
+      return atsApi.userService().getUser(getCurrentUser());
+   }
+
+   @Override
+   public UserToken getUserTokenByUserId(String userId) {
+      return atsApi.userService().getUserByUserId(getCurrentUserId());
    }
 
 }

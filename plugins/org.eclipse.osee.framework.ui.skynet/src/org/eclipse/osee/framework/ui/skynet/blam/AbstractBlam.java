@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,91 +24,102 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.parsers.ParserConfigurationException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.CoreImage;
-import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
-import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
+public abstract class AbstractBlam implements XWidgetSwtRendererListener {
 
-   private static final String DEFAULT_DESCRIPTION =
+   public static final String DEFAULT_DESCRIPTION =
       "Select parameters below and click the play button at the top right.";
-   private final static String titleEnd = " BLAM";
    private final Pattern capitalLetter = Pattern.compile("[A-Z]+[a-z]*");
+
+   /**
+    * Produce a short product label from a BLAM's package name, for display in test names/reports. Core OSEE
+    * packages ("org.eclipse.osee...") show as "OSEE"; other products show the segment immediately after "osee",
+    * uppercased (e.g. "xyz.abc.osee.www" -&gt; "WWW"). Falls back to the first segment uppercased if "osee" is not
+    * present.
+    */
+   public static String getPackageLabel(AbstractBlam blam) {
+      return getPackageLabel(blam.getClass().getPackageName());
+   }
+
+   /**
+    * @see #getPackageLabel(AbstractBlam)
+    */
+   public static String getPackageLabel(String packageName) {
+      if (packageName == null || packageName.isEmpty()) {
+         return "";
+      }
+      if (packageName.startsWith("org.eclipse.osee")) {
+         return "OSEE";
+      }
+      String[] segments = packageName.split("\\.");
+      for (int i = 0; i < segments.length - 1; i++) {
+         if (segments[i].equals("osee")) {
+            return segments[i + 1].toUpperCase();
+         }
+      }
+      return segments[0].toUpperCase();
+   }
 
    protected Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
    protected Map<Long, String> branchViews;
    protected ArtifactToken viewId = ArtifactToken.SENTINEL;
    protected boolean inDebug = false;
-
-   /**
-    * Where Blam XML UI comes from
-    */
-   public enum BlamUiSource {
-      DEFAULT, // specified by Blam's getXWidgetsXml() method
-      FILE; // stored in OSEE-INF/blamUI/<blam-name>UI.xml file
-   }
-
-   public static final String BRANCH_VIEW = "Branch View";
-   public static final String branchXWidgetXml =
-      "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
-   public static final String BRANCH_VIEW_WIDGET =
-      "<XWidget xwidgetType=\"XCombo()\" displayName=\"Branch View\" horizontalLabel=\"true\"/>";
-   public static final String emptyXWidgetsXml = "<xWidgets/>";
    private OperationLogger logger;
-
-   private final String description;
-   private final BlamUiSource source;
-   private final String name;
-   protected VariableMap variableMap;
+   private final String description = DEFAULT_DESCRIPTION;
+   private String name;
+   protected VariableMap variableMap = new VariableMap();
    private BlamEditor editor;
+   protected XWidgetBuilder wb;
+   private OseeImage image = CoreImage.BLAM;
+   private boolean pend = false;
+   protected Collection<IUserGroupArtifactToken> groups;
 
    public AbstractBlam() {
-      this(null, DEFAULT_DESCRIPTION, BlamUiSource.DEFAULT);
+      this("", CoreImage.BLAM);
+      this.name = generateNameFromClass();
    }
 
-   public AbstractBlam(String name, String usageDescription, BlamUiSource source) {
+   public AbstractBlam(String name) {
+      this(name, CoreImage.BLAM);
+   }
+
+   public AbstractBlam(String name, OseeImage image) {
       this.name = name;
-      this.description = Strings.isValid(usageDescription) ? usageDescription : DEFAULT_DESCRIPTION;
-      this.source = source != null ? source : BlamUiSource.DEFAULT;
+      this.image = image;
    }
 
-   /**
-    * Override to limit view by user group(s)
-    */
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      return Collections.emptyList();
+   protected XWidgetBuilder createWidgetBuilder() {
+      wb = new XWidgetBuilder();
+      return wb;
    }
 
    private String generateNameFromClass() {
@@ -133,48 +143,15 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       return new ExecuteBlamOperation(this, variableMap, logger);
    }
 
-   /**
-    * Use WidgetBuilder and getXWidgetItems()
-    */
-   @Deprecated
-   public String getXWidgetsXml() {
-      switch (source) {
-         case FILE:
-            return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), getClass());
-         case DEFAULT:
-         default:
-            StringBuilder sb = new StringBuilder();
-            sb.append("<xWidgets>");
-            sb.append(branchXWidgetXml);
-            sb.append(BRANCH_VIEW_WIDGET);
-            sb.append("</xWidgets>");
-            return sb.toString();
-      }
-   }
-
    public List<XWidgetData> getXWidgetItems() {
+      if (wb != null) {
+         return wb.getXWidgetDatas();
+      }
       return Collections.emptyList();
-   }
-
-   /**
-    * Expects the {@code <className>} of blam. Gets {@code /bundleName/ui/<className>Ui.xml } and returns its contents.
-    *
-    * @param className class name of blam
-    * @param nameOfBundle name of bundle i.e. org.eclipse.rcp.xyz
-    * @return contents of the {@code /bundleName/ui/<className>Ui.xml } usually {@link IOException} or
-    * {@link NullPointerException} wrapped in {@link OseeCoreException}
-    */
-   public String getXWidgetsXmlFromUiFile(String className, Class<?> clazz) {
-      String uiFileName = String.format("blamUi/%sUi.xml", className);
-      return OseeInf.getResourceContents(uiFileName, clazz);
    }
 
    public String getDescriptionUsage() {
       return this.description;
-   }
-
-   public String getName() {
-      return Strings.isValid(name) ? name : generateNameFromClass();
    }
 
    public void log(String... row) {
@@ -218,31 +195,12 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       return editor.getBlamXWidgets();
    }
 
-   @SuppressWarnings("unused")
-   public List<XWidgetData> getXWidgetDatas()
-      throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
-      List<XWidgetData> widDatas = new ArrayList<>();
-      widDatas.addAll(getXWidgetItems());
-      if (widDatas.isEmpty()) {
-         widDatas.addAll(XWidgetParser.extractWidgetDatas(getXWidgetsXml()));
-      }
-      return widDatas;
-   }
-
    public String getRunText() {
-      return "Run BLAM";
-   }
-
-   public Image getImage() {
-      return ImageManager.getImage(CoreImage.BLAM);
-   }
-
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(CoreImage.BLAM);
+      return Strings.truncate(String.format("Run [%s]", getName()), 60, true);
    }
 
    public String getTitle() {
-      return getName().toLowerCase().contains(titleEnd.toLowerCase().trim()) ? getName() : getName() + titleEnd;
+      return getName();
    }
 
    public boolean showUsageSection() {
@@ -348,7 +306,40 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       return false;
    }
 
-   public XWidget getXWidget(XWidgetData widData) {
-      return editor.getXWidget(widData);
+   public XWidget getXWidget(WidgetId widgetId) {
+      return editor.getXWidget(widgetId);
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public OseeImage getImage() {
+      return image;
+   }
+
+   public VariableMap getVariableMap() {
+      return variableMap;
+   }
+
+   public boolean isPend() {
+      return pend;
+   }
+
+   public void setPend(boolean pend) {
+      this.pend = pend;
+   }
+
+   // Limit usage to UserGroups
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      if (groups == null) {
+         groups = new ArrayList<>();
+      }
+      return groups;
+   }
+
+   @Override
+   public String toString() {
+      return getName();
    }
 }

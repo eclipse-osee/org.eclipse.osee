@@ -22,10 +22,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -38,7 +39,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class AtsConfigWizardPage1 extends WizardPage {
-   private XWidgetPage page;
+   private XWidgetSwtRenderer renderer;
 
    public AtsConfigWizardPage1() {
       super("Create New ATS Configuration", "Create ATS Configuration", null);
@@ -93,23 +94,20 @@ public class AtsConfigWizardPage1 extends WizardPage {
    public void createControl(Composite parent) {
 
       try {
-         String xWidgetXml = "<WorkPage>" +
-         //
-            "<XWidget displayName=\"" + TEAMDEF_NAME + "\" required=\"true\" xwidgetType=\"XText\"/>" +
-            //
-            "<XWidget displayName=\"" + ACTIONABLE_ITEMS + "\" required=\"true\" xwidgetType=\"XText\"/>" +
-            //
-            "<XWidget displayName=\"" + VERSIONS + "\" required=\"false\" xwidgetType=\"XText\"/>" +
-            //
-            "<XWidget displayName=\"" + WORKFLOW_ID + "\" required=\"false\" xwidgetType=\"XText\"/>" +
-            //
-            "</WorkPage>";
+
+         XWidgetBuilder wb = new XWidgetBuilder();
+         wb.andTextWidget(TEAMDEF_NAME).andRequired();
+         wb.andTextWidget(ACTIONABLE_ITEMS).andRequired();
+         wb.andTextWidget(VERSIONS);
+         wb.andTextWidget(WORKFLOW_ID);
+
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         page = new XWidgetPage(xWidgetXml);
-         page.createBody(null, comp, null, xModListener, true);
+         renderer = new XWidgetSwtRenderer(null);
+         renderer.setWidgetDatas(wb.getXWidgetDatas());
+         renderer.createBody(null, comp, null, xModListener, true);
 
          Button populateExampleButton = new Button(comp, SWT.PUSH);
          populateExampleButton.setText("Populate with example entries");
@@ -118,10 +116,10 @@ public class AtsConfigWizardPage1 extends WizardPage {
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                try {
-                  ((XText) getXWidget(TEAMDEF_NAME)).set("SAW Labs");
-                  ((XText) getXWidget(ACTIONABLE_ITEMS)).set("Lab Station, Lab Computer, Lab Fire System");
-                  ((XText) getXWidget(VERSIONS)).set("SAW 1.0, SAW 2.0, SAW 3.0");
-                  ((XText) getXWidget(WORKFLOW_ID)).setText(
+                  ((XXTextWidget) getXWidget(TEAMDEF_NAME)).set("SAW Labs");
+                  ((XXTextWidget) getXWidget(ACTIONABLE_ITEMS)).set("Lab Station, Lab Computer, Lab Fire System");
+                  ((XXTextWidget) getXWidget(VERSIONS)).set("SAW 1.0, SAW 2.0, SAW 3.0");
+                  ((XXTextWidget) getXWidget(WORKFLOW_ID)).setText(
                      "WorkDef_Team_SawLabs" + AtsApiService.get().getRandomNum());
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -129,7 +127,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
             }
          });
          setControl(comp);
-         ((XText) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + AtsApiService.get().getRandomNum());
+         ((XXTextWidget) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + AtsApiService.get().getRandomNum());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -137,19 +135,18 @@ public class AtsConfigWizardPage1 extends WizardPage {
    }
 
    public XWidget getXWidget(String attrName) {
-      if (page == null) {
-         throw new OseeArgumentException("WorkPage == null");
+      if (renderer == null) {
+         throw new OseeArgumentException("renderer == null");
       }
-      return page.getXWidget(attrName);
+      return renderer.getXWidget(attrName);
    }
 
    @Override
    public boolean isPageComplete() {
-      if (!page.isPageComplete().isTrue()) {
+      if (renderer == null) {
          return false;
       }
-
-      return true;
+      return renderer.isPageComplete().isOK();
    }
 
 }

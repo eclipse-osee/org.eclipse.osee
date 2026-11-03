@@ -15,9 +15,8 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.core.util.CoreImage;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
@@ -30,145 +29,168 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.BranchIdTopicEventFilter;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.header.ArtEdBaseTab;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.action.AddAttributeAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.action.DeleteAttributeAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.action.EditAttributeAction;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * @author Donald G. Dunne
  */
-public class ArtEdAttrTab extends FormPage implements IRefreshActionHandler, IArtifactEventListener, IArtifactTopicEventListener {
-   private Composite bodyComp;
-   private ScrolledForm scrolledForm;
-   public final static String ID = "art.editor.attr.tab";
-   private Artifact artifact;
-   private ArtEdAttrXViewer xViewer;
-   private ArtEdAttrToolbar toolBar;
-   private Label messageLabel;
-   private final ArtEdAttrTab fTab;
+public class ArtEdAttrTab extends ArtEdBaseTab implements IRefreshActionHandler, IArtifactEventListener, IArtifactTopicEventListener {
 
-   public ArtEdAttrTab(FormEditor editor, Artifact artifact) {
+   public final static String ID = "art.editor.attr.tab";
+   private ArtEdAttrXViewer xViewer;
+   private Artifact artifactOverride;
+
+   public ArtEdAttrTab(ArtifactEditor editor, Artifact artifact) {
       super(editor, ID, "Attributes (Adm)");
-      this.artifact = artifact;
-      fTab = this;
+      OseeEventManager.addListener(this);
+   }
+
+   /**
+    * Constructor for embedding in non-ArtifactEditor contexts (e.g., WorkflowEditor). Pass the FormEditor and artifact
+    * directly. Does not use the common header — call createFormContentShared() to create just the XViewer body.
+    */
+   public ArtEdAttrTab(org.eclipse.ui.forms.editor.FormEditor editor, Artifact artifact) {
+      super(editor, ID, "Attributes (Adm)");
+      this.artifactOverride = artifact;
       OseeEventManager.addListener(this);
    }
 
    @Override
-   protected void createFormContent(IManagedForm managedForm) {
-      super.createFormContent(managedForm);
-
-      scrolledForm = managedForm.getForm();
-      createFormContentShared(managedForm);
-   }
-
-   public void createFormContentShared(IManagedForm managedForm) {
-      try {
-         scrolledForm = managedForm.getForm();
-         bodyComp = scrolledForm.getBody();
-         GridLayout gridLayout = new GridLayout(1, true);
-         bodyComp.setLayout(gridLayout);
-         GridData gd = new GridData(SWT.LEFT, SWT.LEFT, true, true);
-         bodyComp.setLayoutData(gd);
-         bodyComp.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-               OseeEventManager.removeListener(fTab);
-            }
-         });
-
-         final Composite mainComp = new Composite(bodyComp, SWT.BORDER);
-         mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-         mainComp.setLayout(ALayout.getZeroMarginLayout());
-         managedForm.getToolkit().paintBordersFor(mainComp);
-
-         messageLabel = new Label(mainComp, SWT.NONE);
-         messageLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         messageLabel.setText("");
-         messageLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         managedForm.getToolkit().adapt(messageLabel, true, true);
-
-         xViewer = new ArtEdAttrXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, null, artifact);
-         xViewer.setContentProvider(new ArtEdAttrContentProvider());
-         xViewer.setLabelProvider(new ArtEdAttrLabelProvider(xViewer));
-         GridData gd2 = new GridData(GridData.FILL_BOTH);
-         gd2.minimumHeight = 300;
-         gd2.minimumWidth = 300;
-         gd2.heightHint = 300;
-         gd2.widthHint = 300;
-         xViewer.getTree().setLayoutData(gd2);
-         if (getSite() != null) {
-            getSite().setSelectionProvider(xViewer);
-         }
-
-         xViewer.loadTable(artifact);
-
-         toolBar = new ArtEdAttrToolbar(scrolledForm, xViewer, this);
-         toolBar.build();
-
-         scrolledForm.setText("Attributes");
-         scrolledForm.setImage(ImageManager.getImage(CoreImage.ARTIFACT_EDITOR));
-
-         mainComp.layout(true);
-         managedForm.reflow(true);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+   public Artifact getArtifact() {
+      if (artifactOverride != null) {
+         return artifactOverride;
       }
+      return super.getArtifact();
    }
 
-   public void refresh() {
+   /**
+    * Creates just the XViewer body without the ArtEdTabHeader. For embedding in other editors (e.g., WFE).
+    */
+   public void createFormContentShared(IManagedForm managedForm) {
+      ScrolledForm form = managedForm.getForm();
+      form.setExpandHorizontal(true);
+      form.setExpandVertical(true);
+      Composite body = form.getBody();
+      body.setLayout(new org.eclipse.swt.layout.GridLayout(1, false));
+      body.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      createXViewerBody(body, managedForm.getToolkit());
+      body.layout(true);
+   }
+
+   @Override
+   protected String getTabName() {
+      return "Attributes (Admin)";
+   }
+
+   @Override
+   protected void createFormContent(IManagedForm managedForm) {
+      // Disable outer form scrolling - the XViewer handles its own
+      ScrolledForm form = managedForm.getForm();
+      form.setExpandHorizontal(true);
+      form.setExpandVertical(true);
+      super.createFormContent(managedForm);
+   }
+
+   @Override
+   protected void createSectionToolbar(Composite toolbarParent) {
+      ToolBarManager sectionToolBar = new ToolBarManager(SWT.FLAT);
+      sectionToolBar.createControl(toolbarParent);
+      sectionToolBar.getControl().setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
+      sectionToolBar.getControl().setBackground(
+         toolbarParent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+      sectionToolBar.add(new AddAttributeAction(xViewer));
+      sectionToolBar.add(new EditAttributeAction(xViewer));
+      sectionToolBar.add(new DeleteAttributeAction(xViewer));
+      sectionToolBar.add(new Separator());
+      sectionToolBar.add(xViewer.getCustomizeAction());
+      sectionToolBar.update(true);
+   }
+
+   @Override
+   protected void createTabBody(Composite parent, FormToolkit toolkit) {
+      createXViewerBody(parent, toolkit);
+   }
+
+   private void createXViewerBody(Composite parent, FormToolkit toolkit) {
+      Artifact artifact = getArtifact();
+
+      Composite mainComp = new Composite(parent, SWT.NONE);
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      mainComp.setLayout(ALayout.getZeroMarginLayout());
+
+      Label messageLabel = new Label(mainComp, SWT.NONE);
+      messageLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      messageLabel.setText("");
+      messageLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+
+      xViewer = new ArtEdAttrXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, null, artifact);
+      xViewer.setContentProvider(new ArtEdAttrContentProvider());
+      xViewer.setLabelProvider(new ArtEdAttrLabelProvider(xViewer));
+      xViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      if (getSite() != null) {
+         getSite().setSelectionProvider(xViewer);
+      }
+
       xViewer.loadTable(artifact);
+   }
+
+   @Override
+   protected void refreshTabBody() {
+      if (xViewer != null) {
+         xViewer.loadTable(getArtifact());
+      }
    }
 
    @Override
    public void refreshActionHandler() {
-      artifact = artifact.reloadAttributesAndRelations();
-      xViewer.loadTable(artifact);
+      getArtifact().reloadAttributesAndRelations();
+      refreshTabBody();
    }
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (xViewer != null && artifactEvent.isModified(artifact)) {
-         xViewer.loadTable(artifact);
+      if (xViewer != null && artifactEvent.isModified(getArtifact())) {
+         xViewer.loadTable(getArtifact());
       }
    }
 
    @Override
    public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
-      if (xViewer != null && artifactTopicEvent.isModified(artifact)) {
-         xViewer.loadTable(artifact);
+      if (xViewer != null && artifactTopicEvent.isModified(getArtifact())) {
+         xViewer.loadTable(getArtifact());
       }
    }
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(new BranchIdEventFilter(artifact.getBranch()));
+      return Arrays.asList(new BranchIdEventFilter(getArtifact().getBranch()));
    }
 
    @Override
    public List<? extends ITopicEventFilter> getTopicEventFilters() {
-      return Arrays.asList(new BranchIdTopicEventFilter(artifact.getBranch()));
+      return Arrays.asList(new BranchIdTopicEventFilter(getArtifact().getBranch()));
    }
 
-   public Artifact getArtifact() {
-      return artifact;
+   @Override
+   public void dispose() {
+      OseeEventManager.removeListener(this);
+      super.dispose();
    }
 
    public ArtEdAttrXViewer getxViewer() {
       return xViewer;
    }
-
 }

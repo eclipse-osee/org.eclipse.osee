@@ -140,7 +140,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
 
          if (newTeamDef == null) {
-            resultData.warningf("No related Team Definition [%s] in scope for AI [%s].  Configure by hand.",
+            resultData.warningf("No related Team Definition [%s] in scope for AI [%s].  Configure by hand.\n",
                fromTeamDefArt, newAiArt);
          } else {
             Artifact newTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(newTeamDef);
@@ -264,7 +264,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       Artifact fromArt) {
       String newName = CopyAtsUtil.getConvertedName(data, fromArt.getName());
       if (newName.equals(fromArt.getName())) {
-         throw new OseeArgumentException("Could not get new name from name conversion.");
+         throw new OseeArgumentException("Could not get new name from name conversion.\n");
       }
       // duplicate all but baseline branch id
       Artifact newArt =
@@ -276,7 +276,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          newConfigObj = AtsApiService.get().getActionableItemService().createActionableItem(newArt);
          newAiArtToNewAi.put(newArt, (IAtsActionableItem) newConfigObj);
       } else {
-         throw new OseeArgumentException("Unexpected artifact type %s", fromArt.getArtifactTypeName());
+         throw new OseeArgumentException("Unexpected artifact type %s\n", fromArt.getArtifactTypeName());
       }
       newArt.setName(newName);
       changes.add(newArt);

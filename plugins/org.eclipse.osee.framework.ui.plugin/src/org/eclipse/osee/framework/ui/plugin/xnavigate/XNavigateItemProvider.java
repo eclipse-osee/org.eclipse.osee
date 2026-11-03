@@ -27,6 +27,6 @@ public interface XNavigateItemProvider {
     */
    public boolean isApplicable();
 
-   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items);
+   public List<XNavigateItem> getNavigateItemsForCurrentUser(List<XNavigateItem> items);
 
 }

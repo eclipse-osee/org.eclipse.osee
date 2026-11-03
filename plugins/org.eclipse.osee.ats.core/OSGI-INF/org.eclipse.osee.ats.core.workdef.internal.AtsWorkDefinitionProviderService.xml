@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" immediate="true" name="org.eclipse.osee.ats.core.workdef.internal.AtsWorkDefinitionProviderService">
+   <service>
+      <provide interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService"/>
+   </service>
+   <reference bind="addWorkDefinitionBuilder" cardinality="0..n" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder" name="WorkDefinitionBuilder" policy="dynamic" policy-option="greedy" unbind="removeWorkDefinitionBuilder"/>
+   <implementation class="org.eclipse.osee.ats.core.workdef.internal.AtsWorkDefinitionProviderService"/>
+</scr:component>

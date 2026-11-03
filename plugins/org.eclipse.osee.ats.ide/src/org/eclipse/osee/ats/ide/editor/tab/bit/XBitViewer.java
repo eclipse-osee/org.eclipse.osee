@@ -117,8 +117,7 @@ public class XBitViewer extends TaskXViewer {
          if (getContentProvider() != null) {
             List<String> buildOrder = (bids != null) ? bids.getBuildOrder() : Collections.emptyList();
             if (!buildOrder.isEmpty()) {
-               XViewerColumn buildCol =
-                  getCustomizeMgr().getCurrentTableColumn(XBitXViewerFactory.Build_Col.getId());
+               XViewerColumn buildCol = getCustomizeMgr().getCurrentTableColumn(XBitXViewerFactory.Build_Col.getId());
                if (buildCol != null) {
                   buildCol.setSortOrder(buildOrder);
                }

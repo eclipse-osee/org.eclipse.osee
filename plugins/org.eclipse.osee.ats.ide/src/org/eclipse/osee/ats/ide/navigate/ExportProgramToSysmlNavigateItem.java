@@ -14,16 +14,18 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import java.io.File;
+import java.util.Arrays;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * ATS Navigate Item that exports a program's configuration and workflows to SysML V2 textual notation (.sysml files).
@@ -37,7 +39,7 @@ public class ExportProgramToSysmlNavigateItem extends XNavigateItemAction {
    private static final String OUTPUT_DIR = System.getProperty("user.home") + "/SawPlProgramSysMl";
 
    public ExportProgramToSysmlNavigateItem() {
-      super(TITLE, CoreImage.EXPORT, AtsNavigateViewItems.ATS_UTIL);
+      super(TITLE, CoreImage.EXPORT, Arrays.asList(CoreUserGroups.OseeAdmin), AtsNavigateViewItems.ATS_UTIL);
    }
 
    @Override
@@ -69,8 +71,7 @@ public class ExportProgramToSysmlNavigateItem extends XNavigateItemAction {
          String workflowsSysml = actionEp.getSysmlWorkflows(programId);
          File workflowsFile = new File(outputDir, "saw-pl-program-workflows.sysml");
          Lib.writeStringToFile(workflowsSysml, workflowsFile);
-         rd.logf("  Workflows written to: %s (%d bytes)\n", workflowsFile.getAbsolutePath(),
-            workflowsSysml.length());
+         rd.logf("  Workflows written to: %s (%d bytes)\n", workflowsFile.getAbsolutePath(), workflowsSysml.length());
 
          rd.log("\nExport complete.");
       } catch (Exception ex) {

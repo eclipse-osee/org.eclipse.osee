@@ -18,7 +18,6 @@ package org.eclipse.osee.ats.ide.integration.tests;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.ide.integration.tests.define.FixAttributeOperationTest;
-import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.OpenBlamsTest;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.ActionEndpointTest;
 import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.RelationIntegrityCheckTest;
 import org.junit.Test;
@@ -31,11 +30,7 @@ public class ParallelTestSuite {
    @Test
    public void runSuite() {
       Result parallel = JUnitCore.runClasses(new ParallelComputer(true, false),
-         new Class[] {
-            OpenBlamsTest.class,
-            FixAttributeOperationTest.class,
-            ActionEndpointTest.class,
-            RelationIntegrityCheckTest.class,});
+         new Class[] {FixAttributeOperationTest.class, ActionEndpointTest.class, RelationIntegrityCheckTest.class,});
       assertTrue(String.valueOf(parallel.getFailures()), parallel.wasSuccessful());
 
    }

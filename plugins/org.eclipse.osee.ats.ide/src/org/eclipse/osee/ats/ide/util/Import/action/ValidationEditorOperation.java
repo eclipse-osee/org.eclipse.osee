@@ -45,7 +45,7 @@ public class ValidationEditorOperation {
 
          @Override
          public String getEditorName() {
-            return ImportActionsViaSpreadsheetBlam.NAME;
+            return ImportActionsViaSpreadsheetBlam.BLAM_NAME;
          }
 
          @Override

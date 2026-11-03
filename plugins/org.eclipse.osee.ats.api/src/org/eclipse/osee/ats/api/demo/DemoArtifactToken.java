@@ -15,7 +15,10 @@ package org.eclipse.osee.ats.api.demo;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.*;
 import static org.eclipse.osee.framework.core.data.ArtifactToken.valueOf;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.osee.ats.api.config.tx.AtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.AtsProgramArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
@@ -26,6 +29,8 @@ import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsVersionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 
@@ -149,10 +154,11 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    //SAW Agile
    //////////////////////////////////
-   public static final ArtifactToken SAW_Agile_Team = ArtifactToken.valueOf(111, "SAW Agile Team", COMMON, AtsArtifactTypes.AgileTeam);
-   public static final ArtifactToken SAW_Sprint_1 = ArtifactToken.valueOf(222, "SAW Sprint 1", COMMON, AtsArtifactTypes.AgileSprint);
-   public static final ArtifactToken SAW_Sprint_2 = ArtifactToken.valueOf(333, "SAW Sprint 2", COMMON, AtsArtifactTypes.AgileSprint);
-   public static final ArtifactToken SAW_Backlog = ArtifactToken.valueOf(444, "SAW Backlog", COMMON, AtsArtifactTypes.AgileBacklog);
+   public static final ArtifactToken SAW_Agile_Team = ArtifactToken.valueOf(29202943, "SAW Agile Team", COMMON, AtsArtifactTypes.AgileTeam);
+   public static final ArtifactToken SAW_Sprint_1 = ArtifactToken.valueOf(424891459, "SAW Sprint 1", COMMON, AtsArtifactTypes.AgileSprint);
+   public static final ArtifactToken SAW_Sprint_2 = ArtifactToken.valueOf(4901284, "SAW Sprint 2", COMMON, AtsArtifactTypes.AgileSprint);
+   public static final ArtifactToken SAW_Sprint_3 = ArtifactToken.valueOf(80430823, "SAW Sprint 3", COMMON, AtsArtifactTypes.AgileSprint);
+   public static final ArtifactToken SAW_Backlog = ArtifactToken.valueOf(8923498, "SAW Backlog", COMMON, AtsArtifactTypes.AgileBacklog);
 
    //////////////////////////////////
    // SAW Actions
@@ -193,7 +199,7 @@ public final class DemoArtifactToken {
    // RD Agile Configuration
    //////////////////////////////////
 
-   public static final ArtifactToken RD_Agile_Program = ArtifactToken.valueOf(555, "RD Program", COMMON, AtsArtifactTypes.AgileProgram);
+   public static final ArtifactToken RD_Agile_Program = ArtifactToken.valueOf(28203420, "RD Program", COMMON, AtsArtifactTypes.AgileProgram);
    public static final ArtifactToken RD_Program_Backlog = ArtifactToken.valueOf(48784848, "RD Program Backlog", COMMON, AtsArtifactTypes.AgileProgramBacklog);
    public static final ArtifactToken RD_Program_Backlog_Item_1 = ArtifactToken.valueOf(894868989, "Do this step first", COMMON, AtsArtifactTypes.AgileProgramBacklogItem);
    public static final ArtifactToken RD_Program_Backlog_Item_2 = ArtifactToken.valueOf(121264651, "Do this step second", COMMON, AtsArtifactTypes.AgileProgramBacklogItem);
@@ -284,7 +290,8 @@ public final class DemoArtifactToken {
 
    public static final IAtsTeamDefinitionArtifactToken Tools_Team = AtsTeamDefinitionArtifactToken.valueOf(4830548L, "Tools");
    public static final IAtsTeamDefinitionArtifactToken Website_Team = AtsTeamDefinitionArtifactToken.valueOf(2235542L, "Website");
-   public static final IAtsActionableItemArtifactToken Tools_Ai = AtsActionableItemArtifactToken.valueOf(222222343L, "Tools");
+   public static final IAtsActionableItemArtifactToken Website_AI = AtsActionableItemArtifactToken.valueOf(23890348L, "Website");
+   public static final IAtsActionableItemArtifactToken Tools_AI = AtsActionableItemArtifactToken.valueOf(222222343L, "Tools");
    public static final IAtsActionableItemArtifactToken Reader_AI = AtsActionableItemArtifactToken.valueOf(132213123L, "Reader");
    public static final IAtsActionableItemArtifactToken Timesheet_AI = AtsActionableItemArtifactToken.valueOf(79465444L, "Timesheet");
 
@@ -324,9 +331,18 @@ public final class DemoArtifactToken {
    public static final ArtifactToken PrAseStatusNotFound = valueOf(95429389, "ASE Status Not Found", COMMON, TeamWorkflow);
    public static final ArtifactToken PrFixARadioSquawk_Completed = valueOf(246364771, "Fix A457 Radio Squawk - Completed", COMMON, TeamWorkflow);
    public static final ArtifactToken PrSquatSwitchNotShowing_Completed = valueOf(1784767830, "Squat Switch not showing - Completed", COMMON, DemoProblemReportTeamWorkflow);
-   public static final ArtifactToken PrMsgButtonLocation_Cancelled = valueOf(875543052, "MSG Button Location - Cancelled", COMMON, DemoProblemReportTeamWorkflow);
+   public static final ArtifactToken PrMsgButtonLocation_Cancelled
+   = valueOf(875543052, "MSG Button Location - Cancelled", COMMON, DemoProblemReportTeamWorkflow);
+
+
+   public static final ArtifactToken FunctionalAreaFolder = valueOf(288982223, "Functional Areaa", COMMON, Folder);
+   public static IUserGroupArtifactToken Infrastructure = UserGroupArtifactToken.valueOf(8646869L, "Infrastructure");
+   public static IUserGroupArtifactToken ControlsAndDisplays = UserGroupArtifactToken.valueOf(8646871L, "Controls and Displays");
+   public static IUserGroupArtifactToken Navigation = UserGroupArtifactToken.valueOf(8646876L, "Navigation");
 
    // @formatter:on
+   public static final List<IUserGroupArtifactToken> FunctionalAreaUserGroups =
+      Arrays.asList(Infrastructure, ControlsAndDisplays, Navigation);
 
    private DemoArtifactToken() {
       // Constants

@@ -16,25 +16,36 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.ide.search.widget.base.SearchWidget;
+import org.eclipse.osee.ats.ide.util.widgets.xx.XXTeamDefinitionsWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 
 /**
  * @author Donald G. Dunne
  */
-public class TeamDefinitionSearchWidget extends AbstractSearchWidget<XHyperlabelTeamDefinitionSelection, Object> {
+public class TeamDefinitionSearchWidget extends AbstractSearchWidget<XXTeamDefinitionsWidget, IAtsTeamDefinition> {
 
+   private static final String LABEL = "Team Definition(s)";
    public static SearchWidget TeamDefintiionWidget =
-      new SearchWidget(3492378, "Team Definition(s)", "XHyperlabelTeamDefinitionSelection");
+      new SearchWidget(3492378, LABEL, WidgetIdAts.XXTeamDefinitionsWidget);
 
    public TeamDefinitionSearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(TeamDefintiionWidget, searchItem);
+   }
+
+   @Override
+   public void widgetCreating(XWidget xWidget) {
+      super.widgetCreating(xWidget);
+      if (xWidget.getLabel().equals(LABEL)) {
+         xWidget.set(XOption.CLEAR);
+      }
    }
 
    public Collection<Long> getIds() {
@@ -47,31 +58,30 @@ public class TeamDefinitionSearchWidget extends AbstractSearchWidget<XHyperlabel
       return ids;
    }
 
-   public Collection<TeamDefinition> get() {
-      XHyperlabelTeamDefinitionSelection widget = getWidget();
+   public Collection<IAtsTeamDefinition> get() {
+      XXTeamDefinitionsWidget widget = getWidget();
       if (widget != null) {
-         return widget.getSelectedTeamDefintions();
+         return widget.getSelected();
       }
       return null;
    }
 
-   public void set(Collection<TeamDefinition> teamDefs) {
-      getWidget().setSelectedTeamDefs(teamDefs);
+   public void set(Collection<IAtsTeamDefinition> teamDefs) {
+      getWidget().setSelected(teamDefs);
    }
 
    @Override
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
-         getWidget().handleClear();
-         List<TeamDefinition> teamDefs = new LinkedList<>();
+         List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
          for (Long id : data.getTeamDefIds()) {
-            TeamDefinition teamDef =
+            IAtsTeamDefinition teamDef =
                AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
             if (teamDef != null) {
                teamDefs.add(teamDef);
             }
          }
-         set(teamDefs);
+         getWidget().setSelected(teamDefs);
       }
    }
 

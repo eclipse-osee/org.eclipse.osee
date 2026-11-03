@@ -547,6 +547,17 @@ module.exports = {
 						contrast: 'white',
 					},
 				},
+				caution: {
+					// Amber accent for "not allowed, but not an error" feedback
+					// (e.g. the markdown editor's cross-branch drop guard). The
+					// underlying var is themed in osee-variables.css: darker amber in
+					// light mode, brighter amber in dark mode, so it stays readable on
+					// either surface without a per-use dark: variant.
+					DEFAULT: {
+						DEFAULT: 'var(--osee-caution-default)',
+						contrast: 'rgba(0, 0, 0, 0.87)',
+					},
+				},
 				foreground: {
 					base: 'var(--osee-foreground-base)',
 					divider: 'var(--osee-foreground-divider)',

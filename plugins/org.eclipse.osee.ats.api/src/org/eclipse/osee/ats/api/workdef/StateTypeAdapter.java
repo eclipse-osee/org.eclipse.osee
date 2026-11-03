@@ -38,13 +38,23 @@ public abstract class StateTypeAdapter implements IStateToken {
    private static final CountingMap<Class<?>> classToOrdinalCount = new CountingMap<>(20);
    private String description;
    private final String pageName;
+   private final StateColor stateColor;
 
    public StateTypeAdapter(Class<?> clazz, String pageName, StateType StateType) {
+      this(clazz, pageName, StateType, StateColor.BLACK);
+   }
+
+   public StateTypeAdapter(Class<?> clazz, String pageName, StateType StateType, StateColor stateColor) {
       this.pageName = pageName;
       this.StateType = StateType;
+      this.stateColor = stateColor;
       classAndNameToPage.put(clazz, pageName, this);
       classToOrdinalCount.put(clazz);
       pageToOrdinal.put(this, classToOrdinalCount.get(clazz));
+   }
+
+   public StateColor getStateColor() {
+      return stateColor;
    }
 
    public int ordinal() {

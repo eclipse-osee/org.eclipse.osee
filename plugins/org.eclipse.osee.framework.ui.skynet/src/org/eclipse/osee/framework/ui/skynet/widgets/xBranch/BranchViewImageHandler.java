@@ -84,12 +84,9 @@ public class BranchViewImageHandler {
    private static synchronized void checkImages() {
       if (favoriteBranchImage == null) {
          favoriteBranchImage = new OverlayImage(ImageManager.getImage(CoreImage.BRANCH),
-            ImageManager.getImageDescriptor(CoreImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION,
-            Y_LOCATION).createImage();
-         favoriteChangeManagedBranchImage =
-            new OverlayImage(ImageManager.getImage(CoreImage.BRANCH_CHANGE_MANAGED),
-               ImageManager.getImageDescriptor(CoreImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION,
-               Y_LOCATION).createImage();
+            ImageManager.getImageDescriptor(CoreImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION, Y_LOCATION).createImage();
+         favoriteChangeManagedBranchImage = new OverlayImage(ImageManager.getImage(CoreImage.BRANCH_CHANGE_MANAGED),
+            ImageManager.getImageDescriptor(CoreImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION, Y_LOCATION).createImage();
          inCreationBranchImage = new OverlayImage(ImageManager.getImage(CoreImage.BRANCH),
             ImageManager.getImageDescriptor(CoreImage.BRANCH_IN_CREATION_OVERLAY), -1, 8).createImage();
       }

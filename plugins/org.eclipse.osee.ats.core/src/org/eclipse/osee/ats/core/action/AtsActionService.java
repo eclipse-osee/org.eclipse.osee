@@ -233,8 +233,7 @@ public abstract class AtsActionService implements IAtsActionService {
 
    @Override
    public IAtsGoal createGoal(String title, IAtsChangeSet changes) {
-      WorkDefinition workDef =
-         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefGoal);
+      WorkDefinition workDef = atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDefGoal);
       return createGoal(title, AtsArtifactTypes.Goal, workDef, atsApi.getTeamDefinitionService().getTopTeamDefinition(),
          changes, null);
    }

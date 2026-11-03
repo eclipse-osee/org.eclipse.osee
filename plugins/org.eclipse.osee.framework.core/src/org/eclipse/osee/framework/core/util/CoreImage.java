@@ -60,7 +60,7 @@ public class CoreImage extends OseeImage {
    public static final CoreImage BRANCH_SYSTEM_ROOT = new CoreImage("branchYellow.gif");
    public static final CoreImage BRANCH_VIEW = new CoreImage("branchview.gif");
    public static final CoreImage BRANCH_WORKING = new CoreImage("working.gif");
-   public static final CoreImage CALENDAR = new CoreImage("calendar.png");
+   public static final CoreImage CALENDAR = new CoreImage("calendar.gif");
    public static final CoreImage CHANGE_LOG = new CoreImage("changelog_obj.gif");
    public static final CoreImage CHECKBOX_CHECK_FALSE = new CoreImage("checkbox_x.png");
    public static final CoreImage CHECKBOX_CHECK_TRUE = new CoreImage("checkbox_check.gif");
@@ -105,6 +105,7 @@ public class CoreImage extends OseeImage {
    public static final CoreImage ERROR_OVERLAY = new CoreImage("error.gif");
    public static final CoreImage EXAMPLE = new CoreImage("example.gif");
    public static final CoreImage EXCLAIM_RED = new CoreImage("redExclaim.gif");
+   public static final CoreImage EXCLAIM_BLACK = new CoreImage("blackExclaim.gif");
    public static final CoreImage EXPAND_ALL = new CoreImage("expandAll.gif");
    public static final CoreImage EXPORT = new CoreImage("export.gif");
    public static final CoreImage EXPORT_DATA = new CoreImage("export_data.gif");
@@ -203,6 +204,7 @@ public class CoreImage extends OseeImage {
    public static final CoreImage PROBLEM = new CoreImage("greenBug.gif");
    public static final CoreImage PURGE = new CoreImage("purge.gif");
    public static final CoreImage PURPLE = new CoreImage("purple.gif");
+   public static final CoreImage PUBLISH = new CoreImage("publish.gif");
    public static final CoreImage QUESTION = new CoreImage("question.gif");
    public static final CoreImage RECTANGLE_16 = new CoreImage("rectangle16.gif");
    public static final CoreImage RECTANGLE_24 = new CoreImage("rectangle24.gif");
