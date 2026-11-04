@@ -35,13 +35,12 @@ public class WorkDefXWidgetFingerprintTest {
 
    @Test
    public void resolvedWidgetDataMatchesBaseline() throws IOException {
-      Map<String, Object> expected = readBaseline();
       Map<String, Object> rawActual = readReport(TestingReportWorkDefXWidgetFingerprints.getFingerprintData());
-
-      expected = normalize(expected);
       Map<String, Object> actual = normalize(rawActual);
+
+      Map<String, Object> expected = normalize(readBaseline());
       if (!expected.equals(actual)) {
-         Path report = writeDifferenceReport(expected, actual, rawActual);
+         Path report = writeDifferenceReport(expected, actual);
          openInBrowser(report);
          Assert.fail(
             "Resolved WorkDef XWidgetData changed. Review " + report + " and deliberately update " + getBaseline());
@@ -77,8 +76,6 @@ public class WorkDefXWidgetFingerprintTest {
 
    private static Map<String, Object> normalize(Map<String, Object> report) {
       Map<String, Object> normalized = new LinkedHashMap<>(report);
-      normalized.remove("generatedAt");
-      normalized.remove("branch");
       Object workDefs = normalized.get("workDefs");
       Assert.assertTrue("Fingerprint report is missing workDefs", workDefs instanceof List<?>);
       List<Map<String, Object>> contexts = new ArrayList<>();
@@ -88,7 +85,6 @@ public class WorkDefXWidgetFingerprintTest {
          for (Map.Entry<?, ?> entry : ((Map<?, ?>) workDef).entrySet()) {
             context.put(String.valueOf(entry.getKey()), entry.getValue());
          }
-         context.remove("workflowCount");
          contexts.add(context);
       }
       Comparator<Map<String, Object>> contextOrder =
@@ -107,10 +103,9 @@ public class WorkDefXWidgetFingerprintTest {
       return String.valueOf(context.get("artifactType"));
    }
 
-   private Path writeDifferenceReport(Map<String, Object> expected, Map<String, Object> actual,
-      Map<String, Object> replacementBaseline) throws IOException {
+   private Path writeDifferenceReport(Map<String, Object> expected, Map<String, Object> actual) throws IOException {
       Path report = OseeData.getPath().append(getReportName()).toFile().toPath();
-      String actualJson = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(replacementBaseline);
+      String actualJson = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(actual);
       StringBuilder html = new StringBuilder();
       html.append("<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'>");
       html.append("<title>WorkDef XWidget Fingerprint Difference</title><style>");

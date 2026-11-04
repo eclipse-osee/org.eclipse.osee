@@ -14,17 +14,19 @@
 package org.eclipse.osee.ats.ide.util.widgets.xx;
 
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.ChangeType;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.util.XXWorkItemData;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.widget.WidgetId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.XResultType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -38,10 +40,10 @@ import org.osgi.service.component.annotations.Component;
 public class XXChangeTypeWidget extends XXStringsWidget {
 
    public static final WidgetId ID = WidgetIdAts.XXChangeTypeWidget;
-   public static List<String> DefaultChangeTypes =
-      Arrays.asList(ChangeTypes.Improvement.toString(), ChangeTypes.Problem.name(), ChangeTypes.Support.name());
 
    protected XXWorkItemData xxWid = XXWorkItemData.SENTINEL;
+   private IAtsTeamDefinition teamDef;
+   private boolean teamDefMustBeSelected = false;
 
    //////////////////////////////////////////
    // Constructors
@@ -65,7 +67,32 @@ public class XXChangeTypeWidget extends XXStringsWidget {
          List<ChangeTypes> changeTypes = AtsApiService.get().getWorkItemService().getChangeTypeOptions(workItem);
          return Collections.toStrings(changeTypes);
       }
-      return DefaultChangeTypes;
+      if (teamDef != null) {
+         List<ChangeTypes> changeTypes = AtsApiService.get().getWorkItemService().getChangeTypeOptions(teamDef);
+         return Collections.toStrings(changeTypes);
+      }
+      return ChangeTypes.getDefaultValuesStrs();
+   }
+
+   //////////////////////////////////////////
+   // Validation
+   //////////////////////////////////////////
+
+   @Override
+   protected XResultData validateHandleSelection() {
+      // Ok if widget has TeamWf cause versions will come from TeamWf's Team Definition
+      if (xxWid.isWorkItem()) {
+         return XResultData.OK_STATUS;
+      }
+      // Else, error cause teamDef needs to be selected/set before selecting this widget
+      else if (teamDefMustBeSelected && (teamDef == null && getTeamId().isInvalid())) {
+         return new XResultData(XResultType.Error, "Team Definition(s) must be selected first for [%s]", getLabel());
+      }
+      // If selectable was set in another way, then don't need teamDef
+      else if (!getSelectable().isEmpty()) {
+         return XResultData.OK_STATUS;
+      }
+      return XResultData.OK_STATUS;
    }
 
    //////////////////////////////////////////
@@ -76,6 +103,22 @@ public class XXChangeTypeWidget extends XXStringsWidget {
    public void setArtifact(Artifact artifact) {
       xxWid = XXWorkItemData.get(artifact);
       super.setArtifact(artifact);
+   }
+
+   //////////////////////////////////////////
+   // Misc
+   //////////////////////////////////////////
+
+   public void setTeamDef(IAtsTeamDefinition teamDef) {
+      this.teamDef = teamDef;
+   }
+
+   public boolean isTeamDefMustBeSelected() {
+      return teamDefMustBeSelected;
+   }
+
+   public void setTeamDefMustBeSelected(boolean teamDefMustBeSelected) {
+      this.teamDefMustBeSelected = teamDefMustBeSelected;
    }
 
 }
