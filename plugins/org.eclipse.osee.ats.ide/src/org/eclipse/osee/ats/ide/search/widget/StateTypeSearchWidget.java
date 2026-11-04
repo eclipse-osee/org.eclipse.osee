@@ -41,6 +41,7 @@ public class StateTypeSearchWidget extends AbstractSearchWidget<XXStateTypeWidge
       super.widgetCreating(xWidget);
       if (xWidget.getLabel().equals(LABEL)) {
          xWidget.set(XOption.CLEAR);
+         xWidget.set(XOption.VAL_MULTI_SEL);
       }
    }
 
