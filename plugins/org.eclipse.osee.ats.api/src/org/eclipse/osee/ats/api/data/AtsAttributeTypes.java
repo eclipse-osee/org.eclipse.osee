@@ -183,7 +183,7 @@ public interface AtsAttributeTypes {
    AttributeTypeInteger PercentComplete = ats.createInteger(1152921504606847183L, "ats.Percent Complete", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger PercentRework = ats.createInteger(1152921504606847189L, "ats.Percent Rework", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger PlannedPoints = ats.createInteger(232851836925913430L, "ats.Planned Points", TEXT_PLAIN, "", Edit);
-   AttributeTypeString PointsEnum = ats.createString(1152921504606847178L, "ats.Points", TEXT_PLAIN, "",Edit);
+   AttributeTypeString PointsEnum = ats.createString(1152921504606847178L, "ats.Points", TEXT_PLAIN, "", Edit, InOrder);
    AttributeTypeDouble PointsNumeric = ats.createDouble(1728793301637070003L, "ats.Points Numeric", TEXT_PLAIN, "Abstract value that describes risk, complexity, and size of Actions as float.", SingleLine, Edit);
    AttributeTypeString Priority = ats.createString(1152921504606847179L, "ats.Priority", TEXT_PLAIN, "", Edit);
    AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", TEXT_PLAIN, "Problem found during analysis.", MultiLine, Edit);

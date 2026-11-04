@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.core.workdef.builder;
 
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.NeedBy;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.PointsEnum;
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.PointsNumeric;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
+import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -36,6 +38,7 @@ import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.SpaceWidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDef;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workdef.model.xx.ChangeTypeWidgetDefinition;
@@ -47,6 +50,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.util.CoreImage;
+import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -165,6 +169,11 @@ public class WorkDefBuilder {
          }
       }
 
+      validatePointsWidgets("Header", workDef.getHeaderDef().getLayoutItems());
+      for (StateDefinition state : workDef.getStates()) {
+         validatePointsWidgets("State [" + state.getName() + "]", state.getLayoutItems());
+      }
+
       // Construct duplicates attrs map
       CountingMap<String> labelCount = workDef.getLabelCount();
       Set<String> headerLayoutItemNames = new HashSet<String>();
@@ -189,6 +198,30 @@ public class WorkDefBuilder {
       }
 
       return workDef;
+   }
+
+   /**
+    * Points widget must match the work def points attribute type (PointsNumeric unless andPointsAttributeType is
+    * called); the columns and prompts resolve their dialog from that type.
+    */
+   private void validatePointsWidgets(String location, List<LayoutItem> layoutItems) {
+      for (LayoutItem layItem : layoutItems) {
+         if (layItem instanceof CompositeLayoutItem) {
+            validatePointsWidgets(location, ((CompositeLayoutItem) layItem).getLayoutItems());
+         } else if (layItem instanceof WidgetDef) {
+            WidgetId widgetId = ((WidgetDef) layItem).getWidgetId();
+            AttributeTypeToken pointsAttrType = workDef.getPointsAttrType();
+            if (WidgetIdAts.XXPointsEnumWidget.equals(widgetId) && !PointsEnum.equals(pointsAttrType)) {
+               rd.errorf(
+                  "%s of [%s] uses XXPointsEnumWidget but points attribute type is [%s]; call andPointsAttributeType(PointsEnum) or use a numeric points widget\n",
+                  location, workDef.getName(), pointsAttrType.getName());
+            } else if (WidgetIdAts.XXPointsNumericWidget.equals(widgetId) && !PointsNumeric.equals(pointsAttrType)) {
+               rd.errorf(
+                  "%s of [%s] uses XXPointsNumericWidget but points attribute type is [%s]; remove andPointsAttributeType or use an enum points widget\n",
+                  location, workDef.getName(), pointsAttrType.getName());
+            }
+         }
+      }
    }
 
    private void allLayoutItemsToStringSet(Set<String> ret, List<LayoutItem> inputList) {
