@@ -197,7 +197,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testQueryOpenWorkItems() {
       if (AtsApiService.get().getStoreService().getJdbcService().getClient().getDbType().isPaginationOrderingSupported()) {
          String query = String.format("ats/action/query/workitems?artType=%s", TeamWorkflow.getId());
-         getFirstAndCount(query, 26);
+         getFirstAndCount(query, 27);
       }
    }
 

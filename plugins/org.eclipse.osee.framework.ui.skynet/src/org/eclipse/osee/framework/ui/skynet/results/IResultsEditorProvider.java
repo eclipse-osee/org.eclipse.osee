@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.swt.widgets.ToolBar;
 
 /**
@@ -31,6 +32,10 @@ public interface IResultsEditorProvider {
 
    default Long getEditorId() {
       return 0L;
+   }
+
+   default OseeImage getEditorImage() {
+      return null;
    }
 
    default public void addTableToolbarItem(ToolBar toolBar) {

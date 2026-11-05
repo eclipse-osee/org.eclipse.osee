@@ -55,7 +55,7 @@ public class AtsQueryImplTest {
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(joeSmith);
       ResultSet<IAtsWorkItem> results = query.getResults();
-      assertEquals(results.getList().toString(), 8, results.size());
+      assertEquals(results.getList().toString(), 9, results.size());
    }
 
    @Test
@@ -63,7 +63,7 @@ public class AtsQueryImplTest {
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(atsApi.getUserService().getUserByUserId("3333"));
       ResultSet<IAtsWorkItem> results = query.getResults();
-      assertEquals(results.getList().toString(), 8, results.size());
+      assertEquals(results.getList().toString(), 9, results.size());
    }
 
    @Test
@@ -71,7 +71,7 @@ public class AtsQueryImplTest {
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andOriginator(joeSmith);
       ResultSet<IAtsWorkItem> results = query.getResults();
-      assertEquals(results.getList().toString(), 26, results.size());
+      assertEquals(results.getList().toString(), 27, results.size());
    }
 
    @Test
@@ -94,7 +94,7 @@ public class AtsQueryImplTest {
    public void testByTeamWf() {
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ResultSet<IAtsWorkItem> results = query.getResults();
-      assertEquals(results.getList().toString(), 26, results.size());
+      assertEquals(results.getList().toString(), 27, results.size());
    }
 
    @Test
@@ -144,7 +144,7 @@ public class AtsQueryImplTest {
       IAtsQuery query = queryService.createQuery(WorkItemType.WorkItem);
       query.andStateType(StateType.Working);
       ResultSet<IAtsWorkItem> results = query.getResults();
-      assertEquals(results.getList().toString(), 57, results.size());
+      assertEquals(results.getList().toString(), 59, results.size());
    }
 
    @Test
@@ -159,7 +159,7 @@ public class AtsQueryImplTest {
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Working);
       ResultSet<IAtsWorkItem> results = query.getResults();
-      assertEquals(results.getList().toString(), 23, results.size());
+      assertEquals(results.getList().toString(), 24, results.size());
    }
 
    @Test
@@ -174,7 +174,7 @@ public class AtsQueryImplTest {
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Completed, StateType.Working);
       ResultSet<IAtsWorkItem> results = query.getResults();
-      assertEquals(results.getList().toString(), 26, results.size());
+      assertEquals(results.getList().toString(), 27, results.size());
    }
 
    @Test

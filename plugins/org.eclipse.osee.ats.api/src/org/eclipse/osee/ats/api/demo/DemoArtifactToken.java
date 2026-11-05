@@ -320,6 +320,7 @@ public final class DemoArtifactToken {
    public static final ArtifactToken ProblemInTree_TeamWf = valueOf(789987789, "Problem in Diagram Tree", COMMON, DemoTestTeamWorkflow);
    public static final ArtifactToken ProblemWithTheGraphView_TeamWf = valueOf(431354978, "Problem with the Graph View", COMMON, DemoReqTeamWorkflow);
    public static final ArtifactToken ProblemWithTheUserWindow_TeamWf = valueOf(456794312, "Problem with the user window", COMMON, TeamWorkflow);
+   public static final ArtifactToken DefectSearchReviewChanges_TeamWf = valueOf(883097240L, "Defect Search - Review Changes", COMMON, DemoReqTeamWorkflow);
 
    public static final ArtifactToken PeerReview2 = ArtifactToken.valueOf(414911237L, "2 - Peer Review algorithm used in code", COMMON, TeamWorkflow);
 

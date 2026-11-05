@@ -19,7 +19,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.core.review.ReviewDefectError;
 import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -56,6 +58,7 @@ public class WfeDefectsTab extends WfeAbstractTab implements DefectRefreshListen
    private DefectXViewer xViewer;
    private WfeDefectsToolbar toolBar;
    private Label messageLabel;
+   private ReviewDefectItem defectToSelect;
 
    public WfeDefectsTab(WorkflowEditor editor, IAtsPeerToPeerReview review) {
       super(editor, ID, review, "Defects");
@@ -158,8 +161,22 @@ public class WfeDefectsTab extends WfeAbstractTab implements DefectRefreshListen
 
    @Override
    public void refreshCompleted(DefectData data) {
-      xViewer.loadTable(data);
+      Displays.ensureInDisplayThread(() -> {
+         xViewer.set(data.getDefectItems());
+         selectDefectIfLoaded();
+      });
       refreshMessageLabel(data);
+   }
+
+   public void selectDefect(ReviewDefectItem defect) {
+      defectToSelect = defect;
+      selectDefectIfLoaded();
+   }
+
+   private void selectDefectIfLoaded() {
+      if (defectToSelect != null && xViewer != null) {
+         Displays.ensureInDisplayThread(() -> xViewer.setSelection(new StructuredSelection(defectToSelect), true));
+      }
    }
 
    @Override

@@ -50,6 +50,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -67,6 +68,8 @@ public class ResultsEditorTableTab extends AbstractResultsEditorTab implements I
    private final IResultsEditorLabelProvider labelProvider;
    private final List<IResultsEditorTableListener> listeners;
    private IResultsEditorOutlineProvider outlineProvider;
+   private String headerText = "";
+   private int headerForeground = SWT.NONE;
 
    public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows, ITreeContentProvider contentProvider, IResultsEditorLabelProvider labelProvider) {
       this(tabName, columns, rows, contentProvider, labelProvider, null);
@@ -111,6 +114,14 @@ public class ResultsEditorTableTab extends AbstractResultsEditorTab implements I
       this.rows.add(resultsXViewerRow);
    }
 
+   public void setHeaderText(String headerText) {
+      this.headerText = headerText == null ? "" : headerText;
+   }
+
+   public void setHeaderForeground(int headerForeground) {
+      this.headerForeground = headerForeground;
+   }
+
    @Override
    public List<XViewerColumn> getTableColumns() {
       return columns;
@@ -135,6 +146,15 @@ public class ResultsEditorTableTab extends AbstractResultsEditorTab implements I
       if (resultsEditor != null) {
          ToolBar toolBar = resultsEditor.createToolBar(comp);
          addToolBarItems(toolBar);
+      }
+
+      if (!headerText.isEmpty()) {
+         Label headerLabel = new Label(comp, SWT.WRAP);
+         headerLabel.setText(headerText);
+         if (headerForeground != SWT.NONE) {
+            headerLabel.setForeground(headerLabel.getDisplay().getSystemColor(headerForeground));
+         }
+         headerLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       }
 
       GridData gd = new GridData(GridData.FILL_BOTH);
