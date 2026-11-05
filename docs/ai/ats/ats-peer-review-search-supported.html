@@ -1,0 +1,253 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATS Peer Review Search &amp; Filter — Capability Summary</title>
+<style>
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1b1b1b;
+    line-height: 1.5;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 32px 28px 56px;
+  }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 32px 0 10px; border-bottom: 2px solid #e3e3e3; padding-bottom: 5px; }
+  .lead { color: #444; margin: 8px 0 24px; }
+  .q {
+    font-size: 15px; font-weight: 600; margin: 24px 0 6px;
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  }
+  .q .num { color: #0b6cab; }
+  .a { margin: 0 0 10px; }
+  .item { margin: 10px 0 10px; }
+  .item .num { color: #0b6cab; font-weight: 700; margin-right: 6px; }
+  .item.sub { margin-left: 26px; }
+  .item.sub2 { margin-left: 52px; }
+  .item .badge { margin-left: 2px; vertical-align: 1px; }
+  .item .title { font-weight: 700; margin-right: 8px; }
+  .b-future { background: #dcebfa; color: #0b5aa6; border: 1px solid #a9cdee; }
+  .path {
+    font-family: "Cascadia Code", Consolas, monospace; font-size: 12.5px;
+    background: #f5f8fb; border-left: 3px solid #0b6cab; color: #104a6b;
+    padding: 7px 11px; margin: 6px 0 8px; border-radius: 0 4px 4px 0;
+  }
+  .path .sep { color: #9ab6c7; margin: 0 4px; }
+  .path .howto {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+    font-size: 11px; color: #0b6cab; margin-right: 8px;
+  }
+  .criteria {
+    background: #dcebfa; border: 1px solid #a9cdee; border-radius: 6px;
+    padding: 10px 14px; margin: 8px 0 4px;
+  }
+  .criteria .lbl {
+    font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+    font-size: 11px; color: #0b5aa6; display: block; margin-bottom: 6px;
+  }
+  .criteria ol { margin: 0; padding-left: 22px; }
+  .criteria li { margin: 3px 0; }
+  .criteria .op { font-weight: 700; color: #0b5aa6; }
+  .criteria .result { margin: 8px 0 0; font-weight: 600; color: #104a6b; }
+  code { background: #f0f0f2; padding: 1px 5px; border-radius: 3px; font-size: 90%; font-family: "Cascadia Code", Consolas, monospace; }
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .4px;
+    padding: 2px 9px; border-radius: 11px; white-space: nowrap; text-transform: uppercase;
+  }
+  .b-sup  { background: #d9f2e0; color: #1f7a3d; border: 1px solid #9fd9b2; }
+  .b-part { background: #fdf0d0; color: #8a6100; border: 1px solid #ecd292; }
+  .b-not  { background: #fbdcdc; color: #a62828; border: 1px solid #efb0b0; }
+  .future { color: #0b5aa6; font-weight: 600; }
+  .foot { margin-top: 36px; color: #777; font-size: 12px; border-top: 1px solid #e3e3e3; padding-top: 12px; }
+</style>
+</head>
+<body>
+
+<h1>ATS Peer Review Search &amp; Filter</h1>
+<p class="lead">
+  Peer Reviews are workflows, like Team Workflows and Tasks: they have a state machine,
+  assignees, an originator, defects, and reviewer roles. Below is what each reviewer-centric
+  search need can do today, and where work remains. All paths start from the <strong>OSEE
+  Navigator</strong>.
+</p>
+
+<div class="q"><span class="num">1.</span> See all my open reviews (by single assigned name) <span class="badge b-sup">Supported</span></div>
+
+<div class="item sub"><span class="num">1.1</span> <span class="title">My Reviews</span> <span class="badge b-sup">Supported</span>
+<div class="path"><span class="howto">How To:</span>OSEE Navigator <span class="sep">&gt;</span> My Reviews</div>
+<p class="a">The quickest way to see your own open reviews is to go to the <strong>OSEE Navigator</strong>
+and double-click <strong>My Reviews</strong>. This opens every review that is currently assigned to you,
+in one list. It shows only open reviews on purpose: the moment a review is completed or cancelled it
+drops off your assigned list, so what remains in front of you is exactly the set of reviews you still
+have work on. <strong>My Reviews</strong> is always scoped to you, the logged-in user, so there is
+nothing to configure — you just open it. This is the everyday "what is on my plate right now" view.</p></div>
+
+<div class="item sub"><span class="num">1.2</span> <span class="title">Action Search</span> <span class="badge b-sup">Supported</span>
+<div class="path"><span class="howto">How To:</span>OSEE Navigator <span class="sep">&gt;</span> Action Search <span class="sep">&gt;</span> Review <span class="sep">+</span> Team Definition(s) <span class="sep">+</span> User Type = Assignee <span class="sep">+</span> User = &lt;select&gt; <span class="sep">+</span> State Type = Working</div>
+<p class="a">When you want to look at a <em>specific person</em> rather than yourself — for example a lead
+checking a teammate's open reviews — go to the <strong>OSEE Navigator</strong> and open
+<strong>Action Search</strong>. In the search form, set the work item type to <strong>Review</strong>,
+choose the <strong>Team Definition(s)</strong> you care about, set the <strong>User Type</strong> to
+<strong>Assignee</strong>, pick the person in the <strong>User</strong> field, and set the
+<strong>State Type</strong> to <strong>Working</strong> so you get only the open ones. Running that
+search returns all of that person's open reviews on the teams you selected. This is the same idea as
+My Reviews, but with the user and team chosen explicitly instead of defaulting to you.</p></div>
+
+<div class="item sub2"><span class="num">1.2.1</span> <span class="title">Additional Fields</span>
+<p class="a">From the same form you can add any of the other available criteria to narrow the results
+further — for example <strong>Version</strong>, <strong>Change Type</strong>, <strong>Priority</strong>,
+<strong>State Name</strong>, <strong>Review Type</strong>, or specific attribute values. You can also
+switch the <strong>State Type</strong> between <strong>Working</strong> and <strong>Completed</strong>
+depending on whether you want the open reviews or the finished ones, so the one form covers both the
+"open" and "completed" questions.</p></div>
+
+<div class="item sub2"><span class="num">1.2.2</span> <span class="title">Saving Search</span>
+<p class="a">Once a search is set up the way you want it, you can save it so you never have to rebuild
+it. Use <strong>Save</strong> on the search form's toolbar (or <strong>Save As</strong> to keep the
+current one and create a named copy) and give it a meaningful name such as "My Team Open Peer Reviews."</p></div>
+
+<div class="item sub2"><span class="num">1.2.3</span> <span class="title">Running Saved Search</span>
+<div class="path"><span class="howto">How To:</span>OSEE Navigator <span class="sep">&gt;</span> Saved Searches <span class="sep">&gt;</span> &lt;your saved search&gt;</div>
+<p class="a">From then on, the saved search is available to re-run at any time directly from the
+<strong>OSEE Navigator</strong> under <strong>Saved Searches</strong> — one click reproduces the exact
+filter and results without reopening the form.</p></div>
+
+<div class="item sub2"><span class="num">1.2.4</span> <span class="title">Sharing Searches</span> <span class="badge b-future">On Request</span>
+<p class="a">The one limitation today is that a saved search lives with your own account only. It cannot
+yet be handed to someone else or published for the team — that sharing capability is covered under
+item 6.</p></div>
+
+<div class="q"><span class="num">2.</span> See completed reviews <span class="badge b-sup">Supported</span></div>
+<div class="path"><span class="howto">How To:</span>OSEE Navigator <span class="sep">&gt;</span> Action Search <span class="sep">&gt;</span> Review <span class="sep">+</span> User Type = Assignee <span class="sep">+</span> User = &lt;select&gt; <span class="sep">+</span> State Type = Completed</div>
+<p class="a">To see completed reviews, go to the <strong>OSEE Navigator</strong> and open
+<strong>Action Search</strong>. Set the work item type to <strong>Review</strong>, set the
+<strong>User Type</strong> to <strong>Assignee</strong>, pick the person in the <strong>User</strong>
+field (yourself or someone else), and set the <strong>State Type</strong> to
+<strong>Completed</strong>. Running the search returns the reviews that person was responsible for and
+that have since finished. Note that this works even though a completed review no longer has a current
+assignee: when you search for completed items by assignee, the search is smart enough to also match
+people who were assigned at any earlier point in the review's life, so you still get back the reviews
+you actually worked rather than an empty list.</p>
+
+<div class="item sub"><span class="num">2.1</span> <span class="title">Saving &amp; Running</span> <span class="badge b-sup">Supported</span>
+<p class="a">This search can be saved and reloaded exactly the way described in 1.2.2–1.2.3 — Save or
+Save As on the toolbar, then re-run it from <strong>Saved Searches</strong> in the navigator. As with
+1.2.4, a saved "completed reviews" search still cannot be shared with the team.</p></div>
+
+<div class="q"><span class="num">3.</span> Reviews I started but have not yet completed <span class="badge b-sup">Supported</span></div>
+<p class="a">This need is already covered by the assignee searches in items 1 and 2, because in ATS being
+<em>assigned</em> to a review is the signal that you still have work to do on it. In other words, your
+<strong>My Reviews</strong> list (or an Action Search filtered to you as Assignee with State Type
+Working) is exactly the set of reviews you have started but not yet finished — there is nothing extra to
+configure.</p>
+
+<div class="item sub"><span class="num">3.1</span> <span class="title">Filter by Defect Completion</span> <span class="badge b-future">On Request</span>
+<p class="a">What this does <em>not</em> do today is filter based on whether the defects themselves are
+"complete." That would have to be a custom search, because what counts as a "Completed Defect" means
+different things to different teams, and there is no single definition the tool can apply for everyone.
+— <span class="future">available on request, with priority and funding</span>.</p></div>
+
+<div class="item sub"><span class="num">3.2</span> <span class="title">Role Completion Un-assigns You</span> <span class="badge b-sup">Supported</span>
+<p class="a">The reason the assignee approach is enough is the role model. Each reviewer is given a role
+on the review, and being given that role also makes you an assignee. When you finish your part and mark
+your role complete, the system automatically un-assigns you — and you can also un-assign yourself at any
+time. As soon as you are off the review it stops appearing in My Reviews and in the assignee-based
+Action Search (1.1 and 1.2). So the reviews still assigned to you are precisely the ones you have
+started but not yet completed, with no separate "in progress" flag to track.</p></div>
+
+<div class="q"><span class="num">4.</span> Reviews where I created defects, the producer resolved them, but I have not closed them <span class="badge b-sup">Supported</span></div>
+<p class="a">Use the Open Defect Items navigator action to return this set directly. The action first
+limits the candidate reviews to open peer reviews containing the selected user's defect data, then
+evaluates the defect details to find resolved but unclosed items.</p>
+
+<div class="item sub"><span class="num">4.1</span> <span class="title">Manual Review of Defects</span> <span class="badge b-sup">Supported</span>
+<div class="path"><span class="howto">How To:</span>OSEE Navigator <span class="sep">&gt;</span> Action Search (as in 1 / 2) <span class="sep">&gt;</span> open each review <span class="sep">&gt;</span> Defects <span class="sep">&gt;</span> complete role <span class="sep">&gt;</span> un-assign</div>
+<p class="a">The practical way to handle it today is to start from one of your assignee searches (item 1
+or 2) to get the reviews you are involved in, then open each review and look at its
+<strong>Defects</strong>. From there you can see which of your defects the producer has resolved, decide
+whether you are satisfied with each resolution, complete your role, and un-assign yourself. It is a
+per-review manual pass rather than a single filtered list, but it does let you get the answer today
+using features that already exist.</p></div>
+
+<div class="item sub"><span class="num">4.2</span> <span class="title">Directed Defect Search</span> <span class="badge b-sup">Supported</span>
+<div class="path"><span class="howto">How To:</span>OSEE Navigator <span class="sep">&gt;</span> Review <span class="sep">&gt;</span> My Open Defect Items, or User's Open Defect Items <span class="sep">&gt;</span> &lt;select user&gt;</div>
+<p class="a"><strong>My Open Defect Items</strong> searches for the logged-in user's defects.
+<strong>User's Open Defect Items</strong> prompts for an active user and runs the same search for that
+user, surfacing matching defects and peer reviews directly.</p>
+<div class="criteria">
+  <span class="lbl">Most Desirable — Filter Definition</span>
+  <ol>
+    <li>The review is <strong>open</strong></li>
+    <li class="op">AND</li>
+    <li>I have created a defect (defect <strong>created-by = me</strong>, the assignee)</li>
+    <li class="op">AND</li>
+    <li>The defect's <strong>resolution is complete</strong> (resolution has text in it)</li>
+    <li class="op">AND</li>
+    <li>I have not addressed or closed it (<strong>closed = false</strong>)</li>
+  </ol>
+  <p class="result">= Then the review is displayed by the filter.</p>
+</div></div>
+
+<div class="q"><span class="num">5.</span> Create custom filters and save as a Review Search <span class="badge b-sup">Supported</span></div>
+<div class="path"><span class="howto">How To:</span>OSEE Navigator <span class="sep">&gt;</span> Action Search <span class="sep">&gt;</span> set criteria <span class="sep">&gt;</span> Save / Save As</div>
+<p class="a">You can build your own filter from the <strong>OSEE Navigator</strong> by opening
+<strong>Action Search</strong> (or the Review Search form) and combining whatever criteria you need —
+work item type, team, assignee, state type, version, change type, review type, attribute values, and so
+on. When the filter is set the way you want, use <strong>Save</strong> or <strong>Save As</strong> on
+the toolbar and give it a name. The saved filter then appears under <strong>Saved Searches</strong> in
+the navigator, so each person can keep a personal library of the review searches they run most often and
+re-run any of them with a single click.</p>
+
+<div class="q"><span class="num">6.</span> Share Review Filters with team <span class="badge b-future">On Request</span></div>
+<p class="a">Sharing a saved filter is not a feature today. The only way one person's review search reaches
+others right now is informally — through training documents, written instructions, or team
+communication that describes how to rebuild the same search. There is no shared, team-owned place where
+a filter can be published once and automatically picked up by everyone on the team. A proper "share with
+the team" capability would store the filter on a shared item — such as a Team Definition — that
+teammates could simply load from the navigator, so that a standard set of review searches could be
+maintained in one place for the whole team. — <span class="future">available on request, with priority and funding</span>.</p>
+
+<div class="q"><span class="num">7.</span> Additional Attributes or Criteria <span class="badge b-part">Partially Supported</span></div>
+<p class="a">Beyond the core filters, you can already extend both what you search on and what you see in
+the results, with one notable exception around defect fields.</p>
+
+<div class="item sub"><span class="num">7.1</span> <span class="title">Additional Search Fields</span> <span class="badge b-sup">Supported</span>
+<p class="a">The <strong>Action Search</strong> form already exposes additional fields for criteria beyond
+the basics, so in many cases you can tighten a review search using attributes that are already available
+on the form without any new development.</p></div>
+
+<div class="item sub"><span class="num">7.2</span> <span class="title">Additional Result Columns</span> <span class="badge b-sup">Supported</span>
+<p class="a">Once a search has run, the resulting list lets you add columns to display additional
+information about each review, so you can bring extra attributes into view and sort or scan on them even
+when they were not part of the filter itself.</p></div>
+
+<div class="item sub"><span class="num">7.3</span> <span class="title">Defect Fields Not Available</span> <span class="badge b-future">On Request</span>
+<p class="a">The one gap is that these additional attributes and criteria cannot be the defect fields —
+things like who created a defect, whether it was resolved, or whether it was closed are not available as
+search criteria or columns today. Making defect fields available this way
+— <span class="future">available on request, with priority and funding</span>.</p></div>
+
+<div class="foot">
+  Generated from <code>docs/ai/ats/ats-peer-review-search.md</code>. Status key:
+  <span class="badge b-sup">Supported</span> available today ·
+  <span class="badge b-part">Partially Supported</span> works with manual steps today ·
+  <span class="badge b-future">On Request</span> not built today, feasible with priority and funding.
+</div>
+
+</body>
+</html>
