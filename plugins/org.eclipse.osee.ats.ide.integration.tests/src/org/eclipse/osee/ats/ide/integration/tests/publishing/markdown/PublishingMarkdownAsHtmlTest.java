@@ -496,7 +496,7 @@ public class PublishingMarkdownAsHtmlTest {
 
    @Test
    public void testSizedImageHasInlineStyle() {
-      // The demo data has <image-link size="s">1646203177483523742</image-link>
+      // The demo data has <image-link size="s">1646203177</image-link>
       // In the HTML output, this should render as an <img> with style="max-width:50%;height:auto"
       Elements imgElements = htmlDoc.select("img[style]");
       boolean foundSizedImage = false;
