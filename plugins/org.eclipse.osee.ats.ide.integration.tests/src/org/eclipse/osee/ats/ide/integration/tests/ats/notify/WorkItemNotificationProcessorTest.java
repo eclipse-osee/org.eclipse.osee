@@ -13,14 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.notify;
 
-import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.SUBSCRIBED_FOR_AI_EMAIL;
-import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.SUBSCRIBED_FOR_TEAM_EMAIL;
-import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.SUBSCRIBED_WORKFLOW;
-import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_ASSIGNEE;
-import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_CANCELLED_WITH_ATSID;
-import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_CANCELLED_WITH_REASON;
-import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_COMPLETED;
-import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_ORIGINATOR;
+import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -90,10 +83,10 @@ public class WorkItemNotificationProcessorTest {
       event.setNotifyType(AtsNotifyType.Originator);
 
       // Fail if wrong id sent in
-      event.getWorkItemIds().add(9238423948L);
+      event.getWorkItemIds().add(9238423L);
       processor.run(notifications, event);
       Assert.assertTrue(rd.isFailed());
-      Assert.assertTrue(rd.toString().contains("WorkItem id [9238423948] invalid"));
+      Assert.assertTrue(rd.toString().contains("WorkItem id [9238423] invalid"));
 
       // Set valid id and re-run
       event.getWorkItemIds().clear();

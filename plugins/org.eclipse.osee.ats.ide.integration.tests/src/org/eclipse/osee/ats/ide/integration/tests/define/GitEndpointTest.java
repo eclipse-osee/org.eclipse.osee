@@ -69,7 +69,7 @@ public class GitEndpointTest {
    private Artifact repoArtifact;
 
    public static final ArtifactToken Git_Repo =
-      ArtifactToken.valueOf(8974893274747923L, "Demo Repo", DemoBranches.CIS_Bld_1, CoreArtifactTypes.GitRepository);
+      ArtifactToken.valueOf(897489327L, "Demo Repo", DemoBranches.CIS_Bld_1, CoreArtifactTypes.GitRepository);
 
    private GitEndpoint gitEp;
 
