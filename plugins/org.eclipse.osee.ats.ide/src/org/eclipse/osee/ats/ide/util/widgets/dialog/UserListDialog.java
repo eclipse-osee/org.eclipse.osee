@@ -39,8 +39,16 @@ public class UserListDialog extends FilteredTreeAtsUserDialog {
       this(parent, title, getDefaultUsers(active, AtsApiService.get(), includeUnAssigned));
    }
 
+   public UserListDialog(Shell parent, String title, String message, Active active, boolean includeUnAssigned) {
+      this(parent, title, message, getDefaultUsers(active, AtsApiService.get(), includeUnAssigned));
+   }
+
    public UserListDialog(Shell parent, String title, Collection<AtsUser> users) {
-      super(title, title, users, new ArrayTreeContentProvider(), new LabelProvider());
+      this(parent, title, title, users);
+   }
+
+   public UserListDialog(Shell parent, String title, String message, Collection<AtsUser> users) {
+      super(title, message, users, new ArrayTreeContentProvider(), new LabelProvider());
       setShellStyle(getShellStyle() | SWT.RESIZE);
       atsApi = AtsApiService.get();
    }
