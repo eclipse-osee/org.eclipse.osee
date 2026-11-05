@@ -19,13 +19,12 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -94,29 +93,20 @@ public class AgileTeamPointsColumnUI extends XViewerAtsCoreCodeXColumn {
    }
 
    private boolean promptChange(Collection<IAtsWorkItem> workItems) {
-      boolean modified = false;
+      AtsApi atsApi = AtsApiService.get();
       IAtsWorkItem firstWf = workItems.iterator().next();
-      IAgileTeam agileTeam = AtsApiService.get().getAgileService().getAgileTeam(firstWf);
+      IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(firstWf);
       if (agileTeam == null) {
          AWorkbench.popup("Can not determine Agile Team for %s", firstWf.toStringWithId());
          return false;
       }
-      AttributeTypeToken attributeType = AtsApiService.get().getAgileService().getPointsAttrType(firstWf);
+      AttributeTypeToken attributeType = atsApi.getAgileService().getPointsAttrType(firstWf);
       if (attributeType == null) {
          AWorkbench.popup("Can not determine points attribute type for wf %s", firstWf.toStringWithId());
          return false;
       }
 
-      if (AtsAttributeTypes.PointsEnum.equals(attributeType)) {
-         if (PromptChangeUtil.promptChangeAttributeWI(workItems, AtsAttributeTypes.PointsEnum, true)) {
-            modified = true;
-         }
-      } else if (AtsAttributeTypes.PointsNumeric.equals(attributeType)) {
-         if (PromptChangeUtil.promptChangeAttributeWI(workItems, AtsAttributeTypes.PointsNumeric, true)) {
-            modified = true;
-         }
-      }
-      return modified;
+      return PointsColumnUI.promptChangePoints(workItems, attributeType, atsApi);
    }
 
 }

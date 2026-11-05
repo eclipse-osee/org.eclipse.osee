@@ -25,13 +25,14 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.Points;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.widget.validate.XXIntegerValidator;
+import org.eclipse.osee.framework.core.widget.validate.XXDoubleValidator;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -39,8 +40,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.plugin.util.NoOpViewerComparator;
+import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -108,35 +113,74 @@ public class PointsColumnUI extends XViewerAtsColumn implements IXViewerValueCol
 
    public static boolean promptChangePoints(Collection<IAtsWorkItem> workItems, AttributeTypeToken pointsAttrType,
       AtsApi atsApi) {
-      if (pointsAttrType == AtsAttributeTypes.PointsNumeric) {
-         EntryDialog dialog = new EntryDialog("Enter Points", "Enter Points");
-         dialog.setValidator(XXIntegerValidator.instance);
-         if (dialog.open() == Window.OK) {
-            String entry = dialog.getEntry();
-            if (Strings.isNumeric(entry)) {
-               try {
-                  double points = Double.valueOf(entry);
-                  IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
-                  for (IAtsWorkItem workItem : workItems) {
-                     changes.setSoleAttributeValue(workItem, pointsAttrType, points);
-                  }
-                  changes.executeIfNeeded();
-                  return true;
-               } catch (Exception ex) {
-                  // do nothing
-               }
-            } else if (Strings.isInvalidOrBlank(entry)) {
-               IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
-               for (IAtsWorkItem workItem : workItems) {
-                  changes.deleteAttributes(workItem, pointsAttrType);
-               }
-               changes.executeIfNeeded();
-            }
+      if (pointsAttrType.equals(AtsAttributeTypes.PointsNumeric)) {
+         return promptChangePointsNumeric(workItems, pointsAttrType, atsApi);
+      }
+      if (pointsAttrType.equals(AtsAttributeTypes.PointsEnum)) {
+         return promptChangePointsEnum(workItems, pointsAttrType, atsApi);
+      }
+      return PromptChangeUtil.promptChangeAttribute(Collections.castAll(workItems), pointsAttrType, true);
+   }
+
+   /**
+    * Numeric points are a float (partial points allowed), so only a valid double or blank (clear) is accepted.
+    */
+   private static boolean promptChangePointsNumeric(Collection<IAtsWorkItem> workItems,
+      AttributeTypeToken pointsAttrType, AtsApi atsApi) {
+      EntryDialog dialog = new EntryDialog("Enter Points", "Enter Points");
+      dialog.setValidator(XXDoubleValidator.instance);
+      if (dialog.open() != Window.OK) {
+         return false;
+      }
+      String entry = dialog.getEntry();
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
+      if (Strings.isNumeric(entry)) {
+         double points = Double.parseDouble(entry);
+         for (IAtsWorkItem workItem : workItems) {
+            changes.setSoleAttributeValue(workItem, pointsAttrType, points);
+         }
+      } else if (Strings.isInvalidOrBlank(entry)) {
+         for (IAtsWorkItem workItem : workItems) {
+            changes.deleteAttributes(workItem, pointsAttrType);
          }
       } else {
-         PromptChangeUtil.promptChangeAttribute(Collections.castAll(workItems), pointsAttrType, true);
+         return false;
       }
-      return false;
+      changes.executeIfNeeded();
+      return true;
+   }
+
+   /**
+    * Enum points are a closed set defined by the Work Definition (or the default Points scale), so the user selects
+    * rather than types. Same source as XXPointsEnumWidget.getSelectable().
+    */
+   private static boolean promptChangePointsEnum(Collection<IAtsWorkItem> workItems, AttributeTypeToken pointsAttrType,
+      AtsApi atsApi) {
+      IAtsWorkItem firstWorkItem = workItems.iterator().next();
+      Collection<String> selectable = firstWorkItem.getWorkDefinition().getPointsEnums();
+      if (selectable.isEmpty()) {
+         selectable = Points.getValuesStr();
+      }
+      // FilteredListDialog always sorts alphabetically (1, 13, 150, 2...); points scale must keep its order
+      FilteredTreeDialog dialog = new FilteredTreeDialog("Select Points", "Select Points",
+         new ArrayTreeContentProvider(), new StringLabelProvider(), NoOpViewerComparator.instance, true);
+      dialog.setSingleSelect();
+      dialog.setInput(selectable);
+      dialog.open();
+      String selected = dialog.getSelectedFirst();
+      if (!(dialog.isOkSelected() && Strings.isValid(selected)) && !dialog.isClearSelected()) {
+         return false;
+      }
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
+      for (IAtsWorkItem workItem : workItems) {
+         if (dialog.isClearSelected()) {
+            changes.deleteAttributes(workItem, pointsAttrType);
+         } else {
+            changes.setSoleAttributeValue(workItem, pointsAttrType, selected);
+         }
+      }
+      changes.executeIfNeeded();
+      return true;
    }
 
    @Override
