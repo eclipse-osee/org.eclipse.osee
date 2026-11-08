@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.rest.internal.agile.gitlab;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.gitlab.GitLabOutboundEndpoint;
 import org.eclipse.osee.ats.core.agile.gitlab.AbstractAtsGitLabService;
+import org.eclipse.osee.ats.rest.internal.workitem.sync.gitlab.GitLabOutboundEndpointImpl;
 
 public class AtsGitLabServiceImpl extends AbstractAtsGitLabService {
 
@@ -25,9 +26,9 @@ public class AtsGitLabServiceImpl extends AbstractAtsGitLabService {
    }
 
    private GitLabOutboundEndpoint getGitLabEndpoint() {
-      //if (gitLabEndpoint == null) {
-      //   gitLabEndpoint = new GitLabOutboundEndpointImpl(atsApi);
-      //}
+      if (gitLabEndpoint == null) {
+         gitLabEndpoint = new GitLabOutboundEndpointImpl(atsApi);
+      }
       return gitLabEndpoint;
    }
 
