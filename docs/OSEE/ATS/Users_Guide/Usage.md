@@ -675,9 +675,9 @@ From the ATS Navigator, select Create new Agile Team and enter a team
 name. Your team artifact will be placed on the Common Branch under a
 folder named "Agile".
 
-Open the Agile Team in the Artifact Editor and add the "Point Attribute
-Type" attribute and set it to ats.Points or ats.Points Numeric,
-depending on which points are used by your team. "ats.Points" is an
+The points type is configured in the team's Workflow Definition (not on
+the Agile Team). The Workflow Definition selects ats.Points or
+ats.Points Numeric, depending on which points are used by your team. "ats.Points" is an
 enumerated point scale that is more in line with "Pure Agile". It also
 includes the "Epic" option. "ats.Points Numeric" is a floating point
 attribute that allows for partial points and does not have the "Epic"

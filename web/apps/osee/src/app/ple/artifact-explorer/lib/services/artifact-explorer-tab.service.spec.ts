@@ -113,6 +113,36 @@ describe('ArtifactExplorerTabService', () => {
 		expect(service.Tabs()).toEqual([]);
 	});
 
+	describe('removeTabByTabId', () => {
+		it('removes only the tab with the matching tabId', () => {
+			service.Tabs.set([tab1, tab2]);
+			service.removeTabByTabId('1');
+			expect(service.Tabs()).toEqual([tab2]);
+		});
+
+		it('closes only the clicked tab when the same artifact is open on two branches', () => {
+			// tab1 and tab2 share artifact.id '1' on different branches. Removing by
+			// tabId must leave the other branch's tab open (removeTabByArtifactId would
+			// wrongly close both).
+			service.Tabs.set([tab1, tab2]);
+			service.removeTabByTabId(tab2.tabId);
+			expect(service.Tabs()).toEqual([tab1]);
+		});
+
+		it('clamps the selected index after removing the last tab', () => {
+			service.Tabs.set([tab1, tab2]);
+			service.SelectedIndex = 1;
+			service.removeTabByTabId('2');
+			expect(service.selectedIndex()).toBe(0);
+		});
+
+		it('is a no-op for an unknown tabId', () => {
+			service.Tabs.set([tab1, tab2]);
+			service.removeTabByTabId('does-not-exist');
+			expect(service.Tabs()).toEqual([tab1, tab2]);
+		});
+	});
+
 	describe('Event Tests', () => {
 		it('Empty tabs and no branch committed', () => {
 			service.Tabs.set([]);

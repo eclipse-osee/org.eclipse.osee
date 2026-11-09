@@ -95,30 +95,9 @@
 		ctx.currentState.commitable &&
 		!ctx.isPrevious
 	) {
-		<button
-			mat-menu-item
-			(click)="commitBranch()"
-			class="tw-w-full [&>span]:tw-w-full">
-			<div class="tw-grid tw-grid-cols-2 tw-items-center tw-gap-2">
-				<span>Commit Branch</span>
-				<span
-					[ngClass]="{
-						'tw-bg-primary dark:tw-bg-primary-700':
-							ctx.state.state === 'Completed',
-						'tw-bg-warning dark:tw-bg-warning-700':
-							ctx.state.state === 'Cancelled',
-						'tw-bg-accent-800 dark:tw-bg-accent-700':
-							ctx.state.state === 'Review',
-						'tw-bg-osee-neutral-35 dark:tw-bg-background':
-							ctx.state.state !== 'Completed' &&
-							ctx.state.state !== 'Cancelled' &&
-							ctx.state.state !== 'Review',
-					}"
-					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-osee-neutral-100 dark:tw-text-foreground"
-					>{{ ctx.state.state }}</span
-				>
-			</div>
-		</button>
+		<ng-container
+			[ngTemplateOutlet]="commitButton"
+			[ngTemplateOutletContext]="{ $implicit: ctx }"></ng-container>
 	} @else if (
 		isTeamLead() &&
 		!transitionApproved() &&
@@ -154,11 +133,59 @@
 		transitionApproved() &&
 		ctx.state.state === 'Completed'
 	) {
+		<ng-container
+			[ngTemplateOutlet]="commitButton"
+			[ngTemplateOutletContext]="{ $implicit: ctx }"></ng-container>
+	}
+</ng-template>
+
+<!--
+	Commit Branch item: active once the branch resolves (commitReady), otherwise a
+	disabled spinner so the click can't be silently swallowed. Completed has no pill.
+-->
+<ng-template
+	#commitButton
+	let-ctx>
+	@if (commitReady()) {
 		<button
 			mat-menu-item
 			(click)="commitBranch()"
-			class="tw-w-full tw-text-center [&>span]:tw-w-full">
-			Commit Branch
+			class="tw-w-full [&>span]:tw-w-full">
+			<div class="tw-grid tw-grid-cols-2 tw-items-center tw-gap-2">
+				<span>Commit Branch</span>
+				@if (ctx.state.state !== 'Completed') {
+					<span
+						[ngClass]="{
+							'tw-bg-warning dark:tw-bg-warning-700':
+								ctx.state.state === 'Cancelled',
+							'tw-bg-accent-800 dark:tw-bg-accent-700':
+								ctx.state.state === 'Review',
+							'tw-bg-osee-neutral-35 dark:tw-bg-background':
+								ctx.state.state !== 'Cancelled' &&
+								ctx.state.state !== 'Review',
+						}"
+						class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-osee-neutral-100 dark:tw-text-foreground"
+						>{{ ctx.state.state }}</span
+					>
+				}
+			</div>
 		</button>
+	} @else {
+		<span
+			class="tw-inline-block tw-w-full"
+			matTooltip="Loading branch details before commit is available.">
+			<button
+				mat-menu-item
+				disabled
+				class="tw-w-full [&>span]:tw-w-full">
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<mat-progress-spinner
+						mode="indeterminate"
+						[diameter]="16"
+						[strokeWidth]="2" />
+					<span>Commit Branch</span>
+				</div>
+			</button>
+		</span>
 	}
 </ng-template>

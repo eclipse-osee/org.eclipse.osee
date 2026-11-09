@@ -816,8 +816,8 @@ public abstract class XXAbstractBaseXWidget<T> extends XWidget implements ISelec
       if (widData.getViewerComparator() != null) {
          return (ViewerComparator) widData.getViewerComparator();
       }
-      if (getAttributeType().hasDisplayHint(DisplayHint.InOrder)) {
-         // Do not sort, use enum as supplied to dialogs
+      if (widData.is(XOption.NO_SORT) || getAttributeType().hasDisplayHint(DisplayHint.InOrder)) {
+         // Do not sort, use selectable values as supplied to dialogs
          return NoOpViewerComparator.instance;
       }
       return StringNameComparator.instance;

@@ -15,6 +15,11 @@ import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { APP_BASE } from '../../../shared/test-config';
 import { selectBranch } from '../../../shared/branch-helpers';
+import { openSelectAndChooseOption } from '../../../shared/select-helpers';
+import {
+	getTransitionFailureReasons,
+	transitionResponse,
+} from '@osee/shared/types';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -156,10 +161,12 @@ test('peer review branch', async ({ page }) => {
 	await expect(aiOption).toBeVisible();
 	await aiOption.click();
 	await page.getByLabel('Description').fill('Peer review');
-	await page.getByLabel('Change Type').locator('span').click();
 	const changeTypeOption = page.getByRole('option', { name: 'Improvement' });
-	await expect(changeTypeOption).toBeVisible();
-	await changeTypeOption.click();
+	await openSelectAndChooseOption(
+		page.getByRole('combobox', { name: 'Change Type', exact: true }),
+		changeTypeOption,
+		{ optionTimeout: 5000 }
+	);
 
 	let requestPromise = page.waitForResponse((response) =>
 		response.url().startsWith(`${APP_BASE}/ats/ple/branches/pr`)
@@ -226,90 +233,80 @@ test('commit branches', async ({ page }) => {
 	await page.getByRole('button', { name: 'Peer Review' }).click();
 
 	await page.getByText('Select a Peer Review Branch').click();
-	await page.getByText('MIM Peer Review').click({ timeout: 60000 });
-	await page
-		.getByRole('listbox')
-		.locator('div')
-		.filter({ hasText: 'Edit Message' })
-		.getByRole('button')
-		.click();
-	await expect(page.getByText('In Work')).toBeVisible();
-	await page
-		.getByRole('listbox')
-		.locator('div')
-		.filter({ hasText: 'Edit Message' })
-		.getByRole('button')
-		.click();
-	// Same async transition->render->commit sequence as the second branch below: wait for each
-	// control before clicking so the "Review" click can't fire before the transition re-render.
-	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	const tw16Review = page.getByRole('button', {
-		name: 'Review',
-		exact: true,
+	const peerReviewOption = page.getByRole('option', {
+		name: 'MIM Peer Review',
 	});
-	await expect(tw16Review).toBeVisible({ timeout: 60000 });
-	await tw16Review.click();
-	const tw16Commit = page.getByRole('menuitem', { name: 'Commit Branch' });
-	// Gate on enabled, not just visible: during the Review re-render the item can render briefly
-	// disabled, and a click on a disabled menuitem is silently dropped — leaving the branch stuck
-	// at "Review" and the success banner never shown (the failure this guard fixes).
-	await expect(tw16Commit).toBeEnabled({ timeout: 60000 });
-	await tw16Commit.click();
-
-	// Committing a branch is an async server round-trip (commit + SSE refresh) that can exceed the
-	// default 5s assertion timeout under CI load, so wait on the real completion signal (the
-	// success banner) with a generous timeout rather than racing the commit.
-	await expect(
-		page.getByText('Branches included in this PR have been committed')
-	).toBeVisible({ timeout: 60000 });
-
-	await page.screenshot({
-		animations: 'disabled',
-		path: 'screenshots/peer-review/peer-review-committed.png',
-	});
-
-	await page
-		.getByRole('listbox')
-		.locator('div')
-		.filter({ hasText: 'Add an Element' })
-		.getByRole('button')
-		.click();
-	await expect(page.getByText('In Work')).toBeVisible();
-	await page
-		.getByRole('listbox')
-		.locator('div')
-		.filter({ hasText: 'Add an Element' })
-		.getByRole('button')
-		.click();
-	// Transitioning to Review is an async server round-trip; the branch's action control then
-	// re-renders as a "Review" dropdown. Wait for each control to actually be present before
-	// clicking it, rather than assuming the previous async step has finished:
-	//  1. click "Transition to Review",
-	//  2. wait for the resulting "Review" dropdown button, then open it,
-	//  3. wait for the "Commit Branch" item, then click it.
-	// Skipping these waits is what makes the second commit flaky under load (the "Review" click
-	// fires before the transition re-render, so the dropdown never opens and Commit Branch is
-	// never clicked, leaving the branch stuck in Review).
-	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	const tw19Review = page.getByRole('button', {
-		name: 'Review',
-		exact: true,
-	});
-	await expect(tw19Review).toBeVisible({ timeout: 60000 });
-	await tw19Review.click();
-	const tw19Commit = page.getByRole('menuitem', { name: 'Commit Branch' });
-	// Same enabled-gate as the first branch: a disabled-at-click Commit Branch item would be
-	// silently dropped and leave this branch stuck at Review.
-	await expect(tw19Commit).toBeEnabled({ timeout: 60000 });
-	await tw19Commit.click();
-
-	// "Close Peer Review" is disabled until every applied branch is committed
-	// (completedCommitting()). Assert it becomes enabled before clicking, so we wait on the real
-	// precondition (all commits finished) rather than racing the async second commit.
+	await expect(peerReviewOption).toBeVisible();
+	await peerReviewOption.click();
 	const closePeerReview = page.getByRole('button', {
 		name: 'Close Peer Review',
 	});
-	await expect(closePeerReview).toBeEnabled({ timeout: 60000 });
+	await expect(closePeerReview).toBeDisabled();
+
+	for (const title of ['Edit Message Description', 'Add an Element']) {
+		await test.step(`Commit ${title}`, async () => {
+			const branchRow = page
+				.getByRole('listbox')
+				.locator('div')
+				.filter({ hasText: title });
+			const actionButton = branchRow.getByRole('button');
+			await expect(actionButton).toBeEnabled();
+			await actionButton.click();
+			const inWork = branchRow.getByRole('button', {
+				name: 'In Work',
+				exact: true,
+			});
+			await expect(inWork).toBeVisible();
+			await inWork.click();
+			const transition = page.getByRole('menuitem', {
+				name: 'Transition to Review',
+			});
+			await expect(transition).toBeEnabled();
+			await transition.click();
+			const review = branchRow.getByRole('button', {
+				name: 'Review',
+				exact: true,
+			});
+			await expect(review).toBeVisible();
+			await review.click();
+			const commit = page.getByRole('menuitem', {
+				name: 'Commit Branch',
+			});
+			await expect(commit).toBeEnabled();
+			const completedResponse = page.waitForResponse(
+				(response) =>
+					response.url() === `${APP_BASE}/ats/action/transition` &&
+					response.request().method() === 'POST' &&
+					response.request().postDataJSON().toStateName ===
+						'Completed'
+			);
+			await commit.click();
+			const response = await completedResponse;
+			expect(response.status()).toBe(200);
+			const completion: transitionResponse = await response.json();
+			expect(getTransitionFailureReasons(completion)).toEqual([]);
+			expect(completion.workItemIds).toEqual([
+				expect.objectContaining({ name: title }),
+			]);
+
+			const committed = branchRow.getByRole('button', {
+				name: 'Committed',
+				exact: true,
+			});
+			await expect(committed).toBeVisible();
+			await expect(committed).toBeDisabled();
+		});
+
+		if (title === 'Edit Message Description') {
+			await expect(closePeerReview).toBeDisabled();
+			await page.screenshot({
+				animations: 'disabled',
+				path: 'screenshots/peer-review/peer-review-committed.png',
+			});
+		}
+	}
+
+	await expect(closePeerReview).toBeEnabled();
 	await closePeerReview.click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 });

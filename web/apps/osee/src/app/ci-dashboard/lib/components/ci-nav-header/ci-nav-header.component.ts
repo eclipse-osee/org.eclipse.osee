@@ -25,6 +25,7 @@ import {
 	concatMap,
 	from,
 	iif,
+	map,
 	of,
 	reduce,
 	switchMap,
@@ -37,7 +38,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	selector: 'osee-ci-nav-header',
 	imports: [AsyncPipe, NgClass, RouterLink],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	template: `<nav class="tw-flex tw-items-center">
+	template: `<nav
+		class="tw-flex tw-items-center"
+		aria-label="Zenith">
 		<ul class="tw-flex tw-gap-4 tw-text-sm">
 			@for (navItem of navItems | async; track navItem) {
 				<li>
@@ -47,8 +50,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 							'tw-border-b-2 tw-border-primary tw-text-primary':
 								router.url.includes(navItem.routerLink),
 						}"
-						[routerLink]="navItem.routerLink + routeSuffix().path"
-						[queryParams]="routeSuffix().queryParams"
+						[routerLink]="navItem.routerLink"
+						[queryParams]="branchQueryParams()"
 						>{{ navItem.label }}</a
 					>
 				</li>
@@ -74,35 +77,33 @@ export default class CiNavHeaderComponent {
 		reduce((acc, curr) => [...acc, curr], [] as navigationElement[])
 	);
 
-	routeSuffix: Signal<{ path: string; queryParams: Record<string, string> }> =
-		toSignal(
-			combineLatest([
-				this.ui.branchType,
-				this.ui.branchId,
-				this.ui.ciSetId,
-			]).pipe(
-				switchMap(([branchType, branchId, ciSetId]) => {
-					const route: {
-						path: string;
-						queryParams: Record<string, string>;
-					} = { path: '', queryParams: {} };
-					if (branchType === undefined || branchType === '') {
-						return of(route);
-					}
-					if (
-						branchId === undefined ||
-						branchId === '' ||
-						branchId === '-1'
-					) {
-						route.path = `/${branchType}`;
-					}
-					route.path = `/${branchType}/${branchId}`;
-					if (ciSetId !== undefined && ciSetId !== '-1') {
-						route.queryParams = { set: ciSetId };
-					}
-					return of(route);
-				})
-			),
-			{ initialValue: { path: '', queryParams: {} } }
-		);
+	// Branch and CI set are carried as query params (branchType, branchId, set),
+	// not path segments, so nav links preserve the active branch/set selection.
+	branchQueryParams: Signal<Record<string, string>> = toSignal(
+		combineLatest([
+			this.ui.branchType,
+			this.ui.branchId,
+			this.ui.ciSetId,
+		]).pipe(
+			map(([branchType, branchId, ciSetId]) => {
+				const queryParams: Record<string, string> = {};
+				if (branchType === undefined || branchType === '') {
+					return queryParams;
+				}
+				queryParams['branchType'] = branchType;
+				if (
+					branchId !== undefined &&
+					branchId !== '' &&
+					branchId !== '-1'
+				) {
+					queryParams['branchId'] = branchId;
+				}
+				if (ciSetId !== undefined && ciSetId !== '-1') {
+					queryParams['set'] = ciSetId;
+				}
+				return queryParams;
+			})
+		),
+		{ initialValue: {} }
+	);
 }

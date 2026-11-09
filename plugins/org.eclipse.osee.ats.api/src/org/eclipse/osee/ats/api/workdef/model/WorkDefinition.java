@@ -64,12 +64,12 @@ public class WorkDefinition extends AbstractWorkDefItem {
    private XResultData results = new XResultData();
    private final List<WorkDefOption> options = new ArrayList<>();
    private final List<ChangeTypes> changeTypes = new ArrayList<>();
-   private AttributeTypeToken pointsAttrType = PointsNumeric;
    private final List<Priorities> priorities = new ArrayList<>();
    private final List<ReviewRequiredMinimum> reviewRequiredMinimums = new ArrayList<>();
    private List<IAtsTransitionHook> transitionHooks = new ArrayList<>();
    private List<ConditionalRule> conditions = new ArrayList<>();
    private Comparator<String> pcrIdComparator = null;
+   private AttributeTypeToken pointsAttrType = PointsNumeric;
    private List<String> pointsEnums = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {

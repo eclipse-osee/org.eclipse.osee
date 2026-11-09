@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -72,8 +71,6 @@ public class TestingReportWorkDefXWidgetFingerprints extends XNavigateItemAction
          }
       }
       Map<String, Object> report = new LinkedHashMap<>();
-      report.put("generatedAt", Instant.now().toString());
-      report.put("branch", AtsApiService.get().getAtsBranch().toString());
       report.put("workDefs", resolved);
       return report;
    }
