@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 
 /**
@@ -167,6 +168,12 @@ public interface AtsConfigEndpointApi {
    @Path("parallel/{verId}/all")
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<IAtsVersion> getAllParallelVersions(@PathParam("verId") ArtifactId verId);
+
+   @GET
+   @SkipAtsConfigJsonWriter
+   @Path("teamdef")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<NamedIdBase> getTeamDefinitions(@QueryParam("active") @DefaultValue("Active") String active);
 
    @GET
    @SkipAtsConfigJsonWriter
