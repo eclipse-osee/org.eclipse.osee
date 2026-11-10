@@ -382,13 +382,8 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
 
    @Override
    public List<IAtsTeamDefinition> getTeamDefinitions(Active active) {
-      List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
-      for (IAtsTeamDefinition teamDef : atsApi.getConfigService().getConfigurations().getIdToTeamDef().values()) {
-         if (teamDef.isActive()) {
-            teamDefs.add(teamDef);
-         }
-      }
-      return teamDefs;
+      return getActive(new ArrayList<IAtsTeamDefinition>(
+         atsApi.getConfigService().getConfigurations().getIdToTeamDef().values()), active);
    }
 
    @Override

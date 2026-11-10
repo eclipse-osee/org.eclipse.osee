@@ -13,8 +13,10 @@
 
 package org.eclipse.osee.ats.rest.internal.config;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,6 +54,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -59,9 +62,12 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -282,6 +288,18 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Collection<IAtsVersion> getAllParallelVersions(ArtifactId verId) {
       return atsApi.getVersionService().getParallelVersionsRecursive(verId);
+   }
+
+   @Override
+   public List<NamedIdBase> getTeamDefinitions(String active) {
+      Active activeFilter = Active.Active;
+      if (Strings.isValid(active)) {
+         activeFilter = Arrays.stream(Active.values()).filter(a -> a.name().equalsIgnoreCase(active)).findFirst().orElseThrow(
+            () -> new OseeArgumentException("Invalid active [%s]; must be Active, InActive or Both", active));
+      }
+      return atsApi.getTeamDefinitionService().getTeamDefinitions(activeFilter).stream().map(
+         teamDef -> new NamedIdBase(teamDef.getId(), teamDef.getName())).sorted(
+            Comparator.comparing(NamedIdBase::getName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList());
    }
 
    @Override

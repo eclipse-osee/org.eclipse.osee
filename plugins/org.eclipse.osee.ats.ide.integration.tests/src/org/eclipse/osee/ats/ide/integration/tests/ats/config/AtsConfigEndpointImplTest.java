@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -144,6 +145,50 @@ public class AtsConfigEndpointImplTest {
       branchView = atsApi.getBranchService().getBranchView(version);
       Assert.assertTrue(branchView.isValid());
       Assert.assertTrue(Strings.isValid(branchView.getName()));
+   }
+
+   @Test
+   public void testGetTeamDefinitionsDefaultsToActive() {
+      List<NamedIdBase> teamDefs = configEp.getTeamDefinitions("Active");
+      Assert.assertFalse(teamDefs.isEmpty());
+      Assert.assertTrue("Top Team Definition should be active",
+         teamDefs.stream().anyMatch(t -> t.getId().equals(AtsArtifactToken.TopTeamDefinition.getId())));
+      Assert.assertEquals(teamDefs.size(), configEp.getTeamDefinitions(null).size());
+   }
+
+   @Test
+   public void testGetTeamDefinitionsSortedByNameIgnoringCase() {
+      List<NamedIdBase> teamDefs = configEp.getTeamDefinitions("Both");
+      for (int i = 1; i < teamDefs.size(); i++) {
+         Assert.assertTrue(
+            String.format("[%s] should not come before [%s]", teamDefs.get(i).getName(), teamDefs.get(i - 1).getName()),
+            String.CASE_INSENSITIVE_ORDER.compare(teamDefs.get(i - 1).getName(), teamDefs.get(i).getName()) <= 0);
+      }
+   }
+
+   @Test
+   public void testGetTeamDefinitionsActiveFilterIsCaseInsensitiveAndBothIsSuperset() {
+      List<NamedIdBase> active = configEp.getTeamDefinitions("active");
+      List<NamedIdBase> inActive = configEp.getTeamDefinitions("INACTIVE");
+      List<NamedIdBase> both = configEp.getTeamDefinitions("Both");
+
+      Assert.assertEquals(active.size() + inActive.size(), both.size());
+      Assert.assertTrue(both.containsAll(active));
+      Assert.assertTrue(both.containsAll(inActive));
+      for (NamedIdBase teamDef : inActive) {
+         Assert.assertFalse(active.contains(teamDef));
+      }
+   }
+
+   @Test
+   public void testGetTeamDefinitionsInvalidActiveFails() {
+      try {
+         configEp.getTeamDefinitions("Bogus");
+         Assert.fail("Expected failure for invalid active value");
+      } catch (Exception ex) {
+         // expected: server rejects value that is not Active, InActive or Both
+         Assert.assertNotNull(ex);
+      }
    }
 
    @Test
