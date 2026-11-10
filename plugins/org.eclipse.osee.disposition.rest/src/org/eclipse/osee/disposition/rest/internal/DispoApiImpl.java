@@ -998,13 +998,13 @@ public class DispoApiImpl implements DispoApi {
 
    private String getGitlabPersonalAccessToken() {
       ArtifactReadable gitlabConfig =
-         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(AtsArtifactToken.GitlabConfig).asArtifact();
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(AtsArtifactToken.DispoGitLabConfig).asArtifact();
       return gitlabConfig.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
    }
 
    private String getGitlabBaseApiUrl() {
       ArtifactReadable gitlabConfig =
-         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(AtsArtifactToken.GitlabConfig).asArtifact();
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(AtsArtifactToken.DispoGitLabConfig).asArtifact();
       return gitlabConfig.getSoleAttributeAsString(CoreAttributeTypes.ContentUrl);
    }
 
