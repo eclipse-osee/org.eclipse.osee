@@ -12,7 +12,6 @@
  **********************************************************************/
 
 package org.eclipse.osee.framework.core.enums;
-
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractTestResult;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
@@ -274,7 +273,7 @@ public interface CoreRelationTypes {
    RelationTypeSide TestScriptResultsToScriptLog_TestScriptResults = RelationTypeSide.create(TestScriptResultsToScriptLog, SIDE_A);
    RelationTypeSide TestScriptResultsToScriptLog_ScriptLog = RelationTypeSide.create(TestScriptResultsToScriptLog, SIDE_B);
 
-   RelationTypeToken TestScriptDefToTeam = osee.addNewRelationType(8667837141538971292L, "Test Script Definition to Test Case", MANY_TO_ONE, UNORDERED, TestScriptDef, "Test Script Def", ScriptTeam, "Script Team");
+   RelationTypeToken TestScriptDefToTeam = osee.addNewRelationType(8667837141538971292L, "Test Script Definition to Team", MANY_TO_ONE, UNORDERED, TestScriptDef, "Test Script Def", ScriptTeam, "Script Team");
    RelationTypeSide TestScriptDefToTeam_TestScriptDef = RelationTypeSide.create(TestScriptDefToTeam, SIDE_A);
    RelationTypeSide TestScriptDefToTeam_ScriptTeam = RelationTypeSide.create(TestScriptDefToTeam, SIDE_B);
 

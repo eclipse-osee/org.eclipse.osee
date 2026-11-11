@@ -14,4 +14,5 @@ export * from './ci-details.service.mock';
 export * from './ci-dashboard-controls.component.mock';
 export * from './subsystem-selector.component.mock';
 export * from './team-selector.component.mock';
+export * from './team-selector-filter.component.mock';
 export * from './ci-set.service.mock';

@@ -10,8 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import {
+	ATTRIBUTETYPEID,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/attributes/constants';
 import { attribute } from '@osee/attributes/types';
+import { RELATIONTYPEID } from '@osee/shared/types/constants';
 
 export type CISet = {
 	id: `${number}`;
@@ -252,4 +256,37 @@ export const scriptTeamSentinel: ScriptTeam = {
 	id: '-1',
 	gammaId: '-1',
 	name: { id: '-1', gammaId: '-1', typeId: '1152921504606847088', value: '' },
+};
+
+export type ScriptDefColumnFilters = {
+	name: string;
+	team: string;
+	subsystem: string;
+	safety: string;
+	statusBy: string;
+	machineName: string;
+	fullScriptName: string;
+	notes: string;
+};
+
+export type ArtifactQueryElement = {
+	attributeQuery: {
+		attributeId: {
+			id: ATTRIBUTETYPEID;
+		};
+		value: string;
+	};
+	relationPath: {
+		id?: RELATIONTYPEID;
+		name?: string;
+		side?: string;
+		type?: {
+			id: RELATIONTYPEID;
+			name: string;
+		};
+	}[];
+};
+
+export type ColumnFilterRequest = {
+	filters: { column: string; value: string }[];
 };

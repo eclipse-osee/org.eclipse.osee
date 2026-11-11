@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, signal, inject, WritableSignal } from '@angular/core';
+import {
+	Injectable,
+	signal,
+	inject,
+	WritableSignal,
+	computed,
+} from '@angular/core';
 import {
 	combineLatest,
 	distinctUntilChanged,
@@ -25,6 +31,7 @@ import { TmoHttpService } from './tmo-http.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
+import { writableSlice } from '@osee/shared/utils';
 
 @Injectable({
 	providedIn: 'root',
@@ -39,19 +46,68 @@ export abstract class CiDetailsService {
 	protected _currentPage = signal(0);
 	protected _currentPageSize = signal(25);
 
+	protected _filters = signal<{
+		name: string | undefined;
+		team: string | undefined;
+		subsystem: string | undefined;
+		safety: string | undefined;
+		statusBy: string | undefined;
+		machineName: string | undefined;
+		fullScriptName: string | undefined;
+		notes: string | undefined;
+	}>({
+		name: undefined,
+		team: undefined,
+		subsystem: undefined,
+		safety: undefined,
+		statusBy: undefined,
+		machineName: undefined,
+		fullScriptName: undefined,
+		notes: undefined,
+	});
+
+	nameFilter = writableSlice(this._filters, 'name');
+	teamFilter = writableSlice(this._filters, 'team');
+	subsystemFilter = writableSlice(this._filters, 'subsystem');
+	safetyFilter = writableSlice(this._filters, 'safety');
+	statusByFilter = writableSlice(this._filters, 'statusBy');
+	machineNameFilter = writableSlice(this._filters, 'machineName');
+	fullScriptNameFilter = writableSlice(this._filters, 'fullScriptName');
+	notesFilter = writableSlice(this._filters, 'notes');
+
+	private _queries = computed(() => {
+		const filters = this._filters();
+		return Object.entries(filters)
+			.filter(([_, value]) => value !== undefined && value.trim() !== '')
+			.map(([column, value]) => ({ column, value: value! }));
+	});
+
+	filterSignals: Record<string, WritableSignal<string | undefined>> = {
+		name: this.nameFilter,
+		team: this.teamFilter,
+		subsystem: this.subsystemFilter,
+		safety: this.safetyFilter,
+		statusBy: this.statusByFilter,
+		machineName: this.machineNameFilter,
+		fullScriptName: this.fullScriptNameFilter,
+		notes: this.notesFilter,
+	};
+
+	query = computed(() => ({ filters: this._queries() }));
+
 	scriptDefs = combineLatest([
 		this.branchId,
 		this.ciDashboardUiService.ciSetId,
-		toObservable(this._currentDefFilter),
+		toObservable(this.query),
 		toObservable(this._currentPage),
 		toObservable(this._currentPageSize),
 	]).pipe(
 		filter(([branch, setId]) => branch !== '' && setId !== '-1'),
-		switchMap(([branch, setId, filter, currentPage, currentPageSize]) =>
-			this.tmoHttpService.getScriptDefListPagination(
+		switchMap(([branch, setId, query, currentPage, currentPageSize]) =>
+			this.tmoHttpService.getScriptDefListArtifactMultiFilter(
 				branch,
 				setId,
-				filter,
+				query,
 				currentPage + 1,
 				currentPageSize
 			)
@@ -149,6 +205,22 @@ export abstract class CiDetailsService {
 		);
 	}
 
+	private _artifactScriptDefCount = combineLatest([
+		this.branchId,
+		this.ciDashboardUiService.ciSetId,
+		toObservable(this.query),
+	]).pipe(
+		filter(([branch, setId]) => branch !== '' && setId !== '-1'),
+		switchMap(([branch, setId, query]) =>
+			this.tmoHttpService.getScriptDefListArtifactMultiFilterCount(
+				branch,
+				setId,
+				query
+			)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
 	get scriptResults() {
 		return this._scriptResults;
 	}
@@ -190,7 +262,7 @@ export abstract class CiDetailsService {
 	}
 
 	get scriptDefCount() {
-		return this._scriptDefCount;
+		return this._artifactScriptDefCount;
 	}
 
 	get currentPage(): WritableSignal<number> {

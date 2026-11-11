@@ -24,15 +24,14 @@ import java.util.List;
 import java.util.Map;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
+import org.eclipse.osee.accessor.types.ArtifactQueryRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionResult;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardEndpoint;
 import org.eclipse.osee.testscript.ScriptApi;
@@ -66,10 +65,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
       rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
 
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThroughPartialFilter(
-         branch, rels, ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
-         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)), 0L, 0L, null,
-         new LinkedList<>(), viewId);
+      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThroughArtifactQuery(
+         branch, rels, ciSet, new ArtifactQueryRequest(),
+         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)), 0L, 0L, null, viewId);
 
       boolean statsSet = false;
       for (ScriptDefToken def : defs) {
@@ -143,9 +141,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
       rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
 
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThroughPartialFilter(
-         branch, rels, ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name), Collections.emptyList(), 0L,
-         0L, null, new LinkedList<>(), viewId);
+      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThroughArtifactQuery(
+         branch, rels, ciSet, new ArtifactQueryRequest(),
+         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)), 0L, 0L, null, viewId);
 
       for (ScriptDefToken def : defs) {
          ScriptResultToken latestForSet =
@@ -181,9 +179,7 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          }
 
       });
-
       return values;
-
    }
 
    @Override
