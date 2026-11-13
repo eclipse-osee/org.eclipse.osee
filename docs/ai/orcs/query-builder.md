@@ -58,10 +58,16 @@ Criteria narrow which artifacts the query matches. Common patterns:
 | `andNameEquals(String)`                           | Match by exact Name attribute value           |
 | `and(AttributeTypeToken, String, QueryOption...)` | Match by attribute value                      |
 | `andRelatedTo(RelationTypeSide, ArtifactId)`      | Match artifacts related to a given artifact   |
+| `andRelatedToThroughRels(LinkedList<RelationTypeSide>, ArtifactId)` | Match artifacts joined to a given artifact by an ordered relation path |
 | `andRelationExists(RelationTypeSide)`             | Match artifacts that have a given relation    |
 | `andNotRelatedTo(RelationTypeSide, ArtifactId)`   | Exclude artifacts related to a given artifact |
 
 All criteria methods return `this` (the same `QueryBuilder`), enabling fluent chaining.
+
+`andRelatedToThroughRels` traverses the supplied relation sides in order. The first relation starts at the candidate
+artifact; each later relation starts at the prior relation's opposite endpoint; and the supplied artifact ID is matched
+to the final relation's opposite endpoint. For example, to match a Test Script Definition to a Test Script Set through
+a shared Test Script Results artifact, use the Test Script Definition side followed by the Test Script Results side.
 
 ### 3. Following Relations (Pre-Loading)
 

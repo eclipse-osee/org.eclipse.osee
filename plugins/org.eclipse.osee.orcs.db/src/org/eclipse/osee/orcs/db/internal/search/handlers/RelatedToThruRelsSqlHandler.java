@@ -13,13 +13,10 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -28,95 +25,109 @@ import org.eclipse.osee.orcs.search.ds.criteria.CriteriaRelatedToThroughRels;
 public class RelatedToThruRelsSqlHandler extends SqlHandler<CriteriaRelatedToThroughRels> {
    private CriteriaRelatedToThroughRels criteria;
 
-   private final LinkedHashMap<RelationTypeSide, Pair<String, String>> relAliases = new LinkedHashMap<>();
+   private final List<RelationAlias> relationAliases = new ArrayList<>();
    private String artAlias;
+
+   private static final class RelationAlias {
+      private final RelationTypeSide relationTypeSide;
+      private final String txsAlias;
+      private final String relationAlias;
+
+      private RelationAlias(RelationTypeSide relationTypeSide, String txsAlias, String relationAlias) {
+         this.relationTypeSide = relationTypeSide;
+         this.txsAlias = txsAlias;
+         this.relationAlias = relationAlias;
+      }
+   }
 
    @Override
    public void setData(CriteriaRelatedToThroughRels criteria) {
       this.criteria = criteria;
+      validateCriteria();
    }
 
    private void writeTables(AbstractSqlWriter writer) {
-
+      relationAliases.clear();
       for (int i = 0; i < criteria.getRelationTypeSides().size(); i++) {
-         RelationTypeSide relType = criteria.getRelationTypeSides().get(i);
+         RelationTypeSide relationTypeSide = criteria.getRelationTypeSides().get(i);
          String relAlias = "relExists" + i;
          String txsAlias = "txsRelExists" + i;
-         relAliases.put(relType, new Pair<String, String>(txsAlias, relAlias));
-         writer.write(
-            ((relType.isNewRelationTable()) ? OseeDb.RELATION_TABLE2.getName() : OseeDb.RELATION_TABLE.getName()) + " " + relAlias + ", ");
+         relationAliases.add(new RelationAlias(relationTypeSide, txsAlias, relAlias));
+         String tableName =
+            relationTypeSide.isNewRelationTable() ? OseeDb.RELATION_TABLE2.getName() : OseeDb.RELATION_TABLE.getName();
+         writer.write(tableName + " " + relAlias + ", ");
          writer.write(OseeDb.TXS_TABLE.getName() + " " + txsAlias + ",");
       }
       writer.removeDanglingSeparator(",");
 
    }
 
-   private void writePredicate(AbstractSqlWriter writer, RelationTypeSide typeSide, String txsAliasName,
-      String relAliasName, ArtifactId artId, String prevAlias) {
-
-      writer.write(relAliasName);
-      if (typeSide.isNewRelationTable()) {
+   private void writeRelationTypePredicate(AbstractSqlWriter writer, RelationAlias relationAlias) {
+      writer.write(relationAlias.relationAlias);
+      if (relationAlias.relationTypeSide.isNewRelationTable()) {
          writer.write(".rel_type = ?");
       } else {
          writer.write(".rel_link_type_id = ?");
       }
-      writer.addParameter(typeSide.getGuid());
+      writer.addParameter(relationAlias.relationTypeSide.getGuid());
+   }
 
-      writer.writeAnd();
-      String aOrbArtId = typeSide.getSide().isSideA() ? ".a_art_id" : ".b_art_id";
-      String oppositeAOrBartId = typeSide.getSide().isSideA() ? ".b_art_id" : ".a_art_id";
+   private String getSelectedColumn(RelationTypeSide relationTypeSide) {
+      return relationTypeSide.getSide().isSideA() ? "a_art_id" : "b_art_id";
+   }
 
-      if (prevAlias.isEmpty()) {
-         writer.write(relAliasName);
-         writer.write(aOrbArtId);
-         writer.write(" = " + artAlias + ".art_id");
-      } else if (artId.isInvalid()) {
-         writer.write(relAliasName);
-         writer.write(aOrbArtId);
-         writer.write(" = " + prevAlias + "." + oppositeAOrBartId);
-      } else {
-         writer.write(relAliasName);
-         writer.write(aOrbArtId);
-         writer.write(" = ? ");
-         writer.addParameter(artId);
+   private String getOppositeColumn(RelationTypeSide relationTypeSide) {
+      return relationTypeSide.getSide().isSideA() ? "b_art_id" : "a_art_id";
+   }
+
+   private void validateCriteria() {
+      if (criteria == null) {
+         throw new OseeArgumentException("CriteriaRelatedToThroughRels must be provided");
       }
-
+      if (criteria.getRelationTypeSides() == null || criteria.getRelationTypeSides().isEmpty()) {
+         throw new OseeArgumentException("CriteriaRelatedToThroughRels requires at least one relation type side");
+      }
+      if (criteria.getId() == null || criteria.getId().isInvalid()) {
+         throw new OseeArgumentException("CriteriaRelatedToThroughRels requires a valid related artifact id");
+      }
+      for (RelationTypeSide relationTypeSide : criteria.getRelationTypeSides()) {
+         if (relationTypeSide == null || relationTypeSide.isInvalid()) {
+            throw new OseeArgumentException("CriteriaRelatedToThroughRels requires valid relation type sides");
+         }
+      }
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
       writer.writeAndLn();
-      Entry<RelationTypeSide, Pair<String, String>> entry;
-      String prevAlias = Strings.EMPTY_STRING;
       writer.write(" exists ( select null from ");
       writeTables(writer);
-      Iterator<Entry<RelationTypeSide, Pair<String, String>>> iterator = relAliases.entrySet().iterator();
       writer.write(" where ");
-      while (iterator.hasNext()) {
-         entry = iterator.next();
-         if (prevAlias.isEmpty()) {
-            writePredicate(writer, entry.getKey(), entry.getValue().getFirst(), entry.getValue().getSecond(),
-               ArtifactId.SENTINEL, Strings.EMPTY_STRING);
-            writer.writeAndLn();
-            writer.writeEqualsAnd(entry.getValue().getFirst(), entry.getValue().getSecond(), "gamma_id");
-            writer.writeTxBranchFilter(entry.getValue().getFirst());
-            prevAlias = entry.getValue().getSecond();
-         } else if (!iterator.hasNext()) {
-            writer.writeAndLn();
-            writePredicate(writer, entry.getKey(), entry.getValue().getFirst(), entry.getValue().getSecond(),
-               criteria.getId(), prevAlias);
-            writer.writeAnd();
-            writer.writeEqualsAnd(entry.getValue().getFirst(), entry.getValue().getSecond(), "gamma_id");
-            writer.writeTxBranchFilter(entry.getValue().getFirst());
+      RelationAlias previousRelation = null;
+      for (int i = 0; i < relationAliases.size(); i++) {
+         RelationAlias currentRelation = relationAliases.get(i);
+         writeRelationTypePredicate(writer, currentRelation);
+         writer.writeAnd();
+         if (previousRelation == null) {
+            writer.writeEquals(currentRelation.relationAlias, getSelectedColumn(currentRelation.relationTypeSide),
+               artAlias, "art_id");
          } else {
-            writer.writeAndLn();
-            writePredicate(writer, entry.getKey(), entry.getValue().getFirst(), entry.getValue().getSecond(),
-               ArtifactId.SENTINEL, prevAlias);
-            writer.writeAnd();
-            writer.writeEqualsAnd(entry.getValue().getFirst(), entry.getValue().getSecond(), "gamma_id");
-            writer.writeTxBranchFilter(entry.getValue().getFirst());
+            writer.writeEquals(currentRelation.relationAlias, getSelectedColumn(currentRelation.relationTypeSide),
+               previousRelation.relationAlias, getOppositeColumn(previousRelation.relationTypeSide));
          }
+         if (i == relationAliases.size() - 1) {
+            writer.writeAnd();
+            writer.writeEqualsParameter(currentRelation.relationAlias,
+               getOppositeColumn(currentRelation.relationTypeSide), criteria.getId());
+         }
+         writer.writeAnd();
+         writer.writeEqualsAnd(currentRelation.txsAlias, currentRelation.relationAlias, "gamma_id");
+         writer.writeTxBranchFilter(currentRelation.txsAlias);
+         if (i < relationAliases.size() - 1) {
+            writer.writeAndLn();
+         }
+         previousRelation = currentRelation;
       }
       writer.write(") ");
    }
