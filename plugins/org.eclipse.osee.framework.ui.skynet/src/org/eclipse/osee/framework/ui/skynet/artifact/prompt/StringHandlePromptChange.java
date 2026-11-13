@@ -102,6 +102,8 @@ public class StringHandlePromptChange implements IHandlePromptChange {
             toReturn = Double.valueOf(value).toString();
          } else if (attrType.isBoolean()) {
             toReturn = Boolean.valueOf(value).toString();
+         } else if (attrType.isString() || attrType.isEnumerated()) {
+            toReturn = value;
          } else {
             throw new OseeArgumentException(String.format("Unhandled attribute type [%s]", attrType.toStringWithId()));
          }

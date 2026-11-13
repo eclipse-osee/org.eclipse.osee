@@ -15,6 +15,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -620,7 +621,7 @@ public class MimIcdGenerator {
                AtsRelationTypes.ActionToWorkflow_Action).follow(
                   AtsRelationTypes.ActionToWorkflow_TeamWorkflow).asArtifact();
          atsId = assocArt.getAttributeValuesAsString(AtsAttributeTypes.AtsId);
-         timestamp = assocArt.getLatestTxDetails().getTime().toString();
+         timestamp = new SimpleDateFormat("MM/dd/yyyy").format(assocArt.getLatestTxDetails().getTime());
          name = assocArt.getName();
 
          Optional<ArtifactReadable> cr =
@@ -1758,6 +1759,12 @@ public class MimIcdGenerator {
       String icdcns = "";
       if (elementDiff.isPresent()) {
          txIds.addAll(elementDiff.get().getAllTxIds());
+      }
+      if (structDiff != null) {
+         txIds.addAll(structDiff.getRelationChanges(
+            CoreRelationTypes.InterfaceStructureContent_Structure.getId()).stream().filter(
+               change -> change.getArtB().getArtifactId().equals(elementToken.getArtifactId())).map(
+                  ChangeReportRowDto::getTxId).collect(Collectors.toSet()));
       }
       icdcns = getRelatedWorkFlow(txIds, structure.getBranch());
 

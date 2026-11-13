@@ -17,6 +17,15 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - Use `changeDetection: ChangeDetectionStrategy.OnPush`.
 - Use `@if` `@else` `@for` `@loading` etc rather than `ngIf` `ngFor` etc.
 - Display tooltips for why things are disabled.
+- **No member/parameter decorators.** Never use `@Input`, `@Output`,
+  `@ViewChild`, `@ViewChildren`, `@ContentChild`, `@Host`, `@HostBinding`,
+  `@HostListener`, or `@Inject`. Use the function APIs: `input()`, `output()`,
+  `model()`, `viewChild()`, `contentChild()`, `inject()`. Only the class-level
+  `@Component`, `@Directive`, `@Injectable`, and `@Pipe` remain.
+- **Do not use host bindings.** No `@HostBinding`, `@HostListener`, `@Host`, and
+  no `host: {}` metadata for classes/attributes/listeners. Apply classes and
+  attributes in the parent's template (or on the root element of the component's
+  own template) instead.
 
 ## Dependency injection + state
 
@@ -25,6 +34,22 @@ Generate code for our repo using **Angular (v18+)**. **Follow our repo style exa
 - Use RxJS (`BehaviorSubject`/`ReplaySubject`/etc.) only when needed, matching the patterns in our code.
 - Use `viewChild()` or `viewChild.required()` if template references to forms or elements are required.
 - **Avoid constructors in components.** Prefer field initializers with `inject()` and lifecycle callbacks (`afterNextRender`, effects) for initialization logic. For data loading, use signal-based patterns (`httpResource`, `toSignal()`, `computed()`) which handle async state declaratively without constructor logic. Use a constructor only when logic must run synchronously at creation time before the first render and no signal-based alternative exists (e.g., synchronous batch rendering of pre-loaded local data).
+
+### Signals first
+
+- **Prioritize signals**: `signal()`, `computed()`, `linkedSignal()`, signal
+  forms, and `httpResource` for state, derived state, forms, and reads.
+- **Minimize `effect()`.** Effects are for true side effects only (logging,
+  non-Angular APIs, imperative DOM). Never use an effect to copy one signal into
+  another. Instead:
+  - Derived read-only value → `computed()`.
+  - Derived value that is also locally writable/resettable when a source changes
+    (e.g. selected item that resets when the list changes) → `linkedSignal()`.
+  - Async load keyed on a signal → `httpResource` / `resource`.
+- **Source → sink.** Write every data flow in one direction, from the data source
+  to the sink that consumes it (service/resource → `computed`/`linkedSignal` →
+  template). Declare sources first and sinks after them, and do not push values
+  back upstream or mutate a source from a sink's derivation.
 
 ### Prefer reactive chains over manual `subscribe`
 
@@ -129,7 +154,7 @@ Example (activity bar toggle):
 
 - Use `mat-button-toggle-group` for mutually exclusive options (not radio buttons).
 - Always add `hideSingleSelectionIndicator` to remove the default checkmark indicator on the selected toggle. This is purely visual — it does not prevent setting a default `[value]` on the group.
-- Selected state: **primary background with background-colored text** (filled). Use tokens:
+- Selected state: **primary background with background-colored text** (filled). Set these Material tokens inline as Tailwind arbitrary properties on the group, with values from the OSEE theme variables (not Material palette variables):
   - `--mat-button-toggle-selected-state-background-color: var(--osee-primary-default)`
   - `--mat-button-toggle-selected-state-text-color: var(--osee-background-background)`
 - Never use white text on a colored (filled) background for toggle selections — use the background token so it adapts to light/dark mode.
@@ -319,26 +344,40 @@ Hard rules:
   details that break on dependency upgrades. Use a token or input instead
   (steps 2–4). `::ng-deep` is additionally deprecated — never use it.
 
-**Exception — cascading token overrides:** when a token must reach Material
-components nested inside child components (e.g. form-field theming across a
-sidebar), set the tokens in a `styles:` block scoped to the component's own
-element selector together with `encapsulation: ViewEncapsulation.None`, so the
-tokens inherit into descendants. This block may set **only** custom-property
-tokens — never internal class selectors. This is the sole allowed use of
-`styles:` / `ViewEncapsulation.None`. Example:
+**Never turn off view encapsulation.** Do not set
+`encapsulation: ViewEncapsulation.None` (or `ShadowDom`) on any component, and
+do not add `styles:` blocks to work around it. When a token must reach Material
+components nested inside child components, set the token inline with a Tailwind
+arbitrary property on the element that wraps them (custom properties inherit
+into descendants without needing to disable encapsulation):
 
-```ts
-@Component({
-  // ...
-  styles: [
-    `
-      osee-my-component {
-        --mat-form-field-container-color: transparent;
-      }
-    `,
-  ],
-  encapsulation: ViewEncapsulation.None,
-})
+```html
+<div class="[--mat-form-field-container-color:transparent]">
+  <child-with-form-fields />
+</div>
+```
+
+### Material overrides and the color palette
+
+- **Override Material components inline with Tailwind utilities in the
+  template** (e.g. `tw-bg-primary`, `tw-text-warning`). Tailwind utilities are
+  emitted as `!important` in this repo, so they win over Material's styles without
+  specificity hacks or encapsulation tricks.
+- **Use the Tailwind color palette defined for this repo** (see "Theme colors")
+  — never the Angular Material palettes or Material theme variables (e.g.
+  `mat.$blue-palette`, `--mat-sys-*`, `--mdc-*` color vars) for colors.
+  Material component tokens (step 2 above) are still fine for non-color
+  sizing/shape tokens, set inline.
+
+## Animations
+
+- **Do not use `@angular/animations`** (`trigger`, `state`, `transition`).
+- Register keyframes/animations in the Tailwind config
+  (`theme.extend.keyframes` / `theme.extend.animation`) and trigger them from the
+  template with Tailwind classes toggled by a signal:
+
+```html
+<div [class]="open() ? 'tw-animate-fade-in' : 'tw-animate-fade-out'"></div>
 ```
 
 ## Typing + code style (apply broadly)
