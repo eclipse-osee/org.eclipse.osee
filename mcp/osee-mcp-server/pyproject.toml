@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "osee-mcp-server"
+version = "0.1.0"
+description = "MCP server exposing OSEE ORCS REST endpoints to AI clients such as Open WebUI"
+requires-python = ">=3.11"
+license = { text = "EPL-2.0" }
+dependencies = [
+    "mcp==1.30.0",
+    "httpx==0.28.1",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest==8.4.1",
+    "pytest-asyncio==1.1.0",
+]
+
+[project.scripts]
+osee-mcp-server = "osee_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

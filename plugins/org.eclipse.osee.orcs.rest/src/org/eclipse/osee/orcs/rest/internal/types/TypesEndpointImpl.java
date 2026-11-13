@@ -167,6 +167,31 @@ public class TypesEndpointImpl implements TypesEndpoint {
    }
 
    @Override
+   public List<LinkedHashMap<String, Object>> getRelationTypes(ArtifactTypeToken artifactType) {
+      Collection<RelationTypeToken> relTypes = artifactType == null ? orcsTokenService.getValidRelationTypes() : //
+         orcsTokenService.getValidRelationTypes(orcsTokenService.getArtifactType(artifactType.getId()));
+
+      return relTypes.stream().filter(r -> !r.equals(RelationTypeToken.SENTINEL)).sorted(
+         Comparator.comparing(RelationTypeToken::getName)).map(this::relationTypeToMap).collect(Collectors.toList());
+   }
+
+   private LinkedHashMap<String, Object> relationTypeToMap(RelationTypeToken relType) {
+      ArtifactTypeToken artA = relType.getArtifactType(RelationSide.SIDE_A);
+      ArtifactTypeToken artB = relType.getArtifactType(RelationSide.SIDE_B);
+
+      LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+      map.put("id", relType.getId());
+      map.put("name", relType.getName());
+      map.put("sideAName", relType.getSideName(RelationSide.SIDE_A));
+      map.put("sideAArtifactType", new NamedIdBase(artA.getId(), artA.getName()));
+      map.put("sideBName", relType.getSideName(RelationSide.SIDE_B));
+      map.put("sideBArtifactType", new NamedIdBase(artB.getId(), artB.getName()));
+      map.put("multiplicity", relType.getMultiplicity().name());
+      map.put("order", relType.getOrder().name());
+      return map;
+   }
+
+   @Override
    public XResultData getHealthReport() {
       HealthReportOperation reportOp = new HealthReportOperation(orcsTokenService, jdbcService);
       return reportOp.run();

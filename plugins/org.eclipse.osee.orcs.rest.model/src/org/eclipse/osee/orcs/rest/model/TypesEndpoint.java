@@ -69,6 +69,16 @@ public interface TypesEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    Set<String> getAttributeEnums(@PathParam("attributeId") AttributeId attributeId);
 
+   /**
+    * Returns relation types with their side names, side artifact types, multiplicity and sort order.
+    *
+    * @param artifactType when provided, only relation types that can relate this artifact type are returned
+    */
+   @GET
+   @Path("relation")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<LinkedHashMap<String, Object>> getRelationTypes(@QueryParam("artifactType") ArtifactTypeToken artifactType);
+
    @GET
    @Path("health")
    @Produces({MediaType.APPLICATION_JSON})
