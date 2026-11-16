@@ -30,13 +30,13 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionResult;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.core.ds.FollowRelation;
+import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.testscript.DashboardEndpoint;
 import org.eclipse.osee.testscript.ScriptApi;
-import org.eclipse.osee.testscript.ScriptDefToken;
 import org.eclipse.osee.testscript.ScriptResultToken;
 import org.eclipse.osee.testscript.ScriptTeamToken;
 import org.eclipse.osee.testscript.TimelineStatsToken;
@@ -54,6 +54,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
 
    @Override
    public Collection<CIStatsToken> getTeamStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
+      if (ciSet == null || ciSet.isInvalid()) {
+         return Collections.emptyList();
+      }
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<ArtifactId, CIStatsToken> stats = new HashMap<>();
       CIStatsToken allStats = new CIStatsToken("All");
@@ -62,17 +65,10 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
 
       Map<ArtifactId, ScriptResultToken> latestByDefForSet = buildLatestByDefForSet(branch, ciSet);
 
-      LinkedList<RelationTypeSide> rels = new LinkedList<>();
-      rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
-      rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
-
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThroughPartialFilter(
-         branch, rels, ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name),
-         Arrays.asList(FollowRelation.fork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam)), 0L, 0L, null,
-         new LinkedList<>(), viewId);
+      List<ArtifactReadable> defs = getDefsInSet(branch, ciSet, viewId, true);
 
       boolean statsSet = false;
-      for (ScriptDefToken def : defs) {
+      for (ArtifactReadable def : defs) {
          ScriptResultToken latestForSet =
             latestByDefForSet.getOrDefault(def.getArtifactId(), ScriptResultToken.SENTINEL);
          if (latestForSet.isInvalid()) {
@@ -87,8 +83,11 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          accumulate(allStats, pointsPassed, pointsFailed, aborted, ran);
          statsSet = true;
 
-         ArtifactId teamId = def.getTeam().getArtifactId();
-         String teamName = def.getTeam().getName().getValue();
+         ArtifactReadable teamArt =
+            def.getRelated(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
+         ScriptTeamToken team = teamArt.isValid() ? new ScriptTeamToken(teamArt) : ScriptTeamToken.SENTINEL;
+         ArtifactId teamId = team.getArtifactId();
+         String teamName = team.getName().getValue();
 
          if (teamId.isValid() && !teamName.equalsIgnoreCase("unassigned")) {
             CIStatsToken teamStats = stats.getOrDefault(teamId, new CIStatsToken(teamName));
@@ -135,19 +134,16 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
 
    @Override
    public Collection<CIStatsToken> getSubsystemStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
+      if (ciSet == null || ciSet.isInvalid()) {
+         return Collections.emptyList();
+      }
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<String, CIStatsToken> stats = new HashMap<>();
       Map<ArtifactId, ScriptResultToken> latestByDefForSet = buildLatestByDefForSet(branch, ciSet);
 
-      LinkedList<RelationTypeSide> rels = new LinkedList<>();
-      rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
-      rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
+      List<ArtifactReadable> defs = getDefsInSet(branch, ciSet, viewId, false);
 
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByRelationThroughPartialFilter(
-         branch, rels, ciSet, Strings.EMPTY_STRING, Arrays.asList(CoreAttributeTypes.Name), Collections.emptyList(), 0L,
-         0L, null, new LinkedList<>(), viewId);
-
-      for (ScriptDefToken def : defs) {
+      for (ArtifactReadable def : defs) {
          ScriptResultToken latestForSet =
             latestByDefForSet.getOrDefault(def.getArtifactId(), ScriptResultToken.SENTINEL);
          if (latestForSet.isInvalid()) {
@@ -159,7 +155,8 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          boolean aborted = latestForSet.getScriptAborted();
          boolean ran = true;
 
-         String subsystem = def.getSubsystem().isEmpty() ? "None" : def.getSubsystem();
+         String defSubsystem = def.getSoleAttributeAsString(CoreAttributeTypes.ScriptSubsystem, "");
+         String subsystem = defSubsystem.isEmpty() ? "None" : defSubsystem;
          CIStatsToken subsystemStats = stats.getOrDefault(subsystem, new CIStatsToken(subsystem));
 
          accumulate(subsystemStats, pointsPassed, pointsFailed, aborted, ran);
@@ -246,13 +243,26 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       return this.testScriptApi.getDashboardApi().exportDashboardSetData(branch, ciSet, viewId);
    }
 
+   /**
+    * Same query as ScriptResultApi.getAllForSet. The def is not followed because only its id is needed, and the run's
+    * own relation rows already carry it; following would load every def's full result history.
+    */
    private Map<ArtifactId, ScriptResultToken> buildLatestByDefForSet(BranchId branch, ArtifactId ciSet) {
-      Collection<ScriptResultToken> setResults =
-         this.testScriptApi.getScriptResultApi().getAllForSetWithScripts(branch, ArtifactId.SENTINEL, ciSet);
+      List<ArtifactReadable> setResults = this.testScriptApi.getOrcsApi().getQueryFactory().fromBranch(branch,
+         ArtifactId.SENTINEL).includeApplicabilityTokens().andIsOfType(CoreArtifactTypes.TestScriptResults).and(
+            Arrays.asList(CoreAttributeTypes.SetId), ciSet.getIdString(), QueryOption.TOKEN_DELIMITER__ANY,
+            QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY).asArtifacts();
 
       Map<ArtifactId, ScriptResultToken> latestByDef = new HashMap<>(Math.max(16, setResults.size() / 2), 0.75f);
-      for (ScriptResultToken res : setResults) {
-         ArtifactReadable resReadable = res.getArtifactReadable();
+      for (ArtifactReadable resReadable : setResults) {
+         if (resReadable.isInvalid()) {
+            continue;
+         }
+         ScriptResultToken res = new ScriptResultToken(resReadable.getId(), resReadable.getName());
+         res.setExecutionDate(resReadable.getSoleAttributeValue(CoreAttributeTypes.ExecutionDate, new Date()));
+         res.setPassedCount(resReadable.getSoleAttributeValue(CoreAttributeTypes.PassedCount, 0));
+         res.setFailedCount(resReadable.getSoleAttributeValue(CoreAttributeTypes.FailedCount, 0));
+         res.setScriptAborted(resReadable.getSoleAttributeValue(CoreAttributeTypes.ScriptAborted, false));
          ArtifactReadable defReadable = resReadable.getRelated(
             CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef).getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
@@ -276,6 +286,25 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          }
       }
       return latestByDef;
+   }
+
+   /**
+    * Same criteria as ScriptDefApi.getAllByRelationThroughPartialFilter. Returns artifacts because only team and
+    * subsystem are read, so building a full ScriptDefToken per def is wasted work.
+    */
+   private List<ArtifactReadable> getDefsInSet(BranchId branch, ArtifactId ciSet, ArtifactId viewId,
+      boolean withTeam) {
+      LinkedList<RelationTypeSide> rels = new LinkedList<>();
+      rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
+      rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptResults);
+
+      QueryBuilder query = this.testScriptApi.getOrcsApi().getQueryFactory().fromBranch(branch,
+         viewId).includeApplicabilityTokens().andIsOfType(CoreArtifactTypes.TestScriptDef).andRelatedToThroughRels(
+            rels, ciSet);
+      if (withTeam) {
+         query = query.followFork(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam);
+      }
+      return query.asArtifacts();
    }
 
    private void accumulate(CIStatsToken token, int pointsPassed, int pointsFailed, boolean aborted, boolean ran) {
