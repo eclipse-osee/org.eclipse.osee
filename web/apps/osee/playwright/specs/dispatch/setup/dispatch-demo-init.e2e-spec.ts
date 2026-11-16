@@ -41,9 +41,9 @@ test('dispatch setup', async ({ request }) => {
 	);
 
 	// Create the DispatchConfig artifacts with their JSON attribute values.
-	// Publishing gets two JSON values (V1 + V0) to test version filtering.
-	// Reports gets one JSON value (V1).
-	// Features gets one JSON value (V1) exercising checkboxes, static
+	// Publishing gets two JSON values (V2 + V0) to test version filtering.
+	// Reports gets one JSON value (V2).
+	// Features gets one JSON value (V2) exercising checkboxes, static
 	// dropdowns, file inputs, view selector, and email selector.
 	const createTx = {
 		branch: '570',
