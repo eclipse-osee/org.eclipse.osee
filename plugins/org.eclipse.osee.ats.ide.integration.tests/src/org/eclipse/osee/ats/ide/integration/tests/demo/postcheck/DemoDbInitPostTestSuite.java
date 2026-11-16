@@ -16,7 +16,8 @@ import org.junit.runners.Suite;
 
 /** Tests that require the populated demo database. */
 @RunWith(TestStopOnFailureSuite.class)
-@Suite.SuiteClasses({AtsWorkDefinitionXWidgetTest.class, WorkDefXWidgetFingerprintTest.class})
+@Suite.SuiteClasses({AtsWorkDefinitionXWidgetTest.class, WorkDefXWidgetFingerprintTest.class,
+   WorkDefinitionSerializationTest.class})
 public class DemoDbInitPostTestSuite {
    // Suite marker
 }

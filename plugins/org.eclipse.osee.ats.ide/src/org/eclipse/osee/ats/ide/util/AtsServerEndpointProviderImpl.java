@@ -41,6 +41,8 @@ import org.eclipse.osee.ats.api.workflow.pr.AtsPrEndpointApi;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
+import org.eclipse.osee.ats.core.workflow.util.WorkDefinitionJsonReader;
+import org.eclipse.osee.ats.core.workflow.util.WorkDefinitionsJsonReader;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -130,6 +132,8 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
       WebTarget target = jaxRsApi.newTarget("ats");
       target.register(WorkItemJsonReader.class);
       target.register(WorkItemsJsonReader.class);
+      target.register(WorkDefinitionJsonReader.class);
+      target.register(WorkDefinitionsJsonReader.class);
       return target;
    }
 
@@ -346,7 +350,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AtsWorkDefEndpointApi getWorkDefEp() {
       if (workDefEp == null) {
-         workDefEp = jaxRsApi.newProxy("ats", AtsWorkDefEndpointApi.class);
+         workDefEp = jaxRsApi.newProxy(getAtsTarget(), AtsWorkDefEndpointApi.class);
       }
       return workDefEp;
    }

@@ -13,10 +13,12 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.workdef;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Collection;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,23 +30,22 @@ public class AtsWorkDefinitionEndpointTest extends AbstractRestTest {
 
    @Test
    public void testAllWorkDefs() {
-      String url = "ats/workdef";
-      JsonNode jsonNode = getJsonNode(url);
-      Assert.assertEquals(31, jsonNode.size());
+      Collection<WorkDefinition> workDefinitions = AtsApiService.get().getServerEndpoints().getWorkDefEp().get();
+      Assert.assertEquals(31, workDefinitions.size());
    }
 
    @Test
    public void testWorkDefByWorkflow() {
-      String url = "ats/workdef/" + DemoUtil.getSawCodeCommittedWf().getIdString();
-      JsonNode jsonNode = getJsonNode(url);
-      Assert.assertEquals(jsonNode.get("name").asText(), DemoWorkDefinitions.WorkDefTeamDemoCode.getName());
+      WorkDefinition workDefinition = AtsApiService.get().getServerEndpoints().getWorkDefEp().getWorkDef(
+         DemoUtil.getSawCodeCommittedWf().getIdString());
+      Assert.assertEquals(DemoWorkDefinitions.WorkDefTeamDemoCode.getName(), workDefinition.getName());
    }
 
    @Test
    public void testWorkDefByTeamDef() {
-      String url = "ats/workdef/teamdef/" + DemoArtifactToken.SAW_Code.getIdString();
-      JsonNode workDefNode = getJsonNode(url);
-      Assert.assertEquals(workDefNode.get("name").asText(), DemoWorkDefinitions.WorkDefTeamDemoCode.getName());
+      WorkDefinition workDefinition = AtsApiService.get().getServerEndpoints().getWorkDefEp().getWorkDefForTeam(
+         DemoArtifactToken.SAW_Code.getIdString());
+      Assert.assertEquals(DemoWorkDefinitions.WorkDefTeamDemoCode.getName(), workDefinition.getName());
    }
 
 }
