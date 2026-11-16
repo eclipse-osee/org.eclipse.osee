@@ -92,7 +92,24 @@ public class AtsDbConfigDemoOp {
 
       createAndconfigureFunctionalAreaAndDemoFunctionalList();
 
+      createGitLabConfigs();
+
       return rd;
+   }
+
+   private void createGitLabConfigs() {
+      ArtifactToken atsTopFolder = atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsTopFolder);
+      IAtsChangeSet changes = atsApi.createChangeSet("Create GitLab Configs");
+      // Demo placeholders; DispoApiImpl reads the Dispo config as the GitLab API base url and access token
+      for (ArtifactToken configToken : Arrays.asList(AtsArtifactToken.DispoGitLabConfig,
+         AtsArtifactToken.AtsGitLabConfig)) {
+         ArtifactToken gitLabConfig = changes.createArtifact(atsTopFolder, configToken);
+         changes.setSoleAttributeValue(gitLabConfig, CoreAttributeTypes.ContentUrl,
+            "https://gitlab.example.com/api/v4/");
+         changes.setSoleAttributeValue(gitLabConfig, CoreAttributeTypes.GeneralStringData,
+            "demo-gitlab-access-token");
+      }
+      changes.execute();
    }
 
    private void createAndconfigureFunctionalAreaAndDemoFunctionalList() {

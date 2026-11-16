@@ -72,7 +72,7 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
 
          LinkedList<RelationTypeSide> rels = new LinkedList<>();
          rels.add(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef);
-         rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptSet);
+         rels.add(CoreRelationTypes.TestScriptSetToTestScriptResults_TestScriptResults);
 
          Collection<ScriptDefToken> scripts = scriptDefApi.getAllByRelationThroughPartialFilter(branch, rels,
             scriptSetId, filter, Arrays.asList(CoreAttributeTypes.Name),

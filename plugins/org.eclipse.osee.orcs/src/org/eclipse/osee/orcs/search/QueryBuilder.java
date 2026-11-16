@@ -345,6 +345,11 @@ public interface QueryBuilder extends Query {
     */
    QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId);
 
+   /**
+    * Matches artifacts connected to {@code artifactId} by an ordered relation path. The first relation begins at the
+    * candidate artifact; each following relation begins at the preceding relation's opposite endpoint. The supplied
+    * artifact is matched to the opposite endpoint of the final relation.
+    */
    QueryBuilder andRelatedToThroughRels(LinkedList<RelationTypeSide> relationTypeSides, ArtifactId artifactId);
 
    /**
