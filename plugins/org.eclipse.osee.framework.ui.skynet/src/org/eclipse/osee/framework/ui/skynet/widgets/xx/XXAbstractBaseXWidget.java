@@ -355,10 +355,12 @@ public abstract class XXAbstractBaseXWidget<T> extends XWidget implements ISelec
       }
       valueWidget.setLayoutData(gd);
       if (widData.getDefaultValue() != null) {
-         // Ensure correct type for default value
-         if (getSentinel() != null && !widData.getDefaultValue().getClass().isAssignableFrom(
-            getSentinel().getClass())) {
-            setSelected((T) widData.getDefaultValue());
+         Object defaultValue = widData.getDefaultValue();
+         // Prevent subclass single-value bridge methods from casting collection defaults to T.
+         if (defaultValue instanceof Collection<?>) {
+            setSelected((Collection<T>) defaultValue);
+         } else if (getSentinel() != null && !defaultValue.getClass().isAssignableFrom(getSentinel().getClass())) {
+            setSelected((T) defaultValue);
          }
       }
       for (SwtWidgetListener swtListener : widData.getSwtValueListeners()) {
