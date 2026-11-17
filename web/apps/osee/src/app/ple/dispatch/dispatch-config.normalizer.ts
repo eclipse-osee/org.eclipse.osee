@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { DispatchConfig } from './dispatch.types';
+import type { DispatchConfig, DispatchConfigV1 } from './dispatch.types';
 
 /**
  * Normalizes a raw config object (any known version) into the latest
@@ -23,12 +23,22 @@ import type { DispatchConfig } from './dispatch.types';
  * 4. Update DispatchConfig alias to point to the new type
  * 5. Bump DISPATCH_CONFIG_VERSION in dispatch.constants.ts
  */
+function migrateV1toV2(raw: DispatchConfigV1): DispatchConfig {
+	return {
+		version: '2',
+		title: raw.title,
+		tabs: raw.tabs.map((tab) => ({ ...tab })),
+	};
+}
+
 export function normalizeDispatchConfig(raw: unknown): DispatchConfig {
 	const obj = raw as Record<string, unknown>;
 	const version = String(obj['version'] ?? '1');
 
 	switch (version) {
 		case '1':
+			return migrateV1toV2(raw as DispatchConfigV1);
+		case '2':
 			return raw as DispatchConfig;
 		default:
 			console.warn(
