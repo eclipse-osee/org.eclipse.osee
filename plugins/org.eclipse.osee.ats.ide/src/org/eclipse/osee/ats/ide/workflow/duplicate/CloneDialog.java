@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.WidgetIdAts;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.clone.CloneData;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.xx.XXAssigneesWidget;
 import org.eclipse.osee.ats.ide.util.widgets.xx.XXChangeTypeWidget;
@@ -34,10 +35,12 @@ import org.eclipse.osee.ats.ide.util.widgets.xx.rel.XXAgileFeatureSelWidget;
 import org.eclipse.osee.ats.ide.util.widgets.xx.rel.XXAgileSprintSelWidget;
 import org.eclipse.osee.ats.ide.workdef.XWidgetBuilderAts;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.OseeEnum;
 import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XWidgetsDialog;
@@ -85,11 +88,12 @@ public class CloneDialog extends XWidgetsDialog {
 
       AtsUser createdBy = teamWf.getCreatedBy();
       data.setOriginator(createdBy);
-      wba.andOriginatorWidget().andDefault(createdBy);
+      UserToken createdByToken = OseeApiService.userSvc().getUser(createdBy);
+      wba.andOriginatorWidget().andDefault(createdByToken);
 
       List<AtsUser> assignees = teamWf.getAssignees();
       data.setAssignees(assignees);
-      wba.andAssigneesWidget().andDefault(assignees);
+      wba.andAssigneesWidget().andDefault(AtsObjects.toUserTokens(assignees));
       wba.andOseeImage(AtsImage.USER_SM);
 
       // Change Type / Priority combos (dynamic lists based on teamWf).
