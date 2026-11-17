@@ -208,7 +208,7 @@ public interface AtsRelationTypes {
    RelationTypeSide TeamWorkflowToReview_Review = RelationTypeSide.create(TeamWorkflowToReview, SIDE_B);
 
    RelationTypeToken TeamWorkflowToFundingGoal = ats.add(238958198472938L, "TeamWorkflowToFundingGoal", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team Workflow", AbstractReview, "Funding Goal");
-   RelationTypeSide TeamWorkflowToFundingGoal_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToReview, SIDE_A);
+   RelationTypeSide TeamWorkflowToFundingGoal_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToFundingGoal, SIDE_A);
    RelationTypeSide TeamWorkflowToFundingGoal_Goal = RelationTypeSide.create(Goal, SIDE_B);
 
    RelationTypeToken UserGroupToActionableItem = ats.add(23875102986153L, "UserGroupToActionableItem", MANY_TO_ONE, UNORDERED, CoreArtifactTypes.UserGroup, "User Group", ActionableItem, "ActionableItem");
