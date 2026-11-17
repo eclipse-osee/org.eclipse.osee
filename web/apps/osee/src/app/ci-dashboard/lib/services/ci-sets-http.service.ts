@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { Injectable, Signal, inject } from '@angular/core';
 import { CISet } from '../types';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType } from '@osee/shared/types';
@@ -33,6 +33,25 @@ export class CiSetsHttpService {
 		}
 		return this.http.get<CISet[]>(`${apiURL}/script/tmo/${branchId}/set`, {
 			params,
+		});
+	}
+	// Reads only these signals, so it re-requests solely when the branch or set id changes.
+	getCiSetResource(
+		branchId: Signal<string>,
+		ciSetId: Signal<string | undefined>
+	) {
+		return httpResource<CISet>(() => {
+			const branch = branchId();
+			const setId = ciSetId();
+			if (
+				branch === '' ||
+				branch === '-1' ||
+				setId === undefined ||
+				setId === '-1'
+			) {
+				return undefined;
+			}
+			return `${apiURL}/script/tmo/${branch}/set/${setId}`;
 		});
 	}
 }

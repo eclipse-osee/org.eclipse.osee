@@ -11,6 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { MatFormField } from '@angular/material/form-field';
 import { SetDropdownMultiComponent } from './set-dropdown-multi.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CiSetsService } from '../../../services/ci-sets.service';
@@ -37,5 +39,15 @@ describe('SetDropdownMultiComponent', () => {
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
+	});
+
+	it('should label the active filter as applying to the set list', () => {
+		expect(fixture.nativeElement.textContent).toContain('Active sets only');
+	});
+	it('should use an outlined set selector', () => {
+		const formField = fixture.debugElement.query(By.directive(MatFormField))
+			.componentInstance as MatFormField;
+
+		expect(formField.appearance).toBe('outline');
 	});
 });

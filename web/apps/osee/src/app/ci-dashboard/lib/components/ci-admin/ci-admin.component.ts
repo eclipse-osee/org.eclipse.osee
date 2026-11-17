@@ -33,7 +33,8 @@ import { TeamsTableComponent } from './teams-table/teams-table.component';
 	template: `
 		<osee-ci-dashboard-controls
 			[actionButton]="true"
-			[ciSetSelector]="false" />
+			[ciSetSelector]="false"
+			[showSetSection]="false" />
 		@if (branchIdValid()) {
 			<div class="tw-flex tw-flex-col tw-gap-4">
 				<osee-ci-admin-config />

@@ -10,7 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router, UrlTree } from '@angular/router';
 import { ScriptTableComponent } from './script-table.component';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CiDetailsTableService } from '../../../services/ci-details-table.service';
@@ -101,5 +103,56 @@ describe('ScriptTableComponent', () => {
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
+	});
+
+	describe('filter navigation', () => {
+		let router: Router;
+		let navigate: ReturnType<typeof vi.spyOn>;
+		const filter =
+			ciDetailsServiceMock.currentDefFilter as WritableSignal<string>;
+
+		beforeEach(() => {
+			router = TestBed.inject(Router);
+			navigate = vi.spyOn(router, 'navigateByUrl');
+		});
+
+		afterEach(() => {
+			filter.set('');
+		});
+
+		it('should not navigate when the URL filter already matches', () => {
+			vi.spyOn(router, 'url', 'get').mockReturnValue('/ci/allScripts');
+			filter.set('');
+			TestBed.tick();
+
+			expect(navigate).not.toHaveBeenCalled();
+		});
+
+		it('should replace the URL when the filter changes', () => {
+			vi.spyOn(router, 'url', 'get').mockReturnValue('/ci/allScripts');
+			filter.set('abc');
+			TestBed.tick();
+
+			expect(navigate).toHaveBeenCalledOnce();
+			const [tree, extras] = navigate.mock.calls[0] as [
+				UrlTree,
+				{ replaceUrl: boolean },
+			];
+			expect(tree.queryParams['filter']).toBe('abc');
+			expect(extras).toEqual({ replaceUrl: true });
+		});
+
+		it('should drop the filter param when the filter is cleared', () => {
+			vi.spyOn(router, 'url', 'get').mockReturnValue(
+				'/ci/allScripts?filter=abc'
+			);
+			filter.set('abc');
+			TestBed.tick();
+			filter.set('');
+			TestBed.tick();
+
+			const [tree] = navigate.mock.calls.at(-1) as [UrlTree];
+			expect(tree.queryParams['filter']).toBeUndefined();
+		});
 	});
 });

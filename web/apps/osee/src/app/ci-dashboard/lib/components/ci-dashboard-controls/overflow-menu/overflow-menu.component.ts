@@ -13,23 +13,22 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
-	signal,
 	computed,
-	inject,
 	effect,
 	ElementRef,
+	inject,
+	signal,
 	viewChild,
 } from '@angular/core';
-import { toSignal, toObservable } from '@angular/core/rxjs-interop';
-import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
-import { DashboardService } from '../../../services/dashboard.service';
-
-import { MatMenuModule } from '@angular/material/menu';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { merge } from 'rxjs';
-import { map, switchMap, skip } from 'rxjs/operators';
+import { map, skip, switchMap } from 'rxjs/operators';
+import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
+import { DashboardService } from '../../../services/dashboard.service';
 
 @Component({
 	selector: 'osee-overflow-menu',
@@ -38,44 +37,68 @@ import { map, switchMap, skip } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `
 		<div class="tw-flex tw-items-center">
-			<button
-				mat-icon-button
-				aria-label="More actions"
-				[matMenuTriggerFor]="exportMenu"
-				[disabled]="!isBranchValid() && !isSetValid()">
-				<mat-icon>more_vert</mat-icon>
-			</button>
+			<span
+				class="tw-flex"
+				matTooltip="Select a valid branch to enable dashboard export."
+				[matTooltipDisabled]="isBranchValid()"
+				[attr.tabindex]="!isBranchValid() ? 0 : null"
+				[attr.aria-label]="
+					!isBranchValid()
+						? 'Select a valid branch to enable dashboard export.'
+						: null
+				">
+				<button
+					mat-icon-button
+					aria-label="Download Dashboard CSV"
+					matTooltip="Download Dashboard CSV"
+					[matMenuTriggerFor]="exportMenu"
+					[disabled]="!isBranchValid()">
+					<mat-icon>download</mat-icon>
+				</button>
+			</span>
 
 			<mat-menu #exportMenu="matMenu">
-				<button
-					mat-menu-item
-					(click)="triggerBranchExport()"
-					[disabled]="!isBranchValid()"
-					[matTooltip]="
-						isBranchValid()
-							? 'Download a CSV export for the current branch'
-							: 'Select a valid branch to enable branch export'
+				<span
+					class="tw-block"
+					matTooltip="Select a valid branch to enable branch export."
+					[matTooltipDisabled]="isBranchValid()"
+					[attr.tabindex]="!isBranchValid() ? 0 : null"
+					[attr.aria-label]="
+						!isBranchValid()
+							? 'Select a valid branch to enable branch export.'
+							: null
 					">
-					<mat-icon>download</mat-icon>
-					<span>Download CSV for Branch</span>
-				</button>
-				<button
-					mat-menu-item
-					(click)="triggerSetExport()"
-					[disabled]="!isSetValid()"
-					[matTooltip]="
-						isSetValid()
-							? 'Download a CSV export for the selected CI Set'
-							: 'Select a valid CI Set to enable set export'
+					<button
+						mat-menu-item
+						(click)="triggerBranchExport()"
+						[disabled]="!isBranchValid()">
+						<mat-icon>download</mat-icon>
+						<span>Download CSV for Branch</span>
+					</button>
+				</span>
+				<span
+					class="tw-block"
+					matTooltip="Select a valid CI Set to enable set export."
+					[matTooltipDisabled]="isSetValid()"
+					[attr.tabindex]="!isSetValid() ? 0 : null"
+					[attr.aria-label]="
+						!isSetValid()
+							? 'Select a valid CI Set to enable set export.'
+							: null
 					">
-					<mat-icon>download</mat-icon>
-					<span>Download CSV for Set</span>
-				</button>
+					<button
+						mat-menu-item
+						(click)="triggerSetExport()"
+						[disabled]="!isSetValid()">
+						<mat-icon>download</mat-icon>
+						<span>Download CSV for Set</span>
+					</button>
+				</span>
 			</mat-menu>
 			<a
 				#downloadAnchor
 				id="downloadAnchor"
-				style="display:none"
+				style="display: none"
 				[attr.href]="exportedData().href"
 				[attr.download]="exportedData().filename">
 			</a>
@@ -130,32 +153,33 @@ export class OverflowMenuComponent {
 	private _anchor =
 		viewChild.required<ElementRef<HTMLAnchorElement>>('downloadAnchor');
 
-	private _openURL = effect(() => {
+	private _openURL = effect((onCleanup) => {
 		const data = this.exportedData();
-		const a = this._anchor().nativeElement;
+		const anchor = this._anchor().nativeElement;
 
-		if (a && data.href && data.href.length > 0) {
-			a.href = data.href;
-			a.download = data.filename;
-			a.click();
+		if (anchor && data.href) {
+			anchor.href = data.href;
+			anchor.download = data.filename;
+			anchor.click();
+			onCleanup(() => URL.revokeObjectURL(data.href));
 		}
 	});
 
 	triggerBranchExport() {
-		this.exportBranchDataTrigger.update((v) => v + 1);
+		this.exportBranchDataTrigger.update((value) => value + 1);
 	}
 
 	triggerSetExport() {
-		this.exportSetDataTrigger.update((v) => v + 1);
+		this.exportSetDataTrigger.update((value) => value + 1);
 	}
 
 	isBranchValid = computed(() => {
 		const id = this.branchId();
-		return id !== '' && id !== '-1' && id !== '0';
+		return id !== undefined && id !== '' && id !== '-1' && id !== '0';
 	});
 
 	isSetValid = computed(() => {
 		const id = this.ciSetId();
-		return id !== '-1' && id !== '0';
+		return id !== undefined && id !== '-1' && id !== '0';
 	});
 }

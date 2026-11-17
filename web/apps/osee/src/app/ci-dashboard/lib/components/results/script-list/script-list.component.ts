@@ -75,7 +75,7 @@ import { Router } from '@angular/router';
 							<th
 								mat-header-cell
 								*matHeaderCellDef
-								class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
+								class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-darker"
 								[matTooltip]="
 									(getTableHeaderByName(header) | async)
 										?.description || ''
@@ -90,7 +90,7 @@ import { Router } from '@angular/router';
 								*matCellDef="let def"
 								class="tw-align-middle"
 								[ngClass]="{
-									'tw-bg-primary-100 dark:tw-bg-primary-700':
+									'tw-bg-background-focused-button tw-ring-2 tw-ring-inset tw-ring-primary':
 										def.id === selectedScript(),
 								}">
 								<button
