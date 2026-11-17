@@ -188,7 +188,7 @@ public abstract class XXAbstractSTextWidget extends XXAbstractBaseXWidget<String
       int styleBase;
       if (widData.is(XOption.INLINE_EDIT) && widData.isAny(XOption.FILL_BOTH, FILL_VERT, BORDER)) {
          styleBase = SWT.BORDER;
-      } else if (!widData.is(XOption.INLINE_EDIT) && isFillVertically()) {
+      } else if (!widData.is(XOption.INLINE_EDIT) && (isFillVertically() || widData.is(BORDER))) {
          styleBase = SWT.BORDER;
       } else {
          styleBase = SWT.NONE;
