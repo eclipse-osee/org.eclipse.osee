@@ -1,5 +1,5 @@
 {
-	"version": "1",
+	"version": "2",
 	"title": "Attribute Types Explorer - Dispatch Features",
 	"tabs": [
 		{
@@ -85,6 +85,14 @@
 				"url": "/orcs/types/artifact/{artifactType}/attributes",
 				"button": "Get Attribute Types"
 			}
+		},
+		{
+			"key": "information-only",
+			"label": "Information Only",
+			"description": "Exercises a V2 informational tab without an API action.",
+			"instructions": "This tab has no target API, so Dispatch renders the instructions without a publish button.",
+			"dropdowns": [],
+			"checkboxes": []
 		}
 	]
 }

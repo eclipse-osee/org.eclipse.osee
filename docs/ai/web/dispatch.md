@@ -67,7 +67,7 @@ Service parses & filters: Parse each JSON value; keep the one whose
 UI renders:             One page per artifact (using its matching-version JSON)
 ```
 
-Because the JSON attribute is multi-valued, the same artifact carries both the current version and older/newer versions side by side. Release code (`DISPATCH_CONFIG_VERSION = '1'`) reads the `"1"` value; a future nightly (`'2'`) reads the `"2"` value from the same artifact.
+Because the JSON attribute is multi-valued, the same artifact carries both the current version and older/newer versions side by side. The current V2 frontend (`DISPATCH_CONFIG_VERSION = '2'`) reads the `"2"` value; an older V1 release continues to read the `"1"` value from the same artifact.
 
 `DispatchConfigService.getConfigs()` is cached: the fan-out fetch (one artifact load per token) is wrapped in `shareReplay({ bufferSize: 1, refCount: false })` and shared between the index and page components, so navigating index → page does not re-fetch every artifact. The cache lives for the app session (config artifacts on branch 570 are effectively static). On any load error the service sets `uiService.ErrorText` and emits an empty list.
 
@@ -162,7 +162,7 @@ export function normalizeDispatchConfig(raw: unknown): DispatchConfig {
 }
 ```
 
-The normalizer is a safety net — it lets the app run with a V1 JSON value during the transition by transforming it into V2 shape in memory. However, the primary mechanism is version filtering: nightly sets `DISPATCH_CONFIG_VERSION = '2'` and only reads the matching `"2"` JSON value.
+The normalizer is the schema-conversion boundary for callers that receive a raw config object. The primary loading mechanism remains version filtering: a V2 frontend sets `DISPATCH_CONFIG_VERSION = '2'` and only reads the matching `"2"` JSON value.
 
 **3. Bump the frontend version constant:**
 
@@ -235,13 +235,13 @@ The `pageKey` is the artifact name slugified (e.g., "Safety Publishing" → `saf
 The `Dispatch Config Json` attribute contains:
 
 ```typescript
-type DispatchConfig = {
-  version: '1';          // Required — matched against DISPATCH_CONFIG_VERSION
+type DispatchConfigV2 = {
+  version: '2';          // Required — matched against DISPATCH_CONFIG_VERSION
   title: string;         // Page heading
   tabs: DispatchTabConfig[];
 };
 
-type DispatchTabConfig = {
+type DispatchTabConfigV2 = {
   key: string;             // Unique tab identifier (used in route path)
   label: string;           // Tab header text
   description: string;     // Shown below the tab header
@@ -250,11 +250,13 @@ type DispatchTabConfig = {
   checkboxes: TabCheckbox[];
   textInputs?: TabTextInput[];
   fileInputs?: TabFileInput[];
-  targetApi: TargetApi;
+  targetApi?: TargetApi;  // Omit for an informational tab
   artifact?: string;       // Artifact ID for URL template substitution
   downloadFileName?: string;
 };
 ```
+
+When `targetApi` is omitted, Dispatch renders the tab's description, instructions, and configured fields without a publish button.
 
 **V1 is frozen.** The V1 shape is permanently defined by:
 - Type: `DispatchConfigV1` in `dispatch.types.ts`
@@ -273,7 +275,7 @@ creates three `DispatchConfig` artifacts from them on branch 570.
 |---|---|---|
 | `AttributeTypesExplorer.json` | "Publishing" → `Attribute Types Explorer` | Minimal page: `branchSelector` + API-fetched `artifactType` dropdown (`required`, `dependsOn: [branch]`), one optional file input, `GET` targetApi, inline result dialog (no `downloadFileName`) |
 | `AttributeTypesExplorerDownload.json` | "Reports" → `Attribute Types Explorer - Download` | Same shape as above but with `downloadFileName` set, so the result dialog shows a Download button |
-| `AttributeTypesExplorerDispatchFeatures.json` | "Features" → `Attribute Types Explorer - Features` | Feature-coverage page: `viewSelector` and `emailSelector` components, a static-options dropdown (`options`, non-required so it shows the `(none)` option), two `checkboxes` (one `default: true`), a **required** file input and a **multiple** file input |
+| `AttributeTypesExplorerDispatchFeatures.json` | "Features" → `Attribute Types Explorer - Features` | Feature-coverage page: `viewSelector` and `emailSelector` components, a static-options dropdown (`options`, non-required so it shows the `(none)` option), two `checkboxes` (one `default: true`), a **required** file input, a **multiple** file input, and an informational tab with no `targetApi` |
 | `DeprecatedJson.json` | second JSON value on the "Publishing" artifact, `"version": "0"` | Version filtering: this value is intentionally out-of-version and must **not** render, proving the multi-valued attribute filter works |
 
 The artifacts and their `/orcs/txs` creation payload (Names, multi-valued JSON
