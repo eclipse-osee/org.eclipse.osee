@@ -84,7 +84,7 @@ public final class AtsActionUiEndpointImpl implements AtsActionUiEndpointApi {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getWorkflow(@PathParam("id") String id) {
-      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(id);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
       if (workItem == null) {
          workItem = atsApi.getWorkItemService().getWorkItem(atsApi.getQueryService().getArtifactById(id));
       }
