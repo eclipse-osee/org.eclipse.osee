@@ -18,6 +18,7 @@ import {
 	navigateToDispatchPage,
 	selectArtifactType,
 	selectBranch,
+	selectTab,
 	uploadFile,
 } from '../utils/helpers';
 
@@ -505,8 +506,24 @@ test.describe('Dispatch Feature Coverage', () => {
 			'Attribute Types Explorer - Dispatch Features'
 		);
 		const tabLabels = page.locator('.mat-mdc-tab-labels .mdc-tab');
-		await expect(tabLabels).toHaveCount(1);
+		await expect(tabLabels).toHaveCount(2);
 		await expect(tabLabels.nth(0)).toContainText('Feature Coverage');
+		await expect(tabLabels.nth(1)).toContainText('Information Only');
+	});
+
+	test('renders an informational tab without a publish button', async ({
+		page,
+	}) => {
+		await selectTab(page, 'Information Only');
+
+		await expect(
+			page.getByText(
+				'This tab has no target API, so Dispatch renders the instructions without a publish button.'
+			)
+		).toBeVisible();
+		await expect(
+			page.getByRole('button', { name: 'Launch Publish' })
+		).not.toBeVisible();
 	});
 
 	test('renders checkboxes with their configured default state', async ({

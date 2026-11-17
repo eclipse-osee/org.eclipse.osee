@@ -18,7 +18,7 @@
  *
  * Bump this when you introduce a breaking config schema change.
  */
-export const DISPATCH_CONFIG_VERSION = '1';
+export const DISPATCH_CONFIG_VERSION = '2';
 
 /** Artifact type ID for DispatchConfig (CoreArtifactTypes.DispatchConfig). */
 export const DISPATCH_CONFIG_ARTIFACT_TYPE_ID = '7226028762153318337';
