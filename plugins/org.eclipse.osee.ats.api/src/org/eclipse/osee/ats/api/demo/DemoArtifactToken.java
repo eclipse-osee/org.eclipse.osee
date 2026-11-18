@@ -93,7 +93,7 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    public static final IAtsActionableItemArtifactToken SAW_PL_CSCI_AI = AtsActionableItemArtifactToken.valueOf(3234255L, "SAW PL CSCI");
    public static final IAtsActionableItemArtifactToken SAW_PL_CR_AI = AtsActionableItemArtifactToken.valueOf(428487777L, "SAW PL Change Request");
-   public static final IAtsActionableItemArtifactToken SAW_PL_PR_AI = AtsActionableItemArtifactToken.valueOf(8989009812L, "SAW PL Problem Report");
+   public static final IAtsActionableItemArtifactToken SAW_PL_PR_AI = AtsActionableItemArtifactToken.valueOf(89009812L, "SAW PL Problem Report");
    public static final IAtsActionableItemArtifactToken SAW_PL_HW_AI = AtsActionableItemArtifactToken.valueOf(95849383L, "SAW PL HW");
    public static final IAtsActionableItemArtifactToken PL_Adapter_AI = AtsActionableItemArtifactToken.valueOf(456465465L, "Adapter");
    public static final IAtsActionableItemArtifactToken SAW_PL_Test_AI = AtsActionableItemArtifactToken.valueOf(343434343L, "SAW PL Test");
@@ -234,9 +234,9 @@ public final class DemoArtifactToken {
    // Markdown Requirement Images
    //////////////////////////////////
 
-   public static final ArtifactToken SAWTSR_Image_Markdown = ArtifactToken.valueOf(6829343659904028894L, "SAWTSR", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
-   public static final ArtifactToken Robot_Data_Flow_Image_Markdown = ArtifactToken.valueOf(8446203177483923452L, "Robot Data Flow", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
-   public static final ArtifactToken C_Image_Markdown = ArtifactToken.valueOf(1646203177483523742L, "C", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
+   public static final ArtifactToken SAWTSR_Image_Markdown = ArtifactToken.valueOf(68293438L, "SAWTSR", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
+   public static final ArtifactToken Robot_Data_Flow_Image_Markdown = ArtifactToken.valueOf(844620317, "Robot Data Flow", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
+   public static final ArtifactToken C_Image_Markdown = ArtifactToken.valueOf(1646203177L, "C", DemoBranches.SAW_Bld_1, CoreArtifactTypes.Image);
 
    //////////////////////////////////
    // Other
@@ -249,7 +249,7 @@ public final class DemoArtifactToken {
    // Markdown Software Requirements
    //////////////////////////////////
 
-   public static final ArtifactToken RobotApiSwMarkdown = ArtifactToken.valueOf(1995841667264415544L, "Robot API - Markdown", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
+   public static final ArtifactToken RobotApiSwMarkdown = ArtifactToken.valueOf(1995841667L, "Robot API - Markdown", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
    public static final ArtifactToken VirtualFixtures = ArtifactToken.valueOf(1633658933L, "Virtual Fixtures", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
    public static final ArtifactToken IndividualRobotEvents = ArtifactToken.valueOf(1734668983L, "Individual Robot Events", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
 
@@ -320,6 +320,7 @@ public final class DemoArtifactToken {
    public static final ArtifactToken ProblemInTree_TeamWf = valueOf(789987789, "Problem in Diagram Tree", COMMON, DemoTestTeamWorkflow);
    public static final ArtifactToken ProblemWithTheGraphView_TeamWf = valueOf(431354978, "Problem with the Graph View", COMMON, DemoReqTeamWorkflow);
    public static final ArtifactToken ProblemWithTheUserWindow_TeamWf = valueOf(456794312, "Problem with the user window", COMMON, TeamWorkflow);
+   public static final ArtifactToken DefectSearchReviewChanges_TeamWf = valueOf(883097240L, "Defect Search - Review Changes", COMMON, DemoReqTeamWorkflow);
 
    public static final ArtifactToken PeerReview2 = ArtifactToken.valueOf(414911237L, "2 - Peer Review algorithm used in code", COMMON, TeamWorkflow);
 

@@ -193,6 +193,14 @@ public class AtsDbConfigPopulateDemoDbAndTestOp {
       if (rd.isErrors()) {
          return rd;
       }
+      (new Pdd97CreateDemoDefectReviews(rd, atsApi)).run();
+      if (rd.isErrors()) {
+         return rd;
+      }
+      (new Pdd97CreateDemoDefectReviewsTest(rd, atsApi)).run();
+      if (rd.isErrors()) {
+         return rd;
+      }
 
       return new XResultData();
    }

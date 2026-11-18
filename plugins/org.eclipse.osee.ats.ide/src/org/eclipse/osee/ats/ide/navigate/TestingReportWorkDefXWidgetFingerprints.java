@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +71,19 @@ public class TestingReportWorkDefXWidgetFingerprints extends XNavigateItemAction
             resolved.add(fingerprint);
          }
       }
+      resolved.sort(
+         Comparator.comparingLong(TestingReportWorkDefXWidgetFingerprints::workDefId).thenComparing(
+            TestingReportWorkDefXWidgetFingerprints::artifactType));
       Map<String, Object> report = new LinkedHashMap<>();
       report.put("workDefs", resolved);
       return report;
+   }
+
+   private static long workDefId(Map<String, Object> fingerprint) {
+      return ((Number) fingerprint.get("id")).longValue();
+   }
+
+   private static String artifactType(Map<String, Object> fingerprint) {
+      return String.valueOf(fingerprint.get("artifactType"));
    }
 }

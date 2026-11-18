@@ -637,7 +637,7 @@ public class PublishingMarkdownTest {
 
    @Test
    public void testSizedImageHasInlineStyle() {
-      // The demo data has <image-link size="s">1646203177483523742</image-link>
+      // The demo data has <image-link size="s">1646203177</image-link>
       // After processImageLinks, this should become an inline <img> tag with style="max-width:50%;height:auto"
       for (Long productId : products) {
          Node mdDocument = productMarkdownDocs.get(productId);
