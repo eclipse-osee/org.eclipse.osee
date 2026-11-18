@@ -119,8 +119,8 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
 
    /**
     * Wait states this state can transition to. A wait state is a holding place (e.g. Monitor) where a work item is
-    * parked until some external event occurs. Required-field validation is not enforced when transitioning to or from
-    * a wait state; transition hooks still run. A state named here is also a valid to-state.
+    * parked until some external event occurs. Required-field validation is not enforced when transitioning to or from a
+    * wait state; transition hooks still run. A state named here is also a valid to-state.
     */
    public List<StateDefinition> getToWaitStates() {
       return toWaitStates;

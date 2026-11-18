@@ -338,7 +338,7 @@ public class PublishingMarkdownAsPdfTest {
 
    @Test
    public void testSizedImageRenderedInPdf() throws IOException {
-      // The demo data has <image-link size="s">1646203177483523742</image-link> in the
+      // The demo data has <image-link size="s">1646203177</image-link> in the
       // "Programming Language" section. Verify the full pipeline handles the size attribute
       // without errors and still renders the image in the PDF.
       assertPdfContainsImage(pdfDoc,

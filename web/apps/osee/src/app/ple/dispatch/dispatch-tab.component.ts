@@ -271,21 +271,23 @@ const URL_PLACEHOLDER = /\{([^}]+)\}/g;
 				</div>
 			}
 
-			<div class="tw-pt-4">
-				<span
-					class="tw-inline-block"
-					[matTooltip]="publishTooltip()">
-					<button
-						mat-flat-button
-						type="button"
-						color="primary"
-						class="disabled:tw-cursor-not-allowed"
-						[disabled]="publishDisabled()"
-						(click)="executePublish()">
-						{{ tabConfig.targetApi.button || 'Launch Publish' }}
-					</button>
-				</span>
-			</div>
+			@if (tabConfig.targetApi; as targetApi) {
+				<div class="tw-pt-4">
+					<span
+						class="tw-inline-block"
+						[matTooltip]="publishTooltip()">
+						<button
+							mat-flat-button
+							type="button"
+							color="primary"
+							class="disabled:tw-cursor-not-allowed"
+							[disabled]="publishDisabled()"
+							(click)="executePublish()">
+							{{ targetApi.button || 'Launch Publish' }}
+						</button>
+					</span>
+				</div>
+			}
 		</form>
 	`,
 })
@@ -740,6 +742,11 @@ export class DispatchTabComponent {
 
 	executePublish(): void {
 		const tabConfig = this.tab();
+		const targetApi = tabConfig.targetApi;
+
+		if (!targetApi) {
+			return;
+		}
 
 		this.submitAttempted.set(true);
 
@@ -748,14 +755,19 @@ export class DispatchTabComponent {
 		}
 
 		const formValue = this.publishForm().value();
-		const targetUrl = this.resolveUrlTemplate(tabConfig.targetApi.url);
+		const targetUrl = this.resolveUrlTemplate(targetApi.url);
 		const files = this.fileSelections();
 		const hasFiles = Object.values(files).some((f) => f.length > 0);
 
 		this.publishing.set(true);
-		if (tabConfig.targetApi.method === 'GET') {
-			this.executeGetRequest(targetUrl, tabConfig, formValue);
-		} else if (tabConfig.targetApi.method === 'PUT') {
+		if (targetApi.method === 'GET') {
+			this.executeGetRequest(
+				targetUrl,
+				targetApi.url,
+				tabConfig,
+				formValue
+			);
+		} else if (targetApi.method === 'PUT') {
 			this.executePutRequest(targetUrl);
 		} else if (hasFiles && this.getRawFileInput()) {
 			this.executePostRawFileRequest(targetUrl);
@@ -768,10 +780,10 @@ export class DispatchTabComponent {
 
 	private executeGetRequest(
 		url: string,
+		urlTemplate: string,
 		tab: DispatchTabConfig,
 		formValue: FormState
 	): void {
-		const urlTemplate = tab.targetApi.url;
 		let params = new HttpParams();
 
 		if (

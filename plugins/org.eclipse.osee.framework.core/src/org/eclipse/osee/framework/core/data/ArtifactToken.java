@@ -127,11 +127,14 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
       public ArtifactTokenImpl(Long id, String guid, String name, BranchId branch, ArtifactTypeToken artifactType) {
          super(id, name);
          if (!USE_LONG_IDS) {
-            // Until artifacts can have long in db, ensure that tokens aren't negative when turned to int
+            // Until artifacts can have long in db, the id is narrowed to int (Id.getIdIntValue). Ensure the id
+            // round-trips through int (so it is not silently truncated to a different artifact) and that the
+            // resulting int is > 0 or SENTINEL.
             int idInt = Long.valueOf(id).intValue();
-            if (idInt <= 0 && idInt != -1) {
+            boolean truncated = id.longValue() != idInt;
+            if (truncated || (idInt <= 0 && idInt != -1)) {
                String msg = String.format(
-                  "Token id (as int) must be > 0 or SENTINAL, not int [%s] for long id [%s] name [%s] and type [%s])",
+                  "Token id (as int) must be > 0 or SENTINAL and within int range, not int [%s] for long id [%s] name [%s] and type [%s])\n",
                   idInt, id, name, artifactType.getName());
                // Log to console which shows the id, name and type on construction where exception doesn't show till loading
                OseeLog.log(ArtifactToken.class, Level.SEVERE, msg);

@@ -26,19 +26,20 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.report.AtsReportEndpointApi;
 import org.eclipse.osee.ats.api.reqts.icd.AtsIcdEndpointApi;
+import org.eclipse.osee.ats.api.review.AtsReviewEndpointApi;
 import org.eclipse.osee.ats.api.store.AtsRelationEndpointApi;
 import org.eclipse.osee.ats.api.store.AtsStoreEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.AtsTestEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorkTypeEndpoint;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.pr.AtsPrEndpointApi;
-import org.eclipse.osee.ats.api.workdef.AtsWorkDefEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
@@ -86,6 +87,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsRelationEndpointApi relEp;
    private BranchEndpoint brchEp;
    private AtsIcdEndpointApi icdEp;
+   private AtsReviewEndpointApi reviewEp;
    private AtsWorkDefEndpointApi workDefEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
@@ -341,6 +343,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          icdEp = jaxRsApi.newProxy("ats", AtsIcdEndpointApi.class);
       }
       return icdEp;
+   }
+
+   @Override
+   public AtsReviewEndpointApi getReviewEp() {
+      if (reviewEp == null) {
+         reviewEp = jaxRsApi.newProxy("ats", AtsReviewEndpointApi.class);
+      }
+      return reviewEp;
    }
 
    @Override

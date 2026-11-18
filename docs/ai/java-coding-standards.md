@@ -197,6 +197,15 @@ Surface problems as early as possible — ideally when a developer defines or bu
 - Use appropriate data structures: `HashMap` for O(1) lookup, `LinkedHashSet` for ordered deduplication, `HashSet` for membership testing.
 - Don't create unnecessary object allocations in hot paths (event processing, cache lookups).
 
+## Build and Verification
+
+The OSEE Eclipse plugins (the `plugins/` tree -- `org.eclipse.osee.ats.ide`, `*.ide`, `*.rest`, `*.core`, `*.api`, and the rest of the bundles) build with Maven/Tycho against a full PDE target platform, and the client is an Eclipse RCP application.
+
+- **Do not expect to compile, build, or run these changes in an agent session.** A Tycho build resolves a large P2 target platform and is not a quick local `javac`; the IDE itself is a desktop RCP app that cannot be launched or exercised headlessly here. Integration tests that need a populated database/server are likewise out of reach.
+- **Do not offer to "run the build to confirm it compiles" for `plugins/` changes.** That build is run in CI / on a properly configured developer workstation, not from here. Offering it wastes a round trip and sets a false expectation.
+- **Verify by inspection instead.** Keep edits minimal and self-contained; confirm imports resolve, identifiers exist, and the change follows the surrounding patterns. State plainly that compilation/build/run was not performed and that CI or a local Eclipse workspace is where it gets validated.
+- **The web side is different.** Angular code under `web/` has real local lint/build/test tooling -- this limitation is about the Java/Eclipse `plugins/` tree only.
+
 ## Testing
 
 - Test suites and test classes that require test mode set `OseeProperties.setIsInTest(true)` in `@BeforeClass`.
