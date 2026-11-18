@@ -12,7 +12,11 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { CiSetsHttpService } from './ci-sets-http.service';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { signal } from '@angular/core';
+import {
+	HttpTestingController,
+	provideHttpClientTesting,
+} from '@angular/common/http/testing';
 import {
 	provideHttpClient,
 	withInterceptorsFromDi,
@@ -34,5 +38,19 @@ describe('CiSetsHttpService', () => {
 
 	it('should be created', () => {
 		expect(service).toBeTruthy();
+	});
+	it('should request only the selected set by id and skip when none is selected', () => {
+		const http = TestBed.inject(HttpTestingController);
+		const branchId = signal('10');
+		const setId = signal('-1');
+		const resource = TestBed.runInInjectionContext(() =>
+			service.getCiSetResource(branchId, setId)
+		);
+		TestBed.tick();
+		http.expectNone(() => true);
+		setId.set('55');
+		TestBed.tick();
+		http.expectOne((req) => req.url.endsWith('/script/tmo/10/set/55'));
+		expect(resource.isLoading()).toBe(true);
 	});
 });

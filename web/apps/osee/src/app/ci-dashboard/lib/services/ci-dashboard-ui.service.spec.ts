@@ -24,4 +24,25 @@ describe('CiDashboardUiService', () => {
 	it('should be created', () => {
 		expect(service).toBeTruthy();
 	});
+
+	it('should only emit branch id and type when they change', () => {
+		const ids: string[] = [];
+		const types: string[] = [];
+		const idSub = service.branchId.subscribe((id) => ids.push(id));
+		const typeSub = service.branchType.subscribe((type) =>
+			types.push(type)
+		);
+
+		service.BranchId = '10';
+		service.BranchId = '10';
+		service.BranchId = '20';
+		service.BranchType = 'working';
+		service.BranchType = 'working';
+		service.BranchType = '';
+
+		expect(ids).toEqual(['0', '10', '20']);
+		expect(types).toEqual(['', 'working', '']);
+		idSub.unsubscribe();
+		typeSub.unsubscribe();
+	});
 });

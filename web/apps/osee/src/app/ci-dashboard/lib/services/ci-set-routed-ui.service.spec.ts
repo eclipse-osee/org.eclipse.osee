@@ -10,28 +10,51 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-
+import { Router, provideRouter } from '@angular/router';
+import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { CiSetRoutedUiService } from './ci-set-routed-ui.service';
-import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
-
+@Component({ template: '' })
+class BlankComponent {}
 describe('CiSetRoutedUiService', () => {
 	let service: CiSetRoutedUiService;
-
+	let router: Router;
+	let routedSetIds: string[];
 	beforeEach(() => {
+		routedSetIds = [];
 		TestBed.configureTestingModule({
 			providers: [
+				provideRouter([{ path: '**', component: BlankComponent }]),
 				{
-					provide: ActivatedRoute,
-					useValue: { queryParamMap: new Subject() },
+					provide: CiDashboardUiService,
+					useValue: {
+						set CiSetId(value: string) {
+							routedSetIds.push(value);
+						},
+					},
 				},
 			],
 		});
+		router = TestBed.inject(Router);
 		service = TestBed.inject(CiSetRoutedUiService);
 	});
-
 	it('should be created', () => {
 		expect(service).toBeTruthy();
+	});
+	it('should not report a set before the first navigation settles', () => {
+		TestBed.tick();
+		expect(service.urlSetId()).toBeUndefined();
+		expect(routedSetIds).toEqual([]);
+	});
+	it('should report the set id from the settled URL', async () => {
+		await router.navigateByUrl('/ci/allScripts?branchId=1&set=1234');
+		expect(service.urlSetId()).toBe('1234');
+		TestBed.tick();
+		expect(routedSetIds).toEqual(['1234']);
+	});
+	it("should report '-1' only when the settled URL has no set", async () => {
+		await router.navigateByUrl('/ci/allScripts?branchId=1');
+		expect(service.urlSetId()).toBe('-1');
 	});
 });

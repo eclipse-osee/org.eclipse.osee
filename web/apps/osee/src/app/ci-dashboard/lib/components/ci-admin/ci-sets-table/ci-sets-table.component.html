@@ -10,7 +10,10 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<mat-form-field class="tw-w-full">
+<mat-form-field
+	class="tw-w-full"
+	appearance="outline"
+	subscriptSizing="dynamic">
 	<input
 		type="text"
 		matInput
@@ -27,7 +30,7 @@
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="tw-text-primary-600">
+					class="tw-text-primary-darker">
 					{{ header }}
 				</th>
 				<td

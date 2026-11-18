@@ -10,21 +10,20 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<osee-ci-dashboard-controls
-	><div class="tw-flex tw-w-full tw-items-end tw-justify-between">
-		@if (branchId() && setId()) {
-			<osee-batch-dropdown></osee-batch-dropdown>
-		}
-		@if (batchId() !== '-1') {
-			<button
-				mat-flat-button
-				class="primary-button"
-				(click)="downloadBatch()">
-				<mat-icon>download</mat-icon
-				><span class="tw-pl-2">Download</span>
-			</button>
-		}
-	</div>
+<osee-ci-dashboard-controls>
+	@if (branchId() && setId()) {
+		<osee-batch-dropdown />
+	}
+	@if (batchId() !== '-1') {
+		<button
+			ciDashboardAction
+			mat-flat-button
+			class="primary-button"
+			(click)="downloadBatch()">
+			<mat-icon>download</mat-icon>
+			<span class="tw-pl-2">Download</span>
+		</button>
+	}
 </osee-ci-dashboard-controls>
 @if (results | async; as _results) {
 	@if (resultsCount | async; as _count) {
@@ -37,7 +36,7 @@
 						<th
 							mat-header-cell
 							*matHeaderCellDef
-							class="tw-text-primary-600"
+							class="tw-text-primary-darker"
 							[matTooltip]="
 								(getTableHeaderByName(header) | async)
 									?.description || ''

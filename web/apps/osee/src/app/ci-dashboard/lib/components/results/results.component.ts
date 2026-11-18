@@ -84,6 +84,7 @@ import { FormsModule } from '@angular/forms';
 				<div class="tw-flex tw-w-full tw-flex-shrink tw-gap-4">
 					<mat-form-field
 						class="tw-w-full"
+						appearance="outline"
 						subscriptSizing="dynamic">
 						<mat-label>Filter Test Points</mat-label>
 						<input
@@ -126,6 +127,7 @@ import { FormsModule } from '@angular/forms';
 					">
 					<mat-form-field
 						class="tw-w-full"
+						appearance="outline"
 						subscriptSizing="dynamic">
 						<mat-label>Filter Scripts</mat-label>
 						<input
@@ -151,6 +153,7 @@ import { FormsModule } from '@angular/forms';
 						class="tw-w-full">
 						<div class="tw-relative">
 							<mat-form-field
+								appearance="outline"
 								subscriptSizing="dynamic"
 								class="tw-z-0 tw-opacity-0">
 								<input

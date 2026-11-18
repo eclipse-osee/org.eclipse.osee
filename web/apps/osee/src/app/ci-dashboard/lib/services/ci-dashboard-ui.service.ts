@@ -26,7 +26,11 @@ export class CiDashboardUiService {
 		return this.uiService.type;
 	}
 
+	// Equal values are skipped so unrelated query-param changes do not re-trigger branch-keyed requests.
 	set BranchType(type: '' | 'working' | 'baseline') {
+		if (this.uiService.type.value === type) {
+			return;
+		}
 		this.uiService.typeValue = type;
 	}
 
@@ -35,6 +39,9 @@ export class CiDashboardUiService {
 	}
 
 	set BranchId(branchId: string) {
+		if (this.uiService.id.value === branchId) {
+			return;
+		}
 		this.uiService.idValue = branchId;
 	}
 
