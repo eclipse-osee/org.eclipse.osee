@@ -1,0 +1,18 @@
+<mat-form-field appearance="outline" subscriptSizing="dynamic">
+	<mat-label>Team Definition</mat-label>
+	<mat-select id="team-definition-filter">
+		@for (definition of teamDefinitions.hasValue() ? teamDefinitions.value() : []; track definition.id) {
+			<mat-option [value]="definition.id">{{ definition.name }}</mat-option>
+		} @empty {
+			<mat-option disabled>
+				@if (teamDefinitions.isLoading()) {
+					Loading team definitions...
+				} @else if (teamDefinitions.error()) {
+					Unable to load team definitions
+				} @else {
+					No team definitions available
+				}
+			</mat-option>
+		}
+	</mat-select>
+</mat-form-field>
