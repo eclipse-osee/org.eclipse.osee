@@ -50,7 +50,7 @@ public class ShowOpenWorkflowsByArtifactTypeTest {
          new ShowOpenWorkflowsByReviewType("Show Open " + WorkItemType.PeerReview.name() + "s", WorkItemType.PeerReview,
             false, false, AtsImage.PEER_REVIEW);
       Collection<Artifact> results = search.performSearchGetResults();
-      checkResults(7, AtsArtifactTypes.PeerToPeerReview, results);
+      checkResults(8, AtsArtifactTypes.PeerToPeerReview, results);
    }
 
    @org.junit.Test
@@ -59,7 +59,7 @@ public class ShowOpenWorkflowsByArtifactTypeTest {
          new ShowOpenWorkflowsByReviewType("Show Workflows Waiting " + WorkItemType.PeerReview.name() + "s",
             WorkItemType.PeerReview, false, true, AtsImage.PEER_REVIEW);
       Collection<Artifact> results = search.performSearchGetResults();
-      checkResults(6, AtsArtifactTypes.TeamWorkflow, results);
+      checkResults(7, AtsArtifactTypes.TeamWorkflow, results);
    }
 
    private void checkResults(int expectedCount, ArtifactTypeToken ofType, Collection<Artifact> results) {

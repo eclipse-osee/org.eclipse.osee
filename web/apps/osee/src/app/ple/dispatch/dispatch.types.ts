@@ -52,7 +52,7 @@ export type TabFileInput = {
 	readonly contentType?: string;
 };
 
-export type DispatchTabConfig = {
+type DispatchTabConfigBase = {
 	readonly key: string;
 	readonly label: string;
 	readonly description: string;
@@ -61,10 +61,22 @@ export type DispatchTabConfig = {
 	readonly checkboxes: readonly TabCheckbox[];
 	readonly textInputs?: readonly TabTextInput[];
 	readonly fileInputs?: readonly TabFileInput[];
-	readonly targetApi: TargetApi;
 	readonly artifact?: string;
 	readonly downloadFileName?: string;
 };
+
+/** V1 tabs always launch an API action. This schema is frozen. */
+export type DispatchTabConfigV1 = DispatchTabConfigBase & {
+	readonly targetApi: TargetApi;
+};
+
+/** V2 tabs can be informational and omit the API action. */
+export type DispatchTabConfigV2 = DispatchTabConfigBase & {
+	readonly targetApi?: TargetApi;
+};
+
+/** The tab shape consumed by the current Dispatch UI. */
+export type DispatchTabConfig = DispatchTabConfigV2;
 
 // --- Versioned Config Types ---
 
@@ -73,22 +85,28 @@ export type DispatchTabConfig = {
  * The version field is required and must be present in the JSON.
  */
 export type DispatchConfigV1 = {
-	readonly version: string;
+	readonly version: '1';
 	readonly title: string;
-	readonly tabs: readonly DispatchTabConfig[];
+	readonly tabs: readonly DispatchTabConfigV1[];
+};
+
+export type DispatchConfigV2 = {
+	readonly version: '2';
+	readonly title: string;
+	readonly tabs: readonly DispatchTabConfigV2[];
 };
 
 /**
  * Union of all known config versions for raw parsing.
  * Add new versions here as they are introduced.
  */
-export type AnyDispatchConfig = DispatchConfigV1;
+export type AnyDispatchConfig = DispatchConfigV1 | DispatchConfigV2;
 
 /**
  * The current (latest) config type used throughout the app.
  * Always points to the latest version's shape.
  */
-export type DispatchConfig = DispatchConfigV1;
+export type DispatchConfig = DispatchConfigV2;
 
 // --- Shared Types ---
 

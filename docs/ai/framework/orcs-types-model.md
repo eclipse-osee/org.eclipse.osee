@@ -47,6 +47,10 @@ ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false, n
 
 `artifactType(id, name, isAbstract, [icon], [operationTypes], superType...)`. Multiple super types are allowed (e.g. ATS `Team Definition` extends both `AbstractAccessControlled` and a responsible-team type).
 
+> **Artifact ids must fit in a signed int (for now).** Although `ArtifactId.getId()` is a `Long`, the `osee_artifact` table still stores the id as an `int`, and `Id.getIdIntValue()` narrows via `getId().intValue()`. An id above `Integer.MAX_VALUE` (2147483647) is **silently truncated** to a different value, so an `ArtifactToken`/`ArtifactId` (including every `ArtifactToken` and the `*ArtifactToken` tokens in classes like `DemoArtifactToken`) must use an id within int range. Picking an out-of-range id does not fail the lookup loudly - it quietly resolves (or fails to resolve) a *different* artifact.
+>
+> This is enforced fail-fast in `ArtifactToken.ArtifactTokenImpl`'s constructor: when `USE_LONG_IDS` is false it rejects any id that does not round-trip through int (`id.longValue() != id.intValue()`) or whose int value is `<= 0` and not SENTINEL, throwing `OseeArgumentException` at construction/load. The `use.long.ids` system property (`ArtifactToken.USE_LONG_IDS`) is the escape hatch for when the database is migrated to real `long` artifact ids; until that migration, keep all artifact token ids within int range.
+
 ### Attribute types - `AttributeTypeToken`
 
 `AttributeTypeToken.java` plus typed subtypes in the same package: `AttributeTypeString`, `AttributeTypeBoolean`, `AttributeTypeDate`, `AttributeTypeInteger`, `AttributeTypeLong`, `AttributeTypeDouble`, `AttributeTypeArtifactId`, `AttributeTypeBranchId`, `AttributeTypeEnum`, and others. The concrete generic base is `AttributeTypeGeneric<T>`.
