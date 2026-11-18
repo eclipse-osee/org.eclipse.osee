@@ -30,9 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.CoreImage;
-import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
-import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -113,7 +111,7 @@ public class PublishSystemLevelSSDDBlam extends AbstractBlam {
       setViewId(view);
 
       init();
-      ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
+      ViewIdUtility.findExcludedArtifactsByView(branchView.getArtifactId(), branch);
 
       monitor.subTask("Aquiring System Components"); // bulk load for performance reasons
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.Component, branch);

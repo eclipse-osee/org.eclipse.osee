@@ -133,7 +133,7 @@ public class SystemSubsystemReportBlam extends AbstractBlam {
 
       init();
 
-      findExcludedArtifactsByView = ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
+      findExcludedArtifactsByView = ViewIdUtility.findExcludedArtifactsByView(branchView.getArtifactId(), branch);
 
       monitor.subTask("Aquiring System Components"); // bulk load for performance reasons
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.Component, branch);
