@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.ide.integration.tests.coderev.DemoDbCodeReviewTestSu
 import org.eclipse.osee.ats.ide.integration.tests.define.DefineIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.demo.dbinit.DemoDbInitTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.demo.dbpopulate.DemoDbPopulateSuite;
-import org.eclipse.osee.ats.ide.integration.tests.demo.precheck.DemoDbInitPreTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.demo.postcheck.DemoDbInitPostTestSuite;
+import org.eclipse.osee.ats.ide.integration.tests.demo.precheck.DemoDbInitPreTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.dispo.DispoIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.access.FrameworkAccess_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.core.FrameworkCoreSuite;
