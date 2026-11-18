@@ -12,6 +12,7 @@
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
 import { selectBranch } from '../../../shared/branch-helpers';
+import { waitForRealtimeConnected } from '../../../shared/sse-helpers';
 
 test('test baseline branch', async ({ page }) => {
 	await page.goto('/ci/admin');
@@ -73,6 +74,9 @@ test('test working branch', async ({ page }) => {
 
 	await page.getByRole('button', { name: 'CI Sets' }).click();
 	await expect(page.getByTestId('add-ci-set-button')).toBeEnabled();
+	// Creating a set goes through MutationService, which rejects writes until the SSE stream
+	// confirms the server is ready; without this gate the save is silently dropped.
+	await waitForRealtimeConnected(page);
 	await page.getByTestId('add-ci-set-button').click();
 	await page.getByLabel('Name').fill('Demo');
 	await page.getByLabel('Not Active').click();
@@ -105,7 +109,7 @@ test('test import page', async ({ page }) => {
 	await selectBranch(page, 'Working', 'CI Admin Test');
 
 	// Select CI Set
-	await page.getByRole('combobox', { name: 'Select a set' }).click();
+	await page.getByRole('combobox', { name: 'Select a Set' }).click();
 	await page.getByText('Demo').click();
 
 	await expect(page.getByText('Select File')).toBeVisible();

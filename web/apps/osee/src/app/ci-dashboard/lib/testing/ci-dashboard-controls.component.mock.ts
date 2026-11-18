@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
 	selector: 'osee-ci-dashboard-controls',
@@ -18,7 +18,8 @@ import { Component, Input } from '@angular/core';
 	standalone: true,
 })
 export class CiDashboardControlsMockComponent {
-	@Input() branchPicker: boolean = true;
-	@Input() ciSetSelector: boolean = true;
-	@Input() actionButton: boolean = false;
+	branchPicker = input(true);
+	ciSetSelector = input(true);
+	showSetSection = input(true);
+	actionButton = input(false);
 }

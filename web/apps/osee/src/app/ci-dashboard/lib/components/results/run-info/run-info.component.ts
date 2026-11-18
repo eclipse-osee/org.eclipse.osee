@@ -45,7 +45,7 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 						<th
 							mat-header-cell
 							*matHeaderCellDef
-							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600">
+							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-darker">
 							Key
 						</th>
 						<td
@@ -62,7 +62,7 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 						<th
 							mat-header-cell
 							*matHeaderCellDef
-							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600">
+							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-darker">
 							Value
 						</th>
 						<td

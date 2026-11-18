@@ -94,6 +94,73 @@ test.describe('Zenith toolbar navigation', () => {
 		}
 	});
 
+	test('dashboard controls remain accessible and responsive', async ({
+		page,
+	}) => {
+		await page.goto('/ci/allScripts');
+		await selectBranch(page, 'Baseline', 'SAW Product Line');
+
+		const controls = page.getByRole('region', {
+			name: 'Zenith dashboard controls',
+		});
+		const branchGroup = controls.getByRole('group', {
+			name: 'Branch',
+			exact: true,
+		});
+		const branch = branchGroup.getByRole('combobox', {
+			name: 'Select a Branch',
+		});
+		const setGroup = controls.getByRole('group', {
+			name: 'CI Set',
+			exact: true,
+		});
+		const set = setGroup.getByRole('combobox', { name: 'Select a Set' });
+		const activeOnly = setGroup.getByRole('checkbox', {
+			name: 'Active sets only',
+		});
+		const download = controls.getByRole('button', {
+			name: 'Download Dashboard CSV',
+		});
+
+		await expect(branch).toBeVisible();
+		await expect(set).toBeVisible();
+		await expect(activeOnly).toBeVisible();
+		await expect(download).toBeVisible();
+
+		await download.hover();
+		// matTooltip renders no role="tooltip" and skips aria-describedby when the text equals the
+		// aria-label, so assert the visible tooltip overlay by its text.
+		await expect(
+			page
+				.locator('mat-tooltip-component')
+				.filter({ hasText: 'Download Dashboard CSV' })
+				.first()
+		).toBeVisible();
+		await download.focus();
+		await expect(download).toBeFocused();
+		await page.keyboard.press('Enter');
+		await expect(
+			page.getByRole('menuitem', { name: 'Download CSV for Branch' })
+		).toBeVisible();
+		await expect(
+			page.getByRole('menuitem', { name: 'Download CSV for Set' })
+		).toBeVisible();
+		await page.keyboard.press('Escape');
+
+		await page.setViewportSize({ width: 375, height: 800 });
+		await expect(branch).toBeVisible();
+		await expect(set).toBeVisible();
+		await expect(activeOnly).toBeVisible();
+		await expect(download).toBeVisible();
+		// Scoped to the controls region: the Zenith nav header (not part of these controls) is wider
+		// than a 375px viewport, so a page-level overflow check would test the header instead.
+		expect(
+			await controls.evaluate(
+				(element) => element.scrollWidth <= element.clientWidth
+			)
+		).toBe(true);
+	});
+
 	test('toolbar links target routes directly, with the branch as a query param (no legacy path segment)', async ({
 		page,
 	}) => {

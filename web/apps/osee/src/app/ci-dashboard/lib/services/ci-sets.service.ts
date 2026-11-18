@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CiSetsHttpService } from './ci-sets-http.service';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import {
@@ -83,6 +84,11 @@ export class CiSetsService {
 			.subscribe();
 	}
 
+	/** Fetches one set by id regardless of its active state. Call from an injection context. */
+	getCiSetResource(ciSetId: Signal<string | undefined>) {
+		const branchId = toSignal(this.ui.branchId, { initialValue: '' });
+		return this.ciSetsService.getCiSetResource(branchId, ciSetId);
+	}
 	get ciSets() {
 		return this._ciSets;
 	}
