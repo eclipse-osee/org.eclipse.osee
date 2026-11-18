@@ -146,6 +146,9 @@ public class AttributeFactory {
       if (source.getVersion().isInStorage()) {
          try {
             destinationAttribute = destination.getAttributeById(source, DeletionFlag.INCLUDE_DELETED);
+            DataProxy<T> proxy = attributeData.getDataProxy();
+            proxy.setResolver(createResolver(destinationAttribute));
+            proxy.setAttribute(destinationAttribute);
             Reference<AttributeContainer> artifactRef = new WeakReference<>(destination);
             destinationAttribute.internalInitialize(artifactRef, attributeData, true, false, tokenService);
          } catch (AttributeDoesNotExist ex) {
