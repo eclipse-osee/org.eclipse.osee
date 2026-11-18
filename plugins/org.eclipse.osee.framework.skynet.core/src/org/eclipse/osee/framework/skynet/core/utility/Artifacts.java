@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -112,7 +113,12 @@ public final class Artifacts {
          details.put("Read Only", String.valueOf(artifact.isReadOnly()));
          details.put("Last Modified", artifact.isInDb() ? String.valueOf(artifact.getLastModified()) : "Not In Db");
          try {
-            details.put("Last Modified By", artifact.isInDb() ? artifact.getLastModifiedBy().getName() : "Not In Db");
+            String lastModifiedByName = "Not In Db";
+            if (artifact.isInDb()) {
+               UserToken lastModifiedBy = artifact.getLastModifiedBy();
+               lastModifiedByName = lastModifiedBy != null ? lastModifiedBy.getName() : "Unknown";
+            }
+            details.put("Last Modified By", lastModifiedByName);
             TransactionRecord trans = (TransactionRecord) artifact.getTransaction();
             details.put("Last Modified Comment", artifact.isInDb() ? trans.getComment() : "Not In Db");
          } catch (Exception ex) {
