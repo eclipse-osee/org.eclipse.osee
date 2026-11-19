@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
-import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -56,10 +56,10 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchAndViewSelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXCheckBoxWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXListArtifactDropWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchAndViewSelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -171,7 +171,7 @@ public class SubsystemFullTraceReportBlam extends AbstractBlam {
                   if (arts != null && !arts.isEmpty()) {
                      BranchId branch = arts.iterator().next().getBranch();
                      if (branch != null && branch.isValid()) {
-                        branchViews =
+                        Map<Long, String> branchViews =
                            ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
                         branchViewWidget.setSelectable(branchViews.values());
                      }
@@ -218,7 +218,7 @@ public class SubsystemFullTraceReportBlam extends AbstractBlam {
          File dir = new File(scriptDir);
          if (dir.exists()) {
             ScriptTraceabilityOperation traceOperation = new ScriptTraceabilityOperation(dir.getParentFile(), branch,
-               false, traceHandlers, isGitCodeStructure, viewId, false);
+               false, traceHandlers, isGitCodeStructure, branchView.getArtifactId(), false);
             Operations.executeWorkAndCheckStatus(traceOperation, monitor);
             requirementsToCodeUnits = traceOperation.getRequirementToCodeUnitsMap();
          }

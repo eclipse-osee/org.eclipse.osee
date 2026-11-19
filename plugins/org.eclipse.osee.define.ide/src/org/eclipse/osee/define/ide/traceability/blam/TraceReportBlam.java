@@ -149,7 +149,7 @@ public class TraceReportBlam extends AbstractBlam {
       CharBackedInputStream excelInputStream = null;
       Map<String, AbstractArtifactRelationReport> reports = new LinkedHashMap<>();
       List<BaseTraceDataCache> traceCache = new ArrayList<>();
-      RequirementData reqData = new RequirementData(branch, viewId);
+      RequirementData reqData = new RequirementData(branch, branchView.getArtifactId());
       CodeUnitData codeUnit = null;
       TestUnitData testUnit = null;
       try {

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
-import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -45,9 +45,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchAndViewSelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXListArtifactDropWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchAndViewSelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -105,7 +105,7 @@ public class PublishSubsystemToDesignTraceabilityBlam extends AbstractBlam {
                   if (arts != null && !arts.isEmpty()) {
                      BranchId branch = arts.iterator().next().getBranch();
                      if (branch != null && branch.isValid()) {
-                        branchViews =
+                        Map<Long, String> branchViews =
                            ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
                         branchViewWidget.setSelectable(branchViews.values());
                      }
@@ -132,7 +132,8 @@ public class PublishSubsystemToDesignTraceabilityBlam extends AbstractBlam {
       setViewId(view);
 
       init();
-      Set<ArtifactId> findExcludedArtifactsByView = ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
+      Set<ArtifactId> findExcludedArtifactsByView =
+         ViewIdUtility.findExcludedArtifactsByView(branchView.getArtifactId(), branch);
       ViewIdUtility.removeExcludedArtifacts(subsystems.iterator(), findExcludedArtifactsByView);
 
       monitor.subTask("Aquiring Design Artifacts"); // bulk load for performance reasons
