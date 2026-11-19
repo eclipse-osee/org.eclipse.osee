@@ -77,6 +77,12 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
    private String replyToAddress;
 
    /**
+    * Set when the constructor could not build the message (e.g. invalid address). Sending is skipped so a message with
+    * missing recipients or content is never sent; throwing instead would abort callers that loop over many emails.
+    */
+   private String constructionError;
+
+   /**
     * Enables recipient certificate lookup and encrypted send behavior. Recipients with valid certificates receive the
     * encrypted intended content. Recipients without a valid certificate receive a sanitized fallback message.
     */
@@ -157,6 +163,8 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
          }
 
       } catch (MessagingException ex) {
+         constructionError = String.format("to %s, from [%s], reply-to [%s]: %s", toAddresses, fromAddress,
+            replyToAddress, ex.getMessage());
          OseeLog.log(OseeEmail.class, Level.SEVERE, ex);
       }
    }
@@ -337,7 +345,9 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
 
    @Override
    public void send(XResultData rd) {
-      if (Strings.isValid(defaultMailServer) && !"disabled".equals(defaultMailServer)) {
+      if (constructionError != null) {
+         rd.errorf("Email not sent, could not be created (%s)", constructionError);
+      } else if (Strings.isValid(defaultMailServer) && !"disabled".equals(defaultMailServer)) {
          send();
       } else {
          rd.errorf(OseeEmail.DEFAULT_MAIL_SERVER_NOT_CONFIGURED);
@@ -346,8 +356,13 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
 
    @Override
    public void send() {
-      if (Strings.isValid(defaultMailServer) && !"disabled".equals(defaultMailServer)) {
+      if (constructionError != null) {
+         OseeLog.logf(OseeEmail.class, Level.WARNING, "Email not sent, could not be created (%s)", constructionError);
+      } else if (Strings.isValid(defaultMailServer) && !"disabled".equals(defaultMailServer)) {
          new SendThread(this).start();
+      } else {
+         OseeLog.logf(OseeEmail.class, Level.WARNING, "Email not sent; default mail server is [%s]",
+            defaultMailServer);
       }
    }
 
@@ -381,6 +396,11 @@ public abstract class OseeEmail extends MimeMessage implements IOseeEmail {
    @Override
    public XResultData sendLocalThread() {
       XResultData results = new XResultData();
+
+      if (constructionError != null) {
+         results.errorf("Email not sent, could not be created (%s)", constructionError);
+         return results;
+      }
 
       // Do not send emails from sandbox.
       if (System.getProperty("sandbox", "false").equals("true")) {

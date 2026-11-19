@@ -17,13 +17,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -97,9 +95,9 @@ public final class ReportEndpointImpl implements ReportEndpoint {
       String emailRecipient, ReportFormat format) {
       String jsonResponse;
       try {
-         if (EmailUtil.isEmailInValid(emailRecipient)) {
-            throw new OseeArgumentException("Invalid Email Address");
-         }
+         List<String> recipients = parseRecipients(emailRecipient);
+         // Sender and reply-to must be one address, so use the first recipient
+         String senderAddress = recipients.get(0);
          String fileName =
             String.format("Generic_Trace_Report_%s.%s", Lib.getDateTimeString(), format.extension());
          String dataPath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
@@ -129,10 +127,10 @@ public final class ReportEndpointImpl implements ReportEndpoint {
                   format.extension().toUpperCase(Locale.US), fileName, branch, view, templateArt, downloadLink);
 
                IOseeEmail emailMessage = orcsApi.getEmailService().create(
-                  Collections.singletonList(emailRecipient), emailRecipient, emailRecipient, subject, body,
-                  BodyType.Text, Collections.emptySet(), "Report generation complete.");
+                  recipients, senderAddress, senderAddress, subject, body, BodyType.Text, Collections.emptySet(),
+                  "Report generation complete.");
                emailMessage.send();
-            } catch (IOException | WebApplicationException ex) {
+            } catch (Exception ex) {
                // Send a failure notification email so the user knows the report did not complete
                try {
                   String failSubject = "Report Generation Failed";
@@ -140,8 +138,8 @@ public final class ReportEndpointImpl implements ReportEndpoint {
                      "Your %s report could not be generated.%n%nBranch: %s%nView: %s%nTemplate: %s%n%nError: %s",
                      format.extension().toUpperCase(Locale.US), branch, view, templateArt, ex.getMessage());
                   IOseeEmail failEmail = orcsApi.getEmailService().create(
-                     Collections.singletonList(emailRecipient), emailRecipient, emailRecipient, failSubject,
-                     failBody, BodyType.Text, Collections.emptySet(), "Report generation failed.");
+                     recipients, senderAddress, senderAddress, failSubject, failBody, BodyType.Text,
+                     Collections.emptySet(), "Report generation failed.");
                   failEmail.send();
                } catch (Exception emailEx) {
                   OseeLog.log(ReportEndpointImpl.class, OseeLevel.SEVERE_POPUP,
@@ -158,7 +156,7 @@ public final class ReportEndpointImpl implements ReportEndpoint {
             "branch", branch.toString(),
             "view", view.toString(),
             "template", templateArt.toString(),
-            "emailRecipient", emailRecipient,
+            "emailRecipient", String.join(", ", recipients),
             "downloadLink", downloadLink));
       } catch (Exception ex) {
          String errorJson = toJson(Map.of("error", String.valueOf(ex.getMessage())));
@@ -166,6 +164,19 @@ public final class ReportEndpointImpl implements ReportEndpoint {
       }
 
       return Response.ok(jsonResponse, MediaType.APPLICATION_JSON).build();
+   }
+
+   private static List<String> parseRecipients(String emailRecipient) {
+      List<String> recipients = EmailUtil.splitAddresses(emailRecipient);
+      if (recipients.isEmpty()) {
+         throw new OseeArgumentException("Invalid Email Address: none provided");
+      }
+      for (String recipient : recipients) {
+         if (EmailUtil.isEmailInValid(recipient)) {
+            throw new OseeArgumentException("Invalid Email Address: %s", recipient);
+         }
+      }
+      return recipients;
    }
 
    private StreamingOutput createWriter(BranchId branch, ArtifactId view, ArtifactId templateArt,
