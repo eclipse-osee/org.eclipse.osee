@@ -511,6 +511,10 @@ public class ReportEndpointTest {
          assertNotNull("Response should have Content-Disposition header", contentDisposition);
          assertTrue("Content-Disposition should contain .xlsx filename",
             contentDisposition.contains(".xlsx"));
+
+         // Consume the body so the server finishes streaming before the connection is closed
+         byte[] xlsxBytes = response.readEntity(byte[].class);
+         assertTrue("XLSX response body should not be empty", xlsxBytes.length > 0);
       } finally {
          response.close();
       }

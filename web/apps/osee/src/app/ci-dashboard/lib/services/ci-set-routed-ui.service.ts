@@ -10,33 +10,39 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { effect, inject, Injectable } from '@angular/core';
+import { computed, effect, inject, Injectable } from '@angular/core';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-
+import { Router } from '@angular/router';
 @Injectable({
 	providedIn: 'root',
 })
 export class CiSetRoutedUiService {
 	private uiService = inject(CiDashboardUiService);
 	private router = inject(Router);
-	private route = inject(ActivatedRoute);
-
-	private _queryParams = toSignal(this.route.queryParamMap);
-	private _queryParamEffect = effect(() => {
-		const params = this._queryParams();
+	// The root ActivatedRoute emits empty params before the first navigation completes, so
+	// read the committed URL only once a navigation has succeeded.
+	private settledQueryParams = computed(() =>
+		this.router.lastSuccessfulNavigation()
+			? this.router.parseUrl(this.router.url).queryParamMap
+			: undefined
+	);
+	/** Set id in the URL ('-1' when absent); undefined until the router has settled. */
+	readonly urlSetId = computed<`${number}` | undefined>(() => {
+		const params = this.settledQueryParams();
 		if (!params) {
-			return;
+			return undefined;
 		}
 		const setId = params.get('set');
-		if (setId !== null && !isNaN(Number(setId))) {
-			this.uiService.CiSetId = setId as `${number}`;
-		} else {
-			this.uiService.CiSetId = '-1';
+		return setId !== null && !isNaN(Number(setId))
+			? (setId as `${number}`)
+			: '-1';
+	});
+	private _queryParamEffect = effect(() => {
+		const setId = this.urlSetId();
+		if (setId !== undefined) {
+			this.uiService.CiSetId = setId;
 		}
 	});
-
 	setCISetAndNavigate(setId: `${number}`) {
 		const tree = this.router.parseUrl(this.router.url);
 		const queryParams = tree.queryParams;

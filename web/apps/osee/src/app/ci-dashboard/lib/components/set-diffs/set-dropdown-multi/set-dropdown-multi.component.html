@@ -11,16 +11,21 @@
 *     Boeing - initial API and implementation
 -->
 @if (sets | async; as _sets) {
-	<div class="tw-flex tw-flex-col">
-		<mat-checkbox
-			[checked]="activeOnly()"
-			(change)="setActiveOnly($event)"
-			>Active Only</mat-checkbox
-		>
+	<div class="tw-flex tw-w-full tw-flex-col tw-gap-4">
+		<div class="tw-flex tw-h-8 tw-items-center">
+			<mat-checkbox
+				class="[--mat-checkbox-state-layer-size:32px]"
+				matTooltip="Show only CI Sets marked Active in this list. Already selected Sets stay selected."
+				[checked]="activeOnly()"
+				(change)="setActiveOnly($event)"
+				>Active sets only</mat-checkbox
+			>
+		</div>
 		<mat-form-field
+			class="tw-w-full"
 			subscriptSizing="dynamic"
-			appearance="fill">
-			<mat-label>Select sets to compare</mat-label>
+			appearance="outline">
+			<mat-label>Select Sets to Compare</mat-label>
 			<mat-select
 				[ngModel]="selectedSets | async"
 				(ngModelChange)="updateSets($event)"

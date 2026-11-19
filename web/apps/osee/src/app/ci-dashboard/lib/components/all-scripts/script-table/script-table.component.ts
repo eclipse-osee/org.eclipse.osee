@@ -91,73 +91,83 @@ const editRoles = new Set<string>([
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `<div class="tw-flex tw-h-full tw-w-screen tw-flex-col">
 		@if (scriptDefs()) {
-			<mat-form-field
-				class="tw-w-full"
-				subscriptSizing="dynamic">
-				<mat-label>Filter Scripts</mat-label>
-				<input
-					matInput
-					[(ngModel)]="ciDetailsService.currentDefFilter" />
-				<mat-icon matPrefix>filter_list</mat-icon>
-			</mat-form-field>
-			<mat-table
-				[dataSource]="datasource"
-				class="tw-overflow-auto"
-				matSort>
-				@for (header of headers; track $index) {
-					<ng-container [matColumnDef]="header">
-						<th
-							mat-header-cell
-							*matHeaderCellDef
-							mat-sort-header
-							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
-							[matTooltip]="
-								(getTableHeaderByName(header) | async)
-									?.description || ''
-							">
-							{{
-								(getTableHeaderByName(header) | async)
-									?.humanReadable || ''
-							}}
-						</th>
-						<td
-							mat-cell
-							*matCellDef="let def"
-							class="tw-align-middle">
-							@if (header === 'name') {
-								<button
-									mat-list-item
-									(click)="resultList(def.id)"
-									class="tw-text-primary">
+			<div class="tw-px-4 tw-pb-2">
+				<mat-form-field
+					class="tw-w-full"
+					appearance="outline"
+					subscriptSizing="dynamic">
+					<mat-label>Filter Scripts</mat-label>
+					<input
+						matInput
+						[(ngModel)]="ciDetailsService.currentDefFilter" />
+					<mat-icon matPrefix>filter_list</mat-icon>
+				</mat-form-field>
+			</div>
+			<!-- Native table so columns size to content; nowrap cells keep rows one line tall and the wrapper scrolls horizontally. -->
+			<div class="tw-overflow-auto">
+				<table
+					mat-table
+					[dataSource]="datasource"
+					class="tw-w-full"
+					matSort>
+					@for (header of headers; track $index) {
+						<ng-container [matColumnDef]="header">
+							<th
+								mat-header-cell
+								*matHeaderCellDef
+								mat-sort-header
+								class="tw-whitespace-nowrap tw-px-3 tw-text-center tw-align-middle tw-font-medium tw-text-primary-darker"
+								[matTooltip]="
+									(getTableHeaderByName(header) | async)
+										?.description || ''
+								">
+								{{
+									(getTableHeaderByName(header) | async)
+										?.humanReadable || ''
+								}}
+							</th>
+							<td
+								mat-cell
+								*matCellDef="let def"
+								class="tw-whitespace-nowrap tw-px-3 tw-align-middle">
+								@if (header === 'name') {
+									<button
+										mat-list-item
+										(click)="resultList(def.id)"
+										class="tw-text-primary">
+										{{ def[header] }}
+									</button>
+								} @else if (header === 'subsystem') {
+									@if (canEditScripts()) {
+										<osee-subsystem-selector
+											[script]="def" />
+									} @else {
+										{{ def.subsystem || '' }}
+									}
+								} @else if (header === 'team') {
+									@if (canEditScripts()) {
+										<osee-team-selector [script]="def" />
+									} @else {
+										{{ def.team?.name?.value || '' }}
+									}
+								} @else {
 									{{ def[header] }}
-								</button>
-							} @else if (header === 'subsystem') {
-								@if (canEditScripts()) {
-									<osee-subsystem-selector [script]="def" />
-								} @else {
-									{{ def.subsystem || '' }}
 								}
-							} @else if (header === 'team') {
-								@if (canEditScripts()) {
-									<osee-team-selector [script]="def" />
-								} @else {
-									{{ def.team?.name?.value || '' }}
-								}
-							} @else {
-								{{ def[header] }}
-							}
-						</td>
-					</ng-container>
-				}
-				<tr
-					mat-header-row
-					*matHeaderRowDef="headers; sticky: true"></tr>
-				<tr
-					mat-row
-					*matRowDef="let row; columns: headers; let i = index"
-					class="odd:tw-bg-selected-button even:tw-bg-background-background hover:tw-bg-background-app-bar"
-					[attr.data-cy]="'script-def-table-row-' + row.name"></tr>
-			</mat-table>
+							</td>
+						</ng-container>
+					}
+					<tr
+						mat-header-row
+						*matHeaderRowDef="headers; sticky: true"></tr>
+					<tr
+						mat-row
+						*matRowDef="let row; columns: headers; let i = index"
+						class="odd:tw-bg-selected-button even:tw-bg-background-background hover:tw-bg-background-app-bar"
+						[attr.data-cy]="
+							'script-def-table-row-' + row.name
+						"></tr>
+				</table>
+			</div>
 			<mat-paginator
 				[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"
 				[pageSize]="this.ciDetailsService.currentPageSize()"
@@ -209,8 +219,17 @@ export class ScriptTableComponent {
 		this.datasource.filter = this.ciDetailsService.currentDefFilter();
 		const filterValue = this.ciDetailsService.currentDefFilter();
 		const tree = this.router.parseUrl(this.router.url);
-		tree.queryParams['filter'] = filterValue;
-		this.router.navigateByUrl(tree);
+		// Missing and '' are the same filter; skipping avoids a navigation that re-runs routed effects.
+		if ((tree.queryParams['filter'] ?? '') === filterValue) {
+			return;
+		}
+		if (filterValue === '') {
+			delete tree.queryParams['filter'];
+		} else {
+			tree.queryParams['filter'] = filterValue;
+		}
+		// Typing a filter should not add a history entry per keystroke.
+		this.router.navigateByUrl(tree, { replaceUrl: true });
 	});
 
 	private _sortEffect = effect(() => {

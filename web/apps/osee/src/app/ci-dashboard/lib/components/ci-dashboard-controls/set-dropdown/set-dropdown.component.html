@@ -10,34 +10,67 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<form class="tw-flex tw-flex-col">
-	<mat-checkbox
-		[checked]="activeOnly()"
-		(change)="setActiveOnly($event)"
-		>Active Only</mat-checkbox
-	>
+<form
+	class="tw-flex tw-w-full tw-flex-col tw-gap-4"
+	[attr.aria-busy]="loadingSelectedSet()">
+	<!-- 32px row, same height as the Baseline/Working toggle in the Branch group. -->
+	<div class="tw-flex tw-h-8 tw-items-center">
+		<mat-checkbox
+			class="[--mat-checkbox-state-layer-size:32px]"
+			matTooltip="Show only CI Sets marked Active. Does not filter results."
+			[checked]="activeOnly()"
+			(change)="setActiveOnly($event)"
+			>Active sets only</mat-checkbox
+		>
+	</div>
+	<!-- Status text lives in the placeholder so loading never adds rows or changes height. -->
 	<mat-form-field
+		class="tw-w-full"
 		subscriptSizing="dynamic"
-		appearance="fill">
-		<mat-label>Select a set</mat-label>
+		appearance="outline"
+		[floatLabel]="statusText() ? 'always' : 'auto'">
+		<mat-label>Select a Set</mat-label>
 		<input
 			type="text"
 			matInput
 			[matAutocomplete]="auto"
-			[ngModel]="(selectedSet | async)?.name?.value || ''"
-			(keyup)="applyFilter($event)"
+			[placeholder]="statusText()"
+			[ngModel]="inputText()"
+			(focus)="requestList()"
+			(input)="applyFilter($event)"
 			name="autocomplete-text" />
+		@if (loadingSelectedSet()) {
+			<mat-spinner
+				matSuffix
+				class="tw-mr-3"
+				mode="indeterminate"
+				diameter="18"
+				aria-label="Loading CI Set" />
+		} @else if (selectedSet()) {
+			<button
+				type="button"
+				matSuffix
+				mat-icon-button
+				matTooltip="Clear Set Selection"
+				aria-label="Clear CI Set selection"
+				(mousedown)="clearSelection($event)"
+				(keydown.enter)="clearSelection($event)"
+				(keydown.space)="clearSelection($event)">
+				<mat-icon>close</mat-icon>
+			</button>
+		}
 		<mat-autocomplete
 			autoActiveFirstOption
 			#auto="matAutocomplete">
-			@if (sets | async; as _sets) {
-				@for (option of _sets; track option.id) {
-					<mat-option
-						[value]="option.name.value"
-						(click)="selectSet(option)">
-						{{ option.name.value }}
-					</mat-option>
-				}
+			@if (listLoading()) {
+				<mat-option disabled>Loading sets…</mat-option>
+			}
+			@for (option of sets(); track option.id) {
+				<mat-option
+					[value]="option.name.value"
+					(click)="selectSet(option)">
+					{{ option.name.value }}
+				</mat-option>
 			}
 		</mat-autocomplete>
 	</mat-form-field>

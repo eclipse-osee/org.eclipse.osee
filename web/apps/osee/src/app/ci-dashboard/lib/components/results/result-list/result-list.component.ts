@@ -64,7 +64,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 						<th
 							mat-header-cell
 							*matHeaderCellDef
-							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
+							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-darker"
 							[matTooltip]="
 								(getTableHeaderByName(header) | async)
 									?.description || ''
