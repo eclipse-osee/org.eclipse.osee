@@ -7,13 +7,13 @@
 		@if (selectedTeamDefinitionId()) {
 			<mat-option value="">Clear team definition</mat-option>
 		}
-		@for (definition of teamDefinitions.hasValue() ? teamDefinitions.value() : []; track definition.id) {
+		@for (definition of teamDefinitions(); track definition.id) {
 			<mat-option [value]="definition.id">{{ definition.name }}</mat-option>
 		} @empty {
 			<mat-option disabled>
-				@if (teamDefinitions.isLoading()) {
+				@if (configuration.isLoading()) {
 					Loading team definitions...
-				} @else if (teamDefinitions.error()) {
+				} @else if (configuration.error()) {
 					Unable to load team definitions
 				} @else {
 					No team definitions available

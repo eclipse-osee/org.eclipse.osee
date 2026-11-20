@@ -33,17 +33,22 @@ describe('SearchKanbanComponent', () => {
 
 	it('loads team definitions and shows the other filters only after selection', async () => {
 		const http = TestBed.inject(HttpTestingController);
-		http.expectOne(apiURL + '/ats/config/teamdef').flush([
-			{ id: '100', name: 'Peer Review' },
-			{ id: '200', name: 'Code Review' },
-		]);
+		http.expectOne(apiURL + '/ats/config').flush({
+			topTeamDefinition: '56004',
+			idToTeamDef: {
+				'56004': { name: 'Teams', parentId: null },
+				'100': { name: 'SAW SW', parentId: '56004' },
+				'200': { name: 'CIS SW', parentId: '56004' },
+				'300': { name: 'SAW Development', parentId: '100' },
+			},
+		});
 		await fixture.whenStable();
 
 		const select = fixture.debugElement.query(By.directive(MatSelect));
 		const options = (select.componentInstance as MatSelect).options.toArray();
 		expect(options.map(({ value, viewValue }) => [value, viewValue])).toEqual([
-			['100', 'Peer Review'],
-			['200', 'Code Review'],
+			['200', 'CIS SW'],
+			['100', 'SAW SW'],
 		]);
 		expect(fixture.debugElement.queryAll(By.directive(MatSelect))).toHaveLength(1);
 		http.expectNone(apiURL + '/ats/world/my');
