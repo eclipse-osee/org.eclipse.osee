@@ -42,6 +42,8 @@ public enum XOption {
    BUTTON_HYPER(),
    BUTTON_PUSH(),
 
+   NO_CLICK_EDIT(), // Text widget opts out of click-to-edit, which is on for all when OseeInfo.useClickEdit()
+
    //////////////////////
    // Options with 2 are set to remove the opposite, this sets it up in the constructor of the 2nd
    //////////////////////

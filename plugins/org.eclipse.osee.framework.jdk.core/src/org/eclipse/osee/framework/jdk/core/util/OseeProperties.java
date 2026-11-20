@@ -40,6 +40,7 @@ public class OseeProperties {
    private static final String OSEE_DB_CONNECTION_POOL_CONFIG_URI = "osee.db.connection.pool.config.uri";
    public static final String OSEE_SHOW_TOKEN_FOR_CHANGE_NAME = "osee.show.token.for.change.name";
    public static final String OSEE_USE_DARK_MODE_SWT_FIX = "osee.use.dark.mode.swt.fix";
+   public static final String OSEE_USE_CLICK_EDIT = "osee.use.click.edit";
    public static final String OSEE_DB = "osee.db";
    public static final String WIDGET_DEBUG = "widget.debug";
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";

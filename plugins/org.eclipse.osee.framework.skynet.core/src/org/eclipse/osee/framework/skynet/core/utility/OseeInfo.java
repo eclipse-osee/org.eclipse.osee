@@ -97,4 +97,11 @@ public class OseeInfo {
    public static boolean useDarkModeSwtFix() {
       return isSet(OseeProperties.OSEE_USE_DARK_MODE_SWT_FIX);
    }
+
+   /**
+    * Global switch for click-to-edit on all XX text widgets; when not "true", they use only the label/dialog edit.
+    */
+   public static boolean useClickEdit() {
+      return isSet(OseeProperties.OSEE_USE_CLICK_EDIT);
+   }
 }

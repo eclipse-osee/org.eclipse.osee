@@ -50,6 +50,11 @@ Core data objects:
 - **Wrapped Value Presentation** - `WRAP_VALUES` changes inherited read-only `Text` controls to bounded-width
   `SWT.MULTI | SWT.WRAP` displays without changing selection or persistence semantics. Apply it to widgets that need
   wrapped values rather than changing every widget globally.
+- **Click-To-Edit Text** - when `OseeInfo.useClickEdit()` (`osee.use.click.edit` = `true`) is set, every
+  `XXAbstractSTextWidget` subclass lets the user click the value to edit in place with Save/Cancel (`XXClickEditor`);
+  multi-line values auto-expand while editing. The label hyperlink still opens the editor dialog. Saving uses the same
+  `getValidator()` / `setSelected(..., false)` / `handleSelectedPersist()` / `refresh()` path as the dialogs. A widget
+  opts out with `NO_CLICK_EDIT`; `INLINE_EDIT` takes precedence. Unset the key to turn it off everywhere.
 
 ### OSGi contribution & attribute-widget resolution
 
