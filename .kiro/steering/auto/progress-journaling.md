@@ -9,8 +9,9 @@ compacted one) can pick up without losing intent.
 
 ## Keep a progress doc current
 
-- For any non-trivial, multi-step task, maintain a progress/notes file near the work (e.g.
-  `.../coderev/XWidgetsProgress.md` for the XWidget migration / code-quality / review-packet work). One per workstream.
+- For any non-trivial, multi-step task, maintain a progress/notes file near the work (e.g. a `<Workstream>Progress.md`
+  next to the code being changed). One per workstream. When the workstream ends, move durable facts into the main
+  `docs/ai/` docs and delete the progress file.
 - Update it as you go - after finishing a step, when blocked, or when a decision is made - not only when asked. The
   user should rarely have to say "store progress."
 - Especially capture: what was done, what is IN PROGRESS and whether it compiles/works, the next steps, open

@@ -31,8 +31,9 @@ Keep responses concise during the loop (one edit, short confirmation of what cha
 
 - **Section bold lead-ins are Title Case** (e.g. `<b>Same Widgets Used By All UIs</b>`); descriptive text after the
   dash stays sentence case.
-- **"add a note to…" means record it in `coderev/XWidgetsProgress.md`**, NOT in the generated Overview document.
-- **Review notes/flags do not go in the published Overview** — they go in `XWidgetsProgress.md`.
+- **"add a note to…" means record it outside the generated Overview document** (the user tracks open items outside
+  the codebase), NOT in the Overview itself.
+- **Review notes/flags do not go in the published Overview.**
 - **Linking class names** (reference-source mechanism): classes only, never methods or `XOption` values. Curated
   allowlist — ask the user before treating a new token as a linkable class. Inline `<code>ClassName</code>` mentions
   link to the class's **Supporting Information** anchor (`#support-<lowercase>`); the Supporting Information entry
@@ -42,5 +43,6 @@ Keep responses concise during the loop (one edit, short confirmation of what cha
 
 ## Current state
 
-The packet is built and reviewed; work is now pre-merge cleanup. See `coderev/XWidgetsProgress.md` (read the latest
+The packet is built and reviewed; work is now pre-merge cleanup. The former progress file was retired; durable facts
+live in `docs/ai/ide/ide-xwidget-to-xxwidget-migration.md` (Next Steps to Merge) and `ide-xxwidget-architecture.md`.
 session-update sections at the end) for the live status, open items, and next steps.

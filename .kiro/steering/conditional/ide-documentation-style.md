@@ -28,7 +28,7 @@ this, follow the request and mention the deviation.
 - **Use a highlighted "note" box** for asides, recommendations, and caveats. Indent it (left/right margin) so it
   reads as part of its section rather than a full-width banner.
 - **Review/TODO/author reminders do NOT go in the published document.** Record them in the relevant progress/steering
-  file (e.g. `coderev/XWidgetsProgress.md`). "Add a note to..." means put it there, not in the doc.
+  file for that workstream. "Add a note to..." means put it there, not in the doc.
 
 ## Code references & links
 

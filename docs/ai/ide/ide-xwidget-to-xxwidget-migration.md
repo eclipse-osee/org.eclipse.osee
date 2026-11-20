@@ -71,8 +71,11 @@ they conflict, this block wins.
   Report" / `openWidgetReport` are STALE — that is now the Hierarchy View.
 - **Test report output relocated** off `user.home` into the `OseeData` workspace folder (top level) for the runtime
   tests that have a workspace: `OpenWorkDefExamples.html` (`TestingOpenWorkflowSamples`), `atsCoverage.html`
-  (`AtsRestCoverageTest`), `TransitionAssigneesOperationTest.html`, `TestAllRegisteredBlams.html`, and the BLAM nav
-  report (`AbstractTestingOpenAndTestAllRegisteredBlams`). `CodeClean*`/`CodeReview*` stand-alone tooling still
+  (`AtsRestCoverageTest`), `TransitionAssigneesOperationTest.html`, and the BLAM nav report
+  (`AbstractTestingOpenAndTestAllRegisteredBlams`). Exception: `TestAllRegisteredBlamsIntegrationTest` still writes
+  `TestAllRegisteredBlams.html` to `user.home` (debug-only) because `OseeData` pulled an undeclared
+  `org.eclipse.core.resources` dependency into `org.eclipse.osee.client.test.framework` and broke the strict Tycho
+  compile. `CodeClean*`/`CodeReview*` stand-alone tooling still
   writes to `~/CodeCleanOutput` / `~/CodeReviewOutput` by design. FUTURE TASK (logged): stand-alone tooling should
   use the Windows temp dir (`java.io.tmpdir`) since it has no workspace; runtime/production uses `OseeData`.
 - **SSE/ActiveMQ console noise** (not part of this commit — TW22451): dropped routine lifecycle `OseeLog` INFO→FINE
@@ -98,8 +101,9 @@ they conflict, this block wins.
    `@Component(service = IAtsWorkDefinitionBuilder.class)` + matching OSGI-INF xml; register in `CodeReviewAll`.
 7. **Per-proprietary-repo manual step** (when downstream products migrate): remove that repo's own WorkDef provider
    class + its `IAtsWorkDefinitionProvider` XML (the script only knows the org.eclipse.osee names).
-8. **Delete the throwaway tooling** after review+merge: `coderev/packet/*`, `coderev/scripts/*`, and the
-   `~/CodeXWidgetReview` folder. Keep this doc + the rename reference (cross-product retention).
+8. **Delete the throwaway tooling** after review+merge: `coderev/packet/*`, `coderev/scripts/*`, the temporary
+   `.kiro/steering/conditional/overview-edit-task.md`, and the `~/CodeXWidgetReview` folder. Keep this doc + the
+   rename reference (cross-product retention).
 
 ## Why We Did This
 
