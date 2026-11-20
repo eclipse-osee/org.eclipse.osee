@@ -62,6 +62,7 @@ public class WidgetId extends OseeEnum {
    public static final WidgetId XXIntegerSTextWidget = new WidgetId("XXIntegerSTextWidget");
    public static final WidgetId XXLabelValueWidget = new WidgetId("XXLabelValueWidget");
    public static final WidgetId XXLabelWidget = new WidgetId("XXLabelWidget");
+   public static final WidgetId XXLineWidget = new WidgetId("XXLineWidget");
    public static final WidgetId XXListArtifactDropWidget = new WidgetId("XXListArtifactDropWidget");
    public static final WidgetId XXListRelationWidget = new WidgetId("XXListRelationWidget");
    public static final WidgetId XXListWidget = new WidgetId("XXListWidget");

@@ -299,6 +299,14 @@ public class XWidgetBuilder {
       return this;
    }
 
+   /**
+    * Horizontal separator line (XXLineWidget) in its own full-width row; ends any open composite row before it.
+    */
+   public XWidgetBuilder andLineWidget() {
+      andWidget(WidgetId.XXLineWidget).fillHoriz().startComp(1).endComp();
+      return this;
+   }
+
    public XWidgetBuilder andSpaceWidget() {
       andWidget("    ", WidgetId.XXLabelWidget);
       return this;

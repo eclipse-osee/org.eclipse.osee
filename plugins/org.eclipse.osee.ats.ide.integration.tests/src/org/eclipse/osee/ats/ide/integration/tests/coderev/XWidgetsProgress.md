@@ -885,3 +885,15 @@ longer appears; short and interactive parameters remain usable.
 - **Design:** UI in `widgets/xx/util/XXClickEditor` (ported from the since-deleted `RichInlineStyledText`): Save/Cancel row, Enter / Ctrl+Enter / Esc, focus-out save, hover/edit/error border, hand cursor on hover, multi-line auto-expand while editing (min = height at edit start, cap `MAX_EDIT_HEIGHT` = 500, change-aware relayout, original `heightHint` restored on exit), read-only colors restored on exit. The widget supplies validation (`getClickEditError` mirrors the dialog rules + `getValidator()`) and persistence (`handleClickEditSave`: `setSelected(..., false)` or `clear(false)`, `handleSelectedPersist()`, `refresh()`, `notifyXModifiedListeners()`).
 - **Kept:** label hyperlink still opens the editor dialog (`handleSelection` ends any in-progress click-edit first). URL clicks still open the browser. `refresh()` skips while editing.
 - **Next:** runtime test in WFE (single-line + multi-line, Enter/Ctrl+Enter/Esc, focus-out save, invalid value, auto-expand, label dialog during edit, dark mode). Decide whether `XXHyperlinkJiraStatusWidget` needs `NO_CLICK_EDIT`. Open risk: `OseeInfo.useClickEdit()` runs on each text widget creation and could throw with no DB connection.
+
+### WFE Title Styling (2026-11-19) - user-verified look
+
+- **Title:** `WfeHeaderComposite` drops `.sTextBorder()`; `styleTitleWidget()` sets `JFaceResources.getHeaderFont()` and `IFormColors.TITLE` on the header Title `StyledText` only. Dark theme CSS overrides the color to white; accepted (font carries the emphasis).
+- **Label:** `wba.noLabel()` on Title only when `OseeInfo.useClickEdit()`, so Title stays editable via the label dialog when click-edit is off.
+- **Line:** new `XXLineWidget` (extends `XXLabelWidget`, native `SWT.SEPARATOR`), `WidgetId.XXLineWidget`, hand-written `OSGI-INF/...XXLineWidget.xml`, and `XWidgetBuilder.andLineWidget()` (own `startComp(1).endComp()` row). Used once, after the Title row. Additive only; header is builder-based so WorkDef fingerprints are unaffected.
+
+### Deferred (post-release): error decorator position on vertical widgets
+
+- **Cause:** `XXAbstractBaseXWidget.getControl()` returns `comp` (label + value), used by `XWidget.getErrorMessageControl()`; Forms `MessageManager` decorates it at LEFT|BOTTOM, so label-above-value widgets (e.g. Description) show the marker under the value instead of beside the label.
+- **Fix idea:** override `getErrorMessageControl()` in `XXAbstractBaseXWidget` to return the label. Safest scope: only label-above-value widgets with an editable `Hyperlink` label; else `comp`.
+- **Other users of that control:** `XWidgetDecorator` (Artifact Editor `AttributeFormPart` access lock icons would move too) and `MessageSummaryNote` (`message.getControl().setFocus()`; a read-only `Label` can't take focus).
