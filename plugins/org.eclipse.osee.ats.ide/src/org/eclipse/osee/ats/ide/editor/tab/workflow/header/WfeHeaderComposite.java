@@ -21,6 +21,7 @@ import static org.eclipse.osee.framework.core.widget.WidgetId.XXStringsWidget;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -50,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRendererListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXAbstractBaseXWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXAbstractSTextWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXLabelValueWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.WidgetDebugProvider;
@@ -57,12 +60,14 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IManagedForm;
 
 /**
@@ -117,8 +122,13 @@ public class WfeHeaderComposite extends Composite implements XWidgetSwtRendererL
          createIsHistoricalHeader(wba);
 
          // Title
-         wba.andWidget("Title", Title, XXStringSTextHEditWidget).sTextBorder().noClear().fillHoriz().startComp(3);
+         wba.andWidget("Title", Title, XXStringSTextHEditWidget).noClear().fillHoriz().startComp(3);
+         // Label is the edit-dialog link; hide it only when click-to-edit is on so Title stays editable either way
+         if (OseeInfo.useClickEdit()) {
+            wba.noLabel();
+         }
          wba.andCopyIdHyperlinkWidget();
+         wba.andLineWidget();
 
          // State, Date, Originator
          wba.andWidget(CurrentStateName, XXStringsWidget).noEdit().fillHoriz().startComp(7);
@@ -153,6 +163,7 @@ public class WfeHeaderComposite extends Composite implements XWidgetSwtRendererL
          xWidgetPage = new XWidgetPage(widDatas, this);
          xWidgetPage.createBody(managedForm, this, (Artifact) workItem.getStoreObject(), null, true);
          widgets.addAll(xWidgetPage.getSwtXWidgetRenderer().getXWidgets());
+         styleTitleWidget();
 
          relatedWidgets.refresh();
 
@@ -184,6 +195,23 @@ public class WfeHeaderComposite extends Composite implements XWidgetSwtRendererL
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   /**
+    * Makes the WFE Title stand out (header font, Forms title color) in place of a border. Applied only to this header's
+    * Title control, so no other widget, editor, or WorkDef is affected. Runs before the body's layout/reflow.
+    */
+   private void styleTitleWidget() {
+      for (XWidget widget : widgets) {
+         if (widget instanceof XXAbstractSTextWidget && Title.equals(widget.getAttributeType())) {
+            StyledText sText = ((XXAbstractSTextWidget) widget).getStyledText();
+            if (Widgets.isAccessible(sText)) {
+               sText.setFont(JFaceResources.getHeaderFont());
+               sText.setForeground(editor.getToolkit().getColors().getColor(IFormColors.TITLE));
+            }
+            return;
+         }
       }
    }
 

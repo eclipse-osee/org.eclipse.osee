@@ -18,10 +18,13 @@ import org.eclipse.osee.framework.core.widget.WidgetId;
 import org.eclipse.osee.framework.core.widget.XOption;
 import org.eclipse.osee.framework.core.widget.validate.IValueValidator;
 import org.eclipse.osee.framework.core.widget.validate.XXNoOpValidator;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.XXTextWidgetMenu;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.XWidgetUtility;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.XXClickEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XTextUrlListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.spell.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.spell.XTextSpellCheckListener;
@@ -52,6 +55,7 @@ public abstract class XXAbstractSTextWidget extends XXAbstractBaseXWidget<String
    private XTextUrlListener urlListener;
    private Font font;
    private boolean dynamicallyCreated = false;
+   private XXClickEditor clickEditor;
 
    //////////////////////////////////////////
    // Constructors
@@ -140,6 +144,11 @@ public abstract class XXAbstractSTextWidget extends XXAbstractBaseXWidget<String
             valueSText.setTextLimit(maxTextChars);
          }
          validate();
+         // Before the caret is hidden below, so click-edit can restore it
+         if (isClickEdit()) {
+            clickEditor = new XXClickEditor(comp, valueSText, getToolkit(), isFillVertically(), this::isClickEditable,
+               this::getDisplayValue, this::getClickEditError, this::handleClickEditSave);
+         }
          valueSText.setEditable(widData.is(XOption.INLINE_EDIT));
          if (!widData.is(XOption.INLINE_EDIT)) {
             if (isFillVertically()) {
@@ -158,6 +167,18 @@ public abstract class XXAbstractSTextWidget extends XXAbstractBaseXWidget<String
       }
    }
 
+   /**
+    * On for all text widgets when OseeInfo.useClickEdit() is set (the global kill switch); a widget opts out with
+    * XOption.NO_CLICK_EDIT. INLINE_EDIT takes precedence.
+    */
+   private boolean isClickEdit() {
+      return isEditable() && isNot(XOption.INLINE_EDIT) && isNot(XOption.NO_CLICK_EDIT) && OseeInfo.useClickEdit();
+   }
+
+   private boolean isClickEditable() {
+      return isEditable() && isNot(XOption.NOT_ENABLED) && Widgets.isAccessible(valueSText) && valueSText.isEnabled();
+   }
+
    //////////////////////////////////////////
    // Storage
    //////////////////////////////////////////
@@ -167,6 +188,32 @@ public abstract class XXAbstractSTextWidget extends XXAbstractBaseXWidget<String
       return "";
    }
 
+   /**
+    * Label-click editor dialog path. An in-progress click-edit is ended first so the dialog starts from the stored
+    * value and the click-edit focus-out save cannot fire while the dialog is open.
+    */
+   @Override
+   protected boolean handleSelection() {
+      if (clickEditor != null) {
+         clickEditor.stopEditing();
+      }
+      return super.handleSelection();
+   }
+
+   /**
+    * Same storage path as the editor dialogs: empty clears when clearable, then persist, refresh, notify.
+    */
+   private void handleClickEditSave(String text) {
+      if (Strings.isInvalid(text) && isClearable()) {
+         clear(false);
+      } else {
+         setSelected(text, false);
+      }
+      handleSelectedPersist();
+      refresh();
+      notifyXModifiedListeners();
+   }
+
    //////////////////////////////////////////
    // Validation
    //////////////////////////////////////////
@@ -174,6 +221,33 @@ public abstract class XXAbstractSTextWidget extends XXAbstractBaseXWidget<String
    @Override
    protected IValueValidator getValidator() {
       return XXNoOpValidator.instance;
+   }
+
+   /**
+    * Mirrors the editor dialogs: single-line requires a value unless clearable; otherwise the widget's validator.
+    */
+   private String getClickEditError(String text) {
+      if (Strings.isInvalid(text)) {
+         if (isClearable() || isFillVertically()) {
+            return null;
+         }
+         return String.format("New %s must be valid string. Press Esc to cancel.", getLabel());
+      }
+      XResultData rd = getValidator().isValid(text);
+      return rd.isErrors() ? rd.toString() : null;
+   }
+
+   //////////////////////////////////////////
+   // Refresh / Lifecycle
+   //////////////////////////////////////////
+
+   @Override
+   public void refresh() {
+      // Don't overwrite text the user is editing in place
+      if (clickEditor != null && clickEditor.isEditing()) {
+         return;
+      }
+      super.refresh();
    }
 
    //////////////////////////////////////////

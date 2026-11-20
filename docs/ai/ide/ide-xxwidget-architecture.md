@@ -50,6 +50,20 @@ Core data objects:
 - **Wrapped Value Presentation** - `WRAP_VALUES` changes inherited read-only `Text` controls to bounded-width
   `SWT.MULTI | SWT.WRAP` displays without changing selection or persistence semantics. Apply it to widgets that need
   wrapped values rather than changing every widget globally.
+- **Click-To-Edit Text** - when `OseeInfo.useClickEdit()` (`osee.use.click.edit` = `true`) is set, every
+  `XXAbstractSTextWidget` subclass lets the user click the value to edit in place with Save/Cancel (`XXClickEditor`);
+  multi-line values auto-expand while editing. The label hyperlink still opens the editor dialog. Saving uses the same
+  `getValidator()` / `setSelected(..., false)` / `handleSelectedPersist()` / `refresh()` path as the dialogs. A widget
+  opts out with `NO_CLICK_EDIT`; `INLINE_EDIT` takes precedence. Unset the key to turn it off everywhere.
+- **Dark Mode Backgrounds** - the Eclipse Dark theme leaves native controls (read-only `Text`, `Hyperlink`,
+  `StyledText`, `Group`) light grey on black composites. `XWidgetUtility.setDarkModeSyncBackgroundsAsync(root)`
+  (called at the end of `WfeWorkFlowTab.createAtsBody()`) copies each composite's background to those children after
+  each theme skinning burst. Gated on `OseeInfo.useDarkModeSwtFix()` (`osee.use.dark.mode.swt.fix` = `true`) and
+  `AWorkbench.isDarkMode()` (cached once the workbench has finished starting). Verified-required details: react to
+  `SWT.Skin` on ANY composite (the theme restyles from ancestors), defer two `asyncExec` hops (the CSS engine applies
+  colors in its own `asyncExec`), coalesce to one pass per burst, and remove the display filter when `root` is
+  disposed. The theme also overrides foregrounds, so a custom text color (e.g. the WFE Title) shows as white in dark
+  mode.
 
 ### OSGi contribution & attribute-widget resolution
 
@@ -169,6 +183,11 @@ handleSelection()           ← user interaction
 └── return true             ← caller refreshes when true
 ```
 
+**Empty-selection contract:** an empty `selected` collection is the canonical "no value" state. `setSelected` rejects
+`null` by design, so adapters (e.g. search widgets loading `AtsSearchData`) must call `clear()` for null/unset values,
+and wrapper getters return an empty collection, never `null`. Widgets must not seed a placeholder (e.g.
+`SystemUser.UnAssigned`) into `selected`; map empty to a stored placeholder only at persistence time.
+
 **`getSelected()` rules:**
 - Should NOT be overridden. Values come from `this.selected` objects, rendered by `getDisplayValue()`.
 - This is NOT where a widget loads data (that's `initializeSelected()`).
@@ -254,6 +273,7 @@ public List<XWidgetData> getXWidgetItems() {
 - Use `WidgetId.XXxxx` constants, never string widget names
 - Use static String fields for labels (shared with `variableMap` in `runOperation`)
 - Don't use `.endWidget()` — not necessary
+- `andLineWidget()` adds a full-width separator (`XXLineWidget`) in its own row
 - `andCheckBoxWidget` already defaults to LABEL_AFTER
 - Method names: `andTextWidget`, `andButtonPushWidget`, `andBranchSelWidget`, `andBranchViewSelWidget`, `andBranchAndViewSelWidget`
 
@@ -276,6 +296,9 @@ file-name pattern and the recursive discovery walk, workspace-root resolution, a
   under any folder name — and there is no hard-coded path. If no `plugins` ancestor is found it logs an error and
   discovers nothing (safe degrade). The `org.eclipse.osee`-name strip survives only in `getRepoShortName()` for
   display labeling, guarded to error if it strips nothing.
+- **`onlyOpenSource`** (default `true`) limits discovery to the `org.eclipse.osee` repo; set `false` to scan all
+  sibling repos. `CodeReviewOsgiXml` does its own discovery and always scans every sibling repo, so a CI failure there
+  can come from a proprietary repo's descriptor (e.g. a leftover WorkDef provider XML).
 - **Discovery is scoped to `plugins/`**: from the resolved root, discovery fans out across all sibling repos, and
   within each repo it descends into that repo's `plugins` directory only. The canonical ignore list is
   `{.git, \target\, \bin, .integration.tests.}`; subclasses override `getIgnoreDirs()` to adjust (e.g. `CodeReviewGeneral`

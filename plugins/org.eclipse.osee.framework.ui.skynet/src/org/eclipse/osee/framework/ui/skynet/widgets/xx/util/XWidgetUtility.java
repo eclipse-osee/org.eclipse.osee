@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.util.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -37,15 +38,21 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
@@ -408,6 +415,73 @@ public final class XWidgetUtility {
          return "";
       }
       return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
+   }
+
+   /**
+    * Keeps widget backgrounds in sync with their composite in Eclipse Dark Mode. The Dark theme skins composites
+    * asynchronously and does not reliably restyle native controls (read-only Text, Hyperlink, StyledText, Group), which
+    * keep a light-grey background against a black composite. See TW30014 and attachment, or search Eclipse SWT Dark
+    * Mode, for more details.
+    * <p>
+    * Works by listening for {@code SWT.Skin} events on the display. Each skinning burst schedules one deferred pass
+    * (coalesced; further events are ignored until it runs) that copies each composite's background down to those
+    * controls ({@link #applyBackgroundRecursive}). No-op unless the dark mode fix is enabled and Dark Mode is active.
+    * <p>
+    * The skin listener is a display-wide filter, so it is removed when {@code root} is disposed. Pass a composite whose
+    * lifetime matches the content being fixed (e.g. a body that is disposed on editor close or rebuild), or filters
+    * will accumulate.
+    */
+   public static void setDarkModeSyncBackgroundsAsync(Composite root) {
+      if (OseeInfo.useDarkModeSwtFix() && AWorkbench.isDarkMode()) {
+         if (root == null || root.isDisposed()) {
+            return;
+         }
+         Display display = root.getDisplay();
+         boolean[] passQueued = {false}; // UI thread only
+         Listener skinFilter = event -> {
+            // Any composite: the CSS engine restyles from ancestors (editor/form), not only from widgets under root
+            if (!passQueued[0] && event.widget instanceof Composite) {
+               passQueued[0] = true;
+               // Two hops: the CSS engine applies its colors in its own asyncExec, so a single hop runs too early
+               display.asyncExec(() -> display.asyncExec(() -> {
+                  passQueued[0] = false;
+                  if (!root.isDisposed()) {
+                     applyBackgroundRecursive(root);
+                  }
+               }));
+            }
+         };
+         display.addFilter(SWT.Skin, skinFilter);
+         // Display filters are global; remove with root (editor close or body rebuild) or they accumulate
+         root.addDisposeListener(e -> display.removeFilter(SWT.Skin, skinFilter));
+      }
+   }
+
+   private static void applyBackgroundRecursive(Composite parent) {
+      Color bg = parent.getBackground();
+      for (Control child : parent.getChildren()) {
+         if (child.isDisposed()) {
+            continue;
+         }
+         if (child instanceof Text || child instanceof Hyperlink || //
+            child instanceof StyledText) {
+            child.setBackground(bg);
+         } else if (child instanceof Composite) {
+            if (child instanceof Group) {
+               child.setBackground(bg);
+            }
+            // If an intermediate Composite didn't get styled dark, pass the parent's bg down
+            if (isDefaultLightGrey(child.getBackground()) && !isDefaultLightGrey(bg)) {
+               child.setBackground(bg);
+            }
+            applyBackgroundRecursive((Composite) child);
+         }
+      }
+   }
+
+   private static boolean isDefaultLightGrey(Color c) {
+      // Windows default COLOR_WIDGET_BACKGROUND is typically (240, 240, 240)
+      return c != null && c.getRed() > 230 && c.getGreen() > 230 && c.getBlue() > 230;
    }
 
 }
