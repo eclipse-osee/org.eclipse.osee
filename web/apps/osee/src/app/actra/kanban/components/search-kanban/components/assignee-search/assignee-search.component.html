@@ -1,21 +1,23 @@
-<mat-form-field appearance="outline" subscriptSizing="dynamic">
+<mat-form-field
+	appearance="outline"
+	subscriptSizing="dynamic">
 	<mat-label>Assignees</mat-label>
 	<mat-select
 		multiple
-		[value]="selectedAssigneeIds()"
-		(selectionChange)="selectedAssigneeIds.set($event.value)">
-		@for (option of options(); track option.id) {
-			<mat-option [value]="option.id">{{ option.name }}</mat-option>
+		[value]="selectedAssignees()"
+		(selectionChange)="selectedAssignees.set($event.value)">
+		@for (option of options(); track option) {
+			<mat-option [value]="option">{{ option }}</mat-option>
 		} @empty {
-			<mat-option disabled>{{ loading() ? 'Loading options...' : 'No options available' }}</mat-option>
+			<mat-option disabled>No options available</mat-option>
 		}
 	</mat-select>
 </mat-form-field>
-@if (selectedAssigneeIds().length > 0) {
-	<button mat-stroked-button type="button" (click)="selectedAssigneeIds.set([])">
+@if (selectedAssignees().length > 0) {
+	<button
+		mat-stroked-button
+		type="button"
+		(click)="selectedAssignees.set([])">
 		Clear
 	</button>
-}
-@if (error()) {
-	<p role="alert" class="tw-p-4 tw-text-sm tw-opacity-50">{{ error() }}</p>
 }

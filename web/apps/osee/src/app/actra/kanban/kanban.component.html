@@ -1,4 +1,6 @@
 <div class="tw-flex tw-flex-col tw-gap-4 tw-p-4">
 	<osee-search-kanban #filters />
-	<osee-kanban-board [selectedWorkflowIds]="filters.selectedWorkflowIds()" />
+	<osee-kanban-board
+		[teamDefinitionId]="filters.selectedTeamDefinitionId()"
+		[workflows]="filters.filteredWorkflows()" />
 </div>

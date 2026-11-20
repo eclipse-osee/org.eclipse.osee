@@ -41,6 +41,35 @@ export class TeamDefinitionFilterComponent {
 			.map(([id, { name }]) => ({ id, name }))
 			.sort((a, b) => a.name.localeCompare(b.name));
 	});
+	readonly selectedTeamScope = computed(() => {
+		const selectedId = this.selectedTeamDefinitionId();
+		if (!selectedId || !this.configuration.hasValue()) {
+			return undefined;
+		}
+
+		const childrenByParent = new Map<string, string[]>();
+		for (const [id, { parentId }] of Object.entries(
+			this.configuration.value().idToTeamDef
+		)) {
+			if (!parentId) {
+				continue;
+			}
+			const children = childrenByParent.get(parentId);
+			if (children) {
+				children.push(id);
+			} else {
+				childrenByParent.set(parentId, [id]);
+			}
+		}
+
+		const ids = new Set([selectedId]);
+		for (const id of ids) {
+			for (const child of childrenByParent.get(id) ?? []) {
+				ids.add(child);
+			}
+		}
+		return [...ids];
+	});
 
 	protected selectTeamDefinition(id: string): void {
 		this.selection.set(id);

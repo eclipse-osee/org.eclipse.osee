@@ -1,29 +1,25 @@
-
-	<mat-form-field
-		appearance="outline"
-		subscriptSizing="dynamic">
-		<mat-label>Team</mat-label>
-		<mat-select
-			id="team-filter"
-			multiple
-			[value]="selected()"
-			(selectionChange)="setTeam($event)">
-			@for (team of teams(); track team) {
-				<mat-option [value]="team">{{ team }}</mat-option>
-			} @empty {
-				<mat-option disabled>{{ loading() ? 'Loading teams...' : 'No teams available' }}</mat-option>
-			}
-		</mat-select>
-	</mat-form-field>
-	@if (selected().length > 0) {
-		<button
-			mat-stroked-button
-			type="button"
-			id="clear-team-filter"
-			(click)="clearTeam()">
-			Clear
-		</button>
-	}
-	@if (error()) {
-		<p role="alert" class="tw-p-4 tw-text-sm tw-opacity-50">{{ error() }}</p>
-	}
+<mat-form-field
+	appearance="outline"
+	subscriptSizing="dynamic">
+	<mat-label>Team</mat-label>
+	<mat-select
+		id="team-filter"
+		multiple
+		[value]="selected()"
+		(selectionChange)="setTeam($event)">
+		@for (team of teams(); track team) {
+			<mat-option [value]="team">{{ team }}</mat-option>
+		} @empty {
+			<mat-option disabled>No teams available</mat-option>
+		}
+	</mat-select>
+</mat-form-field>
+@if (selected().length > 0) {
+	<button
+		mat-stroked-button
+		type="button"
+		id="clear-team-filter"
+		(click)="clearTeam()">
+		Clear
+	</button>
+}

@@ -1,8 +1,27 @@
-<div class="tw-flex tw-items-center tw-gap-2">
-	<osee-team-definition-filter #teamDefinitionFilter />
-	@if (teamDefinitionFilter.selectedTeamDefinitionId()) {
-		<osee-team-filter></osee-team-filter>
-		<osee-search-workflow />
-		<osee-assignee-search />
+<div class="tw-flex tw-flex-wrap tw-items-center tw-gap-2">
+	<osee-team-definition-filter />
+	@if (search.hasValue()) {
+		<osee-team-filter
+			[teams]="teams()"
+			[(selected)]="selectedTeams" />
+		<osee-search-workflow
+			[options]="workflowOptions()"
+			[(selectedWorkflowIds)]="selectedWorkflowIds" />
+		<osee-assignee-search
+			[options]="assignees()"
+			[(selectedAssignees)]="selectedAssignees" />
 	}
 </div>
+@if (search.isLoading()) {
+	<p
+		role="status"
+		class="tw-text-sm">
+		Loading filters...
+	</p>
+} @else if (search.error()) {
+	<p
+		role="alert"
+		class="tw-text-sm">
+		Unable to load workflows for this team definition.
+	</p>
+}

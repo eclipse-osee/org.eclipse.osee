@@ -25,6 +25,13 @@ Navigation between AcTra surfaces opens the workflow editor in a new tab with `?
 
 ## Components
 
+### Kanban (`kanban/`)
+
+Team Definition selects a top-level ATS team. The workflow search covers that
+team and its descendants, and its results supply the Team, Workflow, and
+Assignees filter options. The board loads its columns from the selected team's
+work definition. Changing the top-level selection resets the other filters.
+
 ### `ActraWorldComponent` (`world/`)
 The "My World" table of the current user's work items.
 - Data via `ActraWorldHttpService.getWorldDataMy()` (`/ats/world/my`) or, with `?op`/`collId`/`custId`

@@ -1,11 +1,7 @@
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSelectChange } from '@angular/material/select';
 import { TeamFilterComponent } from './team-filter.component';
-import { of } from 'rxjs';
-import { ActraWorldHttpService } from '../../../../../services/actra-world-http.service';
-import { worldDataEmpty } from '../../../../../types/actra-types';
 
 describe('TeamFilterComponent', () => {
 	let component: TeamFilterComponent;
@@ -14,23 +10,14 @@ describe('TeamFilterComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [TeamFilterComponent, NoopAnimationsModule],
-			providers: [{
-				provide: ActraWorldHttpService,
-				useValue: { getWorldDataMy: () => of({
-					...worldDataEmpty,
-					rows: [
-						{ Team: 'SAW Requirements' },
-						{ Team: 'SAW Code' },
-						{ Team: ' SAW Code ' },
-						{ Team: '' },
-						{},
-					],
-				}) },
-			}],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(TeamFilterComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('teams', [
+			'SAW Code',
+			'SAW Requirements',
+		]);
 		fixture.detectChanges();
 	});
 
@@ -39,13 +26,13 @@ describe('TeamFilterComponent', () => {
 	});
 
 	it('should keep more than one team selected', () => {
-		component.setTeam(
-			{ value: ['SAW Code', 'SAW Requirements'] } as MatSelectChange
-		);
+		component.setTeam({
+			value: ['SAW Code', 'SAW Requirements'],
+		} as MatSelectChange);
 		expect(component.selected()).toEqual(['SAW Code', 'SAW Requirements']);
 	});
 
-	it('should populate unique, sorted teams and ignore blank values', () => {
+	it('should show the supplied team options', () => {
 		expect(component.teams()).toEqual(['SAW Code', 'SAW Requirements']);
 	});
 
