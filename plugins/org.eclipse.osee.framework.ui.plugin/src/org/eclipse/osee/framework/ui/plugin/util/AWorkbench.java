@@ -48,27 +48,52 @@ import org.eclipse.ui.WorkbenchException;
 
 public final class AWorkbench {
 
+   private static final String CSS_THEME_ENGINE_KEY = "org.eclipse.e4.ui.css.swt.theme";
+   private static volatile Boolean darkModeCache;
+
+   /**
+    * The theme lookup uses reflection and must run on the UI thread, so it is cached for the session once the workbench
+    * has finished starting; a theme changed at runtime is not detected until restart. Off the UI thread, an uncached
+    * call returns false without blocking and schedules the lookup on the UI thread so later calls get the real value.
+    */
    public static boolean isDarkMode() {
+      Boolean cached = darkModeCache;
+      if (cached != null) {
+         return cached;
+      }
+      Display display = Display.getDefault();
+      if (display.getThread() != Thread.currentThread()) {
+         display.asyncExec(AWorkbench::resolveDarkMode);
+         return false;
+      }
+      return resolveDarkMode();
+   }
+
+   private static boolean resolveDarkMode() {
+      Boolean cached = darkModeCache;
+      if (cached != null) {
+         return cached;
+      }
       boolean darkMode = false;
       try {
          darkMode = Display.isSystemDarkTheme();
          if (!darkMode) {
-            try {
-               Object engine = Display.getDefault().getData("org.eclipse.e4.ui.css.swt.theme");
-               if (engine != null) {
-                  // Use reflection to call engine.getActiveTheme().getId()
-                  Object activeTheme = engine.getClass().getMethod("getActiveTheme").invoke(engine);
-                  if (activeTheme != null) {
-                     String themeId = (String) activeTheme.getClass().getMethod("getId").invoke(activeTheme);
-                     darkMode = themeId != null && themeId.toLowerCase().contains("dark");
-                  }
+            Object engine = Display.getDefault().getData(CSS_THEME_ENGINE_KEY);
+            if (engine != null) {
+               Object activeTheme = engine.getClass().getMethod("getActiveTheme").invoke(engine);
+               if (activeTheme != null) {
+                  String themeId = (String) activeTheme.getClass().getMethod("getId").invoke(activeTheme);
+                  darkMode = themeId != null && themeId.toLowerCase().contains("dark");
                }
-            } catch (Exception e) {
-               // Fallback silently if the reflection structure changes
             }
          }
       } catch (Exception ex) {
-         // do nothing
+         // do nothing - reflection structure may change; fall back to light and retry next call
+         return false;
+      }
+      // Theme is not applied until the workbench finishes starting, so only cache after that
+      if (PlatformUI.isWorkbenchRunning() && !PlatformUI.getWorkbench().isStarting()) {
+         darkModeCache = darkMode;
       }
       return darkMode;
    }
