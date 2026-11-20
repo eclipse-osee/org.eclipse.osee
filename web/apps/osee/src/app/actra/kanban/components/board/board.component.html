@@ -25,14 +25,13 @@
 					@for (card of column.cards; track card.id) {
 						<mat-card appearance="outlined">
 							<mat-card-header>
-								<mat-card-title class="tw-break-words">
+								<mat-card-title>
 									{{ card.title }}
 								</mat-card-title>
 							</mat-card-header>
 							<mat-card-content>
 								@if (card.description) {
-									<p
-										class="tw-whitespace-pre-wrap tw-break-words">
+									<p class="tw-whitespace-pre-wrap">
 										{{ card.description }}
 									</p>
 								}

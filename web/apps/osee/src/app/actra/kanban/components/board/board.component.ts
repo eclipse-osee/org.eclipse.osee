@@ -19,6 +19,7 @@ import { KanbanWorkflow } from '../../models/kanban-workflow';
 	selector: 'osee-kanban-board',
 	imports: [MatCard, MatCardContent, MatCardHeader, MatCardTitle],
 	templateUrl: './board.component.html',
+	styleUrl: './board.component.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardComponent {
