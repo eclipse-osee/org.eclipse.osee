@@ -1,15 +1,17 @@
-<div class="tw-flex tw-flex-wrap tw-items-center tw-gap-2">
+<div class="tw-flex tw-flex-col tw-items-start tw-gap-2">
 	<osee-team-definition-filter />
 	@if (search.hasValue()) {
-		<osee-team-filter
-			[teams]="teams()"
-			[(selected)]="selectedTeams" />
-		<osee-search-workflow
-			[options]="workflowOptions()"
-			[(selectedWorkflowIds)]="selectedWorkflowIds" />
-		<osee-assignee-search
-			[options]="assignees()"
-			[(selectedAssignees)]="selectedAssignees" />
+		<div class="tw-flex tw-flex-wrap tw-items-center tw-gap-2">
+			<osee-team-filter
+				[teams]="teams()"
+				[(selected)]="selectedTeams" />
+			<osee-search-workflow
+				[options]="workflowOptions()"
+				[(selectedWorkflowIds)]="selectedWorkflowIds" />
+			<osee-assignee-search
+				[options]="assignees()"
+				[(selectedAssignees)]="selectedAssignees" />
+		</div>
 	}
 </div>
 @if (search.isLoading()) {
