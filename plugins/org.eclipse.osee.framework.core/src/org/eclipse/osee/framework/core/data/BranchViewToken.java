@@ -53,4 +53,8 @@ public class BranchViewToken extends NamedIdBase {
    public String getIdString() {
       return super.getIdString();
    }
+
+   public ArtifactId getArtifactId() {
+      return ArtifactId.valueOf(getId());
+   }
 }

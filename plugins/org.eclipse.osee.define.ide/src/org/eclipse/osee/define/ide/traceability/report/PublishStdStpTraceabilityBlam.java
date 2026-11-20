@@ -160,15 +160,16 @@ public class PublishStdStpTraceabilityBlam extends AbstractBlam {
          // Load Requirements Data
          TraceabilityProviderOperation provider;
          if (traceHandlers.isEmpty()) {
-            provider = new BranchTraceabilityOperation(requirementsBranch, types, searchInherited, viewId);
+            provider =
+               new BranchTraceabilityOperation(requirementsBranch, types, searchInherited, branchView.getArtifactId());
          } else {
             boolean isGitBased = variableMap.getBoolean(SEARCH_GIT_CODE_STRUCTURE);
             boolean includeImpd = variableMap.getBoolean(INCLUDE_IMPD);
             provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited,
-               traceHandlers, isGitBased, viewId, includeImpd);
+               traceHandlers, isGitBased, branchView.getArtifactId(), includeImpd);
          }
          RequirementTraceabilityData traceabilityData =
-            new RequirementTraceabilityData(requirementsBranch, provider, viewId);
+            new RequirementTraceabilityData(requirementsBranch, provider, branchView.getArtifactId());
          IStatus status = traceabilityData.initialize(monitor);
          if (status.getSeverity() == IStatus.CANCEL) {
             monitor.setCanceled(true);
