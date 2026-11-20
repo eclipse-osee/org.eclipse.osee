@@ -61,6 +61,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -234,6 +235,8 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       // this is structural construction, not an ordinary refresh, and does not reintroduce no-op refresh flicker.
       managedForm.reflow(true);
       atsBody.setFocus();
+
+      XWidgetUtility.setDarkModeSyncBackgroundsAsync(atsBody);
    }
 
    private void setEditorWidgets() {
