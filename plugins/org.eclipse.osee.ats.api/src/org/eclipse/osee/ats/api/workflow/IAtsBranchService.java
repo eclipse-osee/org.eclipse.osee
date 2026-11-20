@@ -18,10 +18,12 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.branch.BranchData;
+import org.eclipse.osee.ats.api.branch.BranchDiffData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -163,6 +165,41 @@ public interface IAtsBranchService {
    List<ChangeItem> getChangeData(BranchToken branch);
 
    List<ChangeItem> getChangeData(TransactionId transaction);
+
+   /**
+    * Reads the branch diff data cached on the Team Workflow's {@code CoreAttributeTypes.BranchDiffData} attribute. Does
+    * not compute anything; callers own computing the change items (e.g. from a commit transaction). The returned
+    * {@link BranchDiffData} is never null but is empty when no value is stored.
+    */
+   BranchDiffData getBranchDiffData(IAtsTeamWorkflow teamWf);
+
+   /**
+    * Computes the branch diff data for each Team Workflow from its first commit transaction to an unarchived baseline
+    * branch and stores it on {@code CoreAttributeTypes.BranchDiffData}, batching all writes into a single change set.
+    * Workflows with no such commit or no computed changes are skipped. Callers own deciding when to cache; this does not
+    * run automatically on read.
+    */
+   void setBranchDiffData(Collection<? extends IAtsTeamWorkflow> teamWfs);
+
+   /**
+    * Computes and stores the branch diff data for a single Team Workflow. Convenience for
+    * {@link #setBranchDiffData(Collection)} with one workflow.
+    */
+   void setBranchDiffData(IAtsTeamWorkflow teamWf);
+
+   /**
+    * Stores the given change items on the Team Workflow's {@code CoreAttributeTypes.BranchDiffData} attribute as the
+    * bare JSON list, executing its own change set. Writes only when the value is absent or has changed; empty/null
+    * change items are ignored.
+    */
+   void setBranchDiffData(IAtsTeamWorkflow teamWf, List<ChangeItem> changeItems);
+
+   /**
+    * Stages the given change items onto the provided change set for the Team Workflow's
+    * {@code CoreAttributeTypes.BranchDiffData} attribute (bare JSON list), letting the caller control when the
+    * transaction executes. Stages only when the value is absent or has changed; empty/null change items are ignored.
+    */
+   void setBranchDiffData(IAtsTeamWorkflow teamWf, List<ChangeItem> changeItems, IAtsChangeSet changes);
 
    void setAssociatedArtId(BranchId branch, ArtifactId artifact);
 

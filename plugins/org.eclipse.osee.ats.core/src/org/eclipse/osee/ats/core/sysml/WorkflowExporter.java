@@ -19,10 +19,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.sysml.OseeRelationToSysmlMapper;
 import org.eclipse.osee.ats.api.sysml.SysmlConnection;
 import org.eclipse.osee.ats.api.sysml.SysmlConstants;
@@ -30,9 +30,9 @@ import org.eclipse.osee.ats.api.sysml.SysmlPackage;
 import org.eclipse.osee.ats.api.sysml.SysmlPartDef;
 import org.eclipse.osee.ats.api.sysml.SysmlPartUsage;
 import org.eclipse.osee.ats.api.sysml.SysmlStateMachine;
+import org.eclipse.osee.ats.api.sysml.WorkflowExportData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -40,8 +40,10 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * Exports ATS workflow objects (Actions, Team Workflows, Tasks, Reviews, BIT) for a given program to a SysmlPackage
@@ -58,9 +60,13 @@ public class WorkflowExporter {
    }
 
    /**
-    * Exports all workflow objects for the given program into a SysmlPackage.
+    * Exports workflow objects into a SysmlPackage based on the export data's query options. The program is required and
+    * sets the package name and config import; team definition, artifact type and version are optional filters. The
+    * query options used are logged to the export data's {@link WorkflowExportData#getResults()}.
     */
-   public SysmlPackage export(ArtifactId programId) {
+   public SysmlPackage export(WorkflowExportData exportData) {
+      XResultData rd = exportData.getResults();
+      ArtifactId programId = exportData.getProgramId();
       IAtsProgram program = atsApi.getProgramService().getProgramById(programId);
       if (program == null) {
          throw new OseeArgumentException("Program not found for id [%s]", programId);
@@ -71,18 +77,7 @@ public class WorkflowExporter {
       // Import config schema
       pkg.addImport(sanitizeName(program.getName()) + "_Config::*");
 
-      // Query all team workflows for this program's teams
-      Collection<IAtsTeamDefinition> teamDefs = atsApi.getProgramService().getTeamDefs(program);
-      List<IAtsTeamWorkflow> allTeamWfs = new ArrayList<>();
-      for (IAtsTeamDefinition teamDef : teamDefs) {
-         Collection<IAtsWorkItem> items =
-            atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andTeam(teamDef).getItems();
-         for (IAtsWorkItem item : items) {
-            if (item instanceof IAtsTeamWorkflow) {
-               allTeamWfs.add((IAtsTeamWorkflow) item);
-            }
-         }
-      }
+      List<IAtsTeamWorkflow> allTeamWfs = queryTeamWorkflows(exportData, rd);
 
       // Collect unique actions
       Set<IAtsAction> allActions = new HashSet<>();
@@ -116,8 +111,7 @@ public class WorkflowExporter {
 
       // Connection Defs
       pkg.addConnectionDef(OseeRelationToSysmlMapper.toConnectionDef(AtsRelationTypes.ActionToWorkflow));
-      pkg.addConnectionDef(
-         OseeRelationToSysmlMapper.toConnectionDef(AtsRelationTypes.TeamWorkflowTargetedForVersion));
+      pkg.addConnectionDef(OseeRelationToSysmlMapper.toConnectionDef(AtsRelationTypes.TeamWorkflowTargetedForVersion));
       pkg.addConnectionDef(OseeRelationToSysmlMapper.toConnectionDef(AtsRelationTypes.TeamWorkflowToFoundInVersion));
       pkg.addConnectionDef(
          OseeRelationToSysmlMapper.toConnectionDef(AtsRelationTypes.TeamWorkflowToIntroducedInVersion));
@@ -156,8 +150,8 @@ public class WorkflowExporter {
          Collection<ArtifactToken> foundInVersions = atsApi.getRelationResolver().getRelated(teamWf.getStoreObject(),
             AtsRelationTypes.TeamWorkflowToFoundInVersion_Version);
          for (ArtifactToken version : foundInVersions) {
-            pkg.addConnection(new SysmlConnection("TeamWorkflowToFoundInVersion", getWfName(teamWf),
-               version.getIdString()));
+            pkg.addConnection(
+               new SysmlConnection("TeamWorkflowToFoundInVersion", getWfName(teamWf), version.getIdString()));
          }
 
          // BID relations (for PR workflows): PR -> BID -> CR and BID -> Version
@@ -166,8 +160,7 @@ public class WorkflowExporter {
                AtsRelationTypes.ProblemReportToBid_Bid);
             for (ArtifactToken bid : bids) {
                // PR -> BID
-               pkg.addConnection(
-                  new SysmlConnection("ProblemReportToBid", getWfName(teamWf), bid.getIdString()));
+               pkg.addConnection(new SysmlConnection("ProblemReportToBid", getWfName(teamWf), bid.getIdString()));
 
                // BID part usage instance
                pkg.addPartUsage(buildBidUsage(bid));
@@ -190,6 +183,37 @@ public class WorkflowExporter {
       }
 
       return pkg;
+   }
+
+   /**
+    * Builds and runs the Team Workflow query from the optional filters on the export data. Team definition, artifact
+    * type and version are applied only when provided; the options actually used are logged to the results.
+    */
+   private List<IAtsTeamWorkflow> queryTeamWorkflows(WorkflowExportData exportData, XResultData rd) {
+      IAtsQuery query = atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow);
+
+      if (exportData.isTeamDefIdValid()) {
+         IAtsTeamDefinition teamDef =
+            atsApi.getTeamDefinitionService().getTeamDefinitionById(exportData.getTeamDefId());
+         if (teamDef == null) {
+            rd.errorf("Team Definition not found for id [%s]", exportData.getTeamDefId());
+            return new ArrayList<>();
+         }
+         query = query.andTeam(teamDef);
+         rd.logf("Filtering by Team Definition [%s]\n", teamDef.toStringWithId());
+      }
+      if (exportData.isArtifactTypeValid()) {
+         query = query.andArtType(exportData.getArtifactType());
+         rd.logf("Filtering by Artifact Type [%s]\n", exportData.getArtifactType());
+      }
+      if (exportData.isVersionIdValid()) {
+         query = query.andVersion(exportData.getVersionId().getId());
+         rd.logf("Filtering by Version [%s]\n", exportData.getVersionId().getIdString());
+      }
+
+      List<IAtsTeamWorkflow> teamWfs = Collections.castAll(query.getResultsNew().getList());
+      rd.logf("Query returned %d Team Workflow(s)\n", teamWfs.size());
+      return teamWfs;
    }
 
    // Part Defs
@@ -218,6 +242,7 @@ public class WorkflowExporter {
       def.addAttribute("description", SysmlConstants.STRING, SysmlConstants.MULTIPLICITY_ZERO_OR_ONE);
       def.addAttribute("teamDefinitionReference", SysmlConstants.INTEGER, SysmlConstants.MULTIPLICITY_ZERO_OR_ONE);
       def.addAttribute("percentComplete", SysmlConstants.INTEGER, SysmlConstants.MULTIPLICITY_ZERO_OR_ONE);
+      def.addAttribute("branchDiffData", SysmlConstants.STRING, SysmlConstants.MULTIPLICITY_ZERO_OR_ONE);
       return def;
    }
 
@@ -316,6 +341,12 @@ public class WorkflowExporter {
       IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
       if (teamDef != null) {
          usage.addAttributeValue("teamDefinitionReference", teamDef.getId());
+      }
+
+      String branchDiffData =
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, CoreAttributeTypes.BranchDiffData, "");
+      if (!branchDiffData.isEmpty()) {
+         usage.addAttributeValue("branchDiffData", branchDiffData);
       }
 
       return usage;

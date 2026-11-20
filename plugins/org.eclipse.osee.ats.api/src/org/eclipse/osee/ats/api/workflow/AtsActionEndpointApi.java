@@ -33,6 +33,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.sysml.WorkflowExportData;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.workdef.model.web.WorkflowData;
@@ -381,14 +382,36 @@ public interface AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public WorkflowData getWorkflowData(@PathParam("id") ArtifactId workItemId);
 
-   @Path("{programId}/sysml/config")
-   @GET
-   @Produces(MediaType.TEXT_PLAIN)
-   public String getSysmlConfig(@PathParam("programId") ArtifactId programId);
+   /**
+    * Exports a program's configuration and workflows to SysML V2 textual notation. The given
+    * {@link WorkflowExportData} supplies the query options (program is required; team definition, artifact type and
+    * version are optional workflow filters) and is returned with the generated config and workflow SysML text and an
+    * {@link org.eclipse.osee.framework.jdk.core.result.XResultData} of the export results.
+    */
+   @Path("sysml/export")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorkflowExportData exportSysml(WorkflowExportData exportData);
 
-   @Path("{programId}/sysml/workflows")
-   @GET
-   @Produces(MediaType.TEXT_PLAIN)
-   public String getSysmlWorkflows(@PathParam("programId") ArtifactId programId);
+   /**
+    * Exports the selected program's configuration as JSON. The result's {@link WorkflowExportData#getConfigJson()}
+    * contains the configuration objects for the program.
+    */
+   @Path("json/config")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorkflowExportData getConfigJson(WorkflowExportData exportData);
+
+   /**
+    * Exports the selected program's workflows as individual JSON strings. The optional team definition, artifact type
+    * and version filters are applied in the same way as the SysML workflow export.
+    */
+   @Path("json/workflows")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorkflowExportData getWorkflowJson(WorkflowExportData exportData);
 
 }

@@ -114,7 +114,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       Set<ArtifactTypeToken> allArtTypes = getAllArtTypes();
 
       List<ArtifactTypeToken> teamWorkflowArtTypes = getTeamWorkflowArtTypes(allArtTypes);
-      @SuppressWarnings("unused")
       boolean teamsTypeDefOrAisOrVersionSearched = isTeamTypeDefAisOrVersionSearched(allArtTypes);
 
       /**
@@ -1041,6 +1040,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    @Override
    public void andAttrQuery(AtsAttributeQuery attrQuery) {
       andAttr.add(attrQuery);
+   }
+
+   @Override
+   public IAtsQuery andArtType(ArtifactTypeToken... artTypes) {
+      for (ArtifactTypeToken artType : artTypes) {
+         artifactTypes.add(artType);
+      }
+      return this;
    }
 
 }

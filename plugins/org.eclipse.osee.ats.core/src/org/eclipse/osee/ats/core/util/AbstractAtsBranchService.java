@@ -15,15 +15,18 @@ package org.eclipse.osee.ats.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.branch.BranchData;
+import org.eclipse.osee.ats.api.branch.BranchDiffData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
@@ -33,6 +36,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.util.AtsUtil;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
@@ -47,8 +51,10 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -694,6 +700,54 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public Collection<ChangeItem> getChangeData(IAtsTeamWorkflow teamWf) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public BranchDiffData getBranchDiffData(IAtsTeamWorkflow teamWf) {
+      String changeReportData =
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, CoreAttributeTypes.BranchDiffData, "");
+      if (Strings.isValid(changeReportData)) {
+         return new BranchDiffData(JsonUtil.readValues(changeReportData, ChangeItem.class));
+      }
+      return new BranchDiffData();
+   }
+
+   @Override
+   public void setBranchDiffData(IAtsTeamWorkflow teamWf) {
+      setBranchDiffData(Collections.singletonList(teamWf));
+   }
+
+   @Override
+   public void setBranchDiffData(Collection<? extends IAtsTeamWorkflow> teamWfs) {
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Branch Diff Data");
+      for (IAtsTeamWorkflow teamWf : teamWfs) {
+         Collection<TransactionRecord> commits = getCommitTransactionsToUnarchivedBaselineBranchs(teamWf);
+         if (!commits.isEmpty()) {
+            setBranchDiffData(teamWf, getChangeData(commits.iterator().next()), changes);
+         }
+      }
+      changes.executeIfNeeded();
+   }
+
+   @Override
+   public void setBranchDiffData(IAtsTeamWorkflow teamWf, List<ChangeItem> changeItems) {
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Branch Diff Data");
+      setBranchDiffData(teamWf, changeItems, changes);
+      changes.executeIfNeeded();
+   }
+
+   @Override
+   public void setBranchDiffData(IAtsTeamWorkflow teamWf, List<ChangeItem> changeItems, IAtsChangeSet changes) {
+      if (changeItems == null || changeItems.isEmpty()) {
+         return;
+      }
+      String changeItemJson = JsonUtil.toJson(changeItems);
+      if (atsApi.getAttributeResolver().getAttributeCount(teamWf, CoreAttributeTypes.BranchDiffData) == 0) {
+         changes.addAttribute(teamWf, CoreAttributeTypes.BranchDiffData, changeItemJson);
+      } else if (!atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, CoreAttributeTypes.BranchDiffData,
+         "").equals(changeItemJson)) {
+         changes.setSoleAttributeFromString(teamWf, CoreAttributeTypes.BranchDiffData, changeItemJson);
+      }
    }
 
    @Override
