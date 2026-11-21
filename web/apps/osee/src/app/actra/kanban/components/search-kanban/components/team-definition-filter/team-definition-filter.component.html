@@ -1,0 +1,24 @@
+<mat-form-field appearance="outline" subscriptSizing="dynamic">
+	<mat-label>Team Definition</mat-label>
+	<mat-select
+		id="team-definition-filter"
+		[value]="selectedTeamDefinitionId()"
+		(selectionChange)="selectTeamDefinition($event.value)">
+		@if (selectedTeamDefinitionId()) {
+			<mat-option value="">Clear team definition</mat-option>
+		}
+		@for (definition of teamDefinitions(); track definition.id) {
+			<mat-option [value]="definition.id">{{ definition.name }}</mat-option>
+		} @empty {
+			<mat-option disabled>
+				@if (configuration.isLoading()) {
+					Loading team definitions...
+				} @else if (configuration.error()) {
+					Unable to load team definitions
+				} @else {
+					No team definitions available
+				}
+			</mat-option>
+		}
+	</mat-select>
+</mat-form-field>

@@ -1,0 +1,10 @@
+mat-card-header {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+}
+
+mat-card-title,
+mat-card-content {
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
