@@ -31,6 +31,9 @@ Team Definition selects a top-level ATS team. The workflow search covers that
 team and its descendants, and its results supply the Team, Workflow, and
 Assignees filter options. The board loads its columns from the selected team's
 work definition. Changing the top-level selection resets the other filters.
+Cards can be dragged to later columns and move after the user confirms the
+destination. These moves are local to the current board view and reset when
+the team definition changes.
 
 ### `ActraWorldComponent` (`world/`)
 The "My World" table of the current user's work items.

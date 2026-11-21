@@ -13,17 +13,30 @@
 } @else if (teamDefinitionId()) {
 	<section
 		aria-label="Kanban board"
+		cdkDropListGroup
 		class="tw-flex tw-gap-4 tw-overflow-x-auto tw-pb-4">
-		@for (column of columns(); track column.id) {
+		@for (column of columns(); track column.id; let columnIndex = $index) {
 			<section
 				[attr.aria-label]="column.title"
+				[class.tw-opacity-40]="columnIndex < (draggedFromColumn() ?? 0)"
+				cdkDropList
+				[cdkDropListData]="column.id"
+				[cdkDropListEnterPredicate]="canEnterColumn"
+				[cdkDropListSortingDisabled]="true"
+				(cdkDropListDropped)="moveCard($event)"
 				class="tw-min-w-72 tw-flex-1 tw-rounded tw-border-[5px] tw-border-solid tw-border-foreground-divider tw-p-4">
 				<h2 class="tw-mb-4 tw-mt-0 tw-text-lg tw-font-semibold">
 					{{ column.title }} ({{ column.cards.length }})
 				</h2>
 				<div class="tw-flex tw-flex-col tw-gap-3">
 					@for (card of column.cards; track card.id) {
-						<mat-card appearance="outlined">
+						<mat-card
+							appearance="outlined"
+							class="tw-cursor-grab active:tw-cursor-grabbing"
+							cdkDrag
+							(cdkDragStarted)="draggedFromColumn.set(columnIndex)"
+							(cdkDragEnded)="draggedFromColumn.set(null)"
+							[cdkDragData]="card">
 							<mat-card-header>
 								<mat-card-title>
 									{{ card.title }}
