@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
@@ -89,19 +90,28 @@ public class OseeInfo {
       cache.put(key, new Pair<>(time, value));
    }
 
-   public static boolean isSet(String key) {
+   /**
+    * OseeInfo flags are intended to turn features off if "false" or keep on if "true" or missing. This allows flags to
+    * be retired and removed from code and OSEE_INFO in the future without affecting production releases.
+    *
+    * @return true if flag exists in OSEE_INFO and is "true" or if flag does not exist in OSEE_INFO
+    */
+   public static boolean isSetOrMissing(String key) {
       String cached = getCachedValue(key);
+      if (Strings.isInvalid(cached)) {
+         return true;
+      }
       return "true".equals(cached);
    }
 
    public static boolean useDarkModeSwtFix() {
-      return isSet(OseeProperties.OSEE_USE_DARK_MODE_SWT_FIX);
+      return isSetOrMissing(OseeProperties.OSEE_USE_DARK_MODE_SWT_FIX);
    }
 
    /**
-    * Global switch for click-to-edit on all XX text widgets; when not "true", they use only the label/dialog edit.
+    * Global switch for click-to-edit on all XX text widgets; when true, they use only the label/dialog edit.
     */
    public static boolean useClickEdit() {
-      return isSet(OseeProperties.OSEE_USE_CLICK_EDIT);
+      return isSetOrMissing(OseeProperties.OSEE_USE_CLICK_EDIT);
    }
 }

@@ -57,13 +57,15 @@ Core data objects:
   opts out with `NO_CLICK_EDIT`; `INLINE_EDIT` takes precedence. Unset the key to turn it off everywhere.
 - **Dark Mode Backgrounds** - the Eclipse Dark theme leaves native controls (read-only `Text`, `Hyperlink`,
   `StyledText`, `Group`) light grey on black composites. `XWidgetUtility.setDarkModeSyncBackgroundsAsync(root)`
-  (called at the end of `WfeWorkFlowTab.createAtsBody()`) copies each composite's background to those children after
-  each theme skinning burst. Gated on `OseeInfo.useDarkModeSwtFix()` (`osee.use.dark.mode.swt.fix` = `true`) and
+  (called at the end of `WfeWorkFlowTab.createAtsBody()` and `BlamInputSection.updateDataPart()`) copies each
+  composite's background to those children after each theme skinning burst. Gated on `OseeInfo.useDarkModeSwtFix()` (`osee.use.dark.mode.swt.fix` = `true`) and
   `AWorkbench.isDarkMode()` (cached once the workbench has finished starting). Verified-required details: react to
   `SWT.Skin` on ANY composite (the theme restyles from ancestors), defer two `asyncExec` hops (the CSS engine applies
   colors in its own `asyncExec`), coalesce to one pass per burst, and remove the display filter when `root` is
-  disposed. The theme also overrides foregrounds, so a custom text color (e.g. the WFE Title) shows as white in dark
-  mode.
+  disposed. It also re-syncs on `root`'s shell `Activate`/`Deactivate`, because the theme restyles the shell when a
+  dialog (e.g. the label's editor dialog) opens or closes without sending `SWT.Skin`. The theme also resets text
+  colors, but only on its next restyle, so a custom light-mode text color can show dark on dark until then. Don't set
+  custom foregrounds in dark mode (the WFE Title skips its Forms title color when `AWorkbench.isDarkMode()`).
 
 ### OSGi contribution & attribute-widget resolution
 
