@@ -72,6 +72,7 @@ import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -251,6 +252,10 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writePreviousStates(atsApi, writer, teamWf);
          if (matches(TeamWorkflowDetails.class, annotations)) {
             writeTeamWorkflowDetails(orcsApi, atsApi, writer, teamWf);
+         }
+         String branchDiffData = workItemArt.getSoleAttributeValue(CoreAttributeTypes.BranchDiffData, "");
+         if (Strings.isValid(branchDiffData)) {
+            writer.writeStringField("BranchDiffData", branchDiffData);
          }
          writeDerived(atsApi, writer, teamWf);
       }
