@@ -125,3 +125,20 @@ Broad docs (like web coding standards) can use broad patterns (`"web/**"`).
 3. **Fix stale docs.** If a doc contradicts source code, update it.
 4. **Formalize raw docs.** If you find a `.md` in `docs/ai/` without frontmatter, read it, infer summary/tags/fileMatch, add the frontmatter, and create the steering pointer at `.kiro/steering/conditional/docs/`. If it's in the wrong subfolder, move it to the right `<subsystem>/<feature>.md` path.
 5. **Trust, but verify.** Docs are a starting point. Always check source.
+
+---
+
+## Do not build or run this repository
+
+Do not attempt to compile, build, or run OSEE as part of a change. There is no expectation that an agent produces a green build locally, and the tooling to do so is intentionally not assumed to be present.
+
+- Do not invoke `mvn`, `bazel`, `tycho`, `npm run build`, or any equivalent build/compile step to "verify" a change.
+- Do not start servers, IDE clients, or test harnesses to check your work.
+- Verify changes by reading the code and confirming types, signatures, imports, and call sites against the existing source instead.
+
+This applies to both runtime tiers, and neither may be built or launched by an agent:
+
+- **Eclipse / Java client** (`org.eclipse.osee.ats.ide` and other `*.ide` bundles): the Eclipse RCP application. Do not launch the workbench or run client integration tests.
+- **Java server** (`org.eclipse.osee.ats.rest` and other server bundles): the REST/OSGi server. Do not start the server or hit its endpoints.
+
+Respect the bundle layering when reasoning about where code belongs (`ats.api` -> `ats.core` -> `ats.rest` / `ats.ide`); shared logic that both the client and server need goes in `ats.core` (or `ats.api` for pure interfaces/model), not duplicated per tier.
