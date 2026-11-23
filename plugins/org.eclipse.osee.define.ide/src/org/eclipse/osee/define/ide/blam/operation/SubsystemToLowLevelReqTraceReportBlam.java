@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.core.widget.XWidgetData;
-import org.eclipse.osee.framework.core.widget.XWidgetLabels;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -55,9 +55,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetSwtRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchAndViewSelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXListArtifactDropWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXStringsWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.xx.XXBranchAndViewSelWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xx.util.listen.XModifiedListener;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -128,7 +128,7 @@ public class SubsystemToLowLevelReqTraceReportBlam extends AbstractBlam {
                   if (arts != null && !arts.isEmpty()) {
                      BranchId branch = arts.iterator().next().getBranch();
                      if (branch != null && branch.isValid()) {
-                        branchViews =
+                        Map<Long, String> branchViews =
                            ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
                         branchViewWidget.setSelectable(branchViews.values());
                      }
@@ -162,7 +162,7 @@ public class SubsystemToLowLevelReqTraceReportBlam extends AbstractBlam {
       if (isLegacy.equals(true)) {
          safetyAttribute = CoreAttributeTypes.LegacyDal;
       }
-      excludedArtifactIdMap = ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
+      excludedArtifactIdMap = ViewIdUtility.findExcludedArtifactsByView(branchView.getArtifactId(), branch);
 
       initLowLevelRequirements(arts); // depends on excludedArtifactIdMap being set correctly
       initAllocationComponents(variableMap.getArtifacts(ALLOCATION_COMPONENTS));

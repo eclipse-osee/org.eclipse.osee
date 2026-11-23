@@ -157,4 +157,6 @@ public interface IAtsQuery {
 
    Collection<? extends ArtifactToken> runServerQueryAsArts();
 
+   IAtsQuery andArtType(ArtifactTypeToken... artTypes);
+
 }

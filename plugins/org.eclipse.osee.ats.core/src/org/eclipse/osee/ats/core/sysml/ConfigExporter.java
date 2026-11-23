@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.sysml.SysmlEnumDef;
 import org.eclipse.osee.ats.api.sysml.SysmlPackage;
 import org.eclipse.osee.ats.api.sysml.SysmlPartDef;
 import org.eclipse.osee.ats.api.sysml.SysmlPartUsage;
+import org.eclipse.osee.ats.api.sysml.WorkflowExportData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -51,9 +52,11 @@ public class ConfigExporter {
    }
 
    /**
-    * Exports all config objects for the given program into a SysmlPackage.
+    * Exports all config objects for the export data's program into a SysmlPackage. The full configuration for the
+    * program is always exported.
     */
-   public SysmlPackage export(ArtifactId programId) {
+   public SysmlPackage export(WorkflowExportData exportData) {
+      ArtifactId programId = exportData.getProgramId();
       IAtsProgram program = atsApi.getProgramService().getProgramById(programId);
       if (program == null) {
          throw new OseeArgumentException("Program not found for id [%s]", programId);

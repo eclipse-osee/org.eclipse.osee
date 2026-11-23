@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -38,15 +40,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.sysml.SysmlPackage;
 import org.eclipse.osee.ats.api.sysml.SysmlTextWriter;
+import org.eclipse.osee.ats.api.sysml.WorkflowExportData;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -65,6 +70,7 @@ import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionDataMulti;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
@@ -77,6 +83,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.sysml.ConfigExporter;
 import org.eclipse.osee.ats.core.sysml.WorkflowExporter;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.bids.BidsOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalOperations;
@@ -97,6 +104,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -914,25 +922,163 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   public String getSysmlConfig(ArtifactId programId) {
-      try {
-         ConfigExporter exporter = new ConfigExporter(atsApi);
-         SysmlPackage pkg = exporter.export(programId);
-         return new SysmlTextWriter().write(pkg);
-      } catch (Exception ex) {
-         return "// Error exporting SysML config for program [" + programId + "]: " + ex.getMessage();
+   public WorkflowExportData exportSysml(WorkflowExportData exportData) {
+      XResultData rd = exportData.getResults();
+      if (exportData.getProgramId() == null || exportData.getProgramId().isInvalid()) {
+         rd.errorf("Program id is required for SysML export");
+         return exportData;
       }
+      SysmlTextWriter writer = new SysmlTextWriter();
+
+      // Config is always the full configuration for the given program
+      try {
+         rd.logf("Exporting config for program [%s]\n", exportData.getProgramId().getIdString());
+         SysmlPackage configPkg = new ConfigExporter(atsApi).export(exportData);
+         exportData.setConfigSysml(writer.write(configPkg));
+      } catch (Exception ex) {
+         rd.errorf("Error exporting SysML config for program [%s]: %s", exportData.getProgramId().getIdString(),
+            Lib.exceptionToString(ex));
+      }
+
+      // Workflows are filtered by the provided team def / artifact type / version options
+      try {
+         SysmlPackage workflowPkg = new WorkflowExporter(atsApi).export(exportData);
+         exportData.setWorkflowSysml(writer.write(workflowPkg));
+      } catch (Exception ex) {
+         rd.errorf("Error exporting SysML workflows for program [%s]: %s", exportData.getProgramId().getIdString(),
+            Lib.exceptionToString(ex));
+      }
+
+      return exportData;
    }
 
    @Override
-   public String getSysmlWorkflows(ArtifactId programId) {
-      try {
-         WorkflowExporter exporter = new WorkflowExporter(atsApi);
-         SysmlPackage pkg = exporter.export(programId);
-         return new SysmlTextWriter().write(pkg);
-      } catch (Exception ex) {
-         return "// Error exporting SysML workflows for program [" + programId + "]: " + ex.getMessage();
+   public WorkflowExportData getConfigJson(WorkflowExportData exportData) {
+      XResultData rd = exportData.getResults();
+      if (!hasProgram(exportData, "JSON configuration export")) {
+         return exportData;
       }
+      try {
+         IAtsProgram program = atsApi.getProgramService().getProgramById(exportData.getProgramId());
+         if (program == null) {
+            throw new OseeArgumentException("Program not found for id [%s]", exportData.getProgramId());
+         }
+         StringWriter output = new StringWriter();
+         com.fasterxml.jackson.core.JsonGenerator writer = JsonUtil.getFactory().createGenerator(output);
+         writer.writeStartArray();
+         addConfigJson(writer, program);
+         for (IAtsTeamDefinition teamDef : atsApi.getProgramService().getTeamDefs(program)) {
+            addConfigJson(writer, teamDef);
+            Set<Long> emittedAiIds = new HashSet<>();
+            for (IAtsActionableItem ai : teamDef.getActionableItems()) {
+               addActionableItemJson(writer, ai, emittedAiIds);
+            }
+            for (IAtsVersion version : atsApi.getTeamDefinitionService().getVersions(teamDef)) {
+               addConfigJson(writer, version);
+            }
+            for (AtsUser lead : atsApi.getTeamDefinitionService().getLeads(teamDef)) {
+               addConfigJson(writer, lead);
+            }
+            for (AtsUser member : atsApi.getTeamDefinitionService().getMembers(teamDef)) {
+               addConfigJson(writer, member);
+            }
+         }
+         writer.writeEndArray();
+         writer.close();
+         exportData.setConfigJson(output.toString());
+         rd.logf("Exported JSON configuration for program [%s]\n", exportData.getProgramId().getIdString());
+      } catch (Exception ex) {
+         rd.errorf("Error exporting JSON config for program [%s]: %s", exportData.getProgramId().getIdString(),
+            Lib.exceptionToString(ex));
+      }
+      return exportData;
+   }
+
+   @Override
+   public WorkflowExportData getWorkflowJson(WorkflowExportData exportData) {
+      XResultData rd = exportData.getResults();
+      if (!hasProgram(exportData, "JSON workflow export")) {
+         return exportData;
+      }
+      try {
+         List<IAtsTeamWorkflow> teamWfs = queryTeamWorkflows(exportData, rd);
+         List<String> workflowJson = new ArrayList<>();
+         for (IAtsTeamWorkflow teamWf : teamWfs) {
+            workflowJson.add(toWorkflowJson(teamWf));
+         }
+         exportData.setWorkflowJson(workflowJson);
+         rd.logf("Exported %d workflow JSON file(s)\n", workflowJson.size());
+      } catch (Exception ex) {
+         rd.errorf("Error exporting JSON workflows for program [%s]: %s", exportData.getProgramId().getIdString(),
+            Lib.exceptionToString(ex));
+      }
+      return exportData;
+   }
+
+   private boolean hasProgram(WorkflowExportData exportData, String exportName) {
+      if (exportData.getProgramId() == null || exportData.getProgramId().isInvalid()) {
+         exportData.getResults().errorf("Program id is required for %s", exportName);
+         return false;
+      }
+      return true;
+   }
+
+   private void addConfigJson(com.fasterxml.jackson.core.JsonGenerator writer, IAtsObject config) throws IOException {
+      ConfigJsonWriter.addConfigObject(atsApi, orcsApi, config, new java.lang.annotation.Annotation[0], writer, false);
+   }
+
+   private void addActionableItemJson(com.fasterxml.jackson.core.JsonGenerator writer, IAtsActionableItem ai,
+      Set<Long> emittedAiIds) throws IOException {
+      if (!emittedAiIds.add(ai.getId())) {
+         return;
+      }
+      addConfigJson(writer, ai);
+      for (IAtsActionableItem child : ai.getChildrenActionableItems()) {
+         addActionableItemJson(writer, child, emittedAiIds);
+      }
+   }
+
+   private String toWorkflowJson(IAtsTeamWorkflow teamWf) throws IOException {
+      StringWriter output = new StringWriter();
+      com.fasterxml.jackson.core.JsonGenerator writer = JsonUtil.getFactory().createGenerator(output);
+      try {
+         java.lang.annotation.Annotation[] annotations = AtsTeamWfEndpointApi.class.getMethod(
+            "getTeamWorkflowDetails", ArtifactId.class).getAnnotations();
+         WorkItemJsonWriter.addWorkItem(atsApi, orcsApi, teamWf, annotations, writer, false,
+            java.util.Collections.emptyList());
+      } catch (NoSuchMethodException ex) {
+         throw new IOException("Unable to load TeamWorkflowDetails annotation", ex);
+      }
+      writer.close();
+      return output.toString();
+   }
+
+   private List<IAtsTeamWorkflow> queryTeamWorkflows(WorkflowExportData exportData, XResultData rd) {
+      IAtsQuery query = atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow);
+      IAtsProgram program = atsApi.getProgramService().getProgramById(exportData.getProgramId());
+      if (program == null) {
+         throw new OseeArgumentException("Program not found for id [%s]", exportData.getProgramId());
+      }
+      if (exportData.isTeamDefIdValid()) {
+         IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(exportData.getTeamDefId());
+         if (teamDef == null) {
+            rd.errorf("Team Definition not found for id [%s]", exportData.getTeamDefId());
+            return java.util.Collections.emptyList();
+         }
+         query = query.andTeam(teamDef);
+      } else {
+         query = query.andTeam(atsApi.getProgramService().getTeamDefs(program));
+      }
+      if (exportData.isArtifactTypeValid()) {
+         query = query.andArtType(exportData.getArtifactType());
+      }
+      if (exportData.isVersionIdValid()) {
+         query = query.andVersion(exportData.getVersionId().getId());
+      }
+      List<IAtsTeamWorkflow> teamWfs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+         query.getResultsNew().getList());
+      rd.logf("JSON workflow query returned %d Team Workflow(s)\n", teamWfs.size());
+      return teamWfs;
    }
 
 }

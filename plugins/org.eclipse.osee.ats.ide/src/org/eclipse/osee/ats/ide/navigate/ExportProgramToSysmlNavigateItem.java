@@ -14,29 +14,31 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import java.util.Date;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.sysml.WorkflowExportData;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.util.CoreImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * ATS Navigate Item that exports a program's configuration and workflows to SysML V2 textual notation (.sysml files).
- * Currently hard-coded to SAW_PL_Program for demo purposes.
  *
  * @author Donald G. Dunne
  */
 public class ExportProgramToSysmlNavigateItem extends XNavigateItemAction {
 
    private static final String TITLE = "Export Program to SysML V2";
-   private static final String OUTPUT_DIR = System.getProperty("user.home") + "/SawPlProgramSysMl";
+   private static final String OUTPUT_DIR = System.getProperty("user.home") + "/OseeSysmlExport";
 
    public ExportProgramToSysmlNavigateItem() {
       super(TITLE, CoreImage.EXPORT, Arrays.asList(CoreUserGroups.OseeAdmin), AtsNavigateViewItems.ATS_UTIL);
@@ -44,14 +46,29 @@ public class ExportProgramToSysmlNavigateItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      XResultData rd = new XResultData();
+      AtsApi atsApi = AtsApiService.get();
+
+      WorkflowExportData exportData = new WorkflowExportDialog(atsApi).openAndGet();
+      if (exportData == null) {
+         return; // user cancelled
+      }
+      if (exportData.getProgramId() == null || exportData.getProgramId().isInvalid()) {
+         XResultData cancelRd = new XResultData();
+         cancelRd.error("A Program is required to export.");
+         XResultDataUI.report(cancelRd, TITLE);
+         return;
+      }
+
+      // Dialog has closed with valid selections; run the export on the server.
+      WorkflowExportData result = atsApi.getServerEndpoints().getActionEndpoint().exportSysml(exportData);
+      XResultData rd = result.getResults();
 
       try {
-         // Hard-coded to SAW PL Program for demo
-         ArtifactId programId = DemoArtifactToken.SAW_PL_Program;
-         AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
+         IAtsProgram program = atsApi.getProgramService().getProgramById(result.getProgramId());
+         String programName = program == null ? result.getProgramId().getIdString() : program.getName();
+         String fileBase = toFileName(programName);
+         String timestamp = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
 
-         // Ensure output directory exists
          File outputDir = new File(OUTPUT_DIR);
          if (!outputDir.exists() && !outputDir.mkdirs()) {
             rd.errorf("Could not create output directory: %s", outputDir.getAbsolutePath());
@@ -60,30 +77,40 @@ public class ExportProgramToSysmlNavigateItem extends XNavigateItemAction {
          }
 
          // Export config
-         rd.log("Exporting config for SAW PL Program...");
-         String configSysml = actionEp.getSysmlConfig(programId);
-         File configFile = new File(outputDir, "saw-pl-program-config.sysml");
-         Lib.writeStringToFile(configSysml, configFile);
-         rd.logf("  Config written to: %s (%d bytes)\n", configFile.getAbsolutePath(), configSysml.length());
+         String configSysml = result.getConfigSysml();
+         if (Strings.isValid(configSysml)) {
+            File configFile = new File(outputDir, fileBase + "-" + timestamp + "-config.sysml");
+            Lib.writeStringToFile(configSysml, configFile);
+            rd.logf("  Config written to: %s (%d bytes)\n", configFile.getAbsolutePath(), configSysml.length());
+         }
 
          // Export workflows
-         rd.log("Exporting workflows for SAW PL Program...");
-         String workflowsSysml = actionEp.getSysmlWorkflows(programId);
-         File workflowsFile = new File(outputDir, "saw-pl-program-workflows.sysml");
-         Lib.writeStringToFile(workflowsSysml, workflowsFile);
-         rd.logf("  Workflows written to: %s (%d bytes)\n", workflowsFile.getAbsolutePath(), workflowsSysml.length());
+         rd.log("Exporting workflows for ATS Program...");
+         String workflowsSysml = result.getWorkflowSysml();
+         if (Strings.isValid(workflowsSysml)) {
+            File workflowsFile = new File(outputDir, fileBase + "-" + timestamp + "-workflows.sysml");
+            Lib.writeStringToFile(workflowsSysml, workflowsFile);
+            rd.logf("  Workflows written to: %s (%d bytes)\n", workflowsFile.getAbsolutePath(),
+               workflowsSysml.length());
+         }
 
          rd.log("\nExport complete.");
+
+         org.eclipse.swt.program.Program.launch(outputDir.getAbsolutePath());
       } catch (Exception ex) {
-         rd.errorf("Error exporting to SysML: %s", ex.getMessage());
+         rd.errorf("Error writing SysML export files: %s", ex.getMessage());
       }
 
       XResultDataUI.report(rd, TITLE);
    }
 
+   private String toFileName(String programName) {
+      return programName.trim().replaceAll("[^a-zA-Z0-9]+", "_").toLowerCase();
+   }
+
    @Override
    public String getDescription() {
-      return "Exports SAW PL Program configuration and workflows to SysML V2 textual notation.\n" //
+      return "Exports a program's configuration and workflows to SysML V2 textual notation.\n" //
          + "Output: " + OUTPUT_DIR;
    }
 }

@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -61,10 +59,9 @@ public abstract class AbstractBlam implements XWidgetSwtRendererListener {
    private final Pattern capitalLetter = Pattern.compile("[A-Z]+[a-z]*");
 
    /**
-    * Produce a short product label from a BLAM's package name, for display in test names/reports. Core OSEE
-    * packages ("org.eclipse.osee...") show as "OSEE"; other products show the segment immediately after "osee",
-    * uppercased (e.g. "xyz.abc.osee.www" -&gt; "WWW"). Falls back to the first segment uppercased if "osee" is not
-    * present.
+    * Produce a short product label from a BLAM's package name, for display in test names/reports. Core OSEE packages
+    * ("org.eclipse.osee...") show as "OSEE"; other products show the segment immediately after "osee", uppercased (e.g.
+    * "xyz.abc.osee.www" -&gt; "WWW"). Falls back to the first segment uppercased if "osee" is not present.
     */
    public static String getPackageLabel(AbstractBlam blam) {
       return getPackageLabel(blam.getClass().getPackageName());
@@ -90,8 +87,7 @@ public abstract class AbstractBlam implements XWidgetSwtRendererListener {
    }
 
    protected Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
-   protected Map<Long, String> branchViews;
-   protected ArtifactToken viewId = ArtifactToken.SENTINEL;
+   protected BranchViewToken branchView = BranchViewToken.SENTINEL;
    protected boolean inDebug = false;
    private OperationLogger logger;
    private final String description = DEFAULT_DESCRIPTION;
@@ -224,18 +220,12 @@ public abstract class AbstractBlam implements XWidgetSwtRendererListener {
       }
    }
 
-   public void setViewId(Object view) {
-      if (branchViews != null) {
-         for (Entry<Long, String> entry : branchViews.entrySet()) {
-            if (entry.getValue().equals(view)) {
-               viewId = ArtifactToken.valueOf(entry.getKey(), entry.getValue());
-            }
-         }
-      }
+   public void setViewId(BranchViewToken view) {
+      branchView = view;
    }
 
    public void resetViewId() {
-      viewId = ArtifactToken.SENTINEL;
+      branchView = BranchViewToken.SENTINEL;
    }
 
    public String getOutputMessage() {

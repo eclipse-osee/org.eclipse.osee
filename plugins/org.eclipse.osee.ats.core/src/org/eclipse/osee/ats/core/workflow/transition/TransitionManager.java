@@ -241,6 +241,9 @@ public class TransitionManager implements IAtsChangeSetListener {
                      String errStr =
                         String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
                            fromStateDef.getWorkDefinition().getName(), fromStateDef.getName(), toStateDef.getName());
+                     if (!atsApi.isInTest()) {
+                        OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
+                     }
                      results.addResult(workItem, new TransitionResult(errStr));
                      continue;
                   }
@@ -254,6 +257,9 @@ public class TransitionManager implements IAtsChangeSetListener {
                         "Wait state [%s] can only transition back to [%s] or to a cancelled state, not to \"[%s]\" for Work Def [%s] on %s",
                         fromStateDef.getName(), workItem.getLastStateName(), toStateDef.getName(),
                         workItem.getWorkDefinition().getName(), workItem.toStringWithId());
+                     if (!atsApi.isInTest()) {
+                        OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
+                     }
                      results.addResult(workItem, new TransitionResult(errStr));
                      continue;
                   }

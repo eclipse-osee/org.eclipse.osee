@@ -251,8 +251,12 @@ enforces unique ids and throws `OseeArgumentException` on bind if a work def has
 
 - **Environment gating:** `IAtsWorkDefinitionBuilder.isApplicable()` defaults to `true`; demo/test work defs override
   it to return `DemoUtil.isDemoDatabase()` so they only register on a demo database.
-- **No clearing:** work definitions are immutable code bound once at startup; DS never re-injects, so the collector's
-  `clearCaches()` is an intentional no-op.
+- **Retained builders, rebuilt on clear:** DS binds each builder once and never re-injects, so the collector retains
+  the bound builders. `clearCaches()` marks the cache unloaded; the next `getAll()`/`getWorkDefinition()` rebuilds the
+  applicable set from the retained builders, re-evaluating `isApplicable()`. This is required: `AtsDbConfigDemoOp`
+  sets `osee.db` to the demo value after the builders bound (CI does not launch with `-Dosee.db=orgdemo`), then clears
+  caches so the demo work defs appear. Do not make `clearCaches()` a no-op; that broke CI demo populate ("Demo Work
+  Definitions not Loaded").
 - **Adding a work def:** create the `AbstractWorkDef`/`AbstractDemoWorkDef` subclass, add the `@Component` annotation,
   and add its `OSGI-INF/<fqcn>.xml`. No provider edit needed - there is no central list to update.
 

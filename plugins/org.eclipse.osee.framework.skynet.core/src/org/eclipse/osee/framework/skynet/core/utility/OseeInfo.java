@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
@@ -86,5 +87,21 @@ public class OseeInfo {
    private static void cacheValue(String key, String value) {
       Long time = System.currentTimeMillis();
       cache.put(key, new Pair<>(time, value));
+   }
+
+   public static boolean isSet(String key) {
+      String cached = getCachedValue(key);
+      return "true".equals(cached);
+   }
+
+   public static boolean useDarkModeSwtFix() {
+      return isSet(OseeProperties.OSEE_USE_DARK_MODE_SWT_FIX);
+   }
+
+   /**
+    * Global switch for click-to-edit on all XX text widgets; when not "true", they use only the label/dialog edit.
+    */
+   public static boolean useClickEdit() {
+      return isSet(OseeProperties.OSEE_USE_CLICK_EDIT);
    }
 }
