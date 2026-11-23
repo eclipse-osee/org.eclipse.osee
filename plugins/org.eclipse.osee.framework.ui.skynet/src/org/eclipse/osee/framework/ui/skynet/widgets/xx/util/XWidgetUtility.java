@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.IManagedForm;
@@ -423,13 +424,15 @@ public final class XWidgetUtility {
     * keep a light-grey background against a black composite. See TW30014 and attachment, or search Eclipse SWT Dark
     * Mode, for more details.
     * <p>
-    * Works by listening for {@code SWT.Skin} events on the display. Each skinning burst schedules one deferred pass
-    * (coalesced; further events are ignored until it runs) that copies each composite's background down to those
-    * controls ({@link #applyBackgroundRecursive}). No-op unless the dark mode fix is enabled and Dark Mode is active.
+    * Works by listening for {@code SWT.Skin} events on the display and for activate/deactivate on {@code root}'s shell
+    * (the theme restyles the shell when a dialog opens or closes, without a Skin event). Each burst schedules one
+    * deferred pass (coalesced; further events are ignored until it runs) that copies each composite's background down
+    * to those controls ({@link #applyBackgroundRecursive}). No-op unless the dark mode fix is enabled and Dark Mode is
+    * active.
     * <p>
-    * The skin listener is a display-wide filter, so it is removed when {@code root} is disposed. Pass a composite whose
-    * lifetime matches the content being fixed (e.g. a body that is disposed on editor close or rebuild), or filters
-    * will accumulate.
+    * The skin filter is display-wide and the shell listeners outlive {@code root}, so both are removed when {@code root}
+    * is disposed. Pass a composite whose lifetime matches the content being fixed (e.g. a body that is disposed on
+    * editor close or rebuild), or listeners will accumulate.
     */
    public static void setDarkModeSyncBackgroundsAsync(Composite root) {
       if (OseeInfo.useDarkModeSwtFix() && AWorkbench.isDarkMode()) {
@@ -438,9 +441,8 @@ public final class XWidgetUtility {
          }
          Display display = root.getDisplay();
          boolean[] passQueued = {false}; // UI thread only
-         Listener skinFilter = event -> {
-            // Any composite: the CSS engine restyles from ancestors (editor/form), not only from widgets under root
-            if (!passQueued[0] && event.widget instanceof Composite) {
+         Runnable queuePass = () -> {
+            if (!passQueued[0]) {
                passQueued[0] = true;
                // Two hops: the CSS engine applies its colors in its own asyncExec, so a single hop runs too early
                display.asyncExec(() -> display.asyncExec(() -> {
@@ -451,9 +453,27 @@ public final class XWidgetUtility {
                }));
             }
          };
+         // Any composite: the CSS engine restyles from ancestors (editor/form), not only from widgets under root
+         Listener skinFilter = event -> {
+            if (event.widget instanceof Composite) {
+               queuePass.run();
+            }
+         };
          display.addFilter(SWT.Skin, skinFilter);
-         // Display filters are global; remove with root (editor close or body rebuild) or they accumulate
-         root.addDisposeListener(e -> display.removeFilter(SWT.Skin, skinFilter));
+         // The theme also restyles the whole shell on activate/deactivate (e.g. a dialog opening and closing) without
+         // sending SWT.Skin, which puts the grey back; re-sync after those too
+         Shell shell = root.getShell();
+         Listener shellListener = event -> queuePass.run();
+         shell.addListener(SWT.Activate, shellListener);
+         shell.addListener(SWT.Deactivate, shellListener);
+         // Display filters and shell listeners outlive root; remove with root (editor close or body rebuild)
+         root.addDisposeListener(e -> {
+            display.removeFilter(SWT.Skin, skinFilter);
+            if (!shell.isDisposed()) {
+               shell.removeListener(SWT.Activate, shellListener);
+               shell.removeListener(SWT.Deactivate, shellListener);
+            }
+         });
       }
    }
 
