@@ -93,6 +93,8 @@ public class BlamInputSection extends BaseBlamSection {
       section.layout(true);
       form.getForm().getBody().layout(true);
       abstractBlam.inputSectionCreated(widgetPage);
+      // sectionBody is disposed on rebuild/editor close, which removes the dark mode listeners with it
+      XWidgetUtility.setDarkModeSyncBackgroundsAsync(sectionBody);
    }
 
    private void createWidgets(Composite parent) {
