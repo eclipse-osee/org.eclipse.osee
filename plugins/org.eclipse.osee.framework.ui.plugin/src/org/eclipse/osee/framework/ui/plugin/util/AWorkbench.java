@@ -74,18 +74,20 @@ public final class AWorkbench {
       if (cached != null) {
          return cached;
       }
-      boolean darkMode = false;
+      boolean darkMode;
       try {
-         darkMode = Display.isSystemDarkTheme();
-         if (!darkMode) {
-            Object engine = Display.getDefault().getData(CSS_THEME_ENGINE_KEY);
-            if (engine != null) {
-               Object activeTheme = engine.getClass().getMethod("getActiveTheme").invoke(engine);
-               if (activeTheme != null) {
-                  String themeId = (String) activeTheme.getClass().getMethod("getId").invoke(activeTheme);
-                  darkMode = themeId != null && themeId.toLowerCase().contains("dark");
-               }
-            }
+         // The Eclipse theme decides how widgets render, so it wins over the OS setting (Windows dark + Eclipse Light
+         // must be Light). The OS setting is only a fallback when the Eclipse theme can't be read.
+         Object activeTheme = null;
+         Object engine = Display.getDefault().getData(CSS_THEME_ENGINE_KEY);
+         if (engine != null) {
+            activeTheme = engine.getClass().getMethod("getActiveTheme").invoke(engine);
+         }
+         if (activeTheme != null) {
+            String themeId = (String) activeTheme.getClass().getMethod("getId").invoke(activeTheme);
+            darkMode = themeId != null && themeId.toLowerCase().contains("dark");
+         } else {
+            darkMode = Display.isSystemDarkTheme();
          }
       } catch (Exception ex) {
          // do nothing - reflection structure may change; fall back to light and retry next call

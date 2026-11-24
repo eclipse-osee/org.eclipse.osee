@@ -199,8 +199,9 @@ public class WfeHeaderComposite extends Composite implements XWidgetSwtRendererL
    }
 
    /**
-    * Makes the WFE Title stand out (header font, Forms title color) in place of a border. Applied only to this header's
-    * Title control, so no other widget, editor, or WorkDef is affected. Runs before the body's layout/reflow.
+    * Makes the WFE Title stand out (header font; Forms title color in Light mode) in place of a border. Applied only to
+    * this header's Title control, so no other widget, editor, or WorkDef is affected. Runs before the body's
+    * layout/reflow.
     */
    private void styleTitleWidget() {
       for (XWidget widget : widgets) {
@@ -208,7 +209,11 @@ public class WfeHeaderComposite extends Composite implements XWidgetSwtRendererL
             StyledText sText = ((XXAbstractSTextWidget) widget).getStyledText();
             if (Widgets.isAccessible(sText)) {
                sText.setFont(JFaceResources.getHeaderFont());
-               sText.setForeground(editor.getToolkit().getColors().getColor(IFormColors.TITLE));
+               // Dark theme: keep the theme's text color. The Forms title color is dark blue, and the theme only
+               // replaces it on its next restyle (e.g. shell deactivate), so after a reload it showed dark on dark.
+               if (!AWorkbench.isDarkMode()) {
+                  sText.setForeground(editor.getToolkit().getColors().getColor(IFormColors.TITLE));
+               }
             }
             return;
          }

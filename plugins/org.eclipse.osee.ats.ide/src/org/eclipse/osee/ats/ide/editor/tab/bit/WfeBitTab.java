@@ -29,9 +29,9 @@ import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.cr.bit.model.BitUtil;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
-import org.eclipse.osee.ats.api.workflow.cr.bit.model.BitUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.event.EventModType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,7 +51,6 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
-import org.eclipse.osee.framework.core.event.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -264,8 +264,7 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
             refresh = true;
             break;
          } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            if (atsApi.getRelationResolver().getRelatedOrSentinel(art,
-               AtsRelationTypes.BuildImpactDataToTeamWf_Bid).isValid()) {
+            if (!atsApi.getRelationResolver().getRelated(art, AtsRelationTypes.BuildImpactDataToTeamWf_Bid).isEmpty()) {
                refresh = true;
                break;
             }
@@ -295,8 +294,7 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
             refresh = true;
             break;
          } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            if (atsApi.getRelationResolver().getRelatedOrSentinel(art,
-               AtsRelationTypes.BuildImpactDataToTeamWf_Bid).isValid()) {
+            if (!atsApi.getRelationResolver().getRelated(art, AtsRelationTypes.BuildImpactDataToTeamWf_Bid).isEmpty()) {
                refresh = true;
                break;
             }
