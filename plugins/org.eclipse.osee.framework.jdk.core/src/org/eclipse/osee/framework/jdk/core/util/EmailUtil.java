@@ -13,6 +13,10 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -21,6 +25,7 @@ import java.util.regex.Pattern;
 public class EmailUtil {
 
    private static Pattern addressPattern = Pattern.compile(".+?@.+?\\.[a-z]+");
+   private static final Pattern ADDRESS_SEPARATOR = Pattern.compile("[,;\\s]+");
 
    public static boolean isEmailValid(String email) {
       return email != null && addressPattern.matcher(email).matches();
@@ -28,6 +33,23 @@ public class EmailUtil {
 
    public static boolean isEmailInValid(String email) {
       return !isEmailValid(email);
+   }
+
+   /**
+    * Splits on commas, semicolons and whitespace. Order is preserved and duplicates are dropped. Addresses are not
+    * validated; use {@link #isEmailValid(String)} on each result.
+    */
+   public static List<String> splitAddresses(String addresses) {
+      if (addresses == null) {
+         return new ArrayList<>();
+      }
+      Set<String> unique = new LinkedHashSet<>();
+      for (String address : ADDRESS_SEPARATOR.split(addresses.trim())) {
+         if (!address.isEmpty()) {
+            unique.add(address);
+         }
+      }
+      return new ArrayList<>(unique);
    }
 
 }
