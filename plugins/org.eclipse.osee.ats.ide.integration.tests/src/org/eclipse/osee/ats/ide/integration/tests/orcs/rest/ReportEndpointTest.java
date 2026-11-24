@@ -20,6 +20,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -490,6 +492,48 @@ public class ReportEndpointTest {
       } finally {
          response.close();
       }
+   }
+
+   @Test
+   public void testReportEndpointAsyncMultipleRecipients() {
+      String[] separators = {",", ";", " ", ", ", " ; "};
+      for (String separator : separators) {
+         String emails = "test1@example.com" + separator + "test2@example.com" + separator + "test1@example.com";
+         Response response = getAsyncReport(emails);
+         try {
+            assertEquals("Separator [" + separator + "] should be accepted", Family.SUCCESSFUL,
+               response.getStatusInfo().getFamily());
+
+            String responseBody = readResponseBody(response);
+            assertTrue("Response should indicate report generation started",
+               responseBody.contains("Report generation started"));
+            assertTrue("Response should list both recipients once, in order",
+               responseBody.contains("\"emailRecipient\":\"test1@example.com, test2@example.com\""));
+         } finally {
+            response.close();
+         }
+      }
+   }
+
+   @Test
+   public void testReportEndpointAsyncInvalidRecipientInList() {
+      Response response = getAsyncReport("test1@example.com, notanemail");
+      try {
+         assertEquals(Family.SERVER_ERROR, response.getStatusInfo().getFamily());
+
+         String responseBody = readResponseBody(response);
+         assertTrue("Error should name the invalid address", responseBody.contains("Invalid Email Address: notanemail"));
+      } finally {
+         response.close();
+      }
+   }
+
+   private Response getAsyncReport(String emails) {
+      String encodedEmails = URLEncoder.encode(emails, StandardCharsets.UTF_8);
+      String url = String.format("orcs/report/%s/view/%s/template/%s?format=xml&email=%s",
+         DemoBranches.SAW_PL_Working_Branch.getIdString(), ArtifactId.SENTINEL.getIdString(),
+         templateArt.getIdString(), encodedEmails);
+      return jaxRsApi.newTarget(url).request(MediaType.APPLICATION_JSON).get();
    }
 
    @Test
